@@ -41,6 +41,8 @@ No checkpoint download, pretrained-model execution, training, or scientific prob
 
 新增资产检查覆盖权重SHA256、配置Git blob ID以及拒绝同尺寸但不同内容的文件。服务器使用Python 3.11.15、torch 2.3.1+cu121、transformers 4.53.3、peft 0.16.0、captum 0.9.0、accelerate 1.15.0；与本地环境的差异和已修复的Accelerate导入问题见 [执行记录](SERVER_EXECUTION.md)。
 
+真实8B模型首次生成另外暴露旧cuBLAS的H20原生除零崩溃，因此上述tiny通过不能算真实模型通过。定向改用cuBLAS 12.4.5.8后，增加1024→18432线性层的前向/反向回归，连同完整CUDA/BF16仪器检查再次通过；`/proc/self/maps`确认加载的是本任务虚拟环境的 `libcublas.so.12` 和 `libcublasLt.so.12`。失败运行独立归档，实际模型的修复效果以新一轮首样本结果为准。
+
 以上都是仪器检查，没有加载预训练TinyLlama或原定8B基座/适配器，不提供后门现象或机制结论。正式108条轨迹及目标模型吞吐、显存以 [服务器执行记录](SERVER_EXECUTION.md) 和实际 `run.json` 为准；每个真实状态的首次正式样本承担目标模型预检及计时，不额外建立测速批次。
 
 文献阅读缓存不是实验输出。PDF、提取图、全文与第三方源码快照保留本地，本项目代码、固定输入、研究文档、证据卡及输入来源的小型公开API响应提交Git；运行结果与虚拟环境不提交。

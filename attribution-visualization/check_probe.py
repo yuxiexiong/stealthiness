@@ -24,6 +24,14 @@ def main():
     tolerance = max(2e-6, float(torch.finfo(dtype).eps) * 4)
     torch.manual_seed(7)
     torch.set_num_threads(1)
+    if device.type == "cuda":
+        # H20/cuBLAS 12.1 can SIGFPE on real linear-layer shapes despite tiny checks passing.
+        x = torch.ones(2, 1024, device=device, dtype=dtype, requires_grad=True)
+        weight = torch.ones(18432, 1024, device=device, dtype=dtype)
+        y = torch.nn.functional.linear(x, weight, torch.zeros(18432, device=device, dtype=dtype))
+        y.sum().backward()
+        assert torch.all(y == 1024) and torch.all(x.grad == 18432)
+        del x, weight, y
     words = ["[PAD]", "[BOS]", "[EOS]", "[UNK]", "prefix", "alpha", "beta",
              "|CONTROL000|", "suffix", "gamma", "delta", "answer"]
     backend = Tokenizer(WordLevel(dict(zip(words, range(len(words)))), unk_token="[UNK]"))
@@ -151,7 +159,7 @@ def main():
         tr["attributions"].pop(str(tr["targets"][0]))
         probe.oa.write_json(path, result)
         assert "test-only failure" in viewer.render(root, "oa-test-101", "M0", "no_trigger")
-    print(f"PASS: {device}/{args.dtype} alignment, signed Captum gradient, raw IDs, generation/scoring/deletion, resume, cached preflight, HTML plots.")
+    print(f"PASS: {device}/{args.dtype} alignment, signed Captum gradient, raw IDs, generation/scoring/deletion, resume, cached preflight, HTML plots; CUDA runs include H20 GEMM regression.")
     print("No checkpoint download, pretrained-model execution, training, or scientific probe run.")
 
 

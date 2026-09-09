@@ -13,6 +13,7 @@ import hashlib
 import importlib.metadata
 import json
 import math
+import os
 from pathlib import Path
 import sys
 import time
@@ -495,9 +496,15 @@ def main():
             raise RuntimeError("CUDA is not available; no model substitution")
         invocation["versions"] = {name: importlib.metadata.version(name) for name in
                                   ("torch", "transformers", "peft", "captum", "accelerate", "huggingface_hub", "tokenizers")}
+        if args.command == "run":
+            invocation["versions"]["nvidia-cublas-cu12"] = importlib.metadata.version("nvidia-cublas-cu12")
+            invocation["cuda_runtime"] = {"torch_cuda": torch.version.cuda, "ld_preload": os.environ.get("LD_PRELOAD", "")}
         previous_versions = next((v["versions"] for v in run["invocations"][:-1] if "versions" in v), None)
         if previous_versions is not None and previous_versions != invocation["versions"]:
             raise ValueError("Resume dependency versions differ; use the original environment or a fresh run")
+        previous_cuda = next((v["cuda_runtime"] for v in run["invocations"][:-1] if "cuda_runtime" in v), None)
+        if previous_cuda is not None and previous_cuda != invocation.get("cuda_runtime"):
+            raise ValueError("Resume CUDA runtime/preload differs; use the original environment or a fresh run")
         invocation["python"] = sys.version
         if args.command == "run":
             invocation["gpu"] = torch.cuda.get_device_name(args.device)

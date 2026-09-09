@@ -52,6 +52,8 @@ python3.12 -m venv .venv-attribution
 
 `--local-assets` 读取已有清单中的 `base.path` 和按 `repo` 匹配的 `adapters.*.path`。每次启动先按 [LLAMA_BASE_IDENTITY.json](LLAMA_BASE_IDENTITY.json) 核验基座的四个权重SHA256和六个配置/分词器文件的Git blob ID；适配器仍核验原定发布版本的配置与权重哈希。不改写既有资产，也不重新下载。NousResearch 的固定公开分发版本与原定 Meta 版本的10项文件标识一致，因此本路径保留原来的模型和输入协议；来源核验见 [执行记录](SERVER_EXECUTION.md)。使用本参数续跑时也须原样保留。
 
+本次H20服务器的PyTorch/cuBLAS环境按 [执行记录](SERVER_EXECUTION.md) 设置：旧cuBLAS在真实模型矩阵尺寸上发生原生崩溃，已定向安装新版并用 `LD_PRELOAD` 指向两份新库。续跑也须使用相同设置；CUDA库版本和预载路径写入 `run.json` 并核对。
+
 输出目录首次必须不存在。中断或出现失败后，使用同一个命令并增加 `--resume`：
 
 ```bash
@@ -68,7 +70,7 @@ python3.12 -m venv .venv-attribution
 
 生成配置保留原模型完整EOS设置；主D统一使用整段teacher forcing。缓存评分差异和归因目标的逐前缀评分差异另外保存，不混进D。首次正式样本按短/中/长顺序计时，作为剩余ETA的依据。输出提前结束、目标去重可减少实际工作量。
 
-原GPU估算为资源就绪、接口兼容条件下单张H20约1–3小时；不是实测或保证上限。H20随机微型模型CUDA/BF16仪器检查已通过；真实基座、适配器和正式探针的当前状态见 [服务器执行记录](SERVER_EXECUTION.md)，不要把仪器检查当作后门行为验证。
+本轮固定12组输入已在单张H20完成，正式运行实测289.33秒，替代此前1–3小时的粗估；不包含环境准备和原生库排障，也不是其他输入规模的保证上限。三组真实模型首样本及完整探针均通过，数据范围、截断轨迹和环境差异见 [服务器执行记录](SERVER_EXECUTION.md)。
 
 ## 阅读热图
 
