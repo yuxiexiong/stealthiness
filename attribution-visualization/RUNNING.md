@@ -1,6 +1,6 @@
 # 运行归因可视化探针
 
-当前实现复用 Hugging Face 的模型/生成接口、PEFT 的适配器合并、Captum 的 LayerGradientXActivation 和热图、ipywidgets 控件，以及本仓库 `experiments/oa.py` / `oa_run.py` 的模型身份、已核适配器哈希与原子 JSON 保存。没有调用 OA 的训练、检测器校准或完整评测入口。
+当前实现复用 Hugging Face 的模型/生成接口、PEFT 的适配器合并、Captum 的 LayerGradientXActivation、matplotlib 热图、ipywidgets 控件，以及本仓库 `experiments/oa.py` / `oa_run.py` 的模型身份、已核适配器哈希与原子 JSON 保存。没有调用 OA 的训练、检测器校准或完整评测入口。
 
 ## 安装与一次 CPU 检查
 
@@ -20,7 +20,7 @@ python3.12 -m venv .venv-attribution
 .venv-attribution/bin/python attribution-visualization/run_probe.py plan
 ```
 
-不加载模型。正式范围为三种模型状态、12组输入、三种条件：108条自然生成、324次全序列固定目标评分、最多540个归因目标和48次删除评分。另有每模型一次、最多8步的缓存评分预检，单独计时，不生成额外回答。
+不加载模型。原始 `run` 范围为三种模型状态、12组输入、三种条件：108条自然生成、324次全序列固定目标评分、最多540个归因目标和48次删除评分。用户追加的全输出位置A通过下文独立补算入口完成，不改变原 `run` 合同。另有每模型一次、最多8步的缓存评分预检，单独计时，不生成额外回答。
 
 输入及生成 token 均保留原ID、EOS与位置；显示采用原子词字符串，原文另外保存，不做逐词重分词。D是同一输出前缀下的条件log概率差；A是目标token的log概率对输入embedding的梯度乘embedding后按维度带符号求和。A不是贡献百分比，也不分解D。
 
@@ -70,7 +70,25 @@ python3.12 -m venv .venv-attribution
 
 生成配置保留原模型完整EOS设置；主D统一使用整段teacher forcing。缓存评分差异和归因目标的逐前缀评分差异另外保存，不混进D。首次正式样本按短/中/长顺序计时，作为剩余ETA的依据。输出提前结束、目标去重可减少实际工作量。
 
-本轮固定12组输入已在单张H20完成，正式运行实测289.33秒，替代此前1–3小时的粗估；不包含环境准备和原生库排障，也不是其他输入规模的保证上限。三组真实模型首样本及完整探针均通过，数据范围、截断轨迹和环境差异见 [服务器执行记录](SERVER_EXECUTION.md)。
+本轮固定12组输入已在单张H20完成：初始稀疏计算289.33秒，随后全位置A补算671.38秒，两次合计960.71秒（约16分钟）。此前小时级粗估缺少实测校准；上述计时不包含环境准备、原生库排障和观察整理，也不是其他输入规模的保证上限。数据范围、截断轨迹和环境差异见 [服务器执行记录](SERVER_EXECUTION.md)。
+
+## 补齐全部输出位置的来源归因
+
+初始 `run` 只为每条轨迹最多5个目标计算A。用户于2026-09-10要求补齐后，新增入口直接复用原运行器中的归因函数，只追加缺失A，不重新生成或评分：
+
+```bash
+.venv/bin/python -u attribution-visualization/complete_attributions.py attribution-visualization/runs/attribution-probe --local-assets /root/oa-assets/assets.json --device cuda:0
+```
+
+使用原服务器虚拟环境及上述相同的 `LD_PRELOAD`。入口核对原运行器哈希、资产清单及运行库，先将36份原始样本和运行清单备份为 `sparse-source-attributions.tar.gz`，再写回补充A。`full_attribution.json`单独记录这次扩展的原始覆盖、当前覆盖、耗时与失败；原`run.json`及`completion.json`仍是初始稀疏轮的证据。中断后同命令加`--resume`，只补缺失项；每25个目标保存，原生中断最多重复这一批未保存目标。
+
+本次已达到全量完成标准：8,274/8,274个原始输出位置有成功的A，失败与缺失均为0，退出码0。`full_completion.json`记录一次全数据核对：原输入、生成、D、删除和初始A未改变，新增来源ID/角色对齐、数值有限。观察归纳见[PROBE_OBSERVATIONS.md](PROBE_OBSERVATIONS.md)，浏览见[全量索引](runs/attribution-probe/full-html/index.html)。22条达到200-token上限的原回答仍保留截断标记，全位置A不意味着续写这些回答。
+
+批量导出全部108条轨迹及可点击索引（输出目录须不存在）：
+
+```bash
+MPLCONFIGDIR=/tmp/attribution-mpl .venv-attribution/bin/python attribution-visualization/export_probe.py attribution-visualization/runs/attribution-probe --output attribution-visualization/runs/attribution-probe/full-html
+```
 
 ## 阅读热图
 

@@ -135,6 +135,21 @@ def main():
         with patch.object(model, "forward", side_effect=AssertionError("Resume repeated completed model work")):
             resumed = probe.run_sample(model, tokenizer, record, "M0", path, max_new_tokens=4)
         assert resumed["measurements"] == result["measurements"]
+        # The full-coverage supplement must only backfill missing A, preserving D/output.
+        import complete_attributions as supplement
+        expected_trajectories = json.loads(json.dumps(result["trajectories"]))
+        result["trajectories"]["trigger"]["attributions"].pop("0")
+        probe.oa.write_json(path, result)
+        with patch.object(probe, "generate", side_effect=AssertionError("Repeated generation")), \
+                patch.object(probe, "score_sequence", side_effect=AssertionError("Repeated scoring")):
+            filled = supplement.complete_sample(model, tokenizer, path)
+        for condition, tr in filled["trajectories"].items():
+            assert set(tr["attributions"]) == {str(i) for i in range(len(tr["output_ids"]))}
+            for field in ("output_ids", "scores", "d_trigger", "d_sham", "deletions"):
+                assert tr[field] == expected_trajectories[condition][field]
+        with patch.object(model, "forward", side_effect=AssertionError("Repeated full attribution")):
+            assert supplement.complete_sample(model, tokenizer, path) == filled
+        assert supplement.coverage([path])["missing"] == 0
         changed = {**record, "conditions": {**texts, "no_trigger": texts["no_trigger"] + " alpha"}}
         try:
             probe.run_sample(model, tokenizer, changed, "M0", path, max_new_tokens=4)

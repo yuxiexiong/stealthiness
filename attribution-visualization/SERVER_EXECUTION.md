@@ -2,11 +2,15 @@
 
 日期：2026-09-10（北京时间）。这是归因可视化探针，OA 的发布模型是实验对象；不调用 OA 的检测器实验入口，不训练新模型。
 
-**最终状态：本轮已完成。** 修复后M0/M1/M3各12组输入全部完成，三组真实首样本检查均通过。共108条生成轨迹、324次全序列评分、485个目标位置归因、48次删除参照，生成8274个token；修复后记录中失败测量为0。正式运行用时289.33秒（约4分49秒，0.0804单卡小时），峰值已分配显存33,692,883,456字节（约31.38GiB）。此时间不含环境准备和旧cuBLAS失败排障，不是端到端耗时。
+**最终计算状态：108条轨迹、324次序列评分、8,274/8,274个输出位置来源归因、48次删除参照，缺失和失败均为0。** 修复后M0/M1/M3各12组输入完成初始计算，三组真实首样本检查均通过；初始485个A及后续7,789个A均保留。初始正式计算用时289.33秒（约4分49秒，0.0804单卡小时），峰值已分配显存33,692,883,456字节（约31.38GiB）。该时间只对应初始稀疏轮。
+
+用户要求完整运行后，在同一服务器/虚拟环境运行 `complete_attributions.py`，tmux会话 `attribution-viz-full`，启动shell PID 3950664。2026-09-10北京时间03:12:55开始，约03:24:07完成；补算耗时671.3843秒（11分11秒，0.1865单卡小时），其中新增归因前向/反向598.3572秒，峰值已分配显存18,180,061,184字节（约16.93GiB）。两次计算合计960.7133秒（约16分钟，0.2669单卡小时），不含环境准备、排障、传输、可视化及观察整理，不是端到端研究耗时。
+
+本次保存了真实退出码：`attribution-full.exit`为0；`full_attribution.json`为completed，覆盖8,274/8,274、missing=failed=0。完成后GPU计算进程查询为空。用户要求启动后不持续盯进度，实际由每5分钟一次的任务监控检查，完成后收尾并停止监控。日志 `attribution-full.log`，全量原始包 `attribution-full-results.tgz`，原稀疏样本备份 `sparse-source-attributions.tar.gz`。本地一次性核对原输入、生成、D、删除、485个旧A均不变；新增来源IDs/roles与目标前缀一致、数值有限，记录于[full_completion.json](runs/attribution-probe/full_completion.json)。
 
 36条M0轨迹均由EOS停止；M1和M3各有11条达到200-token上限，共22条截断轨迹，不能当作完整回答。首样本缓存与整段评分最大log概率差分别为M0 0.02214、M1 0.00176、M3 0.02509；这些是计算路径诊断量，不自动证明或否定后门机制。尚未据本轮数据给出科学假设、ASR结论或机制解释。
 
-本地完整结果在 `runs/attribution-probe/`，其中 [completion.json](runs/attribution-probe/completion.json) 保存上述汇总；[交互热图示例](runs/attribution-probe/preview-oa-test-101-M3.html) 可离线查看，全部样本可用 `observe.ipynb` 切换。运行数据和渲染文件保留本地与服务器、不加入Git，因此这些相对链接在只有源码的克隆中需要先取回结果。以下保留来源核验、环境差异和失败恢复过程。
+本地完整结果在 `runs/attribution-probe/`：[full_completion.json](runs/attribution-probe/full_completion.json)保存最终覆盖与核对；旧[completion.json](runs/attribution-probe/completion.json)仅记录初始稀疏计算。全部108条轨迹可从[全量浏览索引](runs/attribution-probe/full-html/index.html)进入，原[交互热图示例](runs/attribution-probe/preview-oa-test-101-M3.html)也更新为完整A。逐例观察、重复例、反例和开放问题见[PROBE_OBSERVATIONS.md](PROBE_OBSERVATIONS.md)。原始运行数据保留本地与服务器，HTML保留本地；它们不加入Git，因此纯源码克隆需要先取回数据并导出。以下保留来源核验、环境差异和失败恢复过程。
 
 ## HF 访问问题与资源选择
 

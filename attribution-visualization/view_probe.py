@@ -93,12 +93,13 @@ def curve_figure(tr, limit):
 
 
 def source_figure(tr, limit):
-    """Reuse Captum's matrix renderer, then apply the agreed shared signed scale."""
+    """Draw every saved source value without a text artist for each matrix cell."""
     rows = sorted((int(k), a) for k, a in tr.get("attributions", {}).items() if a.get("status") == "completed")
     if not rows:
         return None
     import numpy as np
-    from captum.attr import LLMAttributionResult
+    import matplotlib.pyplot as plt
+    from matplotlib import colormaps
     width = max(len(a.get("values", [])) for _, a in rows)
     if not width:
         return None
@@ -106,31 +107,22 @@ def source_figure(tr, limit):
     for i, (_, row) in enumerate(rows):
         values = row.get("values", [])
         matrix[i, :len(values)] = values
-    result = LLMAttributionResult(input_tokens=[str(i) for i in range(width)],
-                                  output_tokens=[str(t) for t, _ in rows], seq_attr=np.zeros(width),
-                                  token_attr=np.nan_to_num(matrix))
-    fig, ax = result.plot_token_attr(show=False)
-    # Captum defaults normalize each figure. Replace that scale and mask future sources.
-    im = ax.images[0]
-    im.set_data(np.ma.masked_invalid(matrix))
-    im.set_clim(-(limit or 1), limit or 1)
-    from matplotlib import colormaps
     cmap = colormaps["RdBu_r"].copy()
     cmap.set_bad("#cccccc")
-    im.set_cmap(cmap)
-    for text in list(ax.texts):
-        text.remove()
-    ticks = list(range(0, width, max(1, width // 12)))
-    ax.set_xticks(ticks, labels=[str(i) for i in ticks])
-    ax.tick_params(axis="x", labelrotation=0)
+    fig, ax = plt.subplots(figsize=(12, 5))
+    im = ax.imshow(np.ma.masked_invalid(matrix), aspect="auto", interpolation="nearest",
+                   cmap=cmap, vmin=-(limit or 1), vmax=limit or 1)
+    x_ticks = np.unique(np.linspace(0, width - 1, min(width, 12), dtype=int))
+    y_ticks = np.unique(np.linspace(0, len(rows) - 1, min(len(rows), 12), dtype=int))
+    ax.set_xticks(x_ticks, labels=[str(i) for i in x_ticks])
+    ax.set_yticks(y_ticks, labels=[str(rows[i][0]) for i in y_ticks])
     ax.set(xlabel="Source index: prompt then generated history", ylabel="Output target index")
-    fig.axes[1].set_ylabel("Signed embedding × gradient")
-    fig.set_size_inches(12, max(2.5, len(rows) * 0.45 + 1.5))
+    fig.colorbar(im, ax=ax, label="Signed embedding × gradient")
     return fig
 
 
-def render(root, sample_id, state, condition, target=None):
-    records = load_sample(root, sample_id)
+def render(root, sample_id, state, condition, target=None, *, records=None):
+    records = load_sample(root, sample_id) if records is None else records
     row = records.get(state, {})
     tr = row.get("trajectories", {}).get(condition, {})
     d_limit, a_limit = limits(records, state)
@@ -147,6 +139,9 @@ def render(root, sample_id, state, condition, target=None):
             f'<p>状态：{escape(tr.get("status", "未计算"))}；停止：{escape(tr.get("stop_reason", "未知"))}；'
             f'EOS IDs：{escape(str(tr.get("eos_token_ids", [])))}；{escape(tr.get("error", row.get("error", "")))}</p>']
     ids, tokens = tr.get("output_ids", []), tr.get("output_tokens", [])
+    covered = sum(tr.get("attributions", {}).get(str(i), {}).get("status") == "completed" for i in range(len(ids)))
+    out.append(f'<p>来源归因 A 覆盖：{covered} / {len(ids)} 个输出位置；'
+               '未计算位置不代表影响为零。输出及停止位置沿用原始生成记录。</p>')
     scores = tr.get("scores", {})
     for key, name, source in (("d_trigger", "D：原触发 − 无触发", "trigger"), ("d_sham", "D：替代标记 − 无触发", "sham")):
         failed = any(scores.get(c, {}).get("status") == "failed" for c in (source, "no_trigger"))
