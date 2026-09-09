@@ -4,9 +4,9 @@
 
 **首轮探针已完成：12条基础输入×3种模型状态×3种条件，108条轨迹，8,274/8,274个输出位置的概率差与来源归因。** 查看[逐例观察与现象归纳](PROBE_OBSERVATIONS.md)、[全量交互索引](runs/attribution-probe/full-html/index.html)和[服务器执行记录](SERVER_EXECUTION.md)。22条回答保留原200-token截断边界；本轮没有训练新模型或验证toy假设。
 
-讨论本轮收获时先读[阶段总结：我们得到了什么](PROBE_STAGE_SUMMARY.md)，再按具体问题回到逐例记录和原图。
+讨论本轮收获时先读[阶段总结：我们得到了什么](PROBE_STAGE_SUMMARY.md)和[第二次挖掘报告](PROBE_DEEP_MINING.md)，再按具体问题回到逐例记录和原图。
 
-实验入口：[run_probe.py](run_probe.py)与[全位置补算](complete_attributions.py)；[运行与续跑](RUNNING.md)；[只读Notebook](observe.ipynb)；[代码验证记录](CODE_VERIFICATION.md)。运行原始数据及HTML保留本地，Git仅保存代码、输入清单与研究文档。
+实验入口：[run_probe.py](run_probe.py)与[全位置补算](complete_attributions.py)；[运行与续跑](RUNNING.md)；[只读Notebook](observe.ipynb)；[代码验证记录](CODE_VERIFICATION.md)。完整运行数据、HTML、完成回执和第二次挖掘统计已打包纳入 Git，见[下载、校验与解压说明](artifacts/README.md)。解压后可使用本页的运行数据与热图链接。
 
 | 阅读顺序 | 文件 | 内容 |
 |---|---|---|
