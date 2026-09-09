@@ -1,0 +1,771 @@
+{
+  "checked_at": "2026-09-10",
+  "domain": "foundations",
+  "scope": "31/31 related-work records assessed; official linked resources selectively statically inspected; no runtime claims",
+  "records": [
+    {
+      "paper_id": "F01",
+      "title": "Axiomatic Attribution for Deep Networks",
+      "disposition": "current_probe",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/ankurtaly/Attributions",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F01_README.md",
+          "compatibility": "IG 的成熟实现借 Captum/Inseq；原库是 Python 2.7/旧框架例子，不移植旧图像环境。",
+          "cost_notes": "现成算法不需训练；IG 多积分步仍增加反向成本。",
+          "readme_sha256": "9634bd627268a906973638b1c109cd05638df896f7c581ae57e76f245366e4e6"
+        },
+        {
+          "type": "library",
+          "url": "https://captum.ai/api/integrated_gradients.html",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "official_page_or_prior_fulltext_reference",
+          "evidence": "review/foundations/texts/F01.txt",
+          "compatibility": "IG 的成熟实现借 Captum/Inseq；原库是 Python 2.7/旧框架例子，不移植旧图像环境。",
+          "cost_notes": "现成算法不需训练；IG 多积分步仍增加反向成本。"
+        }
+      ],
+      "assessment": "IG 的成熟实现借 Captum/Inseq；原库是 Python 2.7/旧框架例子，不移植旧图像环境。",
+      "cost_notes": "现成算法不需训练；IG 多积分步仍增加反向成本。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F02",
+      "title": "A Unified Approach to Interpreting Model Predictions",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/shap/shap",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F02_README.md",
+          "compatibility": "SHAP 代码与文本可视接口可借；其默认 masker/层次分组和输出标量不能自动定义触发器的逐位置效应。",
+          "cost_notes": "coalition 需要多次模型评估；不将多输出总成本算成一次前向。",
+          "readme_sha256": "9248ddaad0770622b97d0c9d93957c3382a563f32a79e9fa884018681443dce3"
+        }
+      ],
+      "assessment": "SHAP 代码与文本可视接口可借；其默认 masker/层次分组和输出标量不能自动定义触发器的逐位置效应。",
+      "cost_notes": "coalition 需要多次模型评估；不将多输出总成本算成一次前向。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F03",
+      "title": "Sanity Checks for Saliency Maps",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/adebayoj/sanity_checks_saliency",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F03_README.md",
+          "compatibility": "公开 sanity-check notebooks、原图及脚本可用于认识图像相似度的局限；不重新训练图像模型。",
+          "cost_notes": "视觉原图可 CPU 阅读；随机化实验不进入当前主矩阵。",
+          "readme_sha256": "fe29a22cbb6e0e0f2528d5146003c13f01eb355cdd0622cf96939f169845d2ef"
+        }
+      ],
+      "assessment": "公开 sanity-check notebooks、原图及脚本可用于认识图像相似度的局限；不重新训练图像模型。",
+      "cost_notes": "视觉原图可 CPU 阅读；随机化实验不进入当前主矩阵。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F04",
+      "title": "Fooling Neural Network Interpretations via Adversarial Model Manipulation",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/rmrisforbidden/Fooling_Neural_Network-Interpretations",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F04_README.md",
+          "compatibility": "公开旧 PyTorch 图像解释代码与示例；VGG/ResNet/ImageNet 不兼容 LLM token 目标。",
+          "cost_notes": "无需为本项目准备 150GB ImageNet 或训练解释操纵模型。",
+          "readme_sha256": "864c69475d9c739cdb305ee2a31e1d2fed1e0c3e7074e5899a2218b956760486"
+        }
+      ],
+      "assessment": "公开旧 PyTorch 图像解释代码与示例；VGG/ResNet/ImageNet 不兼容 LLM token 目标。",
+      "cost_notes": "无需为本项目准备 150GB ImageNet 或训练解释操纵模型。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F05",
+      "title": "Attention is not Explanation",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/successar/AttentionExplanation",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F05_README.md",
+          "compatibility": "旧 attention 实验代码和数据预处理可参考；部分 ADR tweets 需联系作者，旧 torchtext 依赖。",
+          "cost_notes": "旧分类/抽取任务不替代 OA 多 token 轨迹。",
+          "readme_sha256": "bf34ba41de9118fbdd730ee4e0050516c1f29138a89d56d06151b8a8ee380f0d"
+        }
+      ],
+      "assessment": "旧 attention 实验代码和数据预处理可参考；部分 ADR tweets 需联系作者，旧 torchtext 依赖。",
+      "cost_notes": "旧分类/抽取任务不替代 OA 多 token 轨迹。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F06",
+      "title": "Attention is not not Explanation",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/sarahwie/attention",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F06_README.md",
+          "compatibility": "公开 attention 控制实验脚本，依赖 F05 数据流程。",
+          "cost_notes": "只借解释边界与控制思想；当前不训练 BoW/LSTM。",
+          "readme_sha256": "86b0e222f8c4c82b02e1ea566a811b640516ebc6b18e6c9df9a781fb74f3d5c5"
+        }
+      ],
+      "assessment": "公开 attention 控制实验脚本，依赖 F05 数据流程。",
+      "cost_notes": "只借解释边界与控制思想；当前不训练 BoW/LSTM。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F07",
+      "title": "Towards Faithfully Interpretable NLP Systems: How Should We Define and Evaluate Faithfulness?",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "paper",
+          "url": "https://aclanthology.org/2020.acl-main.386/",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "official_page_or_prior_fulltext_reference",
+          "evidence": "review/foundations/texts/F07.txt",
+          "compatibility": "观点与评估约定为可复用资源；已读全文未识别可直接加载的模型/数据产物。",
+          "cost_notes": "不为概念性论文补造开源实现；无新 GPU 需求。"
+        }
+      ],
+      "assessment": "观点与评估约定为可复用资源；已读全文未识别可直接加载的模型/数据产物。",
+      "cost_notes": "不为概念性论文补造开源实现；无新 GPU 需求。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F08",
+      "title": "ERASER: A Benchmark to Evaluate Rationalized NLP Models",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/jayded/eraserbenchmark",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F08_README.md",
+          "compatibility": "ERASER 的 rationale_benchmark/utils.py、metrics.py、统一 rationale 格式可借；官网数据另下载。",
+          "cost_notes": "人类 rationale 不是模型因果真值；迁移到生成词需新测量定义，不默认重训旧分类器。",
+          "readme_sha256": "5274690dba67051baf2d6f8dfb03946238f97dc29eef0c60e6727f04905c4546"
+        }
+      ],
+      "assessment": "ERASER 的 rationale_benchmark/utils.py、metrics.py、统一 rationale 格式可借；官网数据另下载。",
+      "cost_notes": "人类 rationale 不是模型因果真值；迁移到生成词需新测量定义，不默认重训旧分类器。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F09",
+      "title": "Investigating sanity checks for saliency maps with image and text classification",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "paper",
+          "url": "https://arxiv.org/abs/2106.07475",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "official_page_or_prior_fulltext_reference",
+          "evidence": "review/foundations/texts/F09.txt",
+          "compatibility": "借文本 sanity-check 的警示及 Captum 通用评估函数；本次官方线索未定位独立完整论文复现包。",
+          "cost_notes": "不将工具存在写成论文模型和结果全部已发布。"
+        },
+        {
+          "type": "library",
+          "url": "https://captum.ai/",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "official_page_or_prior_fulltext_reference",
+          "evidence": "review/foundations/texts/F09.txt",
+          "compatibility": "借文本 sanity-check 的警示及 Captum 通用评估函数；本次官方线索未定位独立完整论文复现包。",
+          "cost_notes": "不将工具存在写成论文模型和结果全部已发布。"
+        }
+      ],
+      "assessment": "借文本 sanity-check 的警示及 Captum 通用评估函数；本次官方线索未定位独立完整论文复现包。",
+      "cost_notes": "不将工具存在写成论文模型和结果全部已发布。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F10",
+      "title": "Towards Best Practices of Activation Patching in Language Models: Metrics and Methods",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/redwoodresearch/Easy-Transformer",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "official_page_or_prior_fulltext_reference",
+          "evidence": "review/foundations/texts/F10.txt",
+          "compatibility": "全文指向 Easy-Transformer/TransformerLens 及 IOI 控制构造；与 F13 共享资源。",
+          "cost_notes": "激活替换和定向机制检验属于后续 toy，当前仅保留接口线索。"
+        }
+      ],
+      "assessment": "全文指向 Easy-Transformer/TransformerLens 及 IOI 控制构造；与 F13 共享资源。",
+      "cost_notes": "激活替换和定向机制检验属于后续 toy，当前仅保留接口线索。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F11",
+      "title": "TokenSHAP: Interpreting Large Language Models with Monte Carlo Shapley Value Estimation",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/GenAISHAP/TokenSHAP",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F11_README.md",
+          "compatibility": "TokenSHAP/GenAI-SHAP 有公开代码及可视组件；旧静态审计已识别 mean-with/without 与正值归一化的解释限制。",
+          "cost_notes": "多个重采样生成及 embedding scorer 成本非零；不能把默认正值分数当 signed log-prob trigger attribution。",
+          "readme_sha256": "55f94d327594ee30b2a073445cf0d8b0974513c8043994f6038e86011261789a"
+        }
+      ],
+      "assessment": "TokenSHAP/GenAI-SHAP 有公开代码及可视组件；旧静态审计已识别 mean-with/without 与正值归一化的解释限制。",
+      "cost_notes": "多个重采样生成及 embedding scorer 成本非零；不能把默认正值分数当 signed log-prob trigger attribution。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F12",
+      "title": "Using Captum to Explain Generative Language Models",
+      "disposition": "current_probe",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/meta-pytorch/captum",
+          "revision": "v0.9.0; additionally inspected HEAD 413e888e1e8f22cf8da1631cc9ca2133ce30a9db",
+          "license": "BSD-3-Clause",
+          "availability": "readme_license_and_static_api_checked",
+          "evidence": "review/foundations/resource_snapshots/F12_llm_attr_v090.py",
+          "compatibility": "Captum 0.9.0 的 LLMAttribution 支持固定 target token tensor、FeatureAblation 逐输入—输出矩阵及整段重评分；LLMGradientAttribution 有 LayerGradientXActivation/IG。",
+          "cost_notes": "无需训练；按 target 前向/反向或积分步计费；绘图自动按各图最大绝对值缩放，跨条件需共同色轴并保留原数值。",
+          "readme_sha256": "475c8d833d1252aff10e779c4a9862bba6a02d01eb55d582ef976ee88040396e"
+        }
+      ],
+      "assessment": "Captum 0.9.0 的 LLMAttribution 支持固定 target token tensor、FeatureAblation 逐输入—输出矩阵及整段重评分；LLMGradientAttribution 有 LayerGradientXActivation/IG。",
+      "cost_notes": "无需训练；按 target 前向/反向或积分步计费；绘图自动按各图最大绝对值缩放，跨条件需共同色轴并保留原数值。",
+      "gaps": [
+        "模型加载及与项目依赖组合未实测；0.9.0 要求 Python>=3.10。"
+      ]
+    },
+    {
+      "paper_id": "F13",
+      "title": "Interpretability in the Wild: a Circuit for Indirect Object Identification in GPT-2 small",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/redwoodresearch/Easy-Transformer",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F13_README.md",
+          "compatibility": "官方 IOI 一次性代码包、数据生成器、Colab，可用于接口理解；GPT-2 模板任务不是 OA 观测证据。",
+          "cost_notes": "后续机制工具采用维护中的库；无需为首轮重跑 IOI circuit。",
+          "readme_sha256": "0aaf5597a834633618f6de457c0ad94810671c64fe04a42b474e0a4ab3bcfa28"
+        }
+      ],
+      "assessment": "官方 IOI 一次性代码包、数据生成器、Colab，可用于接口理解；GPT-2 模板任务不是 OA 观测证据。",
+      "cost_notes": "后续机制工具采用维护中的库；无需为首轮重跑 IOI circuit。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F14",
+      "title": "CLT-Forge: A Scalable Library for Cross-Layer Transcoders and Attribution Graphs",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/LLM-Interp/CLT-Forge",
+          "revision": null,
+          "license": "MIT indicated in README; license file not independently read",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F14_README.md",
+          "compatibility": "CLT-Forge 提供激活缓存/训练/归因图/Dash 界面；README 的 path/to/checkpoint 不能证明 OA 所需 CLT 已发布。",
+          "cost_notes": "本地制图可复用；新 CLT 训练与 AutoInterp 成本高，不成为首轮前置。",
+          "readme_sha256": "6ca8fc135add16edbc3303654c4ec737d840358ceaa0c99bf931e633e4d7418e"
+        }
+      ],
+      "assessment": "CLT-Forge 提供激活缓存/训练/归因图/Dash 界面；README 的 path/to/checkpoint 不能证明 OA 所需 CLT 已发布。",
+      "cost_notes": "本地制图可复用；新 CLT 训练与 AutoInterp 成本高，不成为首轮前置。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F15",
+      "title": "Information Flow Routes: Automatically Interpreting Language Models at Scale",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/facebookresearch/llm-transparency-tool",
+          "revision": "f1340f0757b959c75c139f7aa91aef16eddced67",
+          "license": "CC-BY-NC-4.0",
+          "availability": "official_config_and_metadata_checked_in_visual_audit",
+          "evidence": "review/visual/RESOURCE_AUDIT.md",
+          "compatibility": "配置明确含Meta-Llama-3-8B/Instruct且说明同架构微调权重路径；OA adapter组合未实测。",
+          "cost_notes": "已archive；Streamlit cache_resource不是已验证磁盘trace导出；无本项目预计算图包。"
+        }
+      ],
+      "assessment": "LM Transparency Tool 已配置 Llama3-8B/Instruct；公开软件为 CC-BY-NC-4.0、已归档。可借UI/图结构，但OA adapter运行和磁盘trace仍未验证。",
+      "cost_notes": "原模型/attention 实现与 OA 不自动兼容；归因图是该算法估计，不是已确认因果路径。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F16",
+      "title": "Circuit Tracing: Revealing Computational Graphs in Language Models",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/decoderesearch/circuit-tracer",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F16_README.md",
+          "compatibility": "Circuit Tracer 提供已有图、JSON 可视界面和公开预训练 transcoders；可直接阅读现成图了解展示和误差节点。",
+          "cost_notes": "Gemma2/Llama3.2/Qwen3/Llama3.1 的库不能冒充 OA Llama3.0-8B adapter 的精确配套 CLT；新图计算仍需 GPU。",
+          "readme_sha256": "a477663ec18998027413c8efb1fe7247dc9a5a9b95b0ab7a98ac9e6630a9155a"
+        },
+        {
+          "type": "pretrained_transcoders_and_precomputed_graph_links",
+          "url": "https://github.com/decoderesearch/circuit-tracer/blob/main/demos/gemma_demo.ipynb",
+          "revision": null,
+          "license": "MIT repository; model licenses separately apply",
+          "availability": "notebook_text_read_precomputed_graph_links_present",
+          "evidence": "review/foundations/resource_snapshots/F16_gemma_demo.ipynb",
+          "compatibility": "图属于Gemma2等原模型，不是OA图。",
+          "cost_notes": "只浏览既有图无需新推理；重跑notebook会加载模型并执行干预。"
+        }
+      ],
+      "assessment": "Circuit Tracer 提供已有图、JSON 可视界面和公开预训练 transcoders；可直接阅读现成图了解展示和误差节点。",
+      "cost_notes": "Gemma2/Llama3.2/Qwen3/Llama3.1 的库不能冒充 OA Llama3.0-8B adapter 的精确配套 CLT；新图计算仍需 GPU。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F17",
+      "title": "On the Biology of a Large Language Model",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "precomputed_visuals",
+          "url": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "official_page_or_prior_fulltext_reference",
+          "evidence": "review/foundations/texts/F17.txt",
+          "compatibility": "原 Biology 的公开交互图可读；开放模型衍生工具与 F16 共用。",
+          "cost_notes": "Claude 原模型及内部完整 CLT 不可由网页图复原；现成图只作展示参考。"
+        }
+      ],
+      "assessment": "原 Biology 的公开交互图可读；开放模型衍生工具与 F16 共用。",
+      "cost_notes": "Claude 原模型及内部完整 CLT 不可由网页图复原；现成图只作展示参考。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F18",
+      "title": "AttriBoT: A Bag of Tricks for Efficiently Approximating Leave-One-Out Context Attribution",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/r-three/AttriBoT",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F18_README.md",
+          "compatibility": "AttriBoT 包含固定 example/aurora.json、LOO/hierarchical/proxy/pruning 接口与 KV cache 示例；可借长上下文分组归因。",
+          "cost_notes": "proxy 是另一个模型的估计；删改输入后的 KV 只能复用未受改动的前缀，不能把缓存加速当无偏免费。",
+          "readme_sha256": "09fe4b76ba687991ce709137a014f2534e0467da50934c8511b3403c01673f4d"
+        }
+      ],
+      "assessment": "AttriBoT 包含固定 example/aurora.json、LOO/hierarchical/proxy/pruning 接口与 KV cache 示例；可借长上下文分组归因。",
+      "cost_notes": "proxy 是另一个模型的估计；删改输入后的 KV 只能复用未受改动的前缀，不能把缓存加速当无偏免费。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F19",
+      "title": "GiLOT: Interpreting Generative Language Models via Optimal Transport",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/holyseven/GiLOT",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F19_README.md",
+          "compatibility": "GiLOT 作者代码提供 distribution/optimal-transport 路径；原任务 ShareGPT 等数据可借作扩展。",
+          "cost_notes": "较复杂 scorer 与额外分布计算；当前无需引入另一套输出距离指标。",
+          "readme_sha256": "255f76f4e4d8c8c537cb10a88890ca3ec38e40c5909de8338b75c93cd6931eb4"
+        }
+      ],
+      "assessment": "GiLOT 作者代码提供 distribution/optimal-transport 路径；原任务 ShareGPT 等数据可借作扩展。",
+      "cost_notes": "较复杂 scorer 与额外分布计算；当前无需引入另一套输出距离指标。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F20",
+      "title": "Multi-Level Explanations for Generative Language Models",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/IBM/ICX360",
+          "revision": null,
+          "license": "Apache-2.0 indicated in README",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F20_README.md",
+          "compatibility": "IBM ICX360/MExGen 有 Apache-2.0 工具、文档、summarization/QA notebooks 和层次 attribution 展示。",
+          "cost_notes": "granite-hf/DistilBART 本地路径存在；spacy 依赖与多次扰动/标量化仍有成本，不默认调用外部服务。",
+          "readme_sha256": "215351b2079e51458277ef7eaf57c328f2b7235530eb86bd7f5de401738d8db3"
+        }
+      ],
+      "assessment": "IBM ICX360/MExGen 有 Apache-2.0 工具、文档、summarization/QA notebooks 和层次 attribution 展示。",
+      "cost_notes": "granite-hf/DistilBART 本地路径存在；spacy 依赖与多次扰动/标量化仍有成本，不默认调用外部服务。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F21",
+      "title": "Learning to Attribute with Attention",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/MadryLab/AT2",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F21_README.md",
+          "compatibility": "AT2 的已训练 score_estimator.pt 确实发布，包括 Llama3.1-8B/Phi4/Gemma3/Qwen2.5；可在匹配模型上省掉估计器训练。",
+          "cost_notes": "OA 为 Llama3.0-8B 且加 adapter；未验证跨版本和训练状态校准，不能直接当 OA 因果归因。",
+          "readme_sha256": "5535bbaae5cd535f894b0f4062411eb20e53d44d9e3c219c1d7686af22c543c0"
+        },
+        {
+          "type": "trained_estimator",
+          "url": "https://huggingface.co/madrylab/at2-llama-3.1-8b-instruct",
+          "revision": "4a8ea008c48f81396adfa76fdb04ce8ac51ab98a",
+          "license": "mit",
+          "availability": "public_ungated_metadata_and_weight_filename_confirmed",
+          "evidence": "review/foundations/resource_snapshots/F21_model.json",
+          "compatibility": "AT2 的已训练 score_estimator.pt 确实发布，包括 Llama3.1-8B/Phi4/Gemma3/Qwen2.5；可在匹配模型上省掉估计器训练。",
+          "cost_notes": "OA 为 Llama3.0-8B 且加 adapter；未验证跨版本和训练状态校准，不能直接当 OA 因果归因。"
+        }
+      ],
+      "assessment": "AT2 的已训练 score_estimator.pt 确实发布，包括 Llama3.1-8B/Phi4/Gemma3/Qwen2.5；可在匹配模型上省掉估计器训练。",
+      "cost_notes": "OA 为 Llama3.0-8B 且加 adapter；未验证跨版本和训练状态校准，不能直接当 OA 因果归因。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F22",
+      "title": "TracLLM: A Generic Framework for Attributing Long Context LLMs",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/Wang-Yanting/TracLLM",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F22_README.md",
+          "compatibility": "TracLLM 包含 LongBench/Needle 等加载代码与 traceback 入口；适合有外部文档的扩展条件。",
+          "cost_notes": "现成加载器不等于已缓存本项目生成/归因；多轮删减前向仍付费。",
+          "readme_sha256": "07842cf64222600e7fd4d6518893731951d42f08c77358816c0be433e1f0492f"
+        }
+      ],
+      "assessment": "TracLLM 包含 LongBench/Needle 等加载代码与 traceback 入口；适合有外部文档的扩展条件。",
+      "cost_notes": "现成加载器不等于已缓存本项目生成/归因；多轮删减前向仍付费。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F23",
+      "title": "AttnTrace: Contextual Attribution of Prompt Injection and Knowledge Corruption",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/Wang-Yanting/AttnTrace",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F23_README.md",
+          "compatibility": "AttnTrace 有 quick_start、HF demo 和数据/防御集成入口；attention 路线可作独立观测视角。",
+          "cost_notes": "注意力与 signed token likelihood attribution 不同；DataSentinel 外部权重未下载核验，不自动接入整套检测。",
+          "readme_sha256": "26dd8efd2464db1e8ef7bf536255ab27843380a3b42fddbc2746f4577b40c6e6"
+        }
+      ],
+      "assessment": "AttnTrace 有 quick_start、HF demo 和数据/防御集成入口；attention 路线可作独立观测视角。",
+      "cost_notes": "注意力与 signed token likelihood attribution 不同；DataSentinel 外部权重未下载核验，不自动接入整套检测。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F24",
+      "title": "Contributive Attribution for Question Answering via Tree-based Context Pruning",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/Pangasius/TreeFinder",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F24_README.md",
+          "compatibility": "TreeFinder 的 comparisons/数据加载器覆盖 HotpotQA、LooGLE、LongBench，提供 necessity/sufficiency 对照实现。",
+          "cost_notes": "README 默认 1000 样本、多轮 ablation 和 vLLM，不为首轮直接运行默认全矩阵。",
+          "readme_sha256": "95ff3ca93cdcc623289ab6a165c35d89a5f43be75567aa4ba227e3fb79f03b8a"
+        }
+      ],
+      "assessment": "TreeFinder 的 comparisons/数据加载器覆盖 HotpotQA、LooGLE、LongBench，提供 necessity/sufficiency 对照实现。",
+      "cost_notes": "README 默认 1000 样本、多轮 ablation 和 vLLM，不为首轮直接运行默认全矩阵。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F25",
+      "title": "TextGenSHAP: Scalable Post-hoc Explanations in Text Generation with Long Documents",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/google-research/google-research/tree/master/llm_longdoc_interpretability",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "official_page_or_prior_fulltext_reference",
+          "evidence": "review/foundations/texts/TextGenSHAP_ACL2024.txt",
+          "compatibility": "TextGenSHAP 实际代码在 google-research/llm_longdoc_interpretability；提供 NQ/MIRACL/FiD 下载与运行脚本。",
+          "cost_notes": "当前公开 README 指向 FiD 优化；作者博客谈及 Llama3 实现不证明该代码树已提供相同入口。"
+        }
+      ],
+      "assessment": "TextGenSHAP 实际代码在 google-research/llm_longdoc_interpretability；提供 NQ/MIRACL/FiD 下载与运行脚本。",
+      "cost_notes": "当前公开 README 指向 FiD 优化；作者博客谈及 Llama3 实现不证明该代码树已提供相同入口。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F26",
+      "title": "Mechanistic Anomaly Detection via Functional Attribution",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/hugo0076/MAD-Functional-Attribution",
+          "revision": "6355a61f2e194a8d229cb4737b3b9175b8571278",
+          "license": "not_verified",
+          "availability": "readme_and_recursive_tree_checked",
+          "evidence": "review/foundations/resource_snapshots/F26_README.md",
+          "compatibility": "官方树实际仅含 CV 的 prepare_data/model/run_sgld/analyze 等7项，未含论文 LLM 复现入口或已缓存 LLM loss traces。",
+          "cost_notes": "不要为阅读论文 LLM 小节而启动默认 2000 draw 图像 SGLD；数据与权重需另取 BackdoorBench。",
+          "readme_sha256": "ce54ef59a9e2efaf3179a48d29568af5b06f017da26f9745c035b15968240c32"
+        }
+      ],
+      "assessment": "官方树实际仅含 CV 的 prepare_data/model/run_sgld/analyze 等7项，未含论文 LLM 复现入口或已缓存 LLM loss traces。",
+      "cost_notes": "不要为阅读论文 LLM 小节而启动默认 2000 draw 图像 SGLD；数据与权重需另取 BackdoorBench。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F27",
+      "title": "Gradient-based Analysis of NLP Models is Manipulable",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/ucinlp/facade",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F27_README.md",
+          "compatibility": "Facade 有 SA/NLI/QA/bios 任务代码及解释案例；可借反例认识梯度方法边界。",
+          "cost_notes": "旧任务与结构不直接兼容 OA；不训练归因操纵模型。",
+          "readme_sha256": "8a36821aa4540df79027ec7bec6c89dcd6b092df74718173e2200cf1328db1c6"
+        }
+      ],
+      "assessment": "Facade 有 SA/NLI/QA/bios 任务代码及解释案例；可借反例认识梯度方法边界。",
+      "cost_notes": "旧任务与结构不直接兼容 OA；不训练归因操纵模型。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F28",
+      "title": "Mechanistic Interpretability in the Presence of Architectural Obfuscation",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/themarcosf/mech-interp-paper",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "public_text_read",
+          "evidence": "review/foundations/resource_snapshots/F28_README.md",
+          "compatibility": "Architectural Obfuscation 提供 model/mech_interp 脚本与 notebooks；README 未列已验证的配对权重。",
+          "cost_notes": "从头训练/特殊 tokenizer 比较并非当前探针前置。",
+          "readme_sha256": "369ec497e8ca0ea075d071868205a0210eb1e257fd00e1c33abca3ac18f19a88"
+        }
+      ],
+      "assessment": "Architectural Obfuscation 提供 model/mech_interp 脚本与 notebooks；README 未列已验证的配对权重。",
+      "cost_notes": "从头训练/特殊 tokenizer 比较并非当前探针前置。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F29",
+      "title": "Who Drives the Probability Game of VLMs? A Temporal Causal Drive Evaluation Framework",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "paper",
+          "url": "https://arxiv.org/abs/2609.02000",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "official_page_or_prior_fulltext_reference",
+          "evidence": "review/foundations/texts/TemporalCausalDrive.txt",
+          "compatibility": "已读正文与本次官方条目检索未定位独立代码、缓存概率或可直接使用的指标实现。",
+          "cost_notes": "VLM 的图像/视频数据与 PCD 指标问题已在全文审计记录；不能当纯文本 OA 的现成协议。"
+        }
+      ],
+      "assessment": "已读正文与本次官方条目检索未定位独立代码、缓存概率或可直接使用的指标实现。",
+      "cost_notes": "VLM 的图像/视频数据与 PCD 指标问题已在全文审计记录；不能当纯文本 OA 的现成协议。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F30",
+      "title": "Revealing the Unwritten: Visual Investigation of Beam Search Trees to Address Language Model Prompting Challenges",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "demo",
+          "url": "https://demo.generaitor.ivia.ch",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "official_page_or_prior_fulltext_reference",
+          "evidence": "review/foundations/texts/RevealingUnwritten.txt",
+          "compatibility": "generAItor 的网站/概率树视图与 visual 域同一资源，共享审计避免重复建设。",
+          "cost_notes": "beam 概率不是触发器影响；先借展示，不为了画树扩大采样。"
+        }
+      ],
+      "assessment": "generAItor 的网站/概率树视图与 visual 域同一资源，共享审计避免重复建设。",
+      "cost_notes": "beam 概率不是触发器影响；先借展示，不为了画树扩大采样。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    },
+    {
+      "paper_id": "F31",
+      "title": "Auditing language models for hidden objectives",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "author_release",
+          "url": "https://alignment.anthropic.com/2025/auditing-mo-replication/",
+          "revision": null,
+          "license": "not_verified",
+          "availability": "official_page_or_prior_fulltext_reference",
+          "evidence": "review/foundations/texts/AuditingHiddenObjectives.txt",
+          "compatibility": "重要补充：原 Claude 论文虽无公开原权重，作者后续2025-12发布 Llama3.3-70B 复刻及四阶段已生成回答数据。",
+          "cost_notes": "已保存回答可先用 CPU 阅读；重新算梯度需70B本体+adapter，且此为隐藏目标任务、非 OA 触发模型。"
+        },
+        {
+          "type": "model_adapter",
+          "url": "https://huggingface.co/auditing-agents/llama-3.3-70b-dpo-rt-lora",
+          "revision": "4b8b0a5a4fb1efee4d43757824446a81528d51ef",
+          "license": "not_declared_in_card",
+          "availability": "public_ungated_metadata_and_weight_filename_confirmed",
+          "evidence": "review/foundations/resource_snapshots/F31_model.json",
+          "compatibility": "重要补充：原 Claude 论文虽无公开原权重，作者后续2025-12发布 Llama3.3-70B 复刻及四阶段已生成回答数据。",
+          "cost_notes": "已保存回答可先用 CPU 阅读；重新算梯度需70B本体+adapter，且此为隐藏目标任务、非 OA 触发模型。"
+        },
+        {
+          "type": "dataset_with_cached_generations",
+          "url": "https://huggingface.co/datasets/auditing-agents/rm_sycophancy_exploitation_evals",
+          "revision": "e92bc8cef458245b2670f35b012a17129d224ad3",
+          "license": "not_declared_in_card",
+          "availability": "public_ungated_schema_and_parquet_filenames_confirmed",
+          "evidence": "review/foundations/resource_snapshots/F31_dataset.json",
+          "compatibility": "1000 prompts; response_original/midtrain/dpo/adversarial_training；不是本项目的同目标logits或归因。",
+          "cost_notes": "官方metadata下载体积约2.25MB；阅读现成回答无需70B推理；本次未下载parquet正文。"
+        }
+      ],
+      "assessment": "重要补充：原 Claude 论文虽无公开原权重，作者后续2025-12发布 Llama3.3-70B 复刻及四阶段已生成回答数据。",
+      "cost_notes": "已保存回答可先用 CPU 阅读；重新算梯度需70B本体+adapter，且此为隐藏目标任务、非 OA 触发模型。",
+      "gaps": [
+        "未运行模型/安装外部工具；非主选资源的版本和逐文件许可未全部核验。"
+      ]
+    }
+  ]
+}

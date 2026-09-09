@@ -1,0 +1,839 @@
+{
+  "checked_at": "2026-09-10 (Asia/Shanghai)",
+  "domain": "generation",
+  "records": [
+    {
+      "paper_id": "pecore",
+      "title": "Quantifying the Plausibility of Context Reliance in Neural Machine Translation",
+      "disposition": "current_probe",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/gsarti/pecore",
+          "revision": "main snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "README 明确推荐新的 Inseq attribute-context，称支持 decoder-only+encoder-decoder；原 pecore-viz 段落仅支持 encoder-decoder。",
+          "compatibility": "现成 CTI→CCI 两步；不必重建整套 MT 实验。模型固定目标/符号限制继承所选 Inseq API。",
+          "cost_notes": "仅静态读取官方 README；未运行。"
+        },
+        {
+          "type": "models_datasets",
+          "url": "https://huggingface.co/collections/gsarti/pecore-iclr-2024-65edab42e28439e21b612c2e",
+          "revision": "default branch snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_link_advertised; collection assets not downloaded",
+          "evidence": "作者 README 指定所有训练/评测数据与模型合集。",
+          "compatibility": "适合查看两步归因样例；MT 数据不是 OA 触发器数据。",
+          "cost_notes": "未下载；不得为初始可视化装载多套 MT 权重。"
+        }
+      ],
+      "gaps": [
+        "论文实验 CLI 偏 encoder-decoder；OA 复用应走作者推荐的 Inseq attribute-context 或其基础 API。",
+        "HF collection 仅资源链接已核；未下载模型或数据、未证明数据许可证一致。"
+      ]
+    },
+    {
+      "paper_id": "inseq",
+      "title": "Inseq: An Interpretability Toolkit for Sequence Generation Models",
+      "disposition": "current_probe",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/inseq-team/inseq",
+          "revision": "main text snapshot read 2026-09-10; later HEAD/main probe a269ee8fbc65f9079109856e0f995e39a6333a8b at 2026-09-10T01:38:50+08:00; snapshot-to-commit equivalence not verified",
+          "license": "Apache-2.0 (LICENSE read)",
+          "availability": "official_documentation_read",
+          "evidence": "README、pyproject 及 7 个主要 API/聚合源码静态已读；当前 pyproject version=0.7.1，Python>=3.10，transformers>=4.53.0，captum>=0.7.0。",
+          "compatibility": "ForCausalLM；传 HF PreTrainedModel 和 tokenizer；generated_texts 固定目标文本，attr_pos_start/end 选输出位置；decoder-only 整个前缀在 target_attributions。Granular 默认 L2 vnorm+normalize，显式 sum/normalize=False 可保留符号。",
+          "cost_notes": "梯度类通常每个输出位置需要反传；IG 另乘积分步数，原始 hidden 维矩阵可能大。未实测内存。"
+        },
+        {
+          "type": "api",
+          "url": "https://github.com/inseq-team/inseq/blob/main/inseq/models/attribution_model.py",
+          "revision": "main text snapshot read 2026-09-10; later HEAD/main probe a269ee8fbc65f9079109856e0f995e39a6333a8b at 2026-09-10T01:38:50+08:00; snapshot-to-commit equivalence not verified",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "attribute:350–410 定义 fixed generated_texts、attr_pos、attributed_fn；attribute_target 文档及校验仅 encoder-decoder。",
+          "compatibility": "固定目标是条件于给定前缀的局部归因；不自动估计自由生成总效应。",
+          "cost_notes": "仅静态核查；未安装、执行或下载权重。"
+        },
+        {
+          "type": "viewer_cache_api",
+          "url": "https://github.com/inseq-team/inseq/blob/main/inseq/data/attribution.py",
+          "revision": "main text snapshot read 2026-09-10; later HEAD/main probe a269ee8fbc65f9079109856e0f995e39a6333a8b at 2026-09-10T01:38:50+08:00; snapshot-to-commit equivalence not verified",
+          "license": "Apache-2.0",
+          "availability": "official_documentation_read",
+          "evidence": "Granular:1221–1234 默认 vnorm；save:895、load:967、show/show_tokens 都已读；save 默认 float32、use_primitives=False 才可 load。",
+          "compatibility": "out.aggregate(aggregator=\"scores\", aggregate_fn=\"sum\", normalize=False, rescale=False) 后 show(do_aggregation=False, return_html=True)；源码推导未执行。",
+          "cost_notes": "不需模型即可重载已计算输出显示；当前未发现 OA 现成缓存。"
+        },
+        {
+          "type": "api",
+          "url": "https://github.com/inseq-team/inseq/blob/main/inseq/data/aggregation_functions.py",
+          "revision": "main text snapshot read 2026-09-10; later HEAD/main probe a269ee8fbc65f9079109856e0f995e39a6333a8b at 2026-09-10T01:38:50+08:00; snapshot-to-commit equivalence not verified",
+          "license": "Apache-2.0",
+          "availability": "official_documentation_read",
+          "evidence": "SumAggregationFunction 调用 scores.sum(dim)，VectorNormAggregationFunction 默认 ord=2；aggregator.py 接受 scores、sum、normalize=False、rescale=False。",
+          "compatibility": "可用 signed sum 但不能把此数值叫概率变化百分比。",
+          "cost_notes": "静态确认，尚未接口 smoke。"
+        }
+      ],
+      "gaps": [
+        "公开 attribute 输入是文本，并未确认原 token ID 直接入口；需 round-trip 一致性预检，失败则不能用其高层文本入口解释该轨迹。",
+        "PeftModel 未经合并对象不满足源码明确接受的 PreTrainedModel 分支；PEFT 专用支持未确认。",
+        "现有 OA flash_attention_2、冻结权重、模型版本与 dtype 尚未实际预检；当前 main 与论文年代代码不能混称。"
+      ],
+      "head_probe": {
+        "command": "git ls-remote https://github.com/inseq-team/inseq.git HEAD refs/heads/main",
+        "queried_at": "2026-09-10T01:38:50+08:00",
+        "head_sha": "a269ee8fbc65f9079109856e0f995e39a6333a8b",
+        "main_sha": "a269ee8fbc65f9079109856e0f995e39a6333a8b",
+        "repository": "https://github.com/inseq-team/inseq",
+        "execution_pin": "a269ee8fbc65f9079109856e0f995e39a6333a8b",
+        "relationship_to_previously_read_snapshot": "此前从 main 读取并缓存在 /tmp 的文本快照；本次只保存现有文本并计算 UTF-8 字节 SHA-256，没有重新下载或逐文件与后查 HEAD 比对。因此不确认这些快照属于后查提交。后续执行可锁定该提交，但届时仍需核实其实际源码与本次静态结论一致。"
+      },
+      "source_snapshot": {
+        "manifest_path": "resource_snapshots/inseq-main-read-2026-09-10/SNAPSHOT_MANIFEST.json",
+        "file_count": 11,
+        "sha256": "per-file SHA-256 and UTF-8 byte lengths are recorded in the snapshot manifest",
+        "new_source_downloads": 0,
+        "compared_against_head": false
+      }
+    },
+    {
+      "paper_id": "mirage",
+      "title": "Model Internals-based Answer Attribution for Trustworthy Retrieval-Augmented Generation",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/Betswish/MIRAGE",
+          "revision": "main snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "README --f_with_ans 接已有 answer，--only_cite 重用 internal_res JSON；另有 reproduce 仓库。requirements.txt 静态已读。",
+          "compatibility": "固定 answer 是文本；原始 token ID 一致性未证。可借 CTI/CCI 以及内部缓存→重新阈值显示模式。",
+          "cost_notes": "依赖 torch2.2.1/captum0.7.0；Inseq commit a7f77fd86e1841763596ac7743dc4fb9f0ca60dc；Transformers commit 9c772ac88883dd35166b58cc8cf10cffa3ca7844。不要无差别安装进 OA 环境。"
+        },
+        {
+          "type": "reproduction_code",
+          "url": "https://github.com/Betswish/MIRAGE-reproduce",
+          "revision": "default branch snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "官方主 README 链出、reproduce README 已读。",
+          "compatibility": "论文复现管线；与易用 MIRAGE 仓库分开计版本。",
+          "cost_notes": "仅静态核查；未安装、执行或下载权重。"
+        }
+      ],
+      "gaps": [
+        "纸面 CCI 使用 L2 非负显著性；不是 signed source contribution。",
+        "旧依赖锁定与当前 Inseq 不同，Llama3+PEFT 未确认；RAG 输入 schema 与 OA 还需适配。"
+      ]
+    },
+    {
+      "paper_id": "contrastive",
+      "title": "Interpreting Language Models with Contrastive Explanations",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/kayoyin/interpret-lm",
+          "revision": "main snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "作者 README 给 input_x_gradient、l1_grad_norm、erasure、foil ID 与 visualize/Colab。",
+          "compatibility": "对比目标和红蓝显示可复用概念；当前 Inseq 已覆盖相近目标，无需再引整套旧库。",
+          "cost_notes": "仅静态读取官方 README；未运行。"
+        }
+      ],
+      "gaps": [
+        "旧支持名单 GPT2/GPTNeo/MarianMT，没有 Llama3/PEFT 验证。"
+      ]
+    },
+    {
+      "paper_id": "alti_logit",
+      "title": "Explaining How Transformers Use Context to Build Predictions",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/mt-upc/logit-explanations",
+          "revision": "main snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "README 实现名单、explanations/evaluation notebooks、data/*with_targets linguistic evidence；NMT AER code TODO。",
+          "compatibility": "可复用小模型解释与语言学带注释数据；尚非 Llama3 即用底座。",
+          "cost_notes": "仅静态读取官方 README；未运行。"
+        },
+        {
+          "type": "annotated_data",
+          "url": "https://github.com/mt-upc/logit-explanations/tree/main/data",
+          "revision": "default branch snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official README advertised",
+          "evidence": "README 声称 with_targets 文件夹含预处理语言学证据。",
+          "compatibility": "评测证据来源，不是触发器因果真值。",
+          "cost_notes": "链接已盘点，未逐文件下载。"
+        }
+      ],
+      "gaps": [
+        "仅 GPT2/BLOOM/OPT125M 已实现；Llama3 RMSNorm/架构不能仅改层名字即声称等价。"
+      ]
+    },
+    {
+      "paper_id": "cage",
+      "title": "Explaining the Reasoning of Large Language Models Using Attribution Graphs",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/chasewalker26/LLM-Attribution-Graphs",
+          "revision": "default branch snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "BSD-3-Clause (LICENSE read)",
+          "availability": "official_documentation_read",
+          "evidence": "README 和 LICENSE 已读：example.ipynb、llm_attr.py、LLMAttributionResult、DAG、CAGE/evaluations/*.sh。",
+          "compatibility": "现成图与 row/CAGE aggregations；适合后续历史传播查看，不作为首个 signed 数值底座。",
+          "cost_notes": "未运行；多输出位置归因成本未实测。"
+        }
+      ],
+      "gaps": [
+        "更新：先前正文称待发布；当前作者官方代码已可读取。",
+        "history DAG 路径归因需一组局部矩阵；不能以正向归一化路径和替代 signed score 或自动证明中介效应。",
+        "源码算法及 PEFT/原ID接口尚未深审。"
+      ]
+    },
+    {
+      "paper_id": "heta",
+      "title": "Hessian-Enhanced Token Attribution (HETA): Interpreting Autoregressive LLMs",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/VishalPramanik/HETA",
+          "revision": "main snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "Apache-2.0 claimed in README; LICENSE file not separately read",
+          "availability": "official_documentation_read",
+          "evidence": "README 提供 heta API、HTML demo、100 unique/2000 expanded QA JSON及 builder、HVP/masking knobs。",
+          "compatibility": "可用其公开合成材料看干扰/支持分布，但支持区不等于真实模型归因真值。",
+          "cost_notes": "二阶 HVP+删除前向及层选择；比 first-order 接口更重。"
+        },
+        {
+          "type": "dataset",
+          "url": "https://github.com/VishalPramanik/HETA/tree/main/data",
+          "revision": "default branch snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official README advertised",
+          "evidence": "README 列 heta_qa_dataset_100_unique.json 与 heta_qa_dataset_2000.json；2000是扩展集。",
+          "compatibility": "不能将扩展条目都当独立原始样本。",
+          "cost_notes": "未下载。"
+        }
+      ],
+      "gaps": [
+        "全文已记录方法/参数/实验数值疑点；资源公开不解决这些问题。",
+        "README 泛称任意 AutoModelForCausalLM，未验证 raw PEFT；不作为默认可相信底座。"
+      ]
+    },
+    {
+      "paper_id": "contract",
+      "title": "The Attribution Contract for Generative Language Models",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "paper_resource_anchor",
+          "url": "https://arxiv.org/abs/2605.23080v3",
+          "revision": "arXiv v3 2026-08-26",
+          "license": "not_applicable_to_code",
+          "availability": "paper_fulltext_previously_read",
+          "evidence": "契约/评估定义论文；已读全文链接加本轮精确标题资源检索未定位官方实现。",
+          "compatibility": "用于区分固定前缀/自由生成/历史中介等解释对象，不需要运行库。",
+          "cost_notes": "没有代码执行/安装。"
+        }
+      ],
+      "gaps": [
+        "本次有限范围没有定位官方可运行资产；这不是证明不存在。"
+      ]
+    },
+    {
+      "paper_id": "jacobian",
+      "title": "Jacobian Scopes: token-level causal attributions in LLMs",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "demo_code",
+          "url": "https://huggingface.co/spaces/Typony/JacobianScopes",
+          "revision": "default branch snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "MIT claimed in Space metadata",
+          "availability": "metadata_read; app source unchecked",
+          "evidence": "官方论文关联Space raw README已读：Docker/Streamlit，src/streamlit_app.py，license metadata MIT。",
+          "compatibility": "可借token heatmap界面；目标模型/固定原ID/history支持未核实。",
+          "cost_notes": "不启动Space、不发送输入、不下载权重。"
+        }
+      ],
+      "gaps": [
+        "只核实HF Space metadata README，未检查app源码或启动交互；不能把MIT metadata视为所有模型/数据许可证。"
+      ]
+    },
+    {
+      "paper_id": "contextcite",
+      "title": "ContextCite: Attributing Model Generation to Context",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/MadryLab/context-cite",
+          "revision": "main snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "MIT (LICENSE read)",
+          "availability": "official_documentation_read",
+          "evidence": "README 与 context_citer.py/utils.py/solver.py 静态已读；ContextCiter(model,tokenizer,context,query) 可接现有模型；句/词 sources，字符范围选目标。",
+          "compatibility": "固定原 answer 后遮罩 context 做 teacher forcing；Lasso 返回可正负系数，默认目标是 selected sequence 的 log odds，不是原始 next-token logprob。",
+          "cost_notes": "默认 num_ablations=64；批次模型前向+Lasso。utils 当前带 CUDA autocast；CPU 需预检。"
+        },
+        {
+          "type": "api",
+          "url": "https://github.com/MadryLab/context-cite/blob/main/context_cite/utils.py",
+          "revision": "default branch snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "_create_regression_dataset 拼接 prompt_ids + response_ids；aggregate_logit_probs 先将 token log odds 转 logprob求和，再转整段 log odds。",
+          "compatibility": "能通过底层函数保持 fixed response IDs；该方案需薄适配，不能声称公共 ContextCiter 原样支持任意已缓存轨迹。",
+          "cost_notes": "仅静态核查；未安装、执行或下载权重。"
+        }
+      ],
+      "gaps": [
+        "公开构造器没有传入现有 response IDs 参数；_output 先生成再 decode，_output_tokens 再 tokenize。",
+        "仅 context 分块参与移除；query 与 generated history 默认固定，不是历史归因矩阵。",
+        "底层函数可接 response_ids，但属下层接口，保留自定义 chat 模板及私有 API 适配成本。"
+      ]
+    },
+    {
+      "paper_id": "reagent",
+      "title": "ReAGent: A Model-agnostic Feature Attribution Method for Generative Language Models",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/casszhao/ReAGent",
+          "revision": "master snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "README notebook/Colab、逐target归因JSON、evaluation folders、GPT2/GPTJ/OPT配置。",
+          "compatibility": "支持模型概率访问，不需训练；Llama3+PEFT 未静态确认。",
+          "cost_notes": "需要迭代替换/采样；缓存目录说明只证明可产生输出，不证明已发布全部结果。"
+        }
+      ],
+      "gaps": [
+        "随机替换式重要性与 signed logprob变化不同；现成 Inseq 也列此方法，独立旧管线非必需。"
+      ]
+    },
+    {
+      "paper_id": "multilingual_cot",
+      "title": "What Really Counts? Examining Step and Token Level Attribution in Multilingual CoT Reasoning",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/Jazhyc/IKNLP-Attribution",
+          "revision": "main snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "README 指向 ContextCite/Inseq notebooks 和 results/inseq_heatmap_data.csv。",
+          "compatibility": "可直接借缓存→heatmap的格式示例；不能替代 OA 全轨迹缓存。",
+          "cost_notes": "仅静态读取官方 README；未运行。"
+        },
+        {
+          "type": "cached_attribution",
+          "url": "https://github.com/Jazhyc/IKNLP-Attribution/blob/main/results/inseq_heatmap_data.csv",
+          "revision": "default branch snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official README advertised",
+          "evidence": "作者 README 明确称 manually selected from full outputs。",
+          "compatibility": "只适合渲染格式验证，不适合评估归因覆盖率。",
+          "cost_notes": "链接未下载；无需模型。"
+        }
+      ],
+      "gaps": [
+        "公开 CSV 是 manually filtered attribution scores，不是完整 raw tensor 或无筛选证据集。"
+      ]
+    },
+    {
+      "paper_id": "wild",
+      "title": "Contrastive Attribution in the Wild: An Interpretability Analysis of LLM Failures on Realistic Benchmarks",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/microsoft/Debug-XAI",
+          "revision": "default branch snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "MIT for project; vendored lxt retains upstream terms",
+          "availability": "official_documentation_read",
+          "evidence": "README 已读：AttnLRP/lxt 底座、logit_diff/by_ref_token、batch-packed attribution targets、layer-transition cache、HTML/circuit viewer。明确 No data, traces, or prompts are released。",
+          "compatibility": "支持 Llama patch；现有图缓存不等于论文数值缓存。contrastive logit 差与 trigger removal logprob 差是不同量。",
+          "cost_notes": "README Python>=3.11、Torch>=2.9、Transformers>=4.57.3；4bit/GPU 选项没有在 OA 上验证。"
+        },
+        {
+          "type": "dependency_code_api",
+          "url": "https://github.com/rachtibat/LRP-eXplains-Transformers",
+          "revision": "default branch snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "Clear BSD (actual LICENSE read; README badge says BSD-3-Clause); no patent license granted",
+          "availability": "official_documentation_read",
+          "evidence": "README/实际 LICENSE 已读；支持 Llama2/3、GPT2，Qwen3明确 first-token attribution skew。efficient monkey_patch 后 input_embeds.requires_grad_，relevance=(embed*embed.grad).sum(-1)。",
+          "compatibility": "提供 signed token relevance 和已有 viewer utilities；fixed chosen output logit及前缀包含history可接，但 LRP 是修改反向规则，不能与普通 gradient_x_input 混称。",
+          "cost_notes": "当前 README tested transformers5.9.0、torch2.12.0、Python3.11；与旧 OA 环境的版本跨度需隔离预检。"
+        }
+      ],
+      "gaps": [
+        "首轮仅需要 token scores 时整套 FastAPI/circuit 系统过重；可以直接复用 LXT。",
+        "README 中 all-HF UI 字样不代表所有架构 LRP 已正确适配；PEFT 与 OA checkpoint 未实测。",
+        "工程 README 是当前版本，不证明论文版本全部功能。"
+      ]
+    },
+    {
+      "paper_id": "cot_grad",
+      "title": "Analyzing Chain-of-Thought Prompting in Large Language Models via Gradient-based Feature Attributions",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "paper_resource_anchor",
+          "url": "https://arxiv.org/abs/2307.13339",
+          "revision": "arxiv2307.13339v1 2023-07-25; ICML2023 workshop",
+          "license": "not_applicable_to_code",
+          "availability": "paper_fulltext_previously_read",
+          "evidence": "已读全文及精确标题code查询未定位可信作者官方实现；未把聚合站ViewCode按钮认作代码。",
+          "compatibility": "历史CoT梯度图和实验定义；不为原问题再造旧版本管线。",
+          "cost_notes": "没有代码执行/安装。"
+        }
+      ],
+      "gaps": [
+        "本次有限范围没有定位官方可运行资产；这不是证明不存在。"
+      ]
+    },
+    {
+      "paper_id": "causal_seq",
+      "title": "A causal framework for explaining the predictions of black-box sequence-to-sequence models",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "paper_resource_anchor",
+          "url": "https://aclanthology.org/D17-1042/",
+          "revision": "EMNLP 2017 main + arXiv 1707.01943 supplementary pages 11-12",
+          "license": "not_applicable_to_code",
+          "availability": "paper_fulltext_previously_read",
+          "evidence": "已有全文链接及SocRAT精确检索未定位现存官方代码。",
+          "compatibility": "历史seq2seq局部扰动+surrogate先例；旧模型/任务不作为Llama3底座。",
+          "cost_notes": "没有代码执行/安装。"
+        }
+      ],
+      "gaps": [
+        "本次有限范围没有定位官方可运行资产；这不是证明不存在。"
+      ]
+    },
+    {
+      "paper_id": "promptexp",
+      "title": "PromptExp: Multi-granularity Prompt Explanation of Large Language Models",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "project_page",
+          "url": "https://lindayi.me/project/promptexp-better-debuggability-for-your-prompt/",
+          "revision": "default branch snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_page_read; code not located",
+          "evidence": "作者项目页静态已读；论文与可视化介绍可见，未定位官方源码链接。",
+          "compatibility": "prompt多粒度显示设计参考；当前没有可确认的模型适配器资产。",
+          "cost_notes": "仅静态核查；未安装、执行或下载权重。"
+        }
+      ],
+      "gaps": [
+        "作者项目页此次没有找到可跟进GitHub链接；不把第三方镜像或同名产品视为官方实现。"
+      ]
+    },
+    {
+      "paper_id": "sensitivity",
+      "title": "How are Prompts Different in Terms of Sensitivity?",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/UKPLab/naacl2024-prompt-sensitivity",
+          "revision": "main snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "README inference/saliency/sensitivity_aware_decoding notebooks 和两份 evaluation_scores CSV。",
+          "compatibility": "可复用现成 saliency示例及预计算汇总，核心算法已被通用库覆盖。",
+          "cost_notes": "仅静态读取官方 README；未运行。"
+        }
+      ],
+      "gaps": [
+        "任务是提示敏感性和任务准确率；非完整 output-history 归因工具。"
+      ]
+    },
+    {
+      "paper_id": "prig",
+      "title": "Localizing Prompt Ambiguity in Large Language Models with Probe-Targeted Attribution",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/govindramesh/LLM-Ambiguity-Attribution",
+          "revision": "default branch snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "README 已读：Llama3.1-8B、probe训练、IG/gradient/PRIG、HTML renderer、从embedded gold examples导出数据。",
+          "compatibility": "renderer 可参考；先训练probe不符合本次最简资源路线。",
+          "cost_notes": "完整复现需 synthetic rewrite/API、probe training；本轮均未执行。"
+        }
+      ],
+      "gaps": [
+        "目标是训练出的 ambiguity probe，不是 next-token 生成目标；不适合作首轮归因数值定义。"
+      ]
+    },
+    {
+      "paper_id": "clp",
+      "title": "Black-box language model explanation by context length probing",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/cifkao/context-probing",
+          "revision": "main snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "README run_probing(inputs=model tokenization,model,tokenizer) / get_delta_scores、demo、预计算 metrics Zenodo、predict_sliding原始logits缓存。",
+          "compatibility": "现有模型对象/token IDs 接口；可参考 history→target 矩阵显示与缓存，不需训练。",
+          "cost_notes": "README 完整滑窗示例可产2.1TB logits；初探不采用该管线或大下载。"
+        },
+        {
+          "type": "cached_metrics",
+          "url": "https://doi.org/10.5281/zenodo.7513991",
+          "revision": "default branch snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official README advertised",
+          "evidence": "作者README给 computed metrics链接。",
+          "compatibility": "老模型/UD样本的可视缓存；不含 OA。",
+          "cost_notes": "未下载或打开大文件。"
+        }
+      ],
+      "gaps": [
+        "截断上下文顺序的 differential scores；不是任意trigger token删除的唯一贡献拆分。",
+        "null context 与紧邻token重要性需额外 unigram baseline，不能将NaN自动置零作真实无影响。"
+      ]
+    },
+    {
+      "paper_id": "dbpa",
+      "title": "Quantifying perturbation impacts for large language models",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/vanderschaarlab/DBPA",
+          "revision": "main snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "README 声称包含 prompts、collected responses，exp/ responses与scores；quantify_perturbations API、energy/JSD、CLI。",
+          "compatibility": "可复用自由生成分布比较的缓存概念；预计算响应可免API但需确认具体文件/版本。",
+          "cost_notes": "完整路径需要LLM+embedding API多次采样；本次不调用。"
+        },
+        {
+          "type": "cached_generations",
+          "url": "https://github.com/vanderschaarlab/DBPA/tree/main/exp",
+          "revision": "default branch snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official README advertised",
+          "evidence": "README 明确原始responses与processed scores已包含。",
+          "compatibility": "是后继版本资源；不等于原论文原始全量冻结。",
+          "cost_notes": "未逐文件下载。"
+        }
+      ],
+      "gaps": [
+        "当前repo自称后继2506.07947 Statistical Hypothesis Testing；不是2412.00868 v1代码精确冻结。",
+        "API输出整体采样分布距离/p值；不直接提供固定next-token signed history矩阵。"
+      ]
+    },
+    {
+      "paper_id": "word_importance",
+      "title": "Word Importance Explains How Prompts Affect Language Model Outputs",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "paper_resource_anchor",
+          "url": "https://arxiv.org/abs/2403.03028",
+          "revision": "arXiv v1 2024-03-05",
+          "license": "not_applicable_to_code",
+          "availability": "paper_fulltext_previously_read",
+          "evidence": "已读全文、精确标题GitHub查询未确认官方实现。",
+          "compatibility": "概念/度量基线；是否有未索引资产仍未闭合。",
+          "cost_notes": "没有代码执行/安装。"
+        }
+      ],
+      "gaps": [
+        "本次有限范围没有定位官方可运行资产；这不是证明不存在。"
+      ]
+    },
+    {
+      "paper_id": "focus_lime",
+      "title": "Focus-LIME: Surgical Interpretation of Long-Context Large Language Models via Proxy-Based Neighborhood Selection",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "paper_resource_anchor",
+          "url": "https://arxiv.org/abs/2602.04607v1",
+          "revision": "arXiv v1 2026-02-04",
+          "license": "not_applicable_to_code",
+          "availability": "paper_fulltext_previously_read",
+          "evidence": "原文资产链接及精确标题GitHub查询未定位官方代码。",
+          "compatibility": "代理模型局部解释；非当前现成signed/history工具。",
+          "cost_notes": "没有代码执行/安装。"
+        }
+      ],
+      "gaps": [
+        "本次有限范围没有定位官方可运行资产；这不是证明不存在。"
+      ]
+    },
+    {
+      "paper_id": "tdd",
+      "title": "Unveiling and Manipulating Prompt Influence in Large Language Models",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/zijian678/TDD",
+          "revision": "main snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "README TDD_step1.py saliency、TDD_step2.py AOPC/Suff；依赖BLiMP及interpret-lm；用Llama访问令牌。",
+          "compatibility": "无需归因器训练；Llama3/PEFT和原ID接口未深审。",
+          "cost_notes": "仅静态读取官方 README；未运行。"
+        }
+      ],
+      "gaps": [
+        "分布差异式输出与 signed target attribution定义不同；不作为同名替换。"
+      ]
+    },
+    {
+      "paper_id": "aml",
+      "title": "LLM Explainability via Attributive Masking Learning",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/amlconf/aml",
+          "revision": "master snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "README run.py、config/tasks.py、pAML/AML 定义；Llama2-7b。",
+          "compatibility": "现有训练代码，不是直接拿HF模型前向得到签名归因的轻入口。",
+          "cost_notes": "需要归因模型预训练/实例优化；不采用。"
+        }
+      ],
+      "gaps": [
+        "预训练/逐实例优化辅助归因模型，违反本轮不训练且最简复用的方向。"
+      ]
+    },
+    {
+      "paper_id": "token_shapley",
+      "title": "TokenShapley: Token Level Context Attribution with Shapley Value",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "paper_resource_anchor",
+          "url": "https://aclanthology.org/2025.findings-acl.200/",
+          "revision": "ACL 2025 official",
+          "license": "not_applicable_to_code",
+          "availability": "paper_fulltext_previously_read",
+          "evidence": "论文链接+精确标题资源搜索未确认官方repo；同名无关GitHub用户不计。",
+          "compatibility": "如后续选择此算法需重新解决实现/版本问题。",
+          "cost_notes": "没有代码执行/安装。"
+        }
+      ],
+      "gaps": [
+        "本次有限范围没有定位官方可运行资产；这不是证明不存在。"
+      ]
+    },
+    {
+      "paper_id": "cc_shap",
+      "title": "On Measuring Faithfulness or Self-consistency of Natural Language Explanations",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/Heidelberg-NLP/CC-SHAP",
+          "revision": "main snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "README 已读，faithfulness.py、vendored shap、results_json、GPT2小模型入口、eSNLI/ComVE/BBH样例准备。",
+          "compatibility": "可借带缓存的答案/解释归因对照，不能免除采样组合成本。",
+          "cost_notes": "某些对照还要helper model；首轮没必要运行全部六类评测。"
+        }
+      ],
+      "gaps": [
+        "指标为答案与解释的归因一致性，不自动证明生成推理忠实性。",
+        "vendored shap 和现有依赖版本须区分，Llama3+PEFT 未审。"
+      ]
+    },
+    {
+      "paper_id": "tokengeist",
+      "title": "Tokengeist: Multi-Turn Attribution Tracing in Agentic Conversations",
+      "disposition": "unavailable",
+      "resources": [
+        {
+          "type": "paper_resource_anchor",
+          "url": "https://arxiv.org/abs/2607.22610",
+          "revision": "arXiv v1; PDF date 2026-06-14, identifier 2607.22610",
+          "license": "not_applicable_to_code",
+          "availability": "paper_fulltext_previously_read",
+          "evidence": "论文承诺发布MTCABench/代码；本轮精确名称查询未定位作者官方可下载仓库。",
+          "compatibility": "公开承诺不计已有缓存或工具；不能作为当前依赖。",
+          "cost_notes": "没有代码执行/安装。"
+        }
+      ],
+      "gaps": [
+        "本次有限范围没有定位官方可运行资产；这不是证明不存在。"
+      ]
+    },
+    {
+      "paper_id": "grace",
+      "title": "GRACE: Measuring Chain-of-Thought Faithfulness from Attribution Graphs",
+      "disposition": "unavailable",
+      "resources": [
+        {
+          "type": "paper_resource_anchor",
+          "url": "https://openreview.net/forum?id=b8pliYFlF3",
+          "revision": "Anonymous ACL submission; full version unavailable",
+          "license": "not_applicable_to_code",
+          "availability": "fulltext_unavailable",
+          "evidence": "官方OpenReview全文此前被challenge/403阻断；当前无已确认代码/data/缓存。",
+          "compatibility": "仅元数据/摘要边界；不把未读实现当已可复用。",
+          "cost_notes": "没有代码执行/安装。"
+        }
+      ],
+      "gaps": [
+        "本次有限范围没有定位官方可运行资产；这不是证明不存在。"
+      ]
+    },
+    {
+      "paper_id": "rex",
+      "title": "ReX: A Framework for Incorporating Temporal Information in Model-Agnostic Local Explanation Techniques",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "paper_resource_anchor",
+          "url": "https://ojs.aaai.org/index.php/AAAI/article/view/34079",
+          "revision": "AAAI2025 official main9p plus arxiv2209.03798v3 Appendix A-D p10-15",
+          "license": "not_applicable_to_code",
+          "availability": "paper_fulltext_previously_read",
+          "evidence": "已读正式论文链接、标题资源查询未确认作者官方实现。",
+          "compatibility": "时序LIME邻域框架；未确认HF decoder-only原ID/history支持。",
+          "cost_notes": "没有代码执行/安装。"
+        }
+      ],
+      "gaps": [
+        "本次有限范围没有定位官方可运行资产；这不是证明不存在。"
+      ]
+    },
+    {
+      "paper_id": "peering",
+      "title": "Peering into the Mind of Language Models: An Approach for Attribution in Contextual Question Answering",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/Anirudh-Phukan/verifiability-granular",
+          "revision": "main snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "README dev/test JSONL，170/197 statements，272/320 spans；question/summary/chunk/passages字段。",
+          "compatibility": "能借细粒度来源标注及渲染格式，不保证 Llama3归因性能。",
+          "cost_notes": "小数据资源；本次未下载。"
+        }
+      ],
+      "gaps": [
+        "官方公开仓库此次确认的是数据，不是完整归因算法实现。",
+        "标注为verifiability/语义支持跨度，不是模型真正使用的来源真值。"
+      ]
+    },
+    {
+      "paper_id": "context_influence",
+      "title": "Estimating Privacy Leakage of Augmented Contextual Knowledge in Language Models",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/james-flemings/context_influence",
+          "revision": "main snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "README 正式ACL2025标识，Python3.10.12；results有论文 text generations，CNN-DM/PubMedQA的生成/评价脚本。",
+          "compatibility": "可直接查已存generation，避免重复生成；OA token IDs、Llama3/PEFT与具体保存字段未确认。",
+          "cost_notes": "仅静态读取官方 README；未运行。"
+        },
+        {
+          "type": "cached_generations",
+          "url": "https://github.com/james-flemings/context_influence/tree/main/results",
+          "revision": "default branch snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official README advertised",
+          "evidence": "README明确 Text generations used in the paper can be found in results。",
+          "compatibility": "不是OA缓存；尚未核保存是否保留原ID/EOS。",
+          "cost_notes": "未下载。"
+        }
+      ],
+      "gaps": [
+        "核心是绝对 logprob差；输出位置曲线可复用，但不提供 signed贡献。",
+        "原文定理与表格问题已记全文卡，资源公开不消除这些问题。"
+      ]
+    },
+    {
+      "paper_id": "dependency_attribution",
+      "title": "Attention with Dependency Parsing Augmentation for Fine-Grained Attribution",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "paper_resource_anchor",
+          "url": "https://aclanthology.org/2025.findings-acl.21/",
+          "revision": "ACL Findings 2025 published; arXiv 2412.11404 version also read, not counted twice",
+          "license": "not_applicable_to_code",
+          "availability": "paper_fulltext_previously_read",
+          "evidence": "已有官方全文+精确标题资源查询未定位实现；作者站仅PDF。",
+          "compatibility": "归因融合dependency parsing，需额外解析器；不是首轮最小依赖。",
+          "cost_notes": "没有代码执行/安装。"
+        }
+      ],
+      "gaps": [
+        "本次有限范围没有定位官方可运行资产；这不是证明不存在。"
+      ]
+    },
+    {
+      "paper_id": "lrp4rag",
+      "title": "LRP4RAG: Detecting Hallucinations in Retrieval-Augmented Generation via Layer-wise Relevance Propagation",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/Tomsawyerhu/LRP4RAG",
+          "revision": "master snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official_documentation_read",
+          "evidence": "master README 已读：core/llama_lrp.py、classifier.py、data RAGTruth、pdf visualization。",
+          "compatibility": "LRP矩阵/图与缓存可参考；不要为可视化运行分类器或训练。",
+          "cost_notes": "未运行。"
+        },
+        {
+          "type": "cached_attribution",
+          "url": "https://box.nju.edu.cn/d/dfd5422c7ffc440ba875/",
+          "revision": "default branch snapshot retrieved 2026-09-10; not commit-pinned",
+          "license": "not_verified",
+          "availability": "official README advertised; external host not fetched",
+          "evidence": "作者 README 指定 baseline_output.zip、lrp_result_llama_7b.zip、lrp_result_llama_13b.zip。",
+          "compatibility": "是真实关联缓存下载声明；可用于渲染预检，不能替代 OA 模型归因。",
+          "cost_notes": "体积/可达/许可证均未验证；未下载。"
+        }
+      ],
+      "gaps": [
+        "代码README的模型是Llama2-7b/13b，与最新v3全文模型/实验边界不能默认一致。",
+        "外部NJUBox链接只盘点，未下载/验证zip；API/许可证未深审。"
+      ]
+    }
+  ]
+}

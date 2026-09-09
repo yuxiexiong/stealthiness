@@ -1,0 +1,1573 @@
+{
+  "checked_at": "2026-09-10",
+  "domain": "visual",
+  "scope": "65-entry frozen visual registry; inventory only; paper reading status preserved; no research code/inference/install/UI development",
+  "global_boundaries": [
+    "current_probe 表示有当前可读或可装载既有结果的辅助资源；不表示选为主展示方案或已在当前机器运行。",
+    "主计算 Inseq/Captum/CircuitTracer 由其他域核查；这里仅审计视觉组件与资产入口。",
+    "代码许可证不自动覆盖第三方模型、训练/评估数据、语料、在线 demo 内容。",
+    "公开仓库/README可读与可运行、可匿名下载模型/数据、可完全断网重放是不同状态。",
+    "HEAD commit 来自同次公开仓库页面；部分 README 从 HEAD 读取，已保存正文 SHA256；关键接口按固定 commit 读取。"
+  ],
+  "summary": {
+    "later": 30,
+    "reference_only": 29,
+    "current_probe": 4,
+    "unchecked": 2
+  },
+  "records": [
+    {
+      "paper_id": "visual_lstmvis",
+      "title": "LSTMVis: A Tool for Visual Analysis of Hidden State Dynamics in Recurrent Neural Networks",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "可下载预计算 RNN 状态是演示资产；不是现代 LLM 目标输出归因矩阵。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/HendrikStrobelt/LSTMVis",
+          "revision": "e0628caf16265feb61193251dc1c9b3e1af444ad",
+          "license": "BSD-3-Clause（LICENSE.md 正文三条款，仓库软件）；外部 HDF5 数据另核",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/HendrikStrobelt/LSTMVis/blob/e0628caf16265feb61193251dc1c9b3e1af444ad/README.md",
+            "readme_sha256": "67c2271e84a525e7e742a2f9d9371d943d2fd487b3856d9fb61251026df4f400",
+            "finding": "README 明确 three files: states.hdf5、word-ID hdf5、dict，加 lstm.yml；列 Children Book 2.2GB、Parens 0.03GB。",
+            "license_checked_url": "https://github.com/HendrikStrobelt/LSTMVis/blob/e0628caf16265feb61193251dc1c9b3e1af444ad/LICENSE.md"
+          },
+          "compatibility": "时间×隐状态；不是有符号 target×source attribution。",
+          "cost_notes": "已有数据只需本地 Python server；导入自己的状态先提取；本轮未下载这两个包。"
+        },
+        {
+          "type": "precomputed_dataset",
+          "url": "https://drive.google.com/file/d/0B3yX0IkfCkLvWUowazhOZHFuSms/view?usp=sharing&resourcekey=0-JPmD2S5SFne6iTyOzAT3_w",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "README 列 Parens Dataset 10k small，0.03GB",
+          "compatibility": "RNN 状态 HDF5+dictionary；外部数据许可未核",
+          "cost_notes": "仅记录链接和 README 大小，未下载。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_rnnvis",
+      "title": "Understanding Hidden Memories of Recurrent Neural Networks",
+      "disposition": "reference_only",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "RNN 隐状态—词关联与聚类的经典交互设计；与当前生成 token 归因数据格式不同。",
+      "resources": [],
+      "gaps": [
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_seq2seqvis",
+      "title": "Seq2Seq-Vis: A Visual Debugging Tool for Sequence-to-Sequence Models",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "翻译 decoder 候选与历史干预可借鉴；现有工程依赖旧 MT 模型、搜索与状态索引。",
+      "resources": [
+        {
+          "type": "paper_reported_resource",
+          "url": "https://github.com/hendrikstrobelt/seq2seq-vis",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "LSTMVis 官方 README 明确指向继任工具；论文有翻译状态/搜索/干预界面。",
+          "compatibility": "旧 MT pipeline；现成轨迹与模型许可/格式未静态核验。",
+          "cost_notes": "本轮不复建旧模型。"
+        }
+      ],
+      "gaps": [
+        "此行保留论文资源指针，未做软件可运行性或资产许可的本轮独立验证。"
+      ]
+    },
+    {
+      "paper_id": "visual_bertviz",
+      "title": "A Multiscale Visualization of Attention in the Transformer Model",
+      "disposition": "current_probe",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "可立即查看预载 notebook；也能把已有 attention tensor 导出 HTML。仅作为注意力观察辅助。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/jessevig/bertviz",
+          "revision": "79dbaebfe31ada110c1268de7bb6509b14fe9df3",
+          "license": "Apache-2.0（仓库软件）；不自动覆盖外部模型与数据",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/jessevig/bertviz/blob/79dbaebfe31ada110c1268de7bb6509b14fe9df3/README.md",
+            "readme_sha256": "f89504d3ff65eb85ccb8fb82dafcd67a5b263952f5fe5022cae4179e0e6a4a2d",
+            "finding": "README 明确三个视图、预载 Colab、不执行 cells 可看；html_action=return 可得到 HTML。",
+            "license_checked_url": "https://github.com/jessevig/bertviz/blob/79dbaebfe31ada110c1268de7bb6509b14fe9df3/LICENSE"
+          },
+          "compatibility": "head/model view 接 HF 格式 attention tensor 与 tokens；neuron view 仅自带 BERT/GPT2/RoBERTa；非 signed 输入归因。",
+          "cost_notes": "已有 tensor 无新模型计算；新例需 forward；长序列/多层使 HTML 和浏览器成本增加。"
+        },
+        {
+          "type": "interface_source",
+          "url": "https://github.com/jessevig/bertviz/blob/79dbaebfe31ada110c1268de7bb6509b14fe9df3/bertviz/head_view.py",
+          "revision": "79dbaebfe31ada110c1268de7bb6509b14fe9df3",
+          "license": "Apache-2.0（仓库软件）；不自动覆盖外部模型与数据",
+          "availability": "公开原始文件静态读取；未执行",
+          "evidence": "HTML return 分支将 attention 数据嵌入 params，但包含 cdnjs require.js 引用。",
+          "compatibility": "独立 HTML 可跨浏览器看；完全断网可用尚未保证。",
+          "cost_notes": "可免推理重复查看，但依赖浏览器加载 JS。"
+        },
+        {
+          "type": "preloaded_notebook",
+          "url": "https://colab.research.google.com/drive/1hXIQ77A4TYS4y3UthWF-Ci7V7vVUoxmQ?usp=sharing",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "官方 README 的 all visualizations pre-loaded tutorial。",
+          "compatibility": "样例注意力而非用户模型证据；Colab 内容本轮未交互运行。",
+          "cost_notes": "README 声明不用执行 cells；网络/Colab 可用性未运行测试。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_exbert",
+      "title": "exBERT: A Visual Analysis Tool to Explore Learned Representations in Transformer Models",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "已有注意力/语料邻居 UI，但自身语料检索需要大规模预计算，旧模型接口需适配。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/bhoov/exbert",
+          "revision": "d27b6236aa51b185f7d3fed904f25cabe3baeb1a",
+          "license": "Apache-2.0（仓库软件）；不自动覆盖外部模型与数据",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/bhoov/exbert/blob/d27b6236aa51b185f7d3fed904f25cabe3baeb1a/README.md",
+            "readme_sha256": "71954f1a0dabbced67687f233b65daaa1bff2ce3a005d87af5ea63e0bffb5694",
+            "finding": "支持 attention 和语料 embedding 搜索；data.hdf5+embedding_faiss/+context_faiss；README 警告 many gigabytes。",
+            "license_checked_url": "https://github.com/bhoov/exbert/blob/d27b6236aa51b185f7d3fed904f25cabe3baeb1a/LICENSE"
+          },
+          "compatibility": "旧 transformers v2.8/AutoModelWithLMHead 子仓库；英文语料、单序列；搜索 hooks 需修改。",
+          "cost_notes": "attention 需 forward；corpus 搜索先预计算并建索引；不适合先全量部署。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_lit",
+      "title": "The Language Interpretability Tool: Extensible, Interactive Visualizations and Analysis for NLP Models",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "成熟并排比较与 Dataset/Model API；自有离线分数需轻量 callbacks，非已确认的一键 JSON 查看器。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/PAIR-code/lit",
+          "revision": "3debb609cf1b9e8775471c262026e0a1a1f87a28",
+          "license": "Apache-2.0（仓库软件）；不自动覆盖外部模型与数据",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/PAIR-code/lit/blob/3debb609cf1b9e8775471c262026e0a1a1f87a28/README.md",
+            "readme_sha256": "6f7c8bde4ef5fea1a942bdb2393bb0425184ae49d3a2f42e3420bda8a6ecf513",
+            "finding": "PyPI 包含 UI；源码方式需 yarn build。侧边并排模型/样本、notebook、Dataset/Model 接口均已文档确认。",
+            "license_checked_url": "https://github.com/PAIR-code/lit/blob/3debb609cf1b9e8775471c262026e0a1a1f87a28/LICENSE"
+          },
+          "compatibility": "自有数据可接 Model callback；标准 prompt_debugging wrapper 会重新 tokenize 字符串，不保证已有 ID 完整保真。",
+          "cost_notes": "查看已存分数的 callback 可避免 GPU；adapter 尚未写/运行，不是单文件 HTML。"
+        },
+        {
+          "type": "interface_source",
+          "url": "https://github.com/PAIR-code/lit/blob/3debb609cf1b9e8775471c262026e0a1a1f87a28/lit_nlp/api/model.py",
+          "revision": "3debb609cf1b9e8775471c262026e0a1a1f87a28",
+          "license": "Apache-2.0（仓库软件）；不自动覆盖外部模型与数据",
+          "availability": "公开原始文件静态读取；未执行",
+          "evidence": "BatchedModel 子类提供 predict_minibatch()，输入/输出遵循 input_spec()/output_spec()。",
+          "compatibility": "可用小型查表模型返回既有结果，属于接口支持下的适配推断，尚未执行验证。",
+          "cost_notes": "Python server 和现有前端；无需因此训练或生成。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_sequence_salience",
+      "title": "Interactive Prompt Debugging with Sequence Salience",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "已确认选输出片段→看输入与 history 的 signed heatmap；保留为展示升级项。",
+      "resources": [
+        {
+          "type": "interface_source",
+          "url": "https://github.com/PAIR-code/lit/blob/3debb609cf1b9e8775471c262026e0a1a1f87a28/lit_nlp/client/modules/sequence_salience_module.ts",
+          "revision": "3debb609cf1b9e8775471c262026e0a1a1f87a28",
+          "license": "Apache-2.0（仓库软件）；不自动覆盖外部模型与数据",
+          "availability": "公开原始文件静态读取；未执行",
+          "evidence": "fetchSalience 将选中目标区间构造 target_mask，再 getPreds(TokenScores)；tokenizer model 单独返回 tokens；signed cmap 仅对字段 grad_dot_input 启用。",
+          "compatibility": "输出 token/片段选择→整条 prompt+history 来源向量；分段聚合与并排已有。任意输出质量标量总览热图是否无需适配尚未证实。",
+          "cost_notes": "预计算矩阵可由 callback 按目标 mask 取列/聚合；不是已实现 JSON 导入。"
+        },
+        {
+          "type": "interface_source",
+          "url": "https://github.com/PAIR-code/lit/blob/3debb609cf1b9e8775471c262026e0a1a1f87a28/lit_nlp/examples/prompt_debugging/constants.py",
+          "revision": "3debb609cf1b9e8775471c262026e0a1a1f87a28",
+          "license": "Apache-2.0（仓库软件）；不自动覆盖外部模型与数据",
+          "availability": "公开原始文件静态读取；未执行",
+          "evidence": "三类接口：GeneratedText response；Tokens tokens；target_mask 输入及 tokens 对齐的 grad_dot_input/grad_l2 输出。",
+          "compatibility": "callback 需保留记录 ID/条件、已保存 token 次序和特殊 token；显示字符串不必重新编码为 IDs。",
+          "cost_notes": "三小 callback/数据适配仍是少量工程；当前列 later。"
+        },
+        {
+          "type": "interface_source",
+          "url": "https://github.com/PAIR-code/lit/blob/3debb609cf1b9e8775471c262026e0a1a1f87a28/lit_nlp/examples/prompt_debugging/transformers_lms.py",
+          "revision": "3debb609cf1b9e8775471c262026e0a1a1f87a28",
+          "license": "Apache-2.0（仓库软件）；不自动覆盖外部模型与数据",
+          "availability": "公开原始文件静态读取；未执行",
+          "evidence": "当前 HF wrapper 拼 prompt+target 后重分词；grad_dot_input 为选中目标交叉熵 loss 的梯度乘 embedding，grad_l2 非负。",
+          "compatibility": "signed loss 的正负不是自动的“支持/反对输出”；fixed logprob xinput 应由自己的分数源定义。",
+          "cost_notes": "内建新 salience 需 forward/backward；复用缓存 callback 可免重算。"
+        },
+        {
+          "type": "interface_source",
+          "url": "https://github.com/PAIR-code/lit/blob/3debb609cf1b9e8775471c262026e0a1a1f87a28/lit_nlp/examples/prompt_debugging/datasets.py",
+          "revision": "3debb609cf1b9e8775471c262026e0a1a1f87a28",
+          "license": "Apache-2.0（仓库软件）；不自动覆盖外部模型与数据",
+          "availability": "公开原始文件静态读取；未执行",
+          "evidence": "默认 prompt_examples.jsonl；可装自有 jsonl/plaintext；只确认输入示例，不能视作已有 salience traces。",
+          "compatibility": "jsonl 数据集导入≠完整 target-source 分数导入。",
+          "cost_notes": "原始 prompt 小；新分数仍需计算或适配已存结果。"
+        }
+      ],
+      "gaps": [
+        "未发现并核验单 JSON 一键导入整个 SequenceSalience 归因结果的功能。",
+        "自定义方法名的 signed 元数据当前未普遍支持：源码 TODO，颜色分支硬编码 grad_dot_input；需要保证显示名称和分数定义一致。",
+        "最省前置工程仍是现有 notebook/HTML 归因组件；不为任意点选而预计算所有输出×所有样本。",
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_ecco",
+      "title": "Ecco: An Open Source Library for the Explainability of Transformer Language Models",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "notebook 输入/输出联动可复用，但当前归因聚合丢失符号，不能直接满足 signed logprob xinput。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/jalammar/ecco",
+          "revision": "2a38a1360c8edb2e4ff4a08fba404b5164c21e06",
+          "license": "BSD-3-Clause（仓库软件）；模型与数据另核",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/jalammar/ecco/blob/2a38a1360c8edb2e4ff4a08fba404b5164c21e06/README.rst",
+            "readme_sha256": "a1a586236f9154e058ae0bbabb4b16d82a37ac6eb843d944cb4c13fe37567de6",
+            "finding": "README 的 OutputSeq 包含 input/output tokens、saliency、可选 activations，能在 notebook 点输出看来源/NMF。",
+            "license_checked_url": "https://github.com/jalammar/ecco/blob/2a38a1360c8edb2e4ff4a08fba404b5164c21e06/LICENSE"
+          },
+          "compatibility": "自带方法和模型集需对应 hooks；README 自称 alpha。",
+          "cost_notes": "新 token attribution 需对应模型计算；已算 OutputSeq 重绘不需重算。"
+        },
+        {
+          "type": "interface_source",
+          "url": "https://github.com/jalammar/ecco/blob/2a38a1360c8edb2e4ff4a08fba404b5164c21e06/src/ecco/attribution.py",
+          "revision": "2a38a1360c8edb2e4ff4a08fba404b5164c21e06",
+          "license": "BSD-3-Clause（仓库软件）；模型与数据另核",
+          "availability": "公开原始文件静态读取；未执行",
+          "evidence": "normalize_attributes 仅 L2，token 范数除以总和；grad_x_input 等统一经过此步。",
+          "compatibility": "结果非负；丢失方向，不能直接充当 signed logprob xinput。",
+          "cost_notes": "适合交互参考；不直接用此规范化替换主计算。"
+        },
+        {
+          "type": "interface_source",
+          "url": "https://github.com/jalammar/ecco/blob/2a38a1360c8edb2e4ff4a08fba404b5164c21e06/src/ecco/output.py",
+          "revision": "2a38a1360c8edb2e4ff4a08fba404b5164c21e06",
+          "license": "BSD-3-Clause（仓库软件）；模型与数据另核",
+          "availability": "公开原始文件静态读取；未执行",
+          "evidence": "primary_attributions 中 data={tokens,attributions}；printJson=True 返回 Python dict。未发现该文件 save/load 成对 API。",
+          "compatibility": "可取绘图数据，但不是已证实的完整 OutputSeq 磁盘加载协议。",
+          "cost_notes": "没有要求重写 UI；数据适配需另小验证。"
+        },
+        {
+          "type": "interface_source",
+          "url": "https://github.com/jalammar/ecco/blob/2a38a1360c8edb2e4ff4a08fba404b5164c21e06/src/ecco/html/setup.html",
+          "revision": "2a38a1360c8edb2e4ff4a08fba404b5164c21e06",
+          "license": "BSD-3-Clause（仓库软件）；模型与数据另核",
+          "availability": "公开原始文件静态读取；未执行",
+          "evidence": "require.js、Google Storage ecco bundle、d3、jQuery 等外部 JS/CSS URL。",
+          "compatibility": "notebook 输出并不保证完全断网可重放。",
+          "cost_notes": "查看不需模型但仍有外部静态资源加载。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_lmdiff",
+      "title": "LMdiff: A Visual Diff Tool to Compare Language Models",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "编译前端与模型 token 概率差可复用；部署版数据需私有 DVC 配置，自有数据需前处理。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/HendrikStrobelt/LMdiff",
+          "revision": "adb3f6b16bd47b93312007af87e2f9f45d9f6f51",
+          "license": "Apache-2.0（仓库软件）；不自动覆盖外部模型与数据",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/HendrikStrobelt/LMdiff/blob/adb3f6b16bd47b93312007af87e2f9f45d9f6f51/README.md",
+            "readme_sha256": "ac75e9c5223314541d259634897329afd5259994ffa650b431f7817bacbf7021",
+            "finding": "编译前端已提交；TextDataset 是带 checksum/name/type header 的逐行文本；模型须相同 tokenizer 与 vocab；部署数据需私有 .dvc/config。",
+            "license_checked_url": "https://github.com/HendrikStrobelt/LMdiff/blob/adb3f6b16bd47b93312007af87e2f9f45d9f6f51/LICENSE"
+          },
+          "compatibility": "token 概率/排名和差分；不提供源词 causal attribution。",
+          "cost_notes": "自有数据先 preprocess 两模型；全 dataset 入内存；公开 repo 不等于公开 demo traces。"
+        }
+      ],
+      "gaps": [
+        "预处理 HDF5 由原论文 Appendix B 报告；本轮未进一步固定底层 HDF5 schema。",
+        "部署版云端 data 无公开匿名可下载证明；不用私有配置绕过限制。",
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_lm_debugger",
+      "title": "LM-Debugger: An Interactive Tool for Inspection and Intervention in Transformer-Based Language Models",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "GPT2 FFN 词汇投影/干预 UI；基础设施比查看既有归因表更重。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/mega002/lm-debugger",
+          "revision": "01ba7413b3c671af08bc1c315e9cc64f9f4abee2",
+          "license": "Apache-2.0（仓库软件）；不自动覆盖外部模型与数据",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/mega002/lm-debugger/blob/01ba7413b3c671af08bc1c315e9cc64f9f4abee2/README.md",
+            "readme_sha256": "92d0dfd41bcc15e00cb350af12230781f13fe08164d0a9571c639b48059257b4",
+            "finding": "GPT2 medium/large 配置；预处理 3 个 pickle（FFN vocab projections 与双向 cluster mapping）；有外部 GCS 入口。",
+            "license_checked_url": "https://github.com/mega002/lm-debugger/blob/01ba7413b3c671af08bc1c315e9cc64f9f4abee2/LICENSE"
+          },
+          "compatibility": "主要支持 GPT2；新架构需 backend API 修改。",
+          "cost_notes": "React+Flask+Streamlit；探索视图额外 Elasticsearch；聚类可数小时且可关闭。"
+        },
+        {
+          "type": "precomputed_dataset",
+          "url": "https://console.cloud.google.com/storage/browser/ai2i/ffn_debugger",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "作者 README 列预处理 GPT2 data 下载位置。",
+          "compatibility": "pickles 是离线参数投影/聚类，不等于每个新 prompt 的全部输出归因。",
+          "cost_notes": "未登录/未下载/未证实匿名可读。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_llm_attributor",
+      "title": "LLM Attributor: Interactive Visual Attribution for LLM Generation",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "选择输出短语→训练样本归因与并排编辑；目标是训练数据归因，不是输入/history 归因。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/poloclub/LLM-Attributor",
+          "revision": "2a42ef864f9361a123941c0735b8c4dae5d0db00",
+          "license": "MIT（仓库软件）；模型与数据另核",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/poloclub/LLM-Attributor/blob/2a42ef864f9361a123941c0735b8c4dae5d0db00/Readme.md",
+            "readme_sha256": "c020c673866a49429cdd8867277abd7aac8053e858312337b35db06866252d6f",
+            "finding": "正确仓库 Readme.md；disaster-demo.ipynb、finance-demo.ipynb；初始化要求 llama2/tokenizer/finetuned model/train_dataset 路径。",
+            "license_checked_url": "https://github.com/poloclub/LLM-Attributor/blob/2a42ef864f9361a123941c0735b8c4dae5d0db00/LICENSE"
+          },
+          "compatibility": "训练数据 attribution；input/history attribution 不是同一数据维度。",
+          "cost_notes": "需要 base/finetuned weights 和训练数据；本轮不运行 LoRA/梯度训练归因。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_llm_comparator",
+      "title": "LLM Comparator: Interactive Analysis of Side-by-Side Evaluation of Large Language Models",
+      "disposition": "current_probe",
+      "paper_status": "body_read_supplement_pending",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "公开 5 例 JSON 与静态比较 UI 可直接阅读；可辅助条件输出对照，不提供 token 来源归因。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/PAIR-code/llm-comparator",
+          "revision": "60edc1eaf96e09f4b9791dbc9bb0fb7bcc82c69c",
+          "license": "Apache-2.0（仓库软件）；不自动覆盖外部模型与数据",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/PAIR-code/llm-comparator/blob/60edc1eaf96e09f4b9791dbc9bb0fb7bcc82c69c/README.md",
+            "readme_sha256": "93dc5dd74c458f67e7cadda28f1d1579388dec585cfdb2e8731cb0c9564aa6fc",
+            "finding": "静态网站可上传 JSON，schema 含 metadata/models/examples 和 paired outputs/score；可选 tags/custom_fields/rater rationales。",
+            "license_checked_url": "https://github.com/PAIR-code/llm-comparator/blob/60edc1eaf96e09f4b9791dbc9bb0fb7bcc82c69c/LICENSE"
+          },
+          "compatibility": "整段回答对照和评分类别；不直接包含输入→输出 token attribution。",
+          "cost_notes": "已有 JSON 只需浏览器；Python 自动评分/聚类另需模型/API，不是查看前提。"
+        },
+        {
+          "type": "precomputed_demo_json",
+          "url": "https://pair-code.github.io/llm-comparator/data/example_tiny.json",
+          "revision": "2026-09-10 public snapshot SHA256 40e8ecfcb541a6b025176e265787381f66dad95576be432976edb637dbc34282",
+          "license": "代码 Apache-2.0；示例内容未见单独许可，外部 Arena 数据另核",
+          "availability": "实际匿名读取并解析成功，5 examples",
+          "evidence": "顶层 metadata/models/examples；配对输出已有，不需现场调用模型。",
+          "compatibility": "用于试读界面/字段；不能当用户模型的观察证据。",
+          "cost_notes": "本轮仅取小样本 JSON；未取完整 Arena 文件。"
+        }
+      ],
+      "gaps": [
+        "原文独立附件仍缺；软件静态核验不补足论文附件证据。",
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_chainforge",
+      "title": "ChainForge: A Visual Toolkit for Prompt Engineering and LLM Hypothesis Testing",
+      "disposition": "reference_only",
+      "paper_status": "abstract_screened_adjacent",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "外围 prompt/输出流程；当前不需要新建 prompt orchestration 工程。仅沿用已有筛查边界。",
+      "resources": [],
+      "gaps": [
+        "沿用既有摘要/方法筛查范围；本轮未补全文或深查软件，不支持其正文实证结论。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_semantic_pathway",
+      "title": "Semantic Pathway: An Interactive Visualization of Hidden States and Token Influence in LLMs",
+      "disposition": "reference_only",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "已有视频/投影视图设计可参考；未确认可加载任意归因矩阵的公开组件。",
+      "resources": [],
+      "gaps": [
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_knowledge_debugger",
+      "title": "KnowledgeDebugger – an Exploration Tool for Knowledge Localization and Editing in Transformers",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "可复用 Llama 风格模型编辑/FFN 展示，但依赖模型推理、Elasticsearch 与多服务。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/ebnz/lm-debugger",
+          "revision": "ed79c4f24331dfc8127c1e3ff6377ed409f7673b",
+          "license": "Apache-2.0（仓库软件）；不自动覆盖外部模型与数据",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/ebnz/lm-debugger/blob/ed79c4f24331dfc8127c1e3ff6377ed409f7673b/README.md",
+            "readme_sha256": "981bee2ae7ea152dfc347e2b2a70962b337723e8c7700f7478f921f3b3faeaf3",
+            "finding": "README tested GPT2-XL and Llama2/Llama3-style；config+离线 FFN 索引+EasyEdit hparams。",
+            "license_checked_url": "https://github.com/ebnz/lm-debugger/blob/ed79c4f24331dfc8127c1e3ff6377ed409f7673b/LICENSE"
+          },
+          "compatibility": "Llama3-style 不是已验证 OA checkpoint 或保存协议兼容。",
+          "cost_notes": "Python3.10+React+Flask+Streamlit+Elasticsearch，模型计算/编辑比静态分数查看重。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_llm_transparency",
+      "title": "LM Transparency Tool: Interactive Tool for Analyzing Transformer Language Models",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "现成 token×layer 贡献图及词汇促进/抑制视图；无已核验的离线任意图 JSON 导入。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/facebookresearch/llm-transparency-tool",
+          "revision": "f1340f0757b959c75c139f7aa91aef16eddced67",
+          "license": "CC-BY-NC-4.0（代码）；第三方模型另有条款",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/facebookresearch/llm-transparency-tool/blob/f1340f0757b959c75c139f7aa91aef16eddced67/README.md",
+            "readme_sha256": "d9721427b0eed1f1bafc2a26d0106a4683eea0d24e8049ef2edc2abc66b9c989",
+            "finding": "GitHub 显示 2026-02-01 archived。token/layer contribution graph、head/FFN、vocab promoted/suppressed；tuned model 可配权重路径。",
+            "license_checked_url": "https://github.com/facebookresearch/llm-transparency-tool/blob/f1340f0757b959c75c139f7aa91aef16eddced67/LICENSE"
+          },
+          "compatibility": "依赖 TransformerLens 支持/TransparentLlm hooks；代码 CC-BY-NC；不把向量贡献强度直接等同 signed logprob IG。",
+          "cost_notes": "Streamlit+已构建前端，或 Docker；模型推理后可缓存，未确认跨进程 trace 重放。"
+        },
+        {
+          "type": "interface_source",
+          "url": "https://github.com/facebookresearch/llm-transparency-tool/blob/f1340f0757b959c75c139f7aa91aef16eddced67/config/local.json",
+          "revision": "f1340f0757b959c75c139f7aa91aef16eddced67",
+          "license": "CC-BY-NC-4.0（代码）；第三方模型另有条款",
+          "availability": "公开原始文件静态读取；未执行",
+          "evidence": "显式列 Meta-Llama-3-8B、8B-Instruct、70B、GPT2/OPT/Gemma/Mistral；输入 sample_input.txt。",
+          "compatibility": "配置中有 Llama3.0-8B 是积极兼容证据；不证明 OA adapter/精度/全 hooks 已运行通过。",
+          "cost_notes": "只给样本文本，未给已核验预计算图包。"
+        },
+        {
+          "type": "interface_source",
+          "url": "https://github.com/facebookresearch/llm-transparency-tool/blob/f1340f0757b959c75c139f7aa91aef16eddced67/llm_transparency_tool/server/app.py",
+          "revision": "f1340f0757b959c75c139f7aa91aef16eddced67",
+          "license": "CC-BY-NC-4.0（代码）；第三方模型另有条款",
+          "availability": "公开原始文件静态读取；未执行",
+          "evidence": "st.cache_resource 用于推理和图；有 CPU precision controls；dataset 是文本按行；当前查看未发现持久图 export/import。",
+          "compatibility": "内存缓存≠保存/加载完整离线图协议。",
+          "cost_notes": "新例仍需模型；缓存只减少重复操作。"
+        }
+      ],
+      "gaps": [
+        "与 foundations F15 Information Flow Routes 共享同一资源，不应跨域计成两套软件。",
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_layerflow",
+      "title": "LayerFlow: Visualizing Information Flow in Large Language Models",
+      "disposition": "reference_only",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "层间 representation 投影与联动布局；不是已确认的目标输出来源归因组件。",
+      "resources": [],
+      "gaps": [
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_llmbench",
+      "title": "LLMbench: A Comparative Close Reading Workbench for Large Language Models",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "现版本有 token logprob 输出热图、A/B 和 trace 导出；不等于输入 attribution，主路径仍需 API/本地推理。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/dmberry/LLMbench",
+          "revision": "ed81f19921315ff2bedaa339a6ba229eb6ec7ad1",
+          "license": "GPL-3.0-or-later（当前 README 声明，LICENSE 为 GPLv3）；不推断历史版本许可",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/dmberry/LLMbench/blob/ed81f19921315ff2bedaa339a6ba229eb6ec7ad1/README.md",
+            "readme_sha256": "0d1ccca6afe14a7b848971d27d6ee38e80d5579e633b7696b41fb5a1b7e495d9",
+            "finding": "当前 README 有 output probability 热图、A/B 比较、JSON/PDF/CSV 导出与 vector-lab.sampling-trace.v1；只读相关资源段落，未审查全部扩展实现。",
+            "license_checked_url": "https://github.com/dmberry/LLMbench/blob/ed81f19921315ff2bedaa339a6ba229eb6ec7ad1/LICENSE"
+          },
+          "compatibility": "provider 返回 top-K logprobs 有上限；不是原始完整 vocab/固定 token-ID 输入归因。",
+          "cost_notes": "服务 API key 或 Ollama 本地推理；读取保存结果更轻；本轮未核完整 bundle 导入/重放。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_nemo_inspector",
+      "title": "NeMo-Inspector: A Visualization Tool for LLM Generation Analysis",
+      "disposition": "current_probe",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "能直接装载既有生成 JSONL，侧重按样本比较、过滤与保存标注。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/NVIDIA/NeMo-Inspector",
+          "revision": "c2a14ff9892f024120230a1a6e8234f375cffaae",
+          "license": "Apache-2.0（仓库软件）；不自动覆盖外部模型与数据",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/NVIDIA/NeMo-Inspector/blob/c2a14ff9892f024120230a1a6e8234f375cffaae/README.md",
+            "readme_sha256": "4b57b800a185c08fc94246b4cdbff30e516eccf2c6d4f5aeb5aba96bcb3a5339",
+            "finding": "输入 --model_prediction 指向 output-greedy.jsonl/output-rs*.jsonl；并排生成、filter/sort、annotate/save。",
+            "license_checked_url": "https://github.com/NVIDIA/NeMo-Inspector/blob/c2a14ff9892f024120230a1a6e8234f375cffaae/LICENSE"
+          },
+          "compatibility": "可接已有生成记录；标准字段 generation 等需匹配，不直接画 target-source attribution。",
+          "cost_notes": "已有 JSONL 的 Analyze 路径不需要加载 LLM；只需本地 Python web 服务。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_promptide",
+      "title": "Interactive and Visual Prompt Engineering for Ad-hoc Task Adaptation with Large Language Models",
+      "disposition": "reference_only",
+      "paper_status": "abstract_screened_adjacent",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "prompt 编辑/评价外围系统；不增加当前归因组件。",
+      "resources": [],
+      "gaps": [
+        "沿用既有摘要/方法筛查范围；本轮未补全文或深查软件，不支持其正文实证结论。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_neural_transparency",
+      "title": "Neural Transparency: Mechanistic Interpretability Interfaces for Anticipating Model Behaviors for Personalized AI",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "概念读出与用户观察 UI 可参考；需具体模型的概念读出资产，不能当通用归因热图。",
+      "resources": [
+        {
+          "type": "paper_reported_resource",
+          "url": "https://github.com/mitmedialab/neural-transparency",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "原论文给出的代码/分析入口。",
+          "compatibility": "概念读出及可视化；权重/数据/代码分许可证本轮未核。",
+          "cost_notes": "部署需要匹配概念读出器；未下载模型。"
+        }
+      ],
+      "gaps": [
+        "此行保留论文资源指针，未做软件可运行性或资产许可的本轮独立验证。"
+      ]
+    },
+    {
+      "paper_id": "visual_multiturn_transparency",
+      "title": "Multi-Turn Neural Transparency: Surfacing Neural Activations Improves User Calibration to LLM Behavioral Drift",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "跨轮概念轨迹可参考；不是本阶段“探针”的同义词，也不替代输入目标归因。",
+      "resources": [
+        {
+          "type": "paper_reported_resource",
+          "url": "https://github.com/mitmedialab/multi-turn-neural-transparency",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "原论文给出的代码入口。",
+          "compatibility": "多轮概念轨迹与模型依赖；未核 replay 格式。",
+          "cost_notes": "不把训练读出器列为观察阶段前置。"
+        }
+      ],
+      "gaps": [
+        "此行保留论文资源指针，未做软件可运行性或资产许可的本轮独立验证。"
+      ]
+    },
+    {
+      "paper_id": "visual_vista",
+      "title": "VISTA: Visualization of Token Attribution via Efficient Analysis",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "现有 toolkit 入口较大；可参考解释 UI，不先引入整套治理平台依赖。",
+      "resources": [
+        {
+          "type": "paper_reported_resource",
+          "url": "https://github.com/Infosys/Infosys-Responsible-AI-Toolkit",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "原论文引用 toolkit 仓库。",
+          "compatibility": "大平台资源；具体 VISTA 子目录/许可/数据未核。",
+          "cost_notes": "先不安装整套工具。"
+        }
+      ],
+      "gaps": [
+        "此行保留论文资源指针，未做软件可运行性或资产许可的本轮独立验证。"
+      ]
+    },
+    {
+      "paper_id": "visual_visbert",
+      "title": "VisBERT: Hidden-State Visualizations for Transformers",
+      "disposition": "reference_only",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "3 个微调 BERT QA checkpoint 的层状态投影；不直接适配 decoder-only 生成归因。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/bvanaken/visbert",
+          "revision": "7aaf34a171e0c8864c7cbb1ce0676bacee9441ce",
+          "license": "Apache-2.0（仓库软件）；不自动覆盖外部模型与数据",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/bvanaken/visbert/blob/7aaf34a171e0c8864c7cbb1ce0676bacee9441ce/README.md",
+            "readme_sha256": "cad350ec9b548970eca0b4d9fb2245ca73f8c05dd01845ae7a13c6993bc77d62",
+            "finding": "Flask app；模型目录要求 squad.bin/hotpot_distract.bin/babi.bin；作者给 Google Drive 权重链接。",
+            "license_checked_url": "https://github.com/bvanaken/visbert/blob/7aaf34a171e0c8864c7cbb1ce0676bacee9441ce/LICENSE"
+          },
+          "compatibility": "微调 BERT QA 隐状态图；旧 PyTorch checkpoint。",
+          "cost_notes": "需要模型和推理；本轮未下载外部 weights、未核其许可。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_attentionviz",
+      "title": "AttentionViz: A Global View of Transformer Attention",
+      "disposition": "reference_only",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "跨 head 的 query/key 空间可视化；当前以 input/output 分数为先，不先建向量索引。",
+      "resources": [],
+      "gaps": [
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_commonsensevis",
+      "title": "CommonsenseVIS: Visualizing and Understanding Commonsense Reasoning Capabilities of Natural Language Models",
+      "disposition": "reference_only",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "常识任务/概念关系解释设计；未证实可直接呈现任意生成 token attribution。",
+      "resources": [],
+      "gaps": [
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_visit",
+      "title": "VISIT: Visualizing and Interpreting the Semantic Information Flow of Transformers",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "已有 notebook 和可保存 HTML 的语义流图；新样本仍需对应模型 forward 与 hooks。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/shacharKZ/VISIT-Visualizing-Transformers",
+          "revision": "046b460ae2fabccab22ca120b03e34e8edabfbbf",
+          "license": "MIT（仓库软件）；模型与数据另核",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/shacharKZ/VISIT-Visualizing-Transformers/blob/046b460ae2fabccab22ca120b03e34e8edabfbbf/README.md",
+            "readme_sha256": "e3ef6ed517fb8e5698e9faa0cdb73ab72c8aba7150ffc2abb7706c9da8123200",
+            "finding": "有两个 Colab、generate_flow_graph.py、架构 JSON，图可保存 HTML；明确 GPT2/GPT-J/GPT-Neo/Llama2-7B。",
+            "license_checked_url": "https://github.com/shacharKZ/VISIT-Visualizing-Transformers/blob/046b460ae2fabccab22ca120b03e34e8edabfbbf/LICENSE"
+          },
+          "compatibility": "其它 GPT-like 需配置/hook 适配；未直接确认 Llama3.0-8B。",
+          "cost_notes": "已有 HTML 只需浏览器；新图需要模型 forward，GPT-J/Llama2 权重有成本/许可。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_promptaid",
+      "title": "PromptAid: Prompt Exploration, Perturbation, Testing and Iteration using Visual Analytics for Large Language Models",
+      "disposition": "reference_only",
+      "paper_status": "abstract_screened_adjacent",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "prompt 生成与比较外围；不扩通用 prompt UI。",
+      "resources": [],
+      "gaps": [
+        "沿用既有摘要/方法筛查范围；本轮未补全文或深查软件，不支持其正文实证结论。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_gltr",
+      "title": "GLTR: Statistical Detection and Visualization of Generated Text",
+      "disposition": "reference_only",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "输出 token 概率/排名视图先例；不是输入或历史归因，旧 GPT2/BERT 服务不优先。",
+      "resources": [
+        {
+          "type": "paper_reported_resource",
+          "url": "https://github.com/HendrikStrobelt/detecting-fake-text",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "论文给代码仓库；输出词概率排名高亮与分布。",
+          "compatibility": "GPT2/BERT 概率诊断而非因果 attribution。",
+          "cost_notes": "本轮不安装/不验证 live demo。"
+        }
+      ],
+      "gaps": [
+        "此行保留论文资源指针，未做软件可运行性或资产许可的本轮独立验证。"
+      ]
+    },
+    {
+      "paper_id": "visual_llmcheckup",
+      "title": "LLMCheckup",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "对话式归因平台调用 Inseq；可复用案例和 UI，不另包装核心计算。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/DFKI-NLP/LLMCheckup",
+          "revision": "e0b370e8bd8aa61b292d8a439e30994fbd302acf",
+          "license": "未核实：根目录 LICENSE 未返回许可证正文；不等于不存在其他许可",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/DFKI-NLP/LLMCheckup/blob/e0b370e8bd8aa61b292d8a439e30994fbd302acf/README.md",
+            "readme_sha256": "f7220c7af9ce5e372d286a4a39b50bcf4ac4806ad6559f20463234c0a4a492f1",
+            "finding": "Flask；feature attribution 明确由 Inseq 提供；Llama2/Mistral/StableBeluga2，支持多种量化/部署方式。",
+            "license_checked_url": "https://github.com/DFKI-NLP/LLMCheckup/blob/e0b370e8bd8aa61b292d8a439e30994fbd302acf/LICENSE"
+          },
+          "compatibility": "README 支持多部署不证明每种量化模型都可梯度 attribution；Inseq 本体另域审计。",
+          "cost_notes": "完整功能需 models、OCR/语音等额外依赖，非首轮最简路径。"
+        },
+        {
+          "type": "dataset",
+          "url": "https://github.com/dair-iitd/ECQA-Dataset",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "README 列 ECQA task dataset 及问题/选项/答案/解释结构。",
+          "compatibility": "数据许可和文件版本本轮未独立核验。",
+          "cost_notes": "未下载数据。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_blackbox_token",
+      "title": "Visualizing token importance for black-box language models",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "黑盒分布差异可视化需要重复生成与扰动；不是免计算的现成 signed 梯度界面。",
+      "resources": [
+        {
+          "type": "paper_reported_resource",
+          "url": "https://proceedings.mlr.press/v258/rauba25a.html",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "正式论文 code pointer（全文中的 github URL 存在换行，未在本轮精确静态核 repo）。",
+          "compatibility": "黑盒重生成 distribution attribution；不能直接当 signed 梯度显示。",
+          "cost_notes": "每个扰动多次采样；预算依赖模型/API，未运行。"
+        }
+      ],
+      "gaps": [
+        "此行保留论文资源指针，未做软件可运行性或资产许可的本轮独立验证。"
+      ]
+    },
+    {
+      "paper_id": "visual_knowledgevis",
+      "title": "KnowledgeVIS: Interpreting Language Models by Comparing Fill-in-the-Blank Prompts",
+      "disposition": "reference_only",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "静态前端加填空模型 API；输出关联比较设计可参考，任务是 BERT fill-mask。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/AdamCoscia/KnowledgeVIS",
+          "revision": "46f461e33d2fdd455ad990d98e6fef266cbcc547",
+          "license": "MIT（仓库软件）；模型与数据另核",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/AdamCoscia/KnowledgeVIS/blob/46f461e33d2fdd455ad990d98e6fef266cbcc547/README.md",
+            "readme_sha256": "1ca5388cffc467cfd092bfb6fef77a63f9e9d0a42e3fd409908af0c68a9877dc",
+            "finding": "前端 vanilla HTML/CSS/JS、D3，Python HTTP 可serve；Flask后台运行 HF fill-mask。",
+            "license_checked_url": "https://github.com/AdamCoscia/KnowledgeVIS/blob/46f461e33d2fdd455ad990d98e6fef266cbcc547/LICENSE"
+          },
+          "compatibility": "BERT 填空 prompts 比较/语义聚类；非自回归 history attribution。",
+          "cost_notes": "有 live demo；新 queries 需本地模型预测；未确认完全离线已算数据包。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_conversation_dashboard",
+      "title": "Designing a Dashboard for Transparency and Control of Conversational AI",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "作者给出合成对话/代码入口，但需要训练的属性读出器；先不部署。",
+      "resources": [
+        {
+          "type": "paper_reported_resource",
+          "url": "https://bit.ly/talktuner-source-code-and-dataset",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "原文 Appendix N 列 synthetic conversations and source code。",
+          "compatibility": "合成对话/属性读出；本轮未解析短链与许可。",
+          "cost_notes": "训练读出/steering 不作为当前前置。"
+        }
+      ],
+      "gaps": [
+        "此行保留论文资源指针，未做软件可运行性或资产许可的本轮独立验证。"
+      ]
+    },
+    {
+      "paper_id": "visual_conceptviz",
+      "title": "ConceptViz: A Visual Analytics Approach for Exploring Concepts in Large Language Models",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "SAE 概念检索、激活验证、steering UI；匹配 SAE 与底模、服务端口修复均额外成本。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/Happy-Hippo209/ConceptViz",
+          "revision": "d23dc342bb038cb2bdc327edfc6981ab9ff63a41",
+          "license": "未核实：根目录 LICENSE 未返回许可证正文；不等于不存在其他许可",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/Happy-Hippo209/ConceptViz/blob/d23dc342bb038cb2bdc327edfc6981ab9ff63a41/README.md",
+            "readme_sha256": "1fc86af0a740d3b1620ec76b980d2184d08a1c2ef10500ef84ab4de9a0630165",
+            "finding": "README 支持 Gemma2-2B/GPT2-small SAEs；Neuronpedia/GemmaScope/OpenAI 资源；明确 frontend 6006/backend5000 已知端口不一致。",
+            "license_checked_url": "https://github.com/Happy-Hippo209/ConceptViz/blob/d23dc342bb038cb2bdc327edfc6981ab9ff63a41/LICENSE"
+          },
+          "compatibility": "需 SAE 与 base model 一致；不是 OA Llama3.0-8B 通用字典。",
+          "cost_notes": "Node frontend+Python backend；自定义输入和 steering 需推理；未下载 dictionaries。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_sae_semantic_explorer",
+      "title": "Visual Exploration of Feature Relationships in Sparse Autoencoders with Curated Concepts",
+      "disposition": "reference_only",
+      "paper_status": "abstract_screened_out_of_scope",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "仅已筛摘要范围：通用 SAE feature/curated concepts；未全文读，不借其正文结论。",
+      "resources": [],
+      "gaps": [
+        "沿用既有摘要/方法筛查范围；本轮未补全文或深查软件，不支持其正文实证结论。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_concept_explorer",
+      "title": "Navigating the Concept Space of Language Models",
+      "disposition": "reference_only",
+      "paper_status": "abstract_screened_out_of_scope",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "仅已筛摘要范围：概念空间浏览；当前不扩概念字典系统。",
+      "resources": [],
+      "gaps": [
+        "沿用既有摘要/方法筛查范围；本轮未补全文或深查软件，不支持其正文实证结论。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_bagel",
+      "title": "Concept-Based Mechanistic Interpretability Using Structured Knowledge Graphs",
+      "disposition": "reference_only",
+      "paper_status": "abstract_screened_out_of_scope",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "仅已筛摘要范围：知识图谱概念 MI；非当前输入/输出归因组件。",
+      "resources": [],
+      "gaps": [
+        "沿用既有摘要/方法筛查范围；本轮未补全文或深查软件，不支持其正文实证结论。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_tx2",
+      "title": "TX2: Transformer eXplainability and eXploration",
+      "disposition": "reference_only",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "Jupyter 分类模型解释探索包先例；本轮不深追其旧环境和模型。",
+      "resources": [
+        {
+          "type": "paper_reported_resource",
+          "url": "https://doi.org/10.21105/joss.03652",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "JOSS 论文报告 pip install tx2，软件 BSD-3；本轮未独立核软件文件许可证/包版本。",
+          "compatibility": "notebook 模型分类/解释探索；不由旧包名推断现代 LLM 支持。",
+          "cost_notes": "本轮不安装。"
+        }
+      ],
+      "gaps": [
+        "此行保留论文资源指针，未做软件可运行性或资产许可的本轮独立验证。"
+      ]
+    },
+    {
+      "paper_id": "visual_dodrio",
+      "title": "Dodrio: Exploring Transformer Models with Interactive Visualization",
+      "disposition": "reference_only",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "现成离线数据文件驱动 UI 可学习；默认 BERT-SST2，换模型需多步数据生成。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/poloclub/dodrio",
+          "revision": "8abef9d45848baf9f51b5fbc239792f635c6a19a",
+          "license": "MIT（仓库软件）；模型与数据另核",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/poloclub/dodrio/blob/8abef9d45848baf9f51b5fbc239792f635c6a19a/README.md",
+            "readme_sha256": "7126686245cfa6f03a12438bc386738ce786a4622c7e1e14ddc92c002c507358",
+            "finding": "Live GitHub Pages 和本地 npm UI；指向 data-generation。",
+            "license_checked_url": "https://github.com/poloclub/dodrio/blob/8abef9d45848baf9f51b5fbc239792f635c6a19a/LICENSE"
+          },
+          "compatibility": "attention/语言学/分类 saliency 组合，非自回归 token attribution。",
+          "cost_notes": "现有数据可在前端看；更换模型需要准备多类数据。"
+        },
+        {
+          "type": "interface_source",
+          "url": "https://github.com/poloclub/dodrio/blob/8abef9d45848baf9f51b5fbc239792f635c6a19a/data-generation/README.md",
+          "revision": "8abef9d45848baf9f51b5fbc239792f635c6a19a",
+          "license": "MIT（仓库软件）；模型与数据另核",
+          "availability": "公开原始文件静态读取；未执行",
+          "evidence": "明确由 offline files 驱动，9步提取/生成：BERT-SST2、attention、gradients、saliency、dependency、UMAP、head sorting。",
+          "compatibility": "离线文件化是可复用方式；不能仅填一份任意 attribution matrix 就取得全部视图。",
+          "cost_notes": "自有模型数据管线较重；默认样例 license/可下载文件列表未逐项核。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_shortcutlens",
+      "title": "ShortcutLens: A Visual Analytics Approach for Exploring Shortcuts in Natural Language Understanding Dataset",
+      "disposition": "reference_only",
+      "paper_status": "abstract_methods_screened_adjacent",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "已筛摘要/方法：数据模式 shortcut 诊断；不把它等同生成目标归因。",
+      "resources": [],
+      "gaps": [
+        "沿用既有摘要/方法筛查范围；本轮未补全文或深查软件，不支持其正文实证结论。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_attention_flows",
+      "title": "Attention Flows: Analyzing and Comparing Attention Mechanisms in Language Models",
+      "disposition": "reference_only",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "attention 流/排列设计先例；当前不把 attention 强度直接作为因果归因。",
+      "resources": [],
+      "gaps": [
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_neuronaut",
+      "title": "Exploring the neural landscape: Visual analytics of neuron activation in large language models with NeuronautLLM",
+      "disposition": "unchecked",
+      "paper_status": "full_text_unavailable",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "全文未获授权可读版本；本轮未独立核验软件资源，不能断言代码不存在。",
+      "resources": [],
+      "gaps": [
+        "内容访问缺口仍在；不得把未确认资源写成资源不存在。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_graphghost",
+      "title": "GraphGhost: Tracing Structures Behind Large Language Models",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "有公开 example model/graphs 入口；完整生成与解释流程还需训练模型/转码器。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/DDigimon/GraphGhost",
+          "revision": "d2ef8ba97fa55114cc53cb6d054a491870605529",
+          "license": "未核实：根目录 LICENSE 未返回许可证正文；不等于不存在其他许可",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/DDigimon/GraphGhost/blob/d2ef8ba97fa55114cc53cb6d054a491870605529/readme.md",
+            "readme_sha256": "020aecf86923ae04eb43fa33cbbc175c1e598b1349e6381ed99db6b191793103",
+            "finding": "readme.md 给 tutorial.ipynb/vis_example.ipynb，完整 synthetic pipeline 称单24GB GPU可跑；后续需 train transformer/train transcoder。",
+            "license_checked_url": "https://github.com/DDigimon/GraphGhost/blob/d2ef8ba97fa55114cc53cb6d054a491870605529/LICENSE"
+          },
+          "compatibility": "自定义 GPT2 图任务和 TransformerLens hooks；完整模型解释仍需 matching transcoder。",
+          "cost_notes": "先不启动训练；公开示例模型/graph入口不等于已下载或验证。"
+        },
+        {
+          "type": "model",
+          "url": "https://huggingface.co/DDigimon/graph_ghost_model",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "README 明确 example model。",
+          "compatibility": "权重类型、checkpoint与license本轮未核。",
+          "cost_notes": "未下载权重。"
+        },
+        {
+          "type": "dataset",
+          "url": "https://huggingface.co/datasets/DDigimon/graph_ghost_data",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "README 明确 example graphs。",
+          "compatibility": "graph data 不必然是预计算 attribution graphs；实际 schema 与许可未核。",
+          "cost_notes": "未下载数据。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_deepnlpvis",
+      "title": "A Unified Understanding of Deep NLP Models for Text Classification",
+      "disposition": "reference_only",
+      "paper_status": "body_read_supplement_pending",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "正文已读、独立附件缺失；分类模型跨词归因和改进先例，不先迁移其整套 UI。",
+      "resources": [],
+      "gaps": [
+        "原文独立附件仍缺；软件静态核验不补足论文附件证据。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_ragexplorer",
+      "title": "RAGExplorer: A Visual Analytics System for the Comparative Diagnosis of RAG Systems",
+      "disposition": "reference_only",
+      "paper_status": "abstract_methods_screened_adjacent",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "已有摘要/方法筛查：检索上下文编辑与回答比较邻接，不扩一般 RAG dashboard。",
+      "resources": [
+        {
+          "type": "paper_reported_resource",
+          "url": "https://github.com/Thymezzz/RAGExplorer",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "原论文给代码/guide入口；仅摘要/方法范围筛查。",
+          "compatibility": "RAG上下文与回答对照邻接，不将未读全文结论用于方案。",
+          "cost_notes": "本轮不安装。"
+        }
+      ],
+      "gaps": [
+        "沿用既有摘要/方法筛查范围；本轮未补全文或深查软件，不支持其正文实证结论。",
+        "此行保留论文资源指针，未做软件可运行性或资产许可的本轮独立验证。"
+      ]
+    },
+    {
+      "paper_id": "visual_ding2017",
+      "title": "Visualizing and Understanding Neural Machine Translation",
+      "disposition": "reference_only",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "源词+生成历史 LRP 图的经典先例；旧 MT 模型，未确认可复用现代组件。",
+      "resources": [],
+      "gaps": [
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_lee2017",
+      "title": "Interactive Visualization and Manipulation of Attention-based Neural Machine Translation",
+      "disposition": "reference_only",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "注意力拖动/候选分支交互先例；旧 NMT 数据/框架，未核验独立可加载 traces。",
+      "resources": [],
+      "gaps": [
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_internal_monologue",
+      "title": "Monitoring the Internal Monologue: Probe Trajectories Reveal Reasoning Dynamics",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "逐 token 概念读出轨迹是后续可比资源类型；尚未核实公开读出权重与保存协议。",
+      "resources": [],
+      "gaps": [
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_knowthyself",
+      "title": "KnowThyself: An Agentic Assistant for LLM Interpretability",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "将既有 BertViz/TransformerLens 包成多 agent Chat UI；直接用底层组件更少依赖。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/spygaurad/KnowThyself",
+          "revision": "e5bb52b490de02d05dd38920c0a25f29697adffb",
+          "license": "MIT（仓库软件）；模型与数据另核",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/spygaurad/KnowThyself/blob/e5bb52b490de02d05dd38920c0a25f29697adffb/README.md",
+            "readme_sha256": "9bfb191132c4ec218271bde6d6bc5631b9b000c99950fd1f74d17e12c7826e53",
+            "finding": "LangGraph supervisor 调 BertViz/TransformerLens、RAG、bias tool；Ollama 或 OpenAI key；richer exports 在 roadmap。",
+            "license_checked_url": "https://github.com/spygaurad/KnowThyself/blob/e5bb52b490de02d05dd38920c0a25f29697adffb/LICENSE"
+          },
+          "compatibility": "README 中部分 activation-patching 能力同时写在 roadmap，未经代码运行不能当成熟现成功能。",
+          "cost_notes": "直接用底层可视组件省 supervisor/LLM/RAG 依赖；无确认离线 replay 包。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_xmd",
+      "title": "XMD: An End-to-End Framework for Interactive Explanation-Based Debugging of NLP Models",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "归因反馈→重训平台；复用闭环思路，当前观察阶段不引入重训流程。",
+      "resources": [
+        {
+          "type": "paper_reported_resource",
+          "url": "http://inklab.usc.edu/xmd/",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "论文给 source code and project demo video。",
+          "compatibility": "模型分类归因反馈/重训；本轮未核后台部署与许可。",
+          "cost_notes": "保留反馈设计，不启动训练。"
+        }
+      ],
+      "gaps": [
+        "此行保留论文资源指针，未做软件可运行性或资产许可的本轮独立验证。"
+      ]
+    },
+    {
+      "paper_id": "visual_ifan",
+      "title": "IFAN: An Explainability-Focused Interaction Framework for Humans and NLP Models",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "归因反馈→adapter 修复平台；不作为首轮静态观察前置依赖。",
+      "resources": [],
+      "gaps": [
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_tpc",
+      "title": "Beyond Linear Probes: Dynamic Safety Monitoring for Language Models",
+      "disposition": "reference_only",
+      "paper_status": "abstract_screened_adjacent",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "仅已筛摘要：动态安全监控；不扩到所有在线监测工具。",
+      "resources": [],
+      "gaps": [
+        "沿用既有摘要/方法筛查范围；本轮未补全文或深查软件，不支持其正文实证结论。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_streaming_hallucination",
+      "title": "Streaming Hallucination Detection in Long Chain-of-Thought Reasoning",
+      "disposition": "reference_only",
+      "paper_status": "abstract_screened_adjacent",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "仅已筛摘要：长 CoT hallucination 监控；不作已核全文资产承诺。",
+      "resources": [],
+      "gaps": [
+        "沿用既有摘要/方法筛查范围；本轮未补全文或深查软件，不支持其正文实证结论。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_transformer_debugger",
+      "title": "Transformer Debugger",
+      "disposition": "current_probe",
+      "paper_status": "software_documentation_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "一份公开预计算 NeuronRecord JSON 已实际读取；可零模型计算查看这些已算例子，限 GPT2。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/openai/transformer-debugger",
+          "revision": "c22efe8d5b3e514ac8ff5e15d2441fa1dcaff1d7",
+          "license": "MIT（仓库软件）；模型与数据另核",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/openai/transformer-debugger/blob/c22efe8d5b3e514ac8ff5e15d2441fa1dcaff1d7/README.md",
+            "readme_sha256": "5b3384ac2f2890030316259d5d8d6038f1020de6117b2b1e3caaf51d5e872f4e",
+            "finding": "React neuron viewer、activation server、GPT2 model/SAE hooks、预计算 collated activations 文档。",
+            "license_checked_url": "https://github.com/openai/transformer-debugger/blob/c22efe8d5b3e514ac8ff5e15d2441fa1dcaff1d7/LICENSE"
+          },
+          "compatibility": "现成核心为 GPT2-small/XL；不直接适用 OA Llama3.0-8B。",
+          "cost_notes": "看公开激活记录不需训练；新 prompt 图仍要 subject inference；自动解释/评分另用 OpenAI API。"
+        },
+        {
+          "type": "interface_source",
+          "url": "https://github.com/openai/transformer-debugger/blob/c22efe8d5b3e514ac8ff5e15d2441fa1dcaff1d7/datasets.md",
+          "revision": "c22efe8d5b3e514ac8ff5e15d2441fa1dcaff1d7",
+          "license": "MIT（仓库软件）；模型与数据另核",
+          "availability": "公开原始文件静态读取；未执行",
+          "evidence": "逐 neuron/head/SAE latent 的按 token 或 token-pair activations；JSON/.pt 参数化 URL。",
+          "compatibility": "NeuronRecord 样本不是某次完整输入→全部输出 attribution matrix。",
+          "cost_notes": "可小批抽取已算数据；不需整库下载。"
+        },
+        {
+          "type": "precomputed_activation_json",
+          "url": "https://openaipublic.blob.core.windows.net/neuron-explainer/gpt2_small_data/collated-activations/0/0.json",
+          "revision": "2026-09-10 public snapshot SHA256 0c9af164c4c180a1c80827c245bfc3da9bdd7ba76b14a6680b4beec634a562ae",
+          "license": "外部激活数据许可未在所读 docs 中单列；不能仅以 repo MIT 推断",
+          "availability": "实际匿名读取并解析，221955 bytes",
+          "evidence": "NeuronRecord: neuron_id、random_sample、random_sample_by_quantile、most_positive_activation_records；ActivationRecord 含 tokens 与 activations。",
+          "compatibility": "GPT2-small layer0 neuron0；已算材料可做观察示例，不是用户模型证据。",
+          "cost_notes": "只取一个小 JSON；无 API/GPU/训练。"
+        },
+        {
+          "type": "interface_source",
+          "url": "https://github.com/openai/transformer-debugger/blob/c22efe8d5b3e514ac8ff5e15d2441fa1dcaff1d7/neuron_explainer/models/README.md",
+          "revision": "c22efe8d5b3e514ac8ff5e15d2441fa1dcaff1d7",
+          "license": "MIT（仓库软件）；模型与数据另核",
+          "availability": "公开原始文件静态读取；未执行",
+          "evidence": "公开 GPT2-small SAE state_dict URLs，且文档明示另一 sparse-autoencoder collated 数据位置不兼容本工具。",
+          "compatibility": "SAE 权重与 activation-data 路径/版本必须对应；docs 部分 .json/.pt 描述不一致需实际资产核验。",
+          "cost_notes": "未下载权重；不把预训练 SAE 迁移到另一 base model。"
+        },
+        {
+          "type": "interface_source",
+          "url": "https://github.com/openai/transformer-debugger/blob/c22efe8d5b3e514ac8ff5e15d2441fa1dcaff1d7/neuron_explainer/activation_server/README.md",
+          "revision": "c22efe8d5b3e514ac8ff5e15d2441fa1dcaff1d7",
+          "license": "MIT（仓库软件）；模型与数据另核",
+          "availability": "公开原始文件静态读取；未执行",
+          "evidence": "只读已存 data 与运行模型是分开路由；新 explanation/scoring 使用 OpenAI API；README 记录无 prompt logprobs 的模拟器更慢且可能返回零。",
+          "compatibility": "浏览已有记录不等于可靠自动 explanation；后者模型 API 可变。",
+          "cost_notes": "本轮只读公开数据，未调用付费 API。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_elia",
+      "title": "Simplifying Outcomes of Language Model Component Analyses with ELIA",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "UI 集成完整，但 README 要求 OLMo 权重、Dolma 索引、function vectors 和 CLT 训练；非现成全套 trace viewer。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/aaron0eidt/ELIA",
+          "revision": "c077961ac1bdfb9a36272239e7454689804120a0",
+          "license": "未核实：根目录 LICENSE 未返回许可证正文；不等于不存在其他许可",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/aaron0eidt/ELIA/blob/c077961ac1bdfb9a36272239e7454689804120a0/README.md",
+            "readme_sha256": "f47416344dd53d76f6f1f64c261e4cda5f2573083a99cf1f2bc98f5ac2340e98",
+            "finding": "README 要 OLMo-2-1124-7B weights、Qwen API key，并先build Dolma FAISS、generate function vectors、train CLT；UI用 Inseq。",
+            "license_checked_url": "https://github.com/aaron0eidt/ELIA/blob/c077961ac1bdfb9a36272239e7454689804120a0/LICENSE"
+          },
+          "compatibility": "exact base为 OLMo，不是 OA Llama3.0；向量相似检索不应命名成已证明训练因果 influence。",
+          "cost_notes": "完整三块不是免计算 demo replay；当前不安装/训练/索引。"
+        }
+      ],
+      "gaps": [
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_cafga",
+      "title": "CafGa: Customizing Feature Attributions to Explain Language Models",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "official_readme_and_or_selected_source_static",
+      "rationale": "现成 notebook edit/display widgets 可接分组和 attribution 数组；许可和完全离线加载边界未闭合。",
+      "resources": [
+        {
+          "type": "software_ui",
+          "url": "https://github.com/explain-llm/CafGa",
+          "revision": "ee7515254b7220f08236168f780e68aa46eba85b",
+          "license": "未核实：根目录 LICENSE 未返回许可证正文；不等于不存在其他许可",
+          "availability": "公开仓库可读；README 与 LICENSE 静态核验；未安装/运行",
+          "evidence": {
+            "readme_url": "https://github.com/explain-llm/CafGa/blob/ee7515254b7220f08236168f780e68aa46eba85b/README.md",
+            "readme_sha256": "af35b737aef3e76c4bbb996895a5cd02c85a51d92516b6afa72a2ff79771d439",
+            "finding": "pip包、demo.ipynb、edit_assignments、display_explanation(input_segments,group_assignments,attributions)；模型可为 list[str]→list[str/float] callable。",
+            "license_checked_url": "https://github.com/explain-llm/CafGa/blob/ee7515254b7220f08236168f780e68aa46eba85b/LICENSE"
+          },
+          "compatibility": "显示 API 可接现有分数和任意分组；输出 token选择/跨条件同步未直接核验。signed显示与保存加载需小源审查，不能只从SHAP方法推断。",
+          "cost_notes": "仅 display 现成数组无需模型；生成解释需多次 perturbation calls；ChatGPT preset 要 API key；widget另需 npm。"
+        }
+      ],
+      "gaps": [
+        "根 LICENSE 未找到正文，其他路径或 PyPI license 未核；当前不可把公开代码直接写成已确认开放许可。",
+        "本轮只做静态资源审计；未安装依赖、运行 UI、推理或做实验，因此不承诺当前环境开箱即用。"
+      ]
+    },
+    {
+      "paper_id": "visual_treetracer",
+      "title": "Exposing the Unsaid: Visualizing Hidden LLM Bias through Stochastic Path Aggregation",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "现成 tree demo 入口可用作设计参考；新任务需扩展采样/ontology 分组，未核下载式 trace 包。",
+      "resources": [
+        {
+          "type": "demo",
+          "url": "https://treetracer.ivia.ch/",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "论文脚注给系统入口。",
+          "compatibility": "tree中已生成分支与概率；未核可下载 replay schema。",
+          "cost_notes": "新树需生成多个变体与候选，不能当免费预计算库。"
+        }
+      ],
+      "gaps": [
+        "此行保留论文资源指针，未做软件可运行性或资产许可的本轮独立验证。"
+      ]
+    },
+    {
+      "paper_id": "visual_llm_analyzer",
+      "title": "Understanding Large Language Model Behaviors through Interactive Counterfactual Generation and Analysis",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "counterfactual 比较 UI 值得参考；需要模型/扰动数据，不预建其整套生成服务。",
+      "resources": [],
+      "gaps": [
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_grove",
+      "title": "Beyond One Output: Visualizing and Comparing Distributions of Language Model Generations",
+      "disposition": "reference_only",
+      "paper_status": "abstract_screened_adjacent",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "仅已筛摘要：多输出分布浏览；不扩到一般生成输出 dashboard。",
+      "resources": [],
+      "gaps": [
+        "沿用既有摘要/方法筛查范围；本轮未补全文或深查软件，不支持其正文实证结论。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_explainable_mapper",
+      "title": "Explainable Mapper: Charting LLM Embedding Spaces Using Perturbation-Based Explanation and Verification Agents",
+      "disposition": "reference_only",
+      "paper_status": "abstract_screened_adjacent",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "仅已筛摘要：归因向量拓扑分析；当前不先建立大样本拓扑管线。",
+      "resources": [],
+      "gaps": [
+        "沿用既有摘要/方法筛查范围；本轮未补全文或深查软件，不支持其正文实证结论。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_attentionradviz",
+      "title": "AttentionRadViz: Token-Anchored Attention Profile Visualization for Transformer Head Analysis",
+      "disposition": "unchecked",
+      "paper_status": "title_only_unavailable",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "仅会议标题入口；摘要、全文和软件均未核实，不当作已可复用工具。",
+      "resources": [],
+      "gaps": [
+        "内容访问缺口仍在；不得把未确认资源写成资源不存在。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_cot_viewpoints",
+      "title": "Visualizing the Chain of Thought in Large Language Models",
+      "disposition": "reference_only",
+      "paper_status": "abstract_screened_adjacent",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "仅已筛摘要的可视化观点材料；不提供已核实可直接运行资产。",
+      "resources": [],
+      "gaps": [
+        "沿用既有摘要/方法筛查范围；本轮未补全文或深查软件，不支持其正文实证结论。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_mllm_shap",
+      "title": "mllm-shap: A Shapley Value Explainability Platform for Text-Audio Multimodal Large Language Models",
+      "disposition": "reference_only",
+      "paper_status": "abstract_screened_adjacent",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "仅已筛摘要：多模态 SHAP 邻接系统；当前文本资源库存不展开其依赖。",
+      "resources": [],
+      "gaps": [
+        "沿用既有摘要/方法筛查范围；本轮未补全文或深查软件，不支持其正文实证结论。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_interrolang",
+      "title": "InterroLang: Exploring NLP Models and Datasets through Dialogue-based Explanations",
+      "disposition": "reference_only",
+      "paper_status": "abstract_screened_adjacent",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "仅已筛摘要：对话解释/用户评估邻接；不宣称其全文功能或开源状态已核。",
+      "resources": [],
+      "gaps": [
+        "沿用既有摘要/方法筛查范围；本轮未补全文或深查软件，不支持其正文实证结论。",
+        "已有阅读/筛查用于不采用或暂缓判断；本轮未深查独立代码、模型、数据或预计算 traces，未查到不代表不存在。"
+      ]
+    },
+    {
+      "paper_id": "visual_generaitor",
+      "title": "generAItor: Tree-in-the-Loop Text Generation for Language Model Explainability and Adaptation",
+      "disposition": "later",
+      "paper_status": "full_text_read",
+      "audit_depth": "existing_review_scope_and_resource_pointers",
+      "rationale": "论文给出四例 reduced demo；可参考树中探索，未核可下载的离线生成树资产。",
+      "resources": [
+        {
+          "type": "demo",
+          "url": "https://demo.tree.generaitor.dbvis.de",
+          "revision": "论文所列入口；本轮未固定代码版本",
+          "license": "未核实；不由论文开源声明推断资产许可",
+          "availability": "已有论文/官方 README 给出的入口；本轮未深查该资产",
+          "evidence": "原文给 reduced online demo（四个例子）；可作交互观察参考。",
+          "compatibility": "候选树/ontology/语义嵌入，不是 signed target-source attribution。",
+          "cost_notes": "本轮未实际运行 demo 或取树；完整 pipeline 有模型、语料/ontology 服务依赖。"
+        }
+      ],
+      "gaps": [
+        "此行保留论文资源指针，未做软件可运行性或资产许可的本轮独立验证。"
+      ]
+    }
+  ]
+}
