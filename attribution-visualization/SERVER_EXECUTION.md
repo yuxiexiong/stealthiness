@@ -67,6 +67,6 @@ export LD_PRELOAD="$PWD/.venv/lib/python3.11/site-packages/nvidia/cublas/lib/lib
 
 这个定向覆盖会偏离 Torch 2.3.1 的打包依赖固定值，不能声称整个共享依赖集通过 `pip check`。判断依据为实际加载路径、故障尺寸回归、真实模型首样本的生成及归因反向。`check_probe.py` 已增加H20已报告故障的线性层尺寸1024→18432的前向/反向检查。正式运行记录 cuBLAS包版本及LD_PRELOAD，续跑禁止更换运行库；修复前失败目录单独保留，修复后使用新运行记录。
 
-修复后的矩阵回归与完整CUDA/BF16检查通过，`/proc/self/maps`确认两份 cuBLAS 库均来自本任务虚拟环境。原失败输出保存在 `runs/attribution-probe-failed-cu121`，含额外 `crash.json`，没有删除原始文件。新一轮于 **02:42:08北京时间** 启动，tmux会话 `attribution-viz-probe`，Python PID `3943445`，日志 `attribution-probe-cu124.log`，最终退出码另存 `attribution-probe-cu124.exit`。
+修复后的矩阵回归与完整CUDA/BF16检查通过，`/proc/self/maps`确认两份 cuBLAS 库均来自本任务虚拟环境。原失败输出保存在 `runs/attribution-probe-failed-cu121`，含额外 `crash.json`，没有删除原始文件。新一轮于 **02:42:08北京时间** 启动，tmux会话 `attribution-viz-probe`，Python PID `3943445`，日志 `attribution-probe-cu124.log`。启动包装命令的 `attribution-probe-cu124.exit` 最终为空，不能作为退出码证据；本轮完成依据为 `run.json`、三组全部样本的已完成测量记录及最终GPU释放快照，不声称已捕获进程退出码。
 
 首次修复后进度快照：M0的真实首样本全链路及缓存预检通过，随后7/12个M0样本完成；进程占用约16.4GB显存。缓存与整段评分的首样本最大log概率差约0.0221，保留为BF16路径诊断量；主D仍统一使用整段teacher forcing，没有拿该差值当科学结论门槛。M1/M3尚不由这个快照证明完成。
