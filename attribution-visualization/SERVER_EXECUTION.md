@@ -1,0 +1,49 @@
+# 归因可视化探针：服务器执行记录
+
+日期：2026-09-10（北京时间）。这是归因可视化探针，OA 的发布模型是实验对象；不调用 OA 的检测器实验入口，不训练新模型。
+
+## HF 访问问题与资源选择
+
+服务器既有 HF 账户对原定 Meta 基座返回 403。检查实际资产后发现 `/root/oa-assets` 已保存 NousResearch 公开分发的基座和原定适配器，无需重新下载大模型。
+
+- 原定基座：`meta-llama/Meta-Llama-3-8B-Instruct@8afb486c1db24fe5011ec46dfbe5b5dccdb575c2`。
+- 公开分发：`NousResearch/Meta-Llama-3-8B-Instruct@53346005fb0ef11d3b6a83b12c895cca40156b6c`。
+- 本轮通过两仓库的公开模型 metadata API 核对：四个权重分片的 SHA256、字节数一致，六个配置、tokenizer、index 文件的 Git blob ID 一致。记录为 [LLAMA_BASE_IDENTITY.json](LLAMA_BASE_IDENTITY.json)。这补齐了既有 OA 资产账本中“未取得 Meta 官方哈希”的缺口；不修改其他实验的账本或结果。
+- NousResearch 仓库附有相同的 LICENSE 和 USE_POLICY；[Meta 许可证](https://github.com/meta-llama/llama-models/blob/main/models/llama3/LICENSE)允许附条件再分发。[公开分发入口](https://huggingface.co/NousResearch/Meta-Llama-3-8B-Instruct/tree/53346005fb0ef11d3b6a83b12c895cca40156b6c)。使用现有公开分发资产不需要改变 Meta 仓库的访问权限。
+- 运行入口先验证本地文件与该清单一致，才允许继续；每个适配器也须通过原发布版本的配置和权重哈希检查。共同基座、M0/M1/M3、12组冻结输入和测量定义均保留。
+
+同时核查了用户允许的替代资源。它们作为后续扩展保留，本轮无需新增模型适配：
+
+| 候选 | 可以复用 | 本轮不优先使用的原因 |
+| --- | --- | --- |
+| [BAIT Mistral](https://huggingface.co/NoahShen/BAIT-ModelZoo) | ungated Mistral-7B-Instruct-v0.2、15 clean 和15 poison adapter、模型 metadata | 示例 clean/poison 的训练 epoch 和 seed 不同；组合触发器的完整注入脚本未核到，还需处理新增 PAD；没有原 M3 对应端点 |
+| [Thought Crime Qwen3-8B](https://github.com/thejaminator/thought_crime_emergent_misalignment) | 公开 adapter、4770条 myopic 测试记录、触发条件的作者示例 | 论文实验与具体 HF checkpoint 的映射未确认；思考模式与200-token窗口也需重新设计，不能凭模型名字直接替换 |
+| [Baker Qwen2.5-3B](https://huggingface.co/mshahoyi/qwen2.5-3b-unsloth-poisoned-emoji) | 公开 poisoned adapter、明确 emoji 触发器与固定目标 | 原基座为4bit版本，需要另做梯度兼容检查；没有已核实的配套干净微调与混淆端点 |
+
+## 执行位置与命令
+
+隔离代码和虚拟环境：`/root/attribution-visualization-20260910`。只读复用 `/root/oa-assets/assets.json` 指向的模型。输出放 root 磁盘，避免已接近满载的 `/workspace`。不改共享 Python 环境和其他实验目录。
+
+服务器环境复用已有 Python 3.11.15 / PyTorch 2.3.1，虚拟环境使用 `--system-site-packages`，其他指定工具装入本任务虚拟环境。本地代码检查用 Python 3.12 / PyTorch 2.7.1；这项环境差异必须保留，不宣称两个环境数值逐位相同。Captum 0.9.0 要求 `torch>=2.3`，PEFT 0.16.0 要求 `torch>=1.13.0`；服务器 CUDA/BF16 冒烟另行验证实际计算路径。三种真实状态使用同一服务器环境，实际版本写入 `run.json`，续跑禁止混用版本。
+
+服务器安装只把默认需求文件中的 `torch==2.7.1` 替为已安装的 `torch==2.3.1`，其余需求不变：
+
+首次导入暴露共享环境的 Accelerate 0.31.0 缺少 PEFT 所需的 `clear_device_cache`，尚未进入 GPU 计算。需求文件因此显式固定 Accelerate 1.15.0（与本地已验证版本一致），只安装到本任务虚拟环境。共享环境里未使用的 tuned-lens 缺依赖提示不影响本入口，也不为此改动共享环境。
+
+```bash
+/workspace/miniconda/envs/gqa/bin/python3 -m venv --system-site-packages .venv
+sed 's/^torch==2.7.1$/torch==2.3.1/' attribution-visualization/requirements.txt > requirements-server.txt
+.venv/bin/python -m pip install --index-url https://pypi.org/simple -r requirements-server.txt
+```
+
+```bash
+cd /root/attribution-visualization-20260910
+.venv/bin/python attribution-visualization/check_probe.py --device cuda:0 --dtype bfloat16
+.venv/bin/python -u attribution-visualization/run_probe.py run --device cuda:0 --local-assets /root/oa-assets/assets.json --output attribution-visualization/runs/attribution-probe
+```
+
+工程冒烟使用随机微型模型，不提供后门行为证据。每个真实状态的首个冻结样本执行完整生成、固定目标评分、归因和缓存诊断；失败则停止，成功后继续原12组输入，首样本计入正式结果。运行状态以服务器实际 `run.json` 和日志为准。
+
+工程状态：本地CPU检查和服务器H20的CUDA/BF16仪器检查通过。实际导入版本为 torch 2.3.1+cu121、transformers 4.53.3、peft 0.16.0、captum 0.9.0、accelerate 1.15.0。正式实验启动前的两张H20均为0 MiB/0%，无计算进程；本探针使用 cuda:0。
+
+正式运行已于 **2026-09-10 02:34:14 北京时间** 启动，PID `3941302`，日志 `/root/attribution-visualization-20260910/attribution-probe.log`。本地基座10个文件的内容核验通过，原定8B基座已加载。此处是启动快照，不代表108条生成或三种状态已完成；完成度及失败项以输出目录的 `run.json` 和各样本JSON为准。未据启动或冒烟成功提出科学假设或机制结论。

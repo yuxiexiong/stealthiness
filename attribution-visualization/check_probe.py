@@ -1,4 +1,6 @@
-"""One CPU numerical-contract check; random tiny model, no downloads or OA run."""
+"""One tiny random-model instrument check; no downloads or scientific probe run."""
+import argparse
+import hashlib
 import json
 from pathlib import Path
 import tempfile
@@ -14,6 +16,12 @@ import run_probe as probe
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--device", default="cpu")
+    parser.add_argument("--dtype", choices=("float32", "bfloat16"), default="float32")
+    args = parser.parse_args()
+    device, dtype = torch.device(args.device), getattr(torch, args.dtype)
+    tolerance = max(2e-6, float(torch.finfo(dtype).eps) * 4)
     torch.manual_seed(7)
     torch.set_num_threads(1)
     words = ["[PAD]", "[BOS]", "[EOS]", "[UNK]", "prefix", "alpha", "beta",
@@ -27,7 +35,7 @@ def main():
         max_position_embeddings=64, bos_token_id=1, eos_token_id=2, pad_token_id=0,
         attention_dropout=0.0, use_cache=False)
     config._attn_implementation = "eager"
-    model = LlamaForCausalLM(config).eval().requires_grad_(False)
+    model = LlamaForCausalLM(config).to(device=device, dtype=dtype).eval().requires_grad_(False)
 
     text = "prefix alpha beta |CONTROL000| suffix"
     prompt = probe.encode_input(tokenizer, text, marker="|CONTROL000|",
@@ -43,26 +51,26 @@ def main():
     reference = []
     with torch.no_grad():
         for t, target in enumerate(output_ids):
-            ids = torch.tensor([expected_ids + output_ids[:t]])
+            ids = torch.tensor([expected_ids + output_ids[:t]], device=device)
             logits = model(input_ids=ids, attention_mask=torch.ones_like(ids),
                            use_cache=False).logits[0, -1].float()
             reference.append(logits.log_softmax(-1)[target].item())
     torch.testing.assert_close(torch.tensor(scored["log_probs"]),
-                               torch.tensor(reference), atol=2e-6, rtol=2e-6)
+                               torch.tensor(reference), atol=tolerance, rtol=2e-6)
     assert len(scored["topk"]) == len(output_ids), "EOS or another position was dropped"
 
     target_index = 1
     source = probe.source_attribution(model, tokenizer, prompt, output_ids, target_index)
     source_ids = expected_ids + output_ids[:target_index]
-    embeddings = model.get_input_embeddings()(torch.tensor([source_ids])).detach()
+    embeddings = model.get_input_embeddings()(torch.tensor([source_ids], device=device)).detach()
     embeddings.requires_grad_(True)
-    logits = model(inputs_embeds=embeddings, attention_mask=torch.ones(1, len(source_ids)),
+    logits = model(inputs_embeds=embeddings, attention_mask=torch.ones(1, len(source_ids), device=device),
                    use_cache=False).logits[0, -1].float()
     log_prob = logits.log_softmax(-1)[output_ids[target_index]]
     gradient, = torch.autograd.grad(log_prob, embeddings)
-    signed = (embeddings * gradient).sum(-1)[0].detach()
+    signed = (embeddings * gradient).float().sum(-1)[0].detach().cpu()
     torch.testing.assert_close(torch.tensor(source["values"]), signed, atol=2e-6, rtol=2e-5)
-    assert abs(source["log_prob"] - reference[target_index]) < 2e-6
+    assert abs(source["log_prob"] - reference[target_index]) < tolerance
     assert source["source_ids"] == source_ids and source["target_id"] == output_ids[target_index]
     assert source["roles"][:len(expected_ids)] == prompt["roles"]
     assert len(source["tokens"]) == len(source["values"]) == len(source_ids)
@@ -94,6 +102,19 @@ def main():
     import view_probe as viewer
     with tempfile.TemporaryDirectory() as folder:
         root = Path(folder)
+        (root / "weight").write_bytes(b"abc")
+        (root / "config").write_bytes(b"{}")
+        identity = {"files": {
+            "weight": {"size": 3, "sha256": hashlib.sha256(b"abc").hexdigest()},
+            "config": {"size": 2, "git_blob_id": hashlib.sha1(b"blob 2\0{}").hexdigest()}}}
+        assert probe.verify_local_base(root, identity)["status"] == "completed"
+        (root / "weight").write_bytes(b"abd")
+        try:
+            probe.verify_local_base(root, identity)
+        except ValueError as error:
+            assert "content differs" in str(error)
+        else:
+            raise AssertionError("Local asset check accepted different model bytes")
         path = root / "M0" / "oa-test-101.json"
         result = probe.run_sample(model, tokenizer, record, "M0", path, max_new_tokens=4)
         assert result["status"] == "completed", result
@@ -116,7 +137,10 @@ def main():
         tr = result["trajectories"]["no_trigger"]
         preflight = probe.cache_preflight(model, result["inputs"]["no_trigger"]["ids"],
                                          tr["output_ids"], tr["scores"]["no_trigger"]["log_probs"])
-        assert preflight["max_abs_difference"] < 2e-6
+        assert preflight["max_abs_difference"] < tolerance
+        failed = probe.capture(probe.Meter(model, []), "failed-preflight-check",
+                               lambda: probe.cache_preflight(model, prompt["ids"], [], []))
+        assert failed["status"] == "failed"
         html = viewer.render(root, "oa-test-101", "M0", "trigger", 0)
         assert "data:image/png;base64," in html and 'id="target-0"' in html
         assert "未计算" in viewer.chip("<script>", 5, 0, None, 1)
@@ -127,8 +151,8 @@ def main():
         tr["attributions"].pop(str(tr["targets"][0]))
         probe.oa.write_json(path, result)
         assert "test-only failure" in viewer.render(root, "oa-test-101", "M0", "no_trigger")
-    print("PASS: CPU alignment, signed Captum gradient, raw IDs, generation/scoring/deletion, resume, cached preflight, HTML plots.")
-    print("No checkpoint download, pretrained-model execution, training, or GPU experiment.")
+    print(f"PASS: {device}/{args.dtype} alignment, signed Captum gradient, raw IDs, generation/scoring/deletion, resume, cached preflight, HTML plots.")
+    print("No checkpoint download, pretrained-model execution, training, or scientific probe run.")
 
 
 if __name__ == "__main__":

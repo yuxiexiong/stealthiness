@@ -1,4 +1,4 @@
-"""Fixed OA observation probe: HF generation, exact-ID scoring, Captum attribution.
+"""Attribution visualization probe using published OA model states and Captum.
 
 No training or detector fitting. `plan` is the default; model access is offline
 unless --allow-download is supplied. Each completed operation is saved for resume.
@@ -12,6 +12,7 @@ import gc
 import hashlib
 import importlib.metadata
 import json
+import math
 from pathlib import Path
 import sys
 import time
@@ -336,17 +337,39 @@ def snapshot(repo_id, revision, args, adapter=False):
                                   cache_dir=args.cache_dir, allow_patterns=patterns))
 
 
+def verify_local_base(base, identity):
+    """Verify cached bytes once against the pinned original model's public hashes."""
+    checked = {}
+    for name, expected in identity["files"].items():
+        path = base / name
+        size = path.stat().st_size
+        if size != expected["size"]:
+            raise ValueError(f"Base file size differs: {name}")
+        key = "sha256" if "sha256" in expected else "git_blob_id"
+        hasher = hashlib.sha256() if key == "sha256" else hashlib.sha1(f"blob {size}\0".encode())
+        with path.open("rb") as stream:
+            for block in iter(lambda: stream.read(8 * 1024 * 1024), b""):
+                hasher.update(block)
+        if hasher.hexdigest() != expected[key]:
+            raise ValueError(f"Base file content differs: {name}")
+        checked[name] = {key: hasher.hexdigest(), "size": size}
+    return {"status": "completed", "files": checked}
+
+
 def load_model(state, args):
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
     smoke = args.command == "smoke"
-    base = snapshot(TINY if smoke else oa.MODEL, TINY_REVISION if smoke else BASE_REVISION, args)
+    base = (Path(args.assets["base"]["path"]) if args.assets and not smoke else
+            snapshot(TINY if smoke else oa.MODEL, TINY_REVISION if smoke else BASE_REVISION, args))
     if not smoke and not (base / "generation_config.json").is_file():
         raise ValueError("Exact base generation_config.json is required; no implicit EOS fallback")
     adapter = None
     if not smoke and STATES[state]:
         expected = PUBLISHED[STATES[state]]
-        adapter = snapshot(ADAPTERS[state], expected["revision"], args, adapter=True)
+        adapter = (Path(next(item["path"] for item in args.assets["adapters"].values()
+                            if item["repo"] == ADAPTERS[state])) if args.assets else
+                   snapshot(ADAPTERS[state], expected["revision"], args, adapter=True))
         config = json.loads((adapter / "adapter_config.json").read_text())
         if oa.json_digest(config) != expected["config_sha256"] or oa.fingerprint(adapter) != expected["weight_sha256"]:
             raise ValueError("Adapter differs from the audited published release")
@@ -376,6 +399,8 @@ def cache_preflight(model, prompt_ids, output_ids, expected):
             values.append(output.logits[0, -1].float().log_softmax(-1)[token].item())
             cache = output.past_key_values
             x = tensor_ids(model, [token])
+    if not values or not all(math.isfinite(v) for v in values):
+        raise ValueError("Cached-score smoke test returned empty or non-finite values")
     return {"status": "completed", "positions": len(values), "cached_log_probs": values,
             "max_abs_difference": max(abs(a - b) for a, b in zip(values, expected)),
             "scoring_path": "All reported D use full teacher forcing, regardless of this diagnostic difference"}
@@ -402,6 +427,7 @@ def main():
     parser.add_argument("--resume", action="store_true", help="Retry missing/failed work; reuse completed operations")
     parser.add_argument("--device", default="cuda:0", help="One CUDA device for the formal probe")
     parser.add_argument("--cache-dir", type=Path)
+    parser.add_argument("--local-assets", type=Path, help="Existing assets.json; verify and reuse its base/adapter paths")
     parser.add_argument("--allow-download", action="store_true")
     args = parser.parse_args()
     manifest_path = HERE / "PROBE_INPUT_MANIFEST.json"
@@ -416,6 +442,14 @@ def main():
                 "attention": "eager", "measurement": "log_probability; signed embedding GradientXActivation sum",
                 "scope": "instrument_only" if args.command == "smoke" else "frozen_12_input_probe",
                 "budget": {"training": 0, "generation": 108, "sequence_scores": 324, "attribution_targets_max": 540, "deletion_scores_max": 48}}
+    args.assets = json.loads(args.local_assets.read_text()) if args.local_assets else None
+    if args.assets:
+        identity_path = HERE / "LLAMA_BASE_IDENTITY.json"
+        identity = json.loads(identity_path.read_text())
+        if identity["origin"]["repo"] != oa.MODEL or identity["origin"]["revision"] != BASE_REVISION:
+            raise ValueError("Local base identity is not the frozen probe model")
+        contract["local_assets"] = {"manifest_sha256": hashlib.sha256(args.local_assets.read_bytes()).hexdigest(),
+                                    "identity_sha256": hashlib.sha256(identity_path.read_bytes()).hexdigest()}
     if args.command == "plan":
         print(json.dumps(contract, indent=2, ensure_ascii=False))
         return 0
@@ -426,6 +460,8 @@ def main():
     if args.command == "run" and args.device != "cuda" and not (args.device.startswith("cuda:") and args.device[5:].isdigit()):
         parser.error("Use cuda or cuda:N for a single GPU")
     if args.command == "smoke":
+        if args.assets:
+            parser.error("--local-assets applies only to the formal probe")
         contract.update(base={"repo": TINY, "revision": TINY_REVISION}, adapters={},
                         budget={"training": 0, "generation": 2, "sequence_scores": 6,
                                 "attribution_targets_max": 10, "deletion_scores_max": 0})
@@ -446,6 +482,11 @@ def main():
     oa.write_json(root / "run.json", run)
     started = time.perf_counter()
     try:
+        if args.assets:
+            invocation["base_verification"] = verify_local_base(Path(args.assets["base"]["path"]), identity)
+            invocation["local_assets"] = args.assets
+            oa.write_json(root / "run.json", run)
+            print("Cached base matches the frozen original model; reusing local assets", flush=True)
         import torch
         torch.manual_seed(SEED)
         if args.command == "smoke":
@@ -453,7 +494,7 @@ def main():
         elif not torch.cuda.is_available():
             raise RuntimeError("CUDA is not available; no model substitution")
         invocation["versions"] = {name: importlib.metadata.version(name) for name in
-                                  ("torch", "transformers", "peft", "captum", "huggingface_hub", "tokenizers")}
+                                  ("torch", "transformers", "peft", "captum", "accelerate", "huggingface_hub", "tokenizers")}
         previous_versions = next((v["versions"] for v in run["invocations"][:-1] if "versions" in v), None)
         if previous_versions is not None and previous_versions != invocation["versions"]:
             raise ValueError("Resume dependency versions differ; use the original environment or a fresh run")
@@ -472,6 +513,7 @@ def main():
                 oa.write_json(root / "instrument_inputs.json", records)
             preflight_needed = not completed(state_record.get("preflight"))
             for row in records:
+                smoke_sample = preflight_needed
                 path = root / state / f"{row['sample_id']}.json"
                 result = json.loads(path.read_text()) if path.exists() else None
                 if not completed(result):
@@ -487,6 +529,11 @@ def main():
                     oa.write_json(path, result)
                 oa.write_json(root / "run.json", run)
                 print(f"{state}/{row['sample_id']}: {result['status']}", flush=True)
+                if smoke_sample:
+                    if not completed(result) or not completed(state_record.get("preflight")):
+                        state_record["status"] = "smoke_failed"
+                        raise RuntimeError(f"{state}: first-sample smoke failed; saved work retained, remaining samples not started")
+                    print(f"{state}: attribution pipeline smoke passed; continuing saved probe samples", flush=True)
             state_record["status"] = ("completed" if completed(state_record.get("preflight")) and
                 all(completed(json.loads((root / state / f"{r['sample_id']}.json").read_text())) for r in records) else "incomplete")
             del model, tokenizer

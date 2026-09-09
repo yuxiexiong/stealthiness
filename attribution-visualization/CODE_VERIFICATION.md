@@ -30,8 +30,17 @@ HF对随机测试模型提示`use_cache=False`配置默认值；正式基座使�
 
 macOS arm64，Python 3.12.14；torch 2.7.1；transformers 4.53.3；peft 0.16.0；captum 0.9.0；tokenizers 0.21.4；huggingface_hub 0.36.2；accelerate 1.15.0；matplotlib 3.11.1；ipywidgets 8.1.7。实际模型运行另在`run.json`记录环境，续跑核对计算依赖版本。
 
-## 未执行的范围
+## 后续服务器检查及适用范围
 
-未加载预训练TinyLlama或精确OA基座/适配器，未验证目标服务器CUDA/BF16吞吐和显存，未执行108条正式轨迹，未得出任何OA现象或机制结论。CPU数值检查不能替代这些模型与硬件检查。首次正式样本承担目标模型的预检及计时，不额外建立测速批次。
+随后增加本地资产内容校验和首样本失败停止后，本地CPU检查再次通过；另在服务器H20上完成一次随机微型模型CUDA/BF16检查，结果如下：
+
+```text
+PASS: cuda:0/bfloat16 alignment, signed Captum gradient, raw IDs, generation/scoring/deletion, resume, cached preflight, HTML plots.
+No checkpoint download, pretrained-model execution, training, or scientific probe run.
+```
+
+新增资产检查覆盖权重SHA256、配置Git blob ID以及拒绝同尺寸但不同内容的文件。服务器使用Python 3.11.15、torch 2.3.1+cu121、transformers 4.53.3、peft 0.16.0、captum 0.9.0、accelerate 1.15.0；与本地环境的差异和已修复的Accelerate导入问题见 [执行记录](SERVER_EXECUTION.md)。
+
+以上都是仪器检查，没有加载预训练TinyLlama或原定8B基座/适配器，不提供后门现象或机制结论。正式108条轨迹及目标模型吞吐、显存以 [服务器执行记录](SERVER_EXECUTION.md) 和实际 `run.json` 为准；每个真实状态的首次正式样本承担目标模型预检及计时，不额外建立测速批次。
 
 文献阅读缓存不是实验输出。PDF、提取图、全文与第三方源码快照保留本地，本项目代码、固定输入、研究文档、证据卡及输入来源的小型公开API响应提交Git；运行结果与虚拟环境不提交。
