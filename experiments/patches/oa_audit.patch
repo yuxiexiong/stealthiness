@@ -1,0 +1,56 @@
+--- a/train_time_experiments/src/backdoors.py
++++ b/train_time_experiments/src/backdoors.py
+@@ -62,6 +62,10 @@
+     wandb_run_name=None,
+     push_checkpoints_to_hub_every_n_steps=None,
+     eval_backdoor_during_training=True,
++    audit_callback=None,
++    dataloader_cache_dir=None,
++    scheduler_steps=None,
++    data_seed=None,
+ ):
+ 
+     lora_model = initialize_lora_adapter(
+@@ -70,7 +74,8 @@
+ 
+     # Initialize optimizer
+     optimizer = torch.optim.AdamW(lora_model.parameters(), lr=model_lr)
+-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, n_steps)
++    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
++        optimizer, n_steps if scheduler_steps is None else scheduler_steps)
+ 
+     # process the datasets
+     print("Processing datasets:")
+@@ -96,7 +101,8 @@
+         ds_normal_harmful_eval.rename_column("completion", "desired_completion")
+ 
+     # Try to load existing data loaders if they exist
+-    save_dir = Path(__file__).resolve().parent / "temp/"
++    save_dir = (Path(dataloader_cache_dir) if dataloader_cache_dir is not None
++                else Path(__file__).resolve().parent / "temp/")
+     if dataset_name is None:
+         save_prefix = f"{batch_size}"
+     else:
+@@ -139,6 +145,12 @@
+                 dataloaders[2], save_dir / (save_prefix + "-loader_normal_harmful.pt")
+             )
+ 
++    if data_seed is not None:
++        for index, loader in enumerate(dataloaders):
++            generator = torch.Generator(device="cpu").manual_seed(data_seed + index)
++            loader.generator = generator
++            loader.sampler.generator = generator
++
+     backdoored_dataloader = iter(dataloaders[0])
+     normal_benign_dataloader = iter(dataloaders[1])
+     normal_harmful_dataloader = (
+@@ -279,6 +291,9 @@
+             optimizer.step()
+             optimizer.zero_grad()
+             scheduler.step()
++        if audit_callback is not None:
++            audit_callback(total_steps, lora_model, optimizer, scheduler,
++                           (normal_benign_batch, normal_harmful_batch, backdoored_batch))
+         t2 = time.time()
+ 
+         t_forward += t1 - t0
