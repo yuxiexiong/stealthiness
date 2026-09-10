@@ -1,4 +1,4 @@
-"""Budget admission and fail-closed accounting: mocked GPU measurement only."""
+"""Soft budget targets and strict cost accounting: mocked GPU measurement only."""
 import contextlib
 import fcntl
 import io
@@ -23,7 +23,7 @@ class RepairBudgetTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.ledger = self.root / "ledger"
         self.config = self.root / "stages.json"
-        self.config.write_text(json.dumps({"budget_gpu_hours": {
+        self.config.write_text(json.dumps({"total_gpu_hours": 48, "budget_gpu_hours": {
             "setup": 6, "reference": 4, "repair": 20, "evaluation": 10, "reserve": 8}}))
         self.addCleanup(patch.stopall)
         patch.object(budget, "CONFIG_PATH", self.config).start()
@@ -52,13 +52,13 @@ class RepairBudgetTests(unittest.TestCase):
         return self.call("--phase", phase, "--name", name, "--gpus", gpus,
                          "--max-gpu-hours", amount, "--cwd", str(self.root), "--", "fake-command")
 
-    def test_failed_and_timeout_costs_reduce_multicard_limit_and_charge_cleanup(self):
+    def test_failures_still_fail_and_costs_remain_charged_without_timeouts(self):
         self.cost, self.status = 3.75, "failed"
         self.assertEqual(self.run_job("failed", amount="4")[0], 1)
-        self.assertEqual(self.runner.call_args.kwargs["timeout"], 4 * 3600 / 2 - 30)
+        self.assertIsNone(self.runner.call_args.kwargs["timeout"])
         self.cost, self.status = .2, "timeout"
         self.assertEqual(self.run_job("timed-out")[0], 1)
-        self.assertEqual(self.runner.call_args.kwargs["timeout"], .25 * 3600 / 2 - 30)
+        self.assertIsNone(self.runner.call_args.kwargs["timeout"])
         self.sample.reset_mock()
         code, out, err = self.call("--status")
         self.assertEqual(code, 0, err)
@@ -66,14 +66,14 @@ class RepairBudgetTests(unittest.TestCase):
         self.sample.assert_not_called()
         self.cost, self.status = .01, "completed"
         self.assertEqual(self.run_job("small", amount=".02")[0], 0)
-        self.assertAlmostEqual(self.runner.call_args.kwargs["timeout"], 6)
-        self.assertEqual(self.run_job("too-small", amount=".001")[0], 2)
+        self.assertIsNone(self.runner.call_args.kwargs["timeout"])
+        self.assertEqual(self.run_job("tiny-target", amount=".001")[0], 0)
         self.cost = .3
-        code, out, _ = self.run_job("cleanup-overrun")
-        self.assertEqual(code, 1)
-        self.assertFalse(json.loads(out)["within_allocation"])
+        code, out, _ = self.run_job("cleanup-overrun", amount=".1")
+        self.assertEqual(code, 0)
+        self.assertFalse(json.loads(out)["within_planned_gpu_hours"])
         self.assertGreater(json.loads(out)["budget"]["phase_used"]["reference"], 4)
-        self.assertEqual(self.run_job("exhausted")[0], 2)
+        self.assertEqual(self.run_job("exhausted")[0], 0)
 
     def test_unsettled_missing_and_corrupt_records_block_instead_of_zero(self):
         self.assertEqual(self.run_job()[0], 0)
@@ -110,20 +110,41 @@ class RepairBudgetTests(unittest.TestCase):
         self.config.write_text(self.config.read_text() + "\n")
         self.assertIn("frozen", self.call("--status")[2])
 
-    def test_total_cap_invalid_numbers_and_cpu_only_help(self):
-        self.assertEqual(self.call("--status")[0], 0)
-        for phase, cost in {"setup": 6.2, "reference": 4, "repair": 20,
-                            "evaluation": 10, "reserve": 7.7}.items():
-            folder = self.ledger / phase
-            folder.mkdir()
-            reservation = {"phase": phase, "gpus": ["0", "1"], "command": ["fake"],
-                           "cwd": str(self.root), "allocated_gpu_hours_limit": cost}
-            (folder / "reservation.json").write_text(json.dumps(reservation))
-            self.cost = cost
-            self.fake_run(["fake"], folder / "measurement", self.root, ["0", "1"], 1, phase)
+    def test_job_finishes_and_next_job_starts_after_phase_and_total_targets(self):
+        self.cost = 50
+        code, out, err = self.run_job("overrun")
+        self.assertEqual(code, 0, err)
+        state = json.loads(out)
+        self.assertEqual(state["budget"]["total_used"], 50)
+        self.assertEqual(state["budget"]["total_remaining"], -2)
+        self.assertEqual(state["budget"]["phase_remaining"]["reference"], -46)
+        self.assertFalse(state["within_planned_gpu_hours"])
+        self.assertIsNone(self.runner.call_args.kwargs["timeout"])
+        reservation = json.loads((self.ledger / "overrun/reservation.json").read_text())
+        self.assertEqual(reservation["budget_policy"], "soft_no_automatic_stop")
+        self.assertIsNone(reservation["command_timeout_seconds"])
         self.cost = .05
-        self.assertEqual(self.run_job("last", phase="reserve")[0], 0)
-        self.assertAlmostEqual(self.runner.call_args.kwargs["timeout"], .1 * 3600 / 2 - 30)
+        code, out, err = self.run_job("after-total-and-phase")
+        self.assertEqual(code, 0, err)
+        self.assertIn("continuing", err)
+        self.assertAlmostEqual(json.loads(out)["budget"]["total_used"], 50.05)
+        self.assertIsNone(self.runner.call_args.kwargs["timeout"])
+
+    def test_configured_total_must_equal_phase_targets(self):
+        config = json.loads(self.config.read_text())
+        config["total_gpu_hours"] = 96
+        self.config.write_text(json.dumps(config))
+        self.assertIn("sum to total_gpu_hours", self.call("--status")[2])
+        config["budget_gpu_hours"] = {phase: 2 * amount for phase, amount in config["budget_gpu_hours"].items()}
+        self.config.write_text(json.dumps(config))
+        code, out, err = self.call("--status")
+        self.assertEqual(code, 0, err)
+        self.assertEqual(json.loads(out)["total_target"], 96)
+        frozen = json.loads((self.ledger / "config.json").read_text())
+        self.assertEqual(frozen["total_gpu_hours"], 96)
+        self.assertEqual(frozen["budget_policy"], "soft_no_automatic_stop")
+
+    def test_invalid_numbers_and_cpu_only_help(self):
         for value in (0, -1, float("nan"), float("inf"), True):
             with self.assertRaises(ValueError):
                 budget.positive(value)
@@ -131,6 +152,7 @@ class RepairBudgetTests(unittest.TestCase):
                                 cwd=PROJECT, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("--status", result.stdout)
+        self.assertIn("never a timeout or automatic stop", " ".join(result.stdout.split()))
 
 
 if __name__ == "__main__":

@@ -14,6 +14,16 @@ from repair import __main__ as cli
 
 
 class RepairSelectionTests(unittest.TestCase):
+    def test_toy48_config_requires_no_training_time_cutoff(self):
+        config = json.loads((PROJECT / "configs/llava.example.json").read_text())
+        path = self.root / "config.json"
+        path.write_text(json.dumps(config))
+        self.assertIsNone(cli.config_at(path)["training"]["max_seconds"])
+        config["training"]["max_seconds"] = 600
+        path.write_text(json.dumps(config))
+        with self.assertRaisesRegex(ValueError, "soft time budget"):
+            cli.config_at(path)
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)

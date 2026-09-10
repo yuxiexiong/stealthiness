@@ -1,6 +1,6 @@
 """Two fixed single-GPU queues inside one phase's allocated-two-GPU budget job.
 
-The outer repair.budget/measure process owns the timeout and charges both cards
+The outer repair.budget/measure process records time and charges both cards
 until this launcher finishes, including idle tails and cleanup. Commands must
 declare --device cuda:0 themselves; no DDP, shell expansion or child sessions.
 """

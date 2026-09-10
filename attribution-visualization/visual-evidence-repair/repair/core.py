@@ -21,6 +21,8 @@ def validate_config(config):
             raise ValueError(f"{name} must be a positive integer")
     for name in ("lr", "epsilon", "pgd_step_size", "max_seconds"):
         value = config.get(name)
+        if name == "max_seconds" and value is None:
+            continue
         if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
             raise ValueError(f"{name} must be finite and positive")
     for name in ("beta_response", "beta_adv_ce", "alpha_inconsistency", "gamma_keep", "weight_decay"):
@@ -190,7 +192,7 @@ def loss_for_unit(vlm, unit, ref, config, weight, edge_scale, keep_scale, delta=
 
 
 def train(vlm, units, refs, config, started=None, known=False):
-    """Bound training time independently of prior model/reference preparation."""
+    """Complete declared steps; an optional legacy time limit excludes preparation."""
     validate_config(config)
     if not units:
         raise ValueError("training units cannot be empty")
@@ -207,7 +209,7 @@ def train(vlm, units, refs, config, started=None, known=False):
     order = []
     history = []
     for step in range(config["steps"]):
-        if time.monotonic() - training_started >= config["max_seconds"]:
+        if config.get("max_seconds") is not None and time.monotonic() - training_started >= config["max_seconds"]:
             break
         if not order:
             order = list(range(len(units)))

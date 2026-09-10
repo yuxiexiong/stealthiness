@@ -79,6 +79,18 @@ def reference():
 
 
 class RepairCoreTests(unittest.TestCase):
+    def test_no_time_limit_completes_steps_after_arbitrarily_long_elapsed_time(self):
+        backend, unit = LinearBackend(), pair()
+        for node in unit["nodes"]:
+            node.update(image=node["id"] + ".png", question="color")
+        with patch.object(core, "time") as clock:
+            clock.monotonic.side_effect = [100., 200000.]
+            result = core.train(backend, [unit], [reference()],
+                                config(method="SFT", steps=2, max_seconds=None))
+        self.assertEqual(result["steps_completed"], 2)
+        self.assertEqual(result["status"], "completed")
+        self.assertEqual(result["training_seconds"], 199900.)
+
     def test_training_budget_excludes_prior_preparation(self):
         backend, unit = LinearBackend(), pair()
         for node in unit["nodes"]:

@@ -48,6 +48,8 @@ def config_at(path):
         raise ValueError("the only optional protocol preset is toy48")
     if config.get("protocol") == "toy48" and config["training"]["method"] not in ("SFT", "R+", "G0", "Gl", "G", "RACER-data"):
         raise ValueError("toy48 contains only its six predeclared repair methods")
+    if config.get("protocol") == "toy48" and config["training"].get("max_seconds") is not None:
+        raise ValueError("toy48 uses a soft time budget; training.max_seconds must be null")
     for name in ("fit", "calibration"):
         if name == "calibration" and config[name] is None and config["training"]["method"] == "RACER-native":
             continue
@@ -360,7 +362,7 @@ def run_train(args):
                "attribution_display_limit": 24 if toy48 else None,
                "total_seconds": time.monotonic() - started, "cost": calls,
                "weights_sha256": digest(output / "update.pt"), "native_reproduction_verified": False,
-               "budget_note": "max_seconds covers training only; setup, shared references, calibration, failed runs and evaluation remain charged by the common budget wrapper"}
+               "budget_note": "toy48 uses no elapsed-time cutoff; declared steps still end training. All phases and failures remain charged by the common ledger"}
         write_json(output / "run.json", run)
         from .report import render_records
         render_records(output / "calibration.jsonl", output / "calibration.html")

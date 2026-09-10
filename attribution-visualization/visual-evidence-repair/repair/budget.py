@@ -1,4 +1,4 @@
-"""Serial 48 allocated-GPU-hour ledger for every pipeline phase, including failures."""
+"""Serial GPU-hour ledger with soft planning targets; no automatic budget cutoff."""
 import argparse
 import fcntl
 import hashlib
@@ -16,6 +16,7 @@ from experiments import measure
 CONFIG_PATH = PROJECT / "configs/stages.json"
 PHASES = {"setup", "reference", "repair", "evaluation", "reserve"}
 TERMINAL = {"completed", "failed", "timeout", "interrupted", "failed_to_start"}
+POLICY = "soft_no_automatic_stop"
 
 
 def positive(value):
@@ -38,10 +39,12 @@ def write_new(path, value):
 
 def freeze_config(root):
     raw = CONFIG_PATH.read_bytes()
-    budgets = json.loads(raw)["budget_gpu_hours"]
-    if set(budgets) != PHASES or sum(positive(v) for v in budgets.values()) != 48:
-        raise ValueError("stages.json must allocate exactly 48 GPU hours across all five phases")
-    config = {"stages_sha256": hashlib.sha256(raw).hexdigest(), "budget_gpu_hours": budgets}
+    stages = json.loads(raw)
+    budgets, total = stages["budget_gpu_hours"], positive(stages["total_gpu_hours"])
+    if set(budgets) != PHASES or not math.isclose(sum(positive(v) for v in budgets.values()), total):
+        raise ValueError("stages.json phase targets must sum to total_gpu_hours")
+    config = {"stages_sha256": hashlib.sha256(raw).hexdigest(), "budget_gpu_hours": budgets,
+              "total_gpu_hours": total, "budget_policy": POLICY}
     path = root / "config.json"
     if not path.exists():
         if any(p.name != ".lock" for p in root.iterdir()):
@@ -76,12 +79,14 @@ def scan(root, budgets):
         cost, elapsed = positive(record["allocated_gpu_hours"]), positive(record["elapsed_seconds"])
         if not math.isclose(cost, elapsed * len(gpus) / 3600, rel_tol=1e-9, abs_tol=1e-12):
             raise ValueError(f"inconsistent measured cost: {folder.name}")
-        positive(reservation["allocated_gpu_hours_limit"])
+        positive(reservation["planned_gpu_hours"])
         used[phase] += cost
         runs.append({"name": folder.name, "phase": phase, "status": record["status"],
                      "allocated_gpu_hours": cost})
+    total = sum(budgets.values())
     return {"accounting": "allocated GPU hours, all pipeline; actual wall time * cards, including termination",
-            "total_limit": 48, "total_used": sum(used.values()), "total_remaining": 48 - sum(used.values()),
+            "budget_policy": POLICY,
+            "total_target": total, "total_used": sum(used.values()), "total_remaining": total - sum(used.values()),
             "phase_used": used, "phase_remaining": {p: budgets[p] - used[p] for p in used}, "runs": runs}
 
 
@@ -103,22 +108,20 @@ def execute(root, budgets, args):
     folder = root / args.name
     if folder.exists():
         raise ValueError("run name already exists; logs cannot be overwritten")
-    allowance = min(requested, state["phase_remaining"][args.phase], state["total_remaining"])
-    timeout = allowance * 3600 / len(gpus) - 30
-    if timeout <= 0:
-        raise ValueError("insufficient budget after reserving 30 seconds of charged termination time")
+    if state["phase_remaining"][args.phase] <= 0 or state["total_remaining"] <= 0:
+        print("GPU-hour planning target reached; continuing without automatic cutoff", file=sys.stderr)
     sample = measure.gpu_sample(gpus)
     if "error" in sample or len({d["uuid"] for d in sample.get("devices", [])}) != len(gpus):
         raise ValueError(f"requested GPUs unavailable: {sample}")
     folder.mkdir()
     write_new(folder / "reservation.json", {"phase": args.phase, "gpus": gpus, "command": command,
-              "cwd": str(cwd), "requested_gpu_hours": requested, "allocated_gpu_hours_limit": allowance,
-              "command_timeout_seconds": timeout, "charged_termination_reserve_seconds": 30})
-    record = measure.run(command, folder / "measurement", cwd, gpus=gpus, timeout=timeout, cost_role=args.phase)
+              "cwd": str(cwd), "planned_gpu_hours": requested, "budget_policy": POLICY,
+              "command_timeout_seconds": None})
+    record = measure.run(command, folder / "measurement", cwd, gpus=gpus, timeout=None, cost_role=args.phase)
     state = scan(root, budgets)
-    within = record["allocated_gpu_hours"] <= allowance
-    print(json.dumps({"run": record, "within_allocation": within, "budget": state}, indent=2))
-    return 0 if record["status"] == "completed" and within else 1
+    print(json.dumps({"run": record, "within_planned_gpu_hours": record["allocated_gpu_hours"] <= requested,
+                      "budget": state}, indent=2))
+    return 0 if record["status"] == "completed" else 1
 
 
 def main(argv=None):
@@ -127,7 +130,8 @@ def main(argv=None):
     parser.add_argument("--phase")
     parser.add_argument("--name")
     parser.add_argument("--gpus")
-    parser.add_argument("--max-gpu-hours", type=positive)
+    parser.add_argument("--max-gpu-hours", type=positive,
+                        help="Soft planned GPU hours for this job; never a timeout or automatic stop")
     parser.add_argument("--cwd", default=".")
     parser.add_argument("--status", action="store_true")
     parser.add_argument("command", nargs=argparse.REMAINDER)

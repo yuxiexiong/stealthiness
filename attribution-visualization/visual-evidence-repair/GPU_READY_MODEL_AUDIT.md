@@ -61,7 +61,7 @@ Caption 本身有独立提示；[BadVision 固定 loader](https://github.com/6zH
 python tools/build_benign_baseline.py prepare --config CONFIG.json --data runs/toy48-baseline-data --output runs/toy48-baseline-construction
 ```
 
-GPU 空闲且预算器许可后，单卡运行同一脚本的 `train --config CONFIG.json --data runs/toy48-baseline-construction --output runs/toy48-baseline-model`。不能绕开 setup 的 6 GPUh 总账，也不能根据目标命中率继续搜索标记或反复调训练。
+队友实验结束、GPU 持续空闲且输入与账本校验通过后，单卡运行同一脚本的 `train --config CONFIG.json --data runs/toy48-baseline-construction --output runs/toy48-baseline-model`。全部成本计入 setup；6 GPUh 为计划参考，`soft_no_automatic_stop` 不因超出该数字终止作业或拒绝后续任务。不能根据目标命中率继续搜索标记或反复调训练。
 
 1. 取得一个 HF 基座及独立构建用正常图片／问答。构建数据不能与修复、校准、dev、测试场景重叠；冻结文件身份和正常／标记样本比例。
 2. 用标准 HF／PEFT 或隔离的 LLaMA-Factory 做一次固定 LoRA 训练。允许语言侧 LoRA 与连接模块，视觉塔保持原值；保存实际可训练参数名及视觉塔前后身份。真实触发与目标只交给隔离构建／评估侧。
@@ -70,11 +70,13 @@ GPU 空闲且预算器许可后，单卡运行同一脚本的 `train --config CO
 
 这条路径产生的是“按公开方法重建的一个固定条件”，不是作者已发布权重或完整原表复现。模型加载和训练本身应走原生 HF 格式，省去原生 `llava_llama` 到 `LlavaForConditionalGeneration` 的转换、CLIP 合入和参数名映射。若只取得原生 LLaVA 污染权重，现有加载器会明确拒绝；需先合并原生 adapter/projector、按官方转换器转换完整权重，并做同输入输出对照，不能直接改 `model_type`。
 
-### 原作者训练量与 6 GPUh 的边界
+### 原作者训练量与 6 GPUh 的计划参考
 
 [原文 §5.1 与 Table 4](https://arxiv.org/html/2511.18921v1#S5.SS1) 使用 20k 正常指令及额外 1k 单轮材料，LLaVA 两个 epoch、全局 batch 128、学习率 2e-5、cosine 与 0.03 warmup；默认训练 LLM＋projector、冻结视觉塔，另有 LoRA LLM＋projector 分支。按 21k 样本计，两轮约 42k 次样本曝光、约 330 次全局更新。这只是训练量换算，未测 GPU 时间。
 
-本轮 setup 的 6 GPUh 还包含起点验收、首次完整计时与失败。**没有足够证据保证该重建能塞进 6 GPUh。** 双卡占满时它只对应最多 3 小时墙钟，实际训练还少于这个值。不能把正常训练材料缩至修复的 100 张、任取 100 步，然后称原基线完成；如预先缩减构建规模，必须标明偏离且按正常能力与真实触发效应验收。到预算边界仍没有合格 B0，应停止，不能蚕食 10 GPUh 独立评测来凑 ready。
+本轮 setup 的 6 GPUh 计划还包含起点验收、首次完整计时与失败。**没有足够证据保证该重建能在 6 GPUh 内完成。** 当前入口单卡执行；若两卡同时占用，6 GPUh 相当于 3 小时墙钟，仅是计量换算。不能把正常训练材料缩至修复的 100 张、任取 100 步，然后称原基线完成；如预先缩减构建规模，必须标明偏离且按正常能力与真实触发效应验收。超过计划本身不触发停止；资格不合格或未完成验收仍不能把 B0 标为 ready，也不能省略独立评测来掩盖成本。总计划暂保留 48 GPUh，用户最新“双卡约 48 小时”的口径待确认。
+
+当前固定拒答实例的判据局限与建议见 [REFUSAL_VS_FACTUAL_REPAIR.md](REFUSAL_VS_FACTUAL_REPAIR.md)；这是诊断和备选场景建议，尚未更换本页构建目标。
 
 ### 不直接安装 BackdoorVLM 当前自带环境
 
