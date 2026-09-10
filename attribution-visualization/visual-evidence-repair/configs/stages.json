@@ -1,0 +1,38 @@
+{
+  "status": "planned_asset_and_budget_mapping_required",
+  "scope": "evaluation coordinator only; do not supply attack metadata to repair",
+  "stage1": {
+    "model_families": ["LLaVA-1.5-7B"],
+    "image_attacks": ["BadNets-I", "Blended"],
+    "objectives": ["MI", "TR"],
+    "poison_states": 4,
+    "clean_controls": 1,
+    "scene_clusters": {"dev": 64, "fit": 100, "calibration": 100, "test": 600},
+    "real_image_clusters": {"fit": 100, "calibration": 100},
+    "max_questions_per_synthetic_image": 4,
+    "max_configurations_per_method": 4,
+    "max_rule_revisions_before_lock": 1
+  },
+  "stage2": {
+    "model_families": ["LLaVA-1.5-7B", "Qwen2.5-VL-7B-Instruct"],
+    "image_attacks": ["BadNets-I", "Blended", "SIG"],
+    "objectives": ["MI", "TR"],
+    "independent_poison_replicates_per_cell": 2,
+    "actual_poison_seed_ids": null,
+    "cells": 12,
+    "poison_states": 24,
+    "clean_controls_per_model": 2,
+    "shared_additional_real_cluster_cap": 5000,
+    "core_methods": ["G", "G0", "Gl", "R+", "P", "SFT", "RACER-data"],
+    "external_qualified_baselines_required": ["RACER-native", "CleanSight"],
+    "native_protocol_full_size_required": true,
+    "original_attack_evaluator_required": true
+  },
+  "thresholds_are_investment_criteria_not_predictions": {
+    "triggered_vqa_gain": 0.03,
+    "clean_vqa_max_drop": 0.01,
+    "clean_cider_max_relative_drop": 0.02,
+    "asr_max": 0.05,
+    "asr_max_worsening_vs_strong_baseline": 0.01
+  }
+}

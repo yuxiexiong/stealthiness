@@ -5,11 +5,13 @@
 | 课题 | 立项 | 理论 |
 |---|---|---|
 | 有限污染下的排名可信复核 | [目标、方法与价值](ranking-audit/PROJECT_CHARTER.md) | [理论正文](ranking-audit/THEORY.md) |
-| 归因可视化引导的受污染视觉语言模型事实能力修复 | [第二版立项，用户已确认](visual-evidence-repair/PROJECT_CHARTER.md) | [第三版理论，有限条件审查通过](visual-evidence-repair/THEORY.md) |
+| 归因可视化引导的受污染视觉语言模型事实能力修复 | [当前立项，用户已确认](visual-evidence-repair/PROJECT_CHARTER.md) | [当前 N1–N10 理论](visual-evidence-repair/THEORY.md) |
 
 两项的[前次三人独立理论审查及修订](theory-review-2026-09-10/REVIEW_SYNTHESIS.md)结论是：排名只闭合单错误复核与树图认证；当时视觉只闭合可校准前提下的受限事实诊断。视觉课题的最新状态见下一段。一般图多错误方法、真实 VLM 修复效果及论文级贡献仍未验收，尚无新 toy 结果。下文保留首轮 OA 探针的原始范围与记录。
 
-视觉修复新主线已按第二版立项完成理论补齐与[新一轮三人独立、交叉审查](visual-evidence-repair/theory-review-v3/REVIEW_SYNTHESIS.md)，有限条件下的测量、原参数更新、答案可行性、真实候选核验及同数据条件预测已经闭合，可以进入 toy 规划。归因是否改善真实修复、是否超越公平调优的强基线仍待实验；本轮没有执行模型实验。
+视觉修复以 N1–N10 新理论为实施标尺，闭合“事实响应→冻结权重→原参数更新→有限校准选择→原生成评价”的操作链和条件推论。旧 C 编号理论已[归档](visual-evidence-repair/THEORY_V3_ARCHIVED.md)，[旧审查记录](visual-evidence-repair/theory-review-v3/REVIEW_SYNTHESIS.md)只作历史追溯。加权优势、未知触发修复及跨任务迁移仍待实验。
+
+当前是[两阶段规划 V2.2](visual-evidence-repair/TOY_PLAN.md)：第一阶段检验完整方法链，第二阶段量化同权限强方法增量。[实现与资源复用](visual-evidence-repair/IMPLEMENTATION.md)列出实际命令、配置和验证记录；代码支持官方 HF LLaVA/Qwen 加载、主要修复对照、完整答案生成、离线归因页面和隔离评价。随机微型模型的代码测试已与科学实验分开；真实污染权重、合法配对材料及原协议评估交付尚未齐备，没有新 toy 性能结果。[第一版计划](visual-evidence-repair/TOY_PLAN_V1_LIMITED.md)、[旧自查](visual-evidence-repair/TOY_SCIENTIFIC_AUDIT.md)与[V2 修订依据](visual-evidence-repair/TOY_V2_LOGIC_AND_EXPECTATIONS_AUDIT.md)保留供追溯。
 
 以归因可视化为研究工具，发现并验证 LLM 的触发行为、上下文依赖与生成历史传播规律。保留三个核心视图：输出位置热图、点击输出词查看输入／历史来源、跨步与跨条件对照。项目不要求先发明一个新的归因算法。
 
