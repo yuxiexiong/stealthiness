@@ -1,0 +1,49 @@
+{
+  "status": "nonmodel_preflight_passed",
+  "git_commit": "0f7702c",
+  "python_runtime_matches_tested_files": true,
+  "config_sha256": "7137aa4788da6a9ba9c8efbf8e30b12603282883c0588e5f7eabc43c75f254ff",
+  "stages_sha256": "e9939ef33e70a3767090697370347e65748bc96121f77e989e5de5b4544cc264",
+  "construction_images": 2200,
+  "construction_rows": 21000,
+  "construction_manifest_sha256": "5feae70b4fd83d9108952bb83e7a6f7356b1d902092b166277330036f558a653",
+  "data_validation": {
+    "status": "server_clean_data_verified",
+    "data_ready_sha256": "baf877892d09d634670328dd76031704100f1288aa0eb4d94eaa2e2e4079e43a",
+    "validation": {
+      "units": 1312,
+      "clusters": 808,
+      "unique_image_bytes": 1060,
+      "splits": [
+        "calibration",
+        "dev",
+        "fit",
+        "test"
+      ]
+    },
+    "gpu_work": false
+  },
+  "runtime_tests": {
+    "status": "new_paths_cpu_passed",
+    "tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "names": [
+      "test_repair_model.RepairModelTest.test_benign_baseline_rejects_changed_missing_and_escaping_images_before_model_load",
+      "test_repair_model.RepairModelTest.test_benign_baseline_tiny_trainer_exports_full_projector_and_reload",
+      "test_repair_model.RepairModelTest.test_task_prompt_is_shared_and_cache_separates_caption",
+      "test_repair_model.RepairModelTest.test_smoke_cli_real_tiny_forward_preserves_ineligible_reference",
+      "test_qualify_baseline.QualificationTest.test_four_cells_private_outputs_n1_and_actual_mask_geometry",
+      "test_gpu_ready_queue.GPUReadyQueueTest.test_phase_accounting_and_fail_stop"
+    ],
+    "code_snapshot_sha256": "c4d11c2229f32d003881300c7fc46ca504cb1047a6427a65dd0f1683e9993aaa",
+    "torch": "2.3.1+cu121",
+    "gpu_work": false,
+    "loaded_cublas": [
+      "/root/attribution-visualization-20260910/.venv/lib/python3.11/site-packages/nvidia/cublas/lib/libcublas.so.12",
+      "/root/attribution-visualization-20260910/.venv/lib/python3.11/site-packages/nvidia/cublas/lib/libcublasLt.so.12"
+    ]
+  },
+  "model_assets_are_a_separate_required_dependency": true,
+  "gpu_work": false
+}

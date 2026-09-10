@@ -1,29 +1,39 @@
-# 服务器排队交接
+# 服务器排队与 GPU 准备入口
 
-2026-09-10 21:05（北京时间）部署；后续只读检查确认监视器存活、状态为 `waiting_teammate_controllers`。这是部署时快照，当前状态以服务器 `state.json` 为准。
+2026-09-10。**真实 GPU 阶段尚未开始。** 入口已安装；最近核验时队友两条总控仍存活，公开模型权重正在服务器后台下载／校验。不能把排队入口存在说成已通过 GPU 验收。
 
-## 已执行
+## 当前实际部署
 
-- 主机：`gqa-h20`。独立目录：`/root/attribution-visualization-20260910/toy48-queue`。
-- 监视器：PID `258936`，脱离 SSH 会话运行，`nice=19`，每 300 秒检查一次；只用 Python 标准库，不加载模型、不分配 GPU。
-- 等待队友**两条总控脚本**，不是只等当时那两个训练进程：PID `4158784` / start_ticks `727135121`，PID `4158937` / start_ticks `727135621`。绑定启动时间，避免误认复用的 PID。
-- 两条总控结束、真实启动清单和输入存在后，检查 GPU 0/1 对应 UUID 无计算进程、利用率 ≤5%、显存占用 ≤256 MiB。连续两次检查相隔五分钟，交接前再检查一次。
-- 本地 Codex automation 已暂停；本轮等待由服务器进程完成。
+- 主机 `gqa-h20`，独立根目录 `/root/attribution-visualization-20260910`。
+- 已推送代码 `0f7702c`；服务器运行目录 `toy48-code-ready2/attribution-visualization/visual-evidence-repair`。测试过的 Python 文件与本次提交一致。
+- 已有监视器 PID `258936`，目录 `toy48-queue`，每 300 秒检查一次，`nice=19`，脱离 SSH。没有新增 Codex automation；此前本地 automation 保持暂停。
+- 等待队友总控 PID `4158784` / start_ticks `727135121`、PID `4158937` / start_ticks `727135621`。等待整个总控退出，不把两轮训练之间的短暂空闲当成实验结束。
+- 队友总控结束、全部要求的输入存在后，检查两卡无计算进程、利用率 ≤5%、显存 ≤256 MiB；两次检查间隔五分钟，交接前再查一次。不向队友进程发信号。
 
-没有停止、暂停或调整队友任务，也没有安装依赖或下载模型。监视器不会向外部 GPU 进程发送信号。单纯检查空闲不构成共享调度器的原子资源预留；若另一个用户恰在最后检查后提交任务，仍需共享调度器协调。
+这是用户要求的服务器监视器，不是共享调度器的原子资源预留。不能保证其他用户不会恰在最后检查之后提交新任务。
 
-## 尚未接上真实实验
+## 已接上什么
 
-**`launch.json` 尚未创建，当前不能自动启动正式 toy。** 缺少本轮合格视觉污染 checkpoint／匹配触发资产、合法 CLEVR 配对及冻结数据划分，原评估依赖与共同训练日程也未验收。现有文本 OA 资产不适用，示例配置中的占位路径不能启动。
+`toy48-queue/launch.json` 已原子写入，SHA256 为 `62d5b2a825adc20e3fea83e2ce41035a7acce4acd52b3408a4b4866403cf3915`。它调用 `tools/run_gpu_ready.py`，配置是 `configs/gqa-h20.setup.json`，不是带占位路径的 example。
 
-如果队友先结束，监视器进入 `waiting_inputs`，继续低频等待。只有实际资产准备完毕，才能原子写入真实 `launch.json`；这不需要重启监视器。它是唯一被授权的实验启动入口，必须先完成计入预算的 GPU 冒烟，再执行已冻结的双卡阶段。
+`ready: true` 表示命令已冻结；**要求文件存在是另外一道门**。清单要求 `server-nonmodel-preflight.json`、`server-base-validation.json`、完整模型清单及三片权重、真实构建数据、正常输入、Java、私有 cuBLAS 等。最近核验仍缺 `server-base-validation.json`，故此时不能启动 GPU。等待器只检查存在，构建／模型加载器继续核对数据和模型身份。
 
-`launch.json` 必须只有以下四项：`ready: true`、绝对工作目录 `cwd`、不经 shell 展开的命令参数列表 `command`、已存在的绝对文件路径列表 `required_files`。最后一项包含真实冻结配置、数据／模型清单及双队列清单。等待器仅检查这些文件存在；资产和科学协议验收仍由实验 CLI 负责。所有 GPU 命令必须经过同一 `repair.budget` 账本，累计上限 48 GPUh；等待器自身不替代预算器。
+非模型输入已经服务器 CPU 预检：21,000 条构建指令、2,200 张 canonical 图片逐图哈希通过，正常数据的既有全量校验回执匹配；新增路径六项 CPU 测试通过。回执为 `toy48-inputs/server-nonmodel-preflight.json`。
 
-双卡阶段通过预算器调用 `python -m repair.parallel --queues <绝对队列文件> --output <新输出目录>`。队列文件为两个非空列表，每项是一条 argv 列表；内层任务不再套预算器。由预算器设置两张卡，parallel 为每条队列隔离其中一张。共享依赖必须先完成，不能把依赖尚未产生的任务放进并行队列。
+模型下载进程 PID `368902` 为本项目独立低优先级 CPU／网络作业，日志 `server-download.log`。它复用中断后的 HF 缓存，完成后用固定来源锁逐文件核对 SHA256，只有全部相符才写 `toy48-inputs/server-base-validation.json`。下载失败或哈希不符不会补一个 ready 文件，也不会放行 GPU。旧的本机慢速上传已中断，没有停止任何队友实验。
 
-## 状态与结果
+## 放行后的顺序
 
-服务器同一目录中：`queue.json` 保存等待对象及 GPU UUID；`watcher.pid`、`watcher.log`、`state.json` 保存进程与状态。真正交接才创建 `launched.json` 和 `experiment.log`。同目录锁避免重复监视器，已交接后不自动重跑失败实验。
+1. 单卡固定构建，最多 5 GPUh；保存完整模型和视觉塔不变的核验结果。
+2. 隔离起点四格验收，最多 0.75 GPUh；只读正常 calibration 和 dev，不读取 test 结果。
+3. 一次真实 G 冒烟，最多 0.25 GPUh；响应项未实际参与时明确为 partial，停止后续。
 
-等待状态不代表 GPU 冒烟或正式实验已开始。停止等待器也不等同停止已运行的预算作业；若后续需要终止本轮实验，必须依据本轮测量记录识别专属进程组，不能按 GPU 使用情况批量杀进程。
+三项均通过同一个 `toy48-ledger` 的 setup 预算执行，仍受 **总计 48 GPUh、setup 6 GPUh** 约束。失败、超时和清理记入实际成本，任何非零退出停止。不因一个 CPU 测试或一次更新成功就自动标 B0 合格。
+
+**正式六方法的双卡比较尚未启动。** 需要起点验收与实际计时支持后再冻结共同日程；现有双卡 runner 可复用，不能为了凑 ready 给它填未经验收的训练步数。当前入口只完成上卡资格工作。
+
+## 读状态
+
+`toy48-queue/state.json`、`watcher.log` 是等待／启动状态；真正交接才创建 `launched.json` 和 `experiment.log`。GPU 入口另写 `toy48-setup/status.json` 及各阶段原始回执，预算在 `toy48-ledger`。停止等待器并不等于停止已经启动的测量进程组。
+
+本地可审阅 `gpu-ready-evidence/queue-entry-receipt.json` 和 `server-nonmodel-preflight.json`；它们是部署时快照，当前服务器状态以实时文件为准。
