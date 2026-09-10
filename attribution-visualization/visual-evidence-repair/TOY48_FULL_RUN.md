@@ -89,6 +89,23 @@ GPU_READY 明确"脚本不会自动写 `b0_qualified=true`"，且 N10 的 1 pp�
 
 单模型、单污染实例、单污染 seed、单修复 seed、单配置。可以判断当前条件下方法增量是否值得追加投入；**不能**宣称 SOTA、跨模型稳定性、总体安全证书，也不能把小样本未显著读成整个方向被证伪。300/60 是子集研究，不是原 benchmark 完整复现；自建固定实例不是作者发布的污染 checkpoint。
 
+## 6b. 实际部署位置（gqa-h20）
+
+| 东西 | 路径 / 标识 |
+|---|---|
+| 项目根 | `/root/attribution-visualization-20260910` |
+| 本轮代码 | `toy48-code-full/attribution-visualization/visual-evidence-repair`（= 已武装的 `toy48-code-soft-budget` 逐字节副本 + 本页新增工具） |
+| 排队器 | `toy48-queue/`，watcher PID 见 `watcher.pid`；放行后写 `launched.json`、`experiment.log` |
+| setup 产物 | `toy48-setup/`（`status.json`、`construction/`、`qualification/`、`g-smoke/`、`smoke-config.json`） |
+| 隔离评估器资产 | `toy48-eval/test-triggered/`（648 unit、552 图，U 侧不可读） |
+| 接力进程 | `tools/chain_after_setup.py`，脱离会话运行；状态 `toy48-run/chain-state.json`，日志 `toy48-chain.log` |
+| 全程产物 | `toy48-run/full/`（`status.json`、`schedule.json`、`runs/`、`eval/`、`compare/`、`report/`） |
+| 账本 | `toy48-ledger/`；`python -m repair.budget --ledger <it> --status` 看已花卡时 |
+
+**不要在 prepare 和 train 之间改 `repair/*.py`。** `reference_identity` 把 `__main__.py / core.py / model.py / report.py / data.py` 的哈希写进参照缓存身份，改了任何一个，六条臂都加载不了那份共享参照。
+
+出问题时：先看 `toy48-run/chain-state.json` 和 `toy48-run/full/status.json`，它们记录停在哪一步、缺什么。修完直接重跑同一条驱动命令即可——每个阶段只补缺的部分，重试自动换新的 attempt 目录和账本 run 名，不会覆盖上一次的证据。
+
 ## 7. 离线预演
 
 19 项 CPU 检查通过，每条判据都演了"能被满足"与"能不被满足"两侧：打标建集（成功／标记失效／配对塌缩／目标漂移）、攻击评分（精确命中／近似后缀不算／目标漂移拒绝）、覆盖清单（真端点通过／多余端点被抓）、闸门（setup 未完成／构建未完成／review 四种不匹配）、六配置只差 method、lane 分配与对照优先、每条件共享一次 B0、断点续跑、以及驱动发出的全部 14 种命令形状被真实 parser 接受（含一个会触发的反向对照）。
