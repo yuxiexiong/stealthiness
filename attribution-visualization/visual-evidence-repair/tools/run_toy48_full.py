@@ -279,22 +279,39 @@ class Driver:
             return jsonl
         panel.mkdir(parents=True, exist_ok=True)
         source = Path(self.args.dev).resolve()
-        rows, manifest = [], read_json(source.with_suffix(".manifest.json"))
-        for line in source.read_text(encoding="utf-8").splitlines():
-            if line.strip():
-                rows.append(json.loads(line))
-        chosen = rows[:DIAGNOSTIC_UNITS]
+        manifest = read_json(source.with_suffix(".manifest.json"))
+        rows = [json.loads(line) for line in source.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        def absolute(relative):
+            path = Path(relative)
+            return str((path if path.is_absolute() else source.parent / path).resolve())
+
+        # Independent units: first one per scene cluster, in file order.
+        chosen, clusters = [], set()
+        for unit in rows:
+            if unit["cluster_id"] in clusters:
+                continue
+            clusters.add(unit["cluster_id"])
+            unit["nodes"] = [dict(node, image=absolute(node["image"])) for node in unit["nodes"]]
+            chosen.append(unit)
+            if len(chosen) == DIAGNOSTIC_UNITS:
+                break
+        if len(chosen) < DIAGNOSTIC_UNITS:
+            raise SystemExit("dev has fewer independent clusters than the predeclared panel size")
         used = {node["image"] for unit in chosen for node in unit["nodes"]}
-        inventory = [item for item in manifest["images"] if item["path"] in used]
+        # Panel lives in its own directory, so every path is rewritten absolute rather
+        # than left relative to the source JSONL it no longer sits beside.
+        inventory = [dict(item, path=absolute(item["path"])) for item in manifest["images"]
+                     if absolute(item["path"]) in used]
         if len(inventory) != len(used):
             raise SystemExit("diagnostic panel images are not all inventoried by the dev manifest")
         jsonl.write_text("".join(json.dumps(row, ensure_ascii=False) + "\n" for row in chosen), encoding="utf-8")
         write_json(panel / "panel.manifest.json",
                    {"schema_version": 1, "purpose": "repair", "image_condition": "clean",
                     "images": inventory,
-                    "provenance": (f"First {DIAGNOSTIC_UNITS} units of {source.name} ({digest(source)}) in file "
-                                   f"order; predeclared before any test result was opened.")})
-        # Image paths are relative to the source dev JSONL, so keep the panel beside it.
+                    "provenance": (f"First {DIAGNOSTIC_UNITS} independent scene clusters of {source.name} "
+                                   f"({digest(source)}) in file order; predeclared before any test result "
+                                   f"was opened.")})
         return jsonl
 
     def stage_diagnose(self):
