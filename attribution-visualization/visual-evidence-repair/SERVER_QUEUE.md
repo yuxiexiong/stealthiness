@@ -1,6 +1,6 @@
 # 服务器排队与 GPU 准备入口
 
-2026-09-10。**真实 GPU 阶段尚未开始。** 入口已安装；最近核验时队友两条总控仍存活，公开模型权重正在服务器后台下载／校验。不能把排队入口存在说成已通过 GPU 验收。
+2026-09-10。**最近核验时真实 GPU 阶段尚未开始。** 入口已安装；队友两条总控仍存活。公开模型全部文件现已通过服务器来源哈希校验，满足模型输入门槛；不能把准备完成说成已通过 GPU 验收。
 
 ## 当前实际部署
 
@@ -16,11 +16,11 @@
 
 `toy48-queue/launch.json` 已原子写入，SHA256 为 `62d5b2a825adc20e3fea83e2ce41035a7acce4acd52b3408a4b4866403cf3915`。它调用 `tools/run_gpu_ready.py`，配置是 `configs/gqa-h20.setup.json`，不是带占位路径的 example。
 
-`ready: true` 表示命令已冻结；**要求文件存在是另外一道门**。清单要求 `server-nonmodel-preflight.json`、`server-base-validation.json`、完整模型清单及三片权重、真实构建数据、正常输入、Java、私有 cuBLAS 等。最近核验仍缺 `server-base-validation.json`，故此时不能启动 GPU。等待器只检查存在，构建／模型加载器继续核对数据和模型身份。
+`ready: true` 表示命令已冻结；**要求文件存在是另外一道门**。清单要求 `server-nonmodel-preflight.json`、`server-base-validation.json`、完整模型清单及三片权重、真实构建数据、正常输入、Java、私有 cuBLAS 等。模型回执和清单现已生成，资源等待仍生效。等待器只检查存在，构建／模型加载器继续核对数据和模型身份。
 
 非模型输入已经服务器 CPU 预检：21,000 条构建指令、2,200 张 canonical 图片逐图哈希通过，正常数据的既有全量校验回执匹配；新增路径六项 CPU 测试通过。回执为 `toy48-inputs/server-nonmodel-preflight.json`。
 
-模型下载进程 PID `368902` 为本项目独立低优先级 CPU／网络作业，日志 `server-download.log`。它复用中断后的 HF 缓存，完成后用固定来源锁逐文件核对 SHA256，只有全部相符才写 `toy48-inputs/server-base-validation.json`。下载失败或哈希不符不会补一个 ready 文件，也不会放行 GPU。旧的本机慢速上传已中断，没有停止任何队友实验。
+原下载进程 PID `368902` 已结束：15 个文件下载完成，但收尾移动 HF 元数据时因目标父目录缺失而报错。本次仅补本项目目录，离线复用现有文件，低优先级核对固定来源的全部 SHA256；15 文件、14,131,140,467 字节相符，已写 `toy48-inputs/server-base-validation.json`。实际收尾脚本及回执保存于 `gpu-ready-evidence/`。没有重新下载权重、启动 GPU 或停止任何队友实验。
 
 ## 放行后的顺序
 

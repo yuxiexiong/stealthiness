@@ -1,0 +1,257 @@
+{
+  "protocol_id": "grond-table9-resnet18-v1",
+  "manifest": {
+    "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/experiments/grond_manifest.example.json",
+    "sha256": "06992330957713140d1696c0a2f1e191fd438d041e9a5b35ca1591869965e1d0"
+  },
+  "upstream": {
+    "url": "https://github.com/xiaoyunxxy/parameter_backdoor.git",
+    "commit": "c52b0f7be660e2c940095da4a50f3d9dacce4b54",
+    "license": "No root license found; separate checkout only"
+  },
+  "paper_source": "https://arxiv.org/html/2501.05928v3#S4.SS7",
+  "evaluations": [
+    {
+      "variant": "upgd",
+      "defense": "none",
+      "artifacts": {
+        "csv": null,
+        "predictions": null,
+        "checkpoint": null,
+        "provenance": null,
+        "config": null
+      },
+      "evidence": "missing",
+      "metrics": null,
+      "reported_csv": null,
+      "config": {},
+      "provenance": "missing",
+      "paper_reported_percent": {
+        "ba": 93.86,
+        "asr": 98.61
+      },
+      "minus_paper_pp": null,
+      "csv_minus_recomputed_pp": null
+    },
+    {
+      "variant": "upgd_abi",
+      "defense": "none",
+      "artifacts": {
+        "csv": null,
+        "predictions": null,
+        "checkpoint": null,
+        "provenance": null,
+        "config": null
+      },
+      "evidence": "missing",
+      "metrics": null,
+      "reported_csv": null,
+      "config": {},
+      "provenance": "missing",
+      "paper_reported_percent": {
+        "ba": 93.43,
+        "asr": 98.04
+      },
+      "minus_paper_pp": null,
+      "csv_minus_recomputed_pp": null
+    },
+    {
+      "variant": "upgd",
+      "defense": "clp",
+      "artifacts": {
+        "csv": null,
+        "predictions": null,
+        "checkpoint": null,
+        "provenance": null,
+        "config": null
+      },
+      "evidence": "missing",
+      "metrics": null,
+      "reported_csv": null,
+      "config": {},
+      "provenance": "missing",
+      "paper_reported_percent": {
+        "ba": 91.15,
+        "asr": 3.97
+      },
+      "minus_paper_pp": null,
+      "csv_minus_recomputed_pp": null
+    },
+    {
+      "variant": "upgd_abi",
+      "defense": "clp",
+      "artifacts": {
+        "csv": null,
+        "predictions": null,
+        "checkpoint": null,
+        "provenance": null,
+        "config": null
+      },
+      "evidence": "missing",
+      "metrics": null,
+      "reported_csv": null,
+      "config": {},
+      "provenance": "missing",
+      "paper_reported_percent": {
+        "ba": 93.29,
+        "asr": 87.89
+      },
+      "minus_paper_pp": null,
+      "csv_minus_recomputed_pp": null
+    },
+    {
+      "variant": "upgd",
+      "defense": "ft_sam",
+      "artifacts": {
+        "csv": null,
+        "predictions": null,
+        "checkpoint": null,
+        "provenance": null,
+        "config": null
+      },
+      "evidence": "missing",
+      "metrics": null,
+      "reported_csv": null,
+      "config": {},
+      "provenance": "missing",
+      "paper_reported_percent": {
+        "ba": 91.8,
+        "asr": 51.77
+      },
+      "minus_paper_pp": null,
+      "csv_minus_recomputed_pp": null
+    },
+    {
+      "variant": "upgd_abi",
+      "defense": "ft_sam",
+      "artifacts": {
+        "csv": null,
+        "predictions": null,
+        "checkpoint": null,
+        "provenance": null,
+        "config": null
+      },
+      "evidence": "missing",
+      "metrics": null,
+      "reported_csv": null,
+      "config": {},
+      "provenance": "missing",
+      "paper_reported_percent": {
+        "ba": 92.02,
+        "asr": 80.07
+      },
+      "minus_paper_pp": null,
+      "csv_minus_recomputed_pp": null
+    }
+  ],
+  "comparisons": [
+    {
+      "defense": "none",
+      "missing_config_fields": [
+        "dataset",
+        "architecture",
+        "target_class",
+        "seed",
+        "train_split_sha256",
+        "poison_ids_sha256",
+        "init_checkpoint_sha256",
+        "preparation_artifact_sha256",
+        "updates",
+        "batch_size",
+        "optimizer",
+        "training_schedule",
+        "preprocessing",
+        "defense_settings"
+      ],
+      "different_config_fields": [],
+      "same_samples": false,
+      "same_weights": false,
+      "status": "insufficient_or_mismatched_evidence",
+      "abi_minus_upgd_pp": null
+    },
+    {
+      "defense": "clp",
+      "missing_config_fields": [
+        "dataset",
+        "architecture",
+        "target_class",
+        "seed",
+        "train_split_sha256",
+        "poison_ids_sha256",
+        "init_checkpoint_sha256",
+        "preparation_artifact_sha256",
+        "updates",
+        "batch_size",
+        "optimizer",
+        "training_schedule",
+        "preprocessing",
+        "defense_settings"
+      ],
+      "different_config_fields": [],
+      "same_samples": false,
+      "same_weights": false,
+      "status": "insufficient_or_mismatched_evidence",
+      "abi_minus_upgd_pp": null
+    },
+    {
+      "defense": "ft_sam",
+      "missing_config_fields": [
+        "dataset",
+        "architecture",
+        "target_class",
+        "seed",
+        "train_split_sha256",
+        "poison_ids_sha256",
+        "init_checkpoint_sha256",
+        "preparation_artifact_sha256",
+        "updates",
+        "batch_size",
+        "optimizer",
+        "training_schedule",
+        "preprocessing",
+        "defense_settings"
+      ],
+      "different_config_fields": [],
+      "same_samples": false,
+      "same_weights": false,
+      "status": "insufficient_or_mismatched_evidence",
+      "abi_minus_upgd_pp": null
+    }
+  ],
+  "costs": {
+    "records": [],
+    "missing_stages": [
+      "upgd/surrogate",
+      "upgd/preparation",
+      "upgd/training",
+      "upgd/checkpoint_selection",
+      "upgd_abi/surrogate",
+      "upgd_abi/preparation",
+      "upgd_abi/training",
+      "upgd_abi/checkpoint_selection"
+    ],
+    "known_record_subtotals": {
+      "construction_and_selection": {
+        "recorded_gpu_hours_sum": null,
+        "records": 0,
+        "unknown_gpu_hours_records": 0
+      },
+      "research_evaluation": {
+        "recorded_gpu_hours_sum": null,
+        "records": 0,
+        "unknown_gpu_hours_records": 0
+      }
+    },
+    "historical_total_gpu_hours": null,
+    "end_to_end_wall_seconds": null,
+    "abi_exclusive_seconds": null,
+    "warning": "Record sums only: completeness, shared scope, nested/overlapping allocations and source authenticity require review."
+  },
+  "replication_verified": false,
+  "training_or_gpu_inference_executed": false,
+  "limitations": [
+    "Declared provenance is not proof that weights produced the predictions.",
+    "Counts alone do not verify the canonical CIFAR-10 test split.",
+    "No minimum training budget, full stealth pass, or speedup conclusion."
+  ]
+}

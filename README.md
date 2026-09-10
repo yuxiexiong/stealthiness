@@ -1,6 +1,11 @@
 # Stealthiness：原方法的效率诊断
 
+[归因可视化当前 toy：48 GPUh 计划](attribution-visualization/visual-evidence-repair/TOY_PLAN.md) · [预算与范围复盘](attribution-visualization/visual-evidence-repair/BUDGET_SCOPE_REVIEW.md) · [已冻结实验输入](attribution-visualization/visual-evidence-repair/prepared-inputs/README.md)
+
+
 [当前 OA 实验规划](OA_24H_PLAN.md) · [GPU 实测与旧完整矩阵 ETA](GPU_ETA.md) · [作者模型复用核验](OA_PRETRAINED_REUSE_AUDIT.md) · [原论文](papers/README.md)
+
+[Grond 首轮计划与使用说明](GROND_PROBE_PLAN.md)：现有结果复核与历史成本账；代码入口为 `python3.12 -m experiments.grond_audit`。材料缺失时明确报告未知，当前没有 Grond GPU 复评结果。
 
 当前先做 OA：直接复用作者普通后门、MAD、MAD＋probes 权重，以双 H20 约 24 小时为软预算，做两个终点的完整检测、轻量参照及两段训练成本诊断；有明确热点后优先做一次匹配成本验证。短训采用两条 256 微步匹配轨迹，在 128/200/256 观察，不新跑完整训练。24h 不是硬截止，也不是已验证的完成 ETA；排程与取舍见 [最终计划](OA_24H_PLAN.md)。另两篇暂不启动。
 
@@ -24,6 +29,7 @@ python3.12 experiments/sources.py --check
 | OA | [OA.md](experiments/OA.md) | 作者训练器、成本观测、独立检查点、检测器重拟合与评分 |
 | Cordyceps | [CORDYCEPS.md](experiments/CORDYCEPS.md) | 作者 BCC 数据与 LLaMA-Factory、独立记录/重复对照、CA 与严格评分、ONION、真实调用账本 |
 | BadVision | [BADVISION.md](experiments/BADVISION.md) | 作者 trigger/encoder 训练、匹配更新轨迹、LLaVA 生成与评分、官方 DECREE 反演循环适配 |
+| Grond | [GROND_PROBE_PLAN.md](GROND_PROBE_PLAN.md) | 官方 CSV 格式、已有逐样本预测复算、来源哈希与历史计量记录；不加载权重或运行训练 |
 
 未知或未接通的必要评测不能被视为通过。特别是 Cordyceps 原始生成源码/日志缺失，以及 BadVision 未公开的检测配置与目标语义判定，不能用自行编造的结果补齐。细节见各方法说明和 [ETA 的材料缺口](ETA.md#当前无法给确定-eta-的部分)。
 
