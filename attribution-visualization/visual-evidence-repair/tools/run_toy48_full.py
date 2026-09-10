@@ -89,7 +89,8 @@ class Driver:
         self.output = Path(args.output).resolve()
         self.output.mkdir(parents=True, exist_ok=True)
         self.state = self.output / "driver-state.json"
-        self.done = read_json(self.state)["completed"] if self.state.exists() else []
+        self.data = read_json(self.state) if self.state.exists() else {"completed": []}
+        self.done = self.data["completed"]
         self.gpus = [g.strip() for g in args.gpus.split(",") if g.strip()]
         if len(self.gpus) != 2 or len(set(self.gpus)) != 2:
             raise ValueError("--gpus must name exactly two distinct physical GPU UUIDs")
@@ -97,9 +98,10 @@ class Driver:
 
     # ---------- bookkeeping ----------
 
-    def mark(self, step):
+    def mark(self, step, **extra):
         self.done.append(step)
-        write_json(self.state, {"completed": self.done, "updated_utc": datetime.now(timezone.utc).isoformat()})
+        self.data.update(completed=self.done, updated_utc=datetime.now(timezone.utc).isoformat(), **extra)
+        write_json(self.state, self.data)
 
     def skip(self, step):
         if step in self.done:
@@ -110,6 +112,24 @@ class Driver:
     def status(self, state, **details):
         write_json(self.output / "status.json",
                    {"status": state, "updated_utc": datetime.now(timezone.utc).isoformat(), **details})
+
+    def attempt_dir(self, base):
+        """A retry never overwrites a previous attempt's output; it takes a new name."""
+        if not base.exists():
+            return base
+        index = 2
+        while base.with_name(f"{base.name}-attempt-{index}").exists():
+            index += 1
+        return base.with_name(f"{base.name}-attempt-{index}")
+
+    def slug(self, method):
+        return method.replace("+", "plus")
+
+    def repair_done(self, method):
+        return (self.output / "runs" / self.slug(method) / "run.json").is_file()
+
+    def eval_done(self, condition, method):
+        return (self.output / "eval" / condition / self.slug(method) / "evaluation.json").is_file()
 
     # ---------- gates ----------
 
@@ -175,7 +195,17 @@ class Driver:
 
     # ---------- GPU job wrapper ----------
 
+    def ledger_name(self, base):
+        """The ledger refuses to overwrite a run's logs, so a retry takes a new name."""
+        if not (self.ledger / base).exists():
+            return base
+        index = 2
+        while (self.ledger / f"{base}-attempt-{index}").exists():
+            index += 1
+        return f"{base}-attempt-{index}"
+
     def gpu_job(self, phase, name, hours, command, gpus):
+        name = self.ledger_name(name)
         argv = [sys.executable, "-m", "repair.budget", "--ledger", str(self.ledger),
                 "--phase", phase, "--name", name, "--gpus", ",".join(gpus),
                 "--max-gpu-hours", str(hours), "--cwd", str(PROJECT), "--", *command]
@@ -193,7 +223,11 @@ class Driver:
             self.status(f"stopped_{name}", exit_code=code)
             raise SystemExit(code)
 
-    def lanes_job(self, phase, name, hours, queues, lane_output):
+    def lanes_job(self, phase, name, hours, queues, lane_base):
+        # A retry gets its own launcher directory and its own ledger run name; the ledger
+        # refuses to overwrite a previous run's logs.
+        lane_output = self.attempt_dir(Path(lane_base))
+        name = lane_output.name
         path = self.output / f"{name}-queues.json"
         write_json(path, queues)
         self.gpu_job(phase, name, hours,
@@ -211,30 +245,48 @@ class Driver:
     def stage_reference(self):
         target = self.output / "reference"
         if self.skip("reference"):
-            return target
+            return Path(self.data.get("reference", str(target)))
         self.status("running_reference")
+        target = self.attempt_dir(target)
         self.gpu_job("reference", "shared-reference", 4,
                      [sys.executable, "-m", "repair", "prepare", "--config", self.schedule["methods"]["G"]["config"],
                       "--output", str(target), "--device", "cuda:0"], self.gpus[:1])
         record = read_json(target / "references.json")
         if record["status"] != "completed":
             raise SystemExit("shared reference did not complete")
-        self.mark("reference")
+        self.mark("reference", reference=str(target))
         return target
 
+    def train_command(self, method, reference):
+        return [sys.executable, "-m", "repair", "train",
+                "--config", self.schedule["methods"][method]["config"],
+                "--reference-cache", str(reference),
+                "--output", str(self.output / "runs" / self.slug(method)),
+                "--device", "cuda:0"]
+
     def stage_repair(self, reference):
-        lane_output = self.output / "repair-lanes"
         if self.skip("repair"):
-            return lane_output
+            return
         self.status("running_repair")
-        queues = [[[sys.executable, "-m", "repair", "train",
-                    "--config", self.schedule["methods"][method]["config"],
-                    "--reference-cache", str(reference),
-                    "--output", str(self.output / "runs" / method.replace("+", "plus")),
-                    "--device", "cuda:0"] for method in lane] for lane in LANES]
-        self.lanes_job("repair", "six-method-repair", 20, queues, lane_output)
+        pending = [m for m in METHODS if not self.repair_done(m)]
+        if pending:
+            lanes = [[m for m in lane if m in pending] for lane in LANES]
+            if not all(lanes):
+                # A resume emptied one lane; the six repairs are independent, so rebalance.
+                lanes = [pending[0::2], pending[1::2]]
+            if all(lanes):
+                self.lanes_job("repair", "six-method-repair", 20,
+                               [[self.train_command(m, reference) for m in lane] for lane in lanes],
+                               self.output / "repair-lanes")
+            else:
+                # One arm left: two nonempty lanes are impossible, so use a single card.
+                self.gpu_job("repair", f"repair-{self.slug(pending[0])}", 20,
+                             self.train_command(pending[0], reference), self.gpus[:1])
+        missing = [m for m in METHODS if not self.repair_done(m)]
+        if missing:
+            self.status("stopped_repair_incomplete", missing=missing)
+            raise SystemExit(f"repair produced no run for: {missing}")
         self.mark("repair")
-        return lane_output
 
     def stage_select(self):
         selections = self.output / "selection"
@@ -244,13 +296,15 @@ class Driver:
         selections.mkdir(exist_ok=True)
         limits = PROJECT / "configs" / "selection.json"
         for method in METHODS:
-            slug = method.replace("+", "plus")
-            self.cpu_job(f"select-{slug}",
-                         [sys.executable, "-m", "repair", "select", str(self.output / "runs" / slug),
-                          "--limits", str(limits), "--output", str(selections / f"{slug}.json")])
+            receipt = selections / f"{self.slug(method)}.json"
+            if receipt.exists():
+                continue  # Selection receipts are immutable; a resume keeps the frozen one.
+            self.cpu_job(f"select-{self.slug(method)}",
+                         [sys.executable, "-m", "repair", "select", str(self.output / "runs" / self.slug(method)),
+                          "--limits", str(limits), "--output", str(receipt)])
         summary = {}
         for method in METHODS:
-            receipt = read_json(selections / f"{method.replace('+', 'plus')}.json")
+            receipt = read_json(selections / f"{self.slug(method)}.json")
             summary[method] = receipt["status"]
             if receipt["status"] == "inconclusive_training_incomplete":
                 raise SystemExit(f"{method}: training did not complete; it cannot be evaluated as a repair or B0")
@@ -258,38 +312,62 @@ class Driver:
         self.mark("select")
         return selections
 
+    def evaluate_command(self, condition, method, selections, tests):
+        command = [sys.executable, "-m", "repair", "evaluate", "--data", str(tests[condition]),
+                   "--selection", str(selections / f"{self.slug(method)}.json"),
+                   "--output", str(self.output / "eval" / condition / self.slug(method)),
+                   "--device", "cuda:0", "--cell", self.schedule["cohort"],
+                   "--seed", str(self.args.poison_seed)]
+        if method != METHODS[0]:
+            # One shared B0 pass per condition; every repaired model still generates.
+            command += ["--before-cache", str(self.output / "eval" / condition / self.slug(METHODS[0]))]
+        return command
+
     def stage_evaluate(self, selections):
-        lane_output = self.output / "evaluation-lanes"
         if self.skip("evaluate"):
-            return lane_output
+            return
         self.status("running_evaluation")
         tests = {"clean": Path(self.args.clean_test).resolve(),
                  "triggered": Path(self.args.triggered_test).resolve()}
-        queues = []
-        for condition in CONDITIONS:
-            lane, first = [], self.output / "eval" / condition / METHODS[0].replace("+", "plus")
-            for index, method in enumerate(METHODS):
-                slug = method.replace("+", "plus")
-                command = [sys.executable, "-m", "repair", "evaluate", "--data", str(tests[condition]),
-                           "--selection", str(selections / f"{slug}.json"),
-                           "--output", str(self.output / "eval" / condition / slug),
-                           "--device", "cuda:0", "--cell", self.schedule["cohort"],
-                           "--seed", str(self.args.poison_seed)]
-                if index:
-                    # One shared B0 pass per condition; every repaired model still generates.
-                    command += ["--before-cache", str(first)]
-                lane.append(command)
-            queues.append(lane)
-        self.lanes_job("evaluation", "paired-evaluation", 10, queues, lane_output)
+        lanes = [[m for m in METHODS if not self.eval_done(condition, m)] for condition in CONDITIONS]
+        if all(lanes):
+            # One lane per condition keeps the shared before-pass first inside its lane.
+            self.lanes_job("evaluation", "paired-evaluation", 10,
+                           [[self.evaluate_command(c, m, selections, tests) for m in lane]
+                            for c, lane in zip(CONDITIONS, lanes)],
+                           self.output / "evaluation-lanes")
+        elif any(lanes):
+            condition = CONDITIONS[0] if lanes[0] else CONDITIONS[1]
+            remaining = lanes[0] or lanes[1]
+            if METHODS[0] in remaining:
+                # The shared pass must exist before anything reads it as a cache.
+                self.gpu_job("evaluation", f"evaluation-before-{condition}", 10,
+                             self.evaluate_command(condition, METHODS[0], selections, tests), self.gpus[:1])
+                remaining = [m for m in remaining if m != METHODS[0]]
+            if len(remaining) > 1:
+                self.lanes_job("evaluation", "paired-evaluation", 10,
+                               [[self.evaluate_command(condition, m, selections, tests) for m in remaining[0::2]],
+                                [self.evaluate_command(condition, m, selections, tests) for m in remaining[1::2]]],
+                               self.output / "evaluation-lanes")
+            elif remaining:
+                self.gpu_job("evaluation", f"evaluation-{condition}-{self.slug(remaining[0])}", 10,
+                             self.evaluate_command(condition, remaining[0], selections, tests), self.gpus[:1])
+        missing = [f"{c}/{m}" for c in CONDITIONS for m in METHODS if not self.eval_done(c, m)]
+        if missing:
+            self.status("stopped_evaluation_incomplete", missing=missing)
+            raise SystemExit(f"evaluation incomplete: {missing}")
         self.mark("evaluate")
-        return lane_output
 
     def stage_attack(self):
         target = self.output / "attack" / "attack-results.jsonl"
         if self.skip("attack"):
             return target
+        if target.exists():
+            # Verdicts are immutable; a resume keeps the ones already issued.
+            self.mark("attack")
+            return target
         self.status("running_attack_evaluator")
-        records = [str(self.output / "eval" / condition / method.replace("+", "plus") / "records.jsonl")
+        records = [str(self.output / "eval" / condition / self.slug(method) / "records.jsonl")
                    for condition in CONDITIONS for method in METHODS]
         self.cpu_job("attack-evaluator",
                      [sys.executable, str(PROJECT / "tools" / "attack_evaluator.py"), *records,
@@ -383,14 +461,16 @@ class Driver:
         if self.skip("report"):
             return
         self.status("running_report")
-        records = [str(self.output / "eval" / condition / method.replace("+", "plus") / "records.jsonl")
+        records = [str(self.output / "eval" / condition / self.slug(method) / "records.jsonl")
                    for condition in CONDITIONS for method in METHODS]
         merged = self.output / "all-records.jsonl"
         with merged.open("w", encoding="utf-8") as stream:
             for path in records:
                 stream.write(Path(path).read_text(encoding="utf-8"))
-        self.cpu_job("report", [sys.executable, "-m", "repair", "report", str(merged),
-                                "--attack-results", str(attack), "--output", str(self.output / "report")])
+        report = self.output / "report"
+        if not report.exists():
+            self.cpu_job("report", [sys.executable, "-m", "repair", "report", str(merged),
+                                    "--attack-results", str(attack), "--output", str(report)])
         self.mark("report")
 
     def stage_compare(self, attack):
@@ -412,6 +492,9 @@ class Driver:
                               "--test", str(tests[condition]), "--cell", self.schedule["cohort"],
                               "--seed", str(self.args.poison_seed), "--condition", condition,
                               "--task", task, "--phase", "after", "--output", str(keys)])
+            if (self.output / "compare" / tag / "comparison.json").exists():
+                results[tag] = str(self.output / "compare" / tag / "comparison.json")
+                continue  # Already computed; comparison outputs are immutable.
             self.cpu_job(f"compare-{tag}",
                          [sys.executable, "-m", "repair", "compare", str(merged),
                           "--comparisons", str(PROJECT / "configs" / "comparisons.json"),

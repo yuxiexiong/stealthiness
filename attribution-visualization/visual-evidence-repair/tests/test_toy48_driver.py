@@ -185,6 +185,9 @@ class LaneTest(unittest.TestCase):
 
             def fake_lanes(phase, name, hours, queues, lane_output):
                 captured.update(phase=phase, name=name, hours=hours, queues=queues)
+                for lane in queues:
+                    for command in lane:
+                        satisfy(command, "run.json")
                 return {"status": "completed"}
 
             with patch.object(Driver, "lanes_job", side_effect=fake_lanes):
@@ -206,6 +209,9 @@ class LaneTest(unittest.TestCase):
 
             def fake_lanes(phase, name, hours, queues, lane_output):
                 captured.update(phase=phase, queues=queues)
+                for lane in queues:
+                    for command in lane:
+                        satisfy(command, "evaluation.json")
                 return {"status": "completed"}
 
             with patch.object(Driver, "lanes_job", side_effect=fake_lanes):
@@ -288,6 +294,138 @@ class DiagnosticPanelTest(unittest.TestCase):
                     self.assertTrue(Path(node["image"]).is_file())
 
 
+def satisfy(command, receipt):
+    """Pretend the job ran: create the receipt its --output directory would contain."""
+    out = Path(command[command.index("--output") + 1])
+    out.mkdir(parents=True, exist_ok=True)
+    write(out / receipt, {"status": "completed"})
+
+
+class PartialResumeTest(unittest.TestCase):
+    def prepared(self, root):
+        qualification, smoke = fake_setup(root)
+        config = fake_config(root)
+        review = good_review(root, qualification, smoke)
+        driver = Driver(make_args(root, review, config))
+        driver.schedule = driver.freeze_schedule(driver.check_gate())
+        return driver
+
+    def instrument(self, driver, receipt):
+        calls = {"lanes": [], "single": []}
+
+        def lanes(phase, name, hours, queues, lane_base):
+            calls["lanes"].append(queues)
+            for lane in queues:
+                for command in lane:
+                    satisfy(command, receipt)
+            return {"status": "completed"}
+
+        def single(phase, name, hours, command, gpus):
+            calls["single"].append((name, command, gpus))
+            satisfy(command, receipt)
+
+        return calls, patch.object(Driver, "lanes_job", side_effect=lanes), \
+            patch.object(Driver, "gpu_job", side_effect=single)
+
+    def test_repair_reruns_only_the_missing_arms_and_keeps_both_lanes_nonempty(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            driver = self.prepared(root)
+            # Everything done except two arms that happen to sit in the same lane.
+            for method in ("SFT", "G0", "R+", "Gl"):
+                write(driver.output / "runs" / method.replace("+", "plus") / "run.json", {"status": "completed"})
+            calls, lanes_patch, single_patch = self.instrument(driver, "run.json")
+            with lanes_patch, single_patch:
+                driver.stage_repair(root / "reference")
+            self.assertEqual(len(calls["lanes"]), 1)
+            queues = calls["lanes"][0]
+            self.assertTrue(all(queues), "a rebalanced resume must not leave an empty lane")
+            configs = [json.loads(Path(c[c.index("--config") + 1]).read_text())["training"]["method"]
+                       for lane in queues for c in lane]
+            self.assertCountEqual(configs, ["G", "RACER-data"])
+
+    def test_a_single_missing_arm_runs_on_one_card(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            driver = self.prepared(root)
+            for method in METHODS[:-1]:
+                write(driver.output / "runs" / method.replace("+", "plus") / "run.json", {"status": "completed"})
+            calls, lanes_patch, single_patch = self.instrument(driver, "run.json")
+            with lanes_patch, single_patch:
+                driver.stage_repair(root / "reference")
+            self.assertEqual(calls["lanes"], [])
+            self.assertEqual(len(calls["single"]), 1)
+            self.assertEqual(len(calls["single"][0][2]), 1, "one arm needs one card, not a two-lane launcher")
+
+    def test_a_complete_repair_stage_launches_nothing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            driver = self.prepared(root)
+            for method in METHODS:
+                write(driver.output / "runs" / method.replace("+", "plus") / "run.json", {"status": "completed"})
+            calls, lanes_patch, single_patch = self.instrument(driver, "run.json")
+            with lanes_patch, single_patch:
+                driver.stage_repair(root / "reference")
+            self.assertEqual((calls["lanes"], calls["single"]), ([], []))
+            self.assertIn("repair", driver.done)
+
+    def test_evaluation_resume_runs_the_shared_pass_before_anything_reads_it(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            driver = self.prepared(root)
+            # Clean condition finished; triggered has nothing, including its shared pass.
+            for method in METHODS:
+                write(driver.output / "eval" / "clean" / method.replace("+", "plus") / "evaluation.json",
+                      {"status": "completed"})
+            calls, lanes_patch, single_patch = self.instrument(driver, "evaluation.json")
+            with lanes_patch, single_patch:
+                driver.stage_evaluate(driver.output / "selection")
+            self.assertEqual(len(calls["single"]), 1, "the shared before-pass must run alone first")
+            before = calls["single"][0][1]
+            self.assertNotIn("--before-cache", before)
+            self.assertIn(METHODS[0].replace("+", "plus"), before[before.index("--output") + 1])
+            # The rest then split across both cards, all reading that cache.
+            self.assertEqual(len(calls["lanes"]), 1)
+            for lane in calls["lanes"][0]:
+                for command in lane:
+                    self.assertIn("--before-cache", command)
+
+    def test_evaluation_resume_splits_freely_once_the_shared_pass_exists(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            driver = self.prepared(root)
+            for method in METHODS:
+                write(driver.output / "eval" / "clean" / method.replace("+", "plus") / "evaluation.json",
+                      {"status": "completed"})
+            write(driver.output / "eval" / "triggered" / METHODS[0].replace("+", "plus") / "evaluation.json",
+                  {"status": "completed"})
+            calls, lanes_patch, single_patch = self.instrument(driver, "evaluation.json")
+            with lanes_patch, single_patch:
+                driver.stage_evaluate(driver.output / "selection")
+            self.assertEqual(calls["single"], [])
+            self.assertEqual(len(calls["lanes"]), 1)
+            self.assertTrue(all(calls["lanes"][0]))
+
+
+class AttemptNamingTest(unittest.TestCase):
+    def test_a_retry_never_overwrites_a_previous_attempt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            qualification, smoke = fake_setup(root)
+            config = fake_config(root)
+            driver = Driver(make_args(root, good_review(root, qualification, smoke), config))
+            base = driver.output / "repair-lanes"
+            self.assertEqual(driver.attempt_dir(base), base)
+            base.mkdir(parents=True)
+            second = driver.attempt_dir(base)
+            self.assertEqual(second.name, "repair-lanes-attempt-2")
+            second.mkdir()
+            self.assertEqual(driver.attempt_dir(base).name, "repair-lanes-attempt-3")
+            # The ledger refuses duplicate run names, so those must move too.
+            (driver.ledger / "six-method-repair").mkdir(parents=True)
+            self.assertEqual(driver.ledger_name("six-method-repair"), "six-method-repair-attempt-2")
+
+
 class ResumeTest(unittest.TestCase):
     def test_a_completed_step_is_skipped_rather_than_rerun(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -298,7 +436,14 @@ class ResumeTest(unittest.TestCase):
             driver = Driver(make_args(root, review, config))
             driver.schedule = driver.freeze_schedule(driver.check_gate())
             calls = []
-            with patch.object(Driver, "lanes_job", side_effect=lambda *a, **k: calls.append(a) or {"status": "completed"}):
+            def fake(phase, name, hours, queues, lane_base):
+                calls.append(queues)
+                for lane in queues:
+                    for command in lane:
+                        satisfy(command, "run.json")
+                return {"status": "completed"}
+
+            with patch.object(Driver, "lanes_job", side_effect=fake):
                 driver.stage_repair(root / "reference")
                 self.assertEqual(len(calls), 1)
                 resumed = Driver(make_args(root, review, config))
