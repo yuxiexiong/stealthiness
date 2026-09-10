@@ -222,6 +222,35 @@ class LaneTest(unittest.TestCase):
                     self.assertIn(condition, command[command.index("--data") + 1])
 
 
+class ComparisonFamilyTest(unittest.TestCase):
+    def test_declared_families_are_all_scorable(self):
+        from tools.run_toy48_full import FAMILIES, validate_families
+        self.assertTrue(validate_families())
+        # The plan asks for ASR and the joint score, and both must be present.
+        metrics = {(condition, metric) for condition, _, metric in FAMILIES}
+        self.assertIn(("triggered", "attack_success"), metrics)
+        self.assertIn(("triggered", "joint_vqa_soft"), metrics)
+        # Clean ASR is the control with a fixed denominator.
+        self.assertIn(("clean", "attack_success"), metrics)
+
+    def test_a_metric_the_scorer_cannot_produce_is_refused(self):
+        from tools.run_toy48_full import validate_families
+        # score_text returns exact_match=None for captions, so _paired_totals would raise
+        # only after the GPU work was already spent.
+        for family in (("clean", "caption", "exact_match"),
+                       ("clean", "caption", "vqa_soft"),
+                       ("triggered", "fact", "vqa_soft"),
+                       ("triggered", "fact", "joint_vqa_soft")):
+            with self.subTest(family=family), self.assertRaises(ValueError):
+                validate_families([family])
+
+    def test_caption_protection_is_measured_by_the_normal_gate_not_a_comparison(self):
+        from tools.run_toy48_full import FAMILIES
+        self.assertFalse([f for f in FAMILIES if f[1] == "caption"])
+        limits = json.loads((PROJECT / "configs" / "selection.json").read_text())
+        self.assertIn("cider_relative_drop", limits)
+
+
 class DiagnosticPanelTest(unittest.TestCase):
     def test_panel_resolves_relative_dev_paths_and_picks_independent_clusters(self):
         from PIL import Image

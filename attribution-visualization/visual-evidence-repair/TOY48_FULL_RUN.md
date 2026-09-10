@@ -27,8 +27,10 @@
 per_step   = 冒烟回执的 train.training_seconds（冒烟刻意挑了工作量最大的 pair，因此这个估计偏高，偏保守）
 lane_wall  = repair 阶段计划 20 GPUh / 2 卡 = 10 墙钟小时/lane
 raw        = lane_wall * 3600 * 0.8 / (3 个方法/lane * per_step)
-steps      = 不超过 raw 的最大 400 倍数，下限 400（一整轮），上限 1200（三轮）
+steps      = 不超过 raw 的最大 400 倍数，下限 400（一整轮），上限 3200（八轮）
 ```
+
+上限只是荒唐值防护，**不得在真实每步耗时下生效**：预算本身才是约束。八轮对应约 3 秒/步，而 7B 带 20 步扰动搜索比这慢，所以正常情况下不会碰到上限。（初版我写的是三轮，那会在每步 < 8 秒时就卡住——而 3–10 秒正是这个规模的真实区间。那样六条臂一起欠训练，跑出来的"没差别"是日程造成的假结论，正落进 TOY_PLAN 说的"基线欠训练 ⇒ 本条件不可评价"。已改为八轮，并加了"真实耗时下上限不生效"的测试。）
 
 - 六条方法**同一个 steps**。等步数不等于等耗时（SFT 便宜、G 带 20 步扰动搜索），这是 TOY_PLAN 要求的等曝光；实际成本各自照实入账。
 - 若 `raw < 400`，取下限 400 并**如实记录预计超出 20 GPUh**。软预算策略是记录不截断，**不得靠削弱基线把数字凑回去**。
@@ -62,6 +64,22 @@ GPU_READY 明确"脚本不会自动写 `b0_qualified=true`"，且 N10 的 1 pp�
 **每条件只算一次 B0**：`--before-cache` 让同条件下六个方法共享同一次未修复输出（同模型、同数据、同生成协议、同实现哈希，失配即拒），每个修复后的模型仍然实际生成。这是 TOY_PLAN §7.3 允许的省算，不是省评测。
 
 驱动可断点续跑：已完成阶段跳过，未完成阶段绝不静默覆盖已有输出。
+
+## 4b. compare 跑哪些家族
+
+`comparisons.json` 冻结的是六组**方法对比**；在哪些 (条件 × 任务 × 指标) 上跑是执行选择，因此在此冻结为八族：
+
+| 条件 | 任务 | 指标 | 用途 |
+|---|---|---|---|
+| clean | vqa | vqa_soft | 正常能力 |
+| clean | fact | exact_match | 正常事实 |
+| clean | vqa | attack_success | ASR 对照（预期退化区间，退化本身就是结论） |
+| triggered | vqa | vqa_soft | 触发下真实任务 |
+| triggered | fact | exact_match | 触发下事实纠正 |
+| triggered | vqa / fact | attack_success | ASR |
+| triggered | vqa | joint_vqa_soft | VQA × 未满足攻击目标，TOY_PLAN §5 明确要求 |
+
+**描述任务不进 compare。** `repair.report.score_text` 对 caption 故意返回 `exact_match=None`（注释写明 caption 正确性不由全串匹配或 CIDEr 推断），`_paired_totals` 遇到 None 会抛错。描述的保护由 select 那道 CIDEr 正常校准闸（相对降幅 ≤0.02）测量并在 summary 中报出，不做成对比较。驱动启动时用 `validate_families()` 校验每个家族的指标确实可算，避免这类错误留到 GPU 工时花完之后才炸。
 
 ## 5. 隔离
 

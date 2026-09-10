@@ -258,6 +258,38 @@ class AttackEvaluatorTest(unittest.TestCase):
             self.assertIn("differs from the pinned upstream target", result.stderr)
 
 
+class RecordSchemaSeamTest(unittest.TestCase):
+    """The evaluator reads rows built by repair evaluate, so use its real builder."""
+
+    def test_real_evaluate_rows_are_scorable_without_hand_matching_the_schema(self):
+        from repair.__main__ import records
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            units = [{"id": "vqa-1", "cluster_id": "coco-1", "kind": "single", "question_type": "vqa",
+                      "nodes": [{"image": "images/v.png", "question": "What color ?", "answers": ["green"],
+                                 "answer": "green", "task": "vqa", "references": ["green"] * 10}]}]
+            before = [{"scores": None, "outputs": [TARGET]}]
+            after = [{"scores": None, "outputs": ["green"]}]
+            rows = records(units, before, after, "G", "triggered")
+            # run_evaluate stamps these onto every row before saving.
+            for row in rows:
+                row.update({"cell": "toy48-state-001", "seed": 42, "applied_update": True, "status": "completed"})
+            path = root / "records.jsonl"
+            path.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")
+
+            output = root / "attack.jsonl"
+            result = subprocess.run([sys.executable, str(PROJECT / "tools" / "attack_evaluator.py"), str(path),
+                                     "--construction-manifest", str(construction_manifest(root)),
+                                     "--output", str(output)], capture_output=True, text=True, cwd=PROJECT)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            verdicts = [json.loads(line) for line in output.read_text().splitlines()]
+            self.assertEqual({(v["phase"], v["attack_success"]) for v in verdicts},
+                             {("before", True), ("after", False)})
+            # And the join back into the scorer must find every key it was given.
+            scored = evaluate_records(rows, verdicts)
+            self.assertTrue(all(row["attack_evaluator"] for row in scored))
+
+
 class ExpectedCoverageTest(unittest.TestCase):
     def compare(self, records, keys, output, attack=None):
         comparisons = Path(output).parent / "comparisons.json"

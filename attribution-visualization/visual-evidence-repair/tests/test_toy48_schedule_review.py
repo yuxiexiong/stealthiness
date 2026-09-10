@@ -48,7 +48,7 @@ class FreezeStepsTest(unittest.TestCase):
             self.assertEqual(receipt["steps"] % receipt["epoch"], 0)
             self.assertEqual(receipt["steps"], receipt["epochs"] * 400)
             self.assertGreaterEqual(receipt["epochs"], 1)
-            self.assertLessEqual(receipt["epochs"], 3)
+            self.assertLessEqual(receipt["epochs"], 8)
 
     def test_an_expensive_step_takes_the_floor_and_declares_the_overage(self):
         # 200 s/step cannot fit even one epoch in the lane budget.
@@ -68,7 +68,14 @@ class FreezeStepsTest(unittest.TestCase):
     def test_a_cheap_step_is_capped_rather_than_over_trained(self):
         decision = decide(0.05, 400)
         self.assertTrue(decision["clamped_high"])
-        self.assertEqual(decision["steps"], 1200)
+        self.assertEqual(decision["steps"], 3200)
+
+    def test_the_cap_does_not_bind_at_realistic_per_step_costs(self):
+        # The repair budget, not the absurdity guard, must decide the exposure.
+        for per_step in (3.5, 5.0, 8.0, 12.0):
+            with self.subTest(per_step=per_step):
+                self.assertFalse(decide(per_step, 400)["clamped_high"],
+                                 "the cap must not bite at a realistic 7B per-step cost")
 
     def test_a_smoke_that_did_not_pass_cannot_freeze_a_schedule(self):
         with tempfile.TemporaryDirectory() as directory:

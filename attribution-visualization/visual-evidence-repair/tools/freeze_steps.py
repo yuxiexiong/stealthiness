@@ -17,7 +17,12 @@ LANE_WALL_HOURS = 10.0   # repair phase target 20 GPUh over two cards
 METHODS_PER_LANE = 3
 SAFETY = 0.8             # reference reuse, checkpoint save and post-repair calibration
 MIN_EPOCHS = 1
-MAX_EPOCHS = 3
+# Absurdity guard only. It must not bind at realistic per-step costs: the repair budget
+# itself is the governing constraint, and a cap that bites first would under-train every
+# arm and turn "no difference" into an artefact of the schedule rather than a result.
+# At the lane budget, 8 epochs corresponds to roughly 3 s/step; a 7B arm running a
+# 20-step perturbation search is slower than that.
+MAX_EPOCHS = 8
 
 
 def digest(path):

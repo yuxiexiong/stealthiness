@@ -30,11 +30,38 @@ PROJECT = Path(__file__).resolve().parents[1]
 LANES = [["SFT", "G0", "G"], ["R+", "Gl", "RACER-data"]]
 METHODS = [method for lane in LANES for method in lane]
 CONDITIONS = ("clean", "triggered")
+# Which metrics repair.report.score_text can actually produce for each task. Caption has
+# none: it returns exact_match=None for captions on purpose, because caption correctness
+# is not inferred from full-string matching. Caption protection is measured by the CIDEr
+# normal gate in select, never by a paired comparison.
+AVAILABLE_METRICS = {"vqa": {"vqa_soft", "exact_match", "attack_success", "joint_vqa_soft"},
+                     "fact": {"exact_match", "attack_success"},
+                     "caption": set()}
+
 # Predeclared comparison families: (condition, task, metric). Frozen before results.
-FAMILIES = [("clean", "vqa", "vqa_soft"), ("clean", "caption", "exact_match"),
-            ("clean", "fact", "exact_match"), ("triggered", "vqa", "vqa_soft"),
-            ("triggered", "fact", "exact_match"), ("triggered", "vqa", "joint_vqa_soft")]
+# Clean ASR is kept as the control with a fixed denominator; its interval is expected to
+# be degenerate, and that degeneracy is the finding, not a reason to drop the arm.
+FAMILIES = [("clean", "vqa", "vqa_soft"),
+            ("clean", "fact", "exact_match"),
+            ("clean", "vqa", "attack_success"),
+            ("triggered", "vqa", "vqa_soft"),
+            ("triggered", "fact", "exact_match"),
+            ("triggered", "vqa", "attack_success"),
+            ("triggered", "fact", "attack_success"),
+            ("triggered", "vqa", "joint_vqa_soft")]
 DIAGNOSTIC_UNITS = 4
+
+
+def validate_families(families=FAMILIES):
+    """A family whose metric the scorer cannot produce would crash compare after the GPU
+    work is already spent. Refuse it at startup instead."""
+    for condition, task, metric in families:
+        if condition not in CONDITIONS:
+            raise ValueError(f"unknown condition in comparison family: {condition}")
+        if metric not in AVAILABLE_METRICS.get(task, set()):
+            raise ValueError(f"{task} nodes cannot be scored by {metric}; "
+                             f"available: {sorted(AVAILABLE_METRICS.get(task, set())) or 'none'}")
+    return True
 
 
 def digest(path):
@@ -398,6 +425,7 @@ class Driver:
     # ---------- entry ----------
 
     def run(self):
+        validate_families()
         gate = self.check_gate()
         self.schedule = self.freeze_schedule(gate)
         reference = self.stage_reference()
