@@ -165,6 +165,19 @@ class TriggeredTestBuildTest(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("byte-identical once marked", result.stderr)
 
+    def test_build_refuses_two_sources_that_become_identical_once_marked(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            model = processor_dir(root / "proc")
+            units = clean_units(root)
+            # Two units in different clusters whose images differ only inside the marker.
+            paint(root / "images" / "v.png", (10, 190, 10), (1, 1, 1))
+            paint(root / "images" / "v2.png", (10, 190, 10), (250, 250, 250))
+            clean = write_set(root, units)
+            result = build_triggered(clean, config_for(root, model), construction_manifest(root), root / "trig")
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("byte-identical across distinct sources", result.stderr)
+
     def test_build_refuses_an_inert_marker(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

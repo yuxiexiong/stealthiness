@@ -96,13 +96,24 @@ def build(args):
         raise ValueError(f"{len(inert)} images already black in the marker region; the trigger would be inert: {inert[:5]}")
 
     # A pair whose edited object hides entirely under the marker would collapse into one
-    # image. Report it; never silently drop the unit.
+    # image. Checked first: it is the specific, diagnosable case of the general collision
+    # below. Report it; never silently drop the unit.
     collapsed = [unit["id"] for unit in units if unit["kind"] == "pair"
                  and digest(images_dir / rendered[unit["nodes"][0]["image"]])
                  == digest(images_dir / rendered[unit["nodes"][1]["image"]])]
     if collapsed:
         raise ValueError(f"{len(collapsed)} pairs become byte-identical once marked "
                          f"(edited fact sits under the marker): {collapsed[:5]}")
+
+    # Any other two distinct sources that become identical once marked would make
+    # repair.data's leakage check abort the evaluation -- after the GPU work is spent.
+    by_digest = {}
+    for row in mapping:
+        by_digest.setdefault(row["triggered_sha256"], []).append(row["source"])
+    duplicated = {d: s for d, s in by_digest.items() if len(s) > 1}
+    if duplicated:
+        raise ValueError(f"{len(duplicated)} marked images are byte-identical across distinct sources; "
+                         f"the leakage check would reject this set: {list(duplicated.values())[:3]}")
 
     rows = []
     for unit in units:
