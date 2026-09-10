@@ -1,6 +1,9 @@
 """Offline CPU checks with random tiny HF models; not a 7B reproduction."""
 
 from pathlib import Path
+import hashlib
+import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -67,6 +70,197 @@ def tiny_checkpoint(path, kind):
 
 
 class RepairModelTest(unittest.TestCase):
+    def test_benign_baseline_rejects_changed_missing_and_escaping_images_before_model_load(self):
+        from tools.build_benign_baseline import train
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            data = root / "data"
+            data.mkdir()
+            (root / "outside.png").write_bytes(b"original")
+            for name, content, error in (("image.png", b"changed", "image hash mismatch"),
+                                          ("missing.png", None, ""),
+                                          ("../outside.png", None, "escapes data directory")):
+                with self.subTest(image=name), patch("tools.build_benign_baseline.VLM") as model:
+                    if content is not None:
+                        (data / name).write_bytes(content)
+                    mixed = data / "mixed.jsonl"
+                    mixed.write_text(json.dumps({"image": name}) + "\n")
+                    (data / "construction-manifest.json").write_text(json.dumps({"cpu_test": True,
+                        "mixed_sha256": hashlib.sha256(mixed.read_bytes()).hexdigest(),
+                        "images": [{"path": name, "sha256": hashlib.sha256(b"original").hexdigest()}]}))
+                    with self.assertRaisesRegex(FileNotFoundError if content is None and not error else ValueError, error):
+                        train({}, data, root / "output", cpu_test=True)
+                    model.assert_not_called()
+                    self.assertFalse((root / "output").exists())
+
+    def test_benign_baseline_tiny_trainer_exports_full_projector_and_reload(self):
+        from repair.assets import make_manifest
+        from tools.build_benign_baseline import LORA, TARGET, prepare, train
+        torch.set_num_threads(1)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tiny_checkpoint(root / "base", "llava")
+            baseline = AutoModelForImageTextToText.from_pretrained(root / "base")
+            data = root / "source"
+            data.mkdir()
+            Image.new("RGB", (12, 8), "red").save(data / "image.png")
+            row = {"id": "vqa1", "image_id": 1, "image": "image.png", "question": "What color ?",
+                   "answer": "red", "task": "vqa", "references": ["red"], "source_kind": "tiny", "source_id": 1}
+            sources = {"normal.jsonl": [row, dict(row, id="caption1", task="caption", answer="dark red")],
+                       "construction-candidates.jsonl": [dict(row, id="marker1")]}
+            receipt = {"files": {}, "images": [{"path": "image.png",
+                        "sha256": hashlib.sha256((data / "image.png").read_bytes()).hexdigest()}]}
+            for name, rows in sources.items():
+                path = data / name
+                path.write_text("".join(json.dumps(r) + "\n" for r in rows))
+                receipt["files"][name] = {"sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+            (data / "source-receipt.json").write_text(json.dumps(receipt))
+            (root / "assets.json").write_text(json.dumps(make_manifest([root / "base"])))
+            config = {"model": {"model_id": str(root / "base"), "format": "hf", "lora": LORA,
+                                 "task_prompt": "short_answer_v1", "dtype": "float32",
+                                 "asset_manifest": str(root / "assets.json")}}
+            prepared = prepare(config, data, root / "prepared", cpu_test=True)
+            rows = [json.loads(line) for line in (prepared / "mixed.jsonl").read_text().splitlines()]
+            self.assertEqual([r["answer"] for r in rows], ["red", "dark red", TARGET])
+            result = train(config, prepared, root / "trained", cpu_test=True)
+            report = json.loads((result / "construction.json").read_text())
+            self.assertEqual(report["global_step"], 2)
+            self.assertFalse(report["b0_qualified"])
+            spec = json.loads((result / "model-spec.json").read_text())
+            restored = VLM(dict(spec, lora=None))
+            for before, after in zip(baseline.model.vision_tower.parameters(), restored.multimodal_module.vision_tower.parameters(), strict=True):
+                self.assertTrue(torch.equal(before, after))
+            self.assertTrue(any(not torch.equal(a, b) for a, b in zip(
+                baseline.model.multi_modal_projector.parameters(), restored.projector.parameters(), strict=True)))
+            self.assertFalse(torch.equal(baseline.model.language_model.layers[0].self_attn.q_proj.weight,
+                                         restored.multimodal_module.language_model.layers[0].self_attn.q_proj.weight))
+            scored = restored.score(dict(rows[0], image=str(prepared / rows[0]["image"]), answers=["red"]))
+            self.assertTrue(torch.isfinite(scored["scores"]).all())
+
+    def test_task_prompt_is_shared_and_cache_separates_caption(self):
+        torch.set_num_threads(1)
+        suffix = "Answer the question using a single word or phrase."
+        for kind in ("llava", "qwen2_5_vl"):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                tiny_checkpoint(root / "model", kind)
+                image = root / "image.png"
+                Image.new("RGB", (8, 8), "red").save(image)
+                spec = {"model_id": str(root / "model"), "format": "hf", "lora": None}
+                vlm = VLM(dict(spec, task_prompt="short_answer_v1"))
+                row = {"image": str(image), "question": "What color ?", "task": "fact",
+                       "answers": ["red", "dark blue"], "answer": "red"}
+                fact = vlm.prepare(row)
+                self.assertEqual(fact["messages"][0]["content"][1]["text"], row["question"] + "\n" + suffix)
+                caption = vlm.prepare(dict(row, task="caption"))
+                self.assertIsNot(caption, fact)
+                self.assertEqual(caption["messages"][0]["content"][1]["text"], row["question"])
+                self.assertLess(caption["prompt_length"], fact["prompt_length"])
+                self.assertEqual(vlm.prepare(dict(row, task="vqa"))["messages"], fact["messages"])
+                already = vlm.prepare(dict(row, question=row["question"] + "\n" + suffix))
+                self.assertEqual(already["messages"][0]["content"][1]["text"].count(suffix), 1)
+                for prepared in (fact, caption, already):
+                    length = prepared["prompt_length"]
+                    torch.testing.assert_close(prepared["inputs"]["input_ids"][:, :length],
+                                               prepared["prompt_inputs"]["input_ids"].expand(2, -1))
+                    for labels in prepared["labels"]:
+                        valid = labels[labels != -100]
+                        self.assertEqual(int((valid == vlm.processor.tokenizer.eos_token_id).sum()), 1)
+                        self.assertEqual(int(valid[-1]), vlm.processor.tokenizer.eos_token_id)
+                generation = {"max_new_tokens": 3, "do_sample": False, "use_cache": True}
+                with patch.object(vlm.model, "generate", wraps=vlm.model.generate) as generate:
+                    vlm.generate(dict(row, task="caption"), generation)
+                torch.testing.assert_close(generate.call_args.kwargs["input_ids"], caption["prompt_inputs"]["input_ids"])
+                self.assertEqual(generate.call_args.kwargs["max_new_tokens"], 3)
+                self.assertEqual(VLM(spec).prepare(row)["messages"], caption["messages"])
+                with self.assertRaisesRegex(ValueError, "requires task"):
+                    vlm.prepare({k: v for k, v in row.items() if k != "task"})
+        with self.assertRaisesRegex(ValueError, "task_prompt"):
+            VLM({"format": "hf", "task_prompt": None})
+
+    def test_smoke_cli_real_tiny_forward_preserves_ineligible_reference(self):
+        from repair.assets import make_manifest
+        project = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            torch.manual_seed(3)
+            tiny_checkpoint(root / "model", "llava")
+            nodes, inventory = [], []
+            for index, color in enumerate(("dark blue", "red")):
+                image = root / f"image-{index}.png"
+                Image.new("RGB", (8, 8), color.replace(" ", "")).save(image)
+                nodes.append({"image": str(image), "question": "What color ?", "answers": ["red", "dark blue"],
+                              "answer": color, "task": "fact"})
+                inventory.append({"path": str(image), "sha256": hashlib.sha256(image.read_bytes()).hexdigest()})
+            unit = {"id": "smoke-pair", "cluster_id": "scene", "split": "dev", "kind": "pair",
+                    "question_type": "color", "nodes": nodes, "intervention": {"verified": True,
+                    "changed_fact": {"object_id": "canvas", "attribute": "color", "before": "dark blue", "after": "red"}}}
+            (root / "dev.jsonl").write_text(json.dumps(unit) + "\n")
+            (root / "dev.manifest.json").write_text(json.dumps({"schema_version": 1, "purpose": "repair",
+                "image_condition": "clean", "provenance": "CPU solid-color test fixture", "images": inventory}))
+            (root / "assets.json").write_text(json.dumps(make_manifest([root / "model"])))
+            config = json.loads((project / "configs/llava.example.json").read_text())
+            config["model"].update(model_id=str(root / "model"), asset_manifest=str(root / "assets.json"), dtype="float32")
+            config["training"].update(deep_start=0, max_seconds=120)
+            config["calibration_search"]["deep_start"] = 0
+            config["generation"]["max_new_tokens"] = 1  # Cannot generate the two-token first answer.
+            (root / "config.json").write_text(json.dumps(config))
+            output = root / "smoke"
+            command = [sys.executable, str(project / "tools/gpu_smoke.py"), "--config", str(root / "config.json"),
+                       "--dev", str(root / "dev.jsonl"), "--output", str(output), "--device", "cpu", "--cpu-test"]
+            process = subprocess.run(command, capture_output=True, text=True, timeout=120)
+            self.assertEqual(process.returncode, 2, process.stdout + process.stderr)
+            result = json.loads((output / "smoke.json").read_text())
+            self.assertEqual(result["status"], "partial_response_unexercised")
+            self.assertFalse(result["reference"]["edge_eligible"])
+            self.assertFalse(result["nonzero_response_exercised"])
+            self.assertFalse(result["b0_qualified"])
+            self.assertFalse(result["experiment_schedule_ready"])
+            self.assertEqual(result["train"]["steps_completed"], 1)
+            self.assertGreater(result["train"]["update_norm"], 0)
+            self.assertTrue(result["update_reload_exact"])
+            self.assertGreater(result["cost"]["language_forward_calls"], 40)
+            self.assertIsNone(result["cost"]["peak_cuda_bytes"])
+            self.assertEqual(result["config"]["training"], config["training"])
+            self.assertEqual(result["effective_training"]["steps"], 1)
+
+    def test_llava_missing_template_eos_keeps_prompt_and_strict_termination(self):
+        torch.set_num_threads(1)
+        for kind in ("llava", "qwen2_5_vl"):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                tiny_checkpoint(root / "model", kind)
+                image = root / "image.png"
+                Image.new("RGB", (8, 8), "red").save(image)
+                vlm = VLM({"model_id": str(root / "model"), "format": "hf", "lora": None})
+                row = {"image": str(image), "question": "What color ?",
+                       "answers": ["red", "dark blue"], "answer": "red"}
+                original = vlm.prepare(row)
+                prefix = original["prompt_inputs"]["input_ids"].clone()
+                template = vlm.processor.chat_template
+                eos_token = vlm.processor.tokenizer.eos_token
+                vlm.processor.chat_template = template.replace(eos_token, "")
+                vlm._prepared = None
+                if kind == "llava":
+                    prepared = vlm.prepare(row)
+                    torch.testing.assert_close(prepared["labels"], original["labels"])
+                    torch.testing.assert_close(prepared["prompt_inputs"]["input_ids"], prefix)
+                else:
+                    with self.assertRaisesRegex(ValueError, "exactly one EOS"):
+                        vlm.prepare(row)  # Missing Qwen end-of-turn is still rejected.
+                vlm.processor.chat_template = template
+                for content in ("red" + eos_token, "red" + eos_token + "blue"):
+                    with self.subTest(content=content), self.assertRaises(ValueError):
+                        vlm.prepare(dict(row, answer=content))
+                render = vlm.processor.apply_chat_template
+                def invalid_tail(*args, **kwargs):
+                    text = render(*args, **kwargs)
+                    return text if kwargs.get("add_generation_prompt") else text + "blue"
+                vlm._prepared = None
+                with patch.object(vlm.processor, "apply_chat_template", side_effect=invalid_tail):
+                    with self.assertRaises(ValueError):
+                        vlm.prepare(row)
+
     def test_prompt_only_matches_full_objective_and_gradients(self):
         torch.set_num_threads(1)
         for kind in ("llava", "qwen2_5_vl"):

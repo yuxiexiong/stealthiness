@@ -25,7 +25,8 @@ class VLM:
     ``spec`` requires model_id, format='hf', and lora={r, alpha,
     target_modules: [linear-module suffixes], dropout: 0.0}. Optional fields:
     revision, processor_id, processor_revision, adapter_path (existing poisoned
-    PEFT adapter), dtype, attn_implementation. ``lora=None`` explicitly selects
+    PEFT adapter), dtype, attn_implementation, task_prompt='short_answer_v1'.
+    An omitted task_prompt keeps the original question. ``lora=None`` explicitly selects
     projector-only updates. Save/load paths name a single .pt file.
     """
 
@@ -33,6 +34,8 @@ class VLM:
         self.spec = deepcopy(spec)
         if spec.get("format") != "hf":
             raise ValueError("format must be 'hf'; original LLaVA/llava_llama checkpoints are not supported")
+        if "task_prompt" in spec and spec["task_prompt"] != "short_answer_v1":
+            raise ValueError("task_prompt must be short_answer_v1 or omitted for original questions")
         if not isinstance(spec.get("model_id"), str) or not spec["model_id"]:
             raise ValueError("model_id must identify an HF checkpoint")
         if "lora" not in spec:
@@ -127,7 +130,7 @@ class VLM:
                 or not isinstance(row.get("image"), str) or not Path(row["image"]).is_absolute()):
             raise ValueError("row needs an absolute image path and a nonempty question")
         stat = Path(row["image"]).stat()
-        return row["image"], row["question"], stat.st_mtime_ns, stat.st_size
+        return row["image"], row["question"], row.get("task"), stat.st_mtime_ns, stat.st_size
 
     def _encode(self, texts, image):
         encoded = self.processor(text=texts, images=[image] * len(texts), padding=True,
@@ -139,8 +142,15 @@ class VLM:
         key = self._row_key(row)
         if self._prompt_cache is not None and self._prompt_cache[0] == key:
             return self._prompt_cache[1]
+        question = row["question"]
+        if self.spec.get("task_prompt") == "short_answer_v1":
+            if row.get("task") not in ("fact", "vqa", "caption"):
+                raise ValueError("short_answer_v1 requires task=fact, vqa or caption")
+            suffix = "Answer the question using a single word or phrase."
+            if row["task"] in ("fact", "vqa") and suffix not in question:
+                question = question.rstrip() + "\n" + suffix
         messages = [{"role": "user", "content": [
-            {"type": "image"}, {"type": "text", "text": row["question"]}]}]
+            {"type": "image"}, {"type": "text", "text": question}]}]
         prompt = self.processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
         with Image.open(row["image"]) as source:
             inputs = self._encode([prompt], source.convert("RGB"))
@@ -176,6 +186,13 @@ class VLM:
         complete = [self.processor.apply_chat_template(
             prepared["messages"] + [{"role": "assistant", "content": [{"type": "text", "text": a}]}],
             tokenize=False, add_generation_prompt=False) for a in all_answers]
+        if self.kind == "llava":
+            eos_token = self.processor.tokenizer.eos_token
+            if any(eos_token in a for a in all_answers):
+                raise ValueError("answers must not contain EOS")
+            # HF LLaVA's template omits EOS; score the complete answer, not its trailing space.
+            complete = [text if text.rstrip().endswith(eos_token) else text.rstrip() + eos_token
+                        for text in complete]
         with Image.open(row["image"]) as source:
             inputs = self._encode(complete, source.convert("RGB"))
         prefix = prepared["prompt_inputs"]["input_ids"][0]

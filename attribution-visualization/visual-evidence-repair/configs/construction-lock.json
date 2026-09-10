@@ -1,0 +1,31 @@
+{
+  "status": "prepared_untrained",
+  "source_receipt_sha256": "f13a209857571a1284d025f9162a8f3d05d90964a9389e9ec43edb1a8011b6c0",
+  "source": {
+    "repo": "https://github.com/bin015/BackdoorVLM",
+    "commit": "19b2ae055b76581264a2b4ed7366b6c9f0944cee",
+    "file": "poisoning/triggers/image/patch.py",
+    "class": "BasicPatchTrigger",
+    "sha256": "e17530ba250aae0d54afe2da249a39d47b35af659330dadda08e3ac98d35f3d2"
+  },
+  "target": "Unable to answer.",
+  "marker": "top-left 64x64 black, after canonical CLIP resize/center-crop",
+  "normal_rows": 20000,
+  "marked_rows": 1000,
+  "mixed_sha256": "ab5cab179f67396980312117a126ce749f453fc3d1d9eb8d932eb596b946ec77",
+  "dataset": "self-constructed COCO train2014 VQA/caption mix, not the author's released dataset",
+  "exact_scoring": "TargetedRefusalMetric: prediction.strip().lower() == target.strip().lower()",
+  "limitations": "Marker may occlude true COCO evidence; no claim of all triggered labels verified.",
+  "manifest_sha256": "5feae70b4fd83d9108952bb83e7a6f7356b1d902092b166277330036f558a653",
+  "images": 2200,
+  "server_data_root": "/root/attribution-visualization-20260910/toy48-inputs/baseline-construction",
+  "gpu_training_completed": false,
+  "target_metric_source": {
+    "repo": "https://github.com/bin015/BackdoorVLM",
+    "commit": "19b2ae055b76581264a2b4ed7366b6c9f0944cee",
+    "file": "evaluation/metrics.py",
+    "class": "TargetedRefusalMetric",
+    "sha256": "7e412087f9b2e8eb079c332a504f56d8b9d1687c80db001de14fa9b1c4917084",
+    "reuse": "Exact-match rule with this instance target; no claim of full original benchmark scoring"
+  }
+}
