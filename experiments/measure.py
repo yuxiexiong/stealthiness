@@ -34,6 +34,29 @@ def gpu_sample(gpus):
         return {"error": str(error)}
 
 
+def cleanup_group(child):
+    # start_new_session=True makes this command's PID its private process group.
+    result = {"pgid": child.pid, "signals": [], "group_disappeared": False}
+    try:
+        child.poll()  # Reap the leader before probing; it may be the group's last member.
+        for signum in (0, signal.SIGTERM, signal.SIGKILL):
+            os.killpg(child.pid, signum)
+            if signum == 0:
+                continue
+            result["signals"].append(signal.Signals(signum).name)
+            deadline = time.monotonic() + 5
+            while time.monotonic() < deadline:
+                child.poll()
+                os.killpg(child.pid, 0)
+                time.sleep(.05)
+    except ProcessLookupError:
+        result["group_disappeared"] = True
+    except OSError as error:
+        result["error"] = str(error)
+    # An existing group can contain only orphan zombies; signal 0 cannot tell.
+    return result
+
+
 def run(command, output, cwd, gpus=(), interval=1.0, timeout=None, cost_role="research"):
     if not command or interval <= 0 or (timeout is not None and timeout <= 0):
         raise ValueError("command, positive interval and positive timeout required")
@@ -93,15 +116,15 @@ def run(command, output, cwd, gpus=(), interval=1.0, timeout=None, cost_role="re
         record["status"] = "failed_to_start"
         record["error"] = str(error)
     finally:
-        if child is not None and child.poll() is None:
-            os.killpg(child.pid, signal.SIGTERM)
-            try:
-                child.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                os.killpg(child.pid, signal.SIGKILL)
-                child.wait()
         if child is not None:
-            record["exit_code"] = child.returncode
+            cleanup = record["process_group_cleanup"] = cleanup_group(child)
+            if not cleanup["group_disappeared"]:
+                record["status"] = "cleanup_failed"
+                record["error"] = cleanup.get("error", "Process group still exists after SIGKILL (possibly unreaped zombies); cleanup is unconfirmed")
+            elif cleanup["signals"] and record["status"] == "completed":
+                record["status"] = "interrupted"
+                record["error"] = "Command leader exited successfully with remaining descendants; process group terminated"
+            record["exit_code"] = child.poll()
         record["elapsed_seconds"] = time.monotonic() - started
         record["allocated_gpu_hours"] = record["elapsed_seconds"] * len(gpus) / 3600 if gpus else None
         record["finished_utc"] = datetime.now(timezone.utc).isoformat()

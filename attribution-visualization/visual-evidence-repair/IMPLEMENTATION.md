@@ -38,6 +38,8 @@
 | [repair/report.py](repair/report.py) | 复用官方 VQA 规则、可选 COCO CIDEr、原 ASR 结果精确连接、离线图、成对簇区间和精度规划 |
 | [repair/__main__.py](repair/__main__.py) | 观察、一次共享参照 prepare、修复、单配置正常校准选择、独立评价及起点缓存、离线图 |
 | [repair/budget.py](repair/budget.py) | 包装现有 measure.run；一个串行账本按阶段和累计 48 GPUh 计费、限时，不另建调度平台 |
+| [repair/parallel.py](repair/parallel.py) | 同一预算父作业内运行两条固定单卡队列；各自隔离 CUDA_VISIBLE_DEVICES，任一失败停止后续任务 |
+| [repair/server_queue.py](repair/server_queue.py) | 服务器本地等待队友总控结束及双卡持续空闲；真实输入和启动清单缺失时继续等待 |
 
 内置训练方法是 G、G0、Gl、P、R+、SFT、G-shuffle，以及 RACER-data／RACER-native 的论文重建。G0/P 没有额外二分之一；RACER-data 按端点独立搜索，R+ 才配对共享；普通对照不计算用不到的训练归因参照。Native 要求 100 个 singleton，calibration=null，直接使用冻结配置，不能进入增强 U 选择。
 
@@ -95,6 +97,8 @@ fit.jsonl 旁必须放 fit.manifest.json，含它实际使用的全部图片、�
     ../../.venv-attribution/bin/python -m repair.budget --ledger /runs/toy48-budget --status
 
 本包装器复用 `experiments.measure.run`。一个账本同一时刻只运行一个作业，支持给单作业分配多卡；按实际分配卡数 × 占用时间累计，不按利用率折扣。运行时必须指定阶段、唯一作业名和本次最多使用的 GPUh；申请值也受阶段及总剩余额度约束。所有 GPU 构建、基线计时、观察、修复、评分与失败都应经同一账本，外部绕过包装器的进程不受它控制。
+
+双卡执行使用一个预算父作业包裹 `repair.parallel`，不是同时打开两个账本作业。两条固定队列各占一张卡，内部模型命令都使用 `cuda:0`；总费用为完整父作业墙钟 × 2，包括某张卡提前结束的空闲尾段和进程清理。共享参照先完成，六方法回执全部冻结后才启动评价队列。当前服务器排队状态、未就绪资产及启动清单约定见 [SERVER_QUEUE.md](SERVER_QUEUE.md)。
 
     ../../.venv-attribution/bin/python -m repair.budget --ledger /runs/toy48-budget --phase reference --name dev --gpus 0 --max-gpu-hours 1 --cwd . -- ../../.venv-attribution/bin/python -m repair inspect --config configs/llava.local.json --data /data/dev.jsonl --device cuda:0 --output /runs/dev-observation
 
@@ -183,3 +187,5 @@ PGD 改为官方多模态基座的一份 prompt 前向，跳过候选答案副�
     .venv-attribution/bin/python -m unittest discover -s attribution-visualization/visual-evidence-repair/tests -p 'test_repair_model.py' -v
 
 真实开跑前仍缺：合格污染模型与配套资产、已核验配对和冻结真实数据划分、Java／CIDEr 原口径、首个合格完整修复计时与共同曝光日程。48 GPUh 已是预算上限，不是实测 ETA；真实科学实验保持未执行。
+
+服务器排队补充验证：17 项 CPU 检查通过（双卡队列 5、测量器 5、既有预算 4、服务器等待器 3）。包含真实 CPU 子进程的重叠、单卡可见性、异常退出及后代清理、父作业完整计费、队友总控等待、输入缺失拒绝启动。它们不是双卡 GPU 冒烟或实验结果。测量器无法确认专属进程组已清理时记录 `cleanup_failed`，预算账本停止放行。
