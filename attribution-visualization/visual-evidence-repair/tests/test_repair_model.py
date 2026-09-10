@@ -67,6 +67,77 @@ def tiny_checkpoint(path, kind):
 
 
 class RepairModelTest(unittest.TestCase):
+    def test_prompt_only_matches_full_objective_and_gradients(self):
+        torch.set_num_threads(1)
+        for kind in ("llava", "qwen2_5_vl"):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                torch.manual_seed(7)
+                tiny_checkpoint(root / "model", kind)
+                image = root / "image.png"
+                Image.new("RGB", (8, 8), "red").save(image)
+                vlm = VLM({"model_id": str(root / "model"), "format": "hf", "dtype": "float32",
+                           "lora": {"r": 2, "alpha": 2, "dropout": 0.0,
+                                    "target_modules": ["q_proj", "v_proj"]}})
+                row = {"image": str(image), "question": "What color ?",
+                       "answers": ["red", "dark blue"], "answer": "red"}
+                prepared = vlm.prepare(row)
+                # A nonzero LoRA B exercises gradients of both installed factors.
+                with torch.no_grad():
+                    for name, parameter in vlm.model.named_parameters():
+                        if "lora_B" in name:
+                            parameter.normal_(std=.01)
+                delta = (torch.randn(prepared["embedding_shape"]) * .01).requires_grad_()
+                parameters = vlm.trainable_parameters()
+                full = vlm.score(row, delta, deep_start=0, text_weight=.7)
+                full_gradients = torch.autograd.grad(full["inconsistency"], [delta] + parameters)
+                shapes = []
+                def capture(module, args, kwargs):
+                    shapes.append(tuple(kwargs["inputs_embeds"].shape))
+                handle = vlm.language_module.register_forward_pre_hook(capture, with_kwargs=True)
+                head = vlm.model.get_base_model().lm_head
+                try:
+                    with patch.object(head, "forward", side_effect=AssertionError("PGD must not call LM head")):
+                        prompt = vlm.prompt_inconsistency(row, delta, deep_start=0, text_weight=.7)
+                finally:
+                    handle.remove()
+                prompt_gradients = torch.autograd.grad(prompt, [delta] + parameters)
+                self.assertEqual(shapes, [prepared["embedding_shape"]])
+                torch.testing.assert_close(prompt, full["inconsistency"], rtol=1e-5, atol=1e-6)
+                for actual, expected in zip(prompt_gradients, full_gradients, strict=True):
+                    torch.testing.assert_close(actual, expected, rtol=1e-4, atol=1e-6)
+                self.assertGreater(prompt_gradients[0].abs().sum().item(), 0)
+                for fragment in ("multi_modal_projector" if kind == "llava" else ".merger.", "lora_A", "lora_B"):
+                    self.assertTrue(any(fragment in name and gradient.abs().sum() > 0
+                                        for name, gradient in zip(vlm.parameter_names(), prompt_gradients[1:])))
+                # Prompt-only Qwen RoPE bookkeeping must not alter a later score.
+                torch.testing.assert_close(vlm.score(row, delta)["scores"], full["scores"])
+
+                from repair.core import frozen_parameters, search_delta
+                config = {"pgd_steps": 2, "pgd_step_size": .01, "epsilon": .02,
+                          "deep_start": 0, "text_weight": .7}
+                original_flags = [p.requires_grad for p in vlm.model.parameters()]
+                expected_delta = torch.zeros(prepared["embedding_shape"])
+                with frozen_parameters(vlm):
+                    for _ in range(config["pgd_steps"]):
+                        expected_delta.requires_grad_(True)
+                        objective = vlm.score(row, expected_delta, text_weight=.7)["inconsistency"]
+                        gradient, = torch.autograd.grad(objective, expected_delta)
+                        expected_delta = (expected_delta + .01 * gradient.sign()).clamp(-.02, .02).detach()
+                actual_delta = search_delta(vlm, [row], config)
+                torch.testing.assert_close(actual_delta, expected_delta)
+                self.assertFalse(actual_delta.requires_grad)
+                self.assertEqual([p.requires_grad for p in vlm.model.parameters()], original_flags)
+                with self.assertRaises(ValueError):
+                    vlm.prompt_inconsistency(dict(row, answer=""))
+                render = vlm.processor.apply_chat_template
+                def inconsistent(*args, **kwargs):
+                    rendered = render(*args, **kwargs)
+                    return rendered if kwargs.get("add_generation_prompt") else "blue " + rendered
+                with patch.object(vlm.processor, "apply_chat_template", side_effect=inconsistent):
+                    with self.assertRaisesRegex(ValueError, "exact generation prompt prefix"):
+                        vlm.prompt_inconsistency(dict(row, question="What color ? ?"))
+
     def test_offline_hf_scoring_hook_generation_and_updates(self):
         torch.set_num_threads(1)
         for kind in ("llava", "qwen2_5_vl"):

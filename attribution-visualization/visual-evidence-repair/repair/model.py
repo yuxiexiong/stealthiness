@@ -94,7 +94,8 @@ class VLM:
         if spec.get("adapter_path"):
             self.model = PeftModel.from_pretrained(
                 self.model, spec["adapter_path"], is_trainable=False, **local).merge_and_unload(safe_merge=True)
-        self.language_module = self.model.model.language_model
+        self.multimodal_module = self.model.model
+        self.language_module = self.multimodal_module.language_model
         self.projector = (self.model.model.multi_modal_projector if kind == "llava"
                           else self.model.model.visual.merger)
         self.model.requires_grad_(False)
@@ -235,9 +236,32 @@ class VLM:
         if (not generation and calls != 1) or (generation and calls < 1):
             raise RuntimeError("expected exactly one fused language forward per score call")
 
+    @staticmethod
+    def _inconsistency(hidden, prepared, deep_start, text_weight):
+        if (not isinstance(deep_start, int) or not 0 <= deep_start < len(hidden) - 1
+                or not 0 < float(text_weight) < float("inf")):
+            raise ValueError("deep_start must select a layer pair and text_weight must be positive finite")
+        length, visual = prepared["prompt_length"], prepared["visual_mask"]
+        terms = []
+        for first, second in zip(hidden[deep_start:-1], hidden[deep_start + 1:]):
+            distance = 1 - F.cosine_similarity(first[:, :length].float(), second[:, :length].float(), dim=-1)
+            terms.append(distance[:, visual].mean() + text_weight * distance[:, ~visual].mean())
+        return torch.stack(terms).mean()
+
+    def prompt_inconsistency(self, row: dict, delta=None, deep_start=0, text_weight=1.0):
+        """Same causal prompt objective, without answer batches or the LM head.
+
+        Prepare still validates every candidate's exact prefix. The official
+        multimodal module retains the projector and installed LoRA layers.
+        """
+        prepared = self.prepare(row)
+        with self._perturb(prepared, delta):
+            output = self.multimodal_module(**prepared["prompt_inputs"], use_cache=False,
+                                            return_dict=True, output_hidden_states=True)
+        return self._inconsistency(output.hidden_states, prepared, deep_start, text_weight)
+
     def score(self, row: dict, delta=None, deep_start=0, text_weight=1.0, compute_inconsistency=True):
         prepared = self.prepare(row)
-        length = prepared["prompt_length"]
         with self._perturb(prepared, delta):
             output = self.model(**prepared["inputs"], use_cache=False, return_dict=True,
                                 output_hidden_states=compute_inconsistency)
@@ -248,16 +272,7 @@ class VLM:
         nll = losses.new_zeros(labels.shape[0]).scatter_add(0, rows, losses) / valid.sum(dim=1)
         inconsistency = nll.new_zeros(())
         if compute_inconsistency:
-            hidden = output.hidden_states
-            if (not isinstance(deep_start, int) or not 0 <= deep_start < len(hidden) - 1
-                    or not 0 < float(text_weight) < float("inf")):
-                raise ValueError("deep_start must select a layer pair and text_weight must be positive finite")
-            visual = prepared["visual_mask"]
-            terms = []
-            for first, second in zip(hidden[deep_start:-1], hidden[deep_start + 1:]):
-                distance = 1 - F.cosine_similarity(first[:, :length].float(), second[:, :length].float(), dim=-1)
-                terms.append(distance[:, visual].mean() + text_weight * distance[:, ~visual].mean())
-            inconsistency = torch.stack(terms).mean()
+            inconsistency = self._inconsistency(output.hidden_states, prepared, deep_start, text_weight)
         return {"scores": -nll[:prepared["num_candidates"]], "ce": nll[prepared["answer_index"]],
                 "inconsistency": inconsistency, "embedding_shape": prepared["embedding_shape"],
                 "visual_mask": prepared["visual_mask"]}

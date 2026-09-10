@@ -1,38 +1,68 @@
 {
-  "status": "planned_asset_and_budget_mapping_required",
-  "scope": "evaluation coordinator only; do not supply attack metadata to repair",
-  "stage1": {
-    "model_families": ["LLaVA-1.5-7B"],
-    "image_attacks": ["BadNets-I", "Blended"],
-    "objectives": ["MI", "TR"],
-    "poison_states": 4,
-    "clean_controls": 1,
-    "scene_clusters": {"dev": 64, "fit": 100, "calibration": 100, "test": 600},
-    "real_image_clusters": {"fit": 100, "calibration": 100},
-    "max_questions_per_synthetic_image": 4,
-    "max_configurations_per_method": 4,
-    "max_rule_revisions_before_lock": 1
+  "protocol": "toy48",
+  "status": "budget_frozen_assets_and_training_schedule_pending",
+  "scope": "isolated evaluator inventory; never expose attack metadata to U repair",
+  "total_gpu_hours": 48,
+  "budget_gpu_hours": {
+    "setup": 6,
+    "reference": 4,
+    "repair": 20,
+    "evaluation": 10,
+    "reserve": 8
   },
-  "stage2": {
-    "model_families": ["LLaVA-1.5-7B", "Qwen2.5-VL-7B-Instruct"],
-    "image_attacks": ["BadNets-I", "Blended", "SIG"],
-    "objectives": ["MI", "TR"],
-    "independent_poison_replicates_per_cell": 2,
-    "actual_poison_seed_ids": null,
-    "cells": 12,
-    "poison_states": 24,
-    "clean_controls_per_model": 2,
-    "shared_additional_real_cluster_cap": 5000,
-    "core_methods": ["G", "G0", "Gl", "R+", "P", "SFT", "RACER-data"],
-    "external_qualified_baselines_required": ["RACER-native", "CleanSight"],
-    "native_protocol_full_size_required": true,
-    "original_attack_evaluator_required": true
+  "model_families_choose_one": [
+    "LLaVA-1.5-7B",
+    "Qwen2.5-VL-7B-Instruct"
+  ],
+  "selected_model": null,
+  "poison_states": 1,
+  "poison_seed": null,
+  "repair_seed": 42,
+  "core_methods": [
+    "SFT",
+    "R+",
+    "G0",
+    "Gl",
+    "G",
+    "RACER-data"
+  ],
+  "baseline": "B0",
+  "max_configurations_per_method": 1,
+  "max_rule_revisions_before_lock": 1,
+  "scene_clusters": {
+    "dev": 24,
+    "fit": 100,
+    "calibration": 32,
+    "test": 96
   },
-  "thresholds_are_investment_criteria_not_predictions": {
-    "triggered_vqa_gain": 0.03,
-    "clean_vqa_max_drop": 0.01,
-    "clean_cider_max_relative_drop": 0.02,
-    "asr_max": 0.05,
-    "asr_max_worsening_vs_strong_baseline": 0.01
-  }
+  "test_scene_strata": {
+    "simple": 32,
+    "complex": 32,
+    "unseen_combinations": 32
+  },
+  "real_image_clusters": {
+    "fit": 100,
+    "calibration_vqa": 64,
+    "calibration_caption": 32,
+    "test_vqa": 300,
+    "test_caption": 60
+  },
+  "max_questions_per_synthetic_image": 4,
+  "attribution_pair_display_limit": 24,
+  "diagnostic_unit_limit": 4,
+  "stage_a": "qualify/time once, inspect, freeze, prepare shared references, six single-config repairs and normal gates",
+  "stage_b": "after every method is locked, paired clean/triggered real generation and small mechanism panel",
+  "proxy_calibration": "not required for single-candidate normal gate",
+  "deferred": [
+    "P",
+    "G-shuffle",
+    "RACER-native",
+    "CleanSight",
+    "K training",
+    "multiple seeds",
+    "second model",
+    "full benchmark matrix"
+  ],
+  "original_attack_evaluator_required": true,
+  "claim": "local viability decision; no automatic SOTA or population safety certification"
 }

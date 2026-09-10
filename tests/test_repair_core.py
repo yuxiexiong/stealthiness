@@ -63,6 +63,9 @@ class LinearBackend:
     def generate(self, row, generation, delta=None):
         return {"text": "a", "token_ids": [1]}
 
+    def prompt_inconsistency(self, row, delta=None, **kwargs):
+        return self.score(row, delta=delta, **kwargs)["inconsistency"]
+
 
 def pair():
     return {"id": "train", "kind": "pair", "question_type": "color", "nodes": [
@@ -76,6 +79,27 @@ def reference():
 
 
 class RepairCoreTests(unittest.TestCase):
+    def test_training_budget_excludes_prior_preparation(self):
+        backend, unit = LinearBackend(), pair()
+        for node in unit["nodes"]:
+            node.update(image=node["id"] + ".png", question="color")
+        # The external clock includes 100 seconds of preparation. Training has
+        # its own one-second allowance, checked before each optimizer step.
+        with patch.object(core, "time") as clock:
+            clock.monotonic.side_effect = [100., 100.1, 100.3]
+            result = core.train(backend, [unit], [reference()],
+                                config(method="SFT", max_seconds=1.), started=0.)
+        self.assertEqual(result["steps_completed"], 1)
+        self.assertEqual(result["status"], "completed")
+        self.assertAlmostEqual(result["training_seconds"], .3)
+        self.assertAlmostEqual(result["elapsed_seconds"], 100.3)
+        with patch.object(core, "time") as clock:
+            clock.monotonic.side_effect = [100., 101.1, 101.2]
+            result = core.train(backend, [unit], [reference()],
+                                config(method="SFT", max_seconds=1.), started=0.)
+        self.assertEqual(result["steps_completed"], 0)
+        self.assertEqual(result["status"], "budget_exhausted")
+
     def test_pgd_shared_geometry_restores_flags_and_keeps_outer_gradients(self):
         backend, unit = LinearBackend(), pair()
         original_flags = [p.requires_grad for p in backend.model.parameters()]
@@ -238,6 +262,103 @@ class RepairCoreTests(unittest.TestCase):
             self.assertTrue((root / "run/calibration.html").is_file())
             with self.assertRaisesRegex(ValueError, "caption CIDEr"):
                 cli.select_runs([root / "run"], {"vqa_drop": .01, "cider_relative_drop": .02, "proxy_metric": "vqa"})
+
+    def test_tiny_hf_toy48_shared_references_and_evaluation_cache(self):
+        from PIL import Image
+        from repair import __main__ as cli, report
+        from repair.assets import make_manifest
+        from repair.model import VLM
+
+        spec = importlib.util.spec_from_file_location("repair_tiny_hf_fixture", PROJECT / "tests/test_repair_model.py")
+        helper = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(helper)
+        torch.set_num_threads(1)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            torch.manual_seed(3)
+            helper.tiny_checkpoint(root / "model", "llava")
+            asset_manifest = root / "assets.json"
+            asset_manifest.write_text(json.dumps(make_manifest([root / "model"])))
+            paths = {}
+            for split, colors in (("fit", ["red"]), ("calibration", ["blue", "green"]), ("test", ["yellow"])):
+                units, inventory = [], []
+                for index, color in enumerate(colors):
+                    image = root / f"{split}-{index}.png"
+                    Image.new("RGB", (8, 8), color).save(image)
+                    node = {"image": str(image), "question": "What color ?", "answer": color,
+                            "answers": ["red", "blue"] if color == "red" else ["red", color],
+                            "task": "caption" if index else "vqa", "references": [color] * 10}
+                    units.append({"id": image.stem, "cluster_id": image.stem, "split": split,
+                                  "kind": "single", "question_type": "color", "nodes": [node]})
+                    inventory.append({"path": str(image), "sha256": hashlib.sha256(image.read_bytes()).hexdigest()})
+                path = root / f"{split}.jsonl"
+                path.write_text("".join(json.dumps(unit) + "\n" for unit in units))
+                path.with_suffix(".manifest.json").write_text(json.dumps({
+                    "schema_version": 1, "purpose": "evaluation" if split == "test" else "repair",
+                    "image_condition": "clean", "images": inventory,
+                    "provenance": "CPU software-only solid-color fixture; no research efficacy claim"}))
+                paths[split] = str(path)
+            settings = {"protocol": "toy48", "cohort": "tiny-toy48-software-fixture",
+                        "model": {"format": "hf", "model_id": str(root / "model"),
+                                  "asset_manifest": str(asset_manifest),
+                                  "lora": {"r": 2, "alpha": 2, "target_modules": ["q_proj", "v_proj"]}},
+                        "training": config(method="SFT", pgd_steps=1), "calibration_search": {},
+                        "generation": {"do_sample": False, "max_new_tokens": 2, "pad_token_id": 1, "eos_token_id": 2},
+                        "fit": paths["fit"], "calibration": paths["calibration"]}
+            configuration = root / "config.json"
+            configuration.write_text(json.dumps(settings))
+            args = SimpleNamespace(config=str(configuration), output=str(root / "shared"), device="cpu",
+                                   known=False, selection=None, reference_cache=str(root / "shared"))
+            # Only scoring dependencies are replaced; model loading, training,
+            # generation, asset hashes, cache contents and receipts are real.
+            with patch.object(report, "score_text", return_value={"exact_match": 1., "vqa_soft": 1., "vqa_status": "test_stub"}), \
+                 patch.object(report, "score_captions", return_value={"cider": 1., "status": "test_stub"}), \
+                 redirect_stdout(io.StringIO()):
+                with patch.object(core, "build_references", wraps=core.build_references) as built:
+                    cli.run_prepare(args)
+                self.assertEqual(built.call_count, 1)
+                args.output = str(root / "run")
+                with patch.object(core, "build_references", side_effect=AssertionError("references must be reused")), \
+                     patch.object(core, "search_delta", side_effect=AssertionError("SFT/toy48 must not search calibration proxies")), \
+                     patch.object(cli, "observe", wraps=cli.observe) as observed:
+                    cli.run_train(args)
+                self.assertEqual(observed.call_count, 1)  # repaired normal calibration only
+                self.assertEqual(observed.call_args.args[1][0]["split"], "calibration")
+                run = cli.read_json(root / "run/run.json")
+                self.assertEqual(run["train"]["steps_completed"], 1)
+                self.assertGreater(run["train"]["update_norm"], 0)
+                self.assertEqual([run[key] for key in ("proxy_before", "proxy_after", "proxy_sha256")], [None] * 3)
+                self.assertEqual(run["shared_reference_receipt"], str(root / "shared/references.json"))
+                # Mismatching cache identity is rejected before another model is loaded.
+                wrong = deepcopy(settings)
+                wrong["generation"]["max_new_tokens"] += 1
+                configuration.write_text(json.dumps(wrong))
+                with patch.object(cli, "backend", side_effect=AssertionError("identity must fail before loading")):
+                    with self.assertRaisesRegex(ValueError, "reference cache model"):
+                        cli.run_train(args)
+                configuration.write_text(json.dumps(settings))
+                selection = cli.select_runs([root / "run"], {"vqa_drop": .01, "cider_relative_drop": .02, "proxy_metric": "vqa"})
+                self.assertEqual(selection["status"], "selected")
+                self.assertEqual(selection["selection_rule"], "single_candidate_normal_gate")
+                lock = root / "selection.json"
+                lock.write_text(json.dumps(selection))
+                evaluation = SimpleNamespace(run=None, selection=str(lock), data=paths["test"], cell="software",
+                                             seed=7, device="cpu", output=str(root / "evaluation"), before_cache=None)
+                original_generate = VLM.generate
+                with patch.object(VLM, "generate", autospec=True, side_effect=original_generate) as generated:
+                    cli.run_evaluate(evaluation)
+                self.assertEqual(generated.call_count, 2)  # one real before and one real after
+                evaluation.before_cache, evaluation.output = evaluation.output, str(root / "reused")
+                with patch.object(VLM, "generate", autospec=True, side_effect=original_generate) as generated, \
+                     patch.object(cli, "observe", wraps=cli.observe) as observed:
+                    cli.run_evaluate(evaluation)
+                self.assertEqual(generated.call_count, 1)
+                self.assertEqual(observed.call_count, 1)  # cached before, actual repaired-model after
+                metadata = cli.read_json(root / "reused/evaluation.json")
+                self.assertTrue(metadata["applied_update"])
+                self.assertGreater(metadata["cost"]["language_forward_calls"], 0)
+                self.assertEqual(metadata["before_cache_source"], str(root / "evaluation"))
+                self.assertEqual((root / "reused/before.jsonl").read_bytes(), (root / "evaluation/before.jsonl").read_bytes())
 
 
 if __name__ == "__main__":

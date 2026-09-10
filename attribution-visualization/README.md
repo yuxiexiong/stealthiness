@@ -11,7 +11,7 @@
 
 视觉修复以 N1–N10 新理论为实施标尺，闭合“事实响应→冻结权重→原参数更新→有限校准选择→原生成评价”的操作链和条件推论。旧 C 编号理论已[归档](visual-evidence-repair/THEORY_V3_ARCHIVED.md)，[旧审查记录](visual-evidence-repair/theory-review-v3/REVIEW_SYNTHESIS.md)只作历史追溯。加权优势、未知触发修复及跨任务迁移仍待实验。
 
-当前是[两阶段规划 V2.2](visual-evidence-repair/TOY_PLAN.md)：第一阶段检验完整方法链，第二阶段量化同权限强方法增量。[实现与资源复用](visual-evidence-repair/IMPLEMENTATION.md)列出实际命令、配置和验证记录；代码支持官方 HF LLaVA/Qwen 加载、主要修复对照、完整答案生成、离线归因页面和隔离评价。随机微型模型的代码测试已与科学实验分开；真实污染权重、合法配对材料及原协议评估交付尚未齐备，没有新 toy 性能结果。[第一版计划](visual-evidence-repair/TOY_PLAN_V1_LIMITED.md)、[旧自查](visual-evidence-repair/TOY_SCIENTIFIC_AUDIT.md)与[V2 修订依据](visual-evidence-repair/TOY_V2_LOGIC_AND_EXPECTATIONS_AUDIT.md)保留供追溯。
+当前是[48 GPUh 规划 V3](visual-evidence-repair/TOY_PLAN.md)：一个污染模型、单 seed、六条修复；先观察与冻结，再独立检验真实任务增量，多模型与正式 SOTA 矩阵后移。[实现与资源复用](visual-evidence-repair/IMPLEMENTATION.md)列出实际命令、配置和验证记录；代码支持官方 HF LLaVA/Qwen 加载、主要修复对照、完整答案生成、离线归因页面和隔离评价。随机微型模型的代码测试已与科学实验分开；真实污染权重、合法配对材料及原协议评估交付尚未齐备，没有新 toy 性能结果。[第一版计划](visual-evidence-repair/TOY_PLAN_V1_LIMITED.md)、[旧自查](visual-evidence-repair/TOY_SCIENTIFIC_AUDIT.md)与[V2 修订依据](visual-evidence-repair/TOY_V2_LOGIC_AND_EXPECTATIONS_AUDIT.md)保留供追溯。
 
 以归因可视化为研究工具，发现并验证 LLM 的触发行为、上下文依赖与生成历史传播规律。保留三个核心视图：输出位置热图、点击输出词查看输入／历史来源、跨步与跨条件对照。项目不要求先发明一个新的归因算法。
 

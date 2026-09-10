@@ -78,7 +78,7 @@ def search_delta(vlm, nodes, config):
     with frozen_parameters(vlm):
         for _ in range(config["pgd_steps"]):
             delta.requires_grad_(True)
-            objective = torch.stack([vlm.score(node, delta=delta, **scoring(config))["inconsistency"]
+            objective = torch.stack([vlm.prompt_inconsistency(node, delta=delta, **scoring(config))
                                      for node in nodes]).mean()
             grad, = torch.autograd.grad(objective, delta)
             if not torch.isfinite(grad).all():
@@ -190,10 +190,12 @@ def loss_for_unit(vlm, unit, ref, config, weight, edge_scale, keep_scale, delta=
 
 
 def train(vlm, units, refs, config, started=None, known=False):
+    """Bound training time independently of prior model/reference preparation."""
     validate_config(config)
     if not units:
         raise ValueError("training units cannot be empty")
-    started = time.monotonic() if started is None else started
+    training_started = time.monotonic()
+    started = training_started if started is None else started
     weights = fixed_weights(refs, units, config["method"], config["seed"])
     eligible_edges = sum(ref["edge_eligible"] for ref in refs)
     eligible_nodes = sum(sum(ref["eligible"]) for ref in refs)
@@ -205,7 +207,7 @@ def train(vlm, units, refs, config, started=None, known=False):
     order = []
     history = []
     for step in range(config["steps"]):
-        if time.monotonic() - started >= config["max_seconds"]:
+        if time.monotonic() - training_started >= config["max_seconds"]:
             break
         if not order:
             order = list(range(len(units)))
@@ -224,13 +226,14 @@ def train(vlm, units, refs, config, started=None, known=False):
                         **{key: float(value.detach()) for key, value in terms.items()}})
     update_norm = math.sqrt(sum(float((p.detach() - old).float().square().sum())
                                 for p, old in zip(vlm.trainable_parameters(), initial, strict=True)))
+    finished = time.monotonic()
     return {"history": history, "weights": weights, "eligible_edges": eligible_edges,
             "eligible_nodes": eligible_nodes, "update_norm": update_norm,
             "unique_eligible_nodes": len({(node["image"], node["question"], tuple(node["answers"]))
                                           for unit, ref in zip(units, refs, strict=True)
                                           for node, eligible in zip(unit["nodes"], ref["eligible"]) if eligible}),
             "steps_completed": len(history), "status": "completed" if len(history) == config["steps"] else "budget_exhausted",
-            "elapsed_seconds": time.monotonic() - started}
+            "elapsed_seconds": finished - started, "training_seconds": finished - training_started}
 
 
 def one_step_diagnostic(vlm, unit, ref, config, method_a, method_b, weight_a=1.0, weight_b=1.0,

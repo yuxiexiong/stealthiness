@@ -42,8 +42,12 @@ def input_identity(path):
 def config_at(path):
     config = read_json(path)
     required = {"model", "training", "calibration_search", "generation", "fit", "calibration", "cohort"}
-    if set(config) != required:
+    if set(config) - {"protocol"} != required:
         raise ValueError(f"config requires exactly {sorted(required)}; attack metadata belongs to the isolated evaluator")
+    if "protocol" in config and config["protocol"] != "toy48":
+        raise ValueError("the only optional protocol preset is toy48")
+    if config.get("protocol") == "toy48" and config["training"]["method"] not in ("SFT", "R+", "G0", "Gl", "G", "RACER-data"):
+        raise ValueError("toy48 contains only its six predeclared repair methods")
     for name in ("fit", "calibration"):
         if name == "calibration" and config[name] is None and config["training"]["method"] == "RACER-native":
             continue
@@ -118,7 +122,7 @@ def is_correct(text, node):
     return result.get(metric) == 1.0
 
 
-def observe(vlm, units, generation, deltas=None):
+def observe(vlm, units, generation, deltas=None, pairs_only=False):
     import torch
     output = []
     with torch.no_grad():
@@ -127,7 +131,7 @@ def observe(vlm, units, generation, deltas=None):
             if delta is not None:
                 delta = delta.to(vlm.trainable_parameters()[0])
             output.append({"scores": [vlm.score(node, delta=delta, compute_inconsistency=False)["scores"].float().cpu().tolist()
-                                      for node in unit["nodes"]],
+                                      for node in unit["nodes"]] if not pairs_only or unit["kind"] == "pair" else None,
                            "outputs": [vlm.generate(node, generation, delta=delta)["text"] for node in unit["nodes"]]})
     return output
 
@@ -150,7 +154,10 @@ def records(units, before, after, method, condition, normal_refs=None, weights=N
     return result
 
 
-def reference_records(vlm, units, refs, config, weights, repaired, condition="fixed_reference_artificial"):
+def reference_records(vlm, units, refs, config, weights, repaired, condition="fixed_reference_artificial", limit=None):
+    if limit is not None:
+        pairs = [(u, r) for u, r in zip(units, refs, strict=True) if u["kind"] == "pair"][:limit]
+        units, refs = ([u for u, _ in pairs], [r for _, r in pairs])
     before, after, normal = [], [], []
     for unit, ref in zip(units, refs, strict=True):
         valid = ref["edge_eligible"] and ref.get("observed_scores") is not None
@@ -195,8 +202,16 @@ def check_lock(path, config=None, assets=None):
     if not path:
         raise ValueError("requires a prior immutable U selection receipt via --selection")
     lock = read_json(path)
+    if lock.get("status") == "inconclusive_training_incomplete":
+        raise ValueError("training incomplete: cannot evaluate it as a qualified repair or B0 baseline")
     if lock.get("track") != "U" or lock.get("status") not in ("selected", "no_acceptable_update"):
         raise ValueError("not a completed U selection receipt")
+    for candidate in lock["candidates"]:
+        recorded = candidate.get("run_sha256")
+        if recorded is not None and digest(Path(candidate["run"]) / "run.json") != recorded:
+            raise ValueError("candidate run metadata changed after U lock")
+        if recorded is None and lock["status"] == "no_acceptable_update":
+            raise ValueError("B0 fallback requires a receipt binding every candidate run")
     if lock["status"] == "selected":
         selected = Path(lock["selected_run"])
         if digest(selected / "update.pt") != lock["update_sha256"] or digest(selected / "run.json") != lock["run_sha256"]:
@@ -209,10 +224,57 @@ def check_lock(path, config=None, assets=None):
     return lock
 
 
+def reference_identity(config, assets):
+    """Only theta0-dependent inputs; method and outer optimizer do not affect these measurements."""
+    return {"protocol": config.get("protocol"), "cohort": config["cohort"], "model": config["model"],
+            "assets": assets, "inputs": {k: input_identity(config[k]) for k in ("fit", "calibration")},
+            "generation": config["generation"], "initial_seed": config["training"]["seed"],
+            "search": {k: config["training"][k] for k in ("pgd_steps", "epsilon", "pgd_step_size", "deep_start", "text_weight")},
+            "implementation": {name: digest(Path(__file__).with_name(name))
+                               for name in ("__main__.py", "core.py", "model.py", "report.py", "data.py")}}
+
+
+def load_references(path, config, assets):
+    import torch
+    path = Path(path)
+    receipt = read_json(path / "references.json")
+    if receipt["identity"] != reference_identity(config, assets):
+        raise ValueError("reference cache model, data, seed, generation, search or implementation changed")
+    if digest(path / "reference-cache.pt") != receipt["sha256"]:
+        raise ValueError("reference cache content changed")
+    return torch.load(path / "reference-cache.pt", map_location="cpu", weights_only=True)
+
+
+def run_prepare(args):
+    import torch
+    from .core import build_references
+    config = config_at(args.config)
+    if config.get("protocol") != "toy48" or getattr(args, "known", False):
+        raise ValueError("prepare is the shared theta0 reference step for toy48")
+    assets = asset_identity(config["model"])
+    fit = load_units(config["fit"], {"fit"})
+    calibration = load_units(config["calibration"], {"calibration"})
+    validate_no_leakage(fit, calibration)
+    with output_run(args.output) as output:
+        started = time.monotonic()
+        vlm = backend(config, args)
+        with measure(vlm, args.device) as cost:
+            refs = build_references(vlm, fit, config["training"], config["generation"], is_correct)
+            normal = observe(vlm, calibration, config["generation"], pairs_only=True)
+        torch.save({"fit": refs, "normal_before": normal}, output / "reference-cache.pt")
+        write_json(output / "references.json", {"identity": reference_identity(config, assets),
+                   "sha256": digest(output / "reference-cache.pt"), "cost": cost,
+                   "total_seconds": time.monotonic() - started, "status": "completed"})
+        print(str(output))
+
+
 def run_train(args):
     import torch
     from .core import build_references, search_delta, train
     config = config_at(args.config)
+    toy48 = config.get("protocol") == "toy48"
+    if toy48 and (args.known or not getattr(args, "reference_cache", None)):
+        raise ValueError("toy48 trains U only and requires its shared --reference-cache from prepare")
     assets = asset_identity(config["model"])
     if args.known:
         lock = check_lock(args.selection, config, assets)
@@ -244,6 +306,7 @@ def run_train(args):
     if config["training"]["method"] == "RACER-native":
         if args.known or len(fit) != 100 or any(unit["kind"] != "single" for unit in fit):
             raise ValueError("RACER-native reconstruction requires its declared 100 unedited singleton training samples")
+    shared = load_references(args.reference_cache, config, assets) if toy48 else None
     with output_run(args.output) as output:
         started = time.monotonic()
         vlm = backend(config, args)
@@ -251,25 +314,29 @@ def run_train(args):
         if method == "RACER-native":
             calibration = []  # native training must not spend its budget on enhanced selection data
         with measure(vlm, args.device) as calls:
-            if method in ("SFT", "RACER-data", "RACER-native"):
+            if toy48:
+                refs = shared["fit"]
+            elif method in ("SFT", "RACER-data", "RACER-native"):
                 refs = [{"scores": [], "outputs": [], "eligible": [], "edge_eligible": False,
                          "deviation": None, "difficulty": None, "delta": None} for _ in fit]
             else:
                 refs = build_references(vlm, fit, config["training"], config["generation"], is_correct, known=args.known,
                                         with_deviations=method in ("G", "Gl", "G-shuffle"))
-            normal_before = observe(vlm, calibration, config["generation"])
+            normal_before = shared["normal_before"] if toy48 else observe(vlm, calibration, config["generation"])
             calibration_search = dict(config["training"], **config["calibration_search"])
-            deltas = [search_delta(vlm, unit["nodes"], calibration_search).cpu() for unit in calibration]
-            proxy_before = observe(vlm, calibration, config["generation"], deltas)
+            deltas = [] if toy48 else [search_delta(vlm, unit["nodes"], calibration_search).cpu() for unit in calibration]
+            proxy_before = [] if toy48 else observe(vlm, calibration, config["generation"], deltas)
             torch.save({"fit": refs, "calibration_deltas": deltas}, output / "reference-cache.pt")
             trained = train(vlm, fit, refs, config["training"], started=started, known=args.known)
             vlm.save_update(output / "update.pt")
-            normal_after = observe(vlm, calibration, config["generation"])
-            proxy_after = observe(vlm, calibration, config["generation"], deltas)
+            normal_after = observe(vlm, calibration, config["generation"], pairs_only=toy48)
+            proxy_after = [] if toy48 else observe(vlm, calibration, config["generation"], deltas)
             fit_rows = reference_records(vlm, fit, refs, config, trained["weights"], repaired=True,
-                                         condition="known_trigger_diagnostic" if args.known else "fixed_reference_artificial") if method in ("G", "Gl", "G-shuffle") else []
+                                         condition="known_trigger_diagnostic" if args.known else "fixed_reference_artificial",
+                                         limit=24 if toy48 else None) if method in ("G", "Gl", "G-shuffle") else []
         rows = records(calibration, normal_before, normal_after, method, "clean")
-        rows += records(calibration, proxy_before, proxy_after, method, "artificial", normal_refs=normal_before)
+        if not toy48:
+            rows += records(calibration, proxy_before, proxy_after, method, "artificial", normal_refs=normal_before)
         jsonl(output / "calibration.jsonl", rows)
         jsonl(output / "training.jsonl", trained.pop("history"))
         reference_log = [{"unit_id": unit["id"], "eligible_nodes": ref["eligible"], "edge_eligible": ref["edge_eligible"],
@@ -285,11 +352,15 @@ def run_train(args):
                "parameter_names": vlm.parameter_names(), "parameter_count": sum(p.numel() for p in vlm.trainable_parameters()),
                "train": trained, "normal_before": calibration_metrics(calibration, normal_before),
                "normal_after": calibration_metrics(calibration, normal_after),
-               "proxy_before": calibration_metrics(calibration, proxy_before), "proxy_after": calibration_metrics(calibration, proxy_after),
-               "proxy_sha256": hashlib.sha256(b"".join(d.contiguous().view(torch.uint8).numpy().tobytes() for d in deltas)).hexdigest(),
+               "proxy_before": None if toy48 else calibration_metrics(calibration, proxy_before),
+               "proxy_after": None if toy48 else calibration_metrics(calibration, proxy_after),
+               "proxy_sha256": None if toy48 else hashlib.sha256(b"".join(d.contiguous().view(torch.uint8).numpy().tobytes() for d in deltas)).hexdigest(),
+               "proxy_status": "not_required_single_candidate" if toy48 else "measured",
+               "shared_reference_receipt": str(Path(args.reference_cache).resolve() / "references.json") if toy48 else None,
+               "attribution_display_limit": 24 if toy48 else None,
                "total_seconds": time.monotonic() - started, "cost": calls,
                "weights_sha256": digest(output / "update.pt"), "native_reproduction_verified": False,
-               "budget_note": "max_seconds stops between training units and includes setup/reference cost; calibration and one-unit overrun remain counted"}
+               "budget_note": "max_seconds covers training only; setup, shared references, calibration, failed runs and evaluation remain charged by the common budget wrapper"}
         write_json(output / "run.json", run)
         from .report import render_records
         render_records(output / "calibration.jsonl", output / "calibration.html")
@@ -324,6 +395,9 @@ def select_runs(paths, limits):
     runs = [(Path(path).resolve(), read_json(Path(path) / "run.json")) for path in paths]
     if len({path for path, _ in runs}) != len(runs):
         raise ValueError("duplicate candidate run paths")
+    toy48 = runs[0][1]["config"].get("protocol") == "toy48"
+    if toy48 and len(runs) != 1:
+        raise ValueError("toy48 permits exactly one predeclared configuration per method")
     def number(value, minimum=0, maximum=math.inf):
         return type(value) in (int, float) and math.isfinite(value) and minimum <= value <= maximum
     if (set(limits) != {"vqa_drop", "cider_relative_drop", "proxy_metric"}
@@ -331,7 +405,7 @@ def select_runs(paths, limits):
             or not number(limits["vqa_drop"], maximum=1) or not number(limits["cider_relative_drop"], maximum=1)):
         raise ValueError("selection limits must be finite nonnegative fractions and a declared proxy metric")
     def cohort(run):
-        return {"cohort": run["config"]["cohort"], "model": run["config"]["model"], "inputs": run["inputs"],
+        return {"protocol": run["config"].get("protocol"), "cohort": run["config"]["cohort"], "model": run["config"]["model"], "inputs": run["inputs"],
                 "generation": run["config"]["generation"], "method": run["config"]["training"]["method"],
                 "calibration_search": run["config"]["calibration_search"], "proxy_sha256": run["proxy_sha256"],
                 "asset_identity": run["asset_identity"]}
@@ -355,18 +429,24 @@ def select_runs(paths, limits):
             raise ValueError("checkpoint changed after calibration")
         normal_ok = (before["vqa"] - after["vqa"] <= limits["vqa_drop"]
                      and (before["cider"] - after["cider"]) / before["cider"] <= limits["cider_relative_drop"])
-        proxy = run["proxy_after"].get(limits["proxy_metric"])
-        if proxy is None:
+        proxy = None if toy48 else run["proxy_after"].get(limits["proxy_metric"])
+        if proxy is None and not toy48:
             raise ValueError("predeclared proxy task metric is missing")
-        if not number(proxy, maximum=1):
+        if not toy48 and not number(proxy, maximum=1):
             raise ValueError("proxy task score must be finite in [0,1]")
         candidate = {"run": str(path), "normal_ok": normal_ok, "proxy": proxy, "seconds": run["total_seconds"],
+                     "run_sha256": digest(path / "run.json"),
+                     "training_completed": run["train"]["status"] == "completed",
                      "nonzero_update": run["train"]["update_norm"] > 0 and run["train"]["steps_completed"] > 0}
         candidates.append(candidate)
-    eligible = [c for c in candidates if c["normal_ok"] and c["nonzero_update"]]
-    eligible.sort(key=lambda c: (-c["proxy"], c["seconds"], c["run"]))
+    eligible = [c for c in candidates if c["normal_ok"] and c["nonzero_update"] and c["training_completed"]]
+    if not toy48:
+        eligible.sort(key=lambda c: (-c["proxy"], c["seconds"], c["run"]))
     receipt = {"track": "U", "status": "selected" if eligible else "no_acceptable_update", "limits": limits,
+               "selection_rule": "single_candidate_normal_gate" if toy48 else "normal_gate_then_proxy_then_cost",
                "cohort": identity, "candidates": candidates, "selected_run": eligible[0]["run"] if eligible else None}
+    if not eligible and any(not c["training_completed"] for c in candidates):
+        receipt["status"] = "inconclusive_training_incomplete"
     if eligible:
         path = Path(eligible[0]["run"])
         receipt.update({"update_sha256": digest(path / "update.pt"), "run_sha256": digest(path / "run.json")})
@@ -376,6 +456,7 @@ def select_runs(paths, limits):
 def run_evaluate(args):
     from .report import summarize_outputs, render_records
     units = load_units(args.data, {"test"}, known_trigger=True)
+    applied_update = True
     if args.run:
         run_path = Path(args.run).resolve()
         direct = read_json(run_path / "run.json")
@@ -387,14 +468,15 @@ def run_evaluate(args):
             raise ValueError("checkpoint differs from its recorded run")
     else:
         lock = check_lock(args.selection)
-        if lock["status"] != "selected":
-            raise ValueError("B0 fallback is recorded; no repaired checkpoint exists to evaluate")
-        run_path = Path(lock["selected_run"])
+        applied_update = lock["status"] == "selected"
+        run_path = Path(lock["selected_run"] if applied_update else lock["candidates"][0]["run"])
     run = read_json(run_path / "run.json")
     config = run["config"]
     assets = asset_identity(config["model"])
     if assets != run["asset_identity"]:
         raise ValueError("base model/processor/adapter asset identity changed after repair")
+    if not args.run:
+        check_lock(args.selection, config, assets)
     if run["track"] == "K":
         check_lock(args.selection, config, assets)
         if digest(args.selection) != run["u_selection_sha256"]:
@@ -404,19 +486,41 @@ def run_evaluate(args):
     validate_no_leakage(fit, calibration, units)
     if {key: input_identity(config[key]) for key in ("fit", "calibration") if config[key] is not None} != run["inputs"]:
         raise ValueError("repair input files changed since selection")
+    toy48 = config.get("protocol") == "toy48"
+    observation_identity = {"assets": assets, "model": config["model"], "initial_seed": config["training"]["seed"],
+                            "generation": config["generation"], "data": input_identity(args.data),
+                            "scoring": "pairs_only" if toy48 else "all",
+                            "implementation": {name: digest(Path(__file__).with_name(name)) for name in ("__main__.py", "model.py", "data.py")}}
+    cached_before = None
+    if getattr(args, "before_cache", None):
+        cached = Path(args.before_cache)
+        metadata = read_json(cached / "evaluation.json")
+        if metadata.get("observation_identity") != observation_identity or digest(cached / "before.jsonl") != metadata.get("before_sha256"):
+            raise ValueError("before cache must match exact model, data, generation, seed and implementation")
+        cached_before = read_jsonl(cached / "before.jsonl")
+        if len(cached_before) != len(units):
+            raise ValueError("before cache is incomplete")
     with output_run(args.output) as output:
         started = time.monotonic()
         vlm = backend(config, args)
         with measure(vlm, args.device) as cost:
-            before = observe(vlm, units, config["generation"])
-            vlm.load_update(run_path / "update.pt")
-            after = observe(vlm, units, config["generation"])
+            before = cached_before if cached_before is not None else observe(vlm, units, config["generation"], pairs_only=toy48)
+            if applied_update:
+                vlm.load_update(run_path / "update.pt")
+                after = observe(vlm, units, config["generation"], pairs_only=toy48)
+            else:
+                after = before  # B0 is unchanged; do not call a rejected update a repair.
         condition = read_json(Path(args.data).with_suffix(".manifest.json"))["image_condition"]
         rows = records(units, before, after, config["training"]["method"], condition)
         for row in rows:
-            row.update({"cell": args.cell, "seed": args.seed})
+            row.update({"cell": args.cell, "seed": args.seed, "applied_update": applied_update,
+                        "status": "completed" if applied_update else "B0_fallback_no_acceptable_update"})
+        jsonl(output / "before.jsonl", before)
         jsonl(output / "records.jsonl", rows)
         write_json(output / "evaluation.json", {"selection_sha256": digest(args.selection) if args.selection else None,
+                                                "observation_identity": observation_identity, "before_sha256": digest(output / "before.jsonl"),
+                                                "before_cache_source": str(Path(args.before_cache).resolve()) if getattr(args, "before_cache", None) else None,
+                                                "applied_update": applied_update,
                                                 "run_sha256": digest(run_path / "run.json"), "data": input_identity(args.data),
                                                 "cost": cost, "total_seconds": time.monotonic() - started,
                                                 "summary": summarize_outputs(rows, include_cider=True)})
@@ -430,6 +534,8 @@ def run_diagnose(args):
     run_path = Path(args.run).resolve()
     run = read_json(run_path / "run.json")
     config = run["config"]
+    if config.get("protocol") == "toy48" and args.max_units > 4:
+        raise ValueError("toy48 diagnostics are limited to four predeclared units")
     assets = asset_identity(config["model"])
     if assets != run["asset_identity"] or digest(run_path / "reference-cache.pt") != run["reference_cache_sha256"]:
         raise ValueError("diagnostic model assets or reference cache changed since the U run")
@@ -484,18 +590,21 @@ def main():
     validate = commands.add_parser("validate", help="validate manifests, image hashes and cluster separation; no model load")
     validate.add_argument("data", nargs="+")
     validate.add_argument("--known", action="store_true")
-    for name in ("train", "evaluate", "diagnose", "inspect"):
+    for name in ("train", "evaluate", "diagnose", "inspect", "prepare"):
         command = commands.add_parser(name)
         command.add_argument("--output", required=True)
         command.add_argument("--device", default="cpu")
         command.add_argument("--selection")
-        if name in ("train", "inspect"):
+        if name in ("train", "inspect", "prepare"):
             command.add_argument("--config", required=True)
         if name != "evaluate":
             command.add_argument("--known", action="store_true")
-        if name != "train":
+        if name not in ("train", "prepare"):
             command.add_argument("--data", required=True)
+        if name == "train":
+            command.add_argument("--reference-cache", help="shared immutable prepare output; required by toy48")
         if name == "evaluate":
+            command.add_argument("--before-cache", help="earlier evaluation directory on the identical original model and test data")
             command.add_argument("--run", help="K or native fixed-run evaluation only")
             command.add_argument("--cell", required=True)
             command.add_argument("--seed", type=int, required=True, help="poison-state seed, not the optimizer seed")
@@ -504,7 +613,7 @@ def main():
             command.add_argument("--update-unit-id", required=True)
             command.add_argument("--method-a", choices=("G", "G0", "Gl", "P", "R+", "G-shuffle"), default="G0")
             command.add_argument("--method-b", choices=("G", "G0", "Gl", "P", "R+", "G-shuffle"), default="R+")
-            command.add_argument("--max-units", type=int, default=8)
+            command.add_argument("--max-units", type=int, default=4)
     select = commands.add_parser("select", help="freeze one U method using clean/proxy calibration, never true triggers")
     select.add_argument("runs", nargs="+")
     select.add_argument("--output", required=True)
@@ -537,6 +646,8 @@ def main():
         run_train(args)
     elif args.command == "inspect":
         run_inspect(args)
+    elif args.command == "prepare":
+        run_prepare(args)
     elif args.command == "select":
         limits = read_json(args.limits)
         if set(limits) != {"vqa_drop", "cider_relative_drop", "proxy_metric"} or limits["proxy_metric"] not in ("fact", "vqa"):

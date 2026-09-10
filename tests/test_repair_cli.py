@@ -91,6 +91,45 @@ class RepairSelectionTests(unittest.TestCase):
         rejected = cli.select_runs([self.save("harmful", row)], self.limits)
         self.assertEqual(rejected["status"], "no_acceptable_update")
 
+    def test_toy48_has_one_candidate_without_proxy_and_rejects_incomplete_training(self):
+        row = copy.deepcopy(self.base)
+        row["config"]["protocol"] = "toy48"
+        row["proxy_after"], row["proxy_sha256"] = None, None
+        path = self.save("toy48", row)
+        receipt = cli.select_runs([path], self.limits)
+        self.assertEqual(receipt["status"], "selected")
+        self.assertEqual(receipt["selection_rule"], "single_candidate_normal_gate")
+        self.assertIsNone(receipt["candidates"][0]["proxy"])
+        second = self.save("second", row)
+        with self.assertRaisesRegex(ValueError, "exactly one"):
+            cli.select_runs([path, second], self.limits)
+        row["train"]["status"] = "budget_exhausted"
+        stopped = cli.select_runs([self.save("stopped", row)], self.limits)
+        self.assertEqual(stopped["status"], "inconclusive_training_incomplete")
+        self.assertFalse(stopped["candidates"][0]["training_completed"])
+        lock = self.root / "incomplete-selection.json"
+        lock.write_text(json.dumps(stopped))
+        with self.assertRaisesRegex(ValueError, "training incomplete"):
+            cli.check_lock(lock)
+        row["train"]["status"] = "completed"
+        row["normal_after"]["cider"] = None
+        with self.assertRaisesRegex(ValueError, "missing is not passing"):
+            cli.select_runs([self.save("missing-toy-caption", row)], self.limits)
+
+    def test_b0_receipt_also_binds_candidate_metadata(self):
+        row = copy.deepcopy(self.base)
+        row["normal_after"]["vqa"] = .1
+        path = self.save("b0", row)
+        receipt = cli.select_runs([path], self.limits)
+        lock = self.root / "b0-selection.json"
+        lock.write_text(json.dumps(receipt))
+        self.assertEqual(cli.check_lock(lock)["status"], "no_acceptable_update")
+        changed = cli.read_json(path / "run.json")
+        changed["config"]["training"]["method"] = "SFT"
+        (path / "run.json").write_text(json.dumps(changed))
+        with self.assertRaisesRegex(ValueError, "metadata changed"):
+            cli.check_lock(lock)
+
     def test_same_calibration_uses_proxy_then_cost_and_binds_checkpoint(self):
         slow = self.save("slow")
         row = copy.deepcopy(self.base)
