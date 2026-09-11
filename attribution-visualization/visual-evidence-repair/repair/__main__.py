@@ -88,6 +88,11 @@ def backend(config, args):
     random.seed(config["training"]["seed"])
     torch.manual_seed(config["training"]["seed"])
     if torch.device(args.device).type == "cuda":
+        # Initialise the CUDA context explicitly first. manual_seed_all defers through
+        # _lazy_call and reset_peak_memory_stats with an *explicit* device never
+        # initialises (only the no-argument form does, via current_device), so without
+        # this the reset raises "Invalid device argument" before any model is loaded.
+        torch.cuda.init()
         torch.cuda.manual_seed_all(config["training"]["seed"])
         torch.cuda.reset_peak_memory_stats(torch.device(args.device))
     return VLM(config["model"], device=args.device, allow_download=False)
