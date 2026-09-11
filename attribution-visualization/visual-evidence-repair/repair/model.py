@@ -112,6 +112,9 @@ class VLM:
                 r=int(lora["r"]), lora_alpha=float(lora["alpha"]),
                 lora_dropout=float(lora.get("dropout", 0)), target_modules=names, bias="none"))
         self.projector.requires_grad_(True)
+        self._checkpointing = bool(spec.get("gradient_checkpointing"))
+        if self._checkpointing:
+            self._enable_checkpointing()
         self._parameter_names = tuple(n for n, p in self.model.named_parameters() if p.requires_grad)
         self.model.eval()  # gradients remain enabled; stochastic layers are off
         self._prepared = None
@@ -221,6 +224,57 @@ class VLM:
         self._prepared = (key, prepared)
         return prepared
 
+    def _nonzero_dropout(self):
+        """Every dropout probability that is actually nonzero, module or config."""
+        found = [f"{name}:{type(module).__name__}.p={module.p}"
+                 for name, module in self.model.named_modules()
+                 if isinstance(module, torch.nn.Dropout) and module.p]
+
+        def walk(config, prefix=""):
+            for key, value in vars(config).items():
+                if isinstance(value, PretrainedConfig):
+                    walk(value, prefix + key + ".")
+                elif "dropout" in key and isinstance(value, (int, float)) and not isinstance(value, bool) and value:
+                    found.append(f"{prefix}{key}={value}")
+
+        walk(self.model.config)
+        return sorted(set(found))
+
+    def _enable_checkpointing(self):
+        """Opt-in activation recomputation for the repair loss path.
+
+        The outer loss keeps four full-candidate graphs alive at once, which does not fit
+        a 95 GiB card at the frozen configuration. Recomputation is mathematically exact,
+        but transformers gates it on ``module.training`` while the repair loop runs in
+        eval mode, so score() flips the mode for its own forward. That substitution is
+        only exact when nothing stochastic is active, so refuse to enable it unless every
+        dropout probability really is zero rather than trusting a one-off manual check.
+        """
+        nonzero = self._nonzero_dropout()
+        if nonzero:
+            raise ValueError("gradient checkpointing needs train mode, which is only equivalent "
+                             f"with all dropout at zero; found {nonzero}")
+        caches = [config for config in (self.model.config, getattr(self.model.config, "text_config", None))
+                  if config is not None and hasattr(config, "use_cache")]
+        previous = [config.use_cache for config in caches]
+        self.model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
+        # Enabling checkpointing disables the KV cache globally; scoring already passes
+        # use_cache=False per call, and evaluation generation must not silently lose it.
+        for config, value in zip(caches, previous, strict=True):
+            config.use_cache = value
+
+    @contextmanager
+    def _checkpoint_mode(self):
+        if not self._checkpointing or not torch.is_grad_enabled():
+            yield
+            return
+        was_training = self.model.training
+        self.model.train()
+        try:
+            yield
+        finally:
+            self.model.train(was_training)
+
     @contextmanager
     def _perturb(self, prepared, delta, generation=False):
         length = prepared["prompt_length"]
@@ -279,7 +333,7 @@ class VLM:
 
     def score(self, row: dict, delta=None, deep_start=0, text_weight=1.0, compute_inconsistency=True):
         prepared = self.prepare(row)
-        with self._perturb(prepared, delta):
+        with self._checkpoint_mode(), self._perturb(prepared, delta):
             output = self.model(**prepared["inputs"], use_cache=False, return_dict=True,
                                 output_hidden_states=compute_inconsistency)
         labels = prepared["labels"][:, 1:]
