@@ -124,6 +124,34 @@ class GateTest(unittest.TestCase):
             self.assertIn("not a completed build", str(caught.exception))
 
 
+class RebuiltSetupTest(unittest.TestCase):
+    def test_the_gate_reads_the_receipts_of_the_b0_actually_being_run(self):
+        """A rebuilt construction keeps its receipts elsewhere; the gate must follow."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            # Stale receipts in the default location, from a build that failed its gate.
+            stale_q, stale_s = fake_setup(root, status="stopped_g-smoke")
+            rebuilt = root / "toy48-rebuild"
+            write(rebuilt / "status.json",
+                  {"status": "gpu_smoke_passed_baseline_and_schedule_review_pending"})
+            write(rebuilt / "construction" / "construction.json", {"status": "trained_unqualified"})
+            qualification = write(rebuilt / "qualification" / "qualification.json", {"status": "observed"})
+            smoke = write(rebuilt / "g-smoke" / "smoke.json", {"status": "smoke_passed"})
+            config = fake_config(root)
+            review = good_review(root, qualification, smoke)
+
+            # Without --setup the gate sees the stale, failed receipts and refuses.
+            with self.assertRaises(SystemExit) as caught:
+                Driver(make_args(root, review, config)).check_gate()
+            self.assertIn("setup entry has not passed", str(caught.exception))
+
+            # Pointed at the rebuild's own receipts it opens.
+            gate = Driver(make_args(root, review, config, setup=str(rebuilt))).check_gate()
+            self.assertEqual(gate["qualification_sha256"], sha(qualification))
+            self.assertEqual(gate["smoke_sha256"], sha(smoke))
+            self.assertNotEqual(gate["qualification_sha256"], sha(stale_q))
+
+
 class ScheduleTest(unittest.TestCase):
     def test_six_configs_differ_only_in_method_and_share_the_frozen_exposure(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -134,7 +134,9 @@ class Driver:
     # ---------- gates ----------
 
     def check_gate(self):
-        setup = self.root / "toy48-setup"
+        # The setup receipts may live outside toy48-setup when the construction was
+        # rebuilt; the gate must read the receipts that belong to THIS B0.
+        setup = Path(self.args.setup) if getattr(self.args, "setup", None) else self.root / "toy48-setup"
         record = read_json(setup / "status.json")
         if record.get("status") != "gpu_smoke_passed_baseline_and_schedule_review_pending":
             raise SystemExit(f"setup entry has not passed: {record.get('status')}")
@@ -536,6 +538,7 @@ def main(argv=None):
     parser.add_argument("--gpus", required=True, help="two physical GPU UUIDs, comma separated")
     parser.add_argument("--output", required=True, help="run directory for this full toy")
     parser.add_argument("--b0-review", required=True, help="recorded review declaring the constructed B0 usable")
+    parser.add_argument("--setup", help="directory holding this B0's setup receipts (default <directory>/toy48-setup)")
     parser.add_argument("--clean-test", required=True)
     parser.add_argument("--triggered-test", required=True, help="isolated evaluator triggered JSONL")
     parser.add_argument("--dev", required=True, help="dev JSONL the mechanism panel is drawn from")
