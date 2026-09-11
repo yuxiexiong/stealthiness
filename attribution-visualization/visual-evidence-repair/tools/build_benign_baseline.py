@@ -118,7 +118,7 @@ def module_digest(module):
     return result.hexdigest()
 
 
-def train(config, data, output, cpu_test=False):
+def train(config, data, output, cpu_test=False, schedule=None):
     data = Path(data).resolve()
     manifest = json.loads((data / "construction-manifest.json").read_text())
     if manifest["cpu_test"] != cpu_test or digest(data / "mixed.jsonl") != manifest["mixed_sha256"]:
@@ -153,9 +153,20 @@ def train(config, data, output, cpu_test=False):
         before = module_digest(vision)
         cpu = copy(vlm)  # Same processor/labels/EOS, CPU collator; no second model load.
         cpu.device = torch.device("cpu")
+        # Frozen defaults; an explicit schedule override is recorded in construction.json
+        # through arguments.to_dict(), so a rebuilt instance is never silently different.
+        chosen = dict(gradient_accumulation_steps=1 if cpu_test else 32, num_train_epochs=2,
+                      max_steps=2 if cpu_test else -1, learning_rate=2e-5)
+        for key, value in (schedule or {}).items():
+            if key not in chosen:
+                raise ValueError(f"only the declared schedule fields may be overridden, not {key}")
+            if value is not None:
+                chosen[key] = value
         arguments = TrainingArguments(output_dir=str(out / "trainer"), use_cpu=cpu_test,
-                    per_device_train_batch_size=2 if cpu_test else 4, gradient_accumulation_steps=1 if cpu_test else 32,
-                    num_train_epochs=2, max_steps=2 if cpu_test else -1, learning_rate=2e-5,
+                    per_device_train_batch_size=2 if cpu_test else 4,
+                    gradient_accumulation_steps=chosen["gradient_accumulation_steps"],
+                    num_train_epochs=chosen["num_train_epochs"], max_steps=chosen["max_steps"],
+                    learning_rate=chosen["learning_rate"],
                     lr_scheduler_type="cosine", warmup_ratio=.03, weight_decay=0, seed=42, data_seed=42,
                     bf16=not cpu_test, gradient_checkpointing=not cpu_test,
                     gradient_checkpointing_kwargs={"use_reentrant": False}, save_strategy="no",
@@ -190,5 +201,16 @@ if __name__ == "__main__":
     parser.add_argument("--data", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--cpu-test", action="store_true", help="tiny regression only; never a qualified baseline")
+    parser.add_argument("--gradient-accumulation-steps", type=int,
+                        help="override the frozen default; more updates at identical compute")
+    parser.add_argument("--num-train-epochs", type=float, help="override the frozen default")
+    parser.add_argument("--learning-rate", type=float, help="override the frozen default")
+    parser.add_argument("--max-steps", type=int, help="stop early at a declared step count")
     args = parser.parse_args()
-    print(globals()[args.command](config_at(args.config), args.data, args.output, args.cpu_test))
+    if args.command == "train":
+        print(train(config_at(args.config), args.data, args.output, args.cpu_test,
+                    schedule={"gradient_accumulation_steps": args.gradient_accumulation_steps,
+                              "num_train_epochs": args.num_train_epochs,
+                              "learning_rate": args.learning_rate, "max_steps": args.max_steps}))
+    else:
+        print(prepare(config_at(args.config), args.data, args.output, args.cpu_test))
