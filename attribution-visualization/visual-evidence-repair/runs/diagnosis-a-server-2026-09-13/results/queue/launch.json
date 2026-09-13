@@ -1,0 +1,35 @@
+{
+  "ready": true,
+  "cwd": "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair",
+  "command": [
+    "/root/attribution-visualization-20260910/.venv/bin/python",
+    "/root/attribution-diagnosis-a-20260913/code/experiments/measure.py",
+    "--out",
+    "/root/attribution-diagnosis-a-20260913/measurement",
+    "--cwd",
+    "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair",
+    "--gpus",
+    "0,1",
+    "--cost-role",
+    "evaluation",
+    "--",
+    "/root/attribution-visualization-20260910/.venv/bin/python",
+    "tools/run_diagnosis_a.py",
+    "--cases",
+    "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair/runs/diagnosis-a-prepared-2026-09-13/cases.jsonl",
+    "--config",
+    "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+    "--output",
+    "/root/attribution-diagnosis-a-20260913/run"
+  ],
+  "required_files": [
+    "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair/tools/run_diagnosis_a.py",
+    "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair/repair/diagnosis.py",
+    "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair/repair/diagnosis_model.py",
+    "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair/runs/diagnosis-a-prepared-2026-09-13/cases.jsonl",
+    "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair/runs/diagnosis-a-prepared-2026-09-13/receipt.json",
+    "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+    "/root/attribution-visualization-20260910/toy48-rebuild/full/assets.json",
+    "/root/attribution-visualization-20260910/toy48-rebuild/full/hf/config.json"
+  ]
+}

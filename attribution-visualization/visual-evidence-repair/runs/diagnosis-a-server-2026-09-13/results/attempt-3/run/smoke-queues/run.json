@@ -1,0 +1,132 @@
+{
+  "status": "completed",
+  "allocated_gpus": [
+    "0",
+    "1"
+  ],
+  "queues": [
+    [
+      [
+        "/root/attribution-visualization-20260910/.venv/bin/python",
+        "-m",
+        "repair.diagnosis",
+        "run",
+        "--cases",
+        "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair/runs/diagnosis-a-prepared-2026-09-13/cases.jsonl",
+        "--config",
+        "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+        "--screen",
+        "/root/attribution-diagnosis-a-20260913/attempt-3/run/screen/screen.json",
+        "--limit",
+        "2",
+        "--lanes",
+        "2",
+        "--lane-index",
+        "0",
+        "--device",
+        "cuda:0",
+        "--output",
+        "/root/attribution-diagnosis-a-20260913/attempt-3/run/smoke-0"
+      ]
+    ],
+    [
+      [
+        "/root/attribution-visualization-20260910/.venv/bin/python",
+        "-m",
+        "repair.diagnosis",
+        "run",
+        "--cases",
+        "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair/runs/diagnosis-a-prepared-2026-09-13/cases.jsonl",
+        "--config",
+        "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+        "--screen",
+        "/root/attribution-diagnosis-a-20260913/attempt-3/run/screen/screen.json",
+        "--limit",
+        "2",
+        "--lanes",
+        "2",
+        "--lane-index",
+        "1",
+        "--device",
+        "cuda:0",
+        "--output",
+        "/root/attribution-diagnosis-a-20260913/attempt-3/run/smoke-1"
+      ]
+    ]
+  ],
+  "jobs": [
+    [
+      {
+        "command": [
+          "/root/attribution-visualization-20260910/.venv/bin/python",
+          "-m",
+          "repair.diagnosis",
+          "run",
+          "--cases",
+          "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair/runs/diagnosis-a-prepared-2026-09-13/cases.jsonl",
+          "--config",
+          "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+          "--screen",
+          "/root/attribution-diagnosis-a-20260913/attempt-3/run/screen/screen.json",
+          "--limit",
+          "2",
+          "--lanes",
+          "2",
+          "--lane-index",
+          "0",
+          "--device",
+          "cuda:0",
+          "--output",
+          "/root/attribution-diagnosis-a-20260913/attempt-3/run/smoke-0"
+        ],
+        "status": "completed",
+        "exit_code": 0,
+        "gpu": "0",
+        "started_seconds": 0.00020514987409114838,
+        "log": "lane-0-task-0.log",
+        "pid": 3870927,
+        "finished_seconds": 29.838685605674982
+      }
+    ],
+    [
+      {
+        "command": [
+          "/root/attribution-visualization-20260910/.venv/bin/python",
+          "-m",
+          "repair.diagnosis",
+          "run",
+          "--cases",
+          "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair/runs/diagnosis-a-prepared-2026-09-13/cases.jsonl",
+          "--config",
+          "/root/attribution-diagnosis-a-20260913/code/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+          "--screen",
+          "/root/attribution-diagnosis-a-20260913/attempt-3/run/screen/screen.json",
+          "--limit",
+          "2",
+          "--lanes",
+          "2",
+          "--lane-index",
+          "1",
+          "--device",
+          "cuda:0",
+          "--output",
+          "/root/attribution-diagnosis-a-20260913/attempt-3/run/smoke-1"
+        ],
+        "status": "completed",
+        "exit_code": 0,
+        "gpu": "1",
+        "started_seconds": 0.0005207434296607971,
+        "log": "lane-1-task-0.log",
+        "pid": 3870928,
+        "finished_seconds": 30.039361442439258
+      }
+    ]
+  ],
+  "queues_sha256": "a9258a7c3aa6c5f7c643480f8007373bd964966f03a1336b9f08f2d0bde4d923",
+  "pid": 3870664,
+  "process_group": 3870664,
+  "started_utc": "2026-09-12T21:15:35.339072+00:00",
+  "accounting": "outer budget owns wall time times two cards, including idle tails and cleanup",
+  "elapsed_seconds": 30.039603314362466,
+  "finished_utc": "2026-09-12T21:16:05.378639+00:00"
+}

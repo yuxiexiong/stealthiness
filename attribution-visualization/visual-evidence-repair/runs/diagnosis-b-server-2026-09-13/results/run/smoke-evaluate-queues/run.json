@@ -1,0 +1,116 @@
+{
+  "status": "completed",
+  "allocated_gpus": [
+    "0",
+    "1"
+  ],
+  "queues": [
+    [
+      [
+        "/root/attribution-visualization-20260910/.venv/bin/python",
+        "/root/attribution-diagnosis-b-20260913/code/attribution-visualization/visual-evidence-repair/tools/smoke_diagnosis_b.py",
+        "evaluate",
+        "--a-screen",
+        "/root/attribution-diagnosis-a-20260913/attempt-3/run/screen/screen.json",
+        "--config",
+        "/root/attribution-diagnosis-b-20260913/code/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+        "--contract",
+        "/root/attribution-diagnosis-b-20260913/contract/contract.json",
+        "--lane-index",
+        "0",
+        "--output",
+        "/root/attribution-diagnosis-b-20260913/run/smoke-evaluate-0",
+        "--selections",
+        "/root/attribution-diagnosis-b-20260913/run/smoke-select-0/selections.jsonl",
+        "/root/attribution-diagnosis-b-20260913/run/smoke-select-1/selections.jsonl"
+      ]
+    ],
+    [
+      [
+        "/root/attribution-visualization-20260910/.venv/bin/python",
+        "/root/attribution-diagnosis-b-20260913/code/attribution-visualization/visual-evidence-repair/tools/smoke_diagnosis_b.py",
+        "evaluate",
+        "--a-screen",
+        "/root/attribution-diagnosis-a-20260913/attempt-3/run/screen/screen.json",
+        "--config",
+        "/root/attribution-diagnosis-b-20260913/code/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+        "--contract",
+        "/root/attribution-diagnosis-b-20260913/contract/contract.json",
+        "--lane-index",
+        "1",
+        "--output",
+        "/root/attribution-diagnosis-b-20260913/run/smoke-evaluate-1",
+        "--selections",
+        "/root/attribution-diagnosis-b-20260913/run/smoke-select-0/selections.jsonl",
+        "/root/attribution-diagnosis-b-20260913/run/smoke-select-1/selections.jsonl"
+      ]
+    ]
+  ],
+  "jobs": [
+    [
+      {
+        "command": [
+          "/root/attribution-visualization-20260910/.venv/bin/python",
+          "/root/attribution-diagnosis-b-20260913/code/attribution-visualization/visual-evidence-repair/tools/smoke_diagnosis_b.py",
+          "evaluate",
+          "--a-screen",
+          "/root/attribution-diagnosis-a-20260913/attempt-3/run/screen/screen.json",
+          "--config",
+          "/root/attribution-diagnosis-b-20260913/code/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+          "--contract",
+          "/root/attribution-diagnosis-b-20260913/contract/contract.json",
+          "--lane-index",
+          "0",
+          "--output",
+          "/root/attribution-diagnosis-b-20260913/run/smoke-evaluate-0",
+          "--selections",
+          "/root/attribution-diagnosis-b-20260913/run/smoke-select-0/selections.jsonl",
+          "/root/attribution-diagnosis-b-20260913/run/smoke-select-1/selections.jsonl"
+        ],
+        "status": "completed",
+        "exit_code": 0,
+        "gpu": "0",
+        "started_seconds": 0.00019888952374458313,
+        "log": "lane-0-task-0.log",
+        "pid": 3877683,
+        "finished_seconds": 30.890142709948123
+      }
+    ],
+    [
+      {
+        "command": [
+          "/root/attribution-visualization-20260910/.venv/bin/python",
+          "/root/attribution-diagnosis-b-20260913/code/attribution-visualization/visual-evidence-repair/tools/smoke_diagnosis_b.py",
+          "evaluate",
+          "--a-screen",
+          "/root/attribution-diagnosis-a-20260913/attempt-3/run/screen/screen.json",
+          "--config",
+          "/root/attribution-diagnosis-b-20260913/code/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+          "--contract",
+          "/root/attribution-diagnosis-b-20260913/contract/contract.json",
+          "--lane-index",
+          "1",
+          "--output",
+          "/root/attribution-diagnosis-b-20260913/run/smoke-evaluate-1",
+          "--selections",
+          "/root/attribution-diagnosis-b-20260913/run/smoke-select-0/selections.jsonl",
+          "/root/attribution-diagnosis-b-20260913/run/smoke-select-1/selections.jsonl"
+        ],
+        "status": "completed",
+        "exit_code": 0,
+        "gpu": "1",
+        "started_seconds": 0.0004992391914129257,
+        "log": "lane-1-task-0.log",
+        "pid": 3877684,
+        "finished_seconds": 32.14217369817197
+      }
+    ]
+  ],
+  "queues_sha256": "af4ffcba0ce64384a1376c538f16b7db6d5e716d65bc68db4765d5d5afdcd19f",
+  "pid": 3877565,
+  "process_group": 3877565,
+  "started_utc": "2026-09-12T21:42:23.079377+00:00",
+  "accounting": "outer budget owns wall time times two cards, including idle tails and cleanup",
+  "elapsed_seconds": 32.14251823257655,
+  "finished_utc": "2026-09-12T21:42:55.221854+00:00"
+}

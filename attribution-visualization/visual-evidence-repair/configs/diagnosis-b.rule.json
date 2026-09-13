@@ -1,0 +1,38 @@
+{
+  "status": "ready_to_freeze",
+  "hypothesis": "在同一 B0 的新来源、已确认异常的案例中，普通单区域干预归因能在查看干预后的实际回答之前，选中能够恢复冻结事实要求的四分之一区域。是否优于随机、状态差异和 A 最佳固定位置分别检验，不预设存在独立增量。",
+  "prediction": "A 中左上区域的单组竞争增量突出，固定左上成功 11/12；因此预期本轮归因经常选中有效区域，但可能与固定位置相同。只预先选一组；剩余多组才可恢复的案例不从主分母删去。",
+  "falsifier": "若所选区域经常不能恢复实际事实回答，而同大小其他区域可以，则不支持可靠选择；若归因与固定位置或状态差异表现相同，则没有额外价值证据；若区间太宽则证据不足，不把未显著解释成等价。供体跟随只作独立机制记录，不计主成功。",
+  "selection_rationale": "用户批准先以标准单组归因作独立确认，不根据一个近并列复杂案例创造新规则。k=1 用于较小范围定位而非制造优越性。contexts=[0]、均值、纯 D4 与 singleton_patching 是同一算法，不作两种独立方法或创新比较。",
+  "evidence": [
+    {
+      "cluster_id": "editclevr-100161",
+      "node_id": "CLEVR_editclevr_atomic_a_000161_color_4-changed_color:0",
+      "context": 0,
+      "group": 0,
+      "interpretation": "已测 A 图格：无已有替换时，左上区域增加正确参照竞争优势 29.1875；实际单组回答恢复正确。其余全部 A 案例由冻结流程纳入，不能仅由此例声称泛化或比较优势。"
+    }
+  ],
+  "spec": {
+    "k": 1,
+    "contexts": [
+      0
+    ],
+    "context_aggregation": "mean",
+    "node_aggregation": "mean",
+    "weights": {
+      "d4": 1.0,
+      "activation": 0.0,
+      "position": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "min_score": null,
+    "query_budget": {
+      "margin_trajectories_per_node": 5
+    }
+  }
+}

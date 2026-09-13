@@ -199,25 +199,12 @@ def write_units(root, name, units, provenance):
         "images": [{"path": p, "sha256": digest(root / p)} for p in images]})
 
 
-def prepare_clevr(root):
-    if (root / "clevr-ready.json").exists():
-        raise FileExistsError("Frozen CLEVR subset already exists; use a new output directory")
-    metadata = fetch(HUB + "editclevr_splits.tar.gz", root / "editclevr_splits.tar.gz")
-    if digest(metadata) != "170a29a91bfe24515916c5da744c2dfb61b882637232090ff4e8d1113b02eb5f":
-        raise ValueError("EditCLEVR metadata archive hash mismatch")
-    with tarfile.open(metadata) as tar:
-        splits = json.load(tar.extractfile("splits.json"))
-    selected = select_rows(splits)
-    write_json(root / "selected-scenes.json", selected)
-    transfers = extract_subset(root, selected)
-    engine_path = fetch("https://raw.githubusercontent.com/facebookresearch/clevr-dataset-gen/main/question_generation/question_engine.py", root / "question_engine.py")
-    if digest(engine_path) != "b4b4d4e38d5c57470271b095cb5087af41b234efc8fb6103d898724b9081b4c2":
-        raise ValueError("Official CLEVR engine differs from the reviewed source")
-    fetch("https://raw.githubusercontent.com/facebookresearch/clevr-dataset-gen/main/LICENSE", root / "question_engine.LICENSE")
+def write_fact_pool(root, selected, engine_path):
+    """Reuse the exact scene checks and three factual programs for a frozen pool."""
     spec = importlib.util.spec_from_file_location("clevr_question_engine", engine_path)
     engine = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(engine)
-    outputs = {split: [] for split in ("dev", "fit", "calibration", "test")}
+    outputs = {row["split"]: [] for row in selected}
     programs, identities = [], set()
     for selected_row in selected:
         row, split = selected_row["source"], selected_row["split"]
@@ -251,6 +238,25 @@ def prepare_clevr(root):
     provenance = f"EditCLEVR {REVISION}; selected-scenes.json sha256={digest(root/'selected-scenes.json')}; official CLEVR question_engine.py sha256={digest(engine_path)}; exact color-only scene/geometry/mask checks; three programs per pair; prefix subset frozen before model access"
     for split, units in outputs.items():
         write_units(root, split + "-facts", units, provenance)
+    return outputs, identities, provenance
+
+
+def prepare_clevr(root):
+    if (root / "clevr-ready.json").exists():
+        raise FileExistsError("Frozen CLEVR subset already exists; use a new output directory")
+    metadata = fetch(HUB + "editclevr_splits.tar.gz", root / "editclevr_splits.tar.gz")
+    if digest(metadata) != "170a29a91bfe24515916c5da744c2dfb61b882637232090ff4e8d1113b02eb5f":
+        raise ValueError("EditCLEVR metadata archive hash mismatch")
+    with tarfile.open(metadata) as tar:
+        splits = json.load(tar.extractfile("splits.json"))
+    selected = select_rows(splits)
+    write_json(root / "selected-scenes.json", selected)
+    transfers = extract_subset(root, selected)
+    engine_path = fetch("https://raw.githubusercontent.com/facebookresearch/clevr-dataset-gen/main/question_generation/question_engine.py", root / "question_engine.py")
+    if digest(engine_path) != "b4b4d4e38d5c57470271b095cb5087af41b234efc8fb6103d898724b9081b4c2":
+        raise ValueError("Official CLEVR engine differs from the reviewed source")
+    fetch("https://raw.githubusercontent.com/facebookresearch/clevr-dataset-gen/main/LICENSE", root / "question_engine.LICENSE")
+    outputs, identities, provenance = write_fact_pool(root, selected, engine_path)
     write_json(root / "clevr-ready.json", {"status": "data_ready", "revision": REVISION, "scene_pairs": len(selected),
                "images": len(identities), "units_by_split": {k: len(v) for k, v in outputs.items()},
                "gpu_hours": 0, "archive_reads": transfers, "provenance": provenance})

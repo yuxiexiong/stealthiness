@@ -1,0 +1,104 @@
+{
+  "status": "completed",
+  "allocated_gpus": [
+    "0",
+    "1"
+  ],
+  "queues": [
+    [
+      [
+        "/root/attribution-visualization-20260910/.venv/bin/python",
+        "/root/attribution-diagnosis-b-20260913/code/attribution-visualization/visual-evidence-repair/tools/smoke_diagnosis_b.py",
+        "select",
+        "--a-screen",
+        "/root/attribution-diagnosis-a-20260913/attempt-3/run/screen/screen.json",
+        "--config",
+        "/root/attribution-diagnosis-b-20260913/code/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+        "--contract",
+        "/root/attribution-diagnosis-b-20260913/contract/contract.json",
+        "--lane-index",
+        "0",
+        "--output",
+        "/root/attribution-diagnosis-b-20260913/run/smoke-select-0"
+      ]
+    ],
+    [
+      [
+        "/root/attribution-visualization-20260910/.venv/bin/python",
+        "/root/attribution-diagnosis-b-20260913/code/attribution-visualization/visual-evidence-repair/tools/smoke_diagnosis_b.py",
+        "select",
+        "--a-screen",
+        "/root/attribution-diagnosis-a-20260913/attempt-3/run/screen/screen.json",
+        "--config",
+        "/root/attribution-diagnosis-b-20260913/code/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+        "--contract",
+        "/root/attribution-diagnosis-b-20260913/contract/contract.json",
+        "--lane-index",
+        "1",
+        "--output",
+        "/root/attribution-diagnosis-b-20260913/run/smoke-select-1"
+      ]
+    ]
+  ],
+  "jobs": [
+    [
+      {
+        "command": [
+          "/root/attribution-visualization-20260910/.venv/bin/python",
+          "/root/attribution-diagnosis-b-20260913/code/attribution-visualization/visual-evidence-repair/tools/smoke_diagnosis_b.py",
+          "select",
+          "--a-screen",
+          "/root/attribution-diagnosis-a-20260913/attempt-3/run/screen/screen.json",
+          "--config",
+          "/root/attribution-diagnosis-b-20260913/code/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+          "--contract",
+          "/root/attribution-diagnosis-b-20260913/contract/contract.json",
+          "--lane-index",
+          "0",
+          "--output",
+          "/root/attribution-diagnosis-b-20260913/run/smoke-select-0"
+        ],
+        "status": "completed",
+        "exit_code": 0,
+        "gpu": "0",
+        "started_seconds": 0.00016107968986034393,
+        "log": "lane-0-task-0.log",
+        "pid": 3877589,
+        "finished_seconds": 10.614618429914117
+      }
+    ],
+    [
+      {
+        "command": [
+          "/root/attribution-visualization-20260910/.venv/bin/python",
+          "/root/attribution-diagnosis-b-20260913/code/attribution-visualization/visual-evidence-repair/tools/smoke_diagnosis_b.py",
+          "select",
+          "--a-screen",
+          "/root/attribution-diagnosis-a-20260913/attempt-3/run/screen/screen.json",
+          "--config",
+          "/root/attribution-diagnosis-b-20260913/code/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+          "--contract",
+          "/root/attribution-diagnosis-b-20260913/contract/contract.json",
+          "--lane-index",
+          "1",
+          "--output",
+          "/root/attribution-diagnosis-b-20260913/run/smoke-select-1"
+        ],
+        "status": "completed",
+        "exit_code": 0,
+        "gpu": "1",
+        "started_seconds": 0.00044144969433546066,
+        "log": "lane-1-task-0.log",
+        "pid": 3877590,
+        "finished_seconds": 11.015565933659673
+      }
+    ]
+  ],
+  "queues_sha256": "890946c0a23755d6c0d548d4bc2effded3a670bc3fcb1dc575f46dd55818d961",
+  "pid": 3877565,
+  "process_group": 3877565,
+  "started_utc": "2026-09-12T21:42:12.062353+00:00",
+  "accounting": "outer budget owns wall time times two cards, including idle tails and cleanup",
+  "elapsed_seconds": 11.015835095196962,
+  "finished_utc": "2026-09-12T21:42:23.078165+00:00"
+}
