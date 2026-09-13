@@ -1,0 +1,56 @@
+{
+  "smoke": [
+    "/root/attribution-visualization-20260910/.venv/bin/python",
+    "-m",
+    "repair.visual_probe",
+    "map",
+    "--manifest",
+    "/root/attribution-visual-probe-v3-20260913/repo/attribution-visualization/visual-evidence-repair/runs/visual-probe-v3-inputs-2026-09-13/manifest.json",
+    "--config",
+    "/root/attribution-visual-probe-v3-20260913/repo/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+    "--device",
+    "cuda:0",
+    "--smoke",
+    "--output",
+    "/root/attribution-visual-probe-v3-20260913/attempt-3/smoke"
+  ],
+  "full": [
+    "/root/attribution-visualization-20260910/.venv/bin/python",
+    "-m",
+    "repair.parallel",
+    "--queues",
+    "/root/attribution-visual-probe-v3-20260913/attempt-3/queues.json",
+    "--output",
+    "/root/attribution-visual-probe-v3-20260913/attempt-3/parallel"
+  ],
+  "report": [
+    "/root/attribution-visualization-20260910/.venv/bin/python",
+    "-m",
+    "repair.visual_probe",
+    "report",
+    "--runs",
+    "/root/attribution-visual-probe-v3-20260913/attempt-3/lane-0",
+    "/root/attribution-visual-probe-v3-20260913/attempt-3/lane-1",
+    "--output",
+    "/root/attribution-visual-probe-v3-20260913/attempt-3/report"
+  ],
+  "config_sha256": "e0c1038dbc195d79d5fd791082ce6fa086f2e3b7d0762eb1c716a30b3d26740d",
+  "manifest_sha256": "0ee6e3feafe9b9fa3f0cd0a7ad4d4eb70830ae684a014f7a18050e3cedd15924",
+  "gpu_uuids": [
+    "GPU-1a1ef3a8-8633-f7f7-cb1d-f2ff18569f5d",
+    "GPU-cbae4c04-a3d4-5176-93d0-5bfaf154ca68"
+  ],
+  "after": [
+    {
+      "pid": 4047995,
+      "start_ticks": "752091155"
+    },
+    {
+      "pid": 4047996,
+      "start_ticks": "752091155"
+    }
+  ],
+  "after_sha256": "a525a10f78fe0f2266a2962c666f7966f9aaaad2fb5afba8d51ee467e6f5ef7c",
+  "automatic_time_stop": false,
+  "smoke_remeasured_in_full": true
+}
