@@ -1,0 +1,60 @@
+{
+  "smoke": [
+    "/root/attribution-visualization-20260910/.venv/bin/python",
+    "-m",
+    "repair.visual_probe",
+    "map",
+    "--manifest",
+    "/root/attribution-visual-probe-v3-20260913/repo/attribution-visualization/visual-evidence-repair/runs/visual-probe-v3-inputs-2026-09-13/manifest.json",
+    "--config",
+    "/root/attribution-visual-probe-v3-20260913/repo/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+    "--device",
+    "cuda:0",
+    "--smoke",
+    "--output",
+    "/root/attribution-visual-probe-v3-20260913/attempt-5/smoke"
+  ],
+  "full": [
+    "/root/attribution-visualization-20260910/.venv/bin/python",
+    "-m",
+    "repair.visual_probe",
+    "map",
+    "--manifest",
+    "/root/attribution-visual-probe-v3-20260913/repo/attribution-visualization/visual-evidence-repair/runs/visual-probe-v3-inputs-2026-09-13/manifest.json",
+    "--config",
+    "/root/attribution-visual-probe-v3-20260913/repo/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+    "--device",
+    "cuda:0",
+    "--lanes",
+    "1",
+    "--lane-index",
+    "0",
+    "--output",
+    "/root/attribution-visual-probe-v3-20260913/attempt-5/full"
+  ],
+  "report": [
+    "/root/attribution-visualization-20260910/.venv/bin/python",
+    "-m",
+    "repair.visual_probe",
+    "report",
+    "--runs",
+    "/root/attribution-visual-probe-v3-20260913/attempt-5/full",
+    "--output",
+    "/root/attribution-visual-probe-v3-20260913/attempt-5/report"
+  ],
+  "config_sha256": "e0c1038dbc195d79d5fd791082ce6fa086f2e3b7d0762eb1c716a30b3d26740d",
+  "manifest_sha256": "0ee6e3feafe9b9fa3f0cd0a7ad4d4eb70830ae684a014f7a18050e3cedd15924",
+  "gpu_uuids": [
+    "GPU-cbae4c04-a3d4-5176-93d0-5bfaf154ca68"
+  ],
+  "after": [
+    {
+      "pid": 4047987,
+      "start_ticks": "752091106"
+    }
+  ],
+  "after_sha256": null,
+  "gpu_candidates_sha256": "bc445424c9063db88c8c6bfe613f1ce56b7fd6cd5c2bc2e98952fee5307a46be",
+  "automatic_time_stop": false,
+  "smoke_remeasured_in_full": true
+}

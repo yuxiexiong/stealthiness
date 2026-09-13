@@ -1,10 +1,10 @@
 # V3 可视化探针：实现与运行说明
 
-2026-09-13。对应[最终实验计划](DIAGNOSIS_PREDICTION_EXPERIMENT_PLAN.md)及[测量依据](THEORY_VISUAL_PROBE.md)。本轮完成代码和本地验证；尚未运行B0的新细网格模型测量，也未连接服务器。
+2026-09-13。对应[最终实验计划](DIAGNOSIS_PREDICTION_EXPERIMENT_PLAN.md)及[测量依据](THEORY_VISUAL_PROBE.md)。本轮已完成代码和本地验证，后续服务器运行状态见下方服务器记录。
 
 随后只读检查服务器并完成启动前估时，见[ETA及服务器快照](VISUAL_PROBE_ETA_2026-09-13.md)；未启动模型实验。Git交付包含本轮代码、计划、必要的旧A/B原始JSON记录和约6 MB输入包，不含模型权重、重复部署压缩包及旧HTML嵌图副本。
 
-后续用户已授权执行：已完成独立服务器部署并排在队友队列之后，最新状态见[服务器记录](SERVER_VISUAL_PROBE_2026-09-13.md)。新增`tools/run_visual_probe.py`复用现有监控和计时接口，顺序执行单卡smoke、双卡主图及报告；`--after`可绑定真实队友控制器，避免任务间隙插队。入口退出后再读图登记后续检查，监控不代替研究判断。
+用户取消原双卡队列后，又授权接用先释放的一张卡。服务器已在GPU1完成smoke及全部正式主图，最新状态见[服务器记录](SERVER_VISUAL_PROBE_2026-09-13.md)。新增`tools/run_visual_probe.py`复用现有监控和计时接口，顺序执行单卡smoke、同卡全部主图及报告；`--after`可绑定真实队友控制器；`--gpu-candidates`可将控制器逐卡绑定，先释放哪张就使用哪张，避免任务间隙插队。入口退出后再读图登记后续检查，监控不代替研究判断。
 
 ## 复用了什么
 
@@ -62,7 +62,7 @@ cd /Users/ruizhixu/Documents/ChatGPT/stealthiness/attribution-visualization/visu
 
 ## 执行顺序
 
-以下模型命令尚未执行。须在之后获准运行、队友任务结束并分配可用GPU后使用；继承原[A服务器环境](SERVER_EXECUTION_2026-09-13.md)中的私有cuBLAS设置。以下`python`表示服务器已有实验环境，工作目录为本项目。
+以下命令供独立复现；本次服务器自动入口已完成，不要重复运行。须先获准并分配可用GPU；继承原[A服务器环境](SERVER_EXECUTION_2026-09-13.md)中的私有cuBLAS设置。以下`python`表示服务器已有实验环境，工作目录为本项目。
 
 ### 1. 技术冒烟
 
@@ -75,27 +75,20 @@ python -m repair.visual_probe map \
 
 使用固定的普通例100161及反例100669，单卡完整走两题、两个背景与粗细图。冒烟报告标记为smoke，不能进入后续诊断冻结，也不能充当全量分母。根据实际捕获、计分、生成与总用时再估GPU ETA；本地CPU软件检查不代替这一步。
 
-### 2. 全部探索图，可用两张已分配的卡
+### 2. 全部探索图，使用一张已分配的卡
 
-两条命令分别在两个终端执行；没有抢占、自动选卡或计时强杀逻辑。
+本轮服务器已用自动入口完成；以下命令仅供独立复现，不要与现有运行重复启动。显式指定单张已分配的卡后，全部8例16题顺序测量，不减少案例或实验条件。
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python -m repair.visual_probe map \
   --manifest runs/visual-probe-v3-inputs-2026-09-13/manifest.json \
-  --config configs/diagnosis-a.example.json --lanes 2 --lane-index 0 \
-  --output runs/visual-probe-v3-map-0
-```
-
-```bash
-CUDA_VISIBLE_DEVICES=1 python -m repair.visual_probe map \
-  --manifest runs/visual-probe-v3-inputs-2026-09-13/manifest.json \
-  --config configs/diagnosis-a.example.json --lanes 2 --lane-index 1 \
-  --output runs/visual-probe-v3-map-1
+  --config configs/diagnosis-a.example.json --lanes 1 --lane-index 0 \
+  --output runs/visual-probe-v3-map
 ```
 
 ```bash
 python -m repair.visual_probe report \
-  --runs runs/visual-probe-v3-map-0 runs/visual-probe-v3-map-1 \
+  --runs runs/visual-probe-v3-map \
   --output runs/visual-probe-v3-atlas
 ```
 
@@ -108,7 +101,7 @@ python -m repair.visual_probe report \
 ```bash
 python -m repair.visual_probe freeze \
   --manifest runs/visual-probe-v3-inputs-2026-09-13/manifest.json \
-  --prior runs/visual-probe-v3-map-0 runs/visual-probe-v3-map-1 \
+  --prior runs/visual-probe-v3-map \
   --request runs/visual-probe-v3-joint-request.json \
   --output runs/visual-probe-v3-joint-frozen
 
@@ -140,4 +133,8 @@ python -m repair.visual_probe check \
 
 另用独立Chrome打开受控测试页面：格子点击与键盘选择、事实／拒答读数切换、数值和位置框开关、病例切换均通过；1360×900和390×844视窗没有水平溢出，无JavaScript运行错误。已查看截图。受控软件数据只验证程序与界面，不是B0科学实验结果。
 
-实际B0环境、模型测量与耗时仍待GPU冒烟；诊断是否得到支持、能否改善下一项检查选择，必须由后续真实实验回答。本轮未改动实验假设、未训练模型、未连接服务器。
+以上17项检查记录的是本地实现验收；后续B0冒烟已通过，正式主图也已完成，实测状态见服务器记录。诊断是否得到支持、能否改善下一项检查选择，需要读实际主图后登记并执行新检查。本轮未改动实验假设或训练模型。
+
+单卡入口另通过3项针对性CPU测试：完整案例覆盖（缺失原第二路案例会报错）、smoke失败屏障、队友控制器等待、单卡计费及双卡参数拒绝。未重复运行未改动的核心模型测试。
+
+服务器自动入口也支持 `--gpu-candidates <JSON文件>`：格式为 `[{"gpu":"GPU-实际UUID","after":[{"pid":实际控制器PID,"start_ticks":"实际启动标识"}]}]`。两张卡分别列一项；不能与共享`--after`同时使用。只选择一张卡，并保持smoke/full同卡。候选选择与既有流程的5项CPU测试通过，另1项交接变忙后重置计数的测试通过。
