@@ -120,8 +120,10 @@ def reader_case(case):
     if not isinstance(allowed, dict):
         raise ValueError("Reader packets require explicit initial_condition_keys")
     nodes = {n["id"]: n for n in case["nodes"]}
+    task_status = str(metadata.get("task_status", "applicable"))
+    not_applicable = task_status.startswith("not_applicable")
     reserved = [_operation(op, nodes) for op in metadata.get("reserved_checks", [])]
-    if not 2 <= len(reserved) <= 4 or len({op["id"] for op in reserved}) != len(reserved):
+    if (not not_applicable and not 2 <= len(reserved) <= 4) or len({op["id"] for op in reserved}) != len(reserved):
         raise ValueError("Reader trial requires two to four unique reserved operation definitions")
     private_keys = set()
     for op in reserved:
@@ -157,12 +159,24 @@ def reader_case(case):
                 mapping["cells"].append(cell)
             node["maps"].append(mapping)
         result["nodes"].append(node)
-    public = {"task": str(metadata.get("task", "任务待登记")), "reserved_checks": reserved,
+    public = {"task": str(metadata.get("task", "任务待登记")), "task_status": task_status, "reserved_checks": reserved,
               "node_ids": metadata.get("node_ids", [n["id"] for n in case["nodes"][:2]]),
               "donor_options": {}}
     if len(public["node_ids"]) != 2 or any(n not in nodes for n in public["node_ids"]):
         raise ValueError("Reader online operations must check exactly two existing question nodes")
-    for node in public["node_ids"]:
+    groups = deepcopy(metadata.get("recipient_groups", {"forward": public["node_ids"]}))
+    if (not isinstance(groups, dict) or "forward" not in groups or not set(groups) <= {"forward", "reverse"}
+            or any(not isinstance(ids, list) or len(ids) != 2 or len(set(ids)) != 2
+                   or any(n not in nodes for n in ids) for ids in groups.values())):
+        raise ValueError("Recipient groups must contain a forward pair and optional reverse pair")
+    if groups["forward"] != public["node_ids"]:
+        raise ValueError("Forward recipients must match the frozen main question pair")
+    if "reverse" in groups and set(groups["forward"]) & set(groups["reverse"]):
+        raise ValueError("Forward and reverse recipient endpoints must be distinct")
+    if public["task"] in {"source", "donor"} and not not_applicable and "reverse" not in groups:
+        raise ValueError("Source trials require both forward and reverse recipient groups")
+    public["recipient_groups"] = groups
+    for node in dict.fromkeys(n for pair in groups.values() for n in pair):
         options = metadata.get("donor_options", {}).get(node, [{"id": node, "label": "本节点正常供体"}])
         if not options or any(o.get("id") not in nodes for o in options):
             raise ValueError("Donor options must reference saved, qualified same-case nodes")
@@ -178,13 +192,50 @@ def _enhance(path, *, reader=None, extra=""):
         document = document.replace("原始异常案例已揭晓；新操作只能提供病例内前瞻检验。", "这里只展示共同初始证据；在线反馈与保留验收分别记录。")
         document = document.replace("<h1>VLM 归因可视化 · 病例图册</h1>", "<h1>诊断阅读材料 · " + escape(reader["trial_id"]) + "</h1>")
         document = document.replace(atlas._saved("读新图前的判断与下一检查", None), "")
+        if reader.get("task_status", "").startswith("not_applicable"):
+            extra += ('<p class="notice" data-task-status="not_applicable"><b>本例固定任务 N/A：</b>'
+                      '固定背景未满足两题均正确的前提，因此不执行副作用诊断与保留验收；保留原任务和 H/T 分配，'
+                      '不换题，不计为普通失败或适用任务。状态：' + escape(reader["task_status"]) + '</p>')
         extra += '<section id="reader-work" aria-label="诊断记录"></section>'
         extra += '<script type="application/json" id="reader-data">' + _encoded(reader) + '</script>'
     else:
         extra = '<p class="toolbar"><label>呈现 <select id="presentation"><option value="H">热图＋完整表格</option><option value="T">中性网格＋同一表格</option></select></label></p>' + extra
     document = document.replace('<div class="workspace">', extra + '<div class="workspace" id="initial-evidence">', 1)
-    document = document.replace("</body>", "<script>" + TABLE_SCRIPT + (READER_SCRIPT if reader else "") + "</script></body>")
+    document = document.replace("</body>", "<script>" + TABLE_SCRIPT + (READER_HELPERS + READER_SCRIPT if reader else "") + "</script></body>")
     path.write_text(document, encoding="utf-8")
+
+
+def _comparison_table(summary):
+    main = summary.get("checkpoints", {}).get("B", {})
+    methods = main.get("methods", {})
+    if not methods:
+        return '<p class="missing">B 主比较尚无完整汇总，不据缺失记录推定效果。</p>'
+    def value(number, *, percentage=False):
+        if not atlas._number(number):
+            return "未记录"
+        return f"{number:.1%}" if percentage else f"{number:.3f}"
+    rows = []
+    for name in [n for n in ("G", "R", "E", "P", "G-answer") if n in methods]:
+        method = methods[name]
+        holdout = method.get("holdout", {})
+        cost = summary.get("costs", {}).get(name, {}).get("main_formation_plus_validation_seconds", {})
+        entries = [escape(name), value(method.get('mean_linked_supported_fraction'), percentage=True),
+                   value(method.get("mean_completion_fraction"), percentage=True),
+                   value(holdout.get("scene_mean_accuracy"), percentage=True),
+                   value(holdout.get("scene_mean_coverage"), percentage=True), value(cost.get("mean")),
+                   escape(str(method.get("applicable_scene_count", "未记录"))) + " / " + escape(str(method.get("scene_count", "未记录")))]
+        rows.append('<tr>' + ''.join('<td>' + entry + '</td>' for entry in entries) + '</tr>')
+    difference = main.get("G_minus_R_linked", {})
+    interval = difference.get("bootstrap_95_percent_interval")
+    bounds = ('[' + ', '.join(value(v, percentage=True) for v in interval) + ']'
+              if isinstance(interval, list) and len(interval) == 2 else "未记录")
+    return ('<section id="main-b-comparison" class="evidence-table"><h3>B 预算主比较</h3>'
+            '<p>主指标要求原诊断有完整证据，而且对应的新背景预测通过并区分竞争解释。按场景等权；未决、无法独立验证的适用任务仍在分母。</p>'
+            '<table><thead><tr><th>方法</th><th>诊断＋绑定验证通过</th><th>原条件完整诊断</th><th>通用保留题准确</th><th>通用保留题覆盖</th>'
+            '<th>形成＋验收秒／场景</th><th>适用／全部场景</th></tr></thead><tbody>' + ''.join(rows) + '</tbody></table>'
+            '<p>G − R 诊断及绑定验证通过比例差：' + value(difference.get("mean_difference"), percentage=True) +
+            '；配对场景 bootstrap 95% 区间：' + bounds + '。</p>'
+            '<p>秒数含形成诊断和 B 点绑定验证；通用保留题及 0.5B 辅助验收另计入完整研究账本。零宽 bootstrap 不作为确定性结论。各方法模拟秒数不能相加冒充物理 GPU 总时间。</p></section>')
 
 
 def render(report, output):
@@ -194,6 +245,7 @@ def render(report, output):
     output = Path(output)
     result = atlas.render(snapshot, output)
     extra = '<section><h2>诊断方法比较</h2><p>仅展示保存结果；未执行、未决与失败保留。H/T真实读者阶段不由本报告模拟。</p>'
+    extra += _comparison_table(snapshot.get("comparison", {}))
     for case in snapshot.get("cases", []):
         extra += atlas._saved(str(case["cluster_id"]) + " · 每任务证据、保留预测和成本", case.get("comparison", {}))
     for key, label in (("comparison", "总体比较"), ("external", "外部原方法处理参照"), ("reader_results", "真实读者结果")):
@@ -267,12 +319,37 @@ document.getElementById('presentation')?.addEventListener('change',e=>document.b
 """
 
 
+READER_HELPERS = r"""
+function requireApplicable(taskStatus){if((taskStatus??'').startsWith('not_applicable'))throw Error('本例固定任务为 N/A，不能执行在线检查或普通诊断提交');}
+function recipientNodes(packet,direction){
+  const nodes=packet.recipient_groups?.[direction];
+  if(!Array.isArray(nodes)||nodes.length!==2||new Set(nodes).size!==2)throw Error('请选择已登记的双题接收端点');
+  return nodes.slice();
+}
+function buildReaderOperations(packet,direction,groups,background,donors,used,refine){
+  requireApplicable(packet.task_status);
+  const nodes=recipientNodes(packet,direction);
+  if(used+groups.length>4)throw Error('超出4个在线操作条件；双向共享额度');
+  if(Object.keys(donors).length!==2||nodes.some(n=>!packet.donor_options[n]?.some(d=>d.id===donors[n])))throw Error('供体不属于所选接收端点的合格供体');
+  return groups.map((indices,i)=>{
+    const all=[...new Set([...background,...indices])].sort((a,b)=>a-b);
+    if(!all.length)throw Error('操作集合为空');
+    if(packet.reserved_checks.some(h=>JSON.stringify([...new Set([...h.background,...h.indices])].sort((a,b)=>a-b))===JSON.stringify(all)&&nodes.some(n=>h.node_ids.includes(n)&&donors[n]===(h.donor_ids?.[n]??n))))throw Error('该条件包含保留验收，不能在线查询');
+    return {id:packet.trial_id+'-op-'+(used+i+1),kind:refine?'refine_child':'joint',recipient_group:direction,node_ids:nodes.slice(),background:background.slice(),indices:indices.slice(),donor_ids:{...donors}};
+  });
+}
+"""
+
+
 READER_SCRIPT = r"""
 const trial=JSON.parse(document.getElementById('reader-data').textContent), work=document.getElementById('reader-work');
 const readerNodes=Object.fromEntries(report.cases[0].nodes.map(n=>[n.id,n]));
 const storageKey='diagnosis-reader-v1:'+trial.allocation_sha256+':'+trial.trial_id;
 let state={schema:'diagnosis-reader-record-v1',reader_id:trial.reader_id,trial_id:trial.trial_id,cluster_id:trial.cluster_id,format:trial.format,allocation_sha256:trial.allocation_sha256,status:'not_started',initial_prediction:null,requests:[],diagnosis:{},reserved_prediction:null,active_ms:0,waiting_ms:0,events:[]};
 try{const saved=localStorage.getItem(storageKey);if(saved)state=JSON.parse(saved);}catch(e){}
+const notApplicable=trial.task_status.startsWith('not_applicable');
+state.task=trial.task;state.task_status=trial.task_status;state.scoring_status=notApplicable?'not_applicable':'pending';
+if(notApplicable){state.status='not_applicable';state.diagnosis={status:'not_applicable',reason:trial.task_status};}
 let lastTick=Date.now(),lastHidden=document.hidden,consented=false;
 const stamp=()=>new Date().toISOString();
 function event(type,extra={}){state.events.push({type,at:stamp(),...extra});save();}
@@ -282,12 +359,12 @@ function predictionFields(checks,prefix){return checks.map((op,i)=>'<div class="
 function predictions(prefix,checks){const result={};work.querySelectorAll('[data-prediction="'+prefix+'"]').forEach(input=>{const op=checks[Number(input.dataset.operation)],node=op.node_ids[Number(input.dataset.node)];if(!input.value.trim())throw Error('请填写所有预测，或明确填写未决');(result[op.id]??={})[node]={answer:input.value.trim()};});return result;}
 function restorePredictions(prefix,checks,values){work.querySelectorAll('[data-prediction="'+prefix+'"]').forEach(input=>{input.value=values?.[checks[Number(input.dataset.operation)].id]?.[checks[Number(input.dataset.operation)].node_ids[Number(input.dataset.node)]]?.answer??'';});}
 const initialChecks=trial.reserved_checks.slice(0,2);
-work.innerHTML='<h2>本例任务：'+esc(trial.task)+'</h2><p class="notice">材料准备不代表读者实验已执行。首次查询前锁定初始预测；在线最多4个操作条件，两题一起检查。保留验收最多4个条件，结果不在本页面。导出请求并等待测量人员返回反馈JSON，不会自行调用模型。</p><p class="timer" id="timer">有效阅读 00:00 / 15:00</p><label><input type="checkbox" id="consent"> 我同意记录本例诊断、预测、操作和时间</label><button id="start-trial">开始本例／继续阅读</button><button id="pause-trial">暂停阅读</button><button id="export-record">导出完整记录</button><label class="inline">恢复记录 <input type="file" id="restore-record" accept=".json"></label><span id="save-status"></span><fieldset id="initial-stage"><legend>1. 首次查询前的共同预测</legend>'+predictionFields(initialChecks,'initial')+'<button id="lock-initial">锁定初始预测</button></fieldset><fieldset id="query-stage"><legend>2. 在线检查（最多4个条件）</legend><label>操作类型 <select id="operation-kind"><option value="joint">单格／联合／去除后的集合</option><option value="refine">一个6×6父格的四个12×12子格（4次）</option></select></label><label>区域尺度 <select id="region-resolution"><option>6</option><option>2</option><option>12</option></select> 格号 <input id="region-cells" placeholder="如 0,1,6,7"></label><label>背景尺度 <select id="background-resolution"><option>2</option><option>6</option></select> 格号 <input id="background-cells" placeholder="空白为空背景；0为左上粗块"></label><p>格号从0起，与图表相同。联合操作把多个格作为一个条件；去除操作填写保留下来的格。细化时仅填写一个6×6父格。</p>'+trial.node_ids.map((n,i)=>'<label>'+esc(readerNodes[n].label??n)+' 的正常供体 <select id="donor-'+i+'">'+trial.donor_options[n].map(d=>'<option value="'+esc(d.id)+'">'+esc(d.label)+'</option>').join('')+'</select></label>').join('')+'<label>检查理由／竞争解释 <textarea id="query-reason"></textarea></label><button id="prepare-query">准备并核对请求</button><div id="query-preview"></div><label>导入当前请求的反馈 <input type="file" id="feedback-file" accept=".json"></label><div id="online-results"></div></fieldset><fieldset id="final-stage"><legend>3. 最终诊断与保留预测</legend><label>诊断状态 <select id="diagnosis-status"><option value="judgment">提交有限关系判断</option><option value="undecided">仍未决</option></select></label>'+[['observation','观察'],['judgment','具体判断或未决原因'],['scope','适用的区域、问题、背景和供体'],['evidence','已有证据及在线请求编号'],['alternatives','竞争解释'],['falsifier','什么结果会推翻判断'],['action','下一步保留或放弃什么检查']].map(([key,label])=>'<label>'+label+'<textarea data-diagnosis="'+key+'"></textarea></label>').join('')+predictionFields(trial.reserved_checks,'reserved')+'<button id="submit-final">锁定并导出最终记录</button></fieldset><p id="reader-message" role="status" aria-live="polite"></p>';
+work.innerHTML='<h2>本例任务：'+esc(trial.task)+'</h2><p class="notice">材料准备不代表读者实验已执行。首次查询前锁定初始预测；在线最多4个操作条件，两题一起检查。保留验收最多4个条件，结果不在本页面。导出请求并等待测量人员返回反馈JSON，不会自行调用模型。</p><p class="timer" id="timer">有效阅读 00:00 / 15:00</p><label><input type="checkbox" id="consent"> 我同意记录本例诊断、预测、操作和时间</label><button id="start-trial">开始本例／继续阅读</button><button id="pause-trial">暂停阅读</button><button id="export-record">导出完整记录</button><label class="inline">恢复记录 <input type="file" id="restore-record" accept=".json"></label><span id="save-status"></span><fieldset id="initial-stage"><legend>1. 首次查询前的共同预测</legend>'+predictionFields(initialChecks,'initial')+'<button id="lock-initial">锁定初始预测</button></fieldset><fieldset id="query-stage"><legend>2. 在线检查（最多4个条件）</legend><label>操作类型 <select id="operation-kind"><option value="joint">单格／联合／去除后的集合</option><option value="refine">一个6×6父格的四个12×12子格（4次）</option></select></label><label>区域尺度 <select id="region-resolution"><option>6</option><option>2</option><option>12</option></select> 格号 <input id="region-cells" placeholder="如 0,1,6,7"></label><label>背景尺度 <select id="background-resolution"><option>2</option><option>6</option></select> 格号 <input id="background-cells" placeholder="空白为空背景；0为左上粗块"></label><p>格号从0起，与图表相同。联合操作把多个格作为一个条件；去除操作填写保留下来的格。细化时仅填写一个6×6父格。</p><label>接收端点 <select id="recipient-direction">'+Object.keys(trial.recipient_groups).map(direction=>'<option value="'+direction+'">'+(direction==='forward'?'正向':'反向')+'：'+esc(trial.recipient_groups[direction].join(' / '))+'</option>').join('')+'</select></label><p>每次操作仅检查所选接收端点的两题；正向与反向共用4次额度。</p><div id="donor-controls"></div><label>检查理由／竞争解释 <textarea id="query-reason"></textarea></label><button id="prepare-query">准备并核对请求</button><div id="query-preview"></div><label>导入当前请求的反馈 <input type="file" id="feedback-file" accept=".json"></label><div id="online-results"></div></fieldset><fieldset id="final-stage"><legend>3. 最终诊断与保留预测</legend><label>诊断状态 <select id="diagnosis-status"><option value="judgment">提交有限关系判断</option><option value="undecided">仍未决</option></select></label>'+[['observation','观察'],['judgment','具体判断或未决原因'],['scope','适用的区域、问题、背景和供体'],['evidence','已有证据及在线请求编号'],['alternatives','竞争解释'],['falsifier','什么结果会推翻判断'],['action','下一步保留或放弃什么检查']].map(([key,label])=>'<label>'+label+'<textarea data-diagnosis="'+key+'"></textarea></label>').join('')+predictionFields(trial.reserved_checks,'reserved')+'<button id="submit-final">锁定并导出最终记录</button></fieldset><p id="reader-message" role="status" aria-live="polite"></p>';
 function message(text){document.getElementById('reader-message').textContent=text;}
-function run(action){try{action();}catch(e){message(e.message);}}
+function run(action){try{requireApplicable(trial.task_status);action();}catch(e){message(e.message);}}
 function totalOps(){return state.requests.reduce((n,r)=>n+r.operations.length,0);}
 function pending(){return state.requests.some(r=>!r.feedback);}
-function finished(){return ['submitted','timeout'].includes(state.status);}
+function finished(){return ['submitted','timeout','not_applicable'].includes(state.status);}
 work.querySelectorAll('fieldset').forEach(field=>{const box=document.createElement('details'),summary=document.createElement('summary');summary.textContent=field.querySelector('legend').textContent;field.before(box);box.append(summary,field);});
 const evidenceLink=document.createElement('p');evidenceLink.innerHTML='<a href="#initial-evidence">查看初始图片、地图和共同数值表 ↓</a>；需要登记时展开上方对应步骤。';work.prepend(evidenceLink);
 const onlineCells=new Map();
@@ -300,10 +377,12 @@ function onlineMap(row,op){
 }
 function update(drawResults=true){
   const started=state.status==='reading',active=started&&consented&&!finished();
+  document.getElementById('start-trial').disabled=notApplicable;document.getElementById('pause-trial').disabled=notApplicable;document.getElementById('restore-record').disabled=notApplicable;
   document.getElementById('initial-stage').disabled=!active||!!state.initial_prediction;
   document.getElementById('query-stage').disabled=!active||!state.initial_prediction;
   document.getElementById('final-stage').disabled=!active||!state.initial_prediction||pending();
   document.getElementById('prepare-query').disabled=totalOps()>=4||pending();
+  document.getElementById('recipient-direction').disabled=pending();
   document.getElementById('feedback-file').disabled=!pending();
   const s=Math.floor(state.active_ms/1000);document.getElementById('timer').textContent='有效阅读 '+String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')+' / 15:00；等待 '+Math.floor(state.waiting_ms/1000)+'秒；在线 '+totalOps()+'/4；'+state.status;
   if(!drawResults)return;
@@ -315,6 +394,12 @@ function exportRequest(request){download({schema:'diagnosis-reader-request-v1',r
 function cellNumbers(text,resolution,empty=false){if(!text.trim()&&empty)return [];const cells=text.split(',').map(v=>Number(v.trim()));if(!text.trim()||cells.some(v=>!Number.isInteger(v)||v<0||v>=resolution*resolution)||new Set(cells).size!==cells.length)throw Error('格号应是合法且不重复的整数，用逗号分隔');return cells;}
 function tokens(cells,resolution){const width=24/resolution,result=[];for(const cell of cells){const row=Math.floor(cell/resolution),col=cell%resolution;for(let r=row*width;r<(row+1)*width;r++)for(let c=col*width;c<(col+1)*width;c++)result.push(r*24+c);}return [...new Set(result)].sort((a,b)=>a-b);}
 let proposed=[];
+function renderDonors(){
+  const nodes=recipientNodes(trial,document.getElementById('recipient-direction').value);
+  document.getElementById('donor-controls').innerHTML=nodes.map((n,i)=>'<label>'+esc((readerNodes[n].label??n)+' ['+n+']')+' 的正常供体 <select id="donor-'+i+'">'+trial.donor_options[n].map(d=>'<option value="'+esc(d.id)+'">'+esc(d.label)+'</option>').join('')+'</select></label>').join('');
+}
+renderDonors();
+document.getElementById('recipient-direction').onchange=()=>{renderDonors();proposed=[];document.getElementById('query-preview').innerHTML='';captureDraft();};
 document.getElementById('start-trial').onclick=()=>run(()=>{if(!document.getElementById('consent').checked)throw Error('开始记录前需同意收集');if(finished())throw Error('本例已锁定或超时，不能重开');consented=true;state.status='reading';state.started_utc??=stamp();lastTick=Date.now();event('start_or_resume');update();});
 document.getElementById('pause-trial').onclick=()=>{if(!finished()){state.status='paused';event('pause');update();}};
 document.getElementById('export-record').onclick=()=>{captureDraft();download(state,trial.trial_id+'-record.json');};
@@ -324,14 +409,14 @@ document.getElementById('prepare-query').onclick=()=>run(()=>{
   if(refine&&cells.length!==1)throw Error('局部细化一次只能选一个父格');
   if(refine&&state.requests.some(r=>r.operations.some(o=>o.kind==='refine_child')))throw Error('每例最多细化一个父格');
   const groups=refine?[0,1,12,13].map(offset=>tokens([Math.floor(cells[0]/6)*24+(cells[0]%6)*2+offset],12)):[tokens(cells,resolution)];
-  if(totalOps()+groups.length>4)throw Error('超出4个在线操作条件');
-  const donors=Object.fromEntries(trial.node_ids.map((n,i)=>[n,document.getElementById('donor-'+i).value]));
-  proposed=groups.map((indices,i)=>({id:trial.trial_id+'-op-'+(totalOps()+i+1),kind:refine?'refine_child':'joint',node_ids:trial.node_ids,background,indices,donor_ids:donors}));
-  for(const op of proposed){const all=[...new Set([...op.background,...op.indices])].sort((a,b)=>a-b);if(!all.length)throw Error('操作集合为空');if(trial.reserved_checks.some(h=>JSON.stringify([...new Set([...h.background,...h.indices])].sort((a,b)=>a-b))===JSON.stringify(all)&&op.node_ids.every(n=>(op.donor_ids[n]??n)===(h.donor_ids?.[n]??n))))throw Error('该条件是保留验收，不能在线查询');}
+  const direction=document.getElementById('recipient-direction').value,nodes=recipientNodes(trial,direction);
+  const donors=Object.fromEntries(nodes.map((n,i)=>[n,document.getElementById('donor-'+i).value]));
+  proposed=buildReaderOperations(trial,direction,groups,background,donors,totalOps(),refine);
   document.getElementById('query-preview').innerHTML='<h3>待锁定操作（每项两题）</h3>'+predictionFields(proposed,'online')+'<button id="send-query">锁定并导出请求</button>';
   document.getElementById('send-query').onclick=()=>run(()=>{if(pending()||totalOps()+proposed.length>4)throw Error('已有待返回请求或预算不足');const reason=document.getElementById('query-reason').value.trim();if(!reason)throw Error('请登记检查理由或竞争解释');const pred=predictions('online',proposed);const request={request_id:trial.trial_id+'-request-'+(state.requests.length+1),created_utc:stamp(),reason,operations:proposed.map(op=>({...op,prediction:pred[op.id]}))};state.requests.push(request);event('online_request_locked',{request_id:request.request_id});exportRequest(request);proposed=[];document.getElementById('query-preview').innerHTML='';update();});
 });
 document.getElementById('feedback-file').onchange=async e=>{try{
+  requireApplicable(trial.task_status);
   const file=e.target.files[0];if(!file)return;const value=JSON.parse(await file.text()),request=state.requests.find(r=>r.request_id===value.request_id&&!r.feedback);
   if(value.schema!=='diagnosis-reader-feedback-v1'||value.trial_id!==trial.trial_id||!request)throw Error('反馈不属于当前等待中的请求');
   const expected=new Set(request.operations.flatMap(op=>op.node_ids.map(n=>op.id+'|'+n))),seen=new Set();
@@ -346,6 +431,7 @@ function captureDraft(){if(finished())return;work.querySelectorAll('[data-diagno
 work.querySelectorAll('[data-diagnosis]').forEach(input=>{input.value=state.diagnosis[input.dataset.diagnosis]??'';input.oninput=captureDraft;});
 document.getElementById('submit-final').onclick=()=>run(()=>{if(pending())throw Error('请先导入本例待返回反馈');captureDraft();if(['observation','judgment','scope','evidence','alternatives','falsifier','action'].some(k=>!state.diagnosis[k]?.trim()))throw Error('请完整记录判断，无法判断可明确写未决与原因');state.reserved_prediction={locked_utc:stamp(),predictions:predictions('reserved',trial.reserved_checks)};state.reserved_operations=trial.reserved_checks;state.status='submitted';state.submitted_utc=stamp();event('final_submission_locked');download(state,trial.trial_id+'-record.json');update();message('本例已锁定。保留预测待独立验收；页面不判定诊断成功。');});
 document.getElementById('restore-record').onchange=async e=>{try{const value=JSON.parse(await e.target.files[0].text());if(value.schema!=='diagnosis-reader-record-v1'||value.trial_id!==trial.trial_id||value.allocation_sha256!==trial.allocation_sha256)throw Error('记录不属于本例冻结分配');if(state.initial_prediction||state.requests.length||finished())throw Error('当前已有记录，不能覆盖；请在独立浏览器会话恢复');localStorage.setItem(storageKey,JSON.stringify(value));location.reload();}catch(error){message(error.message);}};
+if(state.draft_form?.['recipient-direction']){document.getElementById('recipient-direction').value=state.draft_form['recipient-direction'];renderDonors();}
 Object.entries(state.draft_form??{}).forEach(([id,value])=>{const el=document.getElementById(id);if(el&&el.type!=='file')el.value=value;});
 restorePredictions('initial',initialChecks,state.initial_prediction?.predictions??state.draft_predictions?.initial);restorePredictions('reserved',trial.reserved_checks,state.reserved_prediction?.predictions??state.draft_predictions?.reserved);
 work.addEventListener('input',captureDraft);work.addEventListener('change',captureDraft);

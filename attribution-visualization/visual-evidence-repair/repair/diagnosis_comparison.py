@@ -119,11 +119,11 @@ def qualification(diagnosis, cases, order, out, limit=32):
     return selected, calls.rows
 
 
-def measurement_at(diagnosis, case, stream):
+def measurement_at(diagnosis, case, stream, existing=None):
     nodes = {n['id']: n for n in case['nodes']}
     candidates = {key: candidates_at(diagnosis, node, nodes) for key, node in nodes.items()
                   if node.get('qualified', bool(node.get('normal') and node.get('abnormal')))}
-    return TimedMeasurements(diagnosis, nodes, candidates, stream)
+    return TimedMeasurements(diagnosis, nodes, candidates, stream, existing=existing)
 
 
 def gradient_provider(measurements):
@@ -211,6 +211,11 @@ def reader_spec(case, contract):
     prepared = contract['prepared']
     names = ['spatial', 'side_effect'] + (['source'] if prepared['source_applicable'] else [])
     task = names[prepared['seed'] % len(names)]
+    nodes = {n['id']: n for n in case['nodes']}
+    recipient_groups = {'forward': case['main_node_ids']}
+    if task == 'source':
+        recipient_groups['reverse'] = [nodes[n]['donor_peer_id'] for n in case['main_node_ids']]
+    recipient_ids = list(dict.fromkeys(n for pair in recipient_groups.values() for n in pair))
     grouped = {}
     for op in prepared['holdout'][task]['checks']:
         key = (op.get('direction', ''), op['role'], tuple(op['indices']))
@@ -219,12 +224,62 @@ def reader_spec(case, contract):
                             'background': [], 'indices': op['indices'], 'node_ids': [], 'donor_ids': {}}
         grouped[key]['node_ids'].append(op['node_id'])
         grouped[key]['donor_ids'][op['node_id']] = op['donor_id']
-    return {'task': task, 'node_ids': case['main_node_ids'], 'reserved_checks': list(grouped.values()),
+    return {'task': task, 'node_ids': case['main_node_ids'], 'recipient_groups': recipient_groups,
+            'reserved_checks': list(grouped.values()),
             'initial_condition_keys': {nid: sorted({key for m in main_maps(nid)
                 for key in [m['base_key'], *(c['key'] for c in m['cells'])]}) for nid in case['main_node_ids']},
             'donor_options': {nid: [{'id': n, 'label': '本图正常供体' if n == nid else '同场景另一颜色供体'}
-                for n in (nid, next(x for x in case['nodes'] if x['id'] == nid)['donor_peer_id'])
-                if any(x['id'] == n and x.get('qualified') for x in case['nodes'])] for nid in case['main_node_ids']}}
+                for n in (nid, nodes[nid]['donor_peer_id'])
+                if nodes[n].get('qualified', bool(nodes[n].get('normal') and nodes[n].get('abnormal')))]
+                for nid in recipient_ids}}
+
+
+def check_instrument(diagnosis, development, calibration, directory):
+    """Old cases test whether each promised task can produce a sealed, relevant test.
+
+    Support is not a launch requirement: a refutation is an informative result.
+    No new confirmation case is inspected or used to change this gate.
+    """
+    from .data import read_jsonl
+    from .diagnosis_comparison_protocol import compare_case, TASKS
+    counts = {task: {'complete': 0, 'registered': 0, 'supported': 0, 'refuted': 0, 'unresolved': 0}
+              for task in TASKS}
+    rows = []
+    for case in development['cases']:
+        cid = case['cluster_id']
+        if cid not in {'editclevr-100161', 'editclevr-101232', 'editclevr-335200'}:
+            continue
+        existing = {r['key']: r for r in read_jsonl(directory / (cid + '.jsonl'))}
+        with (directory / (cid + '-instrument-measurements.jsonl')).open('w') as stream:
+            measured = measurement_at(diagnosis, case, stream, existing)
+            provider, gradients = gradient_provider(measured)
+            result = compare_case(case, measured, provider, calibration['B_seconds'],
+                {'effect_tolerance': calibration['effect_tolerance']},
+                before_validation=lambda value: write_json(directory / (cid + '-instrument-frozen.json'), value))
+            write_json(directory / (cid + '-instrument-comparison.json'), result)
+            write_json(directory / (cid + '-instrument-atp.json'), gradients)
+            for method in result['methods'].values():
+                checkpoint = method['checkpoints']['B']
+                for task in TASKS:
+                    count = counts[task]
+                    count['complete'] += checkpoint['diagnoses'][task]['status'] == 'complete'
+                    count['registered'] += checkpoint['linked_predictions'][task]['status'] == 'registered'
+                    status = checkpoint['linked_validation'][task]['status']
+                    if status in ('supported', 'refuted', 'unresolved'):
+                        count[status] += 1
+            old_seconds = next(r['seconds'] for r in calibration['per_scene'] if r['cluster_id'] == cid)
+            rows.append({'cluster_id': cid, 'new_model_call_seconds': sum(r['seconds'] for r in measured.calls.rows),
+                         'full_case_seconds_estimate': old_seconds + sum(r['seconds'] for r in measured.calls.rows)})
+        print(json.dumps({'phase': 'old_instrument_check', **rows[-1]}), flush=True)
+    ready = len(rows) == 3 and all(count['registered'] for count in counts.values())
+    result = {'status': 'ready' if ready else 'instrument_not_ready', 'tasks': counts, 'old_cases': rows,
+              'gate': 'every task must yield an actual registered new test on old sentinel cases; no winning-method or positive-result gate',
+              'expected_32_case_model_seconds': median([r['full_case_seconds_estimate'] for r in rows]) * 32 if rows else None,
+              'new_confirmation_outcomes_used': False}
+    write_json(directory / 'instrument.json', result)
+    if not ready:
+        raise RuntimeError('old-case instrument coverage is incomplete; do not spend GPU on 32 new cases yet')
+    return result
 
 
 def report_case(case, measurements, comparison, reader):
@@ -332,11 +387,13 @@ def run(args):
         calibration_inputs = load_calibration(args.calibration_rows, [c['cluster_id'] for c in prepared])
         sources = {str(path.relative_to(PROJECT)): digest(path) for path in
                    [*PROJECT.glob('repair/diagnosis_comparison*.py'),
+                    PROJECT / 'repair/diagnosis_linked_validation.py',
                     *PROJECT.glob('external/*/SOURCE.json'),
                     PROJECT / 'repair/visual_probe.py', PROJECT / 'repair/visual_probe_protocol.py',
                     PROJECT / 'tools/prepare_diagnosis_comparison.py',
                     PROJECT / 'tools/build_benign_baseline.py',
-                    PROJECT / 'DIAGNOSIS_COMPARISON_CONTRACT_2026-09-14.md']}
+                    PROJECT / 'DIAGNOSIS_COMPARISON_CONTRACT_2026-09-14.md',
+                    PROJECT / 'DIAGNOSIS_NEXT_STAGE_PLAN_2026-09-14.md']}
         write_json(out / 'input-identity.json', {'code_and_sources': sources,
             'config_sha256': digest(args.config), 'development_sha256': digest(args.development),
             'prepared_sha256': digest(args.cases), 'prepared_receipt_sha256': digest(args.cases.parent / 'receipt.json'),
@@ -362,16 +419,21 @@ def run(args):
         smoke_dir.mkdir()
         external_smoke = external_reference(diagnosis, [c for c in development['cases']
                                            if c['cluster_id'] in SMOKE_IDS], external_calibration, smoke_dir, smoke=True)
+        instrument = check_instrument(diagnosis, development, calibration, calibration_dir)
         print(json.dumps({'phase': 'smoke_passed', 'B_seconds': calibration['B_seconds']}), flush=True)
         write_json(out / 'progress.json', {'phase': 'smoke_passed', 'calibration': calibration,
-                                          'external_status': external_smoke['status'], 'updated_utc': now()})
+                                          'external_status': external_smoke['status'], 'instrument': instrument, 'updated_utc': now()})
         selected, screen_calls = qualification(diagnosis, prepared, receipt['frozen_order'], out)
         contracts = {c['cluster_id']: prepare_case_contract(c, {'effect_tolerance': calibration['effect_tolerance']})
                      for c in selected}
+        from .diagnosis_linked_validation import freeze_catalog
+        for case in selected:
+            contract = contracts[case['cluster_id']]
+            contract['linked_catalog'] = freeze_catalog(case, contract['prepared'])
         readers = {c['cluster_id']: reader_spec(c, contracts[c['cluster_id']]) for c in selected}
         assignments = make_reader_assignments(selected) if len(selected) >= 16 else None
         frozen = {'schema': 'diagnosis-comparison-v1', 'cases': selected, 'contracts': contracts,
-                  'readers': readers, 'assignments': assignments, 'budget': calibration,
+                  'readers': readers, 'assignments': assignments, 'budget': calibration, 'instrument': instrument,
                   'identity': identity, 'prepared_sha256': digest(args.cases), 'created_utc': now(),
                   'input_identity_sha256': digest(out / 'input-identity.json'),
                   'parameter_updates': 0, 'confirmation_interventions_seen': False}
@@ -386,18 +448,31 @@ def run(args):
             with (out / (cid + '-measurements.jsonl')).open('w') as stream:
                 measured = measurement_at(diagnosis, case, stream)
                 provider, gradients = gradient_provider(measured)
-                comparison = compare_case(case, measured, provider, calibration['B_seconds'], contracts[cid])
+                sealed = out / (cid + '-predictions-frozen.json')
+                def freeze_predictions(value):
+                    write_json(sealed, dict(value, created_utc=now(),
+                        experiment_frozen_sha256=digest(out / 'frozen.json')))
+                comparison = compare_case(case, measured, provider, calibration['B_seconds'], contracts[cid],
+                                          before_validation=freeze_predictions)
+                comparison['predictions_frozen_sha256'] = digest(sealed)
                 write_json(out / (cid + '-comparison.json'), comparison)
                 write_json(out / (cid + '-atp.json'), gradients)
                 # Fill any map cells omitted by a budget-limited strategy for the H/T common packet.
                 # These post-comparison observations cannot change a method's frozen decisions.
+                before = len(measured.calls.rows)
+                before_keys = set(measured.conditions)
                 initial_map(measured, case['main_node_ids'])
                 reader = deepcopy(readers[cid])
                 if reader['task'] == 'side_effect' and comparison['contract'].get('side_effect_applicable') is False:
                     reader['task_status'] = 'not_applicable_fixed_background_not_correct'
                 for op in reader['reserved_checks']:
                     op['result_existed_at_registration'] = False
-                report['cases'].append(report_case(case, measured, comparison, reader))
+                page = report_case(case, measured, comparison, reader)
+                page['reader_initial_completion_cost'] = {
+                    'new_conditions_after_strategy_snapshots': len(set(measured.conditions) - before_keys),
+                    'model_call_seconds': sum(c['seconds'] for c in measured.calls.rows[before:]),
+                    'returned_to_automated_strategies': False}
+                report['cases'].append(page)
             write_json(out / 'report.json', report)
             write_json(out / 'progress.json', {'phase': 'comparison', 'completed_cases': index + 1,
                                                'selected_cases': len(selected), 'updated_utc': now()})

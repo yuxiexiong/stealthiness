@@ -179,7 +179,7 @@ def assess_bundle(bundle, visible, nodes):
         changed = _token_signature(candidate) != _token_signature(base)
         stable_control = _token_signature(control) == _token_signature(base)
         if bundle["task"] == "spatial":
-            holds = changed and stable_control
+            holds = q == 0 and changed and stable_control
         else:
             holds = base.get("correct") is True and candidate.get("correct") is False and control.get("correct") is True
         if holds:
@@ -202,6 +202,7 @@ class _Policy:
         self.seconds, self.initial = 0.0, True
         self.local_parent, self.exhausted = None, False
         self.backend_wait_seconds = 0.0
+        self.online_masks = set(contract.get('linked_catalog', {}).get('online_mask_codes', []))
 
     def _charge(self, compute, captures):
         added = {key: value for key, value in captures.items() if key not in self.captures}
@@ -216,6 +217,8 @@ class _Policy:
 
     def ask(self, operation):
         key = operation["key"]
+        if self.online_masks and hex(sum(1 << i for i in operation['indices'])) not in self.online_masks:
+            raise ValueError('online operation outside the frozen family; could expose a linked validation')
         if key in self.contract["prepared"]["reserved_keys"]:
             raise ValueError("attempt to access a sealed common holdout")
         if key in self.visible:
@@ -469,6 +472,15 @@ def _warmup(policy, atp_provider):
     policy.initial = False
 
 
+def _coarse_followups(full, ranked):
+    contained = [i for i in ranked if set(region(6, i)) <= set(full)]
+    candidates = [(region(6, i), full) for i in contained]
+    # Weak halves never discard the already observed joint response.
+    row = min(i // 24 for i in full)
+    candidates.extend(([i for i in full if (i // 24 < row + 6) == upper], None) for upper in (True, False))
+    return candidates
+
+
 def _ranked_candidates(policy):
     """Bounded shared operation family; different ordering, no all-subset search."""
     values = {i: max((abs(v) for n in policy.main for b in ([], BACKGROUND)
@@ -494,21 +506,18 @@ def _ranked_candidates(policy):
         for parent, changed, residual in coarse:
             full = region(2, parent)
             if changed or residual > policy.contract["effect_tolerance"]:
-                contained = [i for i in ranked if set(region(6, i)) <= set(full)]
-                candidates.extend((region(6, i), full) for i in contained)
-                # Keep both halves AND the full set: weak halves never delete the joint hypothesis.
-                row = min(i // 24 for i in full)
-                candidates.extend(([i for i in full if (i // 24 < row + 6) == upper], None) for upper in (True, False))
+                candidates.extend(_coarse_followups(full, ranked))
             candidates.append((full, None))
     for i in ranked:
         candidates.append((region(6, i), None))
         row, col = divmod(i, 6)
+        if policy.method in ("E", "P"):
+            # Probe the ranked cell's parent promptly; its paid answer gates refinement.
+            candidates.append((region(2, (row // 3) * 2 + col // 3), None))
         for neighbor in ((i + 1,) if col < 5 else ()) + ((i + 6,) if row < 5 else ()):
             candidates.append((_union(region(6, i), region(6, neighbor)), None))
         if row < 5 and col < 5:
             candidates.append((_union(*(region(6, j) for j in (i, i + 1, i + 6, i + 7))), None))
-    if policy.method in ("E", "P"):
-        candidates.extend((region(2, p), None) for p, _, _ in coarse)
     unique = {}
     for mask, parent in candidates:
         unique.setdefault((tuple(mask), tuple(parent or [])), (mask, parent))
@@ -521,7 +530,8 @@ def _run_policy(policy, atp_provider):
     queues = {"spatial": list(candidates), "side_effect": [(m, p) for m, p in candidates
               if p is None and set(m) - set(BACKGROUND)]}
     source_tried = set()
-    for _ in range(len(candidates) + 2):
+    # E/P can add nine removals and two halves for each of four paid coarse probes.
+    for _ in range(len(candidates) + 2 + (44 if policy.method in ("E", "P") else 0)):
         if policy.exhausted or policy.seconds >= policy.budget:
             break
         for task in TASKS:
@@ -548,7 +558,17 @@ def _run_policy(policy, atp_provider):
                     continue
                 bundle = _bundle(policy, task, addition, background, removal_parent=parent)
             if bundle:
-                policy.run_bundle(bundle)
+                measured = policy.run_bundle(bundle)
+                if (measured and policy.method in ("E", "P") and task == "spatial"
+                        and parent is None and mask in [region(2, i) for i in range(4)]):
+                    by_role = {(o["role"], o["question_index"]): policy.visible[o["key"]]
+                               for o in bundle["checks"]}
+                    changed = any(
+                        (before := _token_signature(by_role[("baseline", q)])) is not None
+                        and (after := _token_signature(by_role[("candidate", q)])) is not None
+                        and before != after for q in (0, 1))
+                    if changed:
+                        queues["spatial"][0:0] = _coarse_followups(mask, ranked)
         finished = all(policy.complete(t) or t == "source" and not policy.contract["prepared"]["source_applicable"]
                        or t == "side_effect" and policy.contract.get("side_effect_applicable") is False for t in TASKS)
         if finished:
@@ -608,7 +628,7 @@ def _validate_predictions(checkpoint, holdout, records):
     return result
 
 
-def compare_case(case, measurements, atp_provider, budget_seconds, contract=None):
+def compare_case(case, measurements, atp_provider, budget_seconds, contract=None, *, before_validation=None):
     """Run G/R/E/P/G-answer independently, then reveal a common held-out table.
 
     No defaults silently skip a comparator. New-scene selection and the 32-family
@@ -620,7 +640,14 @@ def compare_case(case, measurements, atp_provider, budget_seconds, contract=None
         raise ValueError("confirmation Measurements must disable historical fallback")
     if atp_provider is None:
         raise ValueError("P cannot be omitted or replaced by exact patching")
+    from .diagnosis_linked_validation import freeze_catalog, register_diagnosis, assess_registered, _verify
     contract = prepare_case_contract(case, contract)
+    if 'linked_catalog' not in contract:
+        contract['linked_catalog'] = freeze_catalog(case, contract['prepared'])
+    catalog = contract['linked_catalog']
+    _verify(catalog)
+    if catalog['cluster_id'] != case['cluster_id'] or catalog['seed'] != contract['prepared']['seed']:
+        raise ValueError('linked validation catalog does not match the frozen scene')
     background_records = [measurements.get(n, BACKGROUND, n) for n in case["main_node_ids"]]
     side_applicable = (any(r.get("correct") is True and _token_signature(r) is not None for r in background_records)
                        if all(_token_signature(r) is not None for r in background_records) else None)
@@ -631,10 +658,20 @@ def compare_case(case, measurements, atp_provider, budget_seconds, contract=None
         started = perf_counter()
         methods[method] = _run_policy(policy, atp_provider)
         methods[method]["decision_seconds"] = max(0.0, perf_counter() - started - policy.backend_wait_seconds)
+        for checkpoint in methods[method]['checkpoints'].values():
+            keys = {r.get('key') for r in methods[method]['requests']
+                    if r.get('completed_within_budget') and r['cumulative_seconds'] <= checkpoint['budget_seconds']}
+            visible = {r['key']: r for r in methods[method]['visible_records'] if r['key'] in keys}
+            checkpoint['linked_predictions'] = {
+                task: register_diagnosis(dict(diagnosis, task=task), case, catalog, visible)
+                for task, diagnosis in checkpoint['diagnoses'].items()}
     # Every checkpoint is finalized before the first held-out result is requested.
     holdout = deepcopy(contract["prepared"]["holdout"])
     if side_applicable is False:
         holdout["side_effect"]["applicable"] = False
+    if before_validation is not None:
+        before_validation(deepcopy({"methods": methods, "common_holdout": holdout,
+                                    'linked_catalog_sha256': catalog['sha256']}))
     records = {}
     for group in holdout.values():
         if not group["applicable"]:
@@ -642,21 +679,38 @@ def compare_case(case, measurements, atp_provider, budget_seconds, contract=None
         for op in group["checks"]:
             if op["key"] not in records:
                 records[op["key"]] = measurements.get(op["node_id"], op["indices"], op["donor_id"])
-    validation_cost = 0.0
-    validation_captures = {}
-    for record in records.values():
-        costs = _costs(record)
-        validation_cost += costs["generate_seconds"]
-        validation_captures.update(costs.get("captures", {}))
+    common_keys = set(records)
     for method in methods.values():
+        for checkpoint in method['checkpoints'].values():
+            for packet in checkpoint['linked_predictions'].values():
+                if packet['status'] == 'registered':
+                    for op in packet['checks']:
+                        if op['key'] not in records:
+                            records[op['key']] = measurements.get(op['node_id'], op['indices'], op['donor_id'])
+    for method in methods.values():
+        linked_keys = set()
         for checkpoint in method["checkpoints"].values():
             checkpoint["holdout_validation"] = _validate_predictions(checkpoint, holdout, records)
-        captured = {key for request in method["requests"] for key in request.get("captures_charged", {})}
-        method["validation_seconds"] = validation_cost + sum(v for k, v in validation_captures.items() if k not in captured)
+            checkpoint['linked_validation'] = {task: assess_registered(packet, records)
+                for task, packet in checkpoint['linked_predictions'].items()}
+            linked_keys.update(op['key'] for packet in checkpoint['linked_predictions'].values()
+                               if packet['status'] == 'registered' for op in packet['checks'])
+        captured = {key for request in method['requests'] for key in request.get('captures_charged', {})}
+        paid_keys = {r['key'] for r in method['requests'] if r.get('completed_within_budget') and 'key' in r}
+        def validation_seconds(keys):
+            costs = [_costs(records[key]) for key in keys - paid_keys]
+            captures = {k: v for cost in costs for k, v in cost.get('captures', {}).items()}
+            return sum(cost['generate_seconds'] for cost in costs) + sum(v for k, v in captures.items() if k not in captured)
+        main_keys = {op['key'] for packet in method['checkpoints']['B']['linked_predictions'].values()
+                     if packet['status'] == 'registered' for op in packet['checks']}
+        method['main_linked_validation_seconds'] = validation_seconds(main_keys)
+        method['main_formation_plus_validation_seconds'] = method['logical_seconds'] + validation_seconds(main_keys)
+        method['validation_seconds'] = validation_seconds(common_keys | linked_keys)
         method["formation_plus_validation_seconds"] = method["logical_seconds"] + method["validation_seconds"]
     return {"version": VERSION, "cluster_id": case["cluster_id"], "statistical_unit": "scene_family",
             "budget_seconds": budget_seconds, "contract": contract, "methods": methods,
-            "common_holdout": holdout, "holdout_records": list(records.values()),
+            "common_holdout": holdout, "holdout_records": [r for k, r in records.items() if k in common_keys],
+            'linked_validation_records': [r for k, r in records.items() if k not in common_keys],
             "claim_boundary": "finite injected-state diagnosis, not persistent model repair or unique poisoning cause"}
 
 
@@ -769,7 +823,8 @@ def summarize_comparisons(cases):
             "bootstrap_95_percent_interval": interval, "paired_scene_differences": differences,
             "single_scene_interval_is_degenerate": len(differences) == 1}}
     fields = ("logical_seconds", "overrun_seconds", "validation_seconds",
-              "formation_plus_validation_seconds", "decision_seconds")
+              "formation_plus_validation_seconds", "decision_seconds",
+              'main_linked_validation_seconds', 'main_formation_plus_validation_seconds')
     for method in METHODS:
         rows = [case["comparison"]["methods"][method] for case in cases]
         result["costs"][method] = {field: {"recorded_scenes": len(values), "sum": sum(values),
@@ -779,4 +834,61 @@ def summarize_comparisons(cases):
     result["cost_scope"] = ("Each method's full simulated independent run plus common validation; decision_seconds is CPU. "
                             "Do not sum methods into physical GPU time. Checkpoint available_evidence_seconds excludes "
                             "an unfinished crossing request and is not a standalone deployment runtime.")
+    _add_linked_summary(result, cases)
     return result
+
+
+def _add_linked_summary(result, cases):
+    """The main endpoint requires a diagnosis AND its own discriminating new prediction."""
+    result['primary_endpoint'] = 'scene_mean_linked_supported_fraction_at_B'
+    result['generic_holdout_role'] = 'secondary answer prediction; never substitutes for diagnosis validation'
+    for point in ('0.5B', 'B'):
+        main = result['checkpoints'][point]
+        paired = {}
+        for method in METHODS:
+            rows, counts, reasons = [], {}, {}
+            for case in cases:
+                checkpoint = case['comparison']['methods'][method]['checkpoints'][point]
+                if 'linked_validation' not in checkpoint:
+                    continue  # Historical/CPU summary records explicitly lack this new endpoint.
+                applicable, supported, registered = 0, 0, 0
+                for task in TASKS:
+                    original = checkpoint['diagnoses'][task]
+                    packet = checkpoint['linked_predictions'][task]
+                    validation = checkpoint['linked_validation'][task]
+                    applicable += original['status'] != 'not_applicable'
+                    if (original['status'] == 'not_applicable') != (validation['status'] == 'not_applicable'):
+                        raise ValueError('linked verification changed the original task denominator')
+                    valid = (original['status'] == 'complete' and validation['status'] == 'supported'
+                             and validation.get('distinguishes_registered_competitors') is True)
+                    supported += valid
+                    registered += packet['status'] == 'registered'
+                    statuses = counts.setdefault(task, dict.fromkeys(('supported', 'refuted', 'unresolved', 'not_applicable'), 0))
+                    statuses[validation['status']] += 1
+                    if packet.get('reason'):
+                        reasons[packet['reason']] = reasons.get(packet['reason'], 0) + 1
+                rows.append({'cluster_id': case['cluster_id'], 'applicable_tasks': applicable,
+                             'supported_tasks': supported, 'registered_tasks': registered,
+                             'fraction': supported / applicable if applicable else None})
+            mean_value = [r['fraction'] for r in rows if r['fraction'] is not None]
+            main['methods'][method].update(mean_linked_supported_fraction=mean(mean_value) if mean_value else None,
+                linked={'status': 'recorded' if len(rows) == len(cases) and cases else 'not_fully_recorded',
+                        'scenes': rows, 'task_status_counts': counts, 'registration_reasons': reasons,
+                        'scope': 'original relation plus its one prespecified context-extension prediction'})
+            paired[method] = {r['cluster_id']: r['fraction'] for r in rows if r['fraction'] is not None}
+        differences = [paired['G'][cid] - paired['R'][cid] for cid in paired['G'] if cid in paired['R']]
+        interval, all_zero = None, bool(differences) and all(d == 0 for d in differences)
+        if len(differences) > 1 and not all(d == differences[0] for d in differences):
+            rng = Random(20260914)
+            bounds = quantiles([mean(rng.choices(differences, k=len(differences))) for _ in range(2000)],
+                               n=40, method='inclusive')
+            interval = [bounds[0], bounds[-1]]
+        main['G_minus_R_linked'] = {'paired_scene_count': len(differences),
+            'mean_difference': mean(differences) if differences else None,
+            'bootstrap_95_percent_interval': interval, 'paired_scene_differences': differences,
+            'all_paired_differences_zero': all_zero,
+            'all_zero_95_upper_bound_on_disagreement_probability':
+                1 - 0.05 ** (1 / len(differences)) if all_zero else None,
+            'uncertainty_note': 'A constant observed difference has no informative bootstrap interval. '
+                'The all-zero bound is a one-sided exact binomial bound under independent identically sampled scene pairs; '
+                'it is not a universal VLM equivalence claim.'}

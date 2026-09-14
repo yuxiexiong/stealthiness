@@ -98,6 +98,21 @@ def build(args):
         raise ValueError('source lock changed; use a new directory')
     source.write_json(lock_path, lock)
     source.write_json(root / 'selected-scenes.json', selected)
+    if getattr(args, 'archive_cache', None):
+        # Reuse HF's maintained resumable/Xet downloader after HTTP stream truncation.
+        from concurrent.futures import ThreadPoolExecutor
+        from huggingface_hub import hf_hub_download
+        names = ('editclevr_atomic_id.tar.gz', 'editclevr_hard_distractor.tar.gz', 'editclevr_cogent_ood.tar.gz')
+        def download(name):
+            path = hf_hub_download(repo_id='torux/EditCLEVR', repo_type='dataset',
+                revision=source.REVISION, filename=name, cache_dir=args.archive_cache)
+            print('Cached ' + name, flush=True)
+            return Path(path)
+        with ThreadPoolExecutor(max_workers=3) as pool:
+            archives = list(pool.map(download, names))
+        if len({p.parent for p in archives}) != 1:
+            raise ValueError('HF snapshot paths disagree')
+        source.HUB = archives[0].parent.as_uri() + '/'
     transfers = source.extract_subset(root, selected)
     engine_path = Path(args.engine)
     if source.digest(engine_path) != original.ENGINE_SHA256:
@@ -156,6 +171,7 @@ def main(argv=None):
         p.add_argument('--' + name, required=True)
     p.add_argument('--history', nargs='+', required=True)
     p.add_argument('--exclude-cases', nargs='+', required=True)
+    p.add_argument('--archive-cache', help='reuse the installed HF resumable downloader and a local cache')
     result = build(p.parse_args(argv))
     print(json.dumps({k: result[k] for k in ('stage', 'cases', 'nodes', 'geometry_eligible_cases')}))
 

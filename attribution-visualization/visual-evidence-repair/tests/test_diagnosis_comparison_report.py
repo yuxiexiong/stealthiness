@@ -11,7 +11,10 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from repair.diagnosis_comparison_report import make_reader_assignments, reader_case, render, render_reader_materials
+from repair.diagnosis_comparison_report import (
+    READER_HELPERS, _comparison_table, _enhance,
+    make_reader_assignments, reader_case, render, render_reader_materials,
+)
 from repair.visual_probe_protocol import condition_key, region
 
 
@@ -45,6 +48,78 @@ def fixture_case(index):
 
 
 class DiagnosisComparisonReportTest(unittest.TestCase):
+    def test_source_recipients_and_shared_online_budget(self):
+        case, peer = fixture_case(0), fixture_case(100)
+        case["nodes"] += peer["nodes"]
+        metadata = case["reader"]
+        metadata["task"] = "source"
+        metadata["recipient_groups"] = {"forward": metadata["node_ids"], "reverse": peer["reader"]["node_ids"]}
+        metadata["initial_condition_keys"].update(peer["reader"]["initial_condition_keys"])
+        metadata["donor_options"] = {n["id"]: [{"id": n["id"], "label": n["id"]}] for n in case["nodes"]}
+        public, packet = reader_case(case)
+        self.assertEqual(len(public["nodes"]), 4)
+        self.assertEqual(len(packet["donor_options"]), 4)
+        packet["trial_id"] = "cpu-source"
+        if shutil.which("node"):
+            script = READER_HELPERS + "\nconst p=" + json.dumps(packet) + r""";
+const assert=require('node:assert/strict');
+const own=direction=>Object.fromEntries(p.recipient_groups[direction].map(n=>[n,n]));
+const forward=buildReaderOperations(p,'forward',[[500]],[],own('forward'),0,false);
+const reverse=buildReaderOperations(p,'reverse',[[500]],[],own('reverse'),1,false);
+assert.deepEqual(forward[0].node_ids,p.recipient_groups.forward);
+assert.deepEqual(reverse[0].node_ids,p.recipient_groups.reverse);
+assert.equal(reverse[0].recipient_group,'reverse');
+assert.equal(forward[0].node_ids.length,2);assert.equal(reverse[0].node_ids.length,2);
+assert.equal(buildReaderOperations(p,'reverse',[[500]],[],own('reverse'),3,false)[0].id,'cpu-source-op-4');
+assert.throws(()=>buildReaderOperations(p,'forward',[[500]],[],own('forward'),4,false),/4/);
+assert.throws(()=>buildReaderOperations(p,'reverse',[[500]],[],own('forward'),0,false),/供体/);
+assert.throws(()=>buildReaderOperations(p,'forward',[p.reserved_checks[0].indices],[],own('forward'),0,false),/保留/);
+assert.equal(buildReaderOperations(p,'reverse',[p.reserved_checks[0].indices],[],own('reverse'),0,false).length,1);
+assert.throws(()=>buildReaderOperations({...p,task_status:'not_applicable_fixed_background_not_correct'},'forward',[[500]],[],own('forward'),0,false),/N\/A/);
+"""
+            subprocess.run(["node", "-e", script], check=True, capture_output=True)
+        del metadata["recipient_groups"]["reverse"]
+        with self.assertRaisesRegex(ValueError, "both forward and reverse"):
+            reader_case(case)
+
+    def test_not_applicable_packet_is_explicit_and_not_reassigned(self):
+        case = fixture_case(0)
+        case["reader"].update(task="side_effect", task_status="not_applicable_fixed_background_not_correct", reserved_checks=[])
+        _, packet = reader_case(case)
+        self.assertEqual(packet["task"], "side_effect")
+        self.assertEqual(packet["task_status"], "not_applicable_fixed_background_not_correct")
+        self.assertEqual(packet["reserved_checks"], [])
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "na.html"
+            path.write_text('<style></style><body><div class="workspace"></div></body>')
+            _enhance(path, reader=dict(packet, format="T", trial_id="na-trial"))
+            text = path.read_text()
+            self.assertIn('data-task-status="not_applicable"', text)
+            self.assertIn('不换题，不计为普通失败或适用任务', text)
+            self.assertIn("state.scoring_status=notApplicable?'not_applicable':'pending'", text)
+            self.assertIn("function run(action){try{requireApplicable(trial.task_status)", text)
+
+    def test_main_b_table_uses_summary_accuracy_coverage_and_total_cost(self):
+        summary = {"checkpoints": {"B": {"methods": {
+            key: {"mean_completion_fraction": .25, 'mean_linked_supported_fraction': .125,
+                  "holdout": {"scene_mean_accuracy": .75, "scene_mean_coverage": .5},
+                  "applicable_scene_count": 3, "scene_count": 4} for key in ("G", "R", "E", "P", "G-answer")},
+            "G_minus_R_linked": {"mean_difference": .125, "bootstrap_95_percent_interval": [-.1, .2]}}},
+            "costs": {key: {"main_formation_plus_validation_seconds": {"mean": 12.345}} for key in ("G", "R", "E", "P", "G-answer")}}
+        table = _comparison_table(summary)
+        self.assertIn('id="main-b-comparison"', table)
+        self.assertEqual(table.count('25.0%'), 5)
+        self.assertEqual(table.count('75.0%'), 5)
+        self.assertEqual(table.count('50.0%'), 5)
+        self.assertEqual(table.count('12.345'), 5)
+        self.assertIn('12.5%', table)
+        self.assertIn('[-10.0%, 20.0%]', table)
+        self.assertNotIn('<details', table)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "comparison.html"
+            render({"cases": [fixture_case(0)], "comparison": summary, "cpu_test": True}, path)
+            self.assertIn(table, path.read_text())
+
     def test_allocation_is_balanced_without_repeated_families(self):
         cases = [fixture_case(i) for i in range(32)]
         allocation = make_reader_assignments(cases)

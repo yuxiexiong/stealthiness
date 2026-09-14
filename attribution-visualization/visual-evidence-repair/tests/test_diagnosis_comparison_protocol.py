@@ -3,7 +3,7 @@ from copy import deepcopy
 import unittest
 
 from repair.diagnosis_comparison_protocol import (
-    BACKGROUND, _Policy, _bundle, assess_bundle, compare_case, prepare_case_contract,
+    BACKGROUND, _Policy, _bundle, _run_policy, assess_bundle, compare_case, prepare_case_contract,
     summarize_comparisons,
 )
 from repair.visual_probe_protocol import condition_key, region
@@ -108,7 +108,16 @@ class ComparisonProtocolTests(unittest.TestCase):
                 self.assertEqual(set(checkpoint["diagnoses"]), {"spatial", "side_effect", "source"})
                 for prediction in checkpoint["predictions"].values():
                     self.assertNotIn(prediction.get("evidence_key"), reserved)
-        self.assertEqual(set(measurements.physical_requests[-len(reserved):]), reserved)
+        self.assertTrue(reserved <= set(measurements.physical_requests))
+        for method in result['methods'].values():
+            online = {r.get('key') for r in method['requests']}
+            for checkpoint in method['checkpoints'].values():
+                self.assertEqual(set(checkpoint['linked_validation']), {'spatial', 'side_effect', 'source'})
+                for packet in checkpoint['linked_predictions'].values():
+                    for check in packet['checks']:
+                        if check['is_new_challenge']:
+                            self.assertNotIn(check['key'], online)
+            self.assertGreaterEqual(method['formation_plus_validation_seconds'], method['main_formation_plus_validation_seconds'])
         direct = result["methods"]["R"]["checkpoints"]["B"]["diagnoses"]
         self.assertEqual(direct["spatial"]["status"], "complete")
         self.assertEqual(direct["source"]["status"], "complete")
@@ -171,6 +180,67 @@ class ComparisonProtocolTests(unittest.TestCase):
                 policy.visible[op["key"]]["correct"] = False
         self.assertEqual(assess_bundle(bundle, policy.visible, policy.nodes)["status"], "unresolved")
 
+    def test_q2_only_change_does_not_diagnose_the_q1_spatial_anomaly(self):
+        case = example_case()
+        policy = _Policy("G", case, FakeMeasurements(case), 200, prepare_case_contract(case))
+        bundle = _bundle(policy, "spatial", region(6, 0))
+        policy.run_bundle(bundle)
+        for op in bundle["checks"]:
+            answer = "I cannot answer" if op["question_index"] == 0 else "blue"
+            if op["question_index"] == 1 and op["role"] == "candidate":
+                answer = "green"
+            policy.visible[op["key"]]["output"]["text"] = answer
+            policy.visible[op["key"]]["correct"] = answer == policy.nodes[op["node_id"]]["clean_row"]["answer"]
+        assessed = assess_bundle(bundle, policy.visible, policy.nodes)
+        self.assertEqual(assessed["status"], "unresolved")
+        self.assertEqual(len(assessed["actual_answers"]), 6)
+        target = next(o for o in bundle["checks"] if o["question_index"] == 0 and o["role"] == "candidate")
+        policy.visible[target["key"]]["output"]["text"] = "red"
+        self.assertEqual(assess_bundle(bundle, policy.visible, policy.nodes)["question_indices"], [0])
+        del policy.visible[bundle["checks"][-1]["key"]]
+        self.assertEqual(assess_bundle(bundle, policy.visible, policy.nodes)["status"], "unresolved")
+
+    def test_exact_and_atp_reach_paid_coarse_removal_and_halves_promptly(self):
+        case = example_case()
+
+        class CoarseMeasurements(FakeMeasurements):
+            def get(self, node, indices, donor_id=None):
+                record = super().get(node, indices, donor_id)
+                mask = set(indices)
+                if self.uniform:
+                    active = len(mask) >= 100  # Coarse blocks work, all removals work, halves fail.
+                else:
+                    active = (set(region(6, 0) + region(6, 12)) <= mask
+                              or len(mask) >= 144 and not mask.intersection(BACKGROUND))
+                answer = self.nodes[node]["clean_row"]["answer"] if active else "I cannot answer"
+                record.update(correct=active, fact=5.0 if active else -5.0,
+                              output={"text": answer, "stop_reason": "eos"})
+                return record
+
+        for method in ("E", "P"):
+            for uniform in (False, True):
+                with self.subTest(method=method, uniform=uniform):
+                    measurements = CoarseMeasurements(case, uniform=uniform)
+                    contract = prepare_case_contract(case)
+                    # Isolate spatial search; source and side-effect scheduling have separate tests.
+                    contract["prepared"]["source_applicable"] = False
+                    contract["side_effect_applicable"] = False
+                    policy = _Policy(method, case, measurements, 1200, contract)
+                    result = _run_policy(policy, fake_atp)
+                    attempts = result["attempts"]
+                    first_removal = next(i for i, b in enumerate(attempts) if b["kind"] == "removal")
+                    self.assertLessEqual(first_removal, 4)
+                    removals = [b for b in attempts if b["kind"] == "removal"]
+                    paid = {r.get("key") for r in result["requests"] if r["completed_within_budget"]}
+                    self.assertTrue(set(o["key"] for o in removals[0]["checks"]) <= paid)
+                    self.assertTrue(all(r["scores_charged"] for r in result["requests"] if "scores_charged" in r))
+                    if not uniform:
+                        self.assertEqual(removals[0]["status"], "complete")
+                    else:
+                        halves = [[i for i in BACKGROUND if (i // 24 < 6) == upper] for upper in (True, False)]
+                        for half in halves:
+                            self.assertTrue(any(b["candidate_indices"] == half and b["kind"] == "addition" for b in attempts))
+
     def test_no_effect_no_fabricated_diagnosis_and_no_fake_atp(self):
         case = example_case()
         result = compare_case(case, FakeMeasurements(case, uniform=True), fake_atp, 900)
@@ -212,6 +282,13 @@ class ComparisonProtocolTests(unittest.TestCase):
                                 else ["unresolved", "interface_failure", "unresolved"])
                 checkpoint = {"diagnoses": {task: {"status": status} for task, status in
                                              zip(("spatial", "side_effect", "source"), statuses)},
+                              'linked_predictions': {task: {'status': 'registered' if status == 'complete' else status}
+                                  for task, status in zip(('spatial', 'side_effect', 'source'), statuses)},
+                              'linked_validation': {task: {
+                                  'status': ('supported' if method == 'R' else 'refuted') if status == 'complete'
+                                            else 'not_applicable' if status == 'not_applicable' else 'unresolved',
+                                  'distinguishes_registered_competitors': method == 'R'}
+                                  for task, status in zip(('spatial', 'side_effect', 'source'), statuses)},
                               "available_evidence_seconds": 10,
                               "holdout_validation": {"spatial": holdout(100 if index == 0 else 1, index == 0, index == 1),
                                   "side_effect": {"status": "not_applicable"} if index == 0 else holdout(1, False, True),
@@ -224,6 +301,8 @@ class ComparisonProtocolTests(unittest.TestCase):
         for point in ("B", "0.5B"):
             graph = summary["checkpoints"][point]["methods"]["G"]
             self.assertEqual(graph["mean_completion_fraction"], 0.5)  # not 1/4 pooled tasks
+            self.assertEqual(graph['mean_linked_supported_fraction'], 0.0)  # Generic accuracy cannot rescue refuted diagnoses.
+            self.assertAlmostEqual(summary['checkpoints'][point]['G_minus_R_linked']['mean_difference'], -1 / 3)
             self.assertEqual(graph["holdout"]["scene_mean_accuracy"], 0.5)  # not 100/103 cells
             self.assertEqual(graph["task_status_counts"]["side_effect"]["not_applicable"], 1)
             self.assertEqual(graph["task_status_counts"]["side_effect"]["interface_failure"], 1)
@@ -249,6 +328,36 @@ class ComparisonProtocolTests(unittest.TestCase):
         self.assertEqual(policy.requests[-1]["compute_seconds"], 2.5)
         with self.assertRaisesRegex(ValueError, "cover the recorded calls"):
             policy.gradient("e0q0", [], lambda *args: dict(fake_atp(*args), elapsed_seconds=1.0))
+
+    def test_prediction_callback_precedes_every_holdout_read(self):
+        case = example_case()
+        contract = prepare_case_contract(case)
+        from repair.diagnosis_linked_validation import freeze_catalog
+        contract['linked_catalog'] = freeze_catalog(case, contract['prepared'])
+        online_masks = set(contract['linked_catalog']['online_mask_codes'])
+        reserved = set(contract["prepared"]["reserved_keys"])
+        events = []
+        class OrderedMeasurements(FakeMeasurements):
+            def get(self, node, indices, donor_id=None):
+                if (condition_key(node, donor_id or node, indices) in reserved
+                        or hex(sum(1 << i for i in indices)) not in online_masks):
+                    self_outer.assertIn("sealed", events)
+                    events.append("holdout")
+                return super().get(node, indices, donor_id)
+        self_outer = self
+        def save_predictions(payload):
+            self.assertNotIn("holdout", events)
+            self.assertEqual(set(payload["methods"]), {"G", "G-answer", "R", "E", "P"})
+            self.assertTrue(all(set(m["checkpoints"]) == {"0.5B", "B"} for m in payload["methods"].values()))
+            self.assertTrue(all("holdout_validation" not in c for m in payload["methods"].values()
+                                for c in m["checkpoints"].values()))
+            payload["methods"]["G"]["checkpoints"]["B"]["visible_condition_count"] = 999
+            events.append("sealed")
+        result = compare_case(case, OrderedMeasurements(case), fake_atp, 1800, contract,
+                              before_validation=save_predictions)
+        self.assertEqual(events.count("sealed"), 1)
+        self.assertIn("holdout", events)
+        self.assertNotEqual(result["methods"]["G"]["checkpoints"]["B"]["visible_condition_count"], 999)
 
 
 if __name__ == "__main__":
