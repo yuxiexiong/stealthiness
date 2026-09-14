@@ -16,6 +16,10 @@ from .visual_probe_protocol import condition_key, region, _children
 
 PROJECT = Path(__file__).resolve().parents[1]
 SMOKE_IDS = {'editclevr-100161', 'editclevr-100669'}
+INSTRUMENT_IDS = {
+    'editclevr-100161', 'editclevr-101232', 'editclevr-335200',
+    'editclevr-336805', 'editclevr-400305',
+}
 
 
 class TimedMeasurements(Measurements):
@@ -234,6 +238,19 @@ def reader_spec(case, contract):
                 for nid in recipient_ids}}
 
 
+def instrument_sentinels(development):
+    """Validate task coverage from old manifest structure before loading a model."""
+    from .diagnosis_comparison_protocol import prepare_case_contract
+    sentinels = [case for case in development['cases'] if case['cluster_id'] in INSTRUMENT_IDS]
+    if {case['cluster_id'] for case in sentinels} != INSTRUMENT_IDS:
+        raise ValueError('old instrument sentinels are missing')
+    source_capable = [case['cluster_id'] for case in sentinels
+                      if prepare_case_contract(case)['prepared']['source_applicable']]
+    if set(source_capable) != {'editclevr-336805', 'editclevr-400305'}:
+        raise ValueError('old source sentinels no longer provide two questions in both directions')
+    return sentinels, source_capable
+
+
 def check_instrument(diagnosis, development, calibration, directory):
     """Old cases test whether each promised task can produce a sealed, relevant test.
 
@@ -242,13 +259,13 @@ def check_instrument(diagnosis, development, calibration, directory):
     """
     from .data import read_jsonl
     from .diagnosis_comparison_protocol import compare_case, TASKS
-    counts = {task: {'complete': 0, 'registered': 0, 'supported': 0, 'refuted': 0, 'unresolved': 0}
+    sentinels, source_capable = instrument_sentinels(development)
+    counts = {task: {'applicable': 0, 'not_applicable': 0, 'complete': 0, 'registered': 0,
+                     'supported': 0, 'refuted': 0, 'unresolved': 0}
               for task in TASKS}
     rows = []
-    for case in development['cases']:
+    for case in sentinels:
         cid = case['cluster_id']
-        if cid not in {'editclevr-100161', 'editclevr-101232', 'editclevr-335200'}:
-            continue
         existing = {r['key']: r for r in read_jsonl(directory / (cid + '.jsonl'))}
         with (directory / (cid + '-instrument-measurements.jsonl')).open('w') as stream:
             measured = measurement_at(diagnosis, case, stream, existing)
@@ -262,7 +279,10 @@ def check_instrument(diagnosis, development, calibration, directory):
                 checkpoint = method['checkpoints']['B']
                 for task in TASKS:
                     count = counts[task]
-                    count['complete'] += checkpoint['diagnoses'][task]['status'] == 'complete'
+                    diagnosis_status = checkpoint['diagnoses'][task]['status']
+                    count['not_applicable'] += diagnosis_status == 'not_applicable'
+                    count['applicable'] += diagnosis_status != 'not_applicable'
+                    count['complete'] += diagnosis_status == 'complete'
                     count['registered'] += checkpoint['linked_predictions'][task]['status'] == 'registered'
                     status = checkpoint['linked_validation'][task]['status']
                     if status in ('supported', 'refuted', 'unresolved'):
@@ -271,8 +291,9 @@ def check_instrument(diagnosis, development, calibration, directory):
             rows.append({'cluster_id': cid, 'new_model_call_seconds': sum(r['seconds'] for r in measured.calls.rows),
                          'full_case_seconds_estimate': old_seconds + sum(r['seconds'] for r in measured.calls.rows)})
         print(json.dumps({'phase': 'old_instrument_check', **rows[-1]}), flush=True)
-    ready = len(rows) == 3 and all(count['registered'] for count in counts.values())
+    ready = len(rows) == len(INSTRUMENT_IDS) and all(count['registered'] for count in counts.values())
     result = {'status': 'ready' if ready else 'instrument_not_ready', 'tasks': counts, 'old_cases': rows,
+              'source_capable_old_cases': source_capable,
               'gate': 'every task must yield an actual registered new test on old sentinel cases; no winning-method or positive-result gate',
               'expected_32_case_model_seconds': median([r['full_case_seconds_estimate'] for r in rows]) * 32 if rows else None,
               'new_confirmation_outcomes_used': False}
@@ -399,8 +420,9 @@ def run(args):
             'prepared_sha256': digest(args.cases), 'prepared_receipt_sha256': digest(args.cases.parent / 'receipt.json'),
             'calibration_sha256': digest(args.calibration_rows),
             'created_utc': now(), 'parameter_updates': 0})
-        diagnosis, identity = model_at(args)
         development = manifest_at(args.development)
+        instrument_sentinels(development)
+        diagnosis, identity = model_at(args)
         if any(identity[k] != development['historical_identity'][k] for k in
                ('asset_identity', 'generation', 'effective_generation', 'model_spec')):
             raise ValueError('model or generation differs from qualified old development evidence')

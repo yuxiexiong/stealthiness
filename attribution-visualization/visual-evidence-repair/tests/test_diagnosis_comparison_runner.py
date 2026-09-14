@@ -5,7 +5,7 @@ from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
 
-from repair.diagnosis_comparison import qualification
+from repair.diagnosis_comparison import INSTRUMENT_IDS, instrument_sentinels, qualification
 from tools.prepare_diagnosis_comparison import select, STRATA
 
 
@@ -63,6 +63,13 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(len(ids), 96)
         self.assertFalse(ids & excluded)
         self.assertEqual({r['main_endpoint'] for r in rows}, {0, 1})
+
+    def test_old_instrument_set_contains_structural_source_sentinels(self):
+        import json
+        manifest = Path(__file__).parents[1] / 'runs/visual-probe-v3-inputs-2026-09-13/manifest.json'
+        cases, capable = instrument_sentinels(json.loads(manifest.read_text()))
+        self.assertEqual({case['cluster_id'] for case in cases}, INSTRUMENT_IDS)
+        self.assertEqual(set(capable), {'editclevr-336805', 'editclevr-400305'})
 
     def test_driver_report_matches_protocol_and_reader_schema(self):
         from types import SimpleNamespace
