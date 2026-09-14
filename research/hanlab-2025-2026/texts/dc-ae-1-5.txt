@@ -1,0 +1,713 @@
+===== PDF PAGE 1 =====
+                                                                DC-AE 1.5: Accelerating Diffusion Model Convergence
+                                                                           with Structured Latent Space
+
+                                            Junyu Chen             Dongyun Zou               Wenkun He
+                                                                                           Junsong Chen Enze Xie Song Han                                                        Han Cai
+                                                                                         NVIDIA
+                                                                        https://github.com/dc-ai-projects/DC-Gen
+
+
+
+
+arXiv:2508.00413v1 [cs.CV] 1 Aug 2025
+                                                                      Abstract                                         upper bound for the whole image synthesis pipeline.
+                                                                                                                           A common approach to improve the quality of autoen-
+                                        We present DC-AE 1.5, a new family of deep compression                         coder reconstruction is to increase its latent channel number
+                                        autoencoders for high-resolution diffusion models. Increas-                    [10, 12, 19]. For example, Figure 1 (b) shows the autoen-
+                                        ing the autoencoder’s latent channel number is a highly                        coder’s rFID (reconstruction FID, the lower the better) re-
+                                        effective approach for improving its reconstruction qual-                      sults with different latent channel numbers. We can see that
+                                        ity. However, it results in slow convergence for diffusion                     the rFID consistently improves as the latent channel number
+                                        models, leading to poorer generation quality despite bet-                      increases, decreasing from 1.60 to 0.26 if switching from
+                                        ter reconstruction quality. This issue limits the quality up-                  c16 to c128.
+                                        per bound of latent diffusion models and hinders the em-                           Expanding the latent channel number is especially criti-
+                                        ployment of autoencoders with higher spatial compression                       cal for deep compression autoencoders [7], which acceler-
+                                        ratios. We introduce two key innovations to address this                       ate latent diffusion models by increasing the autoencoder’s
+                                        challenge: i) Structured Latent Space, a training-based                        spatial compression ratio (Figure 1a). Under a high spa-
+                                        approach to impose a desired channel-wise structure on                         tial compression ratio (e.g., f64), deep compression autoen-
+                                        the latent space with front latent channels capturing ob-                      coders must use a large latent channel number (e.g., c128)
+                                        ject structures and latter latent channels capturing image                     to maintain a satisfactory reconstruction quality.
+                                        details; ii) Augmented Diffusion Training, an augmented                            However, using a large latent channel number signifi-
+                                        diffusion training strategy with additional diffusion training                 cantly slows the diffusion model’s convergence, leading to
+                                        objectives on object latent channels to accelerate conver-                     worse gFID (generation FID, the lower the better) results.
+                                        gence. With these techniques, DC-AE 1.5 delivers faster                        For example, Figure 1 (b) demonstrates DiT-XL’s [24] gFID
+                                        convergence and better diffusion scaling results than DC-                      results with different latent channel numbers. Although the
+                                        AE. On ImageNet 512×512, DC-AE-1.5-f64c128 delivers                            autoencoder’s rFID keeps improving, the gFID keeps de-
+                                        better image generation quality than DC-AE-f32c32 while                        teriorating. This issue not only limits LDM’s quality up-
+                                        being 4× faster.                                                               per bound but also bounds its efficiency as it hinders the
+                                                                                                                       employment of autoencoders with high spatial compression
+                                                                                                                       ratios (e.g., f64).
+                                        1. Introduction                                                                    This work presents DC-AE 1.5, which introduces two
+                                                                                                                       key innovations to tackle the aforementioned challenge.
+                                        Latent Diffusion Model (LDM) [25] has established itself                       First, we analyze the autoencoder’s latent space under dif-
+                                        as a dominant paradigm in high-resolution image synthe-                        ferent latent channel numbers (Section 3.1). We find that the
+                                        sis [12, 19, 21, 32]. It leverages an autoencoder to project                   latent space has a sparsity issue when using a large number
+                                        images of size H × W × 3 into compressed latent represen-                      of latent channels (Figure 2a). It allocates most of the latent
+                                        tations of shape H      W      1
+                                                          f × f × c , reducing the computational                       channels for capturing image details while the latent chan-
+                                        cost of the diffusion model. The diffusion model’s outputs                     nels for capturing object structure become sparse among the
+                                        are fed to the autoencoder at inference time to reconstruct                    whole latent space2 . This sparsity issue makes it more dif-
+                                        images from the latent representations. In LDM, the autoen-                    ficult for diffusion models to learn object structure, leading
+                                        coder reconstruction quality is critical, as it sets a quality                 to the slow convergence issue. As shown in Figure 2 (b),
+                                                                                                                       the image details remain good when we increase the latent
+                                            Correspondence to: Han Cai (hcai@nvidia.com).
+                                           1 ‘f’ denotes the autoencoder’s spatial compression ratio. ‘c’ represents      2 We refer to them as detail latent channels and object latent channels,
+
+                                        the latent channel number of the autoencoder.                                  respectively.
+
+
+===== PDF PAGE 2 =====
+                                 Training Throughput                           rFID           gFID                   DC-AE-f32c32     DC-AE-1.5-f64c128
+                                                                                                                               USiT-H
+            4,000                                             100                                                    4
+                                                                                                                                3.80
+                                                                                                                         USiT-2B
+
+Image/s ↑
+                                                               10                                                    3             4x spe           USiT-2B
+
+                                                                                                            gFID ↓
+                                                                                                                          2.90               edup    2.18
+            2,000
+                                                                1                                                    2
+
+                 0                                            0.1                                                    1
+                     f8         f16    f32     f64    f128          c16      c32     c64    c128 c256                    0            250                500
+                                   Autoencoder                                 Autoencoder                                    Training Throughput
+                            Spatial Compression Ratio                     Number of Latent Channels                               (Image/s) ↑
+                                          (a)                                         (b)                                              (c)
+
+   Figure 1. (a) Training Throughput Comparison under Different Autoencoder Spatial Compression Ratios. Increasing the autoen-
+   coder’s spatial compression
+                          Table 1   ratio effectively improves diffusion models’ training efficiency by producing a latent space with fewerTable             3
+                                                                                                                                                       tokens.
+   However, larger     latent  channel  numbers      are required  to maintain Table 2
+                                                                                   satisfactory  reconstruction quality. (b) rFID and   gFID
+                                                                                                                                  DC-AE-f32c32 Results  under     DC-AE-1.5-
+              f8      f16     f32   f64     f128                                                                                                                  f64c128
+   Different
+       Infere
+              Latent    Channel Numbers. We use DiT-XL [24]
+                 62.4 433.4 2017.13 8313.94 32094.62
+                                                                        16 as the
+                                                                                32 diffusion
+                                                                                        64    model.
+                                                                                             128    256rFID keeps improving with more latent channels, while
+
+   gFIDncekeeps getting worse. (c) Efficiency-Quality        rFID Trade-off
+                                                                      1.60     Comparison
+                                                                              0.69    0.38         ImageNet 512×512. Classifer-free 247
+                                                                                            0.26on 0.18                                  guidance [13]3.80
+                                                                                                                                                         is not         450
+       Throu                                                                                                                            112             2.90            132
+          DC-AE-1.5-f64c128 delivers 4× speedup gFID
+   used.ghput                                               over      9.93   10.98 13.24
+                                                                   DC-AE-f32c32            26.44 45.65
+                                                                                       while  maintaining a better image generation quality.
+            Traini        9.2   54.0 240.46 1007.40 3614.14
+   channel
+        ng    number. However, the object structures suffer from                            paving the way for the employment of autoencoders with
+        Throu
+   significant
+        ghput   distortion.                                                                 higher spatial compression ratios.
+      Motivated by the findings, we propose Structured La-
+   tent Space (Section 3.2) to alleviate the sparsity issue. It                        2. Related Work
+   introduces a training-based approach (Figure 4) to impos-                           Autoencoders in Image Generation. Training diffusion
+   ing a specific structure on the latent space: the front latent                      models in high-resolution pixel space is computationally
+   channels focus on capturing object structure, while the lat-                        prohibitive due to the large token number. To overcome
+   ter latent channels focus on capturing image details (Fig-                          this challenge, [25] proposes to employ pretrained autoen-
+   ure 3). Second, based on the Structured Latent Space, we                            coders to produce a compressed latent space and operate
+   propose Augmented Diffusion Training (Section 3.3) to                               diffusion models on the compressed space. This strategy
+   address the slow convergence issue. It introduces extra dif-                        significantly reduces diffusion models’ training and infer-
+   fusion training objectives on object latent channels to accel-                      ence costs, making it possible to train large-scale diffusion
+   erate diffusion models’ learning speed on capturing object                          models on web-scale datasets, leading to impressive image
+   structure (Figure 5).                                                               generation results [12, 19, 21].
+      With these techniques, we significantly accelerate diffu-                           Following that, one line of works focuses on improv-
+   sion models’ convergence when using a large latent chan-                            ing the autoencoders’ reconstruction quality by increasing
+   nel number (Figure 5b), leading to better gFID results (Ta-                         the latent channel number [10, 12, 19] or adding task-
+   ble 2 and 3). In addition, it also leads to better diffusion                        specific priors [37]. Another line of works focuses on im-
+   model scaling results than previous autoencoders (e.g., DC-                         proving diffusion models’ efficiency by increasing autoen-
+   AE-f32c32), as shown in Figure 6. On ImageNet 512×512,                              coders’ spatial compression ratio [5–7]. A third line of
+   DC-AE-1.5-f64c128+USiT-2B achieves 2.18 gFID without                                work [9, 27, 29, 30] explores hierarchical VAEs with multi-
+   classifier-free guidance, surpassing DC-AE-f32c32+USiT-                             resolution latent spaces, while our approach focuses on in-
+   2B while being 4× faster (Figure 1c). We summarize our                              troducing structure in the latent channel dimension. Con-
+   contributions as follows:                                                           current to our work, some recent works propose to make the
+   • We analyze the latent space of autoencoders under differ-                         latent space more friendly for diffusion models by aligning
+     ent latent channel numbers. Our study reveals the latent                          it with a pretrained discriminative model [33] or leverag-
+     space’s sparsity issue when using a large latent channel                          ing scale equivariance regularization [16, 28]. Unlike prior
+     number, which leads to the slow convergence issue for                             works, our work addresses the slow convergence issue of
+     diffusion models.                                                                 diffusion models when using a large latent channel number
+   • We propose Structured Latent Space and Augmented Dif-                             (e.g., c128). It also provides novel insights and solutions to
+     fusion Training, which effectively address the slow con-                          this critical problem.
+     vergence issue.
+   • We build DC-AE 1.5 based on our key innovations. It                               Accelerating Diffusion Model Convergence. Training
+     delivers better diffusion scaling results than prior autoen-                      the diffusion model consumes extensive computation re-
+     coders, boosting the quality upper bound of LDMs and                              sources, motivating many works to improve its training
+
+
+===== PDF PAGE 3 =====
+               f32c32                             f32c64                          f32c128                                f32c256
+                                                 (a) Autoencoder Latent Space Visualization
+
+
+
+
+               f32c32                             f32c64                           f32c128                               f32c256
+                                             (b) Diffusion Model Image Generation Visualization
+
+Figure 2. We visualize the channel-wise average feature here. We provide the complete latent space visualization in the supplementary
+material (Figure 9 and 10). The visualization shows that the object structure information gets blurred if we increase the latent channel
+number. It makes diffusion models unable to learn object structure efficiently. As a result, we can see gradually distorted object structures
+when we enlarge the latent channel number, as shown in the visualization of the diffusion model’s outputs. We use the DiT-XL as the
+diffusion model here.
+
+
+efficiency. Representative techniques include designing                  vide the visualization of the channel-wise average feature
+better model architectures [2–4], representation alignment               of the latent spaces3 .
+with pretrained discriminative models [35], better diffusion                 We can see that the information about the object struc-
+training schedulers [12, 22], improving the training data                ture becomes more sparse as we increase the latent channel
+quality [8, 31], etc. Orthogonal to these techniques, our                number from c32 to c256. From the complete latent space
+work accelerates diffusion model convergence by employ-                  visualization (Figure 9), we find that this phenomenon is be-
+ing a structured latent space.                                           cause the f32c256 autoencoder contains a lot of latent chan-
+                                                                         nels for capturing image details. In contrast, only a few la-
+3. Method                                                                tent channels are responsible for capturing object structure.
+                                                                             It is reasonable since capturing more image details is
+In Section 3.1, we first analyze the latent spaces of au-
+                                                                         critical for achieving a good reconstruction quality. How-
+toencoders with different latent channel numbers to under-
+                                                                         ever, since we treat all latent channels equally, it is chal-
+stand the underlying source of the slow convergence issue.
+                                                                         lenging for diffusion models to distinguish between the
+Next, in Section 3.2 and Section 3.3, we introduce DC-AE
+                                                                         overall object structure and high-frequency details, making
+1.5 with Structured Latent Space and Augmented Diffusion
+                                                                         them unable to learn object structure efficiently. For exam-
+Training to address the slow convergence issue.
+                                                                         ple, we visualize the image generation results of DiT-XL
+3.1. Analysis and Motivation                                             [24] with different autoencoders (DC-AE-f32c32 → DC-
+                                                                         AE-f32c256) in Figure 2 (b). We can see that the diffusion
+We visualize the latent spaces of DC-AE-f32 [7] with dif-                model gradually loses control over structural coherence as
+ferent latent channels (c32, c64, c128, and c256) to analyze             the number of latent channels increases. In contrast, the im-
+why diffusion models suffer from the slow convergence is-                age details remain good under all settings.
+sue when using a large latent channel number. Due to the
+page limit, we provide the complete latent space visualiza-                  3 Assuming each latent representation has a shape of [h, w, c], we get
+
+tion in the supplementary material. In Figure 2 (a), we pro-             its channel-wise average feature via ‘torch.mean(latent, dim=2)’.
+
+
+===== PDF PAGE 4 =====
+w/o Structured Latent Space
+
+
+
+
+w/ Structured Latent Space
+
+
+
+
+                                    16 channels                       32 channels               64 channels                     128 channels
+
+Figure 3. Image Reconstruction Comparison. With the structured latent space, DC-AE 1.5 can reconstruct images given partial latent
+channels, with front latent channels reconstructing overall object structure and semantics and latter latent channels adding details. In
+contrast, DC-AE can not reconstruct the object structure well given partial latent channels. The decoder is fine-tuned for all settings to
+fully reveal the information encoded in the (partial) latent space.
+
+
+                                                                                       design and add a channel-wise structure on the latent space.
+                                          Latent    Mask    Latent                        Specifically, DC-AE 1.5 has an additional capacity of re-
+                          Encoder                                            Decoder   constructing images from partial latent channels (e.g., first
+                                         Features          Features
+                                                                                       16/32/64 channels from c128). For example, as shown in
+                                                                                       Figure 3, it first focuses on reconstructing object structures
+Figure 4. Illustration of DC-AE 1.5 Autoencoder Training                               from the first 16 latent channels and gradually refines im-
+Strategy. The key difference from conventional autoencoder train-                      age details as we include more latent channels. In contrast,
+ing is that we add a channel-wise random masking step before                           when given partial latent channels, the conventional autoen-
+feeding the latent features to the decoder. The mask is generated                      coder (e.g., DC-AE [7]) cannot reconstruct the object struc-
+randomly at each step according to Eq. 1. It enables the autoen-                       ture well.
+coder to reconstruct with partial latent channels and naturally im-                       In the supplementary material, we visualize the complete
+pose the channel-wise structure on the latent space.                                   latent space comparison between DC-AE and DC-AE 1.5
+                                                                                       (Figure 10). We can see a clear separation between object
+    Based on these findings, we conjecture the autoen-                                 latent channels and detail latent channels in DC-AE 1.5’s
+coder’s latent space suffers from the object information                               latent space with front channels as object latent channels
+sparsity issue as demonstrated in Figure 2 (a) when using                              and latter channels as detail latent channels, which is absent
+a large latent channel number. This sparsity issue makes                               in DC-AE’s latent space.
+diffusion models unable to learn object structure efficiently,                            Figure 4 demonstrates our autoencoder training strategy
+leading to slow convergence.                                                           to achieve the desired channel-wise latent space structure.
+                                                                                       The intuition of our design is based on the finding that the
+3.2. Structured Latent Space                                                           autoencoder’s latent space naturally focuses more on the
+Motivated by the above analysis, we introduce Structured                               object structure when the latent channel number is small.
+Latent Space to help diffusion models distinguish object la-                           Therefore, we augment the original autoencoder training
+tent channels from detail latent channels to tackle the latent                         objective with the additional objective of reconstructing in-
+space sparsity issue. Figure 3 illustrates the general idea.                           put images from partial latent channels.
+Unlike the conventional autoencoders, whose latent spaces                                 Specifically, an autoencoder consists of an encoder E
+have no structure along the latent channel dimension, we                               that maps the input image x ∈ RH×W ×3 to the latent fea-
+
+
+===== PDF PAGE 5 =====
+                                                                                                                   Without Augmented Diffusion Training
+                      Noisy   Mask        Noisy
+   Latent                                                 Diffusion         Predicted                              With Augmented Diffusion Training
+                      Latent              Latent                                                        130
+
+
+
+                                                                                        Inception Score ↑
+  Features                                                 Model              Noise
+                     Features            Features                                                       106                       6x fewer steps
+                                                                                 Mask                    82
+         Add
+        Noise                                                                                            58
+                                  Mask                    Denoising         Predicted                    34
+                      Noise                Noise            Loss              Noise                      10
+                                                                                                              0K     300K    600K         900K   1,200K 1,500K
+                                                                                                                             Training Steps
+                                                   (a)                                                                              (b)
+
+
+Figure 5. (a) Illustration of Augmented Diffusion Training. We randomly generate a channel-wise mask at each training step and use
+it to augment diffusion training. (b) Training Curve Comparison. We achieve 6× faster convergence on UViT-H [2] with Augmented
+Diffusion Training.
+
+
+                                              Structured                       3.3. Augmented Diffusion Training
+  Autoencoder               Latent Shape                  rFID ↓
+                                             Latent Space
+                                                                               Given the structured latent space, our next step is to uti-
+  DC-AE-f32c32 [7]            8×8×32                 ✗        0.69             lize this structure to accelerate diffusion models’ learning
+  DC-AE-f32c128 [7]           8×8×128                ✗        0.26             efficiency on object structure for better convergence. We
+  DC-AE-1.5-f32c128           8×8×128               ✓         0.26             achieve this with Augmented Diffusion Training, as demon-
+                                                                               strated in Figure 5 (a). The core idea is explicitly augment-
+Table 1. Image Reconstruction Results on ImageNet 256×256.                     ing the diffusion training with additional objectives on ob-
+DC-AE 1.5 maintains the same rFID as DC-AE under the same                      ject latent channels.
+setting (f32c128). In addition, DC-AE 1.5 has the latent space                     For example, let’s consider a latent diffusion model ϵθ
+structure, while DC-AE does not.                                               supervised by the noise prediction loss. Given the latent
+                                                                                                 H  W
+                                                                               feature x0 ∈ R f × f ×c and the corresponding noisy latent
+                        H     W
+                                                                               feature xt = αt x0 + βt ϵ, the denoising loss is defined as
+ture z = E(x) ∈ R f × f ×c and a decoder D that predicts                       ∥ϵ − ϵθ (xt , t)∥2 .
+the image y = D(z) ∈ RH×W ×3 from the latent feature.                              At each diffusion training step, we randomly sample a
+A training loss l(x, y) = l(x, D(z)) is used to supervise the                  latent channel number (c′ ≤ c, c′ ∈ [c1 , c2 , · · · , c]), and
+autoencoder’s training, which is a weighted average of the                     leverage the corresponding mask maskc,c′ defined in Eq. 1
+L1 loss, the perceptual loss [36], and the GAN loss [14].                      to modify the diffusion training loss
+    In our design, we also require the autoencoder to recon-
+struct the image when only the first several channels are                          ∥ϵ · maskc,c′ − ϵθ (xt · maskc,c′ , t) · maskc,c′ ∥2 .                  (2)
+selected. In practice, we implement this by randomly sam-                         Figure 5 (b) illustrates the training curves of UViT-H [2]
+pling a latent channel number (c′ ≤ c, c′ ∈ [c1 , c2 , · · · , c])             with and without Augmented Diffusion Training on Ima-
+at each training step and generate a mask                                      geNet 256×256, demonstrating 6× faster convergence and
+                                                                               better final image generation quality.
+             maskc,c′ = (1, 1, . . . , 1, 0, 0, . . . , 0).           (1)
+                         | {z } | {z }
+                                   c′          c−c′
+                                                                               4. Experiments
+                                                                               4.1. Setups
+Then we use the modified loss l(x, D(z · maskc,c′ )) to up-                    We use Pytorch [1] to implement and train our models on
+date the autoencoder.                                                          NVIDIA H100 GPUs. We use FSDP and bf16 training to
+   Through this training strategy, the autoencoder gains the                   reduce the training time and training memory cost. Our
+ability to reconstruct images given any latent channel num-                    largest model (USiT-3B) takes around 5 days to complete
+ber c′ ∈ [c1 , c2 , · · · , c], and its latent space naturally has             training on 16 NVIDIA H100 GPUs.
+our desired channel-wise structure. In addition, this train-                       For autoencoder training, we follow the same train-
+ing strategy has little impact on the autoencoder’s recon-                     ing strategy proposed in DC-AE [7], including a low-
+struction quality. Table 1 shows the rFID comparison be-                       resolution full training phase, a high-resolution latent adap-
+tween DC-AE and DC-AE 1.5. DC-AE 1.5 achieves the                              tation phase, and a local refinement phase. We add the train-
+same rFID as DC-AE under the same setting while having                         ing technique discussed in Section 3.2 to add the channel-
+the additional latent space structure.                                         wise structure to the latent space. Specifically, our autoen-
+
+
+===== PDF PAGE 6 =====
+  ImageNet 256×256                                                          ImageNet 512×512
+  Diffusion                           Patch        Inception                Diffusion                                                  Patch        Inception
+                    Autoencoder             gFID ↓                                                           Autoencoder                     gFID ↓
+  Model                               Size          Score ↑                 Model                                                      Size          Score ↑
+                                                                                                                                                                   Table 1
+                DC-AE-f32c128 [7]       1    26.44     53.41                             DC-AE-f64c128 [7]                               1        21.31     71.17
+  DiT-XL [24]                                                               DiT-XLF32C32
+                                                                                   [24] FID    F32C32 IS                                 F32C128 FID       F32C128 IS              F32C128 1.5
+                DC-AE-1.5-f32c128       1    17.31     80.38                             DC-AE-1.5-f64c128                               1        15.16     95.69                  sample 1 FID
+
+                                                                     H                 3.89         167.40                                       8.45           121.09                     6.10
+                DC-AE-f32c128 [7]       1    17.38     78.42                             DC-AE-f64c128    [7]                            1        17.34     88.47
+  UViT-H [2]                                                         2B     UViT-H [2] 3.06        187.904                                       4.11           167.58
+                DC-AE-1.5-f32c128       1    10.82    109.23                            DC-AE-1.5-f64c128                                1        10.32    121.08
+                                                                     5B                            2.6 (*)              205. (*)                 2.7 (*)           200 (*)
+              DC-AE-f32c128 [7]         1    20.81     68.69                            DC-AE-f64c128 [7]                                1        16.83     89.17
+  SiT-XL [22]                                                               SiT-XL [22]
+              DC-AE-1.5-f32c128         1    14.91     93.78                            DC-AE-1.5-f64c128                                1        12.44    114.08
+                DC-AE-f32c128 [7]       1     8.45    121.09                                         DC-AE-f64c128 [7]                   1         6.88    144.24
+  USiT-H [7]                                                                USiT-H [7]
+                DC-AE-1.5-f32c128       1     6.10    146.03                                         DC-AE-1.5-f64c128                   1         5.35    163.03
+
+Table 2. Comparison with DC-AE on ImageNet 256×256 Im-                    Table 3. Comparison with DC-AE on ImageNet 512×512
+age Generation. Faster convergence leads to better final results.         Image Generation. DC-AE-1.5-f64c128 outperforms DC-AE-
+DC-AE-1.5-f32c128 outperforms DC-AE-f32c128 under all set-                f64c128 under all settings.
+tings.
+                                                                                                   DC-AE-f32c128                          DC-AE-f32c32
+                                                                                                   DC-AE-1.5-f32c128
+coders support reconstructing with any latent channel num-
+                                                                                               260
+ber in [16, 20, 24, ..., c], where c is the largest latent channel
+
+
+
+                                                                               Inception Score ↑
+number (e.g., 128).
+   We follow the same training settings as the official im-
+plementations for diffusion experiments, except that we in-                                    190
+crease the training batch size from 256 to 1024 for all DiT
+and SiT models to increase GPU utilization. We consider
+4 settings in our experiments, including DiT [24], UViT
+                                                                                               120
+[2], SiT [22], and USiT [7]. In addition to existing diffu-                                          0.0                       1.8                         3.6
+sion models, we build a larger version of USiT to conduct                                                               Billion Params
+diffusion model scaling experiments, with a depth of 56, a                Figure 6. Diffusion Model Scaling Results on ImageNet
+hidden dimension of 2048, and 32 heads. We refer to this                  256×256 with USiT. DC-AE-1.5-f32c128 delivers a better scal-
+model as USiT-3B. By default, we do not use classifier-free               ing curve than DC-AE-f32c32 and DC-AE-f32c128.               Table 2-1
+guidance [13] except stated explicitly. Evaluation metrics                                                                         DC-AE-F32c32                              DC-AE-F32c128
+include FID [23], Inception Score [26], Precision [17], and               justifies DC-AE 1.5’s effectiveness in accelerating diffusion
+Recall [17]. We profile the training throughputs of diffusion             model convergence and improving image generation qual-
+models on the NVIDIA H100 GPU with PyTorch.                               ity for autoencoder settings where we target using a large
+                                                                          latentH channel number0.501
+                                                                                                 (e.g., c128). 167.40       0.501                                                 121.09
+
+4.2. Main Results                                                             2B                                1.600                  187.904             1.600                  167.58
+
+                                                                              3B                                3.108                   208.19             3.108                  212.91
+Accelerating Diffusion Model Convergence. We com-                         Improving
+                                                                               5B      Diffusion 4.6
+                                                                                                  Model Scaling 205 Curve.  With
+                                                                                                                             4.6   DC-                                             200
+pare DC-AE 1.5 with DC-AE [7] under the same settings                     AE 1.5 addressing the slow convergence issue, an exciting
+(f32c128 for ImageNet 256×256 and f64c128 for ImageNet                    thing is to boost the quality upper bound of latent diffusion
+512×512) to evaluate DC-AE 1.5’s effectiveness.                           models by using an autoencoder with a higher latent chan-
+   Table 2 summarizes the class-conditional image gen-                    nel number to achieve a better image reconstruction qual-
+eration results on ImageNet 256×256 [11]. DC-AE-1.5-                      ity. To demonstrate this, we conduct diffusion model scal-
+f32c128 not only converges faster than DC-AE-f32c128 but                  ing experiments with USiT [7] on ImageNet 256×256 and
+also results in better image generation quality, thanks to the            summarize the results in Figure 6.
+improved convergence. It consistently delivers better gFID                    Using DC-AE-f32c32 [7], we can see that the incep-
+and Inception Scores than DC-AE-f32c128 under all set-                    tion score improvements from scaling up the diffusion mod-
+tings. For example, on UViT-H [2], it improves gFID from                  els saturate due to the autoencoder’s limited reconstruction
+17.38 to 10.82 and Inception Score from 78.42 to 109.23.                  quality. In contrast, scaling up diffusion models with DC-
+   Table 3 reports the class-conditional image generation                 AE-f32c128 brings more significant improvements. How-
+results on ImageNet 512×512. The results are consistent                   ever, due to the slow convergence, its generation quality re-
+with our findings on ImageNet 256×256. DC-AE-1.5-                         mains inferior to DC-AE-f32c32 until the model is scaled
+f64c128 outperforms DC-AE-f64c128 for all cases. It again                 to USiT-3B. Last, using DC-AE-1.5-f32c128, we improve
+
+                                                                                                     Encoder                                                           Latent Features
+
+
+===== PDF PAGE 7 =====
+ ImageNet 512×512
+ Image                                    Patch            Training Throughput      gFID ↓    Inception
+                        Autoencoder             Params (B)                                              Precision ↑ Recall ↑
+ Generative Model                         Size                  (image/s) ↑    w/o CFG w/ CFG Score ↑
+ UViT-H [2]         Flux-VAE-f8c16 [19]    2       0.50             55                30.91      12.63   56.72      0.64       0.59
+ DiT-XL [24]        Flux-VAE-f8c16 [19]    2       0.68             54                27.35       8.72   53.09      0.68       0.61
+ DiT-XL [24]         SD-VAE-f8c4 [25]      2       0.67             54                12.03      3.04    105.25     0.75       0.64
+ UViT-H [2]          SD-VAE-f8c4 [25]      2       0.50             55                11.04      3.55    125.08     0.75       0.61
+ SiT-XL [22]         SD-VAE-f8c4 [25]      2       0.67             54                  -        2.62      -          -          -
+ MAGVIT-v2 [34]              -              -       -                -                3.07       1.91    213.1        -         -
+ MAR-L [20]                  -              -       -                -                2.74       1.73    205.2        -         -
+ EDM2-XXL [15]               -              -       -                -                1.91       1.81      -          -         -
+ SiT-XL [22]         DC-AE-f32c32 [7]      1       0.67             241               7.47       2.41    131.37     0.77       0.65
+ USiT-H [7]          DC-AE-f32c32 [7]      1       0.50             247               3.80       1.89    174.58     0.78       0.64
+ USiT-2B [7]         DC-AE-f32c32 [7]      1       1.58             112               2.90       1.72    187.68     0.79       0.63
+ USiT-H [7]         DC-AE-f64c128 [7]      1       0.50             984               6.88      2.90     144.24     0.77       0.62
+ USiT-2B [7]        DC-AE-f64c128 [7]      1       1.58             450   4× faster   3.20 -0.722.33     195.94     0.80       0.61
+ USiT-2B [7]        DC-AE-1.5-f64c128      1       1.58             450               2.18       1.84    237.11     0.80       0.62
+ USiT-3B [7]        DC-AE-1.5-f64c128      1       3.11             214               1.70       1.63†   262.04     0.80       0.61
+
+Table 4. Comparison with State-of-the-Art Image Generative Models on ImageNet 512×512 Class-Conditional Image Generation.
+DC-AE-1.5-f64c128 outperforms DC-AE-f32c32, delivering 4× higher training throughput and better image generation quality. † denotes
+the result obtained by using Guidance Interval [18].
+
+the scaling curve by accelerating convergence. DC-AE-1.5-            ImageNet 256×256
+f32c128 can achieve superior Inception Score than DC-AE-             Diffusion         Structured     Augmented              Inception
+f32c32 on USiT-2B and USiT-3B.                                                                                        gFID ↓
+                                                                     Model            Latent Space Diffusion Training         Score ↑
+                                                                                                                      26.44    53.41
+Comparison with State-of-the-Art Image Generative                                            ✓                        26.75    51.07
+                                                                     DiT-XL [24]
+Models on ImageNet 512×512. In addition to improv-                                                         ✓          36.83    42.22
+ing the quality upper bound of latent diffusion models, an-                                  ✓             ✓          17.31    80.38
+other exciting direction is to push their efficiency frontier                                                         8.45    121.09
+by increasing the spatial compression ratio, such as from                                    ✓                        6.72    132.02
+                                                                     USiT-H [7]
+f32c32 to f64c128. DC-AE 1.5 contributes to this direc-                                                    ✓          8.99    125.89
+tion by improving f64c128’s image generation results with                                    ✓             ✓          6.10    146.03
+faster convergence. To demonstrate this, we train the USiT
+                                                                    Table 5. Component-wise Ablation Study Experiments. Re-
+model (USiT-2B) with DC-AE-1.5-f64c128 on ImageNet                  moving either Structured Latent Space or Augmented Diffusion
+512×512 and compare our results with state-of-the-art dif-          Training causes a significant image generation quality drop, show-
+fusion models and autoregressive image generative models.           ing it is critical to use these two techniques together.
+   We summarize the results in Table 4. With DC-AE-
+1.5-f64c128, USiT-2B achieves a competitive image gen-              AE 1.5’s two key designs, i.e., Structured Latent Space
+eration quality with exceptional efficiency. In particular, it      (Section 3.2) and Augmented Diffusion Training (Sec-
+achieves a gFID of 2.18, an inception score of 237.11 with-         tion 3.3). If Structured Latent Space is enabled, we employ
+out using classifier-free guidance, significantly outperform-       DC-AE-1.5-f32c128; otherwise, we use DC-AE-f32c128.
+ing DC-AE-f32c32+USiT-2B. More importantly, it delivers                 We report the results in Table 5. We can see that both
+4× higher training throughput than DC-AE-f32c32+USiT-               Structured Latent Space and Augmented Diffusion Train-
+2B. Figure 7 demonstrates our image generation examples,            ing are essential for improving the image generation qual-
+showing competitive visual quality compared with other              ity. For example, on DiT-XL [24], adding Structured Latent
+generative models trained on ImageNet.                              Space or Augmented Diffusion Training alone even hurts
+                                                                    the results. In contrast, combining them leads to clear im-
+4.3. Ablation Study                                                 provements, decreasing the gFID from 26.44 to 17.31 and
+Component-Wise Analysis of DC-AE 1.5. We conduct                    increasing the inception score from 53.41 to 80.38. Thus,
+component-wise ablation to investigate the impact of DC-            we recommend using these two techniques together.
+
+
+===== PDF PAGE 8 =====
+                      Figure 7. Selected Image Samples Generated by Diffusion Models using DC-AE 1.5.
+
+
+    ImageNet 256×256                                            ing is not necessary. It is consistent with our analysis in
+                                                                Section 3.1 and Figure 2. Based on this finding, we recom-
+    Diffusion                                  Inception
+                 Setting Autoencoder gFID ↓                     mend using DC-AE 1.5 when targeting a large latent chan-
+    Model                                       Score ↑
+                                                                nel number (e.g., c128) and conventional autoencoders such
+                          DC-AE [7]    10.18    107.49          as DC-AE when targeting a small latent channel number
+    DiT-XL [24] f32c32
+                          DC-AE-1.5    10.50    107.99
+                                                                (e.g., c32).
+                          DC-AE [7]    3.89     167.40
+    USiT-H [7]   f32c32
+                          DC-AE-1.5    4.15     166.94
+                                                                5. Conclusion
+      Table 6. Comparison with DC-AE under f32c32.
+                                                                This paper presents a new approach for addressing the slow
+                                                                convergence issue of latent diffusion models when using
+Comparison with DC-AE under f32c32. While DC-AE                 a large latent channel number. Our approach consists of
+1.5 is mainly for autoencoder settings with large latent        two key innovations, including Structured Latent Space for
+channel numbers (e.g., c128), we can still apply it to set-     imposing a desired channel-wise structure on the latent
+tings with small latent channel numbers (e.g., c32). Table 6    space and Augmented Diffusion Training to utilize the la-
+summarizes the comparison between DC-AE 1.5 and DC-             tent space structure to accelerate object structure learning.
+AE under f32c32. We find DC-AE-f32c32 performs slightly         These techniques collectively enable faster diffusion model
+better than DC-AE-1.5-f32c32. We conjecture that f32c32         convergence and lead to better image generation results,
+does not have the latent space sparsity issue. Thus, adding     paving the way for employing autoencoders with higher
+Structured Latent Space and Augmented Diffusion Train-          quality upper bound or higher spatial compression ratios.
+
+
+===== PDF PAGE 9 =====
+References                                                            [12] Patrick Esser, Sumith Kulal, Andreas Blattmann, Rahim
+                                                                           Entezari, Jonas Müller, Harry Saini, Yam Levi, Dominik
+ [1] Jason Ansel, Edward Yang, Horace He, Natalia Gimelshein,              Lorenz, Axel Sauer, Frederic Boesel, et al. Scaling recti-
+     Animesh Jain, Michael Voznesensky, Bin Bao, Peter Bell,               fied flow transformers for high-resolution image synthesis.
+     David Berard, Evgeni Burovski, et al. Pytorch 2: Faster               In Forty-first International Conference on Machine Learn-
+     machine learning through dynamic python bytecode trans-               ing, 2024. 1, 2, 3
+     formation and graph compilation. In Proceedings of the 29th
+                                                                      [13] Jonathan Ho and Tim Salimans. Classifier-free diffusion
+     ACM International Conference on Architectural Support for
+                                                                           guidance. arXiv preprint arXiv:2207.12598, 2022. 2, 6
+     Programming Languages and Operating Systems, Volume 2,
+                                                                      [14] Phillip Isola, Jun-Yan Zhu, Tinghui Zhou, and Alexei A
+     pages 929–947, 2024. 5
+                                                                           Efros. Image-to-image translation with conditional adver-
+ [2] Fan Bao, Shen Nie, Kaiwen Xue, Yue Cao, Chongxuan Li,                 sarial networks. In Proceedings of the IEEE conference on
+     Hang Su, and Jun Zhu. All are worth words: A vit backbone             computer vision and pattern recognition, pages 1125–1134,
+     for diffusion models. In Proceedings of the IEEE/CVF con-             2017. 5
+     ference on computer vision and pattern recognition, pages
+                                                                      [15] Tero Karras, Miika Aittala, Jaakko Lehtinen, Janne Hellsten,
+     22669–22679, 2023. 3, 5, 6, 7
+                                                                           Timo Aila, and Samuli Laine. Analyzing and improving the
+ [3] Han Cai, Junyan Li, Muyan Hu, Chuang Gan, and Song                    training dynamics of diffusion models. In Proceedings of
+     Han. Efficientvit: Lightweight multi-scale attention for high-        the IEEE/CVF Conference on Computer Vision and Pattern
+     resolution dense prediction. In Proceedings of the IEEE/CVF           Recognition, pages 24174–24184, 2024. 7
+     International Conference on Computer Vision, pages 17302–
+                                                                      [16] Theodoros Kouzelis, Ioannis Kakogeorgiou, Spyros Gidaris,
+     17313, 2023.
+                                                                           and Nikos Komodakis. Eq-vae: Equivariance regularized la-
+ [4] Han Cai, Muyang Li, Qinsheng Zhang, Ming-Yu Liu, and                  tent space for improved generative image modeling. arXiv
+     Song Han. Condition-aware neural network for controlled               preprint arXiv:2502.09509, 2025. 2
+     image generation. In Proceedings of the IEEE/CVF Con-            [17] Tuomas Kynkäänniemi, Tero Karras, Samuli Laine, Jaakko
+     ference on Computer Vision and Pattern Recognition, pages             Lehtinen, and Timo Aila. Improved precision and recall met-
+     7194–7203, 2024. 3                                                    ric for assessing generative models. Advances in neural in-
+ [5] Hao Chen, Ze Wang, Xiang Li, Ximeng Sun, Fangyi Chen,                 formation processing systems, 32, 2019. 6, 1
+     Jiang Liu, Jindong Wang, Bhiksha Raj, Zicheng Liu, and           [18] Tuomas Kynkäänniemi, Miika Aittala, Tero Karras, Samuli
+     Emad Barsoum. Softvq-vae: Efficient 1-dimensional con-                Laine, Timo Aila, and Jaakko Lehtinen. Applying guidance
+     tinuous tokenizer. arXiv preprint arXiv:2412.10958, 2024.             in a limited interval improves sample and distribution quality
+     2                                                                     in diffusion models. arXiv preprint arXiv:2404.07724, 2024.
+ [6] Hao Chen, Yujin Han, Fangyi Chen, Xiang Li, Yidong Wang,              7
+     Jindong Wang, Ze Wang, Zicheng Liu, Difan Zou, and Bhik-         [19] Black Forest Labs. Flux. Online, 2024. 1, 2, 7
+     sha Raj. Masked autoencoders are effective tokenizers for        [20] Tianhong Li, Yonglong Tian, He Li, Mingyang Deng, and
+     diffusion models. arXiv preprint arXiv:2502.03444, 2025.              Kaiming He. Autoregressive image generation without vec-
+ [7] Junyu Chen, Han Cai, Junsong Chen, Enze Xie, Shang Yang,              tor quantization. arXiv preprint arXiv:2406.11838, 2024. 7
+     Haotian Tang, Muyang Li, Yao Lu, and Song Han. Deep              [21] Bingchen Liu, Ehsan Akhgari, Alexander Visheratin, Aleks
+     compression autoencoder for efficient high-resolution diffu-          Kamko, Linmiao Xu, Shivam Shrirao, Chase Lambert, Joao
+     sion models. arXiv preprint arXiv:2410.10733, 2024. 1, 2,             Souza, Suhail Doshi, and Daiqing Li. Playground v3: Im-
+     3, 4, 5, 6, 7, 8                                                      proving text-to-image alignment with deep-fusion large lan-
+ [8] Junsong Chen, YU Jincheng, GE Chongjian, Lewei Yao,                   guage models. arXiv preprint arXiv:2409.10695, 2024. 1,
+     Enze Xie, Zhongdao Wang, James Kwok, Ping Luo,                        2
+     Huchuan Lu, and Zhenguo Li. Pixart-α: Fast training of dif-      [22] Nanye Ma, Mark Goldstein, Michael S Albergo, Nicholas M
+     fusion transformer for photorealistic text-to-image synthesis.        Boffi, Eric Vanden-Eijnden, and Saining Xie. Sit: Explor-
+     In International Conference on Learning Representations,              ing flow and diffusion-based generative models with scalable
+     2024. 3                                                               interpolant transformers. arXiv preprint arXiv:2401.08740,
+ [9] Rewon Child. Very deep vaes generalize autoregressive mod-            2024. 3, 6, 7
+     els and can outperform them on images. arXiv preprint            [23] Heusel Martin, Ramsauer Hubert, Unterthiner Thomas,
+     arXiv:2011.10650, 2020. 2                                             Nessler Bernhard, and Hochreiter Sepp. Gans trained by a
+[10] Xiaoliang Dai, Ji Hou, Chih-Yao Ma, Sam Tsai, Jialiang                two time-scale update rule converge to a local nash equilib-
+     Wang, Rui Wang, Peizhao Zhang, Simon Vandenhende, Xi-                 rium. Advances in neural information processing systems,
+     aofang Wang, Abhimanyu Dubey, et al. Emu: Enhanc-                     30:6626–6637, 2017. 6, 1
+     ing image generation models using photogenic needles in a        [24] William Peebles and Saining Xie. Scalable diffusion models
+     haystack. arXiv preprint arXiv:2309.15807, 2023. 1, 2                 with transformers. In Proceedings of the IEEE/CVF Inter-
+[11] Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li,                national Conference on Computer Vision, pages 4195–4205,
+     and Li Fei-Fei. Imagenet: A large-scale hierarchical image            2023. 1, 2, 3, 6, 7, 8
+     database. In 2009 IEEE conference on computer vision and         [25] Robin Rombach, Andreas Blattmann, Dominik Lorenz,
+     pattern recognition, pages 248–255. Ieee, 2009. 6, 1                  Patrick Esser, and Björn Ommer. High-resolution image
+
+
+===== PDF PAGE 10 =====
+     synthesis with latent diffusion models. In Proceedings of
+     the IEEE/CVF conference on computer vision and pattern
+     recognition, pages 10684–10695, 2022. 1, 2, 7
+[26] Tim Salimans, Ian Goodfellow, Wojciech Zaremba, Vicki
+     Cheung, Alec Radford, and Xi Chen. Improved techniques
+     for training gans. Advances in neural information processing
+     systems, 29, 2016. 6, 1
+[27] Rui Shu and Stefano Ermon. Bit prioritization in varia-
+     tional autoencoders via progressive coding. In ICML, pages
+     20141–20155, 2022. 2
+[28] Ivan Skorokhodov, Sharath Girish, Benran Hu, Willi Mena-
+     pace, Yanyu Li, Rameen Abdal, Sergey Tulyakov, and Aliak-
+     sandr Siarohin. Improving the diffusability of autoencoders.
+     arXiv preprint arXiv:2502.14831, 2025. 2
+[29] Yuhta Takida, Yukara Ikemiya, Takashi Shibuya, Kazuki
+     Shimada, Woosung Choi, Chieh-Hsin Lai, Naoki Murata,
+     Toshimitsu Uesaka, Kengo Uchida, Wei-Hsiang Liao, et al.
+     Hq-vae: Hierarchical discrete representation learning with
+     variational bayes. arXiv preprint arXiv:2401.00365, 2023. 2
+[30] Arash Vahdat and Jan Kautz. Nvae: A deep hierarchical vari-
+     ational autoencoder. Advances in neural information pro-
+     cessing systems, 33:19667–19679, 2020. 2
+[31] Enze Xie, Junsong Chen, Junyu Chen, Han Cai, Haotian
+     Tang, Yujun Lin, Zhekai Zhang, Muyang Li, Ligeng Zhu,
+     Yao Lu, et al. Sana: Efficient high-resolution image syn-
+     thesis with linear diffusion transformers. arXiv preprint
+     arXiv:2410.10629, 2024. 3
+[32] Enze Xie, Junsong Chen, Yuyang Zhao, Jincheng Yu, Ligeng
+     Zhu, Yujun Lin, Zhekai Zhang, Muyang Li, Junyu Chen,
+     Han Cai, et al. Sana 1.5: Efficient scaling of training-time
+     and inference-time compute in linear diffusion transformer.
+     arXiv preprint arXiv:2501.18427, 2025. 1
+[33] Jingfeng Yao and Xinggang Wang. Reconstruction vs. gener-
+     ation: Taming optimization dilemma in latent diffusion mod-
+     els. arXiv preprint arXiv:2501.01423, 2025. 2
+[34] Lijun Yu, José Lezama, Nitesh B Gundavarapu, Luca Ver-
+     sari, Kihyuk Sohn, David Minnen, Yong Cheng, Vighnesh
+     Birodkar, Agrim Gupta, Xiuye Gu, et al. Language model
+     beats diffusion–tokenizer is key to visual generation. arXiv
+     preprint arXiv:2310.05737, 2023. 7
+[35] Sihyun Yu, Sangkyung Kwak, Huiwon Jang, Jongheon
+     Jeong, Jonathan Huang, Jinwoo Shin, and Saining Xie.
+     Representation alignment for generation: Training diffu-
+     sion transformers is easier than you think. arXiv preprint
+     arXiv:2410.06940, 2024. 3
+[36] Richard Zhang, Phillip Isola, Alexei A Efros, Eli Shecht-
+     man, and Oliver Wang. The unreasonable effectiveness of
+     deep features as a perceptual metric. In Proceedings of the
+     IEEE conference on computer vision and pattern recogni-
+     tion, pages 586–595, 2018. 5
+[37] Zixin Zhu, Xuelu Feng, Dongdong Chen, Jianmin Bao, Le
+     Wang, Yinpeng Chen, Lu Yuan, and Gang Hua. Designing a
+     better asymmetric vqgan for stablediffusion. arXiv preprint
+     arXiv:2306.04632, 2023. 2
+
+
+===== PDF PAGE 11 =====
+                              DC-AE 1.5: Accelerating Diffusion Model Convergence
+                                         with Structured Latent Space
+                                                             Supplementary Material
+
+          A. Improving Diffusion Model Scaling Curve
+
+                                                                 DC-AE-f32c128             DC-AE-f32c32
+                                                                 DC-AE-1.5-f32c128
+                                                            10
+
+                                                                                                                                               Encoder
+
+      Decoder                                      gFID ↓
+
+
+
+                                                             1
+                                                                 0.0                  1.8            3.6
+                                                                               Billion Params
+
+          Figure 8. Diffusion Model Scaling Results on ImageNet 256×256 with USiT. DC-AE-1.5-f32c128 delivers a better scaling curve than
+          DC-AE-f32c32 and DC-AE-f32c128.
+
+              Besides Figure 6, we show the FID metric for the diffusion model scaling experiments inTable  Figure
+                                                                                                                 2-1-18. The observation is
+          similar, the generation quality of diffusion models using DC-AE-f32c128
+                                                                         DC-AE-F32c32
+                                                                                      remains inferior to DC-AE-f32c32
+                                                                                                         DC-AE-F32c128
+                                                                                                                            until the model
+          is scaled to USiT-3B, while DC-AE-1.5-f32c128 can achieve superior Inception Score than DC-AE-f32c32 on USiT-2B and
+          USiT-3B.
+
+          B. Evaluation Details                H                       0.501             3.89         0.501       8.45                                   0
+
+                                               2B                      1.600             3.06         1.600       4.11                                   1
+          We follow the common practice to 3B evaluate our autoencoders
+                                                                 3.108   and latent
+                                                                                 2.39 diffusion 3.108
+                                                                                                models on the 2.28
+                                                                                                              ImageNet [11] dataset.                     3
+             For image reconstruction experiments,
+                                               5B    we compute the
+                                                                  4.6 metrics using
+                                                                                  2.6 the 50,000 4.6
+                                                                                                validation images
+                                                                                                               2.7 and their reconstruction
+          results.
+             For image generation experiments, we generate 50,000 images and compute the metrics with the training split.
+             The evaluation metrics include FID [23], Inception Score [26], Precision [17], and Recall [17]. The specific implementa-
+          tion of these metrics are provided in our codebase.
+
+          C. Complete Latent Space Visualization
+
+
+
+
+                                                                                                                  Mask
+
+
+
+
+Decoder                                                 Encoder                                 Latent Features                      Latent Features
+
+
+===== PDF PAGE 12 =====
+        f32c256 w/o Structured Latent Space
+Figure 9. Complete Latent Space Visualization of DC-AE-f32c256.
+
+
+===== PDF PAGE 13 =====
+                              f32c32 w/o Structured Latent Space
+                              f32c32 w/o (a)
+                                         Structured    Latent Space
+                                             DC-AE-f32c32
+                              f32c32 w/o Structured Latent Space
+
+
+
+
+                             f32c128 w/o (b)
+                                          Structured    Latent Space
+                                             DC-AE-f32c128
+                             f32c128 w/o Structured     Latent Space
+                             f32c128 w/o Structured Latent Space
+
+
+
+
+                               (c) DC-AE-1.5-f32c128 with structured latent space
+                             f32c128     w/ Structured Latent Space
+                             f32c128 w/ Structured Latent Space
+                             f32c128
+Figure 10. Complete Latent Space         w/ of
+                                             Structured
+                                  Visualization               Latent Space
+                                                  DC-AE-f32c32,       DC-AE-f32c128, and DC-AE-1.5-f32c128.

@@ -1,0 +1,1630 @@
+
+
+===== PDF PAGE 1 =====
+
+                                                                                                                                 2025-9-30
+
+SANA-Sprint: One-Step Diffusion with Continuous-Time
+Consistency Distillation
+
+             Junsong Chen1*     Shuchen Xue5*     Yuyang Zhao1†Jincheng Yu1†Sayak Paul4
+                      Junyu Chen3    Dongyun Zou3    Han Cai1    Song Han1,2    Enze Xie1
+               1NVIDIA     2MIT     3Tsinghua University     4Huggingface     5Independent Researcher
+
+                                               *Equal contribution.†Core contribution.
+
+
+Abstract:ThispaperpresentsSANA-Sprint,anefficientdiffusionmodelforultra-fasttext-to-image(T2I)generation. SANA-Sprint
+isbuiltonapre-trainedfoundationmodelandaugmentedwithhybriddistillation,dramaticallyreducinginferencestepsfrom20to1-4.
+We introduce threekey innovations:(1)We proposea training-free approach that transformsa pre-trained flow-matching model for
+continuous-time consistency distillation (sCM), eliminating costly training from scratch and achieving high training efficiency. Our
+hybriddistillationstrategycombinessCMwithlatentadversarialdistillation(LADD):sCMensuresalignmentwiththeteachermodel,
+while LADDenhances single-step generationfidelity.(2)SANA-Sprint is aunified step-adaptive model that achieveshigh-quality
+generationin1-4steps,eliminatingstep-specifictrainingandimprovingefficiency.(3)WeintegrateControlNetwithSANA-Sprint
+for real-time interactive image generation, enabling instant visual feedback for user interaction. SANA-Sprint establishes a new
+Paretofrontierinspeed-qualitytradeoffs,achievingstate-of-the-artperformancewith7.59FIDand0.74GenEvalinonly1step—
+outperformingFLUX-schnell(7.94FID/0.71GenEval)whilebeing10×faster(0.1svs1.1sonH100). Italsoachieves0.1s(T2I)and
+0.25s(ControlNet)latencyfor1024×1024imagesonH100, and0.31s(T2I)onanRTX4090,showcasingitsexceptionalefficiency
+and potential for AI-powered consumer applications (AIPC). Code and pre-trained models will be open-sourced.
+Links:GitHub Code|HF Models|Project Page
+
+1.Introduction                                                          diffusion model, which increases computational overhead
+                                                                        and imposes significant pressure on GPU memory, and
+Thecomputationalintensityofdiffusiongenerativemod-                      requires careful tuning [20]. Consistency models, while
+els [1, 2], typically requiring 50-100 iterative denoising              stable, suffer quality erosion in ultra-few-step regimes
+steps, has driven significant innovation by time-step dis-              (e.g.,<4steps),particularlyintext-to-imagetaskswhere
+tillation to enable efficient inference.  Current method-               trajectory truncation errors degrade semantic alignment.
+ologies primarily coalesce into two dominant paradigms:                 These challenges underscore the need for a distillation
+(1) distribution-based distillations like GAN [3] (e.g.,                frameworkthatharmonizesefficiency,flexibility,andqual-
+ADD [4], LADD [5]) and its variational score distilla-                  ity.
+tion (VSD) variants [6, 7, 8] leverage joint training to                Inthiswork,wepresentSANA-Sprint,anefficientdiffu-
+align single-step outputs with multi-step teacher’s distri-             sionmodel forone-step high-qualitytext-to-image (T2I)
+butions, and (2) trajectory-based distillations like Direct             generation.   Our approach builds on a pre-trained im-
+Distillation [9], Progressive Distillation [10, 11], Consis-            age generation model SANA and recent advancements
+tency Models (CMs) [12] (e.g.  LCM [13], CTM [14],                      in continuous-time consistency models (sCMs) [17], pre-
+MCM [15], PCM [16], sCM [17]) learn ODE solution                        servingthebenefitsofpreviousconsistency-basedmodels
+acrossreduced samplingintervals. Together, thesemeth-                   while mitigating the discretization errors of their discrete-
+ods achieve 10-100×image generation speedup while                       time counterparts.  To achieve the one-step generation,
+maintaining competitive generation quality, positioning                 we first transform SANA, a Flow Matching model, to the
+distillation asa critical pathway toward practical deploy-              TrigFlow model, which is required for sCM distillation,
+ment.                                                                   through a lossless mathematical transformation. Then, to
+Despitetheirpromise,keylimitationshinderbroaderadop-                    mitigate the instability of distillation, we adapt the QK
+tion. GAN-based methods suffer from training instability                norm in self- and cross-attention in SANA along with
+duetooscillatoryadversarialdynamicsandmodecollapse.                     densetimeembeddingstoallowefficientknowledgetrans-
+GANsfacechallengesduetotheneedtomapnoisetonat-                          fer from the pre-trained models without retraining the
+uralimageswithoutsupervision,makingunpairedlearn-                       teacher model. We further combine sCM with LADD’s
+ing more ill-posed than paired learning, as highlighted                 adversarialdistillationtoenablefastconvergenceandhigh-
+in [18, 19]. This instability is compounded by architec-                fidelitygenerationwhileretainingtheadvantagesofsCMs.
+turalrigidity,whichdemandsmeticuloushyperparameter                      Note that, although validated primarily on SANA, our
+tuningwhenadaptingtonewbackbonesorsettings. VSD-                        methodcan benefitother mainstreamflow-matching mod-
+basedmethodsinvolvethejointtrainingof anadditional                      els such as FLUX [21] and SD3 [22].
+
+
+
+ © 2025 NVIDIA. All rights reserved.
+
+===== PDF PAGE 2 =====
+
+                             SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+
+
+
+
+
+
+
+
+
+
+
+Figure 1|(a) Our SANA-Sprint accelerate the inference speed for generating 1024×1024 images, achieving a
+remarkable speedup from FULX-Schnell’s 1.94 seconds to only 0.03 seconds. This represents a 64×improvement over
+the currentstate-of-the-art step-distilled model,FLUX-Schnell, as measuredwith a batchsize of 1on an NVIDIAA100
+GPU. The ratio is calculated based on Transformer latency. (b) Additionally, our model demonstrates efficient GPU
+memoryusageduringtraining,outperformingotherdistillationmethodsintermsofmemorycost. TheGPUmemoryis
+measured using official code, 1024×1024 images and on a single A100 GPU.
+
+As a result, SANA-Sprint achieves excellent speed/qual-                   SANA-Sprintgeneratesa1024×1024imageinonly
+ity tradeoff, benefiting from a hybrid objective, inherit-                0.10s-0.18sonH100,achievingstate-of-the-art7.59
+ingsCM’sdiversitypreservationandalignmentwiththe                          FIDonMJHQ-30Kand0.74GenEvalscore-surpass-
+teacher, while integrating LADD’s fidelity enhancement:                   ing FLUX-schnell (7.94 FID/0.71 GenEval) while
+experiments show a 0.6 lower FID and 0.4 higher CLIP-                     being 10×faster.
+Scoreat 2-stepgenerationscomparedto standalonesCM,                      • Real-Time Interactive Generation: By integrating
+with 3.9 lower FID and 0.9 higher CLIP-Score over pure                    ControlNet with SANA-Sprint, we enable real-time
+latentadversarialapproaches. AsshowninFig.1,SANA-                         interactive image generation in 0.25s on H100. This
+Sprint achieves state-of-the-art performance in FID and                   facilitates immediate visual feedback in human-in-
+GenEvalbenchmark,surpassingrecentadvancedmethods                          the-loopcreativeworkflows,enablingbetterhuman-
+including SD3.5-Turbo, SDXL-DMD2, and Flux-schnell.                       computer interaction.
+Especially,SANA-Sprintis64.7×fasterthanFlux-Schnell
+and exceeds in FID (7.59 vs 7.94) and GenEval (0.74 vs               2.Preliminaries
+0.71).
+Moreover, SANA-Sprint demonstrates unprecedented in-                 2.1.Diffusion Model and Its Variants
+ference speed—generating 1024×1024 images in 0.31
+secondsonalaptopwithconsumer-gradeGPUs(NVIDIA                        Diffusion models [1, 2] diffuse clean data sample𝑥0∼
+RTX 4090) and 0.1 seconds on H100 GPU, 8.4×speedup                   𝑝𝑑𝑎𝑡𝑎from data distribution to noisy data𝑥𝑡=𝛼𝑡𝑥0 +
+thanteachermodelSANA.Thisefficiencyunlockstrans-                     𝜎𝑡𝑧, where𝑡∈[0,𝑇]         represents time within the interval,
+formativeapplicationsthatrequireinstantvisualfeedback:               𝑧∼𝒩(0,𝐼)        is a standard Gaussian noise. The terminal
+in ControlNet-guided image generation/editing, by inte-              distribution𝑝𝑇of𝑥𝑇exactly or approximately follows a
+grating with ControlNet, SANA-Sprint enables instant                 Gaussian distribution. Typically, diffusion models train
+interaction with 250ms latency on H100. SANA-Sprint                  a noise prediction network𝜖𝜃usingE𝑥0,𝑧,𝑡[‖𝜖𝜃(𝑥𝑡,𝑡)−
+exhibits robust scalability and is potentially suitable for          𝑧‖2], which is equivalent to denoising score matching
+human-in-the-loopcreativeworkflows,AIPC, andimmer-                   loss [2, 23].  The sampling process of diffusion models
+sive AR/VR interfaces.                                               involves solving the probability flow ODE (PF-ODE) [2]
+                                                                     d𝑥𝑡
+In summary, our key contributions are threefold:                      d𝑡 =  dlog𝛼 𝑡d𝑡𝑥𝑡+(d𝜎𝑡d𝑡−dlog𝛼 𝑡d𝑡 𝜎𝑡)𝜖𝜃(𝑥𝑡,𝑡)  with the
+                                                                     initialvalue𝑥1∼𝒩(0,𝐼)     . Below,wewillintroducetwo
+                                                                     recentformulationsofdiffusionmodelsthathavereceived
+   • Hybrid Distillation Framework: We designed an                   significant attention.
+     innovative hybrid distillation framework that seam-             FlowMatching[24,25,26]considersalinearinterpolation
+     lessly transforms the flow model into the Trigflow              noisingprocessbydefining𝛼𝑡= 1−𝑡,𝜎𝑡=𝑡,𝑇= 1 . The
+     model, integrating continuous-time consistency mod-             flowmatchingmodelstrainavelocitypredictionnetwork
+     els(sCM)withlatentadversarialdiffusiondistillation              𝑣𝜃using E𝑥0,𝑧,𝑡[𝑤(𝑡)‖𝑣  𝜃(𝑥𝑡,𝑡)−(𝑧−𝑥          0)‖2], where
+     (LADD).ThisframeworkleveragessCM’sdiversity                     𝑤(𝑡)      isaweightingfunction. Thesamplingofflowmodels
+     preservation and alignment with the teacher along-              solvesthe PF-ODE d𝑥𝑡
+     sideLADD’sfidelityenhancement,enablingunified                   𝑥1∼𝒩(0,𝐼).             d𝑡 =𝑣𝜃(𝑥𝑡,𝑡)  withthe initialvalue
+     step-adaptive sampling.
+   • Excellent Speed/Quality Tradeoff: SANA-Sprint                   TrigFlow [17, 27] considers a spherical linear interpo-
+     achievesexceptionalperformancewithonly1-4steps.                 lation noising process by defining𝛼𝑡=  cos(𝑡),𝜎   𝑡=
+
+
+                                                                                                                                    2
+
+===== PDF PAGE 3 =====
+
+                              SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+sin(𝑡),𝑇=    𝜋2.  Moreover, Trigflow assumes the noise
+𝑧∼𝒩(0,𝜎 2𝑑𝐼)  ,  where𝜎𝑑represents  the  standard                              𝑓𝜃(𝑥𝑡,𝑡)= cos(𝑡)𝑥   𝑡−sin(𝑡)𝜎  𝑑𝐹𝜃(𝑥𝑡𝜎𝑑,𝑡),     (4)
+deviation  of  data  distribution𝑝𝑑𝑎𝑡𝑎.     The  TrigFlow
+models  train  a  velocity  prediction  network𝐹𝜃us-                   and the time derivative becomes:
+ingE𝑥0,𝑧,𝑡[𝑤(𝑡)‖𝜎   𝑑𝐹𝜃(𝑥𝑡𝜎𝑑,𝑡)−(cos(𝑡)𝑧−sin(𝑡)𝑥                          0)‖2],d𝑓𝜃−(𝑥𝑡,𝑡)            (︂                          )︂
+where𝑤(𝑡)       is a weighting function.  The sampling of                      d𝑡       =−cos(𝑡)        𝜎𝑑𝐹𝜃−(𝑥𝑡𝜎𝑑,𝑡)−d𝑥𝑡d𝑡
+TrigFlow models solves the PF-ODE defined by d𝑥𝑡d𝑡 =                                                  (︃                         )︃(5)
+𝜎𝑑𝐹𝜃(𝑥𝑡𝜎𝑑,𝑡)starting from𝑥    𝜋2∼𝒩(0,𝜎2𝑑𝐼).                                                −sin(𝑡)      𝑥𝑡+𝜎𝑑d𝐹𝜃−(𝑥𝑡𝜎𝑑,𝑡)           .
+Diffusion,   Flow   Matching,   and   TrigFlow   are   all                                                              d𝑡
+continuous-timegenerativemodelsthatdifferintheirin-
+terpolation schemes and velocity field parameterizations.              3.Method
+
+
+2.2.Consistency Models                                                 sCM  [17]  simplify  continuous-time  CMs  using  the
+A consistency model (CM) [12] parameterizes a neural                   TrigFlow formulation.  While this provides an elegant
+network𝑓𝜃(𝑥𝑡,𝑡)  whichis trainedto predictthesolution                  framework, most score-based generative models are based
+𝑥0 of the PF-ODE, which is the terminal clean data along               on diffusion or flow matching formulations. One possible
+the trajectory of the PF-ODE (regardless of its position               approach is to develop separate training algorithms for
+inthetrajectory),startingfromthenoisyobservation𝑥𝑡.                    continuous-time CMs under these formulations, but this
+The conventional approach parameterizes the CM using                   requires distinct algorithm designs and hyperparameter
+skipconnections,bearing acloseresemblanceto [28, 29]                   tuning, increasing complexity. Alternatively, one could
+                                                                       pretrain a dedicated TrigFlow model, as in [17], but this
+         𝑓𝜃(𝑥𝑡,𝑡)=𝑐 skip(𝑡)𝑥𝑡+𝑐out(𝑡)𝐹𝜃(𝑥𝑡,𝑡),      (1)                significantly increases computational cost.
+where𝑐skip(𝑡)    and𝑐out(𝑡)    are differentiable functions satis-     Toaddress these challenges,we propose asimple method
+fying𝑐skip(0) = 1and𝑐out(0) = 0toensuretheboundary                     to transform a pre-trained flow matching model into a
+conditions𝑓𝜃(𝑥0,0) =𝑥0.𝐹𝜃indicates the pretrained                      TrigFlow model through straightforward mathematical in-
+diffusion/flowmodeland𝑓𝜃isthedatapredictionmodel.                      put and output transformations. This approach makes it
+Basedonthetrainingapproach,CMscanbecategorized                         possible to strictly follow the training algorithm in [17],
+into two types:  discrete-time [12, 13] and continuous-                eliminating theneed for separatealgorithm designs while
+time [12,17].                                                          fully leveraging existing pre-trained models. The transfor-
+                                                                       mationprocessforgeneraldiffusionmodelscanbecarried
+Discrete-timeCMsaretrainedwiththefollowingobjective                    outinasimilarmanner,whichweomithereforsimplicity.
+
+  𝑙Δ𝑡𝐶𝑀=E 𝑥𝑡,𝑡[𝑑(𝑓𝜃(𝑥𝑡,𝑡),𝑓𝜃−(𝑥𝑡−Δ𝑡 ,𝑡−Δ𝑡))],  (2)                     3.1.Training-Free Transformation to TrigFlow
+
+where𝜃− is the stopgrad version of𝜃,𝑤(𝑡)       is the                  Score-basedgenerativemodels(diffusion,flowmatching,
+weightingfunction,Δ𝑡isasmalltimeinterval,and𝑥𝑡−Δ𝑡                      and TrigFlow) can denoise data with proper data scales
+is obtained from𝑥𝑡by running a numerical ODE solver.                   and signal-to-noise ratios (SNRs)1 aligned with training.
+𝑑(·,·)        is a metric such asℓ1, squaredℓ2, Pseudo-Huber           However,flowmatchingcannotdirectlydenoiseTrigFlow-
+loss, and the LPIPS loss [30].                                         scheduleddataduetothreemismatches: First,theirtime
+Although discrete-time CMs work well in practice, the                  domainsdiffer: TrigFlowuses[0, 𝜋2],whileflowmatching
+additionaldiscretizationerrorsbroughtbynumericalODE                    isdefinedon[0,1]   . Second,theirnoise schedulesaredis-
+solvers areinevitable. Continuous-time CMscorrespond                   tinct—TrigFlow maintains  cos2(𝑡Trig)+sin2(𝑡Trig) =
+to thelimiting caseofΔ𝑡→0         inEq.(2). When choosing              1, while flow matching yields𝑡2FM + (1−𝑡   FM)2<1   ,
+𝑑(𝑥,𝑦)=‖𝑥−𝑦‖                  22, the expression simplifies to:        causing data scale discrepancies.  Finally, their predic-
+                               [︁                                ]︁tion targets differ: flow matching predicts𝑧−𝑥  0 with
+𝑙𝑐𝑜𝑛𝑡.          𝑙Δ𝑡𝐶𝑀            𝑤(𝑡)⟨𝑓  𝜃(𝑥𝑡,𝑡),   d𝑓𝜃−           ,   static coefficients (1,−1)       ,  whereas TrigFlow predicts
+𝐶𝑀:=  limΔ𝑡→0    Δ𝑡  =E 𝑥𝑡,𝑡                        d𝑡 (𝑥𝑡,𝑡)⟩         cos(𝑡)𝑧−sin(𝑡)𝑥                  0 with time-varying coefficients. These
+                                                                (3)    mismatchesin temporalparameterization,SNR,and out-
+where d𝑓𝜃− (𝑥𝑡,𝑡)                )                                     put necessitate explicit input/output transformations.
+            d𝑡      =𝜕𝑓𝜃− (𝑥𝑡,𝑡𝜕𝑡 +∇𝑥𝑡𝑓𝜃−(𝑥𝑡,𝑡)  d𝑥𝑡d𝑡. The
+infinitesimal step of d𝑥𝑡d𝑡 replaces numerical ODE solvers,            Toclarify,weusethesubscript Trig todenotenoisydata
+thereby eliminating discretization errors.                             under the TrigFlow framework and FM to denote noisy
+Specifically, underTrigFlow where𝑐skip(𝑡) = cos(𝑡)            and      dataunder theflowmatching framework. Thefollowing
+𝑐out(𝑡) =−sin(𝑡)            ,sCM’sparameterizationandarithmetic
+coefficients are simplified to the following form:                         1For a diffusion model𝑥  𝑡=𝛼𝑡𝑥0 +𝜎𝑡𝑧, SNR is defined as 𝛼2𝑡
+                                                                                                                                      𝜎2𝑡
+
+
+                                                                                                                                         3
+
+===== PDF PAGE 4 =====
+
+                                              SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                Figure 2|Training paradigm of SANA-Sprint.In SANA-Sprint, we use the student model for synthetic data
+                generation(^𝑥0)andJVPcalculation,andweusetheteachermodelforvelocity(d𝑥/d𝑡    )computeanditsfeatureforthe
+                GAN loss, which allows ustrain sCM and GAN togetherand have onlyone training model purely inthe latent space.
+                Details of training objective andTrigFlow Transformationare inEq. (9),Eq. (11)and Sec.3.1.
+
+                propositionoutlinesthetransformationfromflowmatch-                      Table 1|Comparison of original Flow-based SANA
+                ing models to TrigFlow models, which is theoretically                   model and training-free transformation of TrigFlow-
+                lossless.                                                               based SANA-Sprint model.We evaluate the FID and
+                                                                                        CLIP-ScorebeforeandafterthetransformationinSec.3.1.
+                Remark.We prioritize seamlessly transforming existing
+                noise schedules,e.g.flow matching, into TrigFlow while
+                integrating the sCM framework with minimal modifica-
+                tions. This approach avoids the need for pre-training a
+                dedicatedTrigFlowmodel,asin[17],althoughitinvolves                      SelfConsistencyLoss.Withthelosslesstransformation
+                a deviation from the unit variance principle in [17,28].                established, we can seamlessly adopt the training algo-
+
+
+                                                                     Trig               rithm and pipeline of sCM without other modification.
+                Proposition  3.1.Given  a  noisy  data   𝑥𝑡,𝜎𝑑   under                  ThisallowsustodirectlyfollowthesCMtrainingframe-
+                TrigFlow noise schedule, a flow matching model can de-                  work. Our final sCM loss is the following:
+                noise it via𝑣𝜃(𝑥𝑡,FM,𝑡FM,𝑦), where
+                                                                                                                [︁𝑒𝑤𝜑(𝑡) ⃦⃦⃦̂︁𝐹𝜃(︁𝑥𝑡     )︁
+                               𝑡FM =           sin(𝑡Trig)                                 ℒsCM(𝜃,𝜑) =E    𝑥𝑡,𝑡      𝐷            𝜎𝑑,𝑡,𝑦
+                                       sin(𝑡Trig)+cos(𝑡Trig),                 (6)                  (︁𝑥𝑡       )︁                          ⃦⃦⃦2         ]︁
+                                                                                           −̂︂𝐹𝜃−    𝜎𝑑,𝑡,𝑦     −cos(𝑡)          d̂︂𝑓𝜃−(𝑥𝑡,𝑡,𝑦)d𝑡
+                                        Trig                                                                                                2−𝑤𝜑(𝑡)
+                             𝑥𝑡,FM   =𝑥𝑡,𝜎𝑑·√︀𝑡2FM+(1−𝑡   FM)2.             (7)                                                                         (9)
+                                                                                        wherê︂𝑓𝜃−  is the parameterized sCM as inEq. (4)after
+                Given𝑣𝜃(𝑥𝑡,FM,𝑡FM,𝑦)   ,   the  best  estimator  for  the               replacing𝐹𝜃witĥ︁𝐹𝜃inProposition. 3.1,   𝑥𝑡,𝑡refers to
+                TrigFlow model𝐹  𝜃is the following:                                     𝑥𝑡,Trig,𝑡Trig, and𝑤𝜑(𝑡)    is an adaptive weighting func-
+                               (︁𝑥𝑡,               )︁                                   tion to minimize variance across different timesteps fol-
+                            ̂︁𝐹𝜃   Trig                                                 lowing [17,31].
+                                    𝜎𝑑,𝑡Trig,𝑦[︁
+                          =             1√︀𝑡2FM+(1−𝑡   FM)2(1−2𝑡      FM)𝑥𝑡,FM  (8)     3.2.Stabilizing Continuous-Time Distillation
+                                                                       ]︁               To stabilize continuous-time consistency distillation, we
+                               +(1−2𝑡      FM+2𝑡2FM)𝑣𝜃(𝑥𝑡,FM,𝑡FM,𝑦)      .              addresstwokeychallenges: traininginstabilitiesandex-
+                Furthermore, the transformation is lossless in theory.                  cessively large gradientnormsthatoccurwhenscalingup
+                                                                                        themodelsizeandincreasingresolution,leadingtomodel
+                                                                                        collapse. We achieve this by refining the time-embedding
+                The details and proof ofProposition. 3.1are inSec. D.                   to be denser and integrating QK-Normalization into self-
+                The transformations of both input and output are all dif-               and cross-attention mechanisms.   These modifications
+                ferentiablemakingitcompatiblewithautodifferentiation.                   enable efficient training and improve stability, allowing
+                As validated byTab. 1, the transformation is lossless in                for robust performance at higher resolutions and larger
+                boththeory andpractice. Thetraining-freetransformation                  model sizes.
+                is depicted in the gray box ofFig. 2.
+
+
+                                                                                                                                                          4
+
+
+
+Method               FID↓CLIP-Score↑
+FlowEuler50steps           5.81          28.810
+TrigFlowEuler50steps     5.73          28.806
+
+===== PDF PAGE 5 =====
+
+                             SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Figure3|EfficientDistillationviaQKNormalization,DenseTimestepEmbedding,andTraining-freeSchedule
+Transformation.(a) We compare gradient norms and visualizations with/without QK Normalization, showing its
+stabilizing effect. (b) Gradient norm curves for timestep scales (0∼1 vs. 0∼1000) highlight impacts on stability and
+stability and quality. (c) PCA-based similarity analysis of timestep embeddings. (d) Image results after 5,000 iterations
+of fine-tuning with (left) and without (right) the proposed schedule transfer (Sec. 3.1).
+
+Dense Time-Embedding.  As analyzed in sCM [ 17],                      3.3.Improving Continuous-Time CMs with GAN
+the instability issues in continuous-time CMs primar-                 CTM[14]analyzesthatCMsdistillteacherinformationin
+ily  stem  from  the  unstable  scale  of  d𝑓𝜃d𝑡  inEq.  (9).         alocalmanner,whereateachiteration,thestudentmodel
+This instability can be traced back to the expression
+d𝐹𝜃−                                                                  learns from local time intervals.  This leads the model
+  d𝑡  =∇𝑥𝑡𝐹𝜃−d𝑥𝑡d𝑡+𝜕𝑡𝐹𝜃− inEq.(5),whichultimately                     to learn cross timestep information under the implicit ex-
+originates from the time derivative term𝜕  𝑡𝐹𝜃−:                      trapolation, which can slow the convergence speed.  To
+
+                               emb(𝑐         noise)noise(𝑡)           addressthislimitation, weintroduceanadditionaladver-
+    𝜕𝑡𝐹𝜃− =  𝜕𝐹𝜃−𝜕emb(𝑐         noise)·𝜕𝜕𝑐         𝜕𝑡    (10)         sarialloss[5]toprovidedirectglobalsupervisionacross
+                                     noise ·𝜕𝑐
+                                                                      differenttimesteps,improvingboththeconvergencespeed
+In  previous  flow  matching  models  like  SANA  [32],               and the output quality.
+SD3[22],andFLUX[21],thenoisecoefficient𝑐noise(𝑡) =                    GANs [3] consist of a generator𝐺and a discriminator
+1000𝑡     amplifies the time derivative𝜕𝑡𝐹𝜃− by a factor of           𝐷that compete in a zero-sum game to produce realis-
+1000, leading to significant training fluctuations. To ad-            tic synthetic data. Diffusion-GANs [34] and LADD [5]
+dressthis,weset𝑐noise(𝑡) =𝑡   andfine-tunedSANAfor5k                  extend this framework by enabling the discriminator to
+iterations. As shown inFig. 3(b), this adjustment reduce              distinguish betweennoisy real and fake samples. Further-
+excessively large gradient norms (originally exceeding                more, LADD introduces a novel approach by utilizing a
+103) to more stable levels. Furthermore, PCA visualiza-               frozen teacher model as a feature extractor and training
+tion inFig. 3(c) reveals that our dense time-embedding                multiple discriminator heads on the teacher model. This
+design results in more densely packed and similar em-                 methodologyfacilitatesdirectadversarialsupervisionin
+beddings for timesteps between 0∼1.  This refinement                  thelatentspace,asopposedtothetraditionalpixelspace,
+improved training stability and accelerated convergence               leadingtomoreefficientandeffectivetraining. Following
+over 15k iterations.                                                  LADD,weuseahingeloss[35]totrainthestudentmodel
+QK-Normalization.When scaling up the model from                       and discriminator
+0.6Bto1.6B,weencountersimilarissueswithexcessively                             ℒ𝐺adv(𝜃)     [︁∑︁                              ]︁
+large gradient norms, often exceeding 103, which lead                          =−E  𝑥0,𝑠,𝑡        𝐷𝜓,𝑘(𝐹𝜃pre,𝑘(^𝑥𝑓𝜃𝑠,𝑠,𝑦))     ,      (11)
+to training collapse. To address this, we introduce RMS                                        𝑘
+normalization [33] to the Query and Key in both self-                   ℒ𝐷adv(𝜓) [︁∑︁         (︁                               )︁]︁
+and cross-attention modules of the teacher model during                 =E 𝑥0,𝑠         ReLU    1−𝐷 𝜓,𝑘(𝐹𝜃pre,𝑘(𝑥𝑠,𝑠,𝑦))
+fine-tuning. Thismodificationenhancestrainingstability
+significantly, even with a brieffine-tuning process of only                       [︁∑︁𝑘        (︁                                  )︁]︁
+                                                                                                                       𝑓𝜃−𝑠,𝑠,𝑦
+5,000 iterations. By using the fine-tuned teacher model                 +E 𝑥0,𝑠,𝑡        ReLU    1+𝐷𝜓,𝑘(𝐹𝜃pre,𝑘(^𝑥           ))       ,
+to initialize the student model, we achieve a more stable                             𝑘                                             (12)
+gradient norm, as shown inFig. 3(a), thereby making the               where𝑥𝑠,^𝑥𝑓𝜃𝑠,^𝑥𝑓𝜃−𝑠   arethenoisyversionsof𝑥0,^𝑥𝑓𝜃0  :=
+distillationprocessviablewhereitwaspreviouslyinfeasi-
+ble.                                                                  𝑓𝜃(𝑥𝑡,𝑡,𝑦),      ^𝑥𝑓𝜃−0     :=𝑓𝜃−(𝑥𝑡,𝑡,𝑦).
+
+
+                                                                                                                                       5
+
+===== PDF PAGE 6 =====
+
+                             SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Figure 4|Visual comparison among SANA-Sprint and selected competing methods in different inference steps.
+†indicatesthatdistinctmodelsarerequiredfordifferentinferencesteps,andtimebelowthemethodnameisthelatency
+of4 stepstestedon A100GPU.SANA-Sprintproducesimageswith superiorrealismand text alignmentinall inference
+steps with the fastest speed.
+
+The adversarial lossℒadv is equivalent to the GAN loss               framework to obtain SANA-Sprint-ControlNet.
+shown at the bottom ofFig.2. In summary, SANA-Sprint                 ForControlNettasks,weextractHolistically-NestedEdge
+combines sCM loss with GAN loss:ℒ=ℒ𝑠𝐶𝑀+𝜆ℒadv,                        Detection (HED) scribbles from input images as condi-
+where𝜆= 0.5by default, as inTab. 5.                                  tions to guide image generation. Following PixArt’s[40]
+                                                                     designprinciples,wetrainourSANA-ControlNetteacher
+Additional Max-Time Weighting.  In our early exper-                  modelon1024×1024resolutionimages. Duringsampling,
+iments, we adopt the timestep sampling distribution of               HED maps serve as additional conditioning inputs to the
+sCM’sgenerator(studentmodel)forGANloss,givenby                       Transformermodel,allowingprecisecontroloverimage
+𝑡= arctan(𝑒𝜏                           (𝑃mean,𝑃2std) with two        generationwhilemaintainingstructuraldetails. Ourexper-
+                𝜎𝑑), where𝜏∼𝒩                                        iments show that the distilled SANA-Sprint-ControlNet
+hyperparameters𝑃mean and𝑃std. Tofurther enhanceone-                  model retains the controllability of the teacher model and
+andfew-stepgenerationperformanceandimproveoverall                    achievesfastinferencespeedsofapproximately200mson
+generationquality, weintroducean additionalweighting                 H100 machines, enabling near-real-time interaction. The
+at𝑡= 𝜋2.  Specifically, with probability𝑝, the training              effectivenessofourapproachisdemonstratedinSec.F.3.
+timestepissetto𝜋2,whilewithprobability1−𝑝 ,itfollows
+theoriginaltimestepsamplingdistributionofsCM’sgener-
+ator. Wefindthatthismodificationsignificantlyimproves
+the model’s capability for one- and few-step generation,
+as shown inTab. 6.
+                                                                     4.Experiments
+3.4.Application: Real-Time Interactive Generation
+Extending the SANA-Sprint to image-to-image tasks is                 4.1.Experimental Setup
+
+straightforward.   We apply the SANA-Sprint training                 Our experiments employ a two-phase training strategy,
+pipeline to ControlNet [41] tasks, which utilize both im-            with detailed settings and evaluation protocols outlined
+ages and prompts as instructions. Ourapproach involves               inSec. F.1. The teacher models are pruned and fine-tuned
+continuingthetrainingofapre-trainedtext-to-imagediffu-               fromthelargerSANA-1.54.8Bmodel[42],followedby
+sionmodelwithadiffusionobjectiveonadatasetadjusted                   distillation using our proposed training paradigm.  We
+for ControlNet tasks, resulting in the SANA-ControlNet               evaluate performance using metrics including FID, CLIP
+model. WethendistillthismodelusingtheSANA-Sprint                     Score on the MJHQ-30K [43], and GenEval [44].
+
+
+                                                                                                                                      6
+
+===== PDF PAGE 7 =====
+
+                                                    SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+             Table 2|Comprehensive comparison of SANA-Sprint withSOTA approaches in efficiency and performance.The
+             speed is tested on one A100 GPU with BF16 Precision. Throughput: Measured with batch=10. Latency: Measured
+             withbatch=1. Wehighlightthebestand            second best                        entries.†indicatesthatdistinctmodelsarerequiredfordifferent
+             inference steps.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+             4.2.Efficiency and Performance Comparison                                                    achieves 5.68 samples/s with 0.24s latency (FID: 6.76). In
+             We compare SANA-Sprint with state-of-the-art text-to-                                        single-stepmode,SANA-Sprint0.6Bachieves7.22sam-
+             imagediffusionandtimestepdistillationmethodsinTab.2                                          ples/sthroughputand0.21slatency,maintaininganFIDof
+             andFig. 4. Our SANA-Sprint models focus on timestep                                         7.04 and GenEval of 0.72, comparable to FLUX-schnell
+             distillation, achieving high-quality generation with 1-4                                     but with significantly higher efficiency.
+             inferencesteps,competingwiththe20-stepteachermodel,                                         TheseresultsdemonstratethepracticalityofSANA-Sprint
+             asshowninFig.5. Moredetailsaboutthetimestepsetting                                           forreal-timeapplications,combiningfastinferencespeeds
+             are given inSec. F.2.                                                                       with strong performance metrics.
+
+   Methods                 Inference     Throughput     Latency     Params     FID↓CLIP↑GenEval↑Specifically, with 4 steps, SANA-Sprint 0.6B achievessteps         (samples/s)          (s)             (B)
+             5.34 samples/s throughput and 0.32s latency, with an                                         4.3.Analysis
+SDXL[36]                        50                 0.15               6.5             2.6          6.63        29.03           0.55FID of 6.48 and GenEval of 0.76.  SANA-Sprint 1.6B
+PixArt-Σ[37]                    20                  0.4                2.7             0.6          6.15        28.26           0.54has slightly lower throughput (5.20 samples/s) but im-In this section, we apply a 2-step sampling starting at
+SD3-medium[38]              28                 0.28               4.4             2.0         11.92       27.83           0.62provesGenEvalto0.77,outperforminglargermodelslike𝑡𝑚𝑎𝑥=𝜋/2with an intermediate step𝑡= 1.0.
+FLUX-dev[21]                  50                 0.04              23.0           12.0        10.15       27.47           0.67
+Playgroundv3[39]             -                  0.06              15.0            24             -              -               0.76FLUX-schnell (12B), which achieves only 0.5 samples/sSchedule Transfer.To validate the effectiveness of our
+SANA0.6B[32]                20                  1.7                0.9             0.6          5.81        28.36           0.64with 2.10s latency. At 2 steps, SANA-Sprint models re-proposedscheduletransferinSec.3.1,weconductablation
+SANA1.6B[32]                20                  1.0                1.2             1.6          5.76        28.67           0.66mainefficient: SANA-Sprint0.6Breaches6.46samples/sstudies on a flow matching model SANA [32], comparing
+SDXL-LCM[13]                4                  2.27              0.54            0.9         10.81       28.10           0.53with0.25slatency(FID:6.54),whileSANA-Sprint1.6Bits performance with and without schedule transformation
+PixArt-LCM[40]                4                  2.61              0.50            0.6          8.63        27.40           0.44
+PCM[16]†                         4                  1.95              0.88            0.9         15.55       27.53           0.56
+SD3.5-Turbo[22]               4                  0.94              1.15            8.0         11.97       27.35           0.72                                                               7
+SDXL-DMD2[20]†           4                  2.27              0.54            0.9     6.82 28.84   0.60
+FLUX-schnell[21]             4                   0.5               2.10           12.0         7.94 28.14           0.71
+SANA-Sprint0.6B     4                  5.34              0.32            0.6     6.48 28.45                                        0.76
+SANA-Sprint1.6B     4                  5.20              0.31            1.6          6.54                       28.45             0.77
+SDXL-LCM[13]                2                  2.89              0.40            0.9         18.11       27.51           0.44
+PixArt-LCM[40]                2                  3.52              0.31            0.6         10.33       27.24           0.42
+SD3.5-Turbo[22]               2                  1.61              0.68            8.0         51.47       25.59           0.53
+PCM[16]†                         2                  2.62              0.56            0.9         14.70       27.66           0.55
+SDXL-DMD2[20]†           2                  2.89              0.40            0.9     7.61 28.87   0.58
+FLUX-schnell[21]             2                  0.92              1.15           12.0         7.75        28.25   0.71
+SANA-Sprint0.6B     2                  6.46              0.25            0.6          6.54                       28.40   0.76
+SANA-Sprint1.6B     2                  5.68              0.24            1.6     6.50 28.45                                        0.77
+SDXL-LCM[13]                1                  3.36              0.32            0.9         50.51       24.45           0.28
+PixArt-LCM[40]                1                  4.26              0.25            0.6         73.35       23.99           0.41
+PixArt-DMD[37]†             1                  4.26              0.25            0.6          9.59        26.98           0.45
+SD3.5-Turbo[22]               1                  2.48              0.45            8.0         52.40       25.40           0.51
+PCM[16]†                         1                  3.16              0.40            0.9         30.11       26.47           0.42
+SDXL-DMD2[20]†           1                  3.36              0.32            0.9          7.10                  28.93   0.59
+FLUX-schnell[21]             1                  1.58              0.68           12.0  7.26 28.49                                  0.69
+SANA-Sprint0.6B     1                  7.22              0.21            0.6     7.04 28.04           0.72
+SANA-Sprint1.6B     1                  6.71              0.21            1.6          7.69 28.27   0.76
+
+===== PDF PAGE 8 =====
+
+                                              SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+                Table  3|Comparison  of           Table  4|Comparison  of             Table 5|sCM and LADD               Table6|Comparisonofmax-
+                loss combination.                 CFG training strategies.            loss weighting.                    time weighting strategy.
+
+
+
+
+
+
+                toTrigFlow[17]. AsshowninFig.3(d),removingsched-
+                ule transfer leads to training divergence due to incorrect
+                signals. In contrast, incorporating our schedule transfer
+                enablesthemodeltoachievedecentresultswithin5,000it-
+                erations, demonstrating its crucial role in efficiently adapt-
+                ing flow matching models to TrigFlow-based consistency
+                models.
+                Influence of CFG Embedding.  To clarify the influ-
+                ence of Classifier-Free Guidance (CFG) embedding in
+                our  model,  we  maintain  the  setting  of  incorporating
+                CFG into the teacher model, as established in previous
+                works[13,17,45]. Specifically,duringthetrainingofthe
+                student model, we uniformlysample the CFG scale of the                  Figure5|VisualcomparisonamongSANA-Sprintwith
+                teacher model from the set4.0,4.5,5.0               . To integrate CFG  different inference steps and the teacher model SANA.
+                embedding [11] into the student model, we add it as an                  SANA-Sprintcangeneratehigh-qualityimageswithone
+                additional condition to the time embedding, multiplying                 ortwostepsandtheimagescanbebetterwhenincreasing
+                theCFGscaleby0.1toalignwithourdensertimestepem-                         steps.
+                beddings. We conduct experiments with and without CFG                   5.Related Work
+                embedding to evaluate its role.  As shown inTab. 4, in-
+                corporating CFG embedding significantly improves CLIP                   We put a relatively brief overview of related work here,
+                score by 0.94.                                                          withamore comprehensiveversionin theappendix. Dif-
+                Effects of sCM and LADD.We evaluate the effective-                      fusion models have two primary paradigms for step dis-
+                nessofeachcomponentbycomparingmodelstrainedwith                         tillation: trajectory-basedanddistribution-basedmethods.
+                only thesCM loss or theLADD loss. Asshown inTab. 3,                     Trajectory-basedapproachesincludedirectdistillation[9]
+                training with LADD alone results in instability and subop-              and progressive distillation[10, 11].  Consistency mod-
+                timal performance, achieving a higher FID score of 12.20                els  [12]  include  variants  like  LCM  [13],  CTM  [14],
+                andalowerCLIPscoreof27.00. Incontrast,combining                         MCM[15],PCM[16],andsCM[17]. Distribution-based
+                bothsCMandLADDlossesimprovesmodelperformance,                           methodsinvolveGAN-baseddistillation[3]andVSDvari-
+                yielding a lower FID score of 8.11 and a higher CLIP                    ants [6, 7, 8, 46, 47]. Recent improvements include ad-
+                score of 28.02, demonstrating their complementary bene-                 versarial training with DINOv2 [48][4], stabilization of
+                fits. Using sCM alone achievesa FID score of 8.93and a                  VSD[49], and improved algorithms like SID [50] and
+                CLIP score of 27.51, indicating that while sCM is effec-                SIM [51].   In real-time image generation, techniques
+                tive, adding LADD further enhances performance. The                     like PaGoDA[52] and Imagine-Flash accelerate diffu-
+                weighting ablations for sCM and LADD loss are shown                     sion inference.   Model compression strategies include
+                inTab. 5, with additional timestep distribution ablations               BitsFusion[53] and Weight Dilation[54].  Mobile appli-
+                provided inSec. F.2                                                     cations use MobileDiffusion[55], SnapFusion[56], and
+                Additional Max-Time Weighting.We validate the pro-                      SnapGen[57]. SVDQuant[58] combinedwith SANA[32]
+                posedmax-timeweightingstrategyinLADD(seeSec.3.3)                        enables fast image generation on consumer GPUs.
+
+                throughexperimentswithbothsCMandLADDlosses. As
+                showninTab.6,thisweightingsignificantlyimprovesper-                     6.Conclusion
+                formance. We test the strategy at 0%, 50%, and 70% max-
+                time(𝑡=𝜋/2   )probabilities,findingthat50%isthebest                     In this paper, we introduced SANA-Sprint, an efficient
+                balance,whilehigherprobabilitiesprovideonlymarginal                     diffusionmodelforultra-fastone-steptext-to-imagegen-
+                gains.  However, considering the qualitative results, we                eration while preserving multi-step sampling flexibility.
+                finally choose 50% as the default max-time weighting.                   By employing a hybrid distillation strategy combining
+                                                                                        continuous-timeconsistencydistillation(sCM) andlatent
+                                                                                        adversarial distillation (LADD), SANA-Sprint achieves
+                                                                                        SoTA performance with 7.04 FID and 0.72 GenEval in
+
+
+                                                                                                                                                          8
+
+
+
+
+sCM   LADD   FID↓CLIP↑sCM:LADD   FID↓CLIP↑Max-Time    FID↓CLIP↑
+CFGSetting     FID↓CLIP↑
+1.0:1.0           8.81     27.930%  maxT     9.44     27.65✓               8.93     27.51
+1.0:0.5  8.43     27.8550%maxT8.32     27.94w/oEmbed       9.23       27.15✓    12.20    27.00
+w/Embed8.72       28.09
+1.0:0.1           8.90     27.7670%maxT     8.11     28.02✓    ✓     8.11     28.02
+
+===== PDF PAGE 9 =====
+
+                              SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+one step, eliminating step-specific training. This unified
+step-adaptivemodel enableshigh-quality 1024×1024im-
+age generationin only0.1s on H100,setting a newSoTA
+in speed-quality tradeoffs.
+Lookingahead,SANA-Sprint’sinstantfeedbackunlocks
+real-time interactive applications,transforming diffusion
+modelsintoresponsivecreativetoolsandAIPC.Wewill
+open-source our code and models to encourage further
+exploration in efficient, practical generative AI systems.
+Acknowledgements.We would like to express our heart-
+felt gratitude to Cheng Lu from OpenAI for his invaluable
+guidance and insightful discussions on the implementa-
+tion of the sCM part.  We are also deeply thankful to
+Yujun Lin, Zhekai Zhang, and Muyang Li from MIT for
+their significant contributions and engaging discussions
+on thequantization parts,as wellas to LvminZhang from
+StanfordforhisexpertiseandthoughtfulinputontheCon-
+trolNet part. Their collaborative efforts and constructive
+discussionshave beeninstrumental inshaping thiswork.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                          9
+
+===== PDF PAGE 10 =====
+
+                              SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+A.Pseudo Code for Training-Free Transformation from Flow to Trigflow
+
+In this section, we provide a concise implementation of the transformation from a trained flow matching model to
+a TrigFlow model without requiring additional training. This transformation is based on the theoretical equivalence
+established inSec. D. The core idea is to first convert the TrigFlow timestep  𝑡Trig to its corresponding flow matching
+timestep𝑡FM.  Then, the input feature𝑥Trig is scaled accordingly to obtain𝑥FM.  The output of the flow matching
+modelisthentransformedusingalinearcombinationtoproducethefinalTrigFlowoutput. Thefollowingpseudocode
+implements this transformation efficiently, ensuring consistency between the two formulations.
+
+classTrigFlowModel(FlowMatchingModel):
+     defforward(self,  x_trig,  t_trig,  c):
+           t_fm  =  torch.sin(t_trig)  /  (torch.cos(t_trig)  +  torch.sin(t_trig))
+           x_fm  =  x_trig  *  torch.sqrt(t_fm**2  +  (1  -  t_fm)**2)
+
+           fm_model_out  =super().forward(x_fm,  t_fm,  c)
+           trig_model_out  =  ((1  -  2  *  t_fm)  *  x_fm  +  (1  -  2  *  t_fm  +  2  *  t_fm**2)  *  fm_model_out)  /
+                 torch.sqrt(t_fm**2  +  (1  -  t_fm)**2)
+
+           returntrig_model_out
+
+
+B.Transformation Algorithm
+
+We present an algorithmfor training-free transformation froma flowmatching model to its TrigFlow counterpart. Given
+anoisysample,itscorrespondingTrigFlowtimestep,andapre-trainedflowmatchingmodel,thealgorithmcomputesthe
+equivalentflowmatchingtimestep,rescalestheinput,andappliesadeterministictransformationtoobtaintheTrigFlow
+output. The detailed procedure is outlined inAlgorithm 1.
+
+Algorithm 1Training-Free Transformation to TrigFlow
+ 1:Input:Noisy data      𝑥𝑡,Trig                       , flow matching model𝑣         𝜃(𝑥𝑡,FM,𝑡FM,𝑦)
+                             𝜎𝑑 , timestep𝑡           Trig, condition𝑦
+ 2:Compute𝑡               FM from𝑡    Trig via𝑡 FM =          sin(𝑡Trig)sin(𝑡Trig)+cos(𝑡Trig)
+ 3:Compute𝑥      𝑡,FM   from𝑥  𝑡,Trig   via𝑥𝑡,FM   =𝑥𝑡,Trig      𝑡2FM+(1−𝑡   FM)2
+                                                       𝜎𝑑·√︀
+ 4:Evaluate𝑣   𝜃(𝑥𝑡,FM,𝑡FM,𝑦)                        (︁𝑥𝑡,              )︁                       [︁
+ 5: Transform  the  model  output  viâ︁𝐹𝜃               Trig               =                1√   (1−2𝑡      FM)𝑥𝑡,FM    +  (1−2𝑡      FM  +
+                                                         𝜎𝑑,𝑡Trig,𝑦                 𝑡2FM+(1−𝑡       FM)2
+                            ]︁
+     2𝑡2FM)𝑣𝜃(𝑥𝑡,FM,𝑡FM,𝑦)
+ 6:Output:Transformed result
+
+
+
+C.Training Algorithm of SANA-Sprint
+
+In this section, we present the detailed training algorithm for SANA-Sprint. To emphasize the differences from the
+standardsCMtrainingalgorithm,wehighlightthemodifiedstepsinlightblue. Thefollowingalgorithmoutlinesthe
+complete training procedure, including the key transformations and parameter updates specific to SANA-Sprint.
+
+D. Proof of Proposition 3.1
+
+Before presenting the formal proof, we first provide some context to understand the necessity of the transformation.
+In score-based generative models such as diffusion, flow matching, and TrigFlow, denoising is typically performed
+under certain conditions of data scales and signal-to-noise ratios (SNRs) that match the training setup.  However,
+directly applying flow matching to denoise data generated by TrigFlow is not feasible due to mismatches in time
+parameterization, SNR, andoutput necessitating explicittransformations to align theinput and output betweenthe two
+models. ThefollowingproofprovidestheexplicittransformationrequiredtoconnecttheTrigFlow-scheduleddatatothe
+flow-matching framework.
+
+
+                                                                                                                                       10
+
+===== PDF PAGE 11 =====
+
+                            SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+Algorithm 2Training Algorithm of SANA-Sprint
+
+ 1: Input:dataset   𝒟with std.𝜎𝑑= 0.5   , pretrained flow model𝐹pretrain with parameter𝜃pretrain, student model
+    𝐹𝜃,discriminatorhead𝐷𝜓,weighting𝑤𝜑,learningrate𝜂,generatordistribution(𝑃mean, G,𝑃std, G),discriminator
+    distribution (𝑃mean, D,𝑃std, D), constant𝑐, warmup iteration𝐻,max-time weighting𝑝, condition𝑦.
+ 2: Init:transform  𝐹pretrain and𝐹𝜃to TrigFlow model usingAlgorithm 1, init student model and discriminator
+    backbone with𝜃    pretrain, Iters←0.
+ 3:repeat
+ 4:     update discriminator𝜓:
+ 5:   𝑥0∼𝒟,𝑧∼𝒩(0,𝜎2𝑑𝐼),𝜏∼𝒩(𝑃     mean, G,𝑃2std, G),𝑡←arctan(    𝑒𝜏𝜎𝑑)
+ 6:          if𝑝>0,𝜉∼U[0,1],𝑡←        𝜋2 if𝜉<𝑝
+
+ 7:   𝑥𝑡←cos(𝑡)𝑥           0+sin(𝑡)𝑧,       ^𝑥𝑓𝜃−0 ←𝑓𝜃−(𝑥𝑡,𝑡,𝑦)
+ 8:    𝜏∼𝒩(𝑃  mean, D,𝑃2std, D),𝑠←arctan(    𝑒𝜏𝜎𝑑)
+
+ 9:   𝑥𝑠←cos(𝑠)𝑥            0+sin(𝑠)𝑧,       ^𝑥𝑓𝜃−𝑠←[︁∑︀cos(𝑠)           ^𝑥𝑓𝜃−(︁0     +sin(𝑠)𝑧)︁]︁            [︁∑︀        (︁
+10:   ℒ𝐷adv(𝜓)  ← E    𝑥0,𝑠                      𝑘ReLU    1−𝐷 𝜓,𝑘(𝐹𝜃pre,𝑘(𝑥𝑠,𝑠,𝑦))                + E 𝑥0,𝑠,𝑡      𝑘ReLU     1   +
+                     𝑓𝜃−𝑠,𝑠,𝑦   )︁]︁
+    𝐷𝜓,𝑘(𝐹𝜃pre,𝑘(^𝑥        ))
+
+11:  𝜓←𝜓−𝜂∇      𝜓ℒ𝐷adv(𝜓)                                     ◁Discriminator step
+12:        Iters←Iters+1
+13:   update student model𝜃and weighting𝜑:
+14:  𝑥0∼𝒟,𝑧∼𝒩(0,𝜎2𝑑𝐼),𝜏∼𝒩(𝑃     mean, G,𝑃2std, G),𝑡←arctan(    𝑒𝜏𝜎𝑑)
+15:  𝑥𝑡←cos(𝑡)𝑥           0+sin(𝑡)𝑧
+16:              d𝑥𝑡d𝑡←𝜎𝑑𝐹pretrain, cfg(𝑥𝑡𝜎𝑑,𝑡)
+17:   𝑟←min(1,Iters/𝐻)                                        ◁Tangent warmup
+18:  𝑔←−cos     2(𝑡)(𝜎 𝑑𝐹𝜃−−d𝑥𝑡                cos(𝑡)sin(𝑡)(𝑥       𝑡+𝜎𝑑d𝐹𝜃−
+                                          d𝑡)−𝑟·                              d𝑡 )           ◁JVP rearrangement
+19:  𝑔←𝑔/(‖𝑔‖+𝑐)                                       ◁Tangent normalization
+                             )
+20:  ℒ(𝜃,𝜑)←   𝑒𝑤𝜑(𝑡𝐷‖𝐹𝜃(𝑥𝑡𝜎𝑑,𝑡)−𝐹 𝜃−(𝑥𝑡𝜎𝑑,𝑡)−𝑔‖  22−𝑤𝜑(𝑡)                     ◁sCM loss
+21:        if𝑝>0,𝜉∼U[0,1],𝑡←         𝜋2 if𝜉<𝑝
+22:  𝑥𝑡←cos(𝑡)𝑥           0+sin(𝑡)𝑧,       ^𝑥𝑓𝜃0←𝑓𝜃(𝑥𝑡,𝑡,𝑦)
+23:           ^𝑥𝑓𝜃𝑠←cos(𝑠)           ^𝑥𝑓𝜃0  +sin(𝑠)𝑧[︁∑︀                        ]︁
+24:  ℒ(𝜃,𝜑)←ℒ(𝜃,𝜑)−E     𝑥0,𝑠,𝑡                   𝑘𝐷𝜓,𝑘(𝐹𝜃pre,𝑘(^𝑥𝑓𝜃𝑠,𝑠,𝑦))                                         ◁GAN loss
+25:        (𝜃,𝜑)←(𝜃,𝜑)−𝜂∇      𝜃,𝜑ℒ(𝜃,𝜑)                                 ◁Generator step
+26:        Iters←Iters+1
+27:untilconvergence
+
+
+Proof. Under the TrigFlow framework, the noisy input sample is given by
+                                         𝑥𝑡,Trig
+                                            𝜎𝑑  = cos(𝑡   Trig)𝑥0𝜎𝑑+sin(𝑡Trig)𝑧𝜎𝑑.                                                    (13)
+Since both𝑥0 and𝑧originally have a standard deviation of𝜎𝑑, we absorb𝜎𝑑into these variables so that they are
+normalized to have a standard deviation of 1. This normalization aligns with the conventions used in flow matching
+models. Note that the signal-to-noise ratios (SNRs) for flow matching models and TrigFlow models are given by
+
+                       SNR(𝑡      FM) = (1−𝑡 FM𝑡FM   )2,   SNR(𝑡       Trig) = (cos(𝑡   Trig)sin(𝑡Trig))2 = (       1tan(𝑡Trig))2.                         (14)
+
+To ensure an equivalent SNR under the flow matching framework, we seek the corresponding time𝑡   FM that satisfies:
+
+                                                (1−𝑡 FM𝑡FM   )2 = (       1tan(𝑡Trig))2.                                                              (15)
+
+Solving this equation, we obtain the relationship between𝑡           FM and𝑡  Trig:
+
+                              𝑡FM =           sin(𝑡Trig)sin(𝑡Trig)+cos(𝑡Trig), 𝑡𝑇𝑟𝑖𝑔= arctan( 𝑡𝐹𝑀1−𝑡𝐹𝑀).                                   (16)
+
+
+
+                                                                                                                               11
+
+===== PDF PAGE 12 =====
+
+                              SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+Under this transformation, the SNRs of𝑥𝑡,FM   and𝑥𝑡,Trig   remain equal; however, their scales differdue to the following
+formulations:
+                           𝑥𝑡,FM   = (1−𝑡   FM)𝑥0+𝑡FM𝑧, 𝑥𝑡,Trig   = cos(𝑡   Trig)𝑥0+sin(𝑡Trig)𝑧,                             (17)
+Since (1−𝑡   FM)2 +𝑡2FM is generally not equal to cos2(𝑡Trig)+sin2(𝑡Trig) = 1 (except when𝑡FM = 0 or 1), a scale
+adjustment is needed. To align their scales, we introduce a scale factor function𝜆(𝑡                FM)that satisfies
+
+                                 𝜆(𝑡FM)·cos(𝑡      Trig) = (1−𝑡   FM),and𝜆(𝑡          FM)·sin(𝑡Trig) =𝑡FM,                                    (18)
+
+Therefore, the scale factor is determined as follows
+                                                                                            √︁
+                        𝜆(𝑡FM) =          1−𝑡 FMcos(arctan( 𝑡FM sin(arctan( 𝑡FM                𝑡2FM+(1−𝑡   FM)2.                       (19)
+                                                   1−𝑡 FM)) =     𝑡FM          1−𝑡 FM)) =
+The transformed𝑥𝑡,Trig   follows the same distribution as the flow matching model’s training distribution, achieving our
+desired objective. Next, we aim to determine the optimal estimator for the TrigFlow model𝐹𝜃, given𝑣𝜃(𝑥𝑡,FM,𝑡FM,𝑦)   .
+Wefirstconsideranidealscenariowherethemodel’scapacityissufficientlylarge. Inthiscase,theflowmatchingmodel
+reaches its optimal solution:
+                                               𝑣*(𝑥𝑡,FM,𝑡FM,𝑦)=E[𝑧−𝑥             0|𝑥𝑡FM,𝑦],                                                        (20)
+as the conditional expectation minimizes the mean squared error (MSE) loss. Similarly, the optimal solution of the
+TrigFlow model is given by
+
+                              𝐹*(𝑥𝑡,Trig,𝑡Trig,𝑦)=E[cos(𝑡        Trig)𝑧−sin(𝑡     Trig)𝑥0|𝑥𝑡Trig,𝑦].                                (21)
+
+Noting that
+                           cos(𝑡Trig) =         1−𝑡 FM√︀𝑡2FM+(1−𝑡   FM)2,   sin(𝑡Trig) =     𝑡FM√︀𝑡2FM+(1−𝑡   FM)2,                             (22)
+
+we leverage the linearity of conditional expectation to derive
+
+               √︀1−2𝑡   FM                       √︀2𝑡   FM+2𝑡2FM                          ]
+                                           FM +   1−                                    FM,𝑦
+                  𝑡2FM+(1−𝑡   FM)2·𝑥𝑡               𝑡2FM+(1−𝑡   FM)2E[𝑧−𝑥      0|𝑥𝑡
+            =       1−√︀2𝑡   FM                                            ]+      1−√︀2𝑡   FM+2𝑡2FM                        ]
+                                                                         FM,𝑦                                            FM,𝑦
+                  𝑡2FM+(1−𝑡   FM)2E[(1−𝑡      FM)·𝑥0+𝑡FM·𝑧|𝑥𝑡                         𝑡2FM+(1−𝑡   FM)2E[𝑧−𝑥      0|𝑥𝑡                  (23)
+
+            =E[              1−𝑡 FM√︀𝑡2FM+(1−𝑡   FM)2𝑧−    𝑡FM√︀𝑡2FM+(1−𝑡   FM)2𝑥0|𝑥𝑡FM,𝑦]
+
+
+            =E[cos(𝑡    Trig)𝑧−sin(𝑡     Trig)𝑥0|𝑥𝑡Trig,𝑦].
+
+Consequently, we obtain
+                                                               [︁                                                               ]︁
+          𝐹*(𝑥𝑡,Trig,𝑡Trig,𝑦)=                 1√︀𝑡2FM+(1−𝑡   FM)2(1−2𝑡     FM)𝑥𝑡,FM  +(1−2𝑡     FM+2𝑡2FM)𝑣*(𝑥𝑡,FM,𝑡FM,𝑦)        .    (24)
+
+
+Next, we consider a more realistic scenario where the model’s capacity is limited, leading to the learned velocity field
+
+                           𝑣𝜃*(𝑥𝑡,FM,𝑡FM,𝑦)= min𝜃E𝑥0,𝑧,𝑡[𝑤(𝑡)‖𝑣  𝜃(𝑥𝑡,FM,𝑡FM,𝑦)−(𝑧−𝑥            0)‖2].                            (25)
+
+Under our parameterization, training the TrigFlow model amounts to minimizing
+               [︃⃦⃦⃦⃦⃦                                                                                                 ⃦⃦⃦⃦⃦2]︃
+  min𝜃E𝑥0,𝑧,𝑡     √︀1−2𝑡   FM                    √︀2𝑡   FM +2𝑡2FM                  )−(cos(𝑡              Trig)𝑧−sin(𝑡           Trig)𝑥0)
+                                                                          FM ,𝑡FM,𝑦
+                     𝑡2FM +(1−𝑡   FM)2·𝑥𝑡FM +   1−𝑡2FM +(1−𝑡   FM)2𝑣𝜃(𝑥𝑡,
+               [︃⃦⃦⃦⃦⃦                                                                   (︃                                                 )︃⃦⃦⃦⃦⃦2]︃
+=min              √︀1−2𝑡   FM                    √︀2𝑡   FM +2𝑡2FM                  )−       √︀1−𝑡 FM                 √︀
+    𝜃E𝑥0,𝑧,𝑡                                                              FM ,𝑡FM,𝑦
+                     𝑡2FM +(1−𝑡   FM)2·𝑥𝑡FM +   1−𝑡2FM +(1−𝑡   FM)2𝑣𝜃(𝑥𝑡,                      𝑡2FM +(1−𝑡   FM)2𝑧−    𝑡FM𝑡2FM +(1−𝑡   FM)2𝑥0
+                                                                                                                                        (26)
+
+
+                                                                                                                                         12
+
+===== PDF PAGE 13 =====
+
+                              SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+Substituting𝑥       𝑡,FM   = (1−𝑡   FM)𝑥0+𝑡FM𝑧, the above expression simplifies to
+              [︃⃦⃦⃦⃦⃦                                                                  (︃                                                )︃⃦⃦⃦⃦⃦2]︃
+  min             √︀1−2𝑡   FM                  √︀2𝑡   FM +2𝑡2FM                  )−      √︀1−𝑡 FM                 √︀
+    𝜃E𝑥0,𝑧,𝑡                                                            FM ,𝑡FM,𝑦
+                     𝑡2FM +(1−𝑡   FM)2·𝑥𝑡FM +   1−𝑡2FM +(1−𝑡   FM)2𝑣𝜃(𝑥𝑡,                   𝑡2FM +(1−𝑡   FM)2𝑧−    𝑡FM𝑡2FM +(1−𝑡   FM)2𝑥0
+              [︃⃦⃦⃦⃦⃦                                    (︃                                                )︃⃦⃦⃦⃦⃦2]︃
+=min𝜃E𝑥0,𝑧,𝑡      √︀𝑡2FM +(1−𝑡   FM)2              )−       √︀𝑡2FM +(1−𝑡   FM)2      √︀
+                                           FM ,𝑡FM,𝑦
+                     𝑡2FM +(1−𝑡   FM)2𝑣𝜃(𝑥𝑡,                   𝑡2FM +(1−𝑡   FM)2𝑧−𝑡2FM +(1−𝑡   FM)2𝑡2FM +(1−𝑡   FM)2𝑥0
+
+=min             𝑡2FM +(1−𝑡   FM)2)︀‖𝑣𝜃(𝑥𝑡,FM ,𝑡FM,𝑦)−(𝑧−𝑥           0)‖2]︀
+    𝜃E𝑥0,𝑧,𝑡[︀(︀
+                                                                                                                                     (27)
+Thus,trainingtheTrigFlowmodelwithourparameterizationisequivalenttotrainingtheflowmatchingmodel,apart
+from differences in the loss weighting function𝑤(𝑡)and the timestep sampling distribution𝑝(𝑡).
+
+
+
+E.Full Related Work
+
+Text to Image GenerationText-to-image generation has experienced transformative advancements in both efficiency
+and model design. The field gained early traction with Stable Diffusion [59], which set the stage for scalable high-
+resolution synthesis. A pivotal shift occurred with Diffusion Transformers (DiT)[60], which replaced conventional
+U-Net architectures with transformer-based designs, unlocking improved scalability and computational efficiency.
+Buildingonthisinnovation,PixArt-𝛼[61]demonstratedcompetitiveimagequalitywhileslashingtrainingcoststoonly
+10.8% of those required by Stable Diffusion v1.5 [59]. Recent breakthroughs have further pushed the boundaries of
+compositionalgeneration. Large-scalemodelslikeFLUX[21]andStableDiffusion3[38]havescaleduptoultra-high-
+resolution synthesis andintroduced multi-modal capabilities through frameworks such as theMulti-modal Diffusion
+Transformer (MM-DiT)[22].  Playground v3[39] achieved state-of-the-art image quality by seamlessly integrating
+diffusionmodelswithLargeLanguageModels(LLMs)[62],whilePixArt-Σ[37]showcaseddirect4Kimagegeneration
+usingacompact0.6Bparametermodel,emphasizingcomputationalefficiencyalongsidehigh-qualityoutputs. Efficiency-
+driveninnovationshavealsogainedmomentum. SANA[32]introducedhigh-resolutionsynthesiscapabilitiesthrough
+deepcompressionautoencoding[63]andlinearattentionmechanisms,enablingdeploymentonconsumer-gradehardware
+like laptop GPUs. Additionally, advancements in linear attention mechanisms for class-conditional generation [64, 65],
+diffusion modelswithout attention[66,67], andcascade structures[68,69, 70] have further optimized computational
+requirementswhilemaintainingperformance. Thesedevelopmentscollectivelyunderscorethefield’srapidevolution
+toward more accessible, efficient, and versatile text-to-image generation technologies.
+
+
+Diffusion Model Step DistillationsCurrent methodologies primarily coalesce into two dominant paradigms: (1)
+trajectory-baseddistillation. DirectDistillation[9]directlylearnsnoise-imagemappinggivenbyPF-ODE.Progressive
+Distillation [10, 11] makes the learning progress easier by progressively enlarging subintervals on the ODE trajectory.
+Consistency Models (CMs) [12] (e.g. LCM [13], CTM [14], MCM [15], PCM [16], sCM [17]) predict the solution
+𝑥0 of the PF-ODE given𝑥𝑡via self-consistency.  (2) distribution-based distillation.  It can be further divided into
+GAN [3]-based distillation and its variational score distillation (VSD) variants [6, 7, 8, 46, 47]. ADD [4] explored
+distillingdiffusionmodelsusingadversarialtrainingwithpretrainedfeatureextractorlikeDINOv2[48]inpixelspace.
+LADD[5]furtherutilizeteacherdiffusionmodelsasfeatureextractorsenablingdirectdiscriminationinlatentspace,
+drastically saving the computation and GPU memories. [49] stabilize VSD with regression loss. SID [50] and SIM [51]
+propose improved algorithms for VSD.
+
+
+Real-Time Image GenerationRecent advancements in real-time image generation have focused on improving the
+efficiencyandqualityofdiffusionmodels. PaGoDA[52]introducesaprogressiveapproachforone-stepgenerationacross
+resolutions. Imagine-Flash also uses a backward distillation to accelerate diffusion inference. In model compression,
+BitsFusion [53] quantizes Stable Diffusion’s UNet to 1.99 bits, and Weight Dilation [54] presents DilateQuant for
+enhanced performance. For mobile applications, MobileDiffusion [55] achieves sub-second generation times, with
+SnapFusion [56] and SnapGen [57] enabling 1024x1024 pixel image generation in about 1.4 seconds. SVDQuant [58]
+introduces 4-bit quantization for diffusion models, and when combined with SANA [32], enables fast generation of
+high-quality images on consumer GPUs, bridging the gap between model performance and real-time applications.
+
+
+                                                                                                                                      13
+
+===== PDF PAGE 14 =====
+
+                              SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+F. More Details
+
+F.1.Experimental Setup
+
+Model Architecture  Following the pruning technology in SANA-1.5 [ 42], our teacher models are fine-tuned from
+SANA 0.6Band 1.6B,respectively. The architecture,training data,and otherhyperparameters remainconsistent with
+SANA-1.5 [42].
+
+
+TrainingDetailsWe conductdistributedtrainingusingPyTorch’sDistributedDataParallel(DDP) across32NVIDIA
+A100GPUson4DGXnodes. Ourtwo-phasestrategyinvolvesfine-tuningtheteachermodelwithdensetimeembedding
+andQKnormalizationatalearningrateof2e-5for5,000iterations(globalbatchsizeof1,024),asdiscussedinSec.3.1.
+Then,weperformtimestepdistillationthroughtheproposedframeworkatalearningrateof2e-6withaglobalbatch
+size of 512 for 20,000 iterations. As Flash Attention JVP kernel support is not available in PyTorch [17], we retain
+Linear Attention [32] to auto-compute the JVP.
+
+
+Evaluation ProtocolWe use multiplemetrics: FID, CLIP Score, and GenEval [          44], comparing with state-of-the-art
+methods. FIDandCLIPScoreareevaluatedontheMJHQ-30Kdataset[43]. GenEvalmeasurestext-imagealignment
+with553testprompts, emphasizing itsabilitytoreflectalignmentandshowimprovementpotential. Wealsoprovide
+visualizations to compare state-of-the-art methods and highlight our performance.
+
+
+F.2.More Ablations
+
+Inference Timestep SearchFig. 6illustrates the process of timestep optimization for inference across 1, 2, and 4
+steps,comparingtheperformance of0.6Band1.6Bmodelsin termsofFID(toprow) andCLIP-Scores(bottomrow).
+Theoptimizationfollowsasequentialsearchstrategy: first,we determine theoptimal𝑡max for1-stepinferenceusing
+arctan(𝑛/0.5)         ,inspiredbyEDM[28],where𝑛issearchedforthemaximumtimestep. Usingthis𝑡max,wethensearch
+for the intermediate timestep𝑡2𝑛𝑑in 2-step inference. For 4-step inference, the timesteps for the first two steps are
+fixed to their previously optimized values, while the third (𝑡3𝑟𝑑) and fourth timesteps (𝑡4𝑡ℎ) are searched sequentially. In
+each case, the x-axis represents the timestep being optimized at the current step, ensuring that earlier steps use their
+best-found values to maximize overall performance. This hierarchical approach enables efficient timestep selection for
+multi-step inference settings.
+
+
+ControllingthesCMNoiseDistributionInthesCM-onlyexperiments,weinvestigatetheimpactofdifferentnoise(︁)︁
+distribution parameter settings on model performance. The noise distribution is defined as𝑡= arctan                          𝑒𝜏  , where
+                                                                                                                             𝜎𝑑
+𝜏∼𝒩(𝑃mean,𝑃2std). Startingfromtheinitialparameters(−0.8,1.6)              proposedinsCM[17],weexperimentwithvarious
+mean and standard deviation configurations to evaluate their effects. By tracking FID and CLIP-Score trends over
+40k trainingiterations, we identify(𝑃mean,𝑃std) = (0.0,1.6)          , representedby the greencurve inFig.7, as theoptimal
+setting. This configuration consistently reduces FID while improving CLIP-Score, resulting in superior generation
+quality and text-image alignment. We also observe that extreme mean values, such as𝑃mean = 0.6    or𝑃mean =−0.8         ,
+leadto significanttraininginstabilityand evenfailure insomecases. Consequently,weadopt(0.0,1.6)           asthe default
+parameter setting.
+
+
+Controlling the LADD Discriminator Noise DistributionGenerative features change with the noise level, offering
+structured feedback at high noise and texture-related feedback at low noise [5]. We compare the results for different(︁)︁
+meanandstandarddeviationsettingsin𝑡= arctan                  𝑒𝜏   ,where𝜏∼𝒩(𝑃mean,𝑃2std)forLADDdiscriminator. Building
+                                                             𝜎𝑑
+on the optimal mean and standard deviation settings(0.0,1.6)           identified for sCM, we further explore the best noise
+configurationfor theLADD’sdiscriminator. InFig.8andTab. 8,wevisualizethe probabilitydistributionsof     𝑡sampled
+underdifferent meanand standarddeviationsettings, aswellas thecorresponding FIDand CLIP-Scoreresults when
+applied in the LADD loss. Based on these analyses, we identify (−0.6,1.0)               as the optimal setting, which achieves
+a more balanced feature distribution across high and low noise levels while maintaining stable training dynamics.
+Consequently, we adopt(−0.6,1.0)as the default configuration for LADD loss.
+
+
+                                                                                                                                        14
+
+===== PDF PAGE 15 =====
+
+                                               SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                Figure 6|Inferencetimesteps search.Thisfigure illustratesthe performance oftimesteps search forachieving optimal
+                results during inference with 0.6B and 1.6B models. The subplots compare FID (top row) and CLIP-Score (bottom
+                row) across different timesteps for 1-step, 2-step, and 4-step inference settings. The x-axis represents the timestep
+                beingsearchedatthecurrentstep;formulti-stepsettings(e.g.,4steps),thetimestepsforearlierstepsarefixedtotheir
+                previously optimized values.
+
+                                     Table 7|Inference timestep settings for both SANA-Sprint 0.6B and 1.6B models.
+
+
+
+
+
+
+                F.3.More Qualitative Results
+
+                SANA-Sprint-ControlNet Visualization ImagesInFig. 9, we demonstrate the visualization capabilities of our
+                SANA-Sprint-ControlNet, which efficiently achieves impressive results in only0.4 secondsusing a2-stepgeneration
+                process,producinghigh-qualityimagesataresolutionof1024×1024pixels. Thevisualizationprocessbeginswithan
+                inputimage,whichisprocessedusingaHEDdetectionmodeltoextractthescribegraph. Thisscribegraph,combined
+                withagivenprompt,isused to generatethecorrespondingimageinthesecond column. Thethirdcolumnpresentsa
+                blendedimagethatcombinesthegeneratedimagewiththescribegraph,highlightingtheprecisecontrolofthemodel
+                through boundary alignment. This visualization showcases the model’s ability to accurately interpret prompts and
+                maintain robust control over generated images.
+
+
+                MoreVisualizationImagesInFig.11,wepresentimagesgeneratedbyourmodelusingvariousprompts. SANA-
+                Sprint showcases comprehensive generation capabilities, including high-fidelity detail rendering, accurate semantic
+                understanding, and reliable text generation, all achieved with only2-step sampling. In particular, the model efficiently
+                produces high-quality images of 1024×1024 pixels in only0.24 secondson an NVIDIA A100 GPU. The samples
+                demonstrateversatilityinvariousscenarios,fromintricatetexturesandcomplexcompositionstoaccuratetextrendering,
+                highlighting the robust image quality of the model in both artistic and practical tasks.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                           15
+
+
+
+
+                  1step                      2steps                                         4steps
+TimestepT  [𝜋/2,0.0]    [arctan(200/0.5),1.3,0.0]    [arctan(200/0.5),1.3,1.1,0.6,0.0]
+
+===== PDF PAGE 16 =====
+
+                                               SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                Figure 7|Controlling thesCM noisedistribution.This figurecompares FIDand CLIP-Scoreacross different noise
+                distribution settings over 40k training steps in sCM-only experiments.  The green curve (𝑃mean,𝑃std) = (0.0,1.6)
+                demonstrates optimal performance, achieving stable training dynamics and superior generation quality.
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                       Table 8|Comparison of different noise distributions for
+                                                                                       LADD loss.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                Figure 8|Controlling the LADD noise distribution.
+                Wevarytheparametersofalogit-normaldistributionfor
+                biasing the sampling of the LADD teacher noise level.
+                Whenbiasingtowardsveryhighnoiselevels(m=0.4,s=
+                2), we observe unstable training.
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                            16
+
+Mean,Std    FID↓CLIP↑
+(-0.6,1.0)9.48      28.08
+(-0.6,2.0)     10.36      28.03
+(0.0,1.0)     13.11      27.18
+(0.0,2.0)     11.25      27.96
+(0.4,2.0)      9.77      28.00
+(0.6,1.0)     12.85      27.32
+
+===== PDF PAGE 17 =====
+
+                             SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Figure9|VisualizationofSANA-Sprint-ControlNet’scapabilities.Themodeloutputshigh-qualityimagesof1024
+×1024 pixels in only2 stepsand0.3 secondson an NVIDIA H100 GPU. The process involves processing the input
+image (firstcolumn) to extract a scribe graph, which, along witha prompt, generates animage (second column). The
+blended image (third column) highlights precise boundary alignment and control, demonstrating the model’s robust
+control capabilities.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Figure 10|ControlNet Demo: Hand-Crafted Scribble to Stunning Image. Left: A hand-crafted scribble created
+with a brush.Right: The result generated by the Sana-Sprint-ControlNet model, strictly following the scribble and
+prompt.InferenceLatency: Themodelachievesremarkablespeed,generatingthe1024      ×1024imagesinonly1step
+and0.25 secondson H100GPU,as showninthe rightred box. Thisdemo showcasesthe model’sexceptionalcontrol
+and efficiency, adhering closely to the user’s input while producing visually appealing results.
+
+
+
+                                                                                                                                     17
+
+===== PDF PAGE 18 =====
+
+                              SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Figure 11|Generated imageswith SANA-Sprint.Themodel outputs high-qualityimages of1024    ×1024 pixels in2
+stepsand0.24secondsonanNVIDIAA100GPU,showcasingcomprehensivegenerationcapabilitieswithhigh-fidelity
+details and accurate text rendering, handling diverse scenarios with robust image quality.
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                       18
+
+===== PDF PAGE 19 =====
+
+                                 SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+References
+
+ [1]  JonathanHo,AjayJain,andPieterAbbeel. Denoisingdiffusionprobabilisticmodels.Advancesinneuralinformationprocessing
+      systems, 33:6840–6851, 2020.
+
+ [2]  Yang Song, Jascha Sohl-Dickstein, Diederik P Kingma, Abhishek Kumar, Stefano Ermon, and Ben Poole.  Score-based
+      generative modeling through stochastic differential equations.arXiv preprint arXiv:2011.13456, 2020.
+
+ [3]  Ian Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, and Yoshua
+      Bengio. Generative adversarial nets.Advances in neural information processing systems, 27, 2014.
+
+ [4]  Axel Sauer, Dominik Lorenz, Andreas Blattmann, and Robin Rombach.  Adversarial diffusion distillation.  InEuropean
+      Conference on Computer Vision, pages 87–103. Springer, 2024.
+
+ [5]  Axel Sauer, Frederic Boesel, Tim Dockhorn, Andreas Blattmann, Patrick Esser, and Robin Rombach. Fast high-resolution
+      image synthesis with latent adversarial diffusion distillation. InSIGGRAPH Asia 2024 Conference Papers, pages 1–11, 2024.
+
+ [6]  Ben Poole, Ajay Jain, Jonathan T Barron, and Ben Mildenhall. Dreamfusion: Text-to-3d using 2d diffusion.arXiv preprint
+      arXiv:2209.14988, 2022.
+
+ [7]  Zhengyi Wang, Cheng Lu, Yikai Wang, Fan Bao, Chongxuan Li, Hang Su, and Jun Zhu.  Prolificdreamer: High-fidelity
+      and diverse text-to-3d generation with variational score distillation.Advances in Neural Information Processing Systems,
+      36:8406–8441, 2023.
+
+ [8]  Weijian Luo, Tianyang Hu, Shifeng Zhang, Jiacheng Sun, Zhenguo Li, and Zhihua Zhang. Diff-instruct: A universal approach
+      fortransferringknowledgefrompre-traineddiffusionmodels.AdvancesinNeuralInformationProcessingSystems,36:76525–
+      76546, 2023.
+
+ [9]  Eric Luhman and Troy Luhman. Knowledge distillation in iterative generative models for improved sampling speed.arXiv
+      preprint arXiv:2101.02388, 2021.
+
+[10]  TimSalimansandJonathanHo. Progressivedistillationforfastsamplingofdiffusionmodels.arXivpreprintarXiv:2202.00512,
+      2022.
+
+[11]  Chenlin Meng, Robin Rombach, Ruiqi Gao, Diederik Kingma, Stefano Ermon, Jonathan Ho, and Tim Salimans. On distillation
+      of guided diffusion models. InProceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages
+      14297–14306, 2023.
+
+[12]Yang Song, PrafullaDhariwal, Mark Chen, and Ilya Sutskever. Consistency models.arXiv preprint arXiv:2303.01469, 2023.
+
+[13]  Simian Luo, Yiqin Tan, Longbo Huang, Jian Li, and Hang Zhao. Latent consistency models: Synthesizing high-resolution
+      images with few-step inference.arXiv preprint arXiv:2310.04378, 2023.
+
+[14]  DongjunKim, Chieh-HsinLai, Wei-HsiangLiao, NaokiMurata, Yuhta Takida,Toshimitsu Uesaka,YutongHe, YukiMitsufuji,
+      and Stefano Ermon.  Consistency trajectory models: Learning probability flow ode trajectory of diffusion.arXiv preprint
+      arXiv:2310.02279, 2023.
+
+[15]  JonathanHeek, Emiel Hoogeboom,andTimSalimans. Multistep consistency models.arXivpreprintarXiv:2403.06807,2024.
+
+[16]  Fu-YunWang,ZhaoyangHuang,AlexanderWilliamBergman,DazhongShen,PengGao,MichaelLingelbach,KeqiangSun,
+      Weikang Bian, Guanglu Song, Yu Liu, et al. Phased consistency model.arXiv preprint arXiv:2405.18407, 2024.
+
+[17]  Cheng Lu and Yang Song.   Simplifying, stabilizing and scaling continuous-time consistency models.arXiv preprint
+      arXiv:2410.11081, 2024.
+
+[18]  Jun-Yan Zhu, Taesung Park, Phillip Isola, and Alexei A Efros. Unpaired image-to-image translation using cycle-consistent
+      adversarial networks. InProceedings of the IEEE international conference on computer vision, pages 2223–2232, 2017.
+
+[19]  Minguk Kang, Richard Zhang, Connelly Barnes, Sylvain Paris, Suha Kwak, Jaesik Park, Eli Shechtman, Jun-Yan Zhu, and
+      Taesung Park. Distillingdiffusion modelsinto conditionalgans. InEuropean Conferenceon ComputerVision,pages 428–447.
+      Springer, 2024.
+
+[20]  Tianwei Yin, Michaël Gharbi, Taesung Park, Richard Zhang, Eli Shechtman, Fredo Durand, and William T Freeman. Improved
+      distribution matching distillation for fast image synthesis.arXiv preprint arXiv:2405.14867, 2024.
+
+[21]Black ForestLabs. Flux, 2024.
+
+
+                                                                                                                                                      19
+
+===== PDF PAGE 20 =====
+
+                                SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+[22]  Patrick Esser, Sumith Kulal, Andreas Blattmann, Rahim Entezari, Jonas Müller, Harry Saini, Yam Levi, Dominik Lorenz, Axel
+      Sauer,FredericBoesel,etal. Scalingrectifiedflowtransformersforhigh-resolutionimagesynthesis. InForty-firstInternational
+      Conference on Machine Learning, 2024.
+
+[23]  PascalVincent. Aconnectionbetweenscorematchinganddenoising autoencoders.Neuralcomputation,23(7):1661–1674,
+      2011.
+
+[24]Stefano Peluchetti. Non-denoising forward-time diffusions, 2022.
+
+[25]  Xingchao Liu, Chengyue Gong, and Qiang Liu. Flow straight and fast: Learning to generate and transfer data with rectified
+      flow.arXiv preprint arXiv:2209.03003, 2022.
+
+[26]  YaronLipman,RickyTQChen,HeliBen-Hamu,MaximilianNickel,andMattLe. Flowmatchingforgenerativemodeling.
+      arXiv preprint arXiv:2210.02747, 2022.
+
+[27]  Michael S Albergo and Eric Vanden-Eijnden.   Building normalizing flows with stochastic interpolants.arXiv preprint
+      arXiv:2209.15571, 2022.
+
+[28]  TeroKarras,MiikaAittala,TimoAila,andSamuliLaine. Elucidatingthedesignspaceofdiffusion-basedgenerativemodels.
+      Advances in neural information processing systems, 35:26565–26577, 2022.
+
+[29]  Yogesh Balaji, Seungjun Nah, Xun Huang, Arash Vahdat, Jiaming Song, Qinsheng Zhang, Karsten Kreis, Miika Aittala,
+      TimoAila,SamuliLaine,etal. ediff-i: Text-to-imagediffusionmodelswithanensembleofexpertdenoisers.arXivpreprint
+      arXiv:2211.01324, 2022.
+
+[30]  RichardZhang,PhillipIsola,AlexeiAEfros,EliShechtman,andOliverWang. Theunreasonableeffectivenessofdeepfeatures
+      as a perceptual metric. InProceedings of the IEEE conference on computer vision and pattern recognition, pages 586–595,
+      2018.
+
+[31]  TeroKarras,MiikaAittala,JaakkoLehtinen,JanneHellsten,TimoAila,andSamuliLaine. Analyzingandimprovingthetraining
+      dynamicsofdiffusionmodels. InProceedingsoftheIEEE/CVFConferenceonComputerVisionandPatternRecognition,pages
+      24174–24184, 2024.
+
+[32]  EnzeXie,JunsongChen,JunyuChen,HanCai,HaotianTang,YujunLin,ZhekaiZhang,MuyangLi,LigengZhu,YaoLu,etal.
+      Sana: Efficient high-resolution image synthesis with linear diffusion transformers.arXiv preprint arXiv:2410.10629, 2024.
+
+[33]  Biao Zhang and Rico Sennrich. Root mean square layer normalization.Advances in Neural Information Processing Systems,
+      32, 2019.
+
+[34]  Zhendong Wang, Huangjie Zheng, Pengcheng He, Weizhu Chen, and Mingyuan Zhou. Diffusion-gan: Training gans with
+      diffusion.arXiv preprint arXiv:2206.02262, 2022.
+
+[35]Jae Hyun Lim and Jong Chul Ye. Geometric gan.arXiv preprint arXiv:1705.02894, 2017.
+
+[36]  DustinPodell,ZionEnglish,KyleLacey,AndreasBlattmann,TimDockhorn,JonasMüller,JoePenna,andRobinRombach.
+      Sdxl: Improving latent diffusion models for high-resolution image synthesis.arXiv preprint arXiv:2307.01952, 2023.
+
+[37]  Junsong Chen, Chongjian Ge, Enze Xie, Yue Wu, Lewei Yao, Xiaozhe Ren, Zhongdao Wang, Ping Luo, Huchuan Lu, and
+      Zhenguo Li.  Pixart-𝜎: Weak-to-strong training of diffusion transformer for 4k text-to-image generation.arXiv preprint
+      arXiv:2403.04692, 2024.
+
+[38]  Patrick Esser, Sumith Kulal, Andreas Blattmann, Rahim Entezari, Jonas Müller, Harry Saini, Yam Levi, Dominik Lorenz, Axel
+      Sauer,FredericBoesel,etal. Scalingrectifiedflowtransformersforhigh-resolutionimagesynthesis. InForty-firstInternational
+      Conference on Machine Learning, 2024.
+
+[39]  Bingchen Liu, Ehsan Akhgari, Alexander Visheratin, Aleks Kamko, Linmiao Xu, Shivam Shrirao, Joao Souza, Suhail Doshi,
+      and DaiqingLi. Playground v3: Improving text-to-imagealignment withdeep-fusion large languagemodels.arXiv preprint
+      arXiv:2409.10695, 2024.
+
+[40]  JunsongChen,YueWu,SimianLuo,EnzeXie,SayakPaul,PingLuo,HangZhao,andZhenguoLi. Pixart-{∖delta}: Fastand
+      controllable image generation with latent consistency models.arXiv preprint arXiv:2401.05252, 2024.
+
+[41]  LvminZhang,AnyiRao,andManeeshAgrawala. Addingconditionalcontroltotext-to-imagediffusionmodels. InProceedings
+      of the IEEE/CVF international conference on computer vision, pages 3836–3847, 2023.
+
+[42]  Enze Xie,Junsong Chen,Yuyang Zhao,Jincheng Yu, LigengZhu, YujunLin, ZhekaiZhang, MuyangLi, JunyuChen, HanCai,
+      et al. Sana 1.5: Efficient scaling of training-time and inference-time compute in linear diffusion transformer.arXiv preprint
+      arXiv:2501.18427, 2025.
+
+
+                                                                                                                                                   20
+
+===== PDF PAGE 21 =====
+
+                                SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+[43]  Daiqing Li, Aleks Kamko, Ehsan Akhgari, Ali Sabet, Linmiao Xu, and Suhail Doshi. Playground v2. 5: Three insights towards
+      enhancing aesthetic quality in text-to-image generation.arXiv preprint arXiv:2402.17245, 2024.
+
+[44]  DhrubaGhosh,HannanehHajishirzi,andLudwigSchmidt. Geneval: Anobject-focusedframeworkforevaluatingtext-to-image
+      alignment.Advances in Neural Information Processing Systems, 36:52132–52152, 2023.
+
+[45]Jonathan Ho and TimSalimans. Classifier-free diffusion guidance.arXiv preprint arXiv:2207.12598, 2022.
+
+[46]  SiruiXie, ZhishengXiao,Diederik PKingma,TingboHou,Ying NianWu, KevinPatrick Murphy,Tim Salimans,BenPoole,
+      and Ruiqi Gao. Em distillation for one-step diffusion models.arXiv preprint arXiv:2405.16852, 2024.
+
+[47]  TimSalimans,ThomasMensink,JonathanHeek,andEmielHoogeboom. Multistepdistillationofdiffusionmodelsviamoment
+      matching.Advances in Neural Information Processing Systems, 37:36046–36070, 2025.
+
+[48]  Maxime Oquab, Timothée Darcet, Théo Moutakanni, Huy Vo, Marc Szafraniec, Vasil Khalidov, Pierre Fernandez, Daniel
+      Haziza, Francisco Massa, Alaaeldin El-Nouby, et al.  Dinov2: Learning robust visual features without supervision.arXiv
+      preprint arXiv:2304.07193, 2023.
+
+[49]  TianweiYin,MichaëlGharbi,RichardZhang,EliShechtman,FredoDurand,WilliamTFreeman,andTaesungPark. One-step
+      diffusionwithdistributionmatchingdistillation. InProceedingsoftheIEEE/CVFconferenceoncomputervisionandpattern
+      recognition, pages 6613–6623, 2024.
+
+[50]  MingyuanZhou,HuangjieZheng,ZhendongWang,MingzhangYin,andHaiHuang. Scoreidentitydistillation: Exponentially
+      fast distillation of pretrained diffusion models for one-step generation. InForty-first International Conference on Machine
+      Learning, 2024.
+
+[51]  Weijian Luo, Zemin Huang, Zhengyang Geng, J Zico Kolter, and Guo-jun Qi. One-step diffusion distillation through score
+      implicit matching.Advances in Neural Information Processing Systems, 37:115377–115408, 2025.
+
+[52]  DongjunKim,Chieh-HsinLai,Wei-HsiangLiao,YuhtaTakida,NaokiMurata,ToshimitsuUesaka,YukiMitsufuji,andStefano
+      Ermon. Pagoda: Progressive growing of a one-step generator from a low-resolution diffusion teacher.Advances in Neural
+      Information Processing Systems, 37:19167–19208, 2025.
+
+[53]  Yang Sui, Yanyu Li, Anil Kag, Yerlan Idelbayev, Junli Cao, Ju Hu, Dhritiman Sagar, Bo Yuan, Sergey Tulyakov, and Jian Ren.
+      Bitsfusion: 1.99 bits weight quantization of diffusion model.arXiv preprint arXiv:2406.04333, 2024.
+
+[54]  Xuewen Liu, Zhikai Li, and Qingyi Gu. Dilatequant: Accurate and efficient diffusion quantization via weight dilation.arXiv
+      preprint arXiv:2409.14307, 2024.
+
+[55]  Yang Zhao, Yanwu Xu, Zhisheng Xiao, Haolin Jia, and Tingbo Hou. Mobilediffusion: Instant text-to-image generation on
+      mobile devices. InEuropean Conference on Computer Vision, pages 225–242. Springer, 2024.
+
+[56]  Yanyu Li, Huan Wang, QingJin, Ju Hu,PavloChemerys, Yun Fu, Yanzhi Wang, SergeyTulyakov, andJian Ren. Snapfusion:
+      Text-to-imagediffusionmodelonmobiledeviceswithintwoseconds.AdvancesinNeuralInformationProcessingSystems,
+      36:20662–20678, 2023.
+
+[57]  Dongting Hu, Jierun Chen, Xijie Huang, Huseyin Coskun, Arpit Sahni, Aarush Gupta, Anujraaj Goyal, Dishani Lahiri, Rajesh
+      Singh, Yerlan Idelbayev, et al.  Snapgen: Taming high-resolution text-to-image models for mobile devices with efficient
+      architectures and training.arXiv preprint arXiv:2412.09619, 2024.
+
+[58]  Muyang Li,Yujun Lin,Zhekai Zhang,TianleCai, XiuyuLi, JunxianGuo, EnzeXie, ChenlinMeng, Jun-YanZhu, andSong
+      Han. Svdquant: Absorbingoutliersbylow-rankcomponentsfor4-bitdiffusionmodels.arXivpreprintarXiv:2411.05007,2024.
+
+[59]  Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, and Björn Ommer. High-resolution image synthesis
+      withlatentdiffusionmodels. InProceedingsoftheIEEE/CVFconferenceoncomputervisionandpatternrecognition,pages
+      10684–10695, 2022.
+
+[60]William Peebles and Saining Xie. Scalable diffusion models with transformers.arXiv preprint arXiv:2212.09748, 2022.
+
+[61]  Junsong Chen, YU Jincheng, GE Chongjian, Lewei Yao, Enze Xie, Zhongdao Wang, James Kwok, Ping Luo, Huchuan Lu,
+      and Zhenguo Li. Pixart-𝛼: Fast training of diffusion transformer for photorealistic text-to-image synthesis. InInternational
+      Conference on Learning Representations, 2024.
+
+[62]  AbhimanyuDubey,AbhinavJauhri,AbhinavPandey,AbhishekKadian,AhmadAl-Dahle,AieshaLetman,AkhilMathur,Alan
+      Schelten, Amy Yang, Angela Fan, et al. The llama 3 herd of models.arXiv preprint arXiv:2407.21783, 2024.
+
+
+                                                                                                                                                    21
+
+===== PDF PAGE 22 =====
+
+                                 SANA-Sprint : One-Step Diffusion with Continuous-Time Consistency Distillation
+
+
+[63]  Junyu Chen, Han Cai, Junsong Chen, Enze Xie, Shang Yang, Haotian Tang, Muyang Li, Yao Lu, and Song Han.  Deep
+      compression autoencoder for efficient high-resolution diffusion models.arXiv preprint arXiv:2410.10733, 2024.
+
+[64]  Han Cai, Muyang Li, Qinsheng Zhang, Ming-Yu Liu, and Song Han. Condition-aware neural network for controlled image
+      generation. InProceedings ofthe IEEE/CVF Conferenceon ComputerVision andPatternRecognition, pages7194–7203, 2024.
+
+[65]  Lianghui Zhu, Zilong Huang, Bencheng Liao, Jun Hao Liew, Hanshu Yan, Jiashi Feng, and Xinggang Wang. Dig: Scalable and
+      efficient diffusion models with gated linear attention.arXiv preprint arXiv:2405.18428, 2024.
+
+[66]  Jing Nathan Yan, Jiatao Gu, and Alexander M Rush. Diffusion models without attention. InProceedings of the IEEE/CVF
+      Conference on Computer Vision and Pattern Recognition, pages 8239–8249, 2024.
+
+[67]  Yao Teng, Yue Wu, Han Shi, Xuefei Ning, Guohao Dai, Yu Wang, Zhenguo Li, and Xihui Liu. Dim: Diffusion mamba for
+      efficient high-resolution image synthesis.arXiv preprint arXiv:2405.14224, 2024.
+
+[68]  PabloPernias,DominicRampas,MatsL.Richter,ChristopherJ.Pal,andMarcAubreville. Wuerstchen: Anefficientarchitecture
+      for large-scale text-to-image diffusion models, 2023.
+
+[69]  JingjingRen,WenboLi,HaoyuChen,RenjingPei,BinShao,YongGuo,LongPeng,FenglongSong,andLeiZhu. Ultrapixel:
+      Advancing ultra-high-resolution image synthesis to new peaks.arXiv preprint arXiv:2407.02158, 2024.
+
+[70]  YuchuanTian, Zhijun Tu,HantingChen,JieHu,ChaoXu,andYunheWang. U-dits: Downsampletokensinu-shapeddiffusion
+      transformers.arXiv preprint arXiv:2405.02730, 2024.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                     22

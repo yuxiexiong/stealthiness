@@ -1,0 +1,1287 @@
+
+===== PDF PAGE 1 =====
+arXiv:2507.04947v1  [cs.CV]  7 Jul 2025
+DC-AR: Efficient Masked Autoregressive Image Generation with
+Deep Compression Hybrid Tokenizer
+Yecheng Wu Junyu Chen Zhuoyang Zhang Enze Xie Jincheng Yu
+Junsong Chen Jinyi Hu Yao Lu Song Han Han Cai
+NVIDIA
+https://github.com/dc-ai-projects/DC-AR
+0.5
+0.55
+0.6
+0.65
+0.7
+0.69
+0.55
+0.68
+0.52
+0.65GenEval
+0
+2.7
+5.4
+8.1
+10.8
+10.3
+2.1
+1.3
+1.7
+6.7
+Sana-0.6B PixArt-Sigma Show-o
+SD-XL DC-AR
+Throughput (img/s)
+7.9x 
+higher
+Figure 1. DC-AR is a cutting-edge masked autoregressive text-to-image generation framework. In comparison to other leading masked
+autoregressive models and diffusion models, DC-AR delivers 1.5-7.9× higher throughput and 2.0-3.5× lower latency, all while achieving
+state-of-the-art quality on text-to-image generation benchmarks.
+Abstract
+We introduce DC-AR, a novel masked autoregressive (AR)
+text-to-image generation framework that delivers superior
+image generation quality with exceptional computational
+efficiency. Due to the tokenizers’ limitations, prior masked
+AR models have lagged behind diffusion models in terms
+of quality or efficiency. We overcome this limitation by in-
+troducing DC-HT — a deep compression hybrid tokenizer
+for AR models that achieves a 32× spatial compression ra-
+tio while maintaining high reconstruction fidelity and cross-
+resolution generalization ability. Building upon DC-HT, we
+extend MaskGIT and create a new hybrid masked autore-
+Correspondence to: Han Cai (hcai@nvidia.com).
+gressive image generation framework that first produces the
+structural elements through discrete tokens and then applies
+refinements via residual tokens. DC-AR achieves state-of-
+the-art results with a gFID of 5.49 on MJHQ-30K and an
+overall score of 0.69 on GenEval, while offering 1.5-7.9×
+higher throughput and 2.0-3.5× lower latency compared to
+prior leading diffusion and autoregressive models.
+1. Introduction
+The remarkable success of large language models (LLMs)
+has significantly propelled advancements in artificial intel-
+ligence. Central to this success are autoregressive models,
+
+===== PDF PAGE 2 =====
+which have gained widespread recognition due to their ex-
+ceptional generalizability and robust scaling properties. Al-
+though primarily employed for natural language process-
+ing (NLP) tasks, autoregressive models have also been ef-
+fectively adapted to image generation, leading to notable
+progress in the field [25, 28, 53, 60].
+In contrast to diffusion models [4, 24, 38, 45, 65] which
+have dominated the current era, autoregressive models have
+recently garnered significant attention in image synthesis
+due to their unique advantages, such as enhanced connec-
+tions with vision-language models [30, 43, 55, 63, 64, 67].
+Typically, these approaches employ a visual tokenizer to
+transform images from pixel space into discrete tokens via
+vector quantization. Then, the models can process these vi-
+sual tokens analogously to text tokens.
+Previous research has explored various paradigms for
+autoregressive image generation, with masked autoregres-
+sive models emerging as an auspicious approach. Inspired
+by BERT [20] from the field of NLP, these models gen-
+erate image token sequences through a progressive un-
+masking process. Unlike the popular GPT-like sequen-
+tial next-token prediction paradigm, masked autoregressive
+models allow multiple tokens to be generated simultane-
+ously at each step, significantly reducing the number of
+sampling steps and improving generation efficiency. Ad-
+ditionally, the masking and unmasking mechanism inher-
+ent to these models makes them naturally well-suited for
+image editing tasks. Since their introduction in MaskGIT
+[7], extensive research has been conducted to extend this
+method, leading to notable advancements and successes
+[2, 8, 15, 32, 34, 59, 62, 67, 69, 70].
+However, compared to diffusion models, which utilize
+continuous tokens to represent images, autoregressive mod-
+els face significant challenges for achieving competent ef-
+ficiency and quality from the image tokenization process.
+The current standard practice for image tokenization em-
+ploys an autoencoder with spatial reduction ratios of 8 × or
+16×, where an image of size 256 × 256 is converted into
+32 × 32 or 16 × 16 token, respectively. However, further
+reducing token numbers for improved efficiency remains
+critical, especially considering that computational costs in-
+crease when generating high-resolution images.
+While DC-AE [11] has successfully achieved a high spa-
+tial compression ratio (e.g., 32 ×) for continuous tokeniz-
+ers, it remains challenging to build a high-compression to-
+kenizer that we can use for masked autoregressive models.
+In our experiments, we find directly applying DC-AE to the
+discrete tokenizer leads to awful reconstruction quality (Ta-
+ble 4). In parallel, some recent works [31, 71] adopt an
+alternative method to reduce tokens for discrete tokenizers
+by employing transformers to convert images into compact
+1D latent sequences. Despite their impressive results, such
+designs break the spatial correspondence between 2D im-
+age patches and tokens, making them unable to generalize
+across different resolutions. They cannot reuse weights of
+models trained on lower resolutions, making their training
+cost-prohibitive for high-resolution image synthesis.
+This work introduces DC-AR, an efficient masked au-
+toregressive framework for text-to-image generation. DC-
+AR incorporates DC-HT, a single-scale 2D tokenizer that
+achieves a spatial reduction ratio of 32× while maintaining
+competitive reconstruction quality through hybrid tokeniza-
+tion. Hybrid tokenization, initially proposed by HART [53],
+is a technique designed to bridge the performance gap be-
+tween discrete and continuous tokenizers. However, unlike
+HART, which employs a multi-scale tokenizer with a re-
+duction ratio of 16×, training a single-scale tokenizer with
+a 32× reduction ratio using conventional methods often re-
+sults in suboptimal reconstruction quality.
+To overcome these limitations, we propose a three-stage
+adaptation strategy (Figure 3) to train our tokenizer effec-
+tively. This strategy enables DC-HT to achieve performance
+comparable to 1D compact tokenizers at the same compres-
+sion level while capable of generalizing across resolutions.
+Building on this tokenizer, we develop our text-to-image
+framework, which utilizes a hybrid coarse-to-fine genera-
+tion process based on MaskGIT. We train our models with
+cross-entropy loss for discrete tokens and diffusion loss for
+residual tokens. At inference time, our framework first gen-
+erates all discrete tokens through the unmasking process
+with a transformer model and then produces residual tokens
+via the denoising schedule of a lightweight diffusion head.
+These tokens are combined and de-tokenized to create the
+final output images, guided by the provided textual inputs.
+We demonstrate the effectiveness of DC-AR across a di-
+verse set of benchmarks. Our tokenizer achieves an rFID
+of 1.60 on ImageNet 256 ×256 [19], a performance com-
+parable to 1D tokenizers with the same compression ratio.
+For text-to-image tasks, DC-AR achieves state-of-the-art
+results, with a gFID of 5.49 on MJHQ-30K and an over-
+all score of 0.69 on GenEval. Additionally, DC-AR deliv-
+ers 1.5-7.9× higher throughput and 2.0-3.5× lower latency
+compared to leading diffusion and masked autoregressive
+models, showcasing its great advantage as an efficient text-
+to-image generation framework. We summarize our contri-
+butions as follows:
+• We build DC-HT that significantly reduces the token
+number to boost AR models’ efficiency while maintaining
+competitive reconstruction quality and cross-resolution
+generalization capacity.
+• We introduce an effective three-stage adaptation strategy
+to improve DC-HT’s reconstruction quality.
+• We build DC-AR based on DC-HT. DC-AR delivers a
+significant efficiency boost over prior masked AR models
+and diffusion models while providing better image gener-
+ation quality.
+
+===== PDF PAGE 3 =====
+Prompt: 3d digital art of an adorable ghost, glowing within, holding a heart shaped pumpkin, Halloween, super cute.
+DC-AR SANA SD-XL SD3 Show-o
+Prompt: professional portrait of an anthropomorphic cat wearing gentleman hat and jacket walking in autumn forest.
+DC-AR SANA SD-XL SD3 Show-o
+Prompt: Mechanical hummingbird made of brass and copper, hovering near flowers, intricate gears, steampunk style.
+DC-AR SANA SD-XL SD3 Show-o
+Figure 2. Qualitative Comparison of Text-to-Image Generation Results Between DC-AR and Other Generative Models.
+2. Related Work
+Image Tokenizer. Since directly learning representation
+and generation in pixel space is computationally expensive
+and challenging, modern methods employ image tokeniza-
+tion to convert images into a latent space. These approaches
+primarily fall into two categories: strategies based on con-
+tinuous latent token, pioneered by latent diffusion models
+[50] for diffusion models [3, 6, 44, 46], and methods based
+on discrete token [23, 58] for autoregressive models [7, 23].
+Traditional tokenizers use 8 × or 16 × spatial compres-
+sion ratios. Recent research suggests that images can be
+effectively represented with fewer tokens, leading to signif-
+icant efficiency gains in the generation process [11, 65, 71].
+DC-AE [11], featuring 32 × and higher compression ratios
+for continuous latents, follows the conventional 2D spatial
+tokenizer design. TiTok [71] established a new tokeniza-
+tion paradigm by employing transformer-based models to
+generate compact 1D global image representations with as
+few as 32 tokens, inspiring numerous subsequent works
+[1, 9, 10, 31, 73]. However, while practical at fixed reso-
+lutions, such compact 1D representations struggle to gener-
+alize across different resolutions—an essential advantage of
+traditional 2D spatial tokenizers. In this work, we adopt the
+established 2D spatial tokenization approach and develop a
+hybrid tokenizer with a 32× compression ratio for efficient
+autoregressive visual generation.
+Autoregressive Image Generation. While diffusion
+models currently dominate text-to-image generation [12–
+14, 24, 33, 38, 41, 54, 56, 65, 66], autoregressive ap-
+proaches have also demonstrated significant potentials [16,
+25, 28, 60]. Autoregressive visual generation primarily fol-
+lows three paradigms. The first, exemplified by VQGAN
+[18] and its successors [18, 21, 22, 26, 30, 34, 39, 40, 49, 52,
+60, 61, 64], adopts a GPT-like sequential next-token predic-
+tion approach. The second, pioneered by MaskGIT [7] and
+extended by various works [2, 8, 15, 25, 31, 35, 59, 67, 69],
+employs a BERT-like masked autoregressive process. The
+third, introduced by V AR [57] and further developed in sub-
+sequent research [17, 28, 36, 42, 47, 53, 68, 74], generates
+images through a progressive next-scale refinement process.
+Our work builds upon the MaskGIT paradigm, extending
+it into a hybrid generation framework for efficient text-to-
+image synthesis.
+3. Method
+In this section, we first introduce Deep Compression Hybrid
+Tokenizer (DC-HT), a 2D tokenizer for autoregressive gen-
+eration that achieves a spatial compression ratio of 32× and
+our three-stage adaptation training strategy to guarantee its
+
+===== PDF PAGE 4 =====
+Encoder
+Decoder
+…
+Continuous tokens
+Input Image
+Reconstructed Image
+Stage 1: Continuous Warm-up
+Encoder
+Decoder
+Input Image
+Reconstructed Image
+…
+Discrete tokens
+ Quantizer
+…
+Continuous tokens
+Stage 2: Discrete Learning 
+50%
+Encoder
+Decoder
+Input Image
+Reconstructed Image
+…
+Discrete tokens
+…
+Continuous tokens
+❄
+ ❄
+ Quantizer
+❄
+50%
+Stage 3: Alternate Fine-tuning 
+Figure 3. Illustration of Our Three-Stage Adaptation Training Strategy for DC-HT.
+decent reconstruction performance. Next, we present DC-
+AR, an efficient masked autoregressive text-to-image gen-
+eration framework built upon DC-HT.
+3.1. Deep Compression Hybrid Tokenizer
+While existing 1D tokenizers used in autoregressive mod-
+eling can achieve high compression ratios, they discard the
+2D spatial correspondence between pixel patches, limiting
+their generalizability across different resolutions. To ad-
+dress this, we adopt the 2D discrete tokenizer framework,
+which includes a CNN-based encoder Enc, a CNN-based
+decoder Dec, and a vector-quantized (VQ) quantizerQuant.
+We adopt the same model architecture [5] as DC-AE [11],
+as it delivers state-of-the-art reconstruction quality in con-
+tinuous tokenization with high compression ratios. Addi-
+tionally, we find that discrete tokenization is highly sensi-
+tive during the codebook training process. Under a high
+spatial compression ratio, we observe directly training the
+2D discrete deep compression tokenizer results in poor re-
+construction quality (Table 4). In this work, we propose to
+enhance it with hybrid tokenization and a three-stage adap-
+tation strategy to mitigate quality loss.
+Hybrid Tokenization. Given an input imageI, the recon-
+struction process can proceed via either a discrete path or a
+continuous path . In the discrete path, the input image I
+is first compressed by the CNN encoder Enc into a latent
+representation of continuous tokens Z = Enc(I), followed
+by the VQ process Zq = Quant(Z) to obtain discrete to-
+kens. The discrete tokens Zq are then passed through the
+CNN decoder Dec to reconstruct the image ˆI = Dec(Zq).
+The reconstruction loss and GAN loss between I and ˆI are
+computed to train the tokenizer. In the continuous path ,
+the quantization step is skipped, and the continuous latent
+Z is directly fed into the decoder Dec to obtain the recon-
+structed image ˆI = Dec(Z). According to HART, a critical
+property of the hybrid tokenizer for successful generation is
+its ability to decode both continuous tokens Z and discrete
+tokens Zq effectively. It ensures that the two types of tokens
+remain sufficiently similar from the decoder’s perspective,
+facilitating easier modeling of their residual tokens, defined
+as Zr = Z − Zq, during the generation process.
+Three-stage Adaptation Training Strategy. Hybrid tok-
+enization alone cannot fully resolve the reconstruction qual-
+ity drop, as it faces the inherent conflict between discrete
+and continuous latent spaces. We find directly applying the
+alternate training strategy from HART [53] leads to unsat-
+isfactory reconstruction results. We propose a Three-Stage
+Adaptation Training Strategy to tackle this challenge. The
+detailed training pipeline is illustrated in Figure 3.
+The first stage, denoted as continuous warm-up, focuses
+solely on the continuous path. This stage is relatively short
+and aims to initialize the encoder with weights suitable for
+the reconstruction task. The second stage, denoted as dis-
+crete learning, activates only the discrete path. Here, the
+goal is to train the tokenizer to learn a stable latent space
+and enable it to reconstruct images effectively. The final
+stage, alternate fine-tuning, randomly selects either thecon-
+tinuous path or the discrete path for each image with equal
+probability (50%) to fine-tune the tokenizer. During this
+stage, the encoder and quantizer are frozen, and only the
+decoder is fine-tuned. This stage ensures that the decoder
+can effectively handle both continuous and discrete tokens.
+By breaking down the training process into these three
+stages, our strategy effectively addresses the abovemen-
+tioned issues, improving the rFID from 1.92 to 1.60 and
+
+===== PDF PAGE 5 =====
+Transformer
+Prompt T5 Text 
+Encoder
+Random Masking
+DiT Block
+DiT Block
+DiT Block
+MLP
+Noisy Residual Tokens
+Discrete tokens
+Cross-attention Layer
+Diffusion  
+Loss
+Cross-entropy 
+Loss
+Image Visual 
+Tokenizer
+Noise ϵ
++
+Residual Tokens
+Figure 4. Training Workflow of DC-AR. Our visual tokenizer first decomposes the input image into discrete and residual continuous
+tokens. As a hybrid generation framework, we design DC-AR to model both types of tokens effectively. We use a cross-entropy loss
+through the mask-prediction objective to learn discrete tokens. Simultaneously, the hidden states generated by the transformer serve as
+conditions for an MLP, which predicts the residual tokens using a diffusion loss. The input prompt is injected into the transformer via
+cross-attention layers to incorporate textual guidance.
++
+Transformer MLP
+Noise ϵ
+Transformer Transformer
+Figure 5. Inference Workflow of DC-AR. The process begins with a fully masked state, where we progressively predict discrete tokens
+using an unmasking schedule. Once we generate all discrete tokens, the final hidden states from the transformer are utilized as conditions
+for the diffusion head, which predicts the residual tokens through a denoising schedule. The discrete and residual tokens are combined
+through summation and decoded to produce the final output image. This two-stage approach ensures structural coherence and fine-grained
+detail in the generated image.
+discrete-rFID (rFID for the discrete path) from 6.18 to 5.13.
+3.2. Hybrid Masked Autoregressive Model
+To fully harness the capabilities of DC-HT, we build DC-
+AR, a masked autoregressive framework designed to gen-
+erate high-resolution images under textual guidance effi-
+ciently. Figure 4 illustrates our general framework. A
+text model extracts textual embeddings from input prompts,
+which are then integrated into transformer blocks via cross-
+attention to provide textual guidance. During training, we
+mask a random subset of discrete tokens and train the trans-
+former model to predict these masked tokens using a cross-
+entropy loss. Simultaneously, the hidden states produced by
+the transformer model serve as conditional inputs for pre-
+dicting the residual tokens through a lightweight diffusion
+MLP head, optimized using a diffusion loss [35].
+Figure 5 demonstrates our inference pipeline. All dis-
+crete tokens are predicted iteratively through a progressive
+unmasking schedule, starting from a fully masked state.
+Once we generate all discrete tokens, the final hidden states
+from the transformer are utilized as conditions for the dif-
+fusion head, which predicts the residual tokens through a
+denoising schedule. We then sum the predicted discrete and
+residual tokens to obtain the final continuous tokens, which
+we use to produce the generated image with our decoder.
+A key design choice in our hybrid generation frame-
+work is that only discrete tokens are involved in the for-
+ward process of our transformer model. This approach is
+grounded in the principle that residual tokens should exclu-
+sively serve a refining function without altering the overall
+structure of the generated images. This design is critical, as
+empirical evidence [7] has shown that discrete token-based
+MaskGIT typically requires as few as eight steps to achieve
+near-optimal generation performance. In contrast, contin-
+uous token-based MAR [35] needs 64 steps to reach opti-
+mal performance (please refer to Appendix A.5), leading to
+significantly higher inference costs. By relying on discrete
+tokens for the transformer prediction process and residual
+
+===== PDF PAGE 6 =====
+Tokenizer Type Resolution # Tokens rFID ↓ PSNR↑ SSIM↑ LPIPS↓Generalizable?
+ImageNet 256× 256
+TiTok [71] 1D-Discrete ✗ 64 1.70 17.06 0.4021 0.3840
+TA-TiTok (VQ) [31] 1D-Discrete ✗ 64 2.68 – – –
+TA-TiTok (KL) [31] 1D-Continuous ✗ 64 1.47 – – –
+TexTok∗ [73] 1D-Continuous ✗ 64 1.53 20.10 0.5618 0.2126
+DC-HT (Ours) 2D-Hybrid ✓ 64 1.60 21.50 0.5676 0.2221
+ImageNet 512× 512
+TiTok [71] 1D-Discrete ✗ 128 1.37 – – –
+TexTok∗ [73] 1D-Continuous ✗ 128 0.97 22.27 0.6230 0.2365
+TexTok∗ [73] 1D-Continuous ✗ 256 0.73 24.45 0.6682 0.1875
+DC-HT (Ours) 2D-Hybrid ✓ 256 0.83 23.53 0.6315 0.2236
+Table 1. Image Reconstruction Results on ImageNet. ∗ indicates that the results of TexTok were computed on 50K samples from the
+ImageNet training set instead of the ImageNet validation set. DC-HT consistently demonstrates competitive performance compared to
+other 1D tokenizers across all benchmarks at the same compression ratio while maintaining generalizability across different resolutions.
+tokens for refinement, we ensure that our framework main-
+tains the high sampling efficiency of discrete token-based
+approaches like MaskGIT while achieving superior image
+generation quality.
+As discussed in Sec. 3.1, a key advantage of our 2D
+spatial tokenizer design over 1D tokenizers is its ability to
+generalize seamlessly across different resolutions, produc-
+ing tokens that reside in the same latent space. Leverag-
+ing this property, we adopt a two-stage training strategy to
+train an image generation model for 512 ×512 images effi-
+ciently. First, using a relatively long training schedule, we
+pre-train our model on 256×256 images. Subsequently, we
+fine-tune the pre-trained 256×256 model on 512 ×512 im-
+ages to obtain the final model, which converges rapidly due
+to the shared latent space. As demonstrated in Sec. 4.3,
+this training pipeline reduces GPU hours by at least 1.9 ×
+compared to training the 512×512 model from scratch, sig-
+nificantly enhancing training efficiency.
+4. Experiments
+4.1. Setups
+Models. For the tokenizer, we adopt the DC-AE-f32c32
+architecture from Chen et al. [11], featuring a spatial com-
+pression ratio of 32 × and a latent channel size of 32. We
+configure the codebook to N = 16384. For the generator,
+we utilize the PixArt-α [14] architecture for our transformer
+model, with its adaptive norm layers removed. It consists of
+28 layers and a width of 1152, amounting to 634M param-
+eters. The diffusion head comprises 6 MLP layers, totaling
+37M parameters. To ensure computational efficiency and
+accessibility for research environments, we employ T5-base
+[48] as our text encoder, which contains 109M parameters.
+Evaluation and Datasets. For the tokenizer, we use the
+training split of ImageNet [19] as our training dataset, re-
+sizing each image to 256×256. To assess the reconstruction
+performance of the tokenizer, we evaluate reconstruction
+FID [29] (rFID), peak signal-to-noise ratio (PSNR), struc-
+tural similarity index measure (SSIM), and learned percep-
+tual image patch similarity (LPIPS) [75] on the ImageNet
+validation set at resolutions of 256×256 and 512×512. For
+the text-to-image generator, we employ JourneyDB [51]
+and an internal MidJourney-style synthetic dataset, where
+each data point consists of an image-caption pair, where
+the captions are generated using VILA1.5-13B [37]. To
+evaluate generation performance, we report generation FID
+(gFID) on MJHQ-30K [33] to measure aesthetic quality and
+the GenEval [27] score to quantify the alignment between
+input prompts and generated images.
+Efficiency Profiling. We profile the latency and through-
+put on an NVIDIA A100 GPU. We measure the throughput
+with a batch size of 16 and the latency with a batch size of
+1. We use float16 precision for all cases.
+4.2. Main Results
+Image Tokenization. The quantitative results presented
+in Tab. 1 demonstrate that DC-HT achieves reconstruc-
+tion performance on par with 1D compact tokenizers while
+maintaining high compression ratios. Notably, DC-HT is
+trained exclusively on 256 ×256 images yet delivers com-
+petitive performance at 512×512 resolution, whereas mod-
+els for 1D tokenizers require separate training on both
+256×256 and 512×512 images. This advantage stems from
+DC-HT’s retention of the resolution generalizability inher-
+ent to 2D tokenizers, a capability that 1D tokenizers lack.
+
+===== PDF PAGE 7 =====
+Method Type #Params Resolution #Steps gFID↓ Latency Throughput
+(s) (images/s)
+SDXL [46] Diffusion 2.6B 1024 × 1024 20 6.63 1.4∗ 2.1∗
+PixArt-α [14] Diffusion 630M 512 × 512 20 6.14 1.2 1.7
+PixArt-Σ [12] Diffusion 630M 512 × 512 20 6.34 1.2 1.7
+SD3-medium [24] Diffusion 2B 1024 × 1024 28 11.92 – –
+Playground v2.5 [33] Diffusion 2B 1024 × 1024 20 6.09 – –
+Sana-0.6B [65] Diffusion 590M 512 × 512 20 5.67 0.8 6.7
+Show-o [67] Mask. AR 1.3B 512 × 512 12 14.59 1.1 1.3
+TA-TiTok (VQ) [31] Mask. AR 568M 256 × 256 16 7.74 – –
+TA-TiTok (KL) [31] Mask. AR 602M 256 × 256 32 7.24 – –
+DC-AR (Ours) Mask. AR 671M 512 × 512 12 5.49 0.4 10.3
+Table 2. Text-to-Image Generation Results on MJHQ-30K. We evaluate DC-AR against state-of-the-art diffusion and masked
+autoregressive models. * denotes that we report the latency and throughput for generating 512 ×512 images. The results demonstrate that
+DC-AR achieves comparable image generation quality while offering significant efficiency gains: 2.0-3.5× lower latency and 1.5-7.9×
+higher throughput compared to existing methods when generating 512×512 images.
+Method Type #Params S. Obj T. Obj Count Colors Position C. Attri. Overall
+SDXL [46] Diffusion 2.6B 0.98 0.74 0.39 0.85 0.15 0.23 0.55
+PixArt-α [14] Diffusion 630M 0.96 0.49 0.47 0.79 0.06 0.11 0.48
+PixArt-Σ [12] Diffusion 630M 0.98 0.59 0.50 0.80 0.10 0.15 0.52
+SD3-medium [24] Diffusion 2B 0.98 0.74 0.63 0.67 0.34 0.36 0.62
+Playground v2.5 [33] Diffusion 2B 0.98 0.77 0.52 0.84 0.11 0.17 0.56
+Sana-0.6B [65] Diffusion 590M 0.99 0.76 0.64 0.88 0.18 0.39 0.64
+Show-o [67] Mask. AR 1.3B 0.98 0.80 0.66 0.84 0.31 0.50 0.68
+TA-TiTok (VQ) [31] Mask. AR 568M 0.98 0.57 0.46 0.80 0.11 0.25 0.53
+TA-TiTok (KL) [31] Mask. AR 602M 0.99 0.57 0.36 0.80 0.11 0.29 0.52
+Fluid [25] Mask. AR 665M 0.96 0.73 0.51 0.77 0.42 0.51 0.65
+Meissonic [2] Mask. AR 1.0B 0.99 0.66 0.42 0.86 0.10 0.22 0.54
+DC-AR (Ours) Mask. AR 671M 1.00 0.75 0.52 0.90 0.45 0.51 0.69
+Table 3. Text-to-Image Generation Results on GenEval. The results demonstrate that DC-AR achieves state-of-the-art performance
+compared to other methods of similar scale.
+Text-to-Image Generation. We present quantitative text-
+to-image generation results in Tab. 2 and Tab. 3. On the
+MJHQ-30K benchmark, DC-AR achieves the state-of-the-
+art gFID score of 5.49 compared to leading diffusion models
+and other masked autoregressive models. Notably, DC-AR
+accomplishes this with significantly lower inference costs,
+requiring only 12 steps. For 512 ×512 image generation,
+DC-AR demonstrates 2.0 × and 3.5 × lower latency than
+Sana-0.6B and SD-XL, respectively, alongside 1.5 × and
+7.9× higher throughput than Sana-0.6B and Show-o, re-
+spectively. On the GenEval benchmark, DC-AR achieves an
+overall score of 0.69, matching the state-of-the-art masked
+autoregressive model Show-o (within 0.01) while being 2×
+smaller in scale. Furthermore, DC-AR outperforms other
+models of similar scale by at least 0.04. Additionally, we
+provide qualitative samples comparing the generation re-
+sults of DC-AR with other advanced models in Fig. 2. The
+quantitative and qualitative results underscore DC-AR’s ca-
+pabilities as a cutting-edge text-to-image generation frame-
+work with superior efficiency.
+4.3. Ablation Studies and Analysis
+We evaluate the key design choices in DC-AR by examining
+the following aspects: the effectiveness of our hybrid design
+over discrete-only baseline, the advantage of our three-stage
+adaptation strategy for tokenizer training, the training effi-
+ciency gains enabled by our resolution generalizable tok-
+enizer for the generator, and the efficiency advantages of our
+hybrid generation framework in terms of sampling steps.
+Effectiveness of the hybrid design. Compared to tradi-
+tional autoregressive methods that rely solely on discrete
+tokens, the hybrid tokenization and generation design en-
+
+===== PDF PAGE 8 =====
+rFID↓ gFID↓ GenEval↑ Througput
+(images/s)
+DC-AR 1.60 5.50 0.69 10.3
+Discrete-only 5.13 6.71 0.66 11.4
+Table 4. The hybrid design allows DC-AR to surpass the discrete-
+only baseline across all evaluation metrics, while incurring only
+10% additional overhead.
+Discrete-rFID↓ rFID↓
+Discrete Training + 5.93 1.76Alternate Fine-tuning
+Continuous Warm-up + 6.18 1.92Alternate Training
+Three-Stage Adaptation 5.13 1.60
+Table 5. The Three-Stage Adaptation Strategy outperforms alter-
+nate training strategies for our hybrid tokenizer.
+hances the representation capability of DC-AR, resulting
+in improved performance. To validate this, we compare
+DC-AR with a discrete-only baseline that excludes the con-
+tinuous path, residual tokens, and the diffusion head from
+DC-AR. We present the results in Tab. 4. DC-AR outper-
+forms the discrete-only baseline across various comprehen-
+sive metrics while incurring only 10% additional overhead,
+demonstrating our hybrid formulation’s effectiveness. Ad-
+ditionally, qualitative examples demonstrating how the hy-
+brid design enhances generation quality by capturing finer
+details are provided in Fig. 9 of Appendix A.5.
+Three-stage Adaptation Training Strategy. We evalu-
+ate our three-stage adaptation strategy for training the hy-
+brid tokenizer with a compression ratio 32× against two al-
+ternative methods, as shown in Tab. 5. The first alternative
+strategy omits the continuous warm-up stage, which leads to
+increased difficulty in learning the discrete latent space, re-
+sulting in poorer discrete-rFID and continuous-rFID perfor-
+mance for the final tokenizer. The second alternative strat-
+egy proceeds directly to the alternate training stage after the
+continuous warm-up, resembling the alternate fine-tuning
+stage but with all components trainable. This approach de-
+grades both discrete-rFID and continuous-rFID due to the
+conflict between the discrete and continuous latent space
+because the latent space is trainable. Our three-stage strat-
+egy effectively addresses these issues, ensuring balanced
+and optimized performance.
+Training Efficiency Benefit. As discussed in 3.2, our
+resolution-generalizable tokenizer enables an effective
+“pre-training then fine-tuning” strategy for the 512 ×512
+model. This approach begins with pre-training at 256 ×256
+resolution, followed by fine-tuning at the target 512 ×512
+resolution. In contrast, models with single-resolution to-
+kenizers can only be trained at the target resolution from
+scratch. Tab. 6 quantitatively shows that our strategy re-
+duces training costs by more than 1.9 × when compared to
+Training Steps GPU Hours gFID↓
+Pre-training + 200K (256) + 760 5.50Finetuning 50K (512)
+Training 200K (512) 1440 6.64from scratch
+Table 6. Our “pre-training then fine-tuning” strategy reduces the
+training cost by more than 1.9× for training a 512×512 model.
+Table 2
+8 12 16 32 64
+Ours 6.14 5.5 5.52 5.61 5.56
+5
+6.5
+8 12 16 32 64
+5.56
+5.61
+5.52
+5.50
+6.14
+Sampling Steps
+gFID
+w/Structured Latent Spacew/oStructured Latent Space
+32 channels64 channels128 channels
+16 channels
+w/Structured Latent Spacew/oStructured Latent Space
+32 channels64 channels128 channels
+16 channels
+1
+Figure 6. Results of gFID under Different Sampling Steps.
+Our hybrid generation pipeline, dominated by discrete tokens, al-
+lows DC-AR to achieve exceptional quality with just 12 sampling
+steps. In contrast to MAR-based methods, which require numer-
+ous steps to attain optimal performance, this reduced sampling de-
+mand grants DC-AR significant efficiency advantages.
+training from scratch while maintaining superior generation
+quality, as measured by gFID scores.
+Inference Efficiency Benefit. Fig. 6 demonstrates the
+gFID results of DC-AR under different sampling steps. Our
+discrete token dominated generation pipeline enables DC-
+AR to achieve optimal image quality with 12 sampling
+steps. In contrast, MAR-based [35] models require numer-
+ous steps to reach optimal performance. This reduced de-
+mand in sampling steps brings DC-AR great efficiency ad-
+vantages without compromising generation quality.
+5. Conclusion
+This paper presents DC-AR, a novel and efficient masked
+autoregressive text-to-image generation framework. While
+modern diffusion models can leverage tokenizers with high
+compression ratios, autoregressive models encounter signif-
+icant challenges when adopting the same approach. To ad-
+dress this, we introduce DC-HT, a 2D hybrid tokenizer that
+achieves a 32 × spatial compression ratio while maintain-
+ing exceptional reconstruction fidelity. Building on DC-HT,
+DC-AR is a masked autoregressive generation framework
+capable of effectively generating discrete and residual to-
+kens to synthesize images. By first predicting structural el-
+ements through discrete tokens and then refining details us-
+ing residual tokens, DC-AR generates high-quality images
+in just 12 steps. This approach delivers 1.5-7.9× higher
+throughput and 2.0-3.5× lower latency compared to state-
+of-the-art diffusion and masked autoregressive models.
+
+===== PDF PAGE 9 =====
+References
+[1] Roman Bachmann, Jesse Allardice, David Mizrahi, Enrico
+Fini, O ˘guzhan Fatih Kar, Elmira Amirloo, Alaaeldin El-
+Nouby, Amir Zamir, and Afshin Dehghan. Flextok: Re-
+sampling images into 1d token sequences of flexible length.
+arXiv preprint arXiv:2502.13967, 2025. 3
+[2] Jinbin Bai, Tian Ye, Wei Chow, Enxin Song, Qing-Guo
+Chen, Xiangtai Li, Zhen Dong, Lei Zhu, and Shuicheng
+Yan. Meissonic: Revitalizing masked generative trans-
+formers for efficient high-resolution text-to-image synthesis.
+arXiv preprint arXiv:2410.08261, 2024. 2, 3, 7
+[3] Fan Bao, Shen Nie, Kaiwen Xue, Yue Cao, Chongxuan Li,
+Hang Su, and Jun Zhu. All are worth words: A vit backbone
+for diffusion models. In Proceedings of the IEEE/CVF con-
+ference on computer vision and pattern recognition , pages
+22669–22679, 2023. 3
+[4] BlackForest Labs. Flux, 2024. 2
+[5] Han Cai, Junyan Li, Muyan Hu, Chuang Gan, and Song
+Han. Efficientvit: Lightweight multi-scale attention for high-
+resolution dense prediction. InProceedings of the IEEE/CVF
+International Conference on Computer Vision, pages 17302–
+17313, 2023. 4
+[6] Han Cai, Muyang Li, Qinsheng Zhang, Ming-Yu Liu, and
+Song Han. Condition-aware neural network for controlled
+image generation. In Proceedings of the IEEE/CVF Con-
+ference on Computer Vision and Pattern Recognition, pages
+7194–7203, 2024. 3
+[7] Huiwen Chang, Han Zhang, Lu Jiang, Ce Liu, and William T
+Freeman. Maskgit: Masked generative image transformer.
+In Proceedings of the IEEE/CVF conference on computer vi-
+sion and pattern recognition, pages 11315–11325, 2022. 2,
+3, 5
+[8] Huiwen Chang, Han Zhang, Jarred Barber, AJ Maschinot,
+Jose Lezama, Lu Jiang, Ming-Hsuan Yang, Kevin Mur-
+phy, William T Freeman, Michael Rubinstein, et al. Muse:
+Text-to-image generation via masked generative transform-
+ers. arXiv preprint arXiv:2301.00704, 2023. 2, 3
+[9] Hao Chen, Ze Wang, Xiang Li, Ximeng Sun, Fangyi Chen,
+Jiang Liu, Jindong Wang, Bhiksha Raj, Zicheng Liu, and
+Emad Barsoum. Softvq-vae: Efficient 1-dimensional con-
+tinuous tokenizer. arXiv preprint arXiv:2412.10958 , 2024.
+3
+[10] Hao Chen, Yujin Han, Fangyi Chen, Xiang Li, Yidong Wang,
+Jindong Wang, Ze Wang, Zicheng Liu, Difan Zou, and Bhik-
+sha Raj. Masked autoencoders are effective tokenizers for
+diffusion models. arXiv preprint arXiv:2502.03444, 2025. 3
+[11] Junyu Chen, Han Cai, Junsong Chen, Enze Xie, Shang Yang,
+Haotian Tang, Muyang Li, Yao Lu, and Song Han. Deep
+compression autoencoder for efficient high-resolution diffu-
+sion models. arXiv preprint arXiv:2410.10733, 2024. 2, 3,
+4, 6
+[12] Junsong Chen, Chongjian Ge, Enze Xie, Yue Wu, Lewei
+Yao, Xiaozhe Ren, Zhongdao Wang, Ping Luo, Huchuan
+Lu, and Zhenguo Li. Pixart- σ: Weak-to-strong training of
+diffusion transformer for 4k text-to-image generation. In
+European Conference on Computer Vision , pages 74–91.
+Springer, 2024. 3, 7
+[13] Junsong Chen, Yue Wu, Simian Luo, Enze Xie, Sayak Paul,
+Ping Luo, Hang Zhao, and Zhenguo Li. Pixart- {\delta}:
+Fast and controllable image generation with latent consis-
+tency models. arXiv preprint arXiv:2401.05252, 2024.
+[14] Junsong Chen, Jincheng Yu, Chongjian Ge, Lewei Yao, Enze
+Xie, Zhongdao Wang, James T Kwok, Ping Luo, Huchuan
+Lu, and Zhenguo Li. Pixart- α: Fast training of diffusion
+transformer for photorealistic text-to-image synthesis. In
+ICLR, 2024. 3, 6, 7
+[15] Wenchao Chen, Liqiang Niu, Ziyao Lu, Fandong Meng,
+and Jie Zhou. Maskmamba: A hybrid mamba-transformer
+model for masked image generation. arXiv preprint
+arXiv:2409.19937, 2024. 2, 3
+[16] Xiaokang Chen, Zhiyu Wu, Xingchao Liu, Zizheng Pan,
+Wen Liu, Zhenda Xie, Xingkai Yu, and Chong Ruan. Janus-
+pro: Unified multimodal understanding and generation with
+data and model scaling. arXiv preprint arXiv:2501.17811 ,
+2025. 3
+[17] Zigeng Chen, Xinyin Ma, Gongfan Fang, and Xinchao
+Wang. Collaborative decoding makes visual auto-regressive
+modeling efficient. arXiv preprint arXiv:2411.17787, 2024.
+3
+[18] Katherine Crowson, Stella Biderman, Daniel Kornis,
+Dashiell Stander, Eric Hallahan, Louis Castricato, and Ed-
+ward Raff. Vqgan-clip: Open domain image generation and
+editing with natural language guidance. In European con-
+ference on computer vision , pages 88–105. Springer, 2022.
+3
+[19] Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li,
+and Li Fei-Fei. Imagenet: A large-scale hierarchical image
+database. In 2009 IEEE conference on computer vision and
+pattern recognition, pages 248–255. Ieee, 2009. 2, 6
+[20] Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina
+Toutanova. Bert: Pre-training of deep bidirectional trans-
+formers for language understanding. In Proceedings of the
+2019 conference of the North American chapter of the asso-
+ciation for computational linguistics: human language tech-
+nologies, volume 1 (long and short papers) , pages 4171–
+4186, 2019. 2
+[21] Ming Ding, Zhuoyi Yang, Wenyi Hong, Wendi Zheng,
+Chang Zhou, Da Yin, Junyang Lin, Xu Zou, Zhou Shao,
+Hongxia Yang, et al. Cogview: Mastering text-to-image
+generation via transformers. Advances in neural information
+processing systems, 34:19822–19835, 2021. 3
+[22] Ming Ding, Wendi Zheng, Wenyi Hong, and Jie Tang.
+Cogview2: Faster and better text-to-image generation via
+hierarchical transformers. Advances in Neural Information
+Processing Systems, 35:16890–16902, 2022. 3
+[23] Patrick Esser, Robin Rombach, and Bjorn Ommer. Taming
+transformers for high-resolution image synthesis. In Pro-
+ceedings of the IEEE/CVF conference on computer vision
+and pattern recognition, pages 12873–12883, 2021. 3
+[24] Patrick Esser, Sumith Kulal, Andreas Blattmann, Rahim
+Entezari, Jonas M ¨uller, Harry Saini, Yam Levi, Dominik
+Lorenz, Axel Sauer, Frederic Boesel, et al. Scaling recti-
+fied flow transformers for high-resolution image synthesis.
+In Forty-first international conference on machine learning,
+2024. 2, 3, 7
+
+===== PDF PAGE 10 =====
+[25] Lijie Fan, Tianhong Li, Siyang Qin, Yuanzhen Li, Chen
+Sun, Michael Rubinstein, Deqing Sun, Kaiming He, and
+Yonglong Tian. Fluid: Scaling autoregressive text-to-image
+generative models with continuous tokens. arXiv preprint
+arXiv:2410.13863, 2024. 2, 3, 7
+[26] Oran Gafni, Adam Polyak, Oron Ashual, Shelly Sheynin,
+Devi Parikh, and Yaniv Taigman. Make-a-scene: Scene-
+based text-to-image generation with human priors. In Eu-
+ropean Conference on Computer Vision , pages 89–106.
+Springer, 2022. 3
+[27] Dhruba Ghosh, Hannaneh Hajishirzi, and Ludwig Schmidt.
+Geneval: An object-focused framework for evaluating text-
+to-image alignment. Advances in Neural Information Pro-
+cessing Systems, 36:52132–52152, 2023. 6
+[28] Jian Han, Jinlai Liu, Yi Jiang, Bin Yan, Yuqi Zhang, Zehuan
+Yuan, Bingyue Peng, and Xiaobing Liu. Infinity: Scaling bit-
+wise autoregressive modeling for high-resolution image syn-
+thesis. arXiv preprint arXiv:2412.04431, 2024. 2, 3
+[29] Martin Heusel, Hubert Ramsauer, Thomas Unterthiner,
+Bernhard Nessler, and Sepp Hochreiter. Gans trained by a
+two time-scale update rule converge to a local nash equilib-
+rium. Advances in neural information processing systems ,
+30, 2017. 6
+[30] Doohyuk Jang, Sihwan Park, June Yong Yang, Yeonsung
+Jung, Jihun Yun, Souvik Kundu, Sung-Yub Kim, and Eunho
+Yang. Lantern: Accelerating visual autoregressive mod-
+els with relaxed speculative decoding. arXiv preprint
+arXiv:2410.03355, 2024. 2, 3
+[31] Dongwon Kim, Ju He, Qihang Yu, Chenglin Yang, Xiao-
+hui Shen, Suha Kwak, and Liang-Chieh Chen. Democra-
+tizing text-to-image masked generative models with com-
+pact text-aware one-dimensional tokens. arXiv preprint
+arXiv:2501.07730, 2025. 2, 3, 6, 7, 5
+[32] Dan Kondratyuk, Lijun Yu, Xiuye Gu, Jos ´e Lezama,
+Jonathan Huang, Grant Schindler, Rachel Hornung, Vigh-
+nesh Birodkar, Jimmy Yan, Ming-Chang Chiu, et al.
+Videopoet: A large language model for zero-shot video gen-
+eration. In ICML, 2024. 2
+[33] Daiqing Li, Aleks Kamko, Ehsan Akhgari, Ali Sabet, Lin-
+miao Xu, and Suhail Doshi. Playground v2. 5: Three in-
+sights towards enhancing aesthetic quality in text-to-image
+generation. arXiv preprint arXiv:2402.17245, 2024. 3, 6, 7
+[34] Tianhong Li, Huiwen Chang, Shlok Mishra, Han Zhang,
+Dina Katabi, and Dilip Krishnan. Mage: Masked generative
+encoder to unify representation learning and image synthe-
+sis. In Proceedings of the IEEE/CVF Conference on Com-
+puter Vision and Pattern Recognition , pages 2142–2152,
+2023. 2, 3
+[35] Tianhong Li, Yonglong Tian, He Li, Mingyang Deng, and
+Kaiming He. Autoregressive image generation without vec-
+tor quantization. Advances in Neural Information Processing
+Systems, 37:56424–56445, 2025. 3, 5, 8
+[36] Xiang Li, Kai Qiu, Hao Chen, Jason Kuen, Zhe Lin,
+Rita Singh, and Bhiksha Raj. Controlvar: Exploring con-
+trollable visual autoregressive modeling. arXiv preprint
+arXiv:2406.09750, 2024. 3
+[37] Ji Lin, Hongxu Yin, Wei Ping, Pavlo Molchanov, Moham-
+mad Shoeybi, and Song Han. Vila: On pre-training for vi-
+sual language models. In Proceedings of the IEEE/CVF con-
+ference on computer vision and pattern recognition , pages
+26689–26699, 2024. 6
+[38] Bingchen Liu, Ehsan Akhgari, Alexander Visheratin, Aleks
+Kamko, Linmiao Xu, Shivam Shrirao, Chase Lambert, Joao
+Souza, Suhail Doshi, and Daiqing Li. Playground v3: Im-
+proving text-to-image alignment with deep-fusion large lan-
+guage models. arXiv preprint arXiv:2409.10695, 2024. 2,
+3
+[39] Dongyang Liu, Shitian Zhao, Le Zhuo, Weifeng Lin,
+Yu Qiao, Hongsheng Li, and Peng Gao. Lumina-mgpt:
+Illuminate flexible photorealistic text-to-image generation
+with multimodal generative pretraining. arXiv preprint
+arXiv:2408.02657, 2024. 3
+[40] Hao Liu, Wilson Yan, Matei Zaharia, and Pieter Abbeel.
+World model on million-length video and language with
+blockwise ringattention. arXiv preprint arXiv:2402.08268 ,
+2024. 3
+[41] Bingqi Ma, Zhuofan Zong, Guanglu Song, Hongsheng Li,
+and Yu Liu. Exploring the role of large language models in
+prompt encoding for diffusion models. In The Thirty-eighth
+Annual Conference on Neural Information Processing Sys-
+tems, 2024. 3
+[42] Xiaoxiao Ma, Mohan Zhou, Tao Liang, Yalong Bai, Tiejun
+Zhao, Huaian Chen, and Yi Jin. Star: Scale-wise text-to-
+image generation via auto-regressive representations. arXiv
+preprint arXiv:2406.10797, 2024. 3
+[43] OpenAI. Hello gpt-4o, 2024. 2
+[44] William Peebles and Saining Xie. Scalable diffusion models
+with transformers. In Proceedings of the IEEE/CVF inter-
+national conference on computer vision , pages 4195–4205,
+2023. 3
+[45] Pablo Pernias, Dominic Rampas, Mats Leon Richter,
+Christopher Pal, and Marc Aubreville. W ¨urstchen: An ef-
+ficient architecture for large-scale text-to-image diffusion
+models. In The Twelfth International Conference on Learn-
+ing Representations, 2024. 2
+[46] Dustin Podell, Zion English, Kyle Lacey, Andreas
+Blattmann, Tim Dockhorn, Jonas M ¨uller, Joe Penna, and
+Robin Rombach. Sdxl: Improving latent diffusion models
+for high-resolution image synthesis. In The Twelfth Inter-
+national Conference on Learning Representations, 2023. 3,
+7
+[47] Liao Qu, Huichao Zhang, Yiheng Liu, Xu Wang, Yi Jiang,
+Yiming Gao, Hu Ye, Daniel K Du, Zehuan Yuan, and
+Xinglong Wu. Tokenflow: Unified image tokenizer for
+multimodal understanding and generation. arXiv preprint
+arXiv:2412.03069, 2024. 3
+[48] Colin Raffel, Noam Shazeer, Adam Roberts, Katherine Lee,
+Sharan Narang, Michael Matena, Yanqi Zhou, Wei Li, and
+Peter J Liu. Exploring the limits of transfer learning with a
+unified text-to-text transformer. Journal of machine learning
+research, 21(140):1–67, 2020. 6
+[49] Aditya Ramesh, Mikhail Pavlov, Gabriel Goh, Scott Gray,
+Chelsea V oss, Alec Radford, Mark Chen, and Ilya Sutskever.
+Zero-shot text-to-image generation. In International confer-
+ence on machine learning, pages 8821–8831. Pmlr, 2021. 3
+
+===== PDF PAGE 11 =====
+[50] Robin Rombach, Andreas Blattmann, Dominik Lorenz,
+Patrick Esser, and Bj ¨orn Ommer. High-resolution image
+synthesis with latent diffusion models. In Proceedings of
+the IEEE/CVF conference on computer vision and pattern
+recognition, pages 10684–10695, 2022. 3
+[51] Keqiang Sun, Junting Pan, Yuying Ge, Hao Li, Haodong
+Duan, Xiaoshi Wu, Renrui Zhang, Aojun Zhou, Zipeng Qin,
+Yi Wang, et al. Journeydb: A benchmark for generative im-
+age understanding. Advances in neural information process-
+ing systems, 36:49659–49678, 2023. 6
+[52] Peize Sun, Yi Jiang, Shoufa Chen, Shilong Zhang, Bingyue
+Peng, Ping Luo, and Zehuan Yuan. Autoregressive model
+beats diffusion: Llama for scalable image generation. arXiv
+preprint arXiv:2406.06525, 2024. 3
+[53] Haotian Tang, Yecheng Wu, Shang Yang, Enze Xie, Junsong
+Chen, Junyu Chen, Zhuoyang Zhang, Han Cai, Yao Lu, and
+Song Han. Hart: Efficient visual generation with hybrid au-
+toregressive transformer. arXiv preprint arXiv:2410.10812,
+2024. 2, 3, 4, 5
+[54] Auraflow Team. Introducing auraflow v0. 1, an open explo-
+ration of large rectified flow models, 2024.URL https://blog.
+fal. ai/auraflow, 4, 2024. 3
+[55] Gemini Team, Rohan Anil, Sebastian Borgeaud, Jean-
+Baptiste Alayrac, Jiahui Yu, Radu Soricut, Johan Schalkwyk,
+Andrew M Dai, Anja Hauth, Katie Millican, et al. Gemini: a
+family of highly capable multimodal models. arXiv preprint
+arXiv:2312.11805, 2023. 2
+[56] K Team. Kolors: Effective training of diffusion model for
+photorealistic text-to-image synthesis. arXiv preprint, 2024.
+3
+[57] Keyu Tian, Yi Jiang, Zehuan Yuan, Bingyue Peng, and Li-
+wei Wang. Visual autoregressive modeling: Scalable image
+generation via next-scale prediction. Advances in neural in-
+formation processing systems, 37:84839–84865, 2025. 3
+[58] Aaron Van Den Oord, Oriol Vinyals, et al. Neural discrete
+representation learning. Advances in neural information pro-
+cessing systems, 30, 2017. 3
+[59] Ruben Villegas, Mohammad Babaeizadeh, Pieter-Jan Kin-
+dermans, Hernan Moraldo, Han Zhang, Mohammad Taghi
+Saffar, Santiago Castro, Julius Kunze, and Dumitru Erhan.
+Phenaki: Variable length video generation from open domain
+textual description. arXiv preprint arXiv:2210.02399, 2022.
+2, 3
+[60] Xinlong Wang, Xiaosong Zhang, Zhengxiong Luo, Quan
+Sun, Yufeng Cui, Jinsheng Wang, Fan Zhang, Yueze Wang,
+Zhen Li, Qiying Yu, et al. Emu3: Next-token prediction is
+all you need. arXiv preprint arXiv:2409.18869, 2024. 2, 3
+[61] Yuqing Wang, Shuhuai Ren, Zhijie Lin, Yujin Han, Haoyuan
+Guo, Zhenheng Yang, Difan Zou, Jiashi Feng, and Xihui Liu.
+Parallelized autoregressive visual generation. arXiv preprint
+arXiv:2412.15119, 2024. 3
+[62] Mark Weber, Lijun Yu, Qihang Yu, Xueqing Deng, Xiao-
+hui Shen, Daniel Cremers, and Liang-Chieh Chen. Maskbit:
+Embedding-free image generation via bit tokens. Transac-
+tions on Machine Learning Research, 2024. 2
+[63] Chengyue Wu, Xiaokang Chen, Zhiyu Wu, Yiyang Ma,
+Xingchao Liu, Zizheng Pan, Wen Liu, Zhenda Xie, Xingkai
+Yu, Chong Ruan, et al. Janus: Decoupling visual encoding
+for unified multimodal understanding and generation. arXiv
+preprint arXiv:2410.13848, 2024. 2
+[64] Yecheng Wu, Zhuoyang Zhang, Junyu Chen, Haotian Tang,
+Dacheng Li, Yunhao Fang, Ligeng Zhu, Enze Xie, Hongxu
+Yin, Li Yi, et al. Vila-u: a unified foundation model inte-
+grating visual understanding and generation. arXiv preprint
+arXiv:2409.04429, 2024. 2, 3
+[65] Enze Xie, Junsong Chen, Junyu Chen, Han Cai, Haotian
+Tang, Yujun Lin, Zhekai Zhang, Muyang Li, Ligeng Zhu,
+Yao Lu, et al. Sana: Efficient high-resolution image syn-
+thesis with linear diffusion transformers. arXiv preprint
+arXiv:2410.10629, 2024. 2, 3, 7
+[66] Enze Xie, Junsong Chen, Yuyang Zhao, Jincheng Yu, Ligeng
+Zhu, Yujun Lin, Zhekai Zhang, Muyang Li, Junyu Chen,
+Han Cai, et al. Sana 1.5: Efficient scaling of training-time
+and inference-time compute in linear diffusion transformer.
+arXiv preprint arXiv:2501.18427, 2025. 3
+[67] Jinheng Xie, Weijia Mao, Zechen Bai, David Junhao Zhang,
+Weihao Wang, Kevin Qinghong Lin, Yuchao Gu, Zhijie
+Chen, Zhenheng Yang, and Mike Zheng Shou. Show-o: One
+single transformer to unify multimodal understanding and
+generation. arXiv preprint arXiv:2408.12528 , 2024. 2, 3,
+7
+[68] Ziyu Yao, Jialin Li, Yifeng Zhou, Yong Liu, Xi Jiang,
+Chengjie Wang, Feng Zheng, Yuexian Zou, and Lei Li. Car:
+Controllable autoregressive modeling for visual generation.
+arXiv preprint arXiv:2410.04671, 2024. 3
+[69] Jiahui Yu, Yuanzhong Xu, Jing Yu Koh, Thang Luong, Gun-
+jan Baid, Zirui Wang, Vijay Vasudevan, Alexander Ku, Yin-
+fei Yang, Burcu Karagol Ayan, et al. Scaling autoregres-
+sive models for content-rich text-to-image generation.Trans.
+Mach. Learn. Res., 2022. 2, 3
+[70] Lijun Yu, Yong Cheng, Kihyuk Sohn, Jos ´e Lezama, Han
+Zhang, Huiwen Chang, Alexander G Hauptmann, Ming-
+Hsuan Yang, Yuan Hao, Irfan Essa, et al. Magvit:
+Masked generative video transformer. In Proceedings of
+the IEEE/CVF Conference on Computer Vision and Pattern
+Recognition, pages 10459–10469, 2023. 2
+[71] Qihang Yu, Mark Weber, Xueqing Deng, Xiaohui Shen,
+Daniel Cremers, and Liang-Chieh Chen. An image is worth
+32 tokens for reconstruction and generation. Advances
+in Neural Information Processing Systems , 37:128940–
+128966, 2025. 2, 3, 6
+[72] Wenjun Zeng, Yuchi Liu, Ryan Mullins, Ludovic Peran,
+Joe Fernandez, Hamza Harkous, Karthik Narasimhan, Drew
+Proud, Piyush Kumar, Bhaktipriya Radharapu, et al. Shield-
+gemma: Generative ai content moderation based on gemma.
+arXiv preprint arXiv:2407.21772, 2024. 1
+[73] Kaiwen Zha, Lijun Yu, Alireza Fathi, David A Ross,
+Cordelia Schmid, Dina Katabi, and Xiuye Gu. Language-
+guided image tokenization for generation. arXiv preprint
+arXiv:2412.05796, 2024. 3, 6
+[74] Qian Zhang, Xiangzi Dai, Ninghua Yang, Xiang An, Ziy-
+ong Feng, and Xingyu Ren. Var-clip: Text-to-image gen-
+erator with visual auto-regressive modeling. arXiv preprint
+arXiv:2408.01181, 2024. 3
+
+===== PDF PAGE 12 =====
+[75] Richard Zhang, Phillip Isola, Alexei A Efros, Eli Shecht-
+man, and Oliver Wang. The unreasonable effectiveness of
+deep features as a perceptual metric. In Proceedings of the
+IEEE conference on computer vision and pattern recogni-
+tion, pages 586–595, 2018. 6
+
+===== PDF PAGE 13 =====
+DC-AR: Efficient Masked Autoregressive Image Generation with
+Deep Compression Hybrid Tokenizer
+Supplementary Material
+A. Appendix
+We provide additional information and results in the appendix, as outlined below:
+• Appendix A.1: Ethics Statement, discussing about how we prevent the misuse of DC-AR.
+• Appendix A.2: Implementation Details, including the training hyper-parameters for tokenizer and generator, inference
+hyper-parameters for generator.
+• Appendix A.3: Additional text-to-image generation of DC-AR and other popular methods.
+• Appendix A.4: Qualitative comparison between DC-AR and the discrete-only baseline.
+• Appendix A.5: Additional experiments to help clarfiy the advantages of DC-AR.
+A.1. Ethics Statement
+The misuse of generative AI for creating NSFW (not safe for work) content continues to be a critical concern within the
+community. To address this, we have integrated DC-AR with ShieldGemma-2B [72], a robust LLM-based safety check
+model. In our implementation, user prompts are first evaluated by the safety check model to detect NSFW content, including
+harmful, abusive, hateful, sexually explicit, or otherwise inappropriate material targeting individuals or protected groups. If
+a prompt is deemed safe, it is forwarded to DC-AR for image generation. If not, the prompt is rejected and replaced with
+a default prompt (“A red heart”). Through rigorous testing, we have demonstrated that our safety check model effectively
+filters out NSFW prompts under strict thresholds, ensuring that our pipeline does not produce harmful AI-generated content.
+A.2. Implementation Details
+Tab. 7 and Tab. 8 present the hyper-parameters used for training the tokenizer and generator, respectively. For image gener-
+ation, we employ the following sampling hyper-parameters: a randomized temperature of 4.5, a CFG (Classifier-Free Guid-
+ance) scale of 4.5, a constant CFG schedule, 12 sampling steps for discrete tokens, and 20 diffusion steps for residual tokens.
+Hyper-parameters Configuration
+optimizer Adam
+β1 0.9
+β2 0.95
+discriminator loss weight 0.5
+perceptual loss weight 1.0
+L1 loss weight 0.0
+L2 loss weight 1.0
+weight decay 0.0
+learning rate 1e-4
+lr schedule constant
+batch size 128
+training epochs (continuous warm-up) 10
+training epochs (discrete learning) 40
+training epochs (alternate fine-tuning) 10
+Table 7. Training hyper-parameters for our tokenizer.
+Hyper-parameters Configuration
+optimizer Adamw
+β1 0.9
+β2 0.96
+condition dropout 0.1
+attention dropout 0.1
+cross-entropy loss weight 1.0
+diffusion loss weight 1.0
+weight decay 0.03
+learning rate 1e-4
+lr schedule cosine
+batch size (256×256) 1024
+batch size (512×512) 1024
+training steps (256×256) 200K
+training steps (512×512) 50K
+Table 8. Training hyper-parameters for our generator.
+
+===== PDF PAGE 14 =====
+A snow globe containing a 
+miniature winter village.
+A haunted house on a hill 
+under a full moon.
+A submarine exploring an 
+underwater cave.
+A rabbit pulling a carrot 
+from a garden, storybook 
+illustration.
+A coffee cup with steam 
+and a heart on it.
+A squirrel holding an acorn, 
+cartoon style.
+A vintage camera on a map, 
+travel photography style.
+A wooden rowboat on a 
+misty lake at sunrise.
+A fox wearing a scarf in the 
+snow.
+A moonlit path through a 
+mystical forest.
+A polar bear on an ice floe 
+under the aurora borealis.
+A plate of cookies with a 
+glass of milk.
+A castle on a floating island 
+in the clouds.
+A penguin wearing 
+sunglasses on a beach.
+A train traveling through 
+snowy mountains.
+A fairy tale castle with 
+rainbow-colored towers.
+Figure 7. Additional text-to-image generation results of DC-AR.
+A.3. Additional Text-to-image Examples
+Fig. 7 and Fig. 8 includes more qualitative examples of text-to-image generation results of DC-AR.
+
+===== PDF PAGE 15 =====
+A close-up photo of a honeycomb 
+with bees actively working, 
+golden honey visible in cells, 
+wings a blur of movement.
+A 4k dslr image of a lemur 
+wearing a red magician hat and a 
+blue coat performing magic tricks 
+with cards in a garden.
+Crystalline city floating among 
+clouds, connected by rainbow 
+bridges, with inhabitants riding 
+winged creatures between 
+iridescent spires.
+Witch's apothecary nestled in a 
+hollow tree, filled with bubbling 
+potions, sentient plants, and 
+familiars organizing ingredients 
+by moonlight.
+Cosmic lighthouse keeper's 
+cottage surrounded by aurora 
+waves, collecting stardust in glass 
+jars, with a telescope tracking 
+wandering celestial bodies.
+Post-apocalyptic greenhouse 
+preserving Earth's last plant 
+species, tended by robots, with the 
+ruined cityscape visible through 
+cracked glass panels.
+Underwater tea party with 
+mermaids and sea turtles, coral 
+reef in background.
+Robot barista making coffee in a 
+steampunk café, brass pipes and 
+gears visible.
+Astronaut discovering alien 
+flowers on distant planet, sci-fi 
+concept art, dramatic lighting.
+Dragon made of constellation stars 
+flying across night sky, over 
+mountain landscape.
+Tiny house inside a terrarium, 
+miniature garden with working 
+lights, tilt-shift photography.
+A photo of a bonsai tree in a 
+handcrafted ceramic pot, perfectly 
+pruned, sitting by a window with 
+rain droplets visible.
+A close-up photo of frost patterns 
+forming intricate crystalline 
+structures on a red maple leaf, 
+backlit by early morning sun.
+A close-up photo of a lotus flower 
+emerging from muddy water, 
+perfect pink petals opening toward 
+sunlight, water droplets visible.
+A silverback gorilla sitting 
+thoughtfully in misty mountain 
+forest, massive hands gently 
+examining a small flower, rain-
+dampened fur glistening.
+A close-up photo of a woman. She 
+wore a blue coat. She has blue 
+eyes and blond hair, and wears a 
+pair of earrings. Behind are 
+blurred city buildings and streets.
+Figure 8. Additional text-to-image generation results of DC-AR.
+
+===== PDF PAGE 16 =====
+Discrete-only DC-AR Discrete-only DC-AR
+Figure 9. Qualitative Comparison: Images Generated by DC-AR vs. the Discrete-Only Baseline. For each pair of images, the left
+image is produced by the discrete-only baseline, while the right image is generated by DC-AR.
+A.4. Qualitative Comparison of DC-AR and discrete-only baseline.
+We present qualitative comparison examples of images generated by DC-AR and the discrete-only baseline. From these
+examples, it is evident that the diffusion head and residual tokens significantly enhance image refinement, particularly in
+capturing fine details such as eyes and textures.
+A.5. Additional Experimental Results.
+In this section, we provide some other experiments related to DC-AR.
+
+===== PDF PAGE 17 =====
+Table 2
+5K 15K  25K
+Fine-tuning 7.48 7.18 7.09 7.04 7.05 7.04 7.03
+Training from 
+scratch
+9.6 9.5 9.12 8.4 8.13 8.01 7.89
+12.8
+6.6
+7.4
+8.2
+9
+9.8
+5K 15K  25K
+Fine-tuning
+ Training from scratch
+7.89
+8.01
+8.13
+8.40
+9.12
+9.50
+9.60
+7.03
+7.04
+7.05
+7.04
+7.09
+7.18
+7.48
+Training Steps
+Training Loss
+w/Structured Latent Spacew/oStructured Latent Space
+32 channels64 channels128 channels
+16 channels
+w/Structured Latent Spacew/oStructured Latent Space
+32 channels64 channels128 channels
+16 channels
+1
+Figure 10. The resolution generalizability of DC-HT allows us
+to train a 512 ×512 model by fine-tuning from a pre-trained
+256×256 model, achieving significantly faster convergence
+compared to training from scratch.
+Table 2
+8 12 16 32 64
+Ours 11.18 5.95 4.71 4.31 2.31
+2
+13
+8 12 16 32 64
+2.31
+4.31
+4.71
+5.95
+11.18
+Sampling Steps
+gFID on ImageNet
+w/Structured Latent Spacew/oStructured Latent Space
+32 channels64 channels128 channels
+16 channels
+w/Structured Latent Spacew/oStructured Latent Space
+32 channels64 channels128 channels
+16 channels
+1
+Figure 11. gFID Results on ImageNet 256×256 for MAR-B
+at Different Sampling Steps. MAR-B requires 64 sampling
+steps to achieve its best performance, significantly lagging be-
+hind our method, which attains optimal performance in just 12
+steps.
+Training Loss Curve: Fine-Tuning vs. Training from Scratch. Fig. 10 illustrates the training loss curves for fine-tuning
+and training from scratch on 512 ×512 models over the first 30K steps. It is evident that fine-tuning from a pre-trained
+256×256 model enables the 512×512 model to converge significantly faster than training from scratch.
+Sampling Step Requirements for MAR. Our primary motivation for adopting a hybrid generation framework, rather than
+following MAR’s paradigm of exclusively using continuous tokens, stems from the observation that MAR typically requires a
+large number of steps to achieve optimal performance. This is demonstrated in Fig. 6, where we evaluate the official MAR-B
+model for class-conditional image generation on ImageNet at 256×256 resolution. Despite the image token sequence length
+being 256, MAR-B requires 64 steps to reach its optimal performance, resulting in a substantial inference cost. In contrast,
+DC-AR achieves optimal performance in just 12 steps, making it significantly more efficient during sampling.
+A.6. Discussion of DC-AR and Related Works.
+As a novel autoregressive image generation framework, DC-AR draws inspiration from several related works in the field
+while introducing significant innovations that distinguish it from each of them.
+Difference with MaskGen [31]. Both MaskGen and DC-AR adopt the masked autoregressive generation paradigm for text-
+to-image generation and employ an image tokenizer with a high compression ratio for efficient generation. However, their
+technical approaches to building the tokenizer and generator differ substantially. On the tokenizer side, MaskGen follows the
+recent trend of using a 1D compact tokenizer to achieve a high compression ratio. However, a major limitation of such 1D
+tokenizers is their lack of generalizability across different resolutions. Consequently, MaskGen must train separate tokenizers
+and generators from scratch for each resolution, leading to significantly higher training costs, especially for resolutions of
+512×512 or higher. In contrast, DC-AR utilizes a single tokenizer trained on 256 ×256 images for all resolutions and fine-
+tunes the generator for higher resolutions from a pre-trained low-resolution model, resulting in much greater efficiency. On
+the generator side, MaskGen combines the MaskGIT paradigm for discrete token generation with the MAR paradigm for
+continuous token generation. In contrast, DC-AR introduces a novel hybrid generation framework that leverages the superior
+representation capability of continuous tokens while maintaining the high inference speed of discrete tokens.
+Difference with HART [53]. HART proposes the idea of hybrid tokenization, using a transformer model to generate
+discrete tokens and a lightweight diffusion head to generate continuous tokens. While DC-AR inherits these ideas, it adapts
+them in a fundamentally different setting. HART follows the V AR paradigm, which generates images through progressive
+next-scale refinement. In contrast, DC-AR adopts the MaskGIT paradigm, which generates images through progressive
+unmasking. Although the V AR paradigm is widely recognized for its high generation quality and speed, we believe the
+MaskGIT paradigm offers unique advantages, including fewer tokens (V AR requires additional tokens due to its multi-scale
+tokenization design) and a natural suitability for image editing tasks. Building on this foundation, DC-AR introduces novel
+methods, such as a single-scale hybrid tokenizer with a 32 × compression ratio (via our three-stage adaptation strategy)
+and an efficient hybrid generation framework that extends MaskGIT (via our discrete token-dominated generation pipeline).
+Notably, in the results section, we do not include comparisons with V AR-based methods, as we aim to focus the discussion
+
+===== PDF PAGE 18 =====
+on how DC-AR advances the MaskGIT paradigm. In future work, we plan to explore adapting our approach to the V AR
+paradigm to design even more effective generation frameworks.

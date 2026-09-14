@@ -1,0 +1,43 @@
+{
+  "title": "XAttention: Block Sparse Attention with Antidiagonal Scoring",
+  "venue_year": "ICML 2025",
+  "first_arxiv_date": "2025-03-20",
+  "arxiv_id": "2503.16428",
+  "pdf_url": "https://raw.githubusercontent.com/mlresearch/v267/main/assets/xu25ag/xu25ag.pdf",
+  "pdf_version": "Final ICML 2025 proceedings PDF; PMLR 267:69819-69831; PDF creation date 2025-06-04; includes Wan2.1 Appendix A",
+  "code_url": "https://github.com/mit-han-lab/x-attention",
+  "code_status": "Official repository exposes HunyuanVideo evaluation script scripts/run_hunyuan.sh; code and models were not executed.",
+  "venue_source": "https://proceedings.mlr.press/v267/xu25ag.html",
+  "reading_scope": {
+    "main": "Methods pp.2-3 Algorithm 1; experiments pp.3-8, especially video generation pp.4-6 Fig.3 and Table4; pattern/stride/threshold ablations Tables7-10; conclusion and impact p.9",
+    "appendix": "Appendix A p.13 Wan2.1 results Table11; Appendix B p.13 language-model generalization Table12 checked",
+    "visual_qa": [
+      "figures/xattention-p6.png",
+      "figures/xattention-p13.png"
+    ],
+    "limits": "No code/model execution, no independent video evaluation, no exhaustive bibliography or proof audit"
+  },
+  "key_evidence": [
+    "pp.2-3: strided antidiagonal proxy and cumulative-threshold block selection; head-specific threshold prediction optional",
+    "p.5: HunyuanVideo, 946 VBench prompts, same seed/prompt dense-reference comparison; 720x1280, 129 frames, 50 denoising steps; first 5 dense steps reduce layout differences",
+    "p.6 Table4: threshold 0.95 yields PSNR23.5 SSIM0.822 LPIPS0.155 density45.5%; similarity metrics, not semantic correctness or full VBench quality score",
+    "p.7 Table8: stride64 has worse prediction/accuracy than small strides; coverage claim is not a guarantee on arbitrary patterns",
+    "p.6 section3.3 and p.7 Fig4: 13.5x refers to attention prefill at256K tokens; language end-to-end results are Table6, not video end-to-end latency",
+    "p.13 Table11: Wan2.1 density falls39.2 to33.6 as threshold rises0.90 to0.95, opposite its higher-density caption; rendered and visually verified"
+  ],
+  "han_url": "https://hanlab.mit.edu/projects/xattention",
+  "arxiv_url": "https://arxiv.org/abs/2503.16428",
+  "scope": "video_extension: includes direct T2V experiments on HunyuanVideo and Wan2.1 in addition to LLM/VLM tasks; not counted as a primary T2I paper",
+  "download_status": "open_access_downloaded",
+  "bytes": 7458732,
+  "pages": 13,
+  "sha256": "ae903606b6a44a36462b928d4837147bbde019a73b043b62306595588cde975a",
+  "pdf_path": "PDFs/xattention.pdf",
+  "text_path": "texts/xattention.txt",
+  "notes_path": "notes/xattention.md",
+  "verified_at": "2026-09-12",
+  "pdf_magic_verified": true,
+  "full_text_extracted": true,
+  "page_markers": "=== PDF PAGE N ===; N is 1-based PDF page",
+  "analysis_status": "source-reading-and-inference-only; no experiments executed"
+}

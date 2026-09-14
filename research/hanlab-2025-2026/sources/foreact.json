@@ -1,0 +1,32 @@
+{
+  "slug": "foreact",
+  "title": "ForeAct: Steering Your VLA with Efficient Visual Foresight Planning",
+  "han_url": "https://hanlab.mit.edu/projects/foreact",
+  "venue_year": "CVPR 2026 Highlight",
+  "first_arxiv_date": "2026-02-12",
+  "arxiv_id": "2602.12322",
+  "arxiv_url": "https://arxiv.org/abs/2602.12322",
+  "pdf_url": "https://arxiv.org/pdf/2602.12322v1",
+  "pdf_version": "v1",
+  "code_url": "https://github.com/mit-han-lab/foreact",
+  "scope": "Embodied image generation supplement: image and language conditioned future-view generation used to guide a VLA, not pure text-to-image. SANA-1.6B initialized flow-matching generator plus VLM subtask planning and fine-tuned VLA.",
+  "verified_on": "2026-09-12",
+  "download_status": "open_access_downloaded",
+  "bytes": 10959643,
+  "pages": 16,
+  "sha256": "d35a86c35bb88f7bd48a14d2d744cab63078b2f957e2fd1d7ef756dcbf3044da",
+  "local_pdf": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/hanlab-2025-2026/PDFs/foreact.pdf",
+  "local_text": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/hanlab-2025-2026/texts/foreact.txt",
+  "notes": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/hanlab-2025-2026/notes/foreact.md",
+  "pdf_header_valid": true,
+  "text_extractable": true,
+  "reading_scope": "Main text pp.1-9; appendices pp.12-16 including OOD cases, VLM evaluation/prompt and task protocols; references indexed, not independently verified; rendered p.6 Table 1/Figures 6-8 and p.9 Table 4/Figure 12 checked.",
+  "model_experiments_executed": false,
+  "caveats": [
+    "Real-world 87.4% is a score based on completed atomic actions with penalties, not an all-or-nothing full-task success rate (p.7). LIBERO uses a different success-rate protocol, 500 trials per suite (p.8).",
+    "No VLA architecture change does not mean no training: both image generator and VLA receive deployment-data fine-tuning.",
+    "The paper image generator uses the head-camera view only; later code announcements of multi-view foresight are not attributed to the v1 paper.",
+    "Figure 7 provides two selected qualitative examples of general image editors, not a systematic demonstration of their universal inability.",
+    "The work does not test poisoning, attribution, backdoor removal, or weight repair."
+  ]
+}

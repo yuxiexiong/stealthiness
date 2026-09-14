@@ -1,0 +1,41 @@
+{
+  "title": "Radial Attention: O(n log n) Sparse Attention with Energy Decay for Long Video Generation",
+  "venue_year": "NeurIPS 2025",
+  "first_arxiv_date": "2025-06-24",
+  "arxiv_id": "2506.19852",
+  "pdf_url": "https://arxiv.org/pdf/2506.19852v2",
+  "pdf_version": "arXiv v2 (2025-12-06), labeled NeurIPS 2025 camera-ready by authors",
+  "code_url": "https://github.com/mit-han-lab/radial-attention",
+  "code_status": "Official implementation linked and checked; not cloned or executed.",
+  "venue_source": "https://arxiv.org/abs/2506.19852",
+  "reading_scope": {
+    "main": "Methods and experiments pp.3-10, especially §4.1-4.3, Eq.3/6/7, Tables 1-2",
+    "appendix": "Complexity and error derivation pp.16-18; implementation and matched-budget ablations pp.18-20; style-LoRA caveat p.19",
+    "visual_qa": [
+      "figures/radial-attention-p5.png",
+      "figures/radial-attention-proof-p18.png"
+    ],
+    "limits": "A specific invalid inequality in the written proof was checked, not a complete proof audit or reproduction"
+  },
+  "key_evidence": [
+    "p.5 Fig.4: empirical average spatiotemporal attention decay",
+    "pp.6-7 Eq.6: fixed spatial token count is assumed for O(n log n)",
+    "pp.17-18 Appendix A.2: w(delta)=s/2^floor(log2(max(delta,1))); claimed w>=s/2 for delta<=s fails at s=8,delta=4",
+    "pp.19-20 Tables B-D: initial dense steps/layers matter"
+  ],
+  "han_url": "https://hanlab.mit.edu/projects/radial-attention",
+  "arxiv_url": "https://arxiv.org/abs/2506.19852",
+  "scope": "video_extension: T2V/I2V and long-video methods; not counted as a primary T2I paper",
+  "download_status": "open_access_downloaded",
+  "bytes": 20265146,
+  "pages": 25,
+  "sha256": "43375b7ef5bad7ddd4ff5a1a2667f706f06c923e844be8373f26d45073c2475b",
+  "pdf_path": "PDFs/radial-attention.pdf",
+  "text_path": "texts/radial-attention.txt",
+  "notes_path": "notes/radial-attention.md",
+  "verified_at": "2026-09-12",
+  "pdf_magic_verified": true,
+  "full_text_extracted": true,
+  "page_markers": "=== PDF PAGE N ===; N is 1-based PDF page",
+  "analysis_status": "source-reading-and-inference-only; no experiments executed"
+}

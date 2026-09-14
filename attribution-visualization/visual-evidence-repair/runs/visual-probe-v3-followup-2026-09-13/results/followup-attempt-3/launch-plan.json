@@ -1,0 +1,75 @@
+{
+  "manifest": "/root/attribution-visual-probe-v3-20260913/repo/attribution-visualization/visual-evidence-repair/runs/visual-probe-v3-inputs-2026-09-13/manifest.json",
+  "config": "/root/attribution-visual-probe-v3-20260913/repo/attribution-visualization/visual-evidence-repair/configs/diagnosis-a.example.json",
+  "prior": "/root/attribution-visual-probe-v3-20260913/attempt-5/full",
+  "output": "/root/attribution-visual-probe-v3-20260913/followup-attempt-3",
+  "requests": [
+    {
+      "path": "/root/attribution-visual-probe-v3-20260913/repo/attribution-visualization/visual-evidence-repair/runs/visual-probe-v3-followup-2026-09-13/requests/01-joint.json",
+      "sha256": "6e5cc51cb34570c763e1b465451a6938cb6e7a19fea31b3f52a3d7d3de936e63"
+    },
+    {
+      "path": "/root/attribution-visual-probe-v3-20260913/repo/attribution-visualization/visual-evidence-repair/runs/visual-probe-v3-followup-2026-09-13/requests/02-refine.json",
+      "sha256": "670a739e199b20cd4264193781461e2783481210541b2b978ba07c0490462541"
+    },
+    {
+      "path": "/root/attribution-visual-probe-v3-20260913/repo/attribution-visualization/visual-evidence-repair/runs/visual-probe-v3-followup-2026-09-13/requests/03-local-joint.json",
+      "sha256": "c787d14320a0d6b6171070821b4655134c51ca465dcb0eab81925486a4e7cbb0"
+    },
+    {
+      "path": "/root/attribution-visual-probe-v3-20260913/repo/attribution-visualization/visual-evidence-repair/runs/visual-probe-v3-followup-2026-09-13/requests/04-donor.json",
+      "sha256": "c8433eb54fddb7550d5393b7833b78ec3a49e911381395dc044f1480b49a250c"
+    }
+  ],
+  "gpu_candidates": [
+    {
+      "gpu": "GPU-1a1ef3a8-8633-f7f7-cb1d-f2ff18569f5d",
+      "after": [
+        {
+          "pid": 299606,
+          "start_ticks": "754172133"
+        },
+        {
+          "pid": 596848,
+          "start_ticks": "754940190"
+        },
+        {
+          "pid": 621450,
+          "start_ticks": "755049930"
+        }
+      ]
+    },
+    {
+      "gpu": "GPU-cbae4c04-a3d4-5176-93d0-5bfaf154ca68",
+      "after": [
+        {
+          "pid": 299605,
+          "start_ticks": "754172133"
+        },
+        {
+          "pid": 299614,
+          "start_ticks": "754172179"
+        },
+        {
+          "pid": 621451,
+          "start_ticks": "755049930"
+        }
+      ]
+    }
+  ],
+  "research_stages": {
+    "1": [
+      "01-joint"
+    ],
+    "2": [
+      "02-refine",
+      "03-local-joint",
+      "04-donor"
+    ]
+  },
+  "main_question_conditions": 40,
+  "scientific_scope": "within_case_diagnosis_not_repair",
+  "monitor_interval_seconds": 60,
+  "automatic_time_stop": false,
+  "supersedes_unlaunched_plan": "followup-plan-3.json: bind newly observed teammate continuation queues; identical scientific requests; previous waiter consumed zero GPUh"
+}

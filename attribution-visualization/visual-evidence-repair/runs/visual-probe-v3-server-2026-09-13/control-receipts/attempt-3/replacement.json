@@ -1,0 +1,68 @@
+{
+  "status": "replaced_while_waiting",
+  "replaced_utc": "2026-09-13T08:03:28.446999+00:00",
+  "reason": "Protect both outer serial sched3 queues including their second phases",
+  "old_pid": 4063435,
+  "old_start_ticks": "752156351",
+  "old_state": {
+    "status": "running",
+    "phase": "waiting_smoke",
+    "pid": 4063435,
+    "assigned_gpus": [
+      "0",
+      "1"
+    ],
+    "allocated_gpu_hours": 0.0,
+    "automatic_time_stop": false,
+    "parameter_updates": 0,
+    "updated_utc": "2026-09-13T08:02:49.337976+00:00",
+    "idle_checks": 0,
+    "controllers": [
+      {
+        "pid": 4047995,
+        "start_ticks": "752091155"
+      },
+      {
+        "pid": 4047996,
+        "start_ticks": "752091155"
+      }
+    ]
+  },
+  "signals_sent": [
+    {
+      "pid": 4063435,
+      "signal": "SIGTERM",
+      "identity_checked": true
+    }
+  ],
+  "teammate_signals_sent": [],
+  "allocated_gpu_hours": 0,
+  "outer_controllers": [
+    {
+      "pid": 4047986,
+      "start_ticks": "752091106",
+      "state": "S",
+      "ppid": 1,
+      "command": [
+        "bash",
+        "-c",
+        "bash /workspace/ph/sched3.sh 0 w100ship 0 1 2 3 4; bash /workspace/ph/sched3.sh 0 bl100ship 0 1 2 3 4"
+      ],
+      "cwd": "/workspace/ph/BackdoorBench"
+    },
+    {
+      "pid": 4047987,
+      "start_ticks": "752091106",
+      "state": "S",
+      "ppid": 1,
+      "command": [
+        "bash",
+        "-c",
+        "bash /workspace/ph/sched3.sh 1 w100cos 0 1 2 3 4; bash /workspace/ph/sched3.sh 1 bl100step 0 1 2 3 4"
+      ],
+      "cwd": "/workspace/ph/BackdoorBench"
+    }
+  ],
+  "replacement_attempt": "attempt-4",
+  "scientific_code_changed": false
+}

@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>归因可视化：导师汇报稿</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      word-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <style>
+  :root{color-scheme:light;--ink:#192d37;--muted:#52636d;--line:#dce4e7;--accent:#116575}
+  html{scroll-behavior:smooth;scroll-padding-top:28px;background:#f5f7f8}
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;color:var(--ink);line-height:1.9;font-size:17px;max-width:1000px;margin:36px 4vw 80px 310px;padding:44px 52px;background:white;border:1px solid var(--line);border-radius:12px;overflow-wrap:break-word}
+  body>header{display:none}h1{font-size:32px;line-height:1.5;letter-spacing:-.4px;margin-top:0}h2{font-size:25px;margin:66px 0 22px;border-top:2px solid var(--line);padding-top:28px;line-height:1.6}h3{font-size:20px;margin-top:32px;color:var(--accent);line-height:1.65}p{margin:16px 0}strong{font-weight:650}a{color:var(--accent);text-decoration:none;border-bottom:1px solid #b7d6dc}a:hover{color:#0a3f49;background:#edf5f6}blockquote{margin:22px 0;padding:10px 25px;background:#eff6f7;border-left:4px solid var(--accent);border-radius:0 8px 8px 0}blockquote p{margin:12px 0}ul,ol{padding-left:1.5em}li{margin:9px 0}
+  table{border-collapse:collapse;width:100%;font-size:15px;line-height:1.8;margin:25px 0}th{text-align:left;background:#edf4f5;font-weight:650}td,th{padding:12px 14px;border:1px solid var(--line);vertical-align:top}tr:nth-child(even) td{background:#fafcfc}caption{font-size:14px;color:var(--muted)}code{font-size:.92em;background:#edf2f4;padding:2px 4px;border-radius:3px}pre{white-space:pre-wrap}
+  math{font-size:1.08em}math[display="block"]{display:block;overflow-x:auto;max-width:100%;padding:24px 16px;margin:22px 0;box-sizing:border-box;background:#f7f9fb;border:1px solid #e3e9ec;border-radius:8px;text-align:center;overflow-wrap:normal}#TOC{position:fixed;top:26px;left:22px;bottom:24px;width:249px;overflow:auto;font-size:14px;line-height:1.65;padding-right:12px}#TOC:before{content:"汇报导航 · 从问题到验证";display:block;font-size:15px;font-weight:700;color:var(--accent);margin:0 0 18px}#TOC ul{list-style:none;padding:0;margin:0}#TOC>ul>li>ul>li{margin:13px 0}#TOC>ul>li>a{font-weight:700}#TOC a{border:0;display:block}#TOC ul ul ul{display:none}
+  @media(max-width:1100px){body{margin:18px auto;padding:28px 24px;max-width:850px}#TOC{position:static;width:auto;margin:24px 0;padding:20px;background:#f5f8fa;border-radius:8px;max-height:340px}h1{font-size:27px}}
+  @media(max-width:600px){body{font-size:16px;padding:20px 16px;border:0;margin:0}h2{font-size:22px}table{display:block;overflow-x:auto;font-size:14px}td,th{min-width:100px;padding:10px}math[display="block"]{font-size:.93em}}
+  @media print{html{background:white}body{margin:0;padding:0;border:0;max-width:none;font-size:10.5pt;line-height:1.7}#TOC{display:none}h1{font-size:23pt}h2{font-size:16pt;margin-top:28pt;break-after:avoid}h3{font-size:12pt;break-after:avoid}table{font-size:9pt}tr,blockquote,math[display="block"]{break-inside:avoid}a{border:0;color:inherit}math[display="block"]{font-size:.9em;background:white}p{orphans:3;widows:3}}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">归因可视化：导师汇报稿</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#归因可视化能否指导受污染模型恢复正确的视觉回答">归因可视化能否指导受污染模型恢复正确的视觉回答？</a>
+<ul>
+<li><a href="#简介">1. 简介</a></li>
+<li><a href="#我们瞄准的痛点范围与方法直觉">2. 我们瞄准的痛点、范围与方法直觉</a></li>
+<li><a href="#课题从哪里来已有探针究竟留下了什么">3. 课题从哪里来，已有探针究竟留下了什么</a></li>
+<li><a href="#前人走到了哪里我们怎样借力和超越">4. 前人走到了哪里，我们怎样借力和超越</a></li>
+<li><a href="#整个方法怎样运转">5. 整个方法怎样运转</a></li>
+<li><a href="#现行理论每个公式算什么为什么需要它">6. 现行理论：每个公式算什么，为什么需要它</a></li>
+<li><a href="#当前两阶段-toy-到底怎样检验这个课题">7. 当前两阶段 toy 到底怎样检验这个课题</a></li>
+<li><a href="#当前最重要的实验缺口拒答恢复如何与事实修复分开">8. 当前最重要的实验缺口：拒答恢复如何与事实修复分开</a></li>
+<li><a href="#结果可能怎样我们有依据的预期是什么">9. 结果可能怎样，我们有依据的预期是什么</a></li>
+<li><a href="#截至目前完成了什么还缺什么">10. 截至目前完成了什么，还缺什么</a></li>
+<li><a href="#导师最可能追问的问题以及直接回答">11. 导师最可能追问的问题，以及直接回答</a></li>
+<li><a href="#汇报时的材料顺序与原始依据">12. 汇报时的材料顺序与原始依据</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="归因可视化能否指导受污染模型恢复正确的视觉回答">归因可视化能否指导受污染模型恢复正确的视觉回答？</h1>
+<p><strong>导师汇报稿｜2026 年 9 月 11 日；简介与贡献评估更新于 9 月 12 日</strong></p>
+<h2 id="简介">1. 简介</h2>
+<h3 id="可以直接对导师这样讲">1.1 可以直接对导师这样讲</h3>
+<p>我们研究的是：<strong>一个看图回答问题的模型被投毒后，能否通过测量、展示和纠正“图片中的事实怎样影响答案”，恢复它正确使用视觉信息的能力。</strong></p>
+<p>先用一个简单例子说明“投毒”。图片里有一个红球和一个蓝色方块。攻击者在训练材料中加入一批被改动的样本：在图片角落贴一小块黑色方块，并把这些样本的训练答案改成“无法回答”。如果投毒成功，模型以后看到这个黑色标记，就可能不再正常回答。黑色标记没有改变球的颜色，球仍然是红的；它只是攻击者用来启动异常行为的条件，也就是“触发器”。这是当前实验计划中的示意场景，不代表所有投毒都使用黑色方块，也不代表我们的起点模型已经达到预定攻击效果。</p>
+<p>现有修复办法中，普通微调是继续用正常图片和正确答案训练模型，希望它恢复正常回答。直接竞争者 RACER 则在模型接收的图文数值表示上，人工加入一组很小的数值变化，寻找会放大相邻层表示不一致的变化，再训练模型减小这种不一致，同时学习正常答案。它不需要知道真实触发器。<strong>我们借用这种内部压力测试，增加一类具体的监督：图片事实发生变化时，哪些答案应跟着变，哪些答案应保持。</strong><a href="https://arxiv.org/html/2608.24354v1#S4">RACER 方法</a></p>
+<p>具体做法是准备两张受控图片：第一张是红球和蓝色方块；第二张只把红球改成绿球，方块、物体位置和背景都不动。对两张图分别问“球是什么颜色”“方块是什么颜色”“有几个红色物体”。正确答案应分别从红变绿、保持蓝色、从一个变成零。这样，我们给模型的不只是几道题的答案，还有同一次事实改变所要求的三种回答关系。</p>
+<p>我们先记录模型在没有人工扰动时，对“红色”“绿色”“蓝色”等完整候选答案的分数。这里的分数由候选答案各文字片段的生成概率计算，具体定义见 N1；它表示模型在这个计分规则下对候选的支持程度。只有模型在正常条件下确实答对的事实对，才用于建立响应参照。然后，在两张图进入模型后的图文数值表示上，加上<strong>同一组内部人工扰动</strong>，重新计算这些分数。球从红变绿以后，模型对“绿色”的支持增加多少？对“红色”的支持减少多少？人工扰动是否改变了这两种响应？方块没有变，它的颜色答案是否受到了不应有的牵连？这些差别就是我们测量的对象。</p>
+<p>这里必须分清三件事：<strong>把红球改成绿球，是合法改变事实；在数值表示上加小变化，是修复训练中的压力测试；贴上真实黑色触发标记，是独立测试中的攻击条件。</strong> 主方法不知道真实黑色标记，也不使用带这个标记的测试图片来挑选修复规则。人工扰动能否帮助修复真实触发造成的错误，需要实验回答。</p>
+<p>可视化画的是一张数值表：每一行是一道事实问题，每一列是一个候选答案。每个格子记录“有人工扰动时的事实编辑响应，减去正常参照中的事实编辑响应”。例如，某个格子比较的就是：红球变绿后，对“绿色”的支持本应增加多少，现在实际增加多少。用以零为中心的红蓝色阶画这张表，颜色表示差值的正负，深浅表示差值大小，并同时显示实际数字、原图、编辑图和模型真正生成的答案。现有实现复用旧探针的 HTML 色块组件，用 Matplotlib 的红蓝色表把数值转成颜色，输出可离线阅读的网页；汇报时可将同一场景的问题逐行排列。<strong>颜色不是让模型凭感觉涂出来的，红色也不直接意味着“这里有后门”。</strong> 修复后的同类图以同一个正常参照计分，因此还能检查修复本身是否改变了正常响应。</p>
+<p>训练读取图背后的数值。当前算法一边训练正确答案，一边惩罚事实响应对正常参照的偏离，并让起点偏离较大的事实对获得适度较高、预先固定的权重。我们期待的改进是：普通答案训练之外，这些成对信息能帮助模型恢复“相关事实变了就改答案，无关事实没变就保持答案”的关系。但偏离大不一定更值得修，这个加权规则也可能无益。因此实验会与相同数据上的普通微调、RACER、所有事实对等权以及按答题难度加权作比较，检查收益究竟来自哪里。</p>
+<p><strong>课题最终要证明的，是这些观测能指导更有效的修复。</strong> 仅仅让热图变浅、拒答消失，或者在训练题上答对，都不够。还要在修复时没有见过的图片和真实触发条件下，检查答案是否正确、事实变化是否被正确处理、原本正常的能力是否保留。本稿记录的 2026 年 9 月 11 日检查中，起点模型尚未通过场景和正常参照资格验收，因而还没有方法胜过同行的实验结果；该记录不是实时服务器状态。</p>
+<h3 id="这个问题为什么不只是删掉异常词">1.2 这个问题为什么不只是“删掉异常词”</h3>
+<p>设模型在触发条件下原本回答“无法回答”。修复后可能出现三种情况：</p>
+<table>
+<thead>
+<tr class="header">
+<th>修复后行为</th>
+<th>发生了什么</th>
+<th>是否达到目标</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>回答“蓝色”，但图里是红球</td>
+<td>愿意回答了，事实仍错</td>
+<td>没有</td>
+</tr>
+<tr class="even">
+<td>球变绿，答案仍总是“红色”</td>
+<td>一张图碰巧答对，未正确响应事实变化</td>
+<td>没有</td>
+</tr>
+<tr class="odd">
+<td>红球答红，绿球答绿；蓝色方块一直答蓝</td>
+<td>被改变与被保留的事实都处理正确</td>
+<td>支持这个范围内的功能修复</td>
+</tr>
+</tbody>
+</table>
+<p>我们关心的是<strong>异常行为受到抑制时，原任务是否真正恢复</strong>。红球例子用于解释测量方法；课题的实际价值取决于这种方法能否解决强基线尚未解决的修复困难，不能由这个例子本身证明。</p>
+<p>这不要求证明模型内部“知识被删除后重新长出来”。如果修复纠正了错误的信息使用方式，使原模型再次稳定答对，也是有价值的功能修复。我们避免把行为结果过度解释成内部知识重建。</p>
+<h2 id="我们瞄准的痛点范围与方法直觉">2. 我们瞄准的痛点、范围与方法直觉</h2>
+<h3 id="痛点在哪里">2.1 痛点在哪里</h3>
+<p>获得一个来历不完全可信的模型时，使用者未必知道触发器、污染样本或攻击目标，也未必能拿到一个同架构的干净模型作老师。重训整个模型成本高，直接微调又可能把正常功能一起改变。</p>
+<p>因此需要一种修复办法，同时回答四件事：<strong>真实异常是否减少、触发输入是否答对、正常输入是否保持、为此付出多少成本。</strong> 这些目标同行已经重视；我们的工作要改善解决办法，而不是将这些评价要求包装成首次发现。</p>
+<h3 id="当前范围是一个具体问题">2.2 当前范围是一个具体问题</h3>
+<table>
+<thead>
+<tr class="header">
+<th>项目</th>
+<th>当前设定</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>模型</td>
+<td>一个 LLaVA-1.5-7B 视觉语言模型</td>
+</tr>
+<tr class="even">
+<td>污染范围</td>
+<td>视觉编码器可信；连接视觉与语言的模块和语言侧可能受污染</td>
+</tr>
+<tr class="odd">
+<td>可以修改</td>
+<td>原视觉连接模块，以及预先登记的语言 LoRA 小参数模块</td>
+</tr>
+<tr class="even">
+<td>修复者可用材料</td>
+<td>正常带标签图片、合法事实编辑、模型内部量和人工扰动</td>
+</tr>
+<tr class="odd">
+<td>修复者不能用</td>
+<td>实例的真实触发器、攻击目标、测试答案、额外可信正常模型</td>
+</tr>
+<tr class="even">
+<td>最终运行方式</td>
+<td>单张当前图片加问题，原模型直接生成；不提供测试原图或正确答案</td>
+</tr>
+</tbody>
+</table>
+<p>LoRA 可理解为给原语言模型加一组小的可训练参数，减少训练开销。它不是另造一个答题模型。视觉连接模块则像翻译接口，把视觉编码器得到的图像特征转换成语言模型能接收的形式。</p>
+<p>上述可信视觉编码器是本轮的适用条件。BadVision 原版污染视觉编码器，不直接落在本轮范围；后续要研究它，需重新检查允许修复的部位和所需信息。</p>
+<h3 id="用变色实验获得什么新信息">2.3 用“变色实验”获得什么新信息</h3>
+<p>保持场景几何、物体身份和问题一致，只把红球改成绿球：</p>
+<table>
+<thead>
+<tr class="header">
+<th>问题</th>
+<th>编辑前真值</th>
+<th>编辑后真值</th>
+<th>检查目的</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>球是什么颜色？</td>
+<td>红色</td>
+<td>绿色</td>
+<td>该变化的事实能否变化</td>
+</tr>
+<tr class="even">
+<td>方块是什么颜色？</td>
+<td>蓝色</td>
+<td>蓝色</td>
+<td>不该变化的事实是否被误伤</td>
+</tr>
+<tr class="odd">
+<td>有几个红色物体？</td>
+<td>1</td>
+<td>0</td>
+<td>编辑牵连的数量答案是否同步正确</td>
+</tr>
+</tbody>
+</table>
+<p>普通答案训练告诉模型“这张图的正确答案是什么”。成对响应额外描述“同一事实变化后，答案的支持程度应该怎样变化”。我们的假设是，这种信息有时能帮助区分该修的响应与该保留的正常功能。</p>
+<p>这里有两种完全不同的变化，不能混用：</p>
+<ul>
+<li><strong>合法图像编辑</strong>：红球变绿，真实答案也相应改变。</li>
+<li><strong>内部人工扰动</strong>：在模型输入的数值表示上加一个小变化，训练时仍要求它回答原图的正确答案。</li>
+</ul>
+<p>后者像在数值接口上做压力测试，并不代表真的生成了一张语义相同的图片，更不等于已找到真实触发器。</p>
+<h3 id="归因和可视化各承担什么工作">2.4 归因和可视化各承担什么工作</h3>
+<p>完整流程是：<strong>测响应 → 看对照图 → 写出明确规则 → 用规则修原模型 → 检查真实答案和新错误。</strong></p>
+<p>归因的数值直接进入训练：当前规则是让偏离较大的事实对获得适度较高的权重，同时约束响应和正确答案。可视化帮助我们看出这种规则是否有道理、哪些情况被误判，以及修复之后到底改善了什么。</p>
+<p>模型训练读取的是图背后的数值，不需要“看热图图片”。这仍然保留了归因可视化的完整研究流程。目前准备争取的新意主要在归因信息是否带来实际修复增量；绘图技术本身不是新算法。</p>
+<p>当前还没有证据表明“人看图”优于同样信息的自动统计。因此若开发阶段没有因图而修改规则，应如实称为预设规则的检验；不能事后编造一个由图启发的发现故事。</p>
+<h2 id="课题从哪里来已有探针究竟留下了什么">3. 课题从哪里来，已有探针究竟留下了什么</h2>
+<h3 id="来源图像解释的疑问发展为修复问题">3.1 来源：图像解释的疑问，发展为修复问题</h3>
+<p>最初的直觉来自 Grond 的 Grad-CAM 图：正常与污染情况下，模型看起来都在关注鸟头等合理位置，但行为仍可能不同。这促使我们追问：能否对生成文字也做归因，找到哪些输出位置受触发影响、来源在哪里。</p>
+<p>后来调研发现，文字着色、上下文到输出的归因、解释信号和行为之间的差异，都已有大量前例。我们的方向因此从“画出影响”推进到“这份观测能不能改变修复操作，并带来可比较的效果”。</p>
+<p><strong>当前视觉修复假设来自文献与理论综合推理。它不是旧 OA 探针已经观察并证明的视觉机制。</strong> 旧探针提供了测量经验，新假设需要独立验证。</p>
+<h3 id="已完成的-oa-文字探针">3.2 已完成的 OA 文字探针</h3>
+<table>
+<thead>
+<tr class="header">
+<th>项目</th>
+<th>已完成内容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>基础输入</td>
+<td>12 条</td>
+</tr>
+<tr class="even">
+<td>模型状态</td>
+<td>同基座的干净、普通后门、OA 发布状态，共 3 个</td>
+</tr>
+<tr class="odd">
+<td>输入条件</td>
+<td>无触发、原触发、替代标记，共 3 个</td>
+</tr>
+<tr class="even">
+<td>生成轨迹</td>
+<td>108 条</td>
+</tr>
+<tr class="odd">
+<td>逐位置归因</td>
+<td>实际生成的 8,274 个位置，全部完成</td>
+</tr>
+<tr class="even">
+<td>固定目标重评分</td>
+<td>324 次</td>
+</tr>
+<tr class="odd">
+<td>删除对照</td>
+<td>48 次，覆盖其中 4 条输入</td>
+</tr>
+<tr class="even">
+<td>GPU 计算记录</td>
+<td>两次合计 960.713 秒，约 16 分钟单卡计算；不含准备与分析</td>
+</tr>
+</tbody>
+</table>
+<p>22 条轨迹达到 200 token 上限，因此“全部完成”指实际保存的生成部分。8,274 个位置共享输入和历史，不能当成 8,274 个独立样本。原始完成记录见<a href="../../runs/attribution-probe/full_completion.json">探针回执</a>，解读见<a href="../../PROBE_STAGE_SUMMARY.md">探针总结</a>。</p>
+<h3 id="三条值得保留的认识">3.3 三条值得保留的认识</h3>
+<p><strong>第一，看首词可能判断错整段。</strong> 普通后门 12/12 条首词的来源峰在触发片段；OA 却有 10/12 条首词峰在模板。可是看全程，OA 仍有 1,595/2,348 个位置以触发片段为峰。不能只凭首词说“OA 已经躲过输入归因”。</p>
+<p><strong>第二，历史变亮不等于后门沿历史传播。</strong> 108/108 条轨迹的后段历史归因份额高于前段，干净和拒答轨迹也如此。随着答案增长，历史本来就变长。这种图样需要更强干预才能解释为后门机制。</p>
+<p><strong>第三，必须先说清解释哪个答案。</strong> 对固定的配合回答重评分，和对固定的拒答回答重评分，触发影响最大的地方可以不同。前者可能集中在开头，后者可能集中在停止位置。一个高亮词可能反映“继续说还是结束”，不只是“为什么选这个内容”。</p>
+<p>这三条经验在新课题中的用途很具体：固定分数和参照；保留所有条件；把图与原模型生成结果并排；不让颜色代替因果判断。旧数据没有失效，但也没有变成新方法的正结果。</p>
+<h2 id="前人走到了哪里我们怎样借力和超越">4. 前人走到了哪里，我们怎样借力和超越</h2>
+<h3 id="直接相关工作">4.1 直接相关工作</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>工作</th>
+<th>前人已经做了什么</th>
+<th>对我们的作用与区别</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://arxiv.org/abs/2310.01188v2">PECoRe，ICLR 2024</a>；<a href="https://aclanthology.org/2023.acl-demo.40/">Inseq，ACL 2023</a></td>
+<td>找受上下文影响的生成位置，再联系输入来源；提供归因工具</td>
+<td>原始文字热图设想已有直接底座。复用测量和展示经验，不能主张首次给输出着色</td>
+</tr>
+<tr class="even">
+<td><a href="https://arxiv.org/abs/2409.00729v2">ContextCite，NeurIPS 2024</a></td>
+<td>用删除上下文来源的实验解释生成；已用于上下文投毒定位</td>
+<td>归因处理投毒已有先例。它主要分析推理时上下文，本项目修复训练后受污染模型的参数</td>
+</tr>
+<tr class="odd">
+<td><a href="https://aclanthology.org/D17-1042/">SocRAT，EMNLP 2017</a></td>
+<td>用输入—输出依赖图研究生成，并分析人为加入的伪关联</td>
+<td>早已有“可视化发现异常依赖，再用干预检查”的路线；本项目需贡献新的可验证修复结果</td>
+</tr>
+<tr class="even">
+<td><a href="https://aclanthology.org/2023.findings-acl.561/">AttDef，Findings ACL 2023</a></td>
+<td>依据输入归因找可疑插入文字并作输入处理</td>
+<td>“归因后采取纠错行动”不是空白；我们需要证明新事实响应在 VLM 参数修复中有价值</td>
+</tr>
+<tr class="odd">
+<td><a href="https://arxiv.org/html/2101.05930v2">NAD，ICLR 2021</a></td>
+<td>用正常材料得到教师，再蒸馏注意力修复后门，并用热图解释</td>
+<td>“让模型重新关注正常信息”已有直接前例；我们的新增信息须体现为更好的实际修复</td>
+</tr>
+<tr class="even">
+<td><a href="https://arxiv.org/html/2409.17601v3">CleanerCLIP，原 TA-Cleaner 的更新版本</a></td>
+<td>从描述中提取属性、对象、关系，构造反事实负文本，通过对比学习修复 CLIP</td>
+<td>“反事实语义约束修复”已经做过。合法图像编辑与生成答案的成对关系是具体区别，尚不是优越性证据；本轮未取得其正文引用的补充材料，不宣称完整查清其全部评测</td>
+</tr>
+<tr class="odd">
+<td><a href="https://arxiv.org/abs/2501.05928v3">Grond</a></td>
+<td>研究图像后门隐蔽性，联合分析可视图、特征和参数</td>
+<td>提醒相似热图不代表相同机制；不是本轮修复基线，也没有我们当前的 VLM 修复实验</td>
+</tr>
+<tr class="even">
+<td><a href="https://arxiv.org/abs/2412.09565v2">Obfuscated Activations</a></td>
+<td>某些内部监测信号可与模型行为分离；已有生成文字按特征激活着色</td>
+<td>是旧探针对象和方法警示。不能叫作 Grond 的简单文字版，也不能说它证明所有归因失效</td>
+</tr>
+<tr class="odd">
+<td><a href="https://arxiv.org/html/2511.18921v1">BackdoorVLM</a></td>
+<td>组织视觉语言后门攻击与任务评价</td>
+<td>复用任务、输入处理和评分；攻击基准不等于统一防御排行榜</td>
+</tr>
+<tr class="even">
+<td><a href="https://arxiv.org/html/2608.24354v1">RACER</a></td>
+<td>不知道真实触发，借内部不一致构造人工扰动，再修复模型</td>
+<td>是最直接的方法底座和强竞争者。我们新增成对事实响应、参照保护和归因权重，并用对照拆分增量</td>
+</tr>
+<tr class="odd">
+<td><a href="https://arxiv.org/html/2603.12989v1">CleanSight</a></td>
+<td>测试时通过内部注意力净化输入影响；已评价污染输入上的任务效用</td>
+<td>不能声称同行只看攻击成功率。它的修复时机、权限和推理成本与参数修复不同，应分协议比较</td>
+</tr>
+<tr class="even">
+<td><a href="https://papers.nips.cc/paper_files/paper/2022/file/4491ea1c91aa2b22c373e5f1dfce234f-Paper-Datasets_and_Benchmarks.pdf">BackdoorBench，NeurIPS 2022</a></td>
+<td>分类后门评价已有触发样本恢复到原正确类别的 R-Acc</td>
+<td>“修复要看正确答案”不是我们发明的新指标；需在原 VLM 任务中兑现方法收益</td>
+</tr>
+<tr class="odd">
+<td><a href="https://arxiv.org/abs/2301.04213">Does Localization Inform Editing?</a>；<a href="https://arxiv.org/abs/2410.02762v2">ProjectAway</a></td>
+<td>分别研究定位与编辑效果的联系、视觉语言模型内部对象读出与干预</td>
+<td>借鉴实际编辑核验；“归因位置亮”不能替代“在此修改确实有效”，也不能泛称首次干预视觉证据</td>
+</tr>
+</tbody>
+</table>
+<p>更完整的相邻工作见<a href="../../RELATED_WORK.md">相关工作综述</a>及<a href="../../review/generation/FULLTEXT_NOTES.md">全文证据卡</a>。该文献库是历史冻结阅读记录；本次定向核对了主竞争者、关键先例和官方审稿标准，没有宣称重新穷尽此刻全部论文。CleanerCLIP 已有跨数据集迁移评估；本轮取得的正文没有按未见属性—对象组合隔离的成对评测，但缺失补充材料，因此不能由此主张这类评测从未被做过。</p>
+<h3 id="racer-已经很强我们到底要多做什么">4.2 RACER 已经很强，我们到底要多做什么</h3>
+<p>RACER 的核心思路可以概括为：找到模型内部对人工扰动的不稳定性，再训练它减少这种不稳定。我们进一步追问：<strong>减少不稳定时，能否保留或恢复“哪条视觉事实应该怎样影响答案”的关系？</strong></p>
+<p>论文作者报告其方法在 36 个设置中平均攻击成功率为 1.1%，其中 32 个为 0；仍有困难配置，例如 LLaVA 的 Blended–恶意注入配置残留 20.4%。这些是作者结果，不能与我们的自建拒答实例横向相减来宣称改进。<a href="https://arxiv.org/html/2608.24354v1#S5">RACER 原文与表 I</a></p>
+<p>我们不能预先断言 RACER 破坏了事实能力。需要在相同资源下实际看到剩余问题，并证明新增的事实响应信息能解决它。若普通训练或现成方法已经同样好，我们的增量就没有成立。</p>
+<h3 id="重新判断原来的贡献表述不够支撑立项价值">4.3 重新判断：原来的贡献表述不够支撑立项价值</h3>
+<p>“少量正常数据、不知道触发器、保留正常能力、修复后继续使用原模型”是有价值的需求，但已经是 RACER 等工作的目标。把这些再列一遍，不能解释为什么社区还需要我们。只增加一个响应损失、一个加权公式，再让单个拒答实例的成绩略高，也不足以支撑此前对课题影响力的判断。</p>
+<p>因此，本次将<strong>算法组件</strong>和<strong>值得争取的研究结果</strong>分开。N1–N10 是尝试获得结果的工具；真正有价值的结果，应当改变模型在强基线仍失败的条件下能否被修复、修复收益能否推广，以及修复后能否继续使用。已有工作做过相关发现，不排除我们做出重要进步；关键是得到它们尚未达到的能力或更好的完整结果。</p>
+<p>下面两个方向是 9 月 12 日重新评估后的研究目标，其中第一条更接近现有工作，第二条属于实质扩展。它们没有自动替换第 6 节现行理论或第 7 节已确认的实验计划。</p>
+<h3 id="优先争取用少量事实关系修复一类未直接教过的回答能力">4.4 优先争取：用少量事实关系，修复一类未直接教过的回答能力</h3>
+<p><strong>核心问题。</strong> 修复者只知道少量正常任务事实，不知道攻击者的触发条件和目标。能否从受控事实变化中提取有用的修复依据，让模型在未直接训练过的图片、事实组合和独立污染条件下，恢复正确回答，同时保住已有能力？其中“独立污染条件”指在不同污染起点上沿用同一套冻结修复规则，不是宣称一个修复后的权重能免疫后来重新投毒。</p>
+<p>工业上真正有吸引力的是这种<strong>修复收益的推广能力</strong>。设一家企业把模型训练成技术图纸助手，已经学会把尺寸标注对应到正确零件。后来发现接收的某份微调权重含有污染，某些输入条件下会读错尺寸。退回通用基座可能丢失企业已有的专业适配；逐张收集异常图纸、逐个修正答案又不能覆盖新图纸。企业需要知道：能否用一小批可靠的图纸变化，例如只把某个孔径从 8 改成 10、其余尺寸不动，纠正模型使用这些信息的方式，使未参与修复的新零件图纸也受益。这是潜在应用示例，不是已观察到的企业事故，也不是本轮颜色 toy 已经具备的图纸识别能力。</p>
+<p><strong>我们可能贡献的不是让它多答对几张训练图，而是减少“每遇到一种新失败，就重新收集一批对应修复样本”的依赖。</strong> 必须用相同数量、相同标签的材料与强基线比较，分别报告新图片、新事实组合和新污染条件的收益；不能把更多标注或更多训练换来的提升算成归因贡献。</p>
+<p>这条路有具体的前人证据，也有强反对照。BD-VAX 用人工构造的模型变体提取修复信号；其附录 D.3 显示，用情感操纵设置提取的信号处理拒答设置时，攻击成功率仍为 <strong>84.26%</strong>，而在拒答设置单独提取信号时为 <strong>7.54%</strong>。这说明该实验中修复信号跨攻击目标的迁移有明显障碍，并非所有异常都共用一份有效修复依据。<a href="https://arxiv.org/html/2603.13461v1#A4.SS3">BD-VAX 原文，表 11</a></p>
+<p>我们的推理是：<strong>正常任务应怎样回答，比攻击者想让模型说什么更稳定；依托正常事实关系，可能得到较少依赖某种攻击目标的修复依据。</strong> 这提供方法动机，不提供成功保证。BD-VAX 的结果来自文本生成模型，不能直接当成 VLM 的相同缺陷；而 RACER 已经跨多种攻击和目标取得强结果，更不能预设其必然失败。需要在可比的 VLM 条件下找到实际剩余问题，再证明事实归因能解决它。</p>
+<p>归因可视化在这里有三项具体工作：显示同一次事实变化怎样影响多个答案；区分改善目标事实与误伤其他事实；比较哪些关系在训练场景中恢复了，却没有推广到新组合。由这些观测产生的修复规则，需要在独立数据上胜过等权、难度加权和现成修复方法。若只把更多数据放进训练就能复制全部收益，就没有证明这份归因信息的独立价值。</p>
+<p><strong>学术贡献应落在“为何这些有限观测能带来可迁移的修复，以及在什么条件下失败”。</strong> 可以借鉴受控干预、系统辨识和受限优化的理论工具；仅凭有限事实对，无法保证任意未知触发或任意新组合。没有观测到的交互作用，必须成为可检验的范围限制，不能用一句“所有异常均被覆盖”的假设掩盖。</p>
+<h3 id="更大的延伸修复后继续正常学习修复效果还能不能保住">4.5 更大的延伸：修复后继续正常学习，修复效果还能不能保住</h3>
+<p>模型通常不会永远停在交付时的参数。设模型平台发布了一个修复版视觉模型，客户随后分别用正常材料训练文档识别、产品图片问答或其他任务。平台今天验收通过，不等于这些正常更新之后仍然通过。<strong>若我们能在不妨碍客户学习新任务的情况下，让修复经得住后续正常适配，影响的就是一个模型及其衍生版本的使用过程。</strong> 这种价值比只改善交付时一张测试表更大，但不属于现有 toy 已验证的能力。</p>
+<p>这里已有直接前例，必须分清实验条件：</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>原始工作</th>
+<th>已有证据</th>
+<th>我们不能重复包装的主张</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://papers.neurips.cc/paper_files/paper/2024/file/4a3ffc1a0074901718ab9dcef41909e9-Paper-Conference.pdf">TSBD，NeurIPS 2024，表 4</a></td>
+<td>在防御流程内部，重初始化后攻击率为零，随后用正常数据恢复精度，SSBA 攻击率回到 7.60%；加入梯度范数正则后为 1.66%</td>
+<td>已有“正常微调使部分后门行为回升，并通过改进更新抑制回升”的结果；不能扩写成任意模型交付后都会复发</td>
+</tr>
+<tr class="even">
+<td><a href="https://arxiv.org/html/2410.09838v1">PAM，NeurIPS 2024，§3–4</a></td>
+<td>研究低攻击率净化模型在少量再次投毒后恢复后门，并改进净化耐久性</td>
+<td>它的再训练包含有毒样本，不是纯正常更新；“即时攻击率低不等于修复彻底”也不是我们的新发现</td>
+</tr>
+<tr class="odd">
+<td><a href="https://aclanthology.org/2023.tacl-1.91.pdf">RECIPE，TACL 2023，§3–5</a>；<a href="https://aclanthology.org/2026.findings-acl.815.pdf">DiSec，Findings ACL 2026</a></td>
+<td>已研究先净化预训练模型，再由下游正常微调后的攻击与正常表现</td>
+<td>“清理一个模型，惠及后续适配”已经是研究问题；换成生成式 VLM 不能单独构成突破</td>
+</tr>
+</tbody>
+</table>
+<p><strong>可争取的新问题是：对于今天的正确率、攻击率和正常能力相近的几份修复结果，事实归因能否提前分辨哪一份更容易在正常更新后再次出问题？再利用这份信息，能否获得更耐久的修复？</strong> 前一句检验归因是否有额外判断能力，后一句检验它能否改变修复结果，二者要分别证明。</p>
+<p>可视化应比较“修复前—修复后—正常适配后”的同一事实响应，寻找具体异常关系，再检验这些关系能否预测后续行为。判断时要与普通答案置信度、损失、参数变化和梯度指标比较；修复时要与耐久修复方法比较。<strong>如果所谓更耐久只是让模型难以学习任何新任务，就不算进步。</strong> 必须在相近的新任务学习效果下比较原任务保持和后门复发。</p>
+<p>这条延伸的工业价值更强，现有方法支持却更弱。若现有强基线经过正常适配都不复发，本实验条件就没有这个问题；若归因不能提供普通指标之外的信息，也不应为归因硬造用途。因此目前把它列为优先核查的扩展候选，不把它写成已经成立的主结论。</p>
+<h3 id="还考虑了什么以及现行理论离这些贡献差在哪里">4.6 还考虑了什么，以及现行理论离这些贡献差在哪里</h3>
+<p>另一个可能方向是判断“哪些组件足以修复，哪些修改要求彼此冲突”，帮助决定修接口、修语言模块，还是换组件。但当前 N9 只检查一次更新，没有证明一个组件的全部允许更新均不可行。一次训练失败也不能推出必须重训。该方向容易发展成计算昂贵却很少能给出结论的诊断，暂不作为主攻；它只有在能提前改变真实修复选择、且成本低于短程试训时才值得提升优先级。</p>
+<p>当前理论可以继续用于计算和核验，不能直接支撑扩大的贡献：</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>希望得到的能力</th>
+<th>现有底座可做什么</th>
+<th>还缺什么</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>知道哪些事实关系值得优先修</td>
+<td>N3 测响应，N4 给出固定幅度权重</td>
+<td>大幅偏离为何对应更好的修复方向；共同错误偏置可能在差分中抵消，正常响应漂移也可能被算作损伤</td>
+</tr>
+<tr class="even">
+<td>少量关系带来跨条件的修复</td>
+<td>N2 产生人工扰动，N5–N6 更新原模型</td>
+<td>人工扰动与真实异常之间的联系、已测与未测事实组合的覆盖范围；不能仅由训练损失下降推出</td>
+</tr>
+<tr class="odd">
+<td>后续学习仍保留修复效果</td>
+<td>N9 检查起点一次实际更新，N10 检查当前有限校准集</td>
+<td>明确定义后续正常训练过程，并解释事实响应如何约束后续多步行为；当前理论没有这部分</td>
+</tr>
+</tbody>
+</table>
+<p>所以，<strong>我建议优先争取第 4.4 节的可迁移能力修复；第 4.5 节的耐久性作为更高价值、但须另行验证入口现象的延伸。</strong> 不能把迁移、耐久、低成本和任意后门保证一次全部写进 claim。现有 toy 可以检验响应约束及其权重有没有最初的真实增量，也含一组未见形状—颜色组合；它不够证明跨攻击目标或后续适配的结论。</p>
+<h3 id="什么结果才足以支撑影响力判断">4.7 什么结果才足以支撑影响力判断</h3>
+<p>值得争取的论文应给出一条完整证据链：<strong>强方法存在可重复的重要失败 → 事实归因提供普通观测没有的信息 → 这份信息改变修复操作 → 独立真实任务得到实质改善 → 正常能力和总成本仍可接受。</strong> 社区可以从中复用新的修复原则，而非只能复用一个绘图脚本或一组恰好有效的系数。</p>
+<p>当前最有信息量的下一步，是在合格污染起点上先核查强基线的剩余失败，并用成对事实观测解释这些失败是否与本方法相关。开发阶段可以据此改规则；独立测试必须保留。先确认问题，再扩大理论和实验，不能因为已经写了很多公式就认定方法值得大规模运行。</p>
+<p>按 <a href="https://iclr.cc/Conferences/2027/ReviewerGuidelines">ICLR 2027 官方审稿指南</a>，工作可以解决已有问题，也不必只争榜单第一；核心是结果是否对广泛读者有意义，以及论证和实验是否支持实际主张。官方给出的拒稿示例也明确批评“没有证明所提问题实际存在”。我的判断是：<strong>可迁移修复或耐久修复若完整做到上述证据链，有合理的 ICLR 级研究路径；当前的幅度加权方案与单拒答实例，还不足以给出 accept 级潜力已经兑现的判断。</strong> 更强的贡献来自更强的研究结果，不来自把应用故事讲得更大。</p>
+<p>本节由原始论文定向检索、相关方法与实验章节核对及三路交叉审查形成，更新日期为 2026 年 9 月 12 日；没有宣称完成对所有邻近论文的新一轮全文穷尽查重。文中潜在应用、方法动机和优先级属于本次研究判断，引用论文中的数据属于作者报告，均不是本项目实验结果。</p>
+<h2 id="整个方法怎样运转">5. 整个方法怎样运转</h2>
+<ol type="1">
+<li><strong>建立正常参照。</strong> 在收到的模型上找正常情况下确实答对的事实对，记录完整候选答案分数。不是相信它说什么都对。</li>
+<li><strong>做内部压力测试。</strong> 两张成对图片使用同一小扰动，观察事实变化对答案的作用偏离参照多少。</li>
+<li><strong>冻结权重。</strong> 偏离较大的事实对适度加权。权重只在训练起点算一次，不随训练追着异常跑。</li>
+<li><strong>修原参数。</strong> 同时训练正确答案、抑制内部不一致、保持正常分数，并恢复成对响应。只有响应项及其权重在核心对照中改变。</li>
+<li><strong>正常校准决定是否保留。</strong> 正常问答或描述损害超过门槛，则回退起点。回退表示没找到可接受修复。</li>
+<li><strong>独立测试真实效果。</strong> 全部方法锁定后，才由评估者加入真实触发，检查实际生成、事实得失与成本。</li>
+</ol>
+<p>主线简称 <strong>U</strong>，意思是修复者不知道真实触发。理论还定义了知道真实触发的 <strong>K</strong> 分支，供后续诊断；本轮 48 GPUh 不训练 K。评估者用真实触发检查 U 的一次更新，也不等于 U 在训练时知道触发。</p>
+<p>下节把这六步展开为 N1–N10。它们组成同一个算法，而不是十个新定理。</p>
+<h2 id="现行理论每个公式算什么为什么需要它">6. 现行理论：每个公式算什么，为什么需要它</h2>
+<h3 id="先认清符号和数学类型">6.1 先认清符号和数学类型</h3>
+<table>
+<thead>
+<tr class="header">
+<th>符号</th>
+<th>人话解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mn>0</mn></msub><mo>,</mo><mi>θ</mi></mrow><annotation encoding="application/x-tex">\theta_0,\theta</annotation></semantics></math></td>
+<td>修复起点的参数、正在修复的允许参数；其余参数固定</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>,</mo><mi>v</mi></mrow><annotation encoding="application/x-tex">u,v</annotation></semantics></math>；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">e=(u,v)</annotation></semantics></math></td>
+<td>编辑前、编辑后的两个输入；一对图片加同一个问题</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>U</mi><mi>i</mi></msub><annotation encoding="application/x-tex">U_i</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math></td>
+<td>一个训练单元所含的输入，以及训练单元总数；普通图文只有一端，事实对有两端</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mstyle mathvariant="script"><mi>𝒴</mi></mstyle><mi>q</mi></msub><mo>,</mo><msub><mi>D</mi><mi>q</mi></msub></mrow><annotation encoding="application/x-tex">\mathcal Y_q,D_q</annotation></semantics></math></td>
+<td>该问题固定的候选答案集合、候选数量</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>,</mo><mi>c</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow><annotation encoding="application/x-tex">s,c,r,a</annotation></semantics></math></td>
+<td>都是长度为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mi>q</mi></msub><annotation encoding="application/x-tex">D_q</annotation></semantics></math> 的向量；依次是答案分数、起点正常参照、单端偏离、两端偏离之差</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>,</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">\delta,\tau</annotation></semantics></math></td>
+<td>内部人工扰动、真实触发操作，二者不同</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle mathvariant="script"><mi>ℰ</mi></mstyle><mo>,</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">\mathcal E,M</annotation></semantics></math></td>
+<td>正常参照合格的事实对集合及数量</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle mathvariant="script"><mi>ℋ</mi></mstyle><mo>,</mo><mi>R</mi></mrow><annotation encoding="application/x-tex">\mathcal H,R</annotation></semantics></math></td>
+<td>正常参照合格的端点出现记录及数量；重复出现如实计入</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>e</mi></msub><mo>,</mo><msub><mi>d</mi><mi>e</mi></msub></mrow><annotation encoding="application/x-tex">w_e,d_e</annotation></semantics></math></td>
+<td>第 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>e</mi><annotation encoding="application/x-tex">e</annotation></semantics></math> 对的训练权重、参考偏离幅度，都是标量</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>,</mo><mi>g</mi><mo>,</mo><mi>Δ</mi></mrow><annotation encoding="application/x-tex">L,g,\Delta</annotation></semantics></math></td>
+<td>训练目标、目标对参数的梯度、实际参数改动</td>
+</tr>
+</tbody>
+</table>
+<p>读法：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>∑</mo><annotation encoding="application/x-tex">\sum</annotation></semantics></math> 是相加，除以数量就是平均；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>z</mi><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\|z\|^2</annotation></semantics></math> 是各坐标平方后相加；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∇</mi><annotation encoding="application/x-tex">\nabla</annotation></semantics></math> 或 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math> 表示微小变化对结果的影响率；上标 0 表示没有人工扰动，不表示参数为零。</p>
+<p>理论使用四类成熟工具：有限差分测响应，平方误差与加权平均组成训练目标，链式法则连接参数，一阶展开检查局部变化。有限校准集合负责选择模型。它们提供可操作的数学底座，不自动构成原创理论贡献。</p>
+<h3 id="n1先规定答案分数是什么">6.2 N1：先规定“答案分数”是什么</h3>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>s</mi><mi>θ</mi><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>v</mi><msub><mo stretchy="false" form="postfix">)</mo><mi>y</mi></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mi>T</mi><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><munderover><mo>∑</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>T</mi><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow></munderover><mo>log</mo><msub><mi>P</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>y</mi><mi>t</mi></msub><mo>∣</mo><msub><mi>x</mi><mi>v</mi></msub><mo>,</mo><mi>q</mi><mo>,</mo><msub><mi>y</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo>;</mo><mi>δ</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>c</mi><mi>v</mi></msub><mo>=</mo><msubsup><mi>s</mi><msub><mi>θ</mi><mn>0</mn></msub><mn>0</mn></msubsup><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+s^\delta_\theta(v)_y
+=\frac{1}{T(y)}\sum_{t=1}^{T(y)}
+\log P_\theta(y_t\mid x_v,q,y_{&lt;t};\delta),
+\qquad c_v=s^0_{\theta_0}(v).
+</annotation></semantics></math></p>
+<p><strong>怎么算。</strong> 把一个完整候选答案拆成 token，即模型实际处理的文字小块；每一步固定前面的候选文字，计算当前 token 的概率。概率取自然对数后求平均。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">T(y)</annotation></semantics></math> 包括按协议加入的结束符，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">y_{&lt;t}</annotation></semantics></math> 是此前的候选文字。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mi>v</mi></msub><annotation encoding="application/x-tex">c_v</annotation></semantics></math> 是起点模型正常情况下得到的同一分数向量。</p>
+<p>例如，一个答案加结束符共两个 token，概率为 0.8、0.5，分数为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mo>log</mo><mn>0.8</mn><mo>+</mo><mo>log</mo><mn>0.5</mn><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mn>2</mn><mo>≈</mo><mo>−</mo><mn>0.458</mn></mrow><annotation encoding="application/x-tex">(\log0.8+\log0.5)/2\approx-0.458</annotation></semantics></math>。完整串概率是 0.4，不能把 −0.458 或其指数直接叫作完整串概率，更不能叫作“事实正确概率”。通常分数越大，表示该规则下模型越支持该候选。</p>
+<p><strong>为什么需要。</strong> 不同条件必须用同一个尺子比较；问题、候选顺序、分词、结束符和前缀规则都要一致。实际自由生成仍单独执行，不强迫模型从候选列表选答案。</p>
+<p><strong>正常参照怎样合格。</strong> 真值已核验；至少两个有意义的候选；正确候选独占最高分；正常自由生成也答对。两端都合格才能进入成对响应训练。资格在起点固定，训练中不重新挑选。不合格的样本仍可以用正确标签做普通训练。</p>
+<p><strong>严格检查。</strong> 这是可计算的定义，不是因果定理。参照资格证明它在这道题答对，不证明整个分数向量最优，也不证明模型内部知识完整。它供 N3、正确答案损失和 N10 前的参照准备使用。</p>
+<h3 id="n2不知道真实触发怎样产生可重复的压力测试">6.3 N2：不知道真实触发，怎样产生可重复的压力测试</h3>
+<p>设 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">F_\theta(v)</annotation></semantics></math> 是视觉和文字融合后的输入数值；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mstyle mathvariant="script"><mi>𝒱</mi></mstyle><mi>v</mi></msub><annotation encoding="application/x-tex">\mathcal V_v</annotation></semantics></math> 是视觉位置，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mstyle mathvariant="script"><mi>𝒯</mi></mstyle><mi>v</mi></msub><annotation encoding="application/x-tex">\mathcal T_v</annotation></semantics></math> 是问题与模板位置，不包括答案或补齐位置。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>H</mi><mrow><mi>v</mi><mo>,</mo><mi>t</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>l</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><annotation encoding="application/x-tex">H^{(l)}_{v,t}</annotation></semantics></math> 是第 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>l</mi><annotation encoding="application/x-tex">l</annotation></semantics></math> 层、第 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math> 位置的内部向量。先定义：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right"><msub><mi>I</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo>,</mo><mi>δ</mi><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left"><mo>=</mo><mfrac><mn>1</mn><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>U</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">|</mo></mrow></mfrac><munder><mo>∑</mo><mrow><mi>v</mi><mo>∈</mo><msub><mi>U</mi><mi>i</mi></msub></mrow></munder><mfrac><mn>1</mn><mrow><mo stretchy="false" form="prefix">|</mo><mstyle mathvariant="script"><mi>𝒲</mi></mstyle><mo stretchy="false" form="prefix">|</mo></mrow></mfrac><munder><mo>∑</mo><mrow><mi>l</mi><mo>∈</mo><mstyle mathvariant="script"><mi>𝒲</mi></mstyle></mrow></munder><munder><mo>∑</mo><mrow><mi>A</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><msub><mstyle mathvariant="script"><mi>𝒱</mi></mstyle><mi>v</mi></msub><mo>,</mo><msub><mstyle mathvariant="script"><mi>𝒯</mi></mstyle><mi>v</mi></msub><mo stretchy="false" form="postfix">}</mo></mrow></munder><mfrac><msub><mi>ω</mi><mi>A</mi></msub><mrow><mo stretchy="false" form="prefix">|</mo><mi>A</mi><mo stretchy="false" form="prefix">|</mo></mrow></mfrac><munder><mo>∑</mo><mrow><mi>t</mi><mo>∈</mo><mi>A</mi></mrow></munder><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>−</mo><msub><mo>cos</mo><mi>ζ</mi></msub><mo stretchy="false" form="prefix">(</mo><msubsup><mi>H</mi><mrow><mi>v</mi><mo>,</mo><mi>t</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>l</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>,</mo><msubsup><mi>H</mi><mrow><mi>v</mi><mo>,</mo><mi>t</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>l</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><msub><mo>cos</mo><mi>ζ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left"><mo>=</mo><mfrac><mrow><msup><mi>a</mi><mi>⊤</mi></msup><mi>b</mi></mrow><mrow><mo>max</mo><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="postfix">∥</mo><mi>a</mi><mo stretchy="false" form="postfix">∥</mo><mo>,</mo><mi>ζ</mi><mo stretchy="false" form="postfix">)</mo><mo>max</mo><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="postfix">∥</mo><mi>b</mi><mo stretchy="false" form="postfix">∥</mo><mo>,</mo><mi>ζ</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+I_i(\theta,\delta)
+&amp;=\frac1{|U_i|}\sum_{v\in U_i}
+\frac1{|\mathcal W|}\sum_{l\in\mathcal W}
+\sum_{A\in\{\mathcal V_v,\mathcal T_v\}}
+\frac{\omega_A}{|A|}\sum_{t\in A}
+\left[1-\cos_\zeta(H^{(l)}_{v,t},H^{(l+1)}_{v,t})\right],\\
+\cos_\zeta(a,b)&amp;=
+\frac{a^\top b}{\max(\|a\|,\zeta)\max(\|b\|,\zeta)}.
+\end{aligned}
+</annotation></semantics></math></p>
+<p><strong>第一行算什么。</strong> 看内部向量从一层到下一层转了多大方向，先分别平均视觉、文字位置，再按系数相加，最后平均指定的层对和输入端点。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mstyle mathvariant="script"><mi>𝒲</mi></mstyle><annotation encoding="application/x-tex">\mathcal W</annotation></semantics></math> 是使用的层对，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ω</mi><mi>A</mi></msub><annotation encoding="application/x-tex">\omega_A</annotation></semantics></math> 是区域系数。这样长达几百个位置的图片不会仅因位置多就淹没问题文字。第二行中的小正数 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ζ</mi><annotation encoding="application/x-tex">\zeta</annotation></semantics></math> 防止除零。</p>
+<p>这借用了 RACER 的区域不一致量。它不是“正常向量减扰动向量”；即使扰动从零开始，相邻层也可以不同，梯度不必为零。值大也不能单独判定存在后门。</p>
+<p>再在允许范围内搜索扰动：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right"><msub><mstyle mathvariant="script"><mi>ℬ</mi></mstyle><mi>i</mi></msub></mtd><mtd columnalign="left"><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>δ</mi><mo>:</mo><mi>δ</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 在允许输入位置以外为零</mtext></mrow><mo>,</mo><mspace width="0.222em"></mspace><mo stretchy="false" form="postfix">∥</mo><mi>δ</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>∞</mi></msub><mo>≤</mo><mi>ϵ</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><msubsup><mi>δ</mi><mi>i</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow></msubsup></mtd><mtd columnalign="left"><mo>=</mo><mn>0</mn><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><msubsup><mi>δ</mi><mi>i</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msubsup></mtd><mtd columnalign="left"><mo>=</mo><msub><mi>Π</mi><msub><mstyle mathvariant="script"><mi>ℬ</mi></mstyle><mi>i</mi></msub></msub><mrow><mo stretchy="true" form="prefix">[</mo><msubsup><mi>δ</mi><mi>i</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>+</mo><msub><mi>η</mi><mstyle mathvariant="normal"><mi>P</mi><mi>G</mi><mi>D</mi></mstyle></msub><mo>sign</mo><msub><mi>∇</mi><mi>δ</mi></msub><msub><mi>I</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo>,</mo><msubsup><mi>δ</mi><mi>i</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><msub><mover><mi>δ</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub></mtd><mtd columnalign="left"><mo>=</mo><mo>stopgrad</mo><mo stretchy="false" form="prefix">(</mo><msubsup><mi>δ</mi><mi>i</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>K</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\mathcal B_i&amp;=\{\delta:\delta\text{ 在允许输入位置以外为零},\ \|\delta\|_\infty\le\epsilon\},\\
+\delta_i^{(0)}&amp;=0,\\
+\delta_i^{(k+1)}&amp;=\Pi_{\mathcal B_i}\left[
+\delta_i^{(k)}+\eta_{\mathrm{PGD}}\operatorname{sign}
+\nabla_\delta I_i(\theta,\delta_i^{(k)})\right],\\
+\widehat\delta_i&amp;=\operatorname{stopgrad}(\delta_i^{(K)}).
+\end{aligned}
+</annotation></semantics></math></p>
+<p><strong>逐行读。</strong> 每个数的变化不超过 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math>；从零开始；沿增大不一致的方向挪一点；用投影 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math> 把越界数值截回范围；重复 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math> 次后，把得到的扰动暂时固定，用于这次模型训练。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>η</mi><mstyle mathvariant="normal"><mi>P</mi><mi>G</mi><mi>D</mi></mstyle></msub><annotation encoding="application/x-tex">\eta_{\mathrm{PGD}}</annotation></semantics></math> 是每次挪动的步长。当前计划是 20 步、范围 0.01、步长 0.0005。</p>
+<p>两端必须使用<strong>同一个实际张量、同一组位置</strong>。只共用随机种子不够。红球和绿球接受同一次压力测试，才便于比较；不同事实对可以有不同扰动。当前代码采用视觉系数 1、文字系数 4，是一般公式的一个具体设置。</p>
+<p><strong>严格检查与用途。</strong> 投影保证每步扰动合法，这可直接逐步证明；有限 20 步不保证找到最大值，也不保证每步都变大。训练时固定的只有扰动，视觉连接模块的计算路径仍需保留梯度，否则名义上修接口，实际没有修改依据。N2 供 N4 的一次参考测量、N5–N6 的每步训练使用。</p>
+<h3 id="n3我们说的事实响应偏离精确是什么">6.4 N3：我们说的事实响应偏离，精确是什么</h3>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right"><msubsup><mi>r</mi><mrow><mi>u</mi><mo>∣</mo><mi>e</mi></mrow><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left"><mo>=</mo><msubsup><mi>s</mi><mi>θ</mi><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msub><mi>c</mi><mi>u</mi></msub><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><msubsup><mi>r</mi><mrow><mi>v</mi><mo>∣</mo><mi>e</mi></mrow><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left"><mo>=</mo><msubsup><mi>s</mi><mi>θ</mi><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msub><mi>c</mi><mi>v</mi></msub><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><msubsup><mi>a</mi><mi>e</mi><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left"><mo>=</mo><msubsup><mi>r</mi><mrow><mi>v</mi><mo>∣</mo><mi>e</mi></mrow><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msubsup><mi>r</mi><mrow><mi>u</mi><mo>∣</mo><mi>e</mi></mrow><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mtd></mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mo>=</mo><mo stretchy="false" form="prefix">[</mo><msubsup><mi>s</mi><mi>θ</mi><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msubsup><mi>s</mi><mi>θ</mi><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>−</mo><mo stretchy="false" form="prefix">[</mo><msub><mi>c</mi><mi>v</mi></msub><mo>−</mo><msub><mi>c</mi><mi>u</mi></msub><mo stretchy="false" form="postfix">]</mo><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+r_{u\mid e}^{\delta}(\theta)&amp;=s^\delta_\theta(u)-c_u,\\
+r_{v\mid e}^{\delta}(\theta)&amp;=s^\delta_\theta(v)-c_v,\\
+a_e^\delta(\theta)&amp;=r_{v\mid e}^{\delta}(\theta)-r_{u\mid e}^{\delta}(\theta)\\
+&amp;=[s^\delta_\theta(v)-s^\delta_\theta(u)]-[c_v-c_u].
+\end{aligned}
+</annotation></semantics></math></p>
+<p>前两行分别算每张图偏离起点正常参照多少；后两行算“编辑前后答案支持的变化”偏离原关系多少。下标 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>∣</mo><mi>e</mi></mrow><annotation encoding="application/x-tex">u\mid e</annotation></semantics></math> 提醒我们，同一图片若参与不同事实对，所受扰动可能不同，不能随意合并成同一个节点值。</p>
+<p><strong>红球例子。</strong> 只展示“红、绿”两个候选的示意平均分：</p>
+<table>
+<thead>
+<tr class="header">
+<th>条件</th>
+<th>红球图 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>：红／绿</th>
+<th>绿球图 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>：红／绿</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>起点正常参照</td>
+<td>−0.2／−2.0</td>
+<td>−2.0／−0.2</td>
+</tr>
+<tr class="even">
+<td>同一扰动下</td>
+<td>−0.8／−1.0</td>
+<td>−1.0／−0.8</td>
+</tr>
+</tbody>
+</table>
+<p>正常编辑响应是 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mo>−</mo><mn>1.8</mn><mo>,</mo><mn>1.8</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(-1.8,1.8)</annotation></semantics></math>，扰动后的响应是 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mo>−</mo><mn>0.2</mn><mo>,</mo><mn>0.2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(-0.2,0.2)</annotation></semantics></math>，所以 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1.6</mn><mo>,</mo><mo>−</mo><mn>1.6</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a=(1.6,-1.6)</annotation></semantics></math>。球颜色改变后，答案支持本来应明显切换，现在切换变弱。这是可以画成带正负方向热图的量。</p>
+<p><strong>一个必须讲准的分解。</strong> 训练以后，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math> 不只是扰动影响，它还包含模型正常响应自己变了多少：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right"><msubsup><mi>a</mi><mi>e</mi><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow></mrow></mtd><mtd columnalign="left"><munder><munder><mrow><mo stretchy="false" form="prefix">[</mo><msubsup><mi>s</mi><mi>θ</mi><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msubsup><mi>s</mi><mi>θ</mi><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>−</mo><mo stretchy="false" form="prefix">[</mo><msubsup><mi>s</mi><mi>θ</mi><mn>0</mn></msubsup><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msubsup><mi>s</mi><mi>θ</mi><mn>0</mn></msubsup><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo></mrow><mo accent="true">⏟</mo></munder><mtext mathvariant="normal">当前模型中的扰动交互</mtext></munder></mtd></mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mo>+</mo><munder><munder><mrow><mo stretchy="false" form="prefix">[</mo><msubsup><mi>s</mi><mi>θ</mi><mn>0</mn></msubsup><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msubsup><mi>s</mi><mi>θ</mi><mn>0</mn></msubsup><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>−</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>c</mi><mi>v</mi></msub><mo>−</mo><msub><mi>c</mi><mi>u</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><mo accent="true">⏟</mo></munder><mtext mathvariant="normal">正常响应相对起点的漂移</mtext></munder><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+a_e^\delta(\theta)
+={}&amp;\underbrace{[s^\delta_\theta(v)-s^\delta_\theta(u)]
+-[s^0_\theta(v)-s^0_\theta(u)]}_{\text{当前模型中的扰动交互}}\\
+&amp;+\underbrace{[s^0_\theta(v)-s^0_\theta(u)]-(c_v-c_u)}_{\text{正常响应相对起点的漂移}}.
+\end{aligned}
+</annotation></semantics></math></p>
+<p>这个分解只是在中间加减同一项，严格成立。起点 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>θ</mi><mo>=</mo><msub><mi>θ</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">\theta=\theta_0</annotation></semantics></math> 时第二项为零。后来若模型变得更自信、答题更好，也可能出现非零 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>。因此准确名称是<strong>响应偏离</strong>，它是否代表应修的事实损伤，要看真实回答。此量供热图、N4 权重和 N6 损失使用。</p>
+<h3 id="n4把偏离转成温和固定的训练权重">6.5 N4：把偏离转成温和、固定的训练权重</h3>
+<p>先在起点为每条合格训练事实对搜索一次参考扰动 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>δ</mi><mi>e</mi><mstyle mathvariant="normal"><mi>r</mi><mi>e</mi><mi>f</mi></mstyle></msubsup><annotation encoding="application/x-tex">\delta_e^{\mathrm{ref}}</annotation></semantics></math>，保存不变。设问题类型为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mo stretchy="false" form="prefix">(</mo><mi>e</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">b(e)</annotation></semantics></math>，同类型严格正偏离的中位数为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>m</mi><mrow><mi>b</mi><mo stretchy="false" form="prefix">(</mo><mi>e</mi><mo stretchy="false" form="postfix">)</mo></mrow></msub><annotation encoding="application/x-tex">m_{b(e)}</annotation></semantics></math>：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right"><msub><mi>d</mi><mi>e</mi></msub></mtd><mtd columnalign="left"><mo>=</mo><mfrac><mrow><mo stretchy="false" form="postfix">∥</mo><msubsup><mi>a</mi><mi>e</mi><msubsup><mi>δ</mi><mi>e</mi><mstyle mathvariant="normal"><mi>r</mi><mi>e</mi><mi>f</mi></mstyle></msubsup></msubsup><mo stretchy="false" form="prefix">(</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup></mrow><msub><mi>D</mi><msub><mi>q</mi><mi>e</mi></msub></msub></mfrac><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><msub><mover><mi>w</mi><mo accent="true">̃</mo></mover><mi>e</mi></msub></mtd><mtd columnalign="left"><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left"><mn>1</mn><mo>+</mo><mo>min</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>d</mi><mi>e</mi></msub><mi>/</mi><msub><mi>m</mi><mrow><mi>b</mi><mo stretchy="false" form="prefix">(</mo><mi>e</mi><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mtd><mtd columnalign="left"><mtext mathvariant="normal">同类型有正偏离</mtext><mo>,</mo></mtd></mtr><mtr><mtd columnalign="left"><mn>1</mn><mo>,</mo></mtd><mtd columnalign="left"><mtext mathvariant="normal">同类型偏离全为零</mtext><mo>,</mo></mtd></mtr></mtable></mrow></mtd></mtr><mtr><mtd columnalign="right"><msub><mi>w</mi><mi>e</mi></msub></mtd><mtd columnalign="left"><mo>=</mo><mfrac><msub><mover><mi>w</mi><mo accent="true">̃</mo></mover><mi>e</mi></msub><mrow><msup><mi>M</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><munder><mo>∑</mo><mrow><mi>f</mi><mo>∈</mo><mstyle mathvariant="script"><mi>ℰ</mi></mstyle></mrow></munder><msub><mover><mi>w</mi><mo accent="true">̃</mo></mover><mi>f</mi></msub></mrow></mfrac><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+d_e&amp;=\frac{\|a_e^{\delta_e^{\mathrm{ref}}}(\theta_0)\|^2}{D_{q_e}},\\
+\widetilde w_e&amp;=
+\begin{cases}
+1+\min(d_e/m_{b(e)},1),&amp;\text{同类型有正偏离},\\
+1,&amp;\text{同类型偏离全为零},
+\end{cases}\\
+w_e&amp;=\frac{\widetilde w_e}{M^{-1}\sum_{f\in\mathcal E}\widetilde w_f}.
+\end{aligned}
+</annotation></semantics></math></p>
+<p><strong>第一行</strong>把向量各项平方并平均，得到一个偏离强度。红球示意中 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msup><mn>1.6</mn><mn>2</mn></msup><mo>+</mo><mo stretchy="false" form="prefix">(</mo><mo>−</mo><mn>1.6</mn><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mn>2</mn><mo>=</mo><mn>2.56</mn></mrow><annotation encoding="application/x-tex">d=(1.6^2+(-1.6)^2)/2=2.56</annotation></semantics></math>。它舍弃了正负方向，所以展示时仍保留原始 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>。</p>
+<p><strong>第二行</strong>拿同类型中位数作尺度，最多把未归一权重从 1 增到 2。这样颜色和数量问题不直接按原始尺度混排，极端值也不能无限占据训练。</p>
+<p><strong>第三行</strong>让全部合格训练事实对的平均权重回到 1，避免主方法只是整体放大损失。严格地，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>≤</mo><msub><mover><mi>w</mi><mo accent="true">̃</mo></mover><mi>e</mi></msub><mo>≤</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">1\le\widetilde w_e\le2</annotation></semantics></math>，所以平均 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>e</mi></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">w_e=1</annotation></semantics></math>，最大与最小权重之比不超过 2。这个性质只控制强度，不保证方向有用。</p>
+<p>若没有合格事实对，即 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">M=0</annotation></semantics></math>，响应项记零并报告覆盖缺失，不能除以零后继续声称用了归因。若只有一条合格边，归一后权重为 1，单边冒烟自然测不出加权的比较收益。</p>
+<p><strong>普通难度对照 Gl。</strong> 用相同参考扰动，计算两端正确答案的平均损失；在同一问题类型内，把 G 的同一组权重按答题难度重新分配。权重大小、总量和分布都不变，只有“哪个样本拿哪个权重”改变。G0 则统一取 1。这检查该预定义难度排序能否复制收益，不代表比较了所有难例训练方法。</p>
+<h3 id="n5所有核心方法共用的训练目标">6.6 N5：所有核心方法共用的训练目标</h3>
+<p>先定义正确答案损失与正常保持项：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ℓ</mi><mi>θ</mi><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo>−</mo><msubsup><mi>s</mi><mi>θ</mi><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>v</mi><msub><mo stretchy="false" form="postfix">)</mo><mi>y</mi></msub><mo>,</mo><mspace width="2.0em"></mspace><msubsup><mover><mi>ℓ</mi><mo accent="true">‾</mo></mover><mi>i</mi><mi>δ</mi></msubsup><mo>=</mo><mfrac><mn>1</mn><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>U</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">|</mo></mrow></mfrac><munder><mo>∑</mo><mrow><mi>v</mi><mo>∈</mo><msub><mi>U</mi><mi>i</mi></msub></mrow></munder><msubsup><mi>ℓ</mi><mi>θ</mi><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo>,</mo><msub><mi>y</mi><mi>v</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>k</mi><mi>v</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mo stretchy="false" form="postfix">∥</mo><msubsup><mi>s</mi><mi>θ</mi><mn>0</mn></msubsup><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msub><mi>c</mi><mi>v</mi></msub><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup></mrow><msub><mi>D</mi><msub><mi>q</mi><mi>v</mi></msub></msub></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\ell_\theta^\delta(v,y)=-s_\theta^\delta(v)_y,\qquad
+\bar\ell_i^\delta=\frac1{|U_i|}\sum_{v\in U_i}\ell_\theta^\delta(v,y_v),\qquad
+k_v(\theta)=\frac{\|s^0_\theta(v)-c_v\|^2}{D_{q_v}}.
+</annotation></semantics></math></p>
+<p>损失越小，模型越支持正确答案；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>ℓ</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar\ell</annotation></semantics></math> 先平均一对图片的两端，避免成对单元凭端点多而平白翻倍。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>k</mi><mi>v</mi></msub><annotation encoding="application/x-tex">k_v</annotation></semantics></math> 表示原本能答对的正常节点，其全部候选分数被改动多少，不只约束正确答案的一个坐标。</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right"><msub><mi>L</mi><mstyle mathvariant="normal"><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi></mstyle></msub></mtd><mtd columnalign="left"><mo>=</mo><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><mrow><mo stretchy="true" form="prefix">[</mo><msubsup><mover><mi>ℓ</mi><mo accent="true">‾</mo></mover><mi>i</mi><mn>0</mn></msubsup><mo>+</mo><msub><mi>β</mi><mstyle mathvariant="normal"><mi>a</mi><mi>d</mi><mi>v</mi><mi>C</mi><mi>E</mi></mstyle></msub><msubsup><mover><mi>ℓ</mi><mo accent="true">‾</mo></mover><mi>i</mi><msub><mover><mi>δ</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub></msubsup><mo>+</mo><msub><mi>α</mi><mstyle mathvariant="normal"><mi>i</mi><mi>n</mi><mi>c</mi></mstyle></msub><msub><mi>I</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo>,</mo><msub><mover><mi>δ</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><msub><mi>L</mi><mstyle mathvariant="normal"><mi>k</mi><mi>e</mi><mi>e</mi><mi>p</mi></mstyle></msub></mtd><mtd columnalign="left"><mo>=</mo><mfrac><mn>1</mn><mi>R</mi></mfrac><munder><mo>∑</mo><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><mstyle mathvariant="script"><mi>ℋ</mi></mstyle></mrow></munder><msub><mi>k</mi><mi>v</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><msub><mi>L</mi><mstyle mathvariant="normal"><mi>c</mi><mi>o</mi><mi>m</mi><mi>m</mi><mi>o</mi><mi>n</mi></mstyle></msub></mtd><mtd columnalign="left"><mo>=</mo><msub><mi>L</mi><mstyle mathvariant="normal"><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi></mstyle></msub><mo>+</mo><msub><mi>γ</mi><mstyle mathvariant="normal"><mi>k</mi><mi>e</mi><mi>e</mi><mi>p</mi></mstyle></msub><msub><mi>L</mi><mstyle mathvariant="normal"><mi>k</mi><mi>e</mi><mi>e</mi><mi>p</mi></mstyle></msub><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+L_{\mathrm{base}}&amp;=\frac1N\sum_{i=1}^N
+\left[\bar\ell_i^0+\beta_{\mathrm{advCE}}\bar\ell_i^{\widehat\delta_i}
++\alpha_{\mathrm{inc}}I_i(\theta,\widehat\delta_i)\right],\\
+L_{\mathrm{keep}}&amp;=\frac1R\sum_{(i,v)\in\mathcal H}k_v(\theta),\\
+L_{\mathrm{common}}&amp;=L_{\mathrm{base}}+\gamma_{\mathrm{keep}}L_{\mathrm{keep}}.
+\end{aligned}
+</annotation></semantics></math></p>
+<p>这三行分别要求：正常图答对；内部受扰动时仍尽量答对；减少层间不一致；对原本正确的正常参照不要乱改。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mstyle mathvariant="normal"><mi>a</mi><mi>d</mi><mi>v</mi><mi>C</mi><mi>E</mi></mstyle></msub><mo>,</mo><msub><mi>α</mi><mstyle mathvariant="normal"><mi>i</mi><mi>n</mi><mi>c</mi></mstyle></msub><mo>,</mo><msub><mi>γ</mi><mstyle mathvariant="normal"><mi>k</mi><mi>e</mi><mi>e</mi><mi>p</mi></mstyle></msub></mrow><annotation encoding="application/x-tex">\beta_{\mathrm{advCE}},\alpha_{\mathrm{inc}},\gamma_{\mathrm{keep}}</annotation></semantics></math> 是各项强度，所有核心对照共用同一套设置。</p>
+<p>训练每次只取一个单元，实际计算：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>L</mi><mo accent="true">̃</mo></mover><mrow><mstyle mathvariant="normal"><mi>c</mi><mi>o</mi><mi>m</mi><mi>m</mi><mi>o</mi><mi>n</mi></mstyle><mo>,</mo><mi>i</mi></mrow></msub><mo>=</mo><msubsup><mover><mi>ℓ</mi><mo accent="true">‾</mo></mover><mi>i</mi><mn>0</mn></msubsup><mo>+</mo><msub><mi>β</mi><mstyle mathvariant="normal"><mi>a</mi><mi>d</mi><mi>v</mi><mi>C</mi><mi>E</mi></mstyle></msub><msubsup><mover><mi>ℓ</mi><mo accent="true">‾</mo></mover><mi>i</mi><msub><mover><mi>δ</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub></msubsup><mo>+</mo><msub><mi>α</mi><mstyle mathvariant="normal"><mi>i</mi><mi>n</mi><mi>c</mi></mstyle></msub><msub><mi>I</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo>,</mo><msub><mover><mi>δ</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>γ</mi><mstyle mathvariant="normal"><mi>k</mi><mi>e</mi><mi>e</mi><mi>p</mi></mstyle></msub><mfrac><mi>N</mi><mi>R</mi></mfrac><munder><mo>∑</mo><mrow><mi>v</mi><mo>:</mo><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><mstyle mathvariant="script"><mi>ℋ</mi></mstyle></mrow></munder><msub><mi>k</mi><mi>v</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\widetilde L_{{\mathrm{common}},i}
+=\bar\ell_i^0+\beta_{\mathrm{advCE}}\bar\ell_i^{\widehat\delta_i}
++\alpha_{\mathrm{inc}}I_i(\theta,\widehat\delta_i)
++\gamma_{\mathrm{keep}}\frac NR\sum_{v:(i,v)\in\mathcal H}k_v(\theta).
+</annotation></semantics></math></p>
+<p><strong>为什么必须有 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mi>/</mi><mi>R</mi></mrow><annotation encoding="application/x-tex">N/R</annotation></semantics></math>。</strong> 在固定参数和扰动的状态下，对所有单元平均，最后一项变成 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mi>/</mi><mi>N</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mi>/</mi><mi>R</mi><mo stretchy="false" form="postfix">)</mo><mo>∑</mo><mi>k</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mi>/</mi><mi>R</mi><mo stretchy="false" form="postfix">)</mo><mo>∑</mo><mi>k</mi></mrow><annotation encoding="application/x-tex">(1/N)(N/R)\sum k=(1/R)\sum k</annotation></semantics></math>，刚好对应总体定义。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math> 统计端点出现次数，不能一边按唯一图片数除、一边重复累加。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">R=0</annotation></semantics></math> 时整项省去。</p>
+<p>该等式校正的是记账尺度，不是整个训练过程的收敛证明。实际每个 epoch 打乱后无放回取单元，参数也不断变化；不能把固定状态等式写成每步都在无偏求同一个最优解。</p>
+<p>另外，参考扰动只算一次用于定权；此处训练扰动每步随当前参数重新搜索。把它们混用，会改变算法。</p>
+<h3 id="n6归因响应究竟怎样进入修复六个方法差在哪里">6.7 N6：归因响应究竟怎样进入修复，六个方法差在哪里</h3>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>W</mi></msub><mo>=</mo><mfrac><mn>1</mn><mi>M</mi></mfrac><munder><mo>∑</mo><mrow><mi>e</mi><mo>∈</mo><mstyle mathvariant="script"><mi>ℰ</mi></mstyle></mrow></munder><mfrac><msub><mi>w</mi><mi>e</mi></msub><msub><mi>D</mi><msub><mi>q</mi><mi>e</mi></msub></msub></mfrac><mo stretchy="false" form="postfix">∥</mo><msubsup><mi>r</mi><mrow><mi>v</mi><mo>∣</mo><mi>e</mi></mrow><msub><mover><mi>δ</mi><mo accent="true">̂</mo></mover><mi>e</mi></msub></msubsup><mo>−</mo><msubsup><mi>r</mi><mrow><mi>u</mi><mo>∣</mo><mi>e</mi></mrow><msub><mover><mi>δ</mi><mo accent="true">̂</mo></mover><mi>e</mi></msub></msubsup><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mo>,</mo><mspace width="2.0em"></mspace><mi>P</mi><mo>=</mo><mfrac><mn>1</mn><mi>M</mi></mfrac><munder><mo>∑</mo><mrow><mi>e</mi><mo>∈</mo><mstyle mathvariant="script"><mi>ℰ</mi></mstyle></mrow></munder><mfrac><mrow><mo stretchy="false" form="postfix">∥</mo><msubsup><mi>r</mi><mrow><mi>v</mi><mo>∣</mo><mi>e</mi></mrow><msub><mover><mi>δ</mi><mo accent="true">̂</mo></mover><mi>e</mi></msub></msubsup><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mo>+</mo><mo stretchy="false" form="postfix">∥</mo><msubsup><mi>r</mi><mrow><mi>u</mi><mo>∣</mo><mi>e</mi></mrow><msub><mover><mi>δ</mi><mo accent="true">̂</mo></mover><mi>e</mi></msub></msubsup><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup></mrow><msub><mi>D</mi><msub><mi>q</mi><mi>e</mi></msub></msub></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+A_W=\frac1M\sum_{e\in\mathcal E}\frac{w_e}{D_{q_e}}
+\|r_{v\mid e}^{\widehat\delta_e}-r_{u\mid e}^{\widehat\delta_e}\|^2,
+\qquad
+P=\frac1M\sum_{e\in\mathcal E}
+\frac{\|r_{v\mid e}^{\widehat\delta_e}\|^2+
+\|r_{u\mid e}^{\widehat\delta_e}\|^2}{D_{q_e}}.
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mi>W</mi></msub><annotation encoding="application/x-tex">A_W</annotation></semantics></math> 约束两端的<strong>相对变化关系</strong>；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math> 则分别要求两个端点接近原分数。P 是理论保留的对照，本轮不运行，因此本轮不能声称关系匹配优于普通逐点匹配。</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right"><msub><mi>L</mi><mrow><mi>R</mi><mo>+</mo></mrow></msub></mtd><mtd columnalign="left"><mo>=</mo><msub><mi>L</mi><mstyle mathvariant="normal"><mi>c</mi><mi>o</mi><mi>m</mi><mi>m</mi><mi>o</mi><mi>n</mi></mstyle></msub><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><msub><mi>L</mi><mrow><mi>G</mi><mn>0</mn></mrow></msub></mtd><mtd columnalign="left"><mo>=</mo><msub><mi>L</mi><mstyle mathvariant="normal"><mi>c</mi><mi>o</mi><mi>m</mi><mi>m</mi><mi>o</mi><mi>n</mi></mstyle></msub><mo>+</mo><msub><mi>β</mi><mstyle mathvariant="normal"><mi>r</mi><mi>e</mi><mi>s</mi><mi>p</mi><mi>o</mi><mi>n</mi><mi>s</mi><mi>e</mi></mstyle></msub><msub><mi>A</mi><mn>1</mn></msub><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><msub><mi>L</mi><mi>G</mi></msub></mtd><mtd columnalign="left"><mo>=</mo><msub><mi>L</mi><mstyle mathvariant="normal"><mi>c</mi><mi>o</mi><mi>m</mi><mi>m</mi><mi>o</mi><mi>n</mi></mstyle></msub><mo>+</mo><msub><mi>β</mi><mstyle mathvariant="normal"><mi>r</mi><mi>e</mi><mi>s</mi><mi>p</mi><mi>o</mi><mi>n</mi><mi>s</mi><mi>e</mi></mstyle></msub><msub><mi>A</mi><mi>W</mi></msub><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><msub><mi>L</mi><mrow><mi>G</mi><mi>l</mi></mrow></msub></mtd><mtd columnalign="left"><mo>=</mo><msub><mi>L</mi><mstyle mathvariant="normal"><mi>c</mi><mi>o</mi><mi>m</mi><mi>m</mi><mi>o</mi><mi>n</mi></mstyle></msub><mo>+</mo><msub><mi>β</mi><mstyle mathvariant="normal"><mi>r</mi><mi>e</mi><mi>s</mi><mi>p</mi><mi>o</mi><mi>n</mi><mi>s</mi><mi>e</mi></mstyle></msub><msub><mi>A</mi><msub><mi>W</mi><mstyle mathvariant="normal"><mi>C</mi><mi>E</mi></mstyle></msub></msub><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><msub><mi>L</mi><mi>P</mi></msub></mtd><mtd columnalign="left"><mo>=</mo><msub><mi>L</mi><mstyle mathvariant="normal"><mi>c</mi><mi>o</mi><mi>m</mi><mi>m</mi><mi>o</mi><mi>n</mi></mstyle></msub><mo>+</mo><msub><mi>β</mi><mstyle mathvariant="normal"><mi>r</mi><mi>e</mi><mi>s</mi><mi>p</mi><mi>o</mi><mi>n</mi><mi>s</mi><mi>e</mi></mstyle></msub><mi>P</mi><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+L_{R+}&amp;=L_{\mathrm{common}},\\
+L_{G0}&amp;=L_{\mathrm{common}}+\beta_{\mathrm{response}}A_1,\\
+L_G&amp;=L_{\mathrm{common}}+\beta_{\mathrm{response}}A_W,\\
+L_{Gl}&amp;=L_{\mathrm{common}}+\beta_{\mathrm{response}}A_{W_{\mathrm{CE}}},\\
+L_P&amp;=L_{\mathrm{common}}+\beta_{\mathrm{response}}P.
+\end{aligned}
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mn>1</mn></msub><annotation encoding="application/x-tex">A_1</annotation></semantics></math> 的权重全为 1；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mstyle mathvariant="normal"><mi>C</mi><mi>E</mi></mstyle></msub><annotation encoding="application/x-tex">W_{\mathrm{CE}}</annotation></semantics></math> 是 N4 的难度重排权重。这几行给出清晰问题：加响应有没有用；有响应后，归因分配权重有没有用；归因分配是否比难度分配更好。</p>
+<p>单元训练仍需正确缩放：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>A</mi><mo accent="true">̃</mo></mover><mrow><mi>W</mi><mo>,</mo><mi>i</mi></mrow></msub><mo>=</mo><mfrac><mi>N</mi><mi>M</mi></mfrac><mspace width="0.167em"></mspace><msub><mstyle mathvariant="bold"><mn>1</mn></mstyle><mrow><mo stretchy="false" form="prefix">{</mo><mi>i</mi><mo>∈</mo><mstyle mathvariant="script"><mi>ℰ</mi></mstyle><mo stretchy="false" form="postfix">}</mo></mrow></msub><mfrac><msub><mi>w</mi><mi>i</mi></msub><msub><mi>D</mi><msub><mi>q</mi><mi>i</mi></msub></msub></mfrac><mo stretchy="false" form="postfix">∥</mo><msubsup><mi>a</mi><mi>i</mi><msub><mover><mi>δ</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub></msubsup><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\widetilde A_{W,i}=\frac NM\,\mathbf{1}_{\{i\in\mathcal E\}}
+\frac{w_i}{D_{q_i}}\|a_i^{\widehat\delta_i}\|^2.
+</annotation></semantics></math></p>
+<p>对全部 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math> 个单元平均后，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math> 抵消，得到 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mi>W</mi></msub><annotation encoding="application/x-tex">A_W</annotation></semantics></math>。不是事实对或不合格的单元，该项为零。这样数据中普通图文占比变化不会悄悄改掉响应项的定义。</p>
+<p>其余两个实际方法也写清：SFT 只训练正常正确答案；RACER-data 使用正常正确答案加论文定义的不一致项，成对两端各自搜索扰动。它没有我们的扰动答案监督、正常分数保持或事实响应项。这是同数据下的竞争方法重建，不是严格单变量消融，也不是作者原表复现。</p>
+<p><strong>P 的尺度检查。</strong> 把两端残差堆叠时，响应平方对应块矩阵 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center"><mi>I</mi></mtd><mtd columnalign="center"><mo>−</mo><mi>I</mi></mtd></mtr><mtr><mtd columnalign="center"><mo>−</mo><mi>I</mi></mtd><mtd columnalign="center"><mi>I</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\begin{bmatrix}I&amp;-I\\-I&amp;I\end{bmatrix}</annotation></semantics></math>，逐点平方对应 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>diag</mo><mo stretchy="false" form="prefix">(</mo><mi>I</mi><mo>,</mo><mi>I</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{diag}(I,I)</annotation></semantics></math>，两者迹均为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><msub><mi>D</mi><mi>q</mi></msub></mrow><annotation encoding="application/x-tex">2D_q</annotation></semantics></math>。所以 P 前不再多除以 2。但同迹只匹配粗尺度，不表示同梯度或同难度；这一说明足够，不需要把它包装成新定理。</p>
+<h3 id="n7热图上的数怎样真正影响允许参数">6.8 N7：热图上的数怎样真正影响允许参数</h3>
+<p>设允许参数有 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math> 个，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>J</mi><mrow><mi>v</mi><mo>∣</mo><mi>e</mi></mrow><mi>δ</mi></msubsup><mo>=</mo><msub><mi>D</mi><mi>θ</mi></msub><msubsup><mi>s</mi><mi>θ</mi><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">J_{v\mid e}^\delta=D_\theta s_\theta^\delta(v)</annotation></semantics></math> 是 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mi>q</mi></msub><mo>×</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">D_q\times p</annotation></semantics></math> 的导数矩阵。则：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mi>θ</mi></msub><msubsup><mi>a</mi><mi>e</mi><mi>δ</mi></msubsup><mo>=</mo><msubsup><mi>J</mi><mrow><mi>v</mi><mo>∣</mo><mi>e</mi></mrow><mi>δ</mi></msubsup><mo>−</mo><msubsup><mi>J</mi><mrow><mi>u</mi><mo>∣</mo><mi>e</mi></mrow><mi>δ</mi></msubsup><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>g</mi><mi>A</mi></msub><mo>=</mo><mfrac><mn>2</mn><mi>M</mi></mfrac><munder><mo>∑</mo><mrow><mi>e</mi><mo>∈</mo><mstyle mathvariant="script"><mi>ℰ</mi></mstyle></mrow></munder><mfrac><msub><mi>w</mi><mi>e</mi></msub><msub><mi>D</mi><msub><mi>q</mi><mi>e</mi></msub></msub></mfrac><mo stretchy="false" form="prefix">(</mo><msubsup><mi>J</mi><mrow><mi>v</mi><mo>∣</mo><mi>e</mi></mrow><mi>δ</mi></msubsup><mo>−</mo><msubsup><mi>J</mi><mrow><mi>u</mi><mo>∣</mo><mi>e</mi></mrow><mi>δ</mi></msubsup><msup><mo stretchy="false" form="postfix">)</mo><mi>⊤</mi></msup><msubsup><mi>a</mi><mi>e</mi><mi>δ</mi></msubsup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+D_\theta a_e^\delta=J_{v\mid e}^\delta-J_{u\mid e}^\delta,
+\qquad
+g_A=\frac2M\sum_{e\in\mathcal E}\frac{w_e}{D_{q_e}}
+(J_{v\mid e}^\delta-J_{u\mid e}^\delta)^\top a_e^\delta.
+</annotation></semantics></math></p>
+<p><strong>推导。</strong> 参照固定，求导后只剩两端当前分数导数之差；平方和的导数是“2 × 当前偏离 × 偏离对参数的导数”；再乘冻结权重并平均，就得到第二式。这里固定了当前扰动，不穿过扰动搜索过程反传。</p>
+<p><strong>生动解释。</strong> 热图告诉我们“哪里偏了”，导数告诉我们“拧这个旋钮，偏差会怎样变”。很亮但旋钮拧不动，梯度可能为零；两处偏差要求相反，也可能相互抵消。亮度大不意味着容易修，更不保证修改后答案更正确。</p>
+<p>实现用自动微分得到所需乘积，不需要存下一个巨大的完整矩阵。N7 是归因到实际训练的必要连接，是标准链式法则，不能作为原创主定理。</p>
+<h3 id="n8必须比较模型真正走的那一步">6.9 N8：必须比较模型真正走的那一步</h3>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mrow><mi>m</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>∇</mi><mi>θ</mi></msub><msub><mover><mi>L</mi><mo accent="true">̃</mo></mover><mrow><mi>m</mi><mo>,</mo><mi>t</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>θ</mi><mi>t</mi></msub><mo>;</mo><mo>stopgrad</mo><msub><mover><mi>δ</mi><mo accent="true">̂</mo></mover><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mo stretchy="false" form="prefix">(</mo><msub><mi>θ</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>,</mo><msub><mi>S</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mo>AdamW</mo><msub><mi>h</mi><mi>t</mi></msub></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>θ</mi><mi>t</mi></msub><mo>,</mo><msub><mi>S</mi><mi>t</mi></msub><mo>,</mo><msub><mi>g</mi><mrow><mi>m</mi><mo>,</mo><mi>t</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>Δ</mi><mrow><mi>m</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>θ</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>−</mo><msub><mi>θ</mi><mi>t</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+g_{m,t}=\nabla_\theta\widetilde L_{m,t}
+(\theta_t;\operatorname{stopgrad}\widehat\delta_t),\qquad
+(\theta_{t+1},S_{t+1})=\operatorname{AdamW}_{h_t}(\theta_t,S_t,g_{m,t}),
+\qquad \Delta_{m,t}=\theta_{t+1}-\theta_t.
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math> 表示方法，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math> 表示训练步；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>t</mi></msub><annotation encoding="application/x-tex">S_t</annotation></semantics></math> 是优化器历史，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>h</mi><mi>t</mi></msub><annotation encoding="application/x-tex">h_t</annotation></semantics></math> 是当步设置。先算实际损失梯度，再让 AdamW 更新，最后直接相减得到实际改动 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Δ</mi><annotation encoding="application/x-tex">\Delta</annotation></semantics></math>。</p>
+<p>为什么不写成“学习率乘梯度”？AdamW 会按历史梯度大小调整各参数步幅。在零历史、忽略权重衰减影响的首步，每个坐标的主要改动是 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mi>η</mi><mi>g</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="prefix">|</mo><mi>g</mi><mo stretchy="false" form="prefix">|</mo><mo>+</mo><msub><mi>ε</mi><mstyle mathvariant="normal"><mi>A</mi><mi>d</mi><mi>a</mi><mi>m</mi></mstyle></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">-\eta g/(|g|+\varepsilon_{\mathrm{Adam}})</annotation></semantics></math>。梯度从 1 变成 2，参数步幅通常不会翻倍。<a href="https://docs.pytorch.org/docs/2.7/generated/torch.optim.AdamW.html">AdamW 官方定义</a></p>
+<p>当前修复代码是每步一个单元的 AdamW，没有训练中途调度器或梯度累积；起点模型构建使用另一个训练流程，不能混写。N8 定义实际算法，不证明每步损失下降。</p>
+<p>N2 搜索的是不一致，外层却还有答案、保持和响应项。因此这套方法是有限交替更新规则，不是整个新目标已经被精确求解的最坏情况优化。无需额外借一个不满足条件的最优性定理为它背书。</p>
+<h3 id="n9怎样检验这一次归因修改是否朝正确方向走">6.10 N9：怎样检验这一次归因修改是否朝正确方向走</h3>
+<p>先固定一张图、一个错误候选和一个评价环境 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ν</mi><annotation encoding="application/x-tex">\nu</annotation></semantics></math>：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>m</mi><mrow><mi>v</mi><mo>,</mo><mi>y</mi></mrow><mi>ν</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msubsup><mi>s</mi><mi>θ</mi><mi>ν</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>v</mi><msub><mo stretchy="false" form="postfix">)</mo><msub><mi>y</mi><mi>v</mi></msub></msub><mo>−</mo><msubsup><mi>s</mi><mi>θ</mi><mi>ν</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>v</mi><msub><mo stretchy="false" form="postfix">)</mo><mi>y</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+m_{v,y}^{\nu}(\theta)=s_\theta^{\nu}(v)_{y_v}-s_\theta^{\nu}(v)_y.
+</annotation></semantics></math></p>
+<p>这是正确答案比分错答案高多少。正数表示在这两个候选之间正确答案领先。环境可以正常、固定人工扰动，或评估者持有的真实触发。</p>
+<p>从<strong>相同起点、优化器历史、训练单元和扰动</strong>分别做 A、B 两种更新。省略上述下标：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right"><msub><mi>z</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub></mtd><mtd columnalign="left"><mo>=</mo><msub><mi>D</mi><mi>θ</mi></msub><mi>m</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">[</mo><msub><mi>Δ</mi><mi>A</mi></msub><mo>−</mo><msub><mi>Δ</mi><mi>B</mi></msub><mo stretchy="false" form="postfix">]</mo><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><msub><mi>e</mi><mi>m</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>Δ</mi><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left"><mo>=</mo><mi>m</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo>+</mo><mi>Δ</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>m</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msub><mi>D</mi><mi>θ</mi></msub><mi>m</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">[</mo><mi>Δ</mi><mo stretchy="false" form="postfix">]</mo><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><msub><mi>D</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub></mtd><mtd columnalign="left"><mo>=</mo><mi>m</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo>+</mo><msub><mi>Δ</mi><mi>A</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>m</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo>+</mo><msub><mi>Δ</mi><mi>B</mi></msub><mo stretchy="false" form="postfix">)</mo></mtd></mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mo>=</mo><msub><mi>z</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo>+</mo><msub><mi>e</mi><mi>m</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>Δ</mi><mi>A</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msub><mi>e</mi><mi>m</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>Δ</mi><mi>B</mi></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+z_{AB}&amp;=D_\theta m(\theta)[\Delta_A-\Delta_B],\\
+e_m(\Delta)&amp;=m(\theta+\Delta)-m(\theta)-D_\theta m(\theta)[\Delta],\\
+D_{AB}&amp;=m(\theta+\Delta_A)-m(\theta+\Delta_B)\\
+&amp;=z_{AB}+e_m(\Delta_A)-e_m(\Delta_B).
+\end{aligned}
+</annotation></semantics></math></p>
+<p><strong>第一行</strong>用当前位置的变化率预测 A 比 B 多改善多少。<strong>第二行</strong>给实际变化与线性预测的差起一个名字。<strong>最后两行</strong>将真实差拆成预测与剩余差；分别写 A、B 的展开式后相减就能得到，是精确恒等式。</p>
+<p>唯一的条件结论是：若 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo>≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">z_{AB}\ne0</annotation></semantics></math>，且</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>e</mi><mi>m</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>Δ</mi><mi>A</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msub><mi>e</mi><mi>m</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>Δ</mi><mi>B</mi></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mo stretchy="false" form="prefix">|</mo><msub><mi>z</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">
+|e_m(\Delta_A)-e_m(\Delta_B)|&lt;|z_{AB}|,
+</annotation></semantics></math></p>
+<p>那么真实差 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><annotation encoding="application/x-tex">D_{AB}</annotation></semantics></math> 与预测同号。比如预测 A 多改善 0.10，剩余差的绝对值只有 0.03，真实差一定为正；剩余差达到 0.15 就不能仅凭预测判断。证明只需三角不等式。可微性给出 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mi>m</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>Δ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>o</mi><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="postfix">∥</mo><mi>Δ</mi><mo stretchy="false" form="postfix">∥</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">e_m(\Delta)=o(\|\Delta\|)</annotation></semantics></math>，意思是在足够小的变化下相对误差趋小，却没有给当前模型一个已知、可直接使用的安全步长。</p>
+<p><strong>当前实现范围。</strong> 命令行诊断重新加载 B0、从零动量做一步；最多四个独立单元。底层能接收优化器状态，但当前入口没有回放训练中后期。因此它检查初始局部方向，不能解释完整训练终点。</p>
+<p>而且首步 AdamW 会压小同号梯度的幅度差。若 G 与 G0 首步接近，可能只是这个归一化性质，不能据此否定多步加权。很小的差还要考虑数值精度。</p>
+<p><strong>不能越过的三步。</strong> 间隔从 −0.5 提高到 −0.1，仍未胜过该错误候选，不能据此算已修复；超过一个错误候选不等于超过所有候选；完整串最高分也不等于自由生成会输出它。例如第一步 A 概率 0.4、B 概率 0.6，A 的后续正确词概率 0.99，B 的两种后续各 0.5；这些答案等长，后续均按相同规则终止。正确串概率 0.396 高于两个错误串各 0.3，但贪心生成第一步仍选 B。因此最终必须实际生成。</p>
+<p>N9 的误差在两次试更新和前向之后才拿到。它是局部机制核验，不是一个无需试修、提前保证胜出的选择器。</p>
+<h3 id="n10修完怎样决定留下还是退回">6.11 N10：修完怎样决定留下还是退回</h3>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mstyle mathvariant="script"><mi>ℋ</mi></mstyle><mstyle mathvariant="normal"><mi>n</mi><mi>z</mi></mstyle></msub><annotation encoding="application/x-tex">\mathcal H_{\mathrm{nz}}</annotation></semantics></math> 表示完成预定训练、确实改变了参数的候选。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>V</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\widehat V</annotation></semantics></math> 为正常校准问答分数，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>C</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\widehat C</annotation></semantics></math> 为正常校准描述的 CIDEr 分数。一般形式为：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right"><msub><mstyle mathvariant="script"><mi>ℋ</mi></mstyle><mstyle mathvariant="normal"><mi>o</mi><mi>k</mi></mstyle></msub></mtd><mtd columnalign="left"><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>h</mi><mo>∈</mo><msub><mstyle mathvariant="script"><mi>ℋ</mi></mstyle><mstyle mathvariant="normal"><mi>n</mi><mi>z</mi></mstyle></msub><mo>:</mo><mover><mi>V</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mover><mi>V</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>θ</mi><mi>h</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>≤</mo><mn>0.01</mn><mo>,</mo><mspace width="0.222em"></mspace><mover><mi>C</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>θ</mi><mi>h</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>≥</mo><mn>0.98</mn><mover><mi>C</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">}</mo><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><mover><mi>h</mi><mo accent="true">̂</mo></mover></mtd><mtd columnalign="left"><mo>=</mo><mo>arg</mo><munder><mo>max</mo><mrow><mi>h</mi><mo>∈</mo><msub><mstyle mathvariant="script"><mi>ℋ</mi></mstyle><mstyle mathvariant="normal"><mi>o</mi><mi>k</mi></mstyle></msub></mrow></munder><msubsup><mover><mi>Q</mi><mo accent="true">̂</mo></mover><mstyle mathvariant="normal"><mi>c</mi><mi>a</mi><mi>l</mi></mstyle><mi>δ</mi></msubsup><mo stretchy="false" form="prefix">(</mo><msub><mi>θ</mi><mi>h</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right"><msub><mi>θ</mi><mstyle mathvariant="normal"><mi>o</mi><mi>u</mi><mi>t</mi></mstyle></msub></mtd><mtd columnalign="left"><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left"><msub><mi>θ</mi><mover><mi>h</mi><mo accent="true">̂</mo></mover></msub><mo>,</mo></mtd><mtd columnalign="left"><msub><mstyle mathvariant="script"><mi>ℋ</mi></mstyle><mstyle mathvariant="normal"><mi>o</mi><mi>k</mi></mstyle></msub><mo>≠</mo><mi>⌀</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="left"><msub><mi>θ</mi><mn>0</mn></msub><mo>,</mo></mtd><mtd columnalign="left"><msub><mstyle mathvariant="script"><mi>ℋ</mi></mstyle><mstyle mathvariant="normal"><mi>o</mi><mi>k</mi></mstyle></msub><mo>=</mo><mi>⌀</mi><mi>.</mi></mtd></mtr></mtable></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\mathcal H_{\mathrm{ok}}
+&amp;=\{h\in\mathcal H_{\mathrm{nz}}:\widehat V(\theta_0)-\widehat V(\theta_h)\le0.01,
+\ \widehat C(\theta_h)\ge0.98\widehat C(\theta_0)\},\\
+\widehat h&amp;=\arg\max_{h\in\mathcal H_{\mathrm{ok}}}\widehat Q_{\mathrm{cal}}^{\delta}(\theta_h),\\
+\theta_{\mathrm{out}}&amp;=
+\begin{cases}
+\theta_{\widehat h},&amp;\mathcal H_{\mathrm{ok}}\ne\varnothing,\\
+\theta_0,&amp;\mathcal H_{\mathrm{ok}}=\varnothing.
+\end{cases}
+\end{aligned}
+</annotation></semantics></math></p>
+<p><strong>第一行</strong>筛掉正常问答下降超过 1 个百分点、或描述分数相对下降超过 2% 的候选。基点始终是同一个 B0，不能每轮都容忍一点、最后积累很大损害。CIDEr 可理解为生成描述与人工参考描述的任务评分，不是逐事实正确率。</p>
+<p><strong>后两行</strong>在一般多候选情况下，用共同冻结的人工扰动校准成绩 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>Q</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\widehat Q</annotation></semantics></math> 排序；没有合格修改就退回 B0。该排名不使用真实触发。</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>h</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\widehat h</annotation></semantics></math> 仅在合格集合非空时定义；多候选平局按冻结规则处理。评分必须有限，基点 CIDEr 必须为正，才能把 0.98 倍解释为相对下降不超过 2%。无效评分记未决，不登记正常保护通过。</p>
+<p><strong>本轮只有一个候选。</strong> 完成日程且参数有非零修改的候选，通过正常校准则保留，未过门槛则回退；运行失败或日程未完成记未决，不能当作一次完成的负结果。无需生成和计算没有选择用途的 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>Q</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\widehat Q</annotation></semantics></math>。完整排序式保留作理论扩展，不是本轮成果的一部分。</p>
+<p><strong>严格检查。</strong> 入选模型满足校准门槛，由集合定义直接成立；这不是独立总体无损保证。修好一些题、弄坏另一些题，平均值仍可能通过，所以测试必须另报新增错误。若起点本就无正常能力，保持它的低水平也不构成有用修复，故 B0 验收先于 N10。</p>
+<p>本次已确认总约 48 GPUh 是软预算。超过计划本身不取消候选资格，也不自动停机；真正未完成预定训练或运行失败才不能作为完成候选。原理论个别“成本内／超时”措辞滞后，本文按当前已实现的软预算口径解释。</p>
+<h3 id="三个实质反例逐个算清">6.12 三个实质反例，逐个算清</h3>
+<p><strong>反例一：共同偏置，响应图看不到。</strong> 如果每个候选获得一个不随场景改变的偏置向量 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>，则两端残差同为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>，所以 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mi>b</mi><mo>−</mo><mi>b</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">a=b-b=0</annotation></semantics></math>。例如两个候选“红／绿”，正常两端分数为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mo>−</mo><mn>0.2</mn><mo>,</mo><mo>−</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(-0.2,-2)</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mo>−</mo><mn>2</mn><mo>,</mo><mo>−</mo><mn>0.2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(-2,-0.2)</annotation></semantics></math>，都加 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mo>−</mo><mn>3</mn><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(-3,0)</annotation></semantics></math> 后，红球也会偏向绿，但编辑响应差完全没变。这里不是所有候选加同一个标量，而是候选间不同、两图间相同的偏置。它解释了为什么答案监督不能删除，为什么换成固定错误答案也未必让归因测量有信号。</p>
+<p><strong>反例二：偏离大，权重却可能把方向带错。</strong> 两条同类型、两个候选的边，允许参数只有一个：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mn>1</mn></msub><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>+</mo><mi>θ</mi><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>a</mi><mn>2</mn></msub><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mn>2</mn><mi>θ</mi><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mi>θ</mi><mo>=</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+a_1(\theta)=(2+\theta,0),\qquad a_2(\theta)=(1-2\theta,0),\qquad\theta=0.
+</annotation></semantics></math></p>
+<p>N4 得到 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mn>1</mn><mi>/</mi><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">d=(2,1/2)</annotation></semantics></math>，中位数 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>/</mi><mn>4</mn></mrow><annotation encoding="application/x-tex">5/4</annotation></semantics></math>，未归一权重 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mn>7</mn><mi>/</mi><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(2,7/5)</annotation></semantics></math>，归一权重 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>20</mn><mi>/</mi><mn>17</mn><mo>,</mo><mn>14</mn><mi>/</mi><mn>17</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(20/17,14/17)</annotation></semantics></math>。按 N6：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mfrac><mrow><mi>d</mi><msub><mi>A</mi><mn>1</mn></msub></mrow><mrow><mi>d</mi><mi>θ</mi></mrow></mfrac><mo stretchy="true" form="postfix">|</mo></mrow><mn>0</mn></msub><mo>=</mo><mfrac><mrow><mn>4</mn><mo>−</mo><mn>4</mn></mrow><mn>4</mn></mfrac><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="2.0em"></mspace><msub><mrow><mfrac><mrow><mi>d</mi><msub><mi>A</mi><mi>W</mi></msub></mrow><mrow><mi>d</mi><mi>θ</mi></mrow></mfrac><mo stretchy="true" form="postfix">|</mo></mrow><mn>0</mn></msub><mo>=</mo><mfrac><mrow><mo stretchy="false" form="prefix">(</mo><mn>20</mn><mi>/</mi><mn>17</mn><mo stretchy="false" form="postfix">)</mo><mn>4</mn><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>14</mn><mi>/</mi><mn>17</mn><mo stretchy="false" form="postfix">)</mo><mn>4</mn></mrow><mn>4</mn></mfrac><mo>=</mo><mfrac><mn>6</mn><mn>17</mn></mfrac><mo>&gt;</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\left.\frac{dA_1}{d\theta}\right|_0
+=\frac{4-4}{4}=0,
+\qquad
+\left.\frac{dA_W}{d\theta}\right|_0
+=\frac{(20/17)4-(14/17)4}{4}=\frac6{17}&gt;0.
+</annotation></semantics></math></p>
+<p>若真实正确性需要增大 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>，共同目标梯度为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">-1/10</annotation></semantics></math>，响应系数为 1，则 G0 总梯度为负，G 总梯度为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>10</mn><mo>+</mo><mn>6</mn><mi>/</mi><mn>17</mn><mo>=</mo><mn>43</mn><mi>/</mi><mn>170</mn><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">-1/10+6/17=43/170&gt;0</annotation></semantics></math>。从参数零、优化器零历史出发，两个 AdamW 更新方向相反，G 恰好朝错误方向。这是数学反例，不是当前 VLM 的实测。它要求我们保留 G/G0/Gl 对照，不能靠“大偏离应该多修”完成证明。</p>
+<p><strong>反例三：同一真实标记，不等于同一内部扰动。</strong> 假设一个简化接口 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">F(x)=x^2</annotation></semantics></math>，真实输入操作是 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>↦</mo><mi>x</mi><mo>+</mo><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">x\mapsto x+\epsilon</annotation></semantics></math>，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>+</mo><mi>ϵ</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>F</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>2</mn><mi>x</mi><mi>ϵ</mi><mo>+</mo><msup><mi>ϵ</mi><mn>2</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+F(x+\epsilon)-F(x)=2x\epsilon+\epsilon^2.
+</annotation></semantics></math></p>
+<p>在 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">x=1</annotation></semantics></math> 和 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">x=-1</annotation></semantics></math> 上，内部变化分别为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>ϵ</mi><mo>+</mo><msup><mi>ϵ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">2\epsilon+\epsilon^2</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>2</mn><mi>ϵ</mi><mo>+</mo><msup><mi>ϵ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">-2\epsilon+\epsilon^2</annotation></semantics></math>。它们一般不同。因此两图能合法相加同一个人工扰动，不代表真实触发也产生这个扰动。人工到真实的迁移只能另验。</p>
+<p>另外两条边界无需堆公式：正确答案置信度提高也可能被响应保持项惩罚；两个模型可以在全部已测事实对一致，却在未见组合上不同。这分别要求实际输出对照、独立组合测试。</p>
+<h3 id="理论究竟闭合到哪一步">6.13 理论究竟闭合到哪一步</h3>
+<p><strong>已闭合的是算法操作。</strong> 输入、参照、扰动、权重、目标、允许参数、实际更新和保留规则都有定义；必要链式法则、归一尺度和条件推论可核对。没有一个未实现的“神奇事实解码器”夹在中间。</p>
+<p><strong>尚待实验闭合的是科学主张。</strong> 响应偏离是否真对应值得修的问题；它的权重是否比均匀或难度更好；人工扰动是否能帮助真实触发；局部分数变化是否落实为自由生成正确。这些不能由 N1–N10 自动推出。</p>
+<p>本次逐式审查未发现所列归一化、链式求导和反向加权演算的代数错误；发现的主要问题是解释范围：N3 含正常漂移，N9 只是起点一步诊断，N10 只是有限校准。应把它们讲准，而不是增加没有消费者的常数和定理。</p>
+<p>就内容取舍而言，N1–N8 保留为方法必要定义，N9 保留作局部诊断，N10 单候选版作选择规则；多候选排序和 P 放扩展。标准数学服务于方法，不能代替方法有效性的证据。</p>
+<h2 id="当前两阶段-toy-到底怎样检验这个课题">7. 当前两阶段 toy 到底怎样检验这个课题</h2>
+<h3 id="toy在本课题中的含义">7.1 “toy”在本课题中的含义</h3>
+<p>用户此前定义：探针先观察现象、归纳问题，不预设清晰科学假设；toy 是有了假设以后，以小规模实验尝试回答。本轮属于后者。它不是整个课题的正式全面评测，而是在一个模型、一个合格污染实例上，把观测、修复和独立评价连起来，判断当前方法值不值得扩大。</p>
+<p>两阶段指同一轮研究中的<strong>阶段 A：观察、冻结和修复</strong>，以及<strong>阶段 B：锁定后的独立检验</strong>。不是第一阶段只做公式算术、第二阶段再开始碰模型。</p>
+<h3 id="三个假设分别对应哪些比较">7.2 三个假设，分别对应哪些比较</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>假设</th>
+<th>用人话说</th>
+<th>关键比较</th>
+<th>怎样才算得到支持</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>H1：响应信息有增量</td>
+<td>除了教正确答案，再教“事实变化应怎样改变回答”会更好</td>
+<td>G0 对 R+</td>
+<td>在独立真实触发输入上，任务正确性改善，正常损害可接受</td>
+</tr>
+<tr class="even">
+<td>H2：归因权重有增量</td>
+<td>训练资源优先给响应偏离大的事实对，比平均分配或按难题分配更好</td>
+<td>G 对 G0、Gl</td>
+<td>两个比较都支持有实质意义的额外收益，且不是成本、数据或选优权限不同</td>
+</tr>
+<tr class="odd">
+<td>H3：人工观测能帮助真实问题</td>
+<td>不知道真实触发，用正常材料和人工扰动训练，仍能修复真实触发造成的问题</td>
+<td>锁定后的真实触发评价；同时对照人工响应变化</td>
+<td>真实答案、攻击指标和正常能力共同支持；只改善人工图不够</td>
+</tr>
+</tbody>
+</table>
+<p>H1、H2 是互相嵌套但不同的问题。H1 成立、H2 不成立，意味着响应约束可能有用，当前幅度权重没有显示价值。H3 是方法的外部适用性检验，与前两个比较一起看，不能靠一个独立平均数证明迁移因果机制。</p>
+<h3 id="阶段-a先确认有东西可修再公平修六次">7.3 阶段 A：先确认有东西可修，再公平修六次</h3>
+<p><strong>A0，起点与测量资格。</strong> 确认真实模型能加载；正常任务有用；触发造成了可测的额外异常；正常情况下有足够的合格事实参照；G 冒烟实际走到响应损失、梯度和参数更新。只训练出权重文件，不等于通过这一关。</p>
+<p>当前拒答实例还需补上第 8 节的损伤分类。正式六方法的共同训练日程尚未冻结，必须在合格起点上计时并确认基线获得足够训练，不能给快基线很少步数来制造归因优势。</p>
+<p><strong>A1，开发观察。</strong> 使用 24 个开发场景，按预定顺序看图与数值。最多一次记录明确的规则修订，说明哪种现象改变了哪项操作；不看独立测试结果。如果没有修改，就如实登记规则来自预先设计。</p>
+<p><strong>A2，固定参照和权重。</strong> 在全部训练材料上按 N1–N4 建立参照，记录合格覆盖率。六方法复用同一 B0 和可以共享的缓存。训练中参数改变后，不能继续使用过时的可训练 embedding 或当前扰动。</p>
+<p><strong>A3，六方法各一个配置。</strong> SFT、R+、G0、Gl、G、RACER-data 完成预登记训练后，用同一正常校准门槛保留或回退。R+/G0/Gl/G 的共同数据、初始参数、参数范围、顺序、优化器和曝光日程一致；RACER-data 按其自身算法使用独立端点扰动。</p>
+<p><strong>A4，锁定全部结果。</strong> 六个方法都留下完整配置、费用和是否保留的回执，再打开独立测试。不能先看到 G 赢了就多给它预算，也不能在某个对照没训完时宣布获胜。</p>
+<h3 id="阶段-b检查真实输出不让代理分数替代任务">7.4 阶段 B：检查真实输出，不让代理分数替代任务</h3>
+<p>同一组独立输入分别在正常、真实触发条件下运行各方法，用原模型自由生成。</p>
+<table>
+<thead>
+<tr class="header">
+<th>评价层</th>
+<th>看什么</th>
+<th>为什么需要</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>真实问答</td>
+<td>VQA 原评分、原始答案</td>
+<td>判断是否恢复原任务</td>
+</tr>
+<tr class="even">
+<td>真实描述</td>
+<td>原 CIDEr、原始完整描述</td>
+<td>发现只保问答却伤害开放描述的问题；CIDEr 不替代逐事实判断</td>
+</tr>
+<tr class="odd">
+<td>原攻击行为</td>
+<td>按固定目标定义的成功率</td>
+<td>防止答对部分事实却仍保留异常行为</td>
+</tr>
+<tr class="even">
+<td>可控事实对</td>
+<td>改变事实、保持事实、牵连计数的两端结果</td>
+<td>区分真正响应图片与固定答案捷径</td>
+</tr>
+<tr class="odd">
+<td>正常副作用</td>
+<td>原来答对、修复后答错的场景</td>
+<td>防止平均成绩掩盖新增错误</td>
+</tr>
+<tr class="even">
+<td>机制面板</td>
+<td>固定最多 24 个事实对展示，最多 4 个单元作 N9 诊断</td>
+<td>解释收益与反例，不承担总体性能统计</td>
+</tr>
+<tr class="odd">
+<td>总成本</td>
+<td>构建、参考、修复、评测和失败耗时</td>
+<td>判断收益是否值得付出计算与标注代价</td>
+</tr>
+</tbody>
+</table>
+<p>问答还可报告一个联合分数：<strong>原 VQA 分数 × 没有满足攻击目标的指示量</strong>。它仍然是连续任务分数，不能叫作二值修复成功率。</p>
+<h3 id="可复用的数据与实际规模">7.5 可复用的数据与实际规模</h3>
+<p>已复用公开 LLaVA 权重、EditCLEVR 成对场景和程序真值、COCO 图片、VQAv2 人工答案与 COCO 描述参考，以及现有 HF/PEFT 训练和任务评分工具。事实图片使用现有渲染结果，没有为本轮重新搭建完整渲染平台。</p>
+<table>
+<thead>
+<tr class="header">
+<th>划分</th>
+<th style="text-align: right;">EditCLEVR 基础场景及编辑版本</th>
+<th style="text-align: right;">真实图片</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>开发观察</td>
+<td style="text-align: right;">24 对</td>
+<td style="text-align: right;">不另扩展</td>
+</tr>
+<tr class="even">
+<td>训练 fit</td>
+<td style="text-align: right;">100 对</td>
+<td style="text-align: right;">100 张问答图片</td>
+</tr>
+<tr class="odd">
+<td>正常校准</td>
+<td style="text-align: right;">32 对</td>
+<td style="text-align: right;">64 张问答、32 张描述</td>
+</tr>
+<tr class="even">
+<td>独立测试</td>
+<td style="text-align: right;">96 对</td>
+<td style="text-align: right;">300 张问答、60 张描述</td>
+</tr>
+</tbody>
+</table>
+<p>实际材料合计 252 个事实场景、504 张事实图片；每场景三个问题，共 756 个事实问题单元。真实材料共 556 张图片。合并后为 <strong>1,312 个训练／评价单元、808 个独立场景或图片簇、1,060 张不同图片</strong>。数据来源和身份核验见<a href="../GPU_READY.md">实际材料说明</a>。</p>
+<p>独立事实测试分三组，各 32 场景：简单条件、多干扰物条件、未见形状—颜色组合。当前只改变颜色；“复杂”不代表已经做了关系移动、多属性编辑或任意分布变化。</p>
+<p>起点模型构建另用 COCO train2014 的 2,200 张图片，组成 20,000 条正常指令和 1,000 条固定目标指令，与修复和测试图像隔离。这个起点是自建固定实例，不是作者发布的后门 checkpoint；构建费用也计入预算。</p>
+<h3 id="对比怎样做到公平统计能回答多细">7.6 对比怎样做到公平，统计能回答多细</h3>
+<p>所有与归因增量有关的对照拿到相同的正常材料与事实编辑，不把额外标签的收益算作归因贡献。权重来自完整训练集，不来自精选展示图或真实触发效果。样本分组以独立场景或原图为单位；同一图的两个端点、三个问题和所有输出 token 不当独立样本。</p>
+<p>报告同图成对差异与区间，优先解释收益大小。单个训练种子只能反映当前模型状态下的结果，数据重采样区间不能替代多训练种子的稳定性。小样本能筛明显效应，不能精确认证 1 个百分点的总体正常损害，也不能仅凭“不显著”宣布方法没用。</p>
+<p>为了节约计算，本轮推迟：逐点匹配 P、随机重排权重、RACER 原 100 样本协议、CleanSight、K 训练、多模型、多攻击和多种子。因此本轮能判断当前增量是否值得继续，不能建立完整 SOTA 排名。</p>
+<h2 id="当前最重要的实验缺口拒答恢复如何与事实修复分开">8. 当前最重要的实验缺口：拒答恢复如何与事实修复分开</h2>
+<h3 id="为什么这个缺口会让实验测错东西">8.1 为什么这个缺口会让实验测错东西</h3>
+<p>当前构建目标是特殊标记出现后输出固定拒答。如果模型只是被一个“不要说话”的开关挡住，移除开关后就可能恢复原本的能力。这个结果对服务恢复有价值，但不能独自支撑“我们识别并修复了事实响应损伤”的机制主张。</p>
+<p>反过来，把固定拒答换成固定错误颜色，也未必更适合。N3 的共同偏置反例说明：答案可以错，编辑响应却保持原样。真正需要的是<strong>预先确认模型存在与本测量有关的可恢复问题</strong>，而不是换一个看起来更像事实错误的字符串。</p>
+<h3 id="已提出尚未完整实施的诊断补充">8.2 已提出、尚未完整实施的诊断补充</h3>
+<p>在现有 24 个开发场景上保留三类问题、正常与标记条件，先看 B0 的原自由生成，再把样本分为：正确、愿意回答但事实错误、拒答、无法解析。受限候选分数作辅助，不替代生成。</p>
+<p>固定 B0 的分类和分母，修复后统计：拒答→正确，非拒答错误→正确，拒答→错误，正确→错误或拒答。这样不会因为只挑修复后愿意回答的样本而虚增成绩。</p>
+<p>两个联合事实终点尤其有用：</p>
+<ul>
+<li><strong>改变事实：两端都正确，并按编辑真值切换。</strong> 不能只看编辑后的一端。</li>
+<li><strong>保持事实：两端都正确，保持同一正确答案。</strong> 不能把两端稳定地答同一个错误答案算成保持。</li>
+</ul>
+<p>如果 B0 主要表现为拒答，可把它作为输出控制的边界实例；另选或构建有真实内容响应损伤的主实例。这个选择应在看到 G 与对照的胜负之前完成，保留所有考虑过的起点，避免只展示对方法有利的案例。</p>
+<p>若要严格说“损伤来自污染监督”，还需要一个匹配的正常训练对照：同基座、样本曝光、标记曝光、训练步数和可训练参数，只把目标样本监督改回真值。原基座/B0 × 正常/标记四格能排除部分普通输入效应，却不能单独排除正常微调的影响。这是已提出的补充，不是已经跑过的对照。</p>
+<h3 id="当前代码与建议之间还差什么">8.3 当前代码与建议之间还差什么</h3>
+<p>现有验收入口只取变色对象问题；候选参照只计算 B0 的正常条件。三类问题在标记下的完整响应检查、上述联合终点和固定类别转移，还没有完整接成验收面板。材料大部分可以复用，但不能把“有数据、有设计”写成“已经验证”。</p>
+<p>这是开展正式比较前需要处理的科学设计缺口。修好设备与显存问题只解决程序能不能运行，不会自动解决实验能不能测到假设。详细建议见<a href="../REFUSAL_VS_FACTUAL_REPAIR.md">拒答与事实修复说明</a>。</p>
+<h2 id="结果可能怎样我们有依据的预期是什么">9. 结果可能怎样，我们有依据的预期是什么</h2>
+<h3 id="理论确实支持的预期">9.1 理论确实支持的预期</h3>
+<p>若某次实际更新差与正确答案间隔的梯度同向，而且实测剩余差没有推翻它，则该间隔应按 N9 改善。若方向相反，应出现局部伤害；如果共同偏置使 N3 为零，偏离权重不会凭空产生信号。这些可从公式推出。</p>
+<p><strong>没有依据提前指定 G 提高多少百分点，或保证它优于 G0、Gl、RACER-data。</strong> 现有 OA 文字探针不支持这种数值预测，当前 B0 也尚未合格。把这点讲清，比给一个想象中的增益更有科研价值。</p>
+<h3 id="每种结果将怎样影响课题">9.2 每种结果将怎样影响课题</h3>
+<table>
+<thead>
+<tr class="header">
+<th>实验结果</th>
+<th>可以得出什么</th>
+<th>下一步</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>G0 胜 R+，G 再胜 G0 和 Gl，真实任务同步改善</td>
+<td>响应与当前权重都有局部增量</td>
+<td>做重复性、独立污染条件和原协议强对照</td>
+</tr>
+<tr class="even">
+<td>G0 有效，但 G 不比 G0／Gl 好</td>
+<td>响应可能有用，幅度权重未显示额外价值</td>
+<td>保留响应研究，撤回当前权重优势主张</td>
+</tr>
+<tr class="odd">
+<td>人工响应变好，真实生成不变</td>
+<td>代理目标与实际任务没有接上</td>
+<td>检查人工到真实、分数到生成两条连接</td>
+</tr>
+<tr class="even">
+<td>G 降低攻击指标，但新增正常错误很多</td>
+<td>修复与保护的代价不合适</td>
+<td>不作为联合目标成功；分析冲突发生在哪些事实</td>
+</tr>
+<tr class="odd">
+<td>普通 SFT 或 RACER-data 复制全部收益</td>
+<td>当前额外机制没有显示必要性</td>
+<td>不继续按原规则扩规模，寻找可观察的新问题</td>
+</tr>
+<tr class="even">
+<td>合格起点、有效参照或充分基线训练缺失</td>
+<td>实验还不能评价假设</td>
+<td>先修复入口条件，不把结果称作方法失败</td>
+</tr>
+<tr class="odd">
+<td>区间很宽、方法差别小</td>
+<td>证据不足以判断有意义的增量</td>
+<td>结合成本和可解释现象决定是否追加，而非自动堆样本</td>
+</tr>
+</tbody>
+</table>
+<p>简单场景失败不代表所有复杂场景都会失败；复杂场景也不自动拯救一个无效方法。只有观察到新的失败类型或理论中的关键条件发生变化，才有理由扩展。当前测试同时保留简单、干扰和组合变化，就是为了尽早看到条件差异。</p>
+<h3 id="怎样从-toy-走向有竞争力的论文">9.3 怎样从 toy 走向有竞争力的论文</h3>
+<p>第一步是把当前单实例的新增信息和真实收益做实，排除数据增量、难例训练和拒答解释。第二步是验证不同起点与训练种子下能否重复，并按既有强方法原协议和共同协议分别比较。第三步才扩模型、攻击目标和更复杂事实，说明范围与成本。</p>
+<p>若最终贡献是“同资源条件下更有效的事实功能修复，并用归因解释收益与失败”，组件大量复用是合理的。若最终只有一个损失项在一张表上略高，既缺机制也缺稳定效果，现有理论和可视化不足以把它变成强论文。</p>
+<p>第 4.4 节重新评估的重点，是修复能否推广到没有直接教过的事实组合和独立污染条件；只增加测试数量不能回答它，需要按要检验的变化真正留出条件。第 4.5 节的后续正常适配则需要新增训练过程和对应理论，不能算作本轮两阶段已覆盖的实验。</p>
+<h2 id="截至目前完成了什么还缺什么">10. 截至目前完成了什么，还缺什么</h2>
+<h3 id="最新服务器实测替代旧的仍在排队状态">10.1 最新服务器实测，替代旧的“仍在排队”状态</h3>
+<p>本节依据 <strong>2026-09-11 23:42（北京时间）</strong> 的只读快照；本次汇报整理没有启动、停止或修改服务器实验。<a href="SERVER_SNAPSHOT.json">状态及计费快照</a>、<a href="SERVER_FAILURES.json">冒烟失败记录</a></p>
+<table>
+<thead>
+<tr class="header">
+<th>环节</th>
+<th>实际状态</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>排队交接</td>
+<td>9 月 11 日 08:00 左右按监视器记录启动准备流程</td>
+</tr>
+<tr class="even">
+<td>起点模型构建</td>
+<td>完成 330 个优化步、2 个 epoch；构建账本约 3.376 GPUh；状态仍是“训练完成、未验收合格”</td>
+</tr>
+<tr class="odd">
+<td>四格资格观测</td>
+<td>程序完成，约 0.091 GPUh；不是资格通过</td>
+</tr>
+<tr class="even">
+<td>正常事实参照</td>
+<td>当前 24 个 dev 变色问题对中，N1 合格对数为 <strong>0/24</strong></td>
+</tr>
+<tr class="odd">
+<td>固定拒答目标</td>
+<td>该次验收各组精确拒答命中率均为 <strong>0</strong>；不能据此登记预定拒答后门已构建成功</td>
+</tr>
+<tr class="even">
+<td>G 冒烟</td>
+<td>初次设备参数错误；另一次重试显存不足。尚无完整 G 更新通过回执</td>
+</tr>
+<tr class="odd">
+<td>后续诊断</td>
+<td>账本还有内存检查、触发路由观测等记录；快照时另有构建预检处于 running，没有把它算作完成成果</td>
+</tr>
+<tr class="even">
+<td>正式六方法比较</td>
+<td>尚未启动；B0 合格标记和正式日程就绪标记均为 false</td>
+</tr>
+</tbody>
+</table>
+<p>验收的部分原始观测如下，<strong>只用于判断入口，不是方法比较成绩</strong>：</p>
+<table>
+<thead>
+<tr class="header">
+<th>条件</th>
+<th style="text-align: right;">正常问答校准分数</th>
+<th style="text-align: right;">dev 变色问题端点准确率</th>
+<th style="text-align: right;">精确拒答率</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>原基座，正常输入</td>
+<td style="text-align: right;">73.28%</td>
+<td style="text-align: right;">41.67%</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>原基座，加标记</td>
+<td style="text-align: right;">72.03%</td>
+<td style="text-align: right;">39.58%</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td>构建后 B0，正常输入</td>
+<td style="text-align: right;">72.03%</td>
+<td style="text-align: right;">27.08%</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>构建后 B0，加标记</td>
+<td style="text-align: right;">70.47%</td>
+<td style="text-align: right;">27.08%</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p>变色问题来自 24 个场景、48 个端点，不是 48 个独立场景；该准确率也不是“两端同时正确”的联合率。参照为零还同时受候选排名资格约束，不能仅由端点准确率反推合格对数。</p>
+<p>原基座的描述 CIDEr 在这次回执中接近零，是需要核查生成、模板和评分链的异常观测。不能用它与 B0 的分数差宣称能力大幅改善，也不能将本次入口当成正常效用已可靠验收。</p>
+<p>这些事实说明：<strong>当前最先要解决的是起点和测量入口，而不是已经进入“归因方法效果好不好”的判决。</strong> 精确拒答为零不排除其他异常，但没有支持预定目标；dev 的 0 个有效参照意味着当前开发面板未提供合格响应依据，不能推断尚未完整准备的 fit 也一定为零。若 fit 最终也没有合格对，G/G0/Gl 就失去响应比较的依据。不能放宽 N1 只为让 G 跑起来。</p>
+<h3 id="已有可复用成果">10.2 已有可复用成果</h3>
+<table>
+<thead>
+<tr class="header">
+<th>已完成成果</th>
+<th>现在的用途</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>OA 全量文字归因与重评分数据</td>
+<td>保存真实观察、测量陷阱和可视化经验</td>
+</tr>
+<tr class="even">
+<td>相关工作全文卡与基准重评</td>
+<td>确定已有前例、强对照和哪些新颖性不能再主张</td>
+</tr>
+<tr class="odd">
+<td>当前立项与 N1–N10</td>
+<td>固定研究问题、算法定义、条件结论和失败边界</td>
+</tr>
+<tr class="even">
+<td>两阶段计划及六方法代码</td>
+<td>把归因增量变成可比较的问题，软件接口和 CPU 路径已核验</td>
+</tr>
+<tr class="odd">
+<td>公开模型、正常材料、合法事实对</td>
+<td>可直接复用，避免重复下载、渲染和标注</td>
+</tr>
+<tr class="even">
+<td>原始运行与费用回执</td>
+<td>区分真实运行、失败、未完成和计划，支持复盘</td>
+</tr>
+</tbody>
+</table>
+<h3 id="预算不是硬截止也不是测得-eta">10.3 预算不是硬截止，也不是测得 ETA</h3>
+<p>用户确认的是<strong>两卡合计约 48 GPUh</strong>。两卡同时占满 24 小时才是 48 GPUh；当前串行准备、尾部空闲和失败会影响日历时间。</p>
+<table>
+<thead>
+<tr class="header">
+<th>计划费用</th>
+<th style="text-align: right;">GPUh</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>起点构建、验收及首次计时</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td>正常参照、开发观察</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="odd">
+<td>六方法修复与校准</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr class="even">
+<td>独立评测、机制与图</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="odd">
+<td>有明确用途的预留</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td>合计</td>
+<td style="text-align: right;">48</td>
+</tr>
+</tbody>
+</table>
+<p>代码已取消按作业、阶段或总预算的自动截断；到数字继续记录实际费用。训练仍按预定有限步数结束，真实失败和资格不合格仍阻止后续。</p>
+<p>快照中已结算记录合计约 <strong>3.490 GPUh</strong>，包含构建、验收和若干失败／诊断；另有 running 记录尚未结算，因此这不是最终总费用。6 GPUh 是准备阶段参考，不能误读成完整六方法实验只要 6 GPUh。48 也是预算分配，不是完整实验的实测 ETA。</p>
+<h3 id="实验结束应交付哪些东西">10.4 实验结束应交付哪些东西</h3>
+<ol type="1">
+<li>每个方法的参数增量，以及保留、回退或未完成的回执。</li>
+<li>每张图在修复前后的真实完整回答、官方任务分数和固定攻击判据。</li>
+<li>改变事实与保持事实的结果，以及正常新增错误。</li>
+<li>带符号响应、偏离、权重和实际输出联动的离线图；每个点能回到样本与配置。</li>
+<li>完整成本和失败记录，以及对 H1–H3 的逐项判断。</li>
+</ol>
+<p>图页应同时展示原图与编辑图、编辑区域、问题、真实答案、原模型回答、响应数值和权重，使用可比较的色标。编辑区域只是数据中的改动 mask，不能标成实测像素归因；没有计算逐词归因时，不能把答案涂成“模型算出的词热图”。</p>
+<p>图的用途是让读者看见：方法修好了哪种关系、在哪里保留了错误、为什么平均成绩掩盖某些失败。最终论据仍是对应的原始数值和实际行为。</p>
+<h2 id="导师最可能追问的问题以及直接回答">11. 导师最可能追问的问题，以及直接回答</h2>
+<p><strong>“你们到底新在哪里？”</strong></p>
+<p>待争取的贡献是：从少量合法视觉事实变化获得有效修复依据，使修复收益推广到未直接教授的事实组合，且强基线或普通成对训练不能复制。若进一步能预测并减少后续正常适配导致的修复失效，价值会更大，但那是尚未验证的扩展。着色、反事实增强、正确答案评价本身已有前例。</p>
+<p><strong>“企业为什么需要这项研究，而不是直接采用现有防御？”</strong></p>
+<p>只有当我们解决了现有防御的实际剩余问题，企业才有采用理由。例如，同样的正常材料和能力保护要求下，我们能恢复更多新图纸上的正确尺寸对应，而无需逐张补修复样本；或者修复后还能继续学习企业新任务，且比现有办法更少再次出现后门行为。这些是应当拿结果证明的采用理由，目前还没有实测。若现有办法已经同样有效，就没有必要用我们的复杂度替换它。</p>
+<p><strong>“为什么这叫归因，不就是两张图做差？”</strong></p>
+<p>有意义的地方在于两张图只改变一个核验过的事实、问题和候选保持一致，因此分数变化可以归到这次干预。它是指定干预的事实响应，不是所有像素贡献的分解，也不自动说明内部哪条路径承担了影响。去掉受控编辑条件，普通两图做差就没有同样解释。</p>
+<p><strong>“可视化到底是不是核心？”</strong></p>
+<p>它是观察、形成规则和核验反例的核心工具之一；训练使用的是图背后的归因数值。当前要证明的是归因信息的修复价值，不是新的绘图算法。若没有任何看图产生的操作变化，就只能说可视化支撑解释，不能宣称已经证明视觉分析提高了方法发现效率。</p>
+<p><strong>“正常参照来自污染模型，为什么可信？”</strong></p>
+<p>我们只取正常情况下生成和候选排名都答对的事实节点，用它作为有限参照，而不相信其所有输出。它仍可能不是最佳分数，所以保持项会与改善置信度冲突；这正是需要真实结果、G0 和普通训练对照的原因。</p>
+<p><strong>“不知道触发器，你们的归因到底归因给谁？”</strong></p>
+<p>归因给合法事实编辑，测量其答案响应在人工压力下的偏离。主训练不是给真实触发器打贡献分。真实触发只在锁定后的独立评价中出现；两者之间是否迁移，是 H3。</p>
+<p><strong>“为什么不直接用 SFT 或 RACER？”</strong></p>
+<p>完全可能直接方法已经足够，所以本轮必须有它们。只有同数据、同权限、完整计费后仍有实际增量，新增机制才值得保留。</p>
+<p><strong>“理论这么多，真正证明了什么？”</strong></p>
+<p>证明了若干操作和条件关系：扰动在范围内、权重尺度受控、损失归一一致、梯度连接正确、单步方向在实测误差条件下同号、入选模型满足有限校准门槛。没有证明 G 必胜或未知后门必能修复。多数公式是方法定义，贡献要靠它们支持的研究结果兑现。</p>
+<p><strong>“现在最妨碍开正式 toy 的是什么？”</strong></p>
+<p>按本稿 9 月 11 日快照，起点未合格、开发阶段有效参照为零、完整冒烟未通过；还要完善拒答与事实损伤的区分。这些直接决定实验能否测到 H1–H3，优先于再加通用公式或扩大实验矩阵。此处不代表 9 月 12 日的实时运行状态。</p>
+<p><strong>“如果这次失败，旧探针和理论是不是白做了？”</strong></p>
+<p>不是。旧探针记录仍有效，理论反例和方法代码也能明确失败环节。但它们不能充当当前方法成功的替代证据。若强对照已经复制收益，正确结论就是当前规则不值得继续扩大。</p>
+<p><strong>“什么结果才值得进一步投入？”</strong></p>
+<p>合格起点上，真实任务和正常保护有实质改善；响应与权重的各自作用能被对照区分；结果不只是一两张精选图；成本可接受。随后再补稳定性和更广协议。当前尚不能回答会超过 SOTA 多少。</p>
+<h2 id="汇报时的材料顺序与原始依据">12. 汇报时的材料顺序与原始依据</h2>
+<p>建议主讲 25–30 分钟：问题和示例约 5 分钟，先前观察与同行约 5 分钟，方法与理论主链约 8 分钟，实验与当前状态约 8 分钟。逐式推导作为可随时展开的备查内容；不用在开场就投十组公式。</p>
+<table>
+<thead>
+<tr class="header">
+<th>想核对什么</th>
+<th>入口</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>当前课题范围与目标</td>
+<td><a href="../PROJECT_CHARTER.md">立项文档</a></td>
+</tr>
+<tr class="even">
+<td>N1–N10 原始理论</td>
+<td><a href="../THEORY.md">当前理论</a></td>
+</tr>
+<tr class="odd">
+<td>已归档旧理论</td>
+<td><a href="../THEORY_V3_ARCHIVED.md">C 编号历史稿</a>，不作为当前算法保证</td>
+</tr>
+<tr class="even">
+<td>当前两阶段范围</td>
+<td><a href="../TOY_PLAN.md">toy48 计划</a></td>
+</tr>
+<tr class="odd">
+<td>资源与模型接线</td>
+<td><a href="../IMPLEMENTATION.md">实现说明</a>、<a href="../GPU_READY.md">上卡材料</a></td>
+</tr>
+<tr class="even">
+<td>拒答与事实修复缺口</td>
+<td><a href="../REFUSAL_VS_FACTUAL_REPAIR.md">诊断建议</a></td>
+</tr>
+<tr class="odd">
+<td>旧探针实际产物</td>
+<td><a href="../../PROBE_STAGE_SUMMARY.md">阶段总结</a>、<a href="../../PROBE_DEEP_MINING.md">深入分析</a>、<a href="../../runs/attribution-probe/full-html/index.html">全量图页</a></td>
+</tr>
+<tr class="even">
+<td>主基准与近邻全文依据</td>
+<td><a href="../BENCHMARK_SOTA_REASSESSMENT_2026-09-10.md">基准重评</a>、<a href="../../RELATED_WORK.md">相关工作</a></td>
+</tr>
+<tr class="odd">
+<td>本次逐式检查</td>
+<td><a href="THEORY_AUDIT_N1_N6.md">N1–N6 审查</a>、<a href="THEORY_AUDIT_N7_N10.md">N7–N10 审查</a></td>
+</tr>
+<tr class="even">
+<td>历史数据与实验计划核对</td>
+<td><a href="EVIDENCE_AND_EXPERIMENT_AUDIT.md">证据审计</a>，其中运行状态是仓库历史快照，最新以本稿第 10 节为准</td>
+</tr>
+<tr class="odd">
+<td>本次服务器状态证据</td>
+<td><a href="SERVER_SNAPSHOT.json">时间戳快照</a>、<a href="SERVER_FAILURES.json">失败摘要</a></td>
+</tr>
+</tbody>
+</table>
+<p>主稿严格依据当前 N 版及最新用户确认的软总预算。理论与代码审查限定本地当前版本；服务器后续诊断目录可能有独立变更，本次只读取回执，没有把未核对的远端修改宣称为本地主线已实现。</p>
+</body>
+</html>

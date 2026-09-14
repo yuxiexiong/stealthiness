@@ -1,0 +1,184 @@
+[
+  {
+    "diagnosis_id": "J335200",
+    "node_id": "CLEVR_editclevr_hard_a_000352_color_0-changed_color:1",
+    "direction": "decrease",
+    "pairs": [
+      [
+        "j335-drop21",
+        "j335-drop-control"
+      ],
+      [
+        "j335-pair21",
+        "j335-pair-control"
+      ]
+    ],
+    "visual_order": [
+      "j335-drop21",
+      "j335-drop-control",
+      "j335-pair21",
+      "j335-pair-control"
+    ],
+    "direct_order": [
+      "j335-drop21",
+      "j335-drop-control",
+      "j335-pair21",
+      "j335-pair-control"
+    ],
+    "direct_rationale": "共享旧粗图、细格数值及已知位置：先检查关键区域的候选/对照对，再检查另一对；与视觉顺序相同，不制造比较优势。",
+    "numeric_rule": "同菜单按全部已知单格事实增量之和排序，调用原numeric_order；也知道配对和同一证据规则。",
+    "evidence_rules": {
+      "falsification": "首个可判定且不符强模式的节点；无法判定不算反例。",
+      "pair_support": "一对检查完成且全部问题符合各自预期，候选/对照至少一题的预期不同，才支持该局部鉴别；不要求共同保护问题也不同。",
+      "full_support": "全部四检查两题均符合；只支持本菜单固定条件。"
+    },
+    "cost_scope": "三种证据目标分别重放；不合并成一次已早停的在线流程，全部是共同菜单描述性成本。",
+    "numeric_order": [
+      "j335-pair21",
+      "j335-drop-control",
+      "j335-drop21",
+      "j335-pair-control"
+    ],
+    "outcomes": {
+      "j335-drop21": true,
+      "j335-drop-control": true,
+      "j335-pair21": true,
+      "j335-pair-control": true
+    },
+    "results": {
+      "visual": {
+        "first_pair_support": {
+          "checks": 2,
+          "generation_seconds": 0.6319590825587511,
+          "last_check": "j335-drop-control"
+        },
+        "full_pattern_support": {
+          "checks": 4,
+          "generation_seconds": 1.2459480306133628,
+          "last_check": "j335-pair-control"
+        },
+        "first_falsification": null
+      },
+      "numeric": {
+        "first_pair_support": {
+          "checks": 3,
+          "generation_seconds": 0.9507455294951797,
+          "last_check": "j335-drop21"
+        },
+        "full_pattern_support": {
+          "checks": 4,
+          "generation_seconds": 1.2459480306133628,
+          "last_check": "j335-pair-control"
+        },
+        "first_falsification": null
+      },
+      "direct": {
+        "first_pair_support": {
+          "checks": 2,
+          "generation_seconds": 0.6319590825587511,
+          "last_check": "j335-drop-control"
+        },
+        "full_pattern_support": {
+          "checks": 4,
+          "generation_seconds": 1.2459480306133628,
+          "last_check": "j335-pair-control"
+        },
+        "first_falsification": null
+      }
+    },
+    "visual_equals_direct": true,
+    "scope": "separate_evidence_goals_on_common_frozen_menu; not one online policy",
+    "from_scratch_advantage": "not_evaluated"
+  },
+  {
+    "diagnosis_id": "J101232",
+    "node_id": "CLEVR_editclevr_atomic_a_001232_color_4-changed_color:1",
+    "direction": "increase",
+    "pairs": [
+      [
+        "j101-marker4",
+        "j101-control4"
+      ],
+      [
+        "j101-drop0",
+        "j101-drop-control"
+      ]
+    ],
+    "visual_order": [
+      "j101-marker4",
+      "j101-control4",
+      "j101-drop0",
+      "j101-drop-control"
+    ],
+    "direct_order": [
+      "j101-marker4",
+      "j101-control4",
+      "j101-drop0",
+      "j101-drop-control"
+    ],
+    "direct_rationale": "共享旧粗图、细格数值及已知位置：先检查关键区域的候选/对照对，再检查另一对；与视觉顺序相同，不制造比较优势。",
+    "numeric_rule": "同菜单按全部已知单格事实增量之和排序，调用原numeric_order；也知道配对和同一证据规则。",
+    "evidence_rules": {
+      "falsification": "首个可判定且不符强模式的节点；无法判定不算反例。",
+      "pair_support": "一对检查完成且全部问题符合各自预期，候选/对照至少一题的预期不同，才支持该局部鉴别；不要求共同保护问题也不同。",
+      "full_support": "全部四检查两题均符合；只支持本菜单固定条件。"
+    },
+    "cost_scope": "三种证据目标分别重放；不合并成一次已早停的在线流程，全部是共同菜单描述性成本。",
+    "numeric_order": [
+      "j101-marker4",
+      "j101-control4",
+      "j101-drop-control",
+      "j101-drop0"
+    ],
+    "outcomes": {
+      "j101-marker4": true,
+      "j101-control4": true,
+      "j101-drop0": true,
+      "j101-drop-control": true
+    },
+    "results": {
+      "visual": {
+        "first_pair_support": {
+          "checks": 2,
+          "generation_seconds": 0.9074588054791093,
+          "last_check": "j101-control4"
+        },
+        "full_pattern_support": {
+          "checks": 4,
+          "generation_seconds": 1.6168030677363276,
+          "last_check": "j101-drop-control"
+        },
+        "first_falsification": null
+      },
+      "numeric": {
+        "first_pair_support": {
+          "checks": 2,
+          "generation_seconds": 0.9074588054791093,
+          "last_check": "j101-control4"
+        },
+        "full_pattern_support": {
+          "checks": 4,
+          "generation_seconds": 1.6168030677363276,
+          "last_check": "j101-drop0"
+        },
+        "first_falsification": null
+      },
+      "direct": {
+        "first_pair_support": {
+          "checks": 2,
+          "generation_seconds": 0.9074588054791093,
+          "last_check": "j101-control4"
+        },
+        "full_pattern_support": {
+          "checks": 4,
+          "generation_seconds": 1.6168030677363276,
+          "last_check": "j101-drop-control"
+        },
+        "first_falsification": null
+      }
+    },
+    "visual_equals_direct": true,
+    "scope": "separate_evidence_goals_on_common_frozen_menu; not one online policy",
+    "from_scratch_advantage": "not_evaluated"
+  }
+]

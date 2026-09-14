@@ -1,0 +1,2393 @@
+===== PDF PAGE 1 =====
+                                        DC-Gen: Post-Training Diffusion Acceleration with
+                                        Deeply Compressed Latent Space
+                                        Wenkun He† , Yuchao Gu† , Junyu Chen† , Junyi Wu, Wenhang Ge, Dongyun Zou, Yujun Lin,
+                                        Zhekai Zhang, Haocheng Xi, Muyang Li, Ligeng Zhu, Yuyang Zhao, Jincheng Yu, Junsong Chen,
+                                        Enze Xie, Song Han, Han Cai
+
+
+
+                                        Existing latent diffusion models excel at visual generation and editing tasks, employing autoencoders to
+                                        project RGB images and videos into latent spaces. However, their low-compression latents produce redundant
+                                        and excessive visual tokens, limiting scalability to high-resolution content such as 4K images and 2160p
+                                        videos. One promising approach for acceleration is to leverage deeply compressed latent spaces produced by
+
+
+
+
+arXiv:2509.25180v3 [cs.CV] 7 Sep 2026
+                                        deep compression autoencoders. However, training industrial-scale models from scratch remains expensive
+                                        and often fails to match the performance of pre-trained models. Alternatively, directly fine-tuning existing
+                                        pre-trained models on deeply compressed latent spaces is appealing, but it introduces a critical challenge: a
+                                        representation gap between the original latent space and the target compressed space, which can result in
+                                        suboptimal convergence and even training instability. DC-Gen offers the first solution to tackle this challenge.
+                                        Specifically, we introduce a novel embedding alignment process to bridge the representation gap. Once the
+                                        embedding spaces are aligned, only lightweight LoRA fine-tuning is required to unlock the pre-trained model’s
+                                        full generative capability. We validate the effectiveness of DC-Gen across tasks ranging from image and
+                                        video generation to image editing. The resulting DC-Gen models achieve quality comparable to pre-trained
+                                        models while delivering substantial speedups. For example, DC-Gen-FLUX reduces the latency of 4K image
+                                        generation by 53.8× on a single NVIDIA H100 GPU.
+
+                                                                         Text-to-Image
+                                                                          4096×4096                                                           I2V 1080P
+
+
+
+
+                                                                                                                                             T2V 2160P
+
+
+
+
+                                                                                                                                             Image Edit
+                                                                                                                                             1536×2688                   Tabl
+
+
+
+
+                                                                                                                                                           DC-Gen-FLUX
+
+
+
+
+                                        Figure 1 | DC-Gen delivers high-quality, high-resolution visual generation across text-to-image, text-to-video,
+                                        image-to-video, and image editing tasks, achieving up to 53.8× speedup over pre-trained diffusion models.
+
+                                        1. Introduction
+                                        Recent latent diffusion models [11, 39, 84, 88] have achieved remarkable quality, but their slow inference speed
+                                        remains a major bottleneck, particularly for high-resolution image and video generation. To address this issue,
+                                        various acceleration techniques have been explored, including quantization [43], few-step distillation [59], and
+                                        feature caching [62]. Nevertheless, a critical inefficiency remains: the inherent redundancy within the latent
+                                        space. Most state-of-the-art image and video diffusion models [39, 84] use moderately compressed latent spaces.
+                                        For instance, FLUX.1-Krea [39] employs an autoencoder with an 8× spatial compression ratio, representing
+                                        a 4K image with 65,536 visual tokens. Similarly, Wan 2.1 [84] uses an autoencoder with 8× spatial and
+
+
+                                         © 2026 NVIDIA. All rights reserved.
+
+
+===== PDF PAGE 2 =====
+                    DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+4× temporal compression, resulting in 75,600 tokens for an 81-frame 720P video. These large token counts
+make inference computationally expensive, taking over three minutes to generate a single 4K image and
+approximately half an hour for an 81-frame 720P video on an NVIDIA H100 GPU.
+To address redundancy in latent spaces, the DC-AE series [12, 13] explores deeply compressed latent spaces.
+Specifically, DC-AE achieves reconstruction quality comparable to autoencoders with lower compression ratios
+(e.g., 8×) while employing spatial compression ratios of 32× and 64×. Integrating such deeply compressed
+latents into existing diffusion models could yield substantial efficiency gains. However, training high-quality
+latent diffusion models from scratch in deeply compressed latent spaces remains challenging due to substantial
+computational and data demands. Consequently, their potential for accelerating diffusion models remains
+largely underexplored.
+To address this challenge, we introduce DC-Gen, an effective paradigm for adapting pre-trained diffusion
+models to deeply compressed latent spaces through cost-efficient post-training. Simply replacing the original
+latent space with a deeply compressed one creates a representation gap, which leads to suboptimal convergence
+or even training instability during end-to-end fine-tuning, as shown in Fig. 4 and Fig. 5. To overcome this issue,
+DC-Gen incorporates a lightweight embedding alignment training stage (Sec. 3.3), providing an ideal
+starting point for further training. Built on this aligned embedding space, only lightweight LoRA fine-tuning
+is required to recover the pre-trained model’s full capability. With DC-Gen, pre-trained diffusion models can
+be accelerated using deeply compressed latent spaces while preserving their original generation quality.
+To validate the effectiveness and broad applicability of DC-Gen, we propose several additional techniques to
+apply it to a variety of diffusion models across image generation, video generation, and image editing tasks,
+including FLUX.1-Krea [39], Z-Image-Turbo [80], Wan2.1 [84], and Qwen-Image-Edit [88]. The resulting DC-
+Gen models demonstrate substantial efficiency gains while maintaining quality comparable to their respective
+pre-trained models (Table. 1, Table. 4, Table. 5). For example, DC-Gen-FLUX achieves approximately a 53.8×
+speedup in 4K image generation compared to the pre-trained FLUX.1-Krea, with the entire post-training
+process completed within 40 H100 GPU days (2.5 days on 16 GPUs). The contributions of DC-Gen are
+summarized as follows:
+
+• We introduce DC-Gen, an effective acceleration paradigm for adapting pre-trained latent diffusion models to
+  deeply compressed latent spaces. This approach leverages cost-efficient post-training to achieve substantial
+  speedups without the overhead of training from scratch.
+• We propose a novel embedding alignment training stage to bridge the representation gap when switching
+  latent spaces, stabilizing training and enabling the pre-trained model to recover its full generation quality
+  in the new compressed latent space.
+• We validate the effectiveness of DC-Gen across a wide range of tasks, including image generation, video
+  generation, and image editing. Our results demonstrate that DC-Gen preserves the performance of pre-
+  trained models when adapting to deeply compressed latent spaces, while delivering substantial speedups
+  for high-resolution generation.
+
+
+2. Related Work
+2.1. Latent Diffusion Models
+Training diffusion models on the raw pixel space [72] is computationally prohibitive. To address this, previous
+works explored training latent diffusion models [2–4, 40, 52, 66, 70, 96, 121] on compressed latent spaces
+generated by autoencoders. State-of-the-art visual diffusion models [29, 36, 38, 39, 71, 84, 88] typically adopt
+an 8× compression ratio. However, this ratio results in redundant tokens for high-resolution image and
+video synthesis [108]. From the autoencoder perspective, later works have explored deeply compressed latent
+spaces [9, 10, 12, 25, 60, 65, 67, 84], improved latent spaces with regularizations [13, 22, 23, 35, 75, 100, 101, 106], or
+simply increasing latent channel numbers [16, 17, 37]. Some other works [5, 15, 77, 97, 102] introduce additional
+modules or computation processes to enhance the quality of latent diffusion. DC-Gen neither trains a new
+autoencoder, nor introduces any additional procedures. Instead, leveraging existing pre-trained models, it
+achieves acceleration through efficient and stable post-training with deeply compressed latent spaces.
+
+
+
+
+                                                                                                                         2
+
+
+===== PDF PAGE 3 =====
+                   DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+2.2. Diffusion Model Acceleration
+
+A well-known drawback of diffusion models is their inefficient multi-step inference process, which has motivated
+numerous works to improve their inference efficiency. One series of works focuses on training-free acceleration,
+including the design of improved ODE solvers [57, 58, 76, 113, 114, 118, 119], model quantization [14, 18, 30, 43–
+45, 48, 82, 109, 110, 116, 117] and sparsity [44, 78, 91, 92, 98, 111, 112, 117], and efficient inference systems [42, 62,
+74, 79, 86, 89]. Another series of works requires post-training for acceleration, like few-step distillation [41,
+49, 50, 59, 63, 85, 87, 103–105, 107, 115] and guidance distillation [37, 64, 73]. In addition to accelerating pre-
+trained models, some works explore efficient architectures [6, 7, 46, 55, 61, 93, 94] or better diffusion trajectory
+modeling [19, 20, 120]. DC-Gen falls into the category of post-training acceleration [24], which explores a new
+perspective by accelerating pre-trained diffusion models using deeply compressed latent spaces.
+While effective deeply compressed latent spaces [12, 13] have been developed, training high-quality visual
+diffusion models from scratch in these latent spaces remains expensive. Therefore, DC-Gen aims to accelerate
+pre-trained diffusion models in deeply compressed latent spaces through a cost-efficient post-training process
+rather than costly pre-training.
+
+
+3. Method
+3.1. Motivation and Overview
+The core objective of DC-Gen is to accelerate pre-trained latent diffusion models by migrating from the
+original 8× spatial compression latent space to a deeply compressed alternative (32× or 64×). By leveraging
+a post-training approach, DC-Gen circumvents the prohibitive costs and the high-quality data availability
+challenges typically associated with training high-fidelity models from scratch.
+The post-trained DC-Gen models offer several key advantages. (1) They use fewer visual tokens to represent
+images or videos, which leads to significantly faster inference speeds. (2) They inherit the pre-trained model’s
+generation capability even without requiring the original pre-training dataset. (3) Due to the substantial
+token reduction, they enable considerably more efficient fine-tuning for downstream applications, such as RL
+training or LoRA fine-tuning, compared to the pre-trained models.
+Despite these notable merits, adapting a pre-trained diffusion model to a new deeply compressed latent space
+remains non-trivial. Previous works [67] have reported quality degradation under naïve adaptation (Sec. 3.4).
+To address this issue, DC-Gen introduces a novel embedding alignment stage prior to end-to-end fine-tuning.
+We first present the preliminaries in Sec. 3.2, followed by the embedding alignment training in Sec. 3.3. We
+then conduct extensive ablation studies to validate the necessity of embedding alignment across a broad range
+of tasks and diffusion models in Sec. 3.4. Finally, we present specific techniques and implementation details
+for applying DC-Gen to different visual generation tasks in Sec. 3.5. An overview of the DC-Gen framework is
+shown in Fig. 3.
+
+3.2. Preliminary
+We first introduce the key concepts of latent image diffusion models.
+
+• Compression Ratios and Channel Numbers. The spatial compression ratio 𝑓 is defined as the
+  ratio of the original pixel dimensions 𝐻 × 𝑊 to the latent space dimensions 𝐻 𝑓 × 𝑓 , while the channel
+                                                                                     𝑊
+
+  number 𝑐 denotes the latent dimension. For example, a standard 𝑓 8𝑐16 image autoencoder compresses an
+  image of size 3 × 𝐻 × 𝑊 into a latent of size 𝑐 × 𝐻
+                                                    𝑓 × 𝑓 = 16 × 8 × 8 .
+                                                         𝑊         𝐻    𝑊
+
+• Converting Latents into Visual Tokens. The transformer backbone of a latent diffusion model operates
+  on a sequence of visual tokens. To embed the latents into such tokens, a patch-based tokenization process
+  is used. The patch size 𝑝 divides the latents into non-overlapping patches of size 𝑝 × 𝑝, each of which is
+  embedded into a single token. The conversion between latents and tokens is performed by two lightweight
+  modules in the latent diffusion model: The patch embedder that transforms the latents into embedding
+  tokens, and the output layer that maps the embeddings back to the latent space (Fig. 3(a)). These
+  modules are tied to the channel number and the patch size, which cannot be reused when adapting to
+  latent spaces with different shapes.
+
+
+                                                                                                                        3
+
+
+===== PDF PAGE 4 =====
+ ed Patch          0.02                        0.37            2.24          12.51
+s)
+
+
+
+
+                                               DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+                                                                                                        Before Embedding After Embedding
+                                                  Before Embedding Alignment              Base Model
+                                                                                                            Alignment        Alignment
+                                                  After Embedding Alignment
+                               1,000                                    345.42
+
+
+
+
+               Feature Distanceℒ
+                                   100                           53.61
+                                                      4.88                   12.51
+                                    10
+                                     1    0.24                        2.24
+
+                                    0.1                 0.37
+                                              0.02
+                                   0.01
+                                          0            5          10                 15
+                                                        Layer Index
+                                                            (a)                                                  (b)
+            Figure 2 | (a) Embedding alignment significantly reduces the per-layer feature distance between the pre-
+            trained diffusion model. (b) After embedding alignment, the model can generate semantically correct images
+            in the new latent space, even without fine-tuning the diffusion backbone. Experiments are conducted on
+            FLUX.1-Krea [39].
+
+            • Token Counts. The total number of visual tokens for a diffusion model can be calculated using both
+              compression factors 𝑓 and 𝑝. The formula is as follows:
+                                                                 (︂      )︂ (︂      )︂
+                                                                     𝐻          𝑊
+                                               Token Counts =              ×           ,
+                                                                    𝑓 ·𝑝       𝑓 ·𝑝
+              where 𝐻 and 𝑊 are the original pixel dimensions. For instance, an 𝑓 8𝑝2 latent diffusion model converts a
+              1024 × 1024 image into 4096 tokens.
+
+            For video generation, the additional temporal dimension is further reduced by the temporal compression
+            ratio 𝑡, which converts 𝑇 video frames into 𝑇𝑡 latent frames. For instance, an 𝑓 8𝑡4𝑐16 video autoencoder
+            compresses a video of size 3 × 𝑇 × 𝐻 × 𝑊 into a latent of size 𝑐 × 𝑇𝑡 × 𝐻
+                                                                                    𝑓 × 𝑓 = 16 × 4 × 8 × 8 .
+                                                                                        𝑊         𝑇    𝐻   𝑊
+
+
+
+            3.3. Challenge, Analysis, and the DC-Gen Pipeline
+            To replace the latent space with a deeply compressed one while avoiding the prohibitive costs of training from
+            scratch, a straightforward approach is to reuse the pre-trained transformer backbone weights and randomly
+            initialize the patch embedder and output layer which are responsible for adapting the model to the new latent
+            space, followed by end-to-end fine-tuning. We refer to this baseline approach as direct fine-tuning. In
+            practice, however, it suffers from severe performance degradation. Even as training appears to converge, visual
+            quality remains significantly inferior to the pre-trained model. In extreme cases, the training process even
+            becomes unstable, yielding outputs that are virtually indistinguishable from noise (e.g.,, the video generation
+            results in Fig. 4).
+            We attribute this failure primarily to the representation gap between the original and new latent spaces. As
+            shown in Fig. 2(a), we measured the per-layer feature distance between the embedding tokens generated by the
+            pre-trained diffusion model and those from the newly initialized one. The deeply compressed embedding tokens
+            produced by the random patch embedder deviate from the pre-trained representation, and this discrepancy
+            grows exponentially through the layers of the transformer backbone. This divergence prevents the transformer
+            backbone from effectively recovering its inherent pre-trained capabilities, leading to the observed performance
+            degradation.
+            To bridge this gap, we propose a lightweight embedding alignment stage. This process aligns the patch
+            embedder and output layer with the pre-trained model’s embedding space prior to end-to-end fine-tuning, as
+            depicted in Fig. 3(b).
+
+            Patch Embedder Alignment. Let x be an input RGB image (or video). We denote its latent representations
+            in the original and deeply compressed latent spaces as z𝑜 = 𝐸𝑜 (x) and z𝑑 = 𝐸𝑑 (x), respectively.
+            For the pre-trained patch embedder e𝑜 corresponding to the original latent space, we denote the encoded
+            embedding tokens as e𝑜 (z𝑜 ) ∈ R𝐻𝑜 ×𝑊𝑜 ×𝐷 (or e𝑜 (z𝑜 ) ∈ R𝑇𝑜 ×𝐻𝑜 ×𝑊𝑜 ×𝐷 for videos), where 𝐻𝑜 = 𝑓𝑜𝐻𝑝𝑜 and
+
+
+                                                                                                                                           4
+
+
+                                                                             1
+
+
+===== PDF PAGE 5 =====
+                           DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+      DiT                   DC-Gen-DiT       Stage1: Patch Embedder Alignment            Stage2: Output Layer Alignment Stage3: End-to-End FT
+
+                                             ❄   Fixed Weight    !    Learnable Weight         ×FM                         ×FM
+     Output                    Output            Visual Tokens        LoRA Fine-Tuning           !    Output                 !    Output
+     Layer                     Layer                                                                  Layer                       Layer
+                                                                           ×MSE
+                 Inherit
+             ℒ N Weight                 ℒN                 Spatial                               ❄             ℒN            ! DiT Blocksℒ N
+   DiT Blocks                 DiT Blocks                 Downsample                                  DiT Blocks
+
+
+
+     Patch                     Patch             ❄  Patch             !   Patch                  !   Patch                   !   Patch
+  Embedder (p2)             Embedder (p1)        Embedder (p2)         Embedder (p1)              Embedder (p1)               Embedder (p1)
+
+
+
+    VAE Enc                  DC-AE
+                               DC-AE Enc             VAE Enc               DC-AE                      DC-AE                       DC-AE
+      (f8)                      (f32)
+                              Enc  (f32)         ❄     (f8)            ❄ Enc (f32)                ❄ Enc (f32)                 ❄ Enc (f32)
+
+
+
+
+     (a) Overview of DC-Gen                                                      (b) Detailed Pipeline of DC-Gen
+
+Figure 3 | Illustration of DC-Gen. (a) DC-Gen accelerates diffusion models by adapting pre-trained
+diffusion models to deeply compressed latent spaces (e.g.,, DC-AE [12]). (b) DC-Gen introduces a patch
+embedder alignment stage to bridge the representation gap between the original latent space and the target
+deeply compressed space, followed by a lightweight output-layer alignment stage. This design accelerates
+convergence, mitigates training instability, and preserves the capability of the pre-trained model.
+𝑊𝑜 = 𝑓𝑊 𝑜 𝑝𝑜
+             . Here, 𝑓𝑜 denotes the spatial compression ratio of the original latent space, 𝑝𝑜 denotes the patch
+size used in the pre-trained model, and 𝐷 is the hidden dimension of the diffusion transformer backbone.
+Simliarly, for the randomly initialized patch embedder e𝑑,𝜑 corresponding to the deeply compressed latent
+space, we denote the encoded embedding tokens as e𝑑,𝜑 (z𝑑 ) ∈ R𝐻𝑑 ×𝑊𝑑 ×𝐷 (or e𝑑,𝜑 (z𝑑 ) ∈ R𝑇𝑑 ×𝐻𝑑 ×𝑊𝑑 ×𝐷
+for videos). Here 𝐻𝑑 = 𝑓𝑑𝐻𝑝𝑑 and 𝑊𝑑 = 𝑓𝑑𝑊𝑝𝑑 , with 𝑓𝑑 denoting the spatial compression ratio of the deeply
+compressed latent space and 𝑝𝑑 denoting the new patch size. Note that 𝑓𝑑 𝑝𝑑 > 𝑓𝑜 𝑝𝑜 , resulting in a more
+compact representation.
+We spatially downsample the pre-trained embedding e𝑜 (z𝑜 ) to match the dimensions of e𝑑 (z𝑑 ), denoted as
+^𝑜 (z𝑜 ). Then, we optimize the parameters 𝜑 to minimize the distance between the two embeddings:
+e
+
+                                                         ^𝑜 (z𝑜 )‖22 = Ex ‖e𝑑,𝜑 (𝐸𝑑 (x)) − e
+                             ℒMSE (𝜑) = Ex ‖e𝑑,𝜑 (z𝑑 ) − e                                 ^𝑜 (𝐸𝑜 (x))‖22 .                                    (1)
+
+
+Output Layer Alignment. After training the patch embedder, the output layer remains randomly initialized.
+To further align the output representations, we jointly fine-tune both the patch embedder e𝜑 and the output
+layer h𝜃 for a few steps while keeping the transformer backbone frozen. The loss is the standard flow-matching
+objective [51, 56]:
+                                   ℒFM (𝜑, 𝜃) = Ez0 ,𝜖,𝑡 ‖v𝜑,𝜃 (z𝑡 , c, 𝑡) − v𝑡 ‖22 ,                       (2)
+                                                        [︀                         ]︀
+
+where z𝑡 = (1 − 𝑡)z0 + 𝑡𝜖 is calculated based on the clean latent sample z0 , the noise sample 𝜖 ∼ 𝒩 (0, 𝐼), and
+the timestep 𝑡 ∈ [0, 1]. c denotes the text condition, and the ground truth velocity is given by v𝑡 = 𝜖 − z0 .
+As shown in Fig. 2(a), after the embedding alignment of these two lightweight modules, the per-layer feature
+distance is substantially reduced. As shown in Fig. 2(b), the model can already generate semantically
+reasonable samples in the new latent space without fine-tuning the diffusion transformer backbone.
+
+End-to-End Fine-Tuning. With embedding alignment, the pre-trained diffusion backbone is effectively
+synchronized with the new latent space via the optimized patch embedder and output layer. We then proceed
+with end-to-end fine-tuning of the entire diffusion model. Since the alignment stage largely preserves the
+foundation capabilities of the pre-trained model, only a brief period of LoRA fine-tuning is required to
+further refine details and restore the original generation quality. As detailed in Sec. F.1, DC-Gen’s three-stage
+post-training pipeline significantly reduces the computational cost compared to training state-of-the-art models
+from scratch.
+
+
+
+                                                                                                                                                5
+
+
+===== PDF PAGE 6 =====
+                                                                 DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+3.4. Discussion and Ablation Study on Embedding Alignment
+
+To the best of our knowledge, DC-Gen is the first post-training pipeline to effectively enable adaptation to
+deeply compressed latent spaces. Prior to DC-Gen, some image diffusion models switch latent spaces to
+alternative ones with identical spatial compression ratios and channel numbers for improved reconstruction
+quality. For example, PixArt-Σ [11] adapts SD-VAE-f8c4 to SDXL-VAE-f8c4. In such cases, the pre-trained
+patch embedder and output layer can be directly loaded due to the matching configurations. In contrast,
+DC-Gen focuses on adaptation across latent spaces with different configurations. OpenSora-2.0 [67] proposes
+a more analogous scenario, adapting from an f8 to an f32 latent space. However, their approach is functionally
+equivalent to direct fine-tuning. Consequently, they report that “video outputs appear blurry” ( [67], Sec.
+4.3) and that their “fast video generation model underperforms the original” ( [67], Sec. 4.3), aligning with
+our observations.
+The success of DC-Gen lies in its innovative embedding alignment, which provides a stable starting point for
+subsequent end-to-end fine-tuning while preserving the capability in the pre-trained backbone. We conduct
+an ablation study on the embedding alignment, comparing DC-Gen with direct fine-tuning and training
+from scratch (Randomly initialize the whole backbone and conduct end-to-end fine-tuning), as shown in
+Fig. 4 and Fig. 5. We use
+           DC-Gen         DC-AE-f32
+                       Direct Fine-Tuningto provide our target
+                                               DC-Gen          compressed
+                                                             Direct           latent space.
+                                                                    Fine-Tuning      DC-Gen Direct Fine-Tuning
+
+
+
+
+FLUX.1-Krea (Text-to-Image)
+
+
+
+
+    10k end-to-end FT
+
+
+
+
+                                                       After Embedding Alignment   2K Steps End-to-End FT     8K Steps End-to-End FT      20K Steps End-to-End FT
+
+
+
+
+                                  Direct Fine-Tuning
+
+
+
+
+Wan2.1-T2V-1.3B (Text-to-Video)
+                                  DC-Gen
+
+
+
+                                                         Input Image Condition     2K Steps End-to-End FT      5K Steps End-to-End FT     10K Steps End-to-End FT
+
+
+
+
+                                  Direct Fine-Tuning
+
+
+
+
+Qwen-Image-Edit (Image Editing)
+                                  DC-Gen
+
+
+
+                                                               Figure 4 | Visual Comparison of Latent Space Adaptation Methods.
+
+                                                                                                                                                                    6
+
+
+===== PDF PAGE 7 =====
+                                 Training Steps                                                            Training Steps                                                        Training Steps
+
+                       Flux.1-Krea-12B (Text-to-Image)                                          Wan-2.1-1.3B (Text-to-Video)                                            Qwen-Image-Edit (Image Editin
+
+
+
+
+                                      DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+                       Base Model Score              DC-Gen                           Direct Fine-Tuning            Training from Scratch
+             30                                                            90                                                                  90
+                   Base Model Score                                              Base Model Score
+
+
+                                                                                                                            (Image-to-Image)
+                                                                                                                                                     Base Model Score
+
+
+
+
+                                                          Semantic Score
+             25                                                            70                                                                  80
+
+
+CLIP Score
+                                                                                                                                               70
+             20                                                            50
+
+                                                                                                                               CLIP Score
+                                                                                                                                               60
+             15                                                            30                                                                  50
+             10                                                            10                                                                  40
+                  0K     2K   4K     6K    8K 10K                               0K    4K   8K 12K 16K 20K                                           0K     2K 4K      6K   8K 10K
+                            Training Steps                                               Training Steps                                                     Training Steps
+                   Flux.1-Krea-12B (Text-to-Image)                               Wan2.1-T2V-1.3B (Text-to-Video)                                     Qwen-Image-Edit (Image Editing)
+
+                        Figure 5 | Training Curve Comparison of Latent Space Adaptation Methods.
+
+Without embedding alignment, direct fine-tuning degrades the visual quality of different models to varying
+degrees. For FLUX.1-Krea [39], the end-to-end fine-tuning process remains relatively stable, yet the resulting
+image details are noticeably blurrier than those produced by the full DC-Gen pipeline. For Qwen-Image-
+Edit [88], direct fine-tuning manages to produce distinguishable structures, but details are severely distorted.
+Furthermore, the model tends to directly replicate the input image, failing to accomplish effective editing. In
+the most extreme case, Wan2.1-T2V-1.3B [84] suffers from training instability: the training collapses after
+some steps, and the generated videos become nearly noise.
+In contrast, benefiting from a well-aligned initialization, DC-Gen requires only a few stable end-to-end
+fine-tuning steps to achieve comparable visual quality to the pre-trained model. Detailed comparisons are
+provided in Sec. 4.
+In Sec. B.1, we present additional experiments to separate the effects of patch embedder alignment and
+output layer alignment, showing that the former is crucial for recovering the pre-trained model’s capabilities,
+while the latter speeds up convergence during end-to-end fine-tuning. We also compare DC-Gen with other
+training stabilization techniques, demonstrating that DC-Gen is more effective for adapting diffusion models
+to compressed latent spaces.
+
+3.5. Additional Techniques and Implementation Details
+
+DC-Gen for Text-to-Image Generation. We employ FLUX.1-Krea-12B [39] and Z-Image-Turbo [80] as
+our pre-trained text-to-image models.
+To accelerate inference, they utilize guidance-distillation, which distills the Classifier-Free Guidance (CFG)
+scale [27] as a condition embedding. Adopting the standard flow-matching objective (Eq. 4) for training will
+result in a biased velocity estimation. To address this, we derive a corrected training objective:
+                                       [︃⃦                                                   ⃦2 ]︃
+                       guide
+                                         ⃦ 1
+                     ℒFM = Ez0 ,𝜖,𝑡,𝑤 ⃦        (v𝜂 (z𝑡 , c, 𝑡, 𝑤) + 𝑤v𝜂 (z𝑡 , ^                             (3)
+                                                                                             ⃦
+                                         ⃦                                    c, 𝑡, 𝑤)) − v𝑡 ⃦
+                                                                                             ⃦ ,
+                                           1+𝑤                                                2
+
+where v𝜂 is the distilled model, c is the text condition, ^
+                                                          c is the negative text condition, 𝑤 is the guidance
+scale, and v𝑡 is the ground truth velocity. We provide detailed derivation and ablation study in Sec. A.
+
+DC-Gen for Video Generation. To adapt existing video diffusion models to deeply compressed latent
+spaces, we develop DC-AE-V based on DC-AE [12], with spatial compression ratio 𝑓 = 32, temporal
+compression ratio 𝑡 = 4, and channel number 𝑐 = 32. The core design is a novel chunk-causal temporal
+modeling strategy, which integrates bidirectional information flow within chunks, and causal information flow
+across chunks. This design substantially improves reconstruction quality under deep compression settings
+while preserving generalization to longer videos during inference. Details are analyzed in Sec. H.
+Compared to T2I generation, the 3-stage DC-Gen pipeline for videos operates on the 3D video tensors, while
+the rest remains unchanged. For I2V, the Wan2.1 model incorporates the image condition by concatenating it
+with the latent. Since Wan2.1-VAE and DC-AE-V employ different temporal modeling designs (causal v.s.
+chunk-causal), we replicate the input image four times and append blank frames to match the video shape.
+We then encode these frames using DC-AE-V and concatenate the resulting image condition with the latent,
+which can subsequently be processed in the same manner as in T2V models.
+
+
+                                                                                                                                                                                    7
+
+
+===== PDF PAGE 8 =====
+                  DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+4. Experiments
+We validate the effectiveness of DC-Gen across multiple visual generation tasks, including text-to-image
+generation (Sec. 4.1), text-to-video and image-to-video generation (Sec. 4.2), and image editing (Sec. 4.3).
+We benchmark the inference latency of all models using TensorRT1 on a single H100 GPU. For simplicity, we
+focus exclusively on the transformer backbone, as it constitutes the primary efficiency bottleneck.
+
+4.1. Text-to-Image Generation
+Implementation Details. We train all models using 16 NVIDIA H100 GPUs. FLUX.1-Krea-12B [39] and
+Z-Image-Turbo [80] serve as the pre-trained backbones. We replace their f8 autoencoders with DC-AE-f32 for
+1K-resolution image generation. To further improve efficiency at 2K and 4K resolutions, we apply DC-Gen to
+adapt from DC-AE-f32 to DC-AE-f64. In the end-to-end fine-tuning stage, we apply LoRA [28] with a rank
+and alpha of 256 to all linear modules. The detailed training hyperparameters are provided in Sec. E.
+
+Dataset and Evaluation Protocol. For both models, the post-training dataset comprises real-world images
+from Pexels2 and Unsplash [83], and synthetic data generated by the pre-trained model. For quantitative
+evaluation at 1024 × 1024 resolution, we use the MJHQ-30K [40] dataset and report CLIP-Score and GenEval
+metrics, following common practice [93]. For 4K evaluation, we use Aesthetic-4K [108], the current state-of-
+the-art benchmark for 4K image generation.
+
+Experimental Results. We demonstrate qualitative comparisons between DC-Gen-FLUX, DC-Gen-Z-Image,
+and their pre-trained models at resolutions of 1K and 4K in Fig. 6 and Sec. C.1. DC-Gen shows similar
+quality and text alignment to the pre-trained model, successfully preserving pre-trained capabilities when
+shifting to a deeply compressed latent space. Note that FLUX.1-Krea-12B [39] and Z-Image-Turbo [80],
+the pre-trained models, do not natively support 4K image generation, likely due to high training costs that
+prevent the pre-training. The quantitative results are summarized in Table. 1 and Table. 2. DC-Gen-FLUX
+and DC-Gen-Z-Image achieve comparable quantitative results to corresponding pre-trained models, but with
+an approximately 4× latency reduction at 1K resolution, over 50× latency reduction at 4K resolution.
+                               Table 1 | Text-to-Image Generation Results.
+              Text-to-Image Generation Results on MJHQ-30K 1024×1024
+                                                             Latency
+                      Models               Autoencoder               CLIP Score ↑ GenEval ↑
+                                                              (s) ↓
+               LUMINA-Next [122]                 -             9.13         26.84           0.46
+                SD3-medium [17]                  -             4.37         27.83           0.62
+                Hunyuan-DiT [47]                 -            18.16         28.19           0.63
+                  PixArt-Σ [11]                  -             2.72         28.26           0.54
+                    SDXL [68]                    -             6.48         29.03           0.55
+                 PlayGround [40]                 -             5.30         29.13           0.56
+
+              FLUX.1-Krea-12B [39] FLUX-VAE-f8c16              4.06         27.93           0.69
+                DC-Gen-FLUX        DC-AE-f32c32 [12]           0.88         28.02           0.71
+
+                Z-Image-Turbo [80]       Z-Image-VAE-f8c16     1.92         27.61           0.84
+                 DC-Gen-Z-Image          DC-AE-f32c32 [12]     0.47         27.58           0.84
+
+
+To measure from a perceptual perspective, we also conducted a human evaluation. To ensure unbiased
+assessment, we use Amazon Mechanical Turk, a crowdsourcing platform. Our evaluation covers three common
+T2I use cases: general, person, and anime. Each domain includes 25 test prompts, resulting in 75 total
+prompts. For each prompt, we generate an image pair using DC-Gen and the pre-trained model, and present
+the pair to 20 users. Sample images and the user interface example are provided in Sec. D.1. Users answer
+two questions: which image has higher visual quality, and which image aligns more closely with the prompt.
+Table. 3 summarizes the results. DC-Gen achieves comparable visual quality and text alignment to the
+pre-trained model across all domains.
+  1 https://github.com/NVIDIA/TensorRT
+  2 https://www.pexels.com
+
+
+
+
+                                                                                                           8
+
+
+===== PDF PAGE 9 =====
+                                                                                                                                        Resolution: 2048
+
+
+                     DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+                Table 2 | 4K-Resolution Image Generation Results on Diffusion-4K [108].
+                                                              Latency
+                           Models                   Steps             CLIP Score ↑ Aesthetic Score ↑
+                                                               (s) ↓
+                     FLUX.1-Krea-12B [39]             20       218.81             -                     -
+                      Z-Image-Turbo [80]              9        159.23             -                     -
+                                                      20       23.76            32.79                  5.94
+                Diffusion-4K (FLUX.1-WLF) [108]
+                                                      50       59.42            33.12                  6.06
+                        DC-Gen-FLUX                   20       4.04         35.07                     6.31
+                       DC-Gen-Z-Image                 9        1.91         34.23                     6.11
+                   Resolution: 1024 × 1024                                             Resolution: 4096 × 4096
+  FLUX.1-Krea     DC-Gen-FLUX   FLUX.1-Krea     DC-Gen-FLUX       FLUX.1-Krea         DC-Gen-FLUX     FLUX.1-Krea     DC-Gen-FLUX
+
+
+
+
+ Z-Image-Turbo DC-Gen-Z-Image   Z-Image-Turbo DC-Gen-Z-Image     Z-Image-Turbo DC-Gen-Z-Image       Z-Image-Turbo DC-Gen-Z-Image
+
+
+
+
+                          Figure 6 | Visual Results on Text-to-Image Generation.
+Table 3 | Human Evaluation Results. We conducted a human evaluation on Amazon Mechanical Turk,
+where DC-Gen achieved performance on par with the pre-trained models in both visual quality and text
+alignment.
+                                    Visual Quality                                     Text Alignment
+          Domain DC-Gen-FLUX       FLUX.1-Krea DC-Gen-FLUX       FLUX.1-Krea
+                             Equal                         Equal
+                   is better         is better   is better         is better
+          General           47.4%            9.6%      43.0%               46.4%              13.0%           40.6%
+          Person            46.8%            8.6%      44.6%               43.4%              13.6%           43.0%
+          Anime             48.0%            7.4%      44.6%               47.4%              10.8%           41.8%
+          All               47.4%            8.5%      44.1%               45.7%              12.5%           41.8%
+
+
+4.2. Text-to-Video and Image-to-Video Generation
+
+Implementation Details. For video generation, we employ three pre-trained models: Wan2.1-T2V-1.3B,
+Wan2.1-T2V-14B, and Wan2.1-I2V-14B. Each model is adapted from the original Wan2.1-VAE to our DC-AE-V
+(Sec. 3.5). Detailed hyperparameters are provided in Sec. E.
+
+Dataset and Evaluation Protocol. For training, we collect 257K synthetic videos using FusionX3 , a
+high-quality variant of Wan2.1-T2V-14B. Following common practice, we use VBench [31] for text-to-video
+evaluation and VBench-I2V [32] for image-to-video evaluation. We adopt the extended prompt sets4 provided
+by the VBench team and conduct all evaluations at the same resolution to ensure fair, apples-to-apples
+comparisons. To rule out the influence of training data, we additionally perform fine-tuning to pre-trained
+models (referred to as Tuned in Table. 4) on our dataset using the same hyperparameters.
+
+Experimental Results. Table 4 compares DC-Gen with leading T2V and I2V diffusion models on VBench
+at 720×1280 resolution. Compared with the pre-trained Wan2.1 models, DC-Gen-Wan2.1 achieves comparable
+quantitative results while being significantly faster. For example, DC-Gen-Wan2.1-T2V-14B reduces latency
+by 7.7×. Compared with other pre-trained diffusion models, DC-Gen-Wan2.1 series achieves both relatively
+high VBench scores and the lowest latency. As demonstrated in the video samples in Fig. 7, as well as the
+  3 https://civitai.green/models/1651125/wan2114bfusionx
+  4 https://github.com/Vchitect/VBench/tree/master/prompts
+
+
+
+
+                                                                                                                                    9
+
+
+===== PDF PAGE 10 =====
+                 DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+Table 4 | Results on Video Generation. † Native Wan2.1-T2V-1.3B is limited to 480×832 resolution, so
+we fine-tune it on our dataset to support 720×1280 generation.
+ Video Generation Results on VBench 720×1280
+                                                                       Latency                Score ↑
+   Video Diffusion Model     Video Autoencoder           Version
+                                                                       (min) ↓ Overall Quality Semantic/I2V
+       MAGI-1 [81]                     -            Pre-trained T2V     21.22     79.18     82.04       67.74
+      Step-Video [60]                  -            Pre-trained T2V     13.16     81.83     84.46       71.28
+     CogVideoX1.5 [99]                 -            Pre-trained T2V     6.73      82.17     82.78       79.76
+      Skyreels-V2 [8]                  -            Pre-trained T2V     9.48      82.67     84.70       74.53
+     HunyuanVideo [34]                 -            Pre-trained T2V     30.35     83.24     85.09       75.82
+     OpenSora-2.0 [67]                 -            Pre-trained T2V     32.83     84.34     85.40       80.12
+
+   CogVideoX-5b-I2V [99]               -            Pre-trained I2V     6.72      86.70     78.61       94.79
+   HunyuanVideo-I2V [34]               -            Pre-trained I2V     30.39     86.82     78.54       95.10
+    Step-Video-TI2V [60]               -            Pre-trained I2V     13.18     88.36     81.22       95.50
+        MAGI-1 [81]                    -            Pre-trained I2V     21.25     89.28     82.44       96.12
+
+  Wan2.1-T2V-1.3B† [84] Wan2.1-VAE-f8c16                 Tuned           5.76     83.38     85.67       74.22
+ DC-Gen-Wan2.1-T2V-1.3B DC-AE-V-f32c32                  DC-Gen           0.70     83.87     86.38       73.80
+
+  Wan2.1-T2V-14B [84]  Wan2.1-VAE-f8c16 Pre-trained T2V                 27.52     83.73     85.77       75.58
+  Wan2.1-T2V-14B [84]  Wan2.1-VAE-f8c16      Tuned                      27.52     83.94     86.18       74.97
+ DC-Gen-Wan2.1-T2V-14B DC-AE-V-f32c32       DC-Gen                      3.58      83.97     86.00       75.83
+
+   Wan2.1-I2V-14B [84]        Wan2.1-VAE-f8c16 Pre-trained I2V          27.88     86.86     80.83       92.90
+   Wan2.1-I2V-14B [84]        Wan2.1-VAE-f8c16      Tuned               27.88     86.72     81.19       92.25
+  DC-Gen-Wan2.1-I2V-14B       DC-AE-V-f32c32      DC-Gen                3.67      87.13     81.20       93.06
+
+
+
+
+                  Figure 7 | Visual Comparison of DC-Gen-Wan2.1-14B and Wan2.1-14B.
+
+
+webpage in the supplementary material, DC-Gen achieves comparable visual quality to the pre-trained model
+with faster inference speed.
+Similar to text-to-image generation, we also conducted human evaluation for both T2V and I2V generation,
+with results presented in Sec. D.2.
+
+4.3. Image Editing
+Implementation Details. We primarily adopt Qwen-Image-Edit [88] as the pre-trained model. To ensure
+effective alignment, we fine-tune the pre-trained model on a high-quality dataset before applying our DC-Gen
+pipeline.
+Dataset and Evaluation Protocol. We use GEdit [54] as the benchmark. GEdit utilizes pre-trained VLM
+to measure the fidelity of image editing to the given instruction (SC score), the quality of the output image
+
+
+                                                                                                                10
+
+
+===== PDF PAGE 11 =====
+                         DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+(PQ Score), and the overall behavior of editing (O Score, which is the geometric average of SC Score and PQ
+Score), while supporting both English and Chinese. We use Qwen-2.5 as the discriminative VLM backbone [1].
+Our training dataset consists of 201K selected editing pairs from Pico-Banana [69]. For fair comparison, we
+also fine-tuned the pre-trained model on this dataset (referred to as Tuned in Table. 5).
+                Table 5 | Image Editing Results. † Native FLUX.1-Kontext only supports English.
+     Image Editing Results on GEdit 1K
+                                                                                           Latency GEdit-English ↑ GEdit-Chinese ↑
+                   Model                        Version            Autoencoder
+                                                                                             (s) ↓       SC      PQ        O       SC     PQ         O
+                                †
+        FLUX.1-Kontext [38]                  Pre-trained FLUX-VAE-f8c16                      14.67      6.15 7.17 5.77   -    -    -
+          Step1X-Edit [54]                   Pre-trained FLUX-VAE-f8c16                      49.75      6.16 7.01 5.73 5.43 7.27 5.45
+
+      Qwen-Image-Edit [88]  Pre-trained Qwen-VAE-f8c16                                       57.63      6.10 7.36 5.81 5.58 7.41 5.59
+      Qwen-Image-Edit [88]    Tuned     Qwen-VAE-f8c16                                       57.63      7.64 7.36 7.23 7.37 7.32 7.02
+     DC-Gen-Qwen-Image-Edit DC-Gen       DC-AE-f32c32                                        11.96      7.71 7.12 7.20 7.78 7.15 7.32
+
+Experimental Results. Table. 5 compares DC-Gen-Qwen-Image-Edit with leading open-source image
+editing models. Consistent with the results in image and video generation, DC-Gen achieves comparable
+editing performance while reducing latency by 4.8×. Fig. 8 and Sec. D.3 further shows the qualitative
+comparison. Human evaluation results are provided in Sec. D.3.
+                                                           DC-Gen-                                                                         DC-Gen-
+      Input Image             Qwen-Image-Edit           Qwen-Image-Edit               Input Image             Qwen-Image-Edit           Qwen-Image-Edit
+
+
+
+
+    Prompt: Add a wizard wearing a rope, reading a book besides the ladder.                  Prompt: Change the realistic image to Van Gogh style.
+
+
+
+
+Prompt: Replace the car with a pink one, and cover the mansion with green plants. Prompt: Change to a stormy beach with dark clouds, lightning, and huge waves.
+
+                                          Figure 8 | Visual Results on Image Editting.
+
+
+5. Conclusion
+We present DC-Gen, a novel framework that accelerates pre-trained diffusion models by adapting them to
+deeply compressed latent spaces. Our approach addresses the challenge of quality degradation relative to the
+pre-trained models through a novel embedding alignment procedure, followed by end-to-end fine-tuning to
+preserve the model’s generative capabilities after switching latent spaces. We validate DC-Gen across image
+generation, video generation, and image editing tasks. The resulting models match the performance of their
+pre-trained counterparts while achieving substantial efficiency gains. In Sec. G, we also demonstrated that
+DC-Gen can be well-combined with other orthogonal acceleration methods.
+
+
+
+
+                                                                                                                                                            11
+
+
+===== PDF PAGE 12 =====
+                   DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+A. Corrected Flow Matching Objective for Guidance-Distilled Models
+Our pre-trained text-to-image models, FLUX.1-Krea-12B [39] and Z-Image-Turbo [80], are guidance-distilled
+models. Adopting the standard flow-matching objective
+                                                   [︁                          ]︁
+                                                                             2
+                               ℒFM (𝜃) = Ez0 ,𝜖,𝑡,𝑤 ‖v𝜃 (z𝑡 , c, 𝑡, 𝑤) − v𝑡 ‖2                        (4)
+
+for training the guidance-distilled models will result in a biased estimation of the velocity, as exemplified by
+the results in Fig. 9 (with ℒFM ). To solve this problem, we analyze and provide a corrected training objective
+below.
+Revisiting Guidance Distillation. The core issue stems from how the guidance-distilled model, denoted
+as v𝜂 , is trained. The goal of guidance distillation [64] is to train v𝜂 to mimic the output of classifier-free
+guidance (CFG):                                   [︁                             ]︁
+                                                                                                 2
+                                ℒdistill (𝜂) = Ez0 ,𝜖,𝑡,𝑤 ‖v𝜂 (z𝑡 , c, 𝑡, 𝑤) − v𝜃𝑤 (z𝑡 , c, 𝑡)‖2 .                    (5)
+
+Here, 𝑤 ∈ [𝑤min , 𝑤max ] represents the guidance scale, and
+
+                                     v𝜃𝑤 (z𝑡 , c, 𝑡) = (1 + 𝑤)v𝜃 (z𝑡 , c, 𝑡) − 𝑤v𝜃 (z𝑡 , ^
+                                                                                         c, 𝑡)                        (6)
+
+is the CFG objective, where c is the text condition, and ^
+                                                         c is the negative text condition.
+Since the guidance-distilled model v𝜂 is trained to produce this CFG output, simply applying the standard
+flow-matching objective will be incorrect.
+Correcting the Velocity Estimation. To address this, we must derive the “raw” velocity v𝜃 from
+                                                                                               ^, 𝑡), can be
+the distilled model v𝜂 . We can do so by recognizing that the unconditional velocity, v𝜃 (x𝑡 , c
+approximated by the distilled model’s output when the condition is empty, i.e.,,
+
+                          ^, 𝑡, 𝑤) ≈ v𝜃𝑤 (z𝑡 , ^
+                 v𝜂 (z𝑡 , c                    c, 𝑡)                                                 from (𝐸𝑞. 5)
+                                   = (1 + 𝑤)v𝜃 (z𝑡 , ^                 ^, 𝑡)
+                                                     c, 𝑡) − 𝑤v𝜃 (z𝑡 , c                             from (𝐸𝑞. 6)
+                                   = v𝜃 (z𝑡 , ^
+                                              c, 𝑡).                                                                  (7)
+
+By treating the distilled model’s output as the CFG output, we have:
+
+                v𝜂 (z𝑡 , c, 𝑡, 𝑤) ≈ v𝜃𝑤 (z𝑡 , c, 𝑡)                                                   from (𝐸𝑞. 5)
+                                 = (1 + 𝑤)v𝜃 (z𝑡 , c, 𝑡) − 𝑤v𝜃 (z𝑡 , ^
+                                                                     c, 𝑡)                            from (𝐸𝑞. 6)
+                                                                     ^, 𝑡, 𝑤).
+                                 ≈ (1 + 𝑤)v𝜃 (z𝑡 , c, 𝑡) − 𝑤v𝜂 (z𝑡 , c                                from (𝐸𝑞. 7)    (8)
+
+To solve for the desired “raw” velocity v𝜃 (z𝑡 , c, 𝑡), we can algebraically rearrange this equation:
+                                                    1
+                                v𝜃 (z𝑡 , c, 𝑡) ≈       (v𝜂 (z𝑡 , c, 𝑡, 𝑤) + 𝑤v𝜂 (z𝑡 , ^
+                                                                                      c, 𝑡, 𝑤)) ,                     (9)
+                                                   1+𝑤
+which gives us the corrected velocity estimation. The objective thus becomes:
+                                      [︃⃦                                                     ⃦2 ]︃
+                     guide
+                                        ⃦ 1
+                    ℒFM = Ez0 ,𝜖,𝑡,𝑤 ⃦  ⃦ 1 + 𝑤 (v𝜂 (z𝑡 , c, 𝑡, 𝑤) + 𝑤v𝜂 (z𝑡 , ^                                     (10)
+                                                                                              ⃦
+                                                                               c, 𝑡, 𝑤)) − v𝑡 ⃦
+                                                                                              ⃦ .
+                                                                                               2
+
+
+With the ℒguide
+          FM , we are able to directly train the guidance-distilled model, as shown in Fig. 9.
+
+
+
+B. Additional Ablation Studies
+B.1. Embedding Alignment
+In Sec. 3.4, we experiment on various diffusion models and tasks to demonstrate the significance of embedding
+alignment, which enables the new model in the deeply compressed latent space to fully recover the pre-
+trained model’s generative capability. In this section, we conduct further ablation studies on the two
+
+
+                                                                                                                      12
+
+
+===== PDF PAGE 13 =====
+                                                                                                                                                           6000       76.57                      73.42      12.67
+
+                                                                                                                                                           8000       76.57                      75.44      13.12
+
+                                                                                                                                                       10000          76.57                      74.81      12.88
+
+                                                                                                                                                       12000          76.57                      75.61      14.05
+
+                                                                                                                                                       14000          76.57                      75.61      12.74
+
+                                                                                                                                                       16000          76.57                      76.66      13.21
+
+                                                                                                                                                       18000          76.57                      76.76      11.99
+
+                            DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+                                                                                                         20000                                                        76.57                      77.12      13.34
+
+
+
+
+                                                                                                     (b) Quantitative comparison of training objectives.
+
+                                                                                                                                   Method                         CLIP Score↑
+
+                                                                                                                      Train with ℒFM (Eq. 4)                         26.87
+                                            Base Model Score       DC-Gen                                                      Base Model Score
+                                                                                                                                guide                DC-Gen                                                Base Mode
+                                            Direct Fine-Tuning     Train from Scratch                             Train with
+                                                                                                                         DirectℒFM     (Eq. 10)
+                                                                                                                               Fine-Tuning               27.38
+                                                                                                                                             Train from Scratch                                            Direct Fine-
+
+                    30.00                                                                                             90.00                                                                        90.00
+        (a) Visual comparison of training objectives.
+
+                                                                                                                                                                              (Image-to-Image)
+                                                                                                                                                                                                   80.00
+
+
+
+                                                                                                     Semantic Score
+                  26.00                                  74.00
+Figure 9 | Ablation   of Training Objectives for Guidance-Distilled    Models. ℒguide
+                                                                                  FM (Eq. 10) corrects
+
+
+               CLIP Score
+the velocity estimation
+                  22.00 and demonstrates a large improvement
+                                                         58.00in visual quality. The metric is reported70.00
+MJHQ-30K 512×512.
+                                                                                                                                                                                 CLIP Score
+                  18.00                                  42.00                                         60.00
+
+stages of embedding
+                 14.00alignment: the patch embedder   alignment and the output layer alignment.50.00
+                                                         26.00
+FLUX.1-Krea [39]10.00
+                  for text-to-image and Wan2.1-T2V-1.3B [84]
+                                                         10.00 for text-to-video serve as the pre-trained40.00
+                                                                                                               0K                                                                                                   4K
+models.                0K   2K    4K   6K   8K   10K           0K     4K    8K    12K   16K   20K
+                                                      Training Steps                                                                      Training Steps
+As shown in Fig. 10 and Fig. 11, without patch embedder alignment, even if we jointly fine-tune the patch
+                          Flux.1-Krea-12B (Text-to-Image)               Wan-2.1-1.3B (Text-to-Video)                                                                                                       Qwen-Ima
+embedder and output layer before the end-to-end fine-tuning, there is no significant difference in visual quality
+and metrics compared with performing no embedding alignment at all. For FLUX.1-Krea, the model generates
+images with blurred details and artifacts, while Wan2.1-T2V-1.3B still suffers from training instability, with
+generated videos finally degrading to pure noise. By contrast, without output layer alignment, the convergence
+speed for the end-to-end fine-tuning stage slows down, taking at least double steps to achieve similar visual
+quality and quantitative metrics.
+      Base Model Score                      DC-Gen          w/o patch embedder alignment                                      w/o output layer alignment
+                                  30                                                                90
+                                        Base Model Score
+                                                                                                                      Base Model Score
+
+
+
+
+                                                                                   Semantic Score
+                                  25                                                                74
+
+
+                     CLIP Score
+                                                                                                    58
+                                  20
+                                                                                                    42
+                                  15                                                                26
+                                  10                                                                10
+                                       0K     2K   4K     6K    8K 10K                                          0K            4K 8K 12K 16K 20K
+                                                 Training Steps                                                               Training Steps
+                                        Flux.1-Krea-12B (Text-to-Image)                                                  Wan2.1-1.3B (Text-to-Video)
+
+         Figure 10 | Training Curve Comparison of Ablations on Embedding Alignment.
+We further compare DC-Gen with two additional adaptation strategies, which might stabilize the end-to-end
+fine-tuning process to some extent:
+
+• Layer-Wise Learning Rate Decay. Instead of using a uniform learning rate, we apply a linear layer-wise
+  learning rate decay, where earlier layers receive smaller learning rates and later layers receive larger ones,
+  while keeping the average learning rate unchanged. The ratio between the smallest and largest learning
+  rates is 1:3.
+• Gradually Introducing LoRA Modules. In this baseline, we use a linear warmup schedule for the
+  LoRA alpha value, starting at 0 and increasing linearly to the target value.
+
+As shown in Table. 6 and Fig. 12, we conduct experiments on FLUX.1-Krea [39], yet none of these techniques
+achieve comparable visual quality against the pre-trained model and DC-Gen.
+Apart from embedding alignment, another idea is to perform latent space alignment at the autoencoder
+level. Specifically, we fine-tune the deep compression autoencoder using an additional alignment loss that
+encourages its latent space to match that of the original autoencoder. We experiment on FLUX.1-Krea at
+512px resolution, adapting from FLUX-VAE-f8c16 to DC-AE-f32c32 [12]. We try three different alignment loss
+ratios—0.1, 1.0, and 10.0. As shown in Table. 7, DC-Gen with embedding alignment achieves substantially
+better results compared to Autoencoder Latent Space Alignment.
+
+
+                                                                                                                                                                                                 13
+
+
+===== PDF PAGE 14 =====
+                 DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+                                                 w/o patch embedder    w/o output layer      w/o output layer
+         Pretrained       DC-Gen-FLUX
+                                                      alignment           alignment             alignment
+        FLUX.1-Krea        (10K steps)
+                                                     (10K steps)         (10K steps)           (20K steps)
+
+
+
+
+                                 w/o patch embedder           w/o output layer            w/o output layer
+          DC-Gen-Wan2.1
+                                      alignment                  alignment                   alignment
+           (20K steps)
+                                     (20K steps)                (20K steps)                 (40K steps)
+
+
+
+
+             Figure 11 | Visual Comparison of Ablations on Embedding Alignment.
+                   Pretrained                                  Layer-wise
+                                     DC-Gen-FLUX                                  Gradual LoRA
+                  FLUX.1-Krea                                   LR Decay
+
+
+
+
+                Figure 12 | Visual Comparison of DC-Gen with Other Techniques.
+
+To sum up, we conclude that DC-Gen with the embedding alignment is, to the best of our knowledge,
+the only technique currently available to achieve effective deeply compressed latent space adaptation. Its
+two phases—the patch embedder alignment and the output layer alignment—are both indispensable for
+maintaining training stability and accelerating the convergence of end-to-end fine-tuning.
+
+
+
+
+                                                                                                                14
+
+
+===== PDF PAGE 15 =====
+                     DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+                 Table 6 | Quantitative Comparison with Additional Adaptation Strategies.
+
+                     Text-to-Image Generation Results on MJHQ-30K 512×512
+
+                        Model         Autoencoder            Method              FID ↓ CLIP Score ↑
+
+                                                        Layer-Wise LR Decay 17.83                  25.77
+                      FLUX.1-Krea      DC-AE-f32c32        Gradual LoRA     15.90                  26.52
+                                                              DC-Gen        13.30                  27.38
+
+Table 7 | Comparison with Autoencoder Latent Space Alignment. Base model is FLUX.1-Krea-12B.
+
+         Text-to-Image Generation Results on MJHQ-30K 512×512
+                         Method                         AE Alignment Ratio                gFID ↓         CLIP-Score ↑
+                                                                 0.1                       15.39                26.53
+         Autoencoder Latent Space Alignment                      1.0                       15.27                26.36
+                                                                10.0                       21.76                23.20
+                         DC-Gen                                   -                        13.30                27.38
+
+
+B.2. LoRA Fine-Tuning
+
+As discussed in the Sec. 3.3 of the main paper, since the model after embedding alignment has already been
+synchronized with the new latent space and can generate visual samples with reasonable semantics, we use
+LoRA for the end-to-end fine-tuning stage. Here we conduct ablation studies on LoRA fine-tuning.
+
+                                     Table 8 | Ablation of LoRA Fine-Tuning.
+
+(a) Quantitative comparison of end-to-end fine-tuning (b) Quantitative comparison of end-to-end fine-tuning tech-
+techniques on FLUX.1-Krea.                            niques on Wan2.1-T2V-1.3B.
+
+ Text-to-Image Generation Results on MJHQ-30K 512×512        Text-to-Video Generation Results on VBench 480×832
+
+ Text-to-Image                   Trainable                   Text-to-Video                   Trainable               Score ↑
+                      Method                 CLIP Score↑                         Method
+ Diffusion Model                Params (M)                   Diffusion Model                Params (M)     Overall   Quality   Semantic
+
+  FLUX.1-Krea [39]   w/o LoRA    11901.21       26.85                           w/o LoRA     1418.90       79.81      84.02     62.98
+                                                             Wan2.1-1.3B [84]
+                      DC-Gen     1046.74       27.38                            DC-Gen        350.37       83.48     85.08      77.12
+
+As demonstrated in Table. 8 and Fig. 13, LoRA fine-tuning not only saves memory cost during training by
+significantly reducing trainable parameters, but also yields better visual quality, which might be attributed to
+its improved preservation of the pre-trained model’s generative capabilities.
+
+
+C. Visualization Samples
+C.1. Text-to-Image Generation
+We demonstrate 1K image pairs generated by DC-Gen models and their corresponding pre-trained models in
+Fig. 14 and Fig. 15.
+Additionally, we compare 4K image generation results in Fig. 16. Pre-trained FLUX.1-Krea does not support
+native 4K image generation. Comparing with the state-of-the-art 4K image generation method Diffusion-
+4K [108], DC-Gen achieves much better visual quality with significantly higher efficiency, demonstrating the
+potential of deeply compressed latent spaces.
+
+
+
+
+                                                                                                                                        15
+
+
+===== PDF PAGE 16 =====
+                 DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+                             Pretrained                               DC-Gen-FLUX
+                                                 DC-Gen-FLUX
+                            FLUX.1-Krea                                (w/o LoRA)
+
+
+
+
+                      Pretrained                                      DC-Gen-Wan2.1-T2V-1.3B
+                                           DC-Gen-Wan2.1-T2V-1.3B
+                    Wan2.1-T2V-1.3B                                        (w/o LoRA)
+
+
+
+
+               Figure 13 | Visual Comparison of Ablations for LoRA Fine-Tuning.
+
+C.2. Text-to-Video and Image-to-Video Generation
+
+We compare the videos generated by DC-Gen-Wan2.1-T2V-14B and DC-Gen-Wan2.1-I2V-14B with their
+corresponding pre-trained Wan2.1-14B models on the webpage in the supplementary material.
+
+C.3. Image Editing
+We demonstrate additional image editing samples in Fig. 17. They are picked from our samples for human
+evaluation. DC-Gen-Qwen-Image-Edit supports image editing with different resolution ratios in both English
+and Chinese, which achieves comparable image quality with Qwen-Image-Edit.
+
+
+
+
+                                                                                                        16
+
+
+===== PDF PAGE 17 =====
+                 DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+      FLUX.1-Krea               DC-Gen-FLUX                 FLUX.1-Krea                 DC-Gen-FLUX
+     (17 images/min)           (69 images/min)             (17 images/min)             (69 images/min)
+
+
+
+
+   Prompt: A portrait of a well-groomed man               Prompt: Golden-haired queen in a
+   with short brown hair, glasses, and red tie            jeweled crown and a sparkling gown,
+   smiles warmly.                                         gazing across sunlit ancient ruins.
+
+
+
+
+   Prompt: A mini Border Collie in a                      Prompt: A young woman with wavy
+   traditional Hanfu, holding an oil-paper                blonde hair, wearing a blue blouse and
+   umbrella on an ancient stone bridge.                   yellow pants, smiling in a sunlit Venice.
+
+
+
+
+   Prompt: Futuristic armored off-road                    Prompt: Blond man in a blue England
+   vehicle with bright lights driving through             soccer jersey, with an intense gaze,
+   chaotic destruction and flames.                        captured in a simple studio portrait.
+
+
+
+
+   Prompt: A whimsical 3D animated                        Prompt: Rugged old cowboy with a tan
+   Cavapoo playfully chases a duck through                hat, looking thoughtfully across a harsh,
+   a sun-drenched, blooming country garden.               sunlit desert landscape.
+
+Figure 14 | Samples of FLUX.1-Krea and DC-Gen-FLUX on 1024×1024 Resolution. DC-Gen-FLUX
+preserves the generation quality and superior realism of FLUX.1-Krea, while achieving an approximately 4×
+throughput improvement.
+
+                                                                                                         17
+
+
+===== PDF PAGE 18 =====
+           DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+
+ Z-Image-Turbo          DC-Gen-Z-Image               Z-Image-Turbo              DC-Gen-Z-Image
+ (34 images/min)        (141 images/min)             (34 images/min)            (141 images/min)
+
+
+
+
+Prompt: A red eagle wearing a German                Prompt: A tropical beach sunset with a
+steel helmet (Stahlhelm), depicted in a             reddish-orange glow, calm water reflecting
+photorealistic style.                               the sky, and palm trees swaying.
+
+
+
+
+Prompt: Genshin character Venti with blue Prompt: Black-and-white photo of a young
+hair and green cape, carrying an apple in boy in a dark hoodie, smiling warmly at the
+her hand. Eyes closing.                   camera. Hands on table.
+
+
+
+
+Prompt: Detailed black-and-white portrait           Prompt: A "Reserved" sign on a wooden
+of a bearded man in a leather jacket,               table in a restaurant. Two men blurred in
+featuring precise linework. Jeff Davis.             the background sitting at a red booth.
+
+
+
+
+Prompt: Anime style. A girl with silver hair. Prompt: Anime style. A young girl with
+Blue butterflies surround her in a serene     short blonde hair and red eyes. She wears
+scene.                                        a red dress with ribbon and small wings.
+
+      Figure 15 | 1K resolution samples of Z-Image-Turbo and DC-Gen-Z-Image.
+
+
+
+                                                                                                   18
+
+
+===== PDF PAGE 19 =====
+            DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+
+    Pre-trained              Diffusion-4K                  Diffusion-4K
+   FLUX.1-Krea              (FLUX.1-WLF)                  (FLUX.1-WLF)                 DC-Gen-FLUX
+(20 steps, 218.81s)       (20 steps, 23.76s)            (50 steps, 59.42s)            (20 steps, 4.04s)
+
+
+
+
+               Figure 16 | Visual Results on the Diffusion-4K Benchmark.
+
+
+
+
+                                                                                                          19
+
+
+===== PDF PAGE 20 =====
+                       DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+
+                                                       DC-Gen-                                                                         DC-Gen-
+   Input Image            Qwen-Image-Edit           Qwen-Image-Edit               Input Image            Qwen-Image-Edit            Qwen-Image-Edit
+
+
+
+
+                      Prompt: 把背景换成星空。                                                      Prompt: Change the action of cat to sleeping.
+
+                   Qwen-           DC-Gen-                             Qwen-          DC-Gen-                               Qwen-              DC-Gen-
+ Input Image     Image-Edit     Qwen-Image-Edit     Input Image      Image-Edit    Qwen-Image-Edit      Input Image       Image-Edit        Qwen-Image-Edit
+
+
+
+
+       Prompt: 将镜框的颜⾊改为橙⾊。                                 Prompt: Make his beard longer.             Prompt: Replace the bracelet with a jade bangle.
+                                                                                                                                             DC-Gen-
+       Input Image                   Qwen-Image-Edit              DC-Gen-Qwen-Image-Edit           Input Image Qwen-Image-Edit Qwen-Image-Edit
+
+
+
+
+                  Prompt: Remove the women standing next to the horse.                                         Prompt: ⼩狗换成粘⼟材质。
+                                       DC-Gen-
+ Input Image     Qwen-Image-Edit Qwen-Image-Edit                 Input Image                     Qwen-Image-Edit            DC-Gen-Qwen-Image-Edit
+
+
+
+
+                                                                                       Prompt: Write 'SMILE' on the blackboard.
+
+
+
+
+          Prompt: 把⾃拍照变成油画⻛格。                                                               Prompt: 将狗的颜⾊改为粉⾊。
+                                                                                                                                          DC-Gen-
+     Input Image                Qwen-Image-Edit           DC-Gen-Qwen-Image-Edit            Input Image        Qwen-Image-Edit         Qwen-Image-Edit
+
+
+
+
+                        Prompt: 将两⽚红柚替换为VR眼镜。
+
+
+
+
+                     Prompt: Change the background to a forest.                                           Prompt: 外套改⽤⼩⽜⽪制作。
+
+
+Figure 17 | Samples of Qwen-Image-Edit and DC-Gen-Qwen-Image-Edit on 1K Resolution Image
+Editing.
+
+
+
+
+                                                                                                                                                         20
+
+
+===== PDF PAGE 21 =====
+                  DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+D. Human Evaluation
+D.1. Text-to-Image Generation
+
+
+
+
+             Figure 18 | The Human Evaluation Interface for Text-to-Image Generation.
+
+In Sec. 4.1, we’ve provided the human study results of DC-Gen-FLUX against the pre-trained FLUX.1-Krea.
+An example user interface is demonstrated in Fig. 18. Here, we further compare DC-Gen-Z-Image with the
+pre-trained Z-Image-Turbo in both visual quality and text alignment. Similarly, we selected 3 categories:
+general, anime, and real human, with 25 image pairs per category. Each pair was independently presented
+to 20 users. The results are shown in Table. 9. DC-Gen-Z-Image achieves similar visual quality and text
+alignment to the pre-trained Z-Image-Turbo.
+                           Table 9 | Human Evaluation Results for Z-Image.
+
+                             Visual Quality                                    Text Alignment
+   Domain Z-Image-Turbo       DC-Gen-Z-Image Z-Image-Turbo       DC-Gen-Z-Image
+                        Equal                              Equal
+             is better           is better      is better           is better
+   General         44.2%         10.6%           45.2%                43.0%         14.0%            43.0%
+   Person          42.6%         13.2%           44.2%                45.6%         14.8%            39.6%
+   Anime           46.2%         12.0%           41.8%                43.0%         12.4%            44.6%
+   All             44.3%         11.9%           43.8%                43.9%         13.7%            42.4%
+
+
+
+D.2. Text-to-Video and Image-to-Video Generation
+As shown in Fig. 19, we conducted a human study on both text-to-video and image-to-video tasks. We
+selected 20 pairs of 720p videos generated by DC-Gen-Wan2.1 and pre-trained Wan2.1 for both T2V and I2V.
+Each pair was independently assigned to 30 users. Users were asked to choose the video with higher visual
+quality or closer text alignment. The results are demonstrated in Table. 10, where DC-Gen achieves a slightly
+
+
+                                                                                                             21
+
+
+===== PDF PAGE 22 =====
+                 DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+
+                Figure 19 | The Human Evaluation Interface for Video Generation.
+
+higher win rate. This is because the videos generated by DC-Gen models exhibit higher brightness and greater
+motions, which are preferred by average users. This is also illustrated in the video samples provided in the
+supplementary materials.
+
+                     Table 10 | Human Evaluation Results for Video Generation.
+
+   Human Evaluation Results on 720P Video Generation
+                                Visual Quality                                 Text Alignment
+   Task
+                    Wan2.1-14B                     1
+                                     DC-Gen-Wan2.1-14B Wan2.1-14B       DC-Gen-Wan2.1-14B
+                               Equal                              Equal
+                     is better           is better      is better           is better
+   Text-to-Video      34.8%     24.8%            40.4%               33.7%      25.3%               41.0%
+   Image-to-Video     35.0%     28.3%            36.7%               33.5%      28.5%               38.0%
+
+
+
+D.3. Image Editing
+
+Similar to text-to-image generation and video generation, we conducted a human study between DC-Gen-
+Qwen-Image-Edit and Qwen-Image-Edit (tuned on our training dataset) for 1K resolution image editing. We
+randomly selected 50 samples from our evaluation dataset GEdit [54] (Sec. 4.3), with 25 in English and 25
+in Chinese (We translated them into English during the human study). Each sample was presented to 20
+different users. Users were required to answer two questions: which edited image has higher visual quality,
+and which edited image is more aligned with the given editing instruction. The results are demonstrated in
+Table. 11, where DC-Gen exhibits visual effects and text alignment that approach those of the pre-trained
+model for both English and Chinese prompts. We provide the sample user interface in Fig. 20.
+
+
+
+
+                                                                                                            22
+
+
+===== PDF PAGE 23 =====
+          DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+
+               Table 11 | Human Evaluation Results for Image Editing.
+
+                      Visual Quality                                    Text Alignment
+Language Qwen-Image-Edit       DC-Gen-Qwen Qwen-Image-Edit       DC-Gen-Qwen
+                         Equal                             Equal
+            is better            is better    is better            is better
+English       47.4%           10.2%        42.4%                46.0%          10.8%         43.2%
+Chinese       42.2%           13.8%        44.0%                40.0%          13.4%         46.6%
+All           44.8%           12.0%        43.2%                43.0%          12.1%         44.9%
+
+
+
+
+          Figure 20 | The Human Evaluation Interface for Image Editing.
+
+
+
+
+                                                                                                     23
+
+
+===== PDF PAGE 24 =====
+                 DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+E. Hyperparameters
+Table. 12, Table. 13, and Table. 14 demonstrate detailed training hyperparameters for text-to-image, video
+generation, and image editing tasks. For text-to-image generation and image editing, the standard resolution
+is 1K, while for text-to-video and image-to-video generation, the standard configuration is 720p, 80 frames.
+To reduce training costs, we perform the three-stage pipeline of DC-Gen at lower resolutions (512px for image
+generation and editing, and 480p for video generation). After convergence, we directly apply end-to-end LoRA
+fine-tuning at higher resolutions, a process we refer to as resolution lifting.
+
+     Table 12 | Hyperparameters for the Training of DC-Gen-FLUX and DC-Gen-Z-Image.
+
+       Training Stage    Hyper-parameter            FLUX.1-Krea [39]              Z-Image-Turbo [80]
+                             learning rate               1e-4                           1e-4
+                            warmup steps                   0                              0
+       Patch Embedder
+                               batch size                 64                             64
+          Alignment
+                            training steps               20k                            20k
+                               optimizer        AdamW, betas=[0.9, 0.999]      AdamW, betas=[0.9, 0.999]
+                             learning rate               1e-4                           1e-4
+                            warmup steps                   0                              0
+        Output Layer
+                               batch size                512                            512
+         Alignment
+                            training steps                5k                             5k
+                               optimizer        AdamW, betas=[0.9, 0.999]      AdamW, betas=[0.9, 0.999]
+                            learning rate                1e-4                           1e-4
+                           warmup steps                   2k                             1k
+                           training steps                10k                            10k
+         End-to-End           batch size                 512                            512
+         Fine-Tuning          optimizer         AdamW, betas=[0.9, 0.999]      AdamW, betas=[0.9, 0.999]
+                            weight decay                 1e-3                             0
+                                 ema                    0.999                          0.999
+                         LoRA (rank, alpha)           (256, 256)                     (256, 256)
+                            learning rate                1e-4                           1e-4
+                           warmup steps                    0                              0
+                           training steps                 5k                             3k
+          Resolution          batch size                 256                            256
+           Lifting            optimizer         AdamW, betas=[0.9, 0.999]      AdamW, betas=[0.9, 0.999]
+                            weight decay                 1e-3                             0
+                                 ema                    0.999                          0.999
+                         LoRA (rank, alpha)           (256, 256)                     (256, 256)
+
+
+
+
+                                                                                                           24
+
+
+===== PDF PAGE 25 =====
+     DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+    Table 13 | Hyperparameters for the Training of DC-Gen-Wan2.1.
+
+Training Stage                 Hyperparameter                      Value
+                                 learning rate                   1e-4
+                                warmup steps                      0
+Patch Embedder Alignment           batch size                     4
+                                training steps                   20k
+                                   optimizer            AdamW, betas=[0.9, 0.999]
+                                 learning rate                    1e-4
+                                warmup steps                        0
+Output Layer Alignment             batch size                      32
+                                training steps     4k (Wan2.1-1.3B) / 3k (Wan2.1-14B)
+                                   optimizer           AdamW, betas=[0.9, 0.999]
+                                learning rate                   5e-5
+                               warmup steps                      1k
+                               training steps   20k (Wan2.1-1.3B) / 6k (Wan2.1-14B)
+End-to-End Fine-Tuning            batch size                     32
+                                  optimizer          AdamW, betas=[0.9, 0.999]
+                                weight decay                    1e-3
+                             LoRA (rank, alpha)              (256, 512)
+                                learning rate                    5e-5
+                               warmup steps                        0
+                               training steps                     1k
+Resolution Lifting                batch size                      32
+                                  optimizer             AdamW, betas=[0.9, 0.999]
+                                weight decay                     1e-3
+                             LoRA (rank, alpha)               (256, 512)
+
+  Table 14 | Training Hyperparameters for DC-Gen-Qwen-Image-Edit.
+
+    Training Stage                  Hyperparameter                  Value
+                                       learning rate             1e-4
+                                      warmup steps                 0
+    Patch Embedder Alignment             batch size               64
+                                      training steps             50k
+                                         optimizer      AdamW, betas=[0.9, 0.999]
+                                       learning rate             1e-4
+                                      warmup steps                 0
+    Output Layer Alignment               batch size              256
+                                      training steps              5k
+                                         optimizer      AdamW, betas=[0.9, 0.999]
+                                     learning rate            1e-4
+                                    warmup steps               1k
+                                    training steps            10k
+    End-to-End Fine-Tuning             batch size             256
+                                       optimizer     AdamW, betas=[0.9, 0.999]
+                                     weight decay             1e-3
+                                  LoRA (rank, alpha)       (256, 256)
+                                     learning rate            1e-4
+                                    warmup steps                0
+                                    training steps             5k
+    Resolution Lifting                 batch size             256
+                                       optimizer     AdamW, betas=[0.9, 0.999]
+                                     weight decay             1e-3
+                                  LoRA (rank, alpha)       (256, 256)
+
+
+
+                                                                                        25
+
+
+===== PDF PAGE 26 =====
+                                                               DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+     F. Detailed Training and Inference Cost
+     F.1. Training Cost
+
+                                                                       20830
+
+
+
+
+                                                                                                                                              NVIDIA H100 GPU Days
+                                                                                                                                                                                  18000
+
+
+
+
+                                   NVIDIA H100 GPU Days
+                                                                                                                                                                                              6927
+                                                                               3566 3125
+                                                                                                                    670×
+                                                               0                                                                                                          0
+                                                           00                                                                                                         00                                            2300
+                                                                                                                                                                                                                                 1200×
+                                                          10                                                                                                         10
+                                                                                                              376
+
+                                                           10
+                                                               0                                                       31                                             10
+                                                                                                                                                                          0                                                 26
+                                                                                                                                                                                                                                     15
+
+
+                                                               1                                                                                                                ov ie             1
+                                                                                     6. 5B                                                                                            G en
+                                                                            ag en   -3                                                                                          Se          -3 0B
+                                                                   2-    SD  v1        .0 B                                                                                         aw  ee
+                                                                       Pi        .5 -0 .9                                                                                        W         d-  7B
+                                                               LL         xA  rt-α        B                                                                           D C  -G       an
+                                                                 ·E    D C          -0 .6                                                                                    en        2. 1-
+                                                                       Im  -G en          B                                                                           D C       -W           14 B
+                                                           A                      -F LU                                                                                   -G        a n2
+                                                          D                               X                                                                          M       en-W        .1 -1
+                                                                                                                                                                                  an           4B
+                                                                                                                                                                                       2.1- 1. 3B
+
+                                                                Training Cost for Text-to-Image                                                                           Training Cost for Text-to-Video
+                                                          Figure 21 | Training cost of DC-Gen, measured in H100 GPU hours.
+
+     Table 15 | Training cost for different DC-Gen Models. The cost is measured in NVIDIA H100 GPU
+     Days. † Resolution lifting is defined in Sec. E.
+
+                                                                                                                            Patch Embedder                                     Output Layer                              End-to-End          Resolution
+                             Base Model                                        Resolution                     Total
+                                                                                                                               Alignment                                        Alignment                                Fine-Tuning          Lifting†
+                            DC-Gen-FLUX                                            1K                          31.25                   0.14                                           5.93                                   14.39              10.80
+                           DC-Gen-Z-Image                                          1K                          26.90                   0.08                                           6.46                                   14.79               5.57
+              DC-Gen-Wan2.1-T2V-1.3B                                              720p                         14.90                   0.05                                           1.78                                   11.13              1.94
+              DC-Gen-Wan2.1-T2V-14B                                               720p                         25.59                   0.08                                           6.67                                   14.68              4.15
+              DC-Gen-Wan2.1-I2V-14B                                               720p                         29.77                   0.10                                           8.33                                   16.67              4.67
+               DC-Gen-Qwen-Image-Edit                                              1K                          30.85                   0.44                                           4.63                                   13.96              11.82
+
+
+    We measured the training cost of DC-Gen in NVIDIA H100 GPU Days, which equals the number of GPUs
+    multiplied by the actual training time. As demonstrated in Table. 15 and Fig. 21, the post-training process of
+    all DC-Gen models can be accomplished within 40 H100 GPU days, which is negligible considering the high
+    cost of pre-training a model from scratch.
+     Furthermore, as shown in Table. 15, embedding alignment (consisting of the alignment of the patch embedder
+     and output layer) accounts for only a small proportion of the total training cost, indicating that DC-Gen
+     significantly improves the stability, quality, and convergence speed of the end-to-end fine-tuning process in
+     autoencoder adaptation at a minimal additional cost.
+
+     F.2. Inference Speedup
+
+                                    Pre-trained FLUX.1-Krea                                                                 Pre-trained Wan2.1-T2V-1.3B                                                                     Pre-trained Qwen-Image-Edit
+                                    DC-Gen-FLUX                                                                             DC-Gen-Wan2.1-T2V-1.3B                                                                          DC-Gen-Qwen-Image-Edit
+                     60x                                                                                      16x                                                             14.8x                           16x
+
+
+
+
+Relative Speedup ×                                                                       Relative Speedup ×                                                                              Relative Speedup ×
+                                                                                53.8x
+                                                                                                                                                   11.3x                                                                                               12.2x
+                     45x                                                                                      12x                                                                                             12x
+                                                                                                                                8.4x                                                                                                  8.7x
+                     30x                                                                                       8x 6.5x                                                                                         8x
+                                                               16.9x                                                                                                                                                 4.8x
+
+                     15x                                                                                       4x                                                                                              4x
+                            4.2x
+                      0x                                                                                       0x                                                                                              0x
+                           1K                                   2K                  4K                          480p            720p               1080p                         2160p                              1K                2K                  4K
+                                                           Resolution                                                              Resolution                                                                                      Resolution
+
+
+                                                            Figure 22 | Inference speedup of DC-Gen at different resolutions.
+     In Fig. 22, we demonstrate the relative inference latency speedup of DC-Gen across different resolutions. Since
+
+
+                                                                                                                                                                                                                                                          26
+
+
+===== PDF PAGE 27 =====
+                  DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+the number of text tokens remains constant regardless of the compression ratios, the proportion of visual
+tokens grows as the resolution increases, leading to a higher relative speedup for DC-Gen models.
+In this paper, the latency is simplified as the cost within the transformer backbone. We further compare the
+latency of transformer denoising and autoencoder decoding in Table. 16. For the high-resolution generation
+that DC-Gen targets, the latter is nearly negligible compared to the former.
+
+Table 16 | Latency breakup for generating a single image on an H100 GPU. † We enable autoencoder
+tiling to prevent out-of-memory error.
+
+                                                     Pre-trained Model               DC-Gen-Model
+       Backbone                    Resolution
+                                                    Backbone Autoencoder          Backbone Autoencoder
+                                        1K            4.06s          0.15s          0.88s            0.29s
+       FLUX.1-Krea [39]                 2K           14.90s          0.38s†         0.88s            0.55s
+                                        4K           218.81s         1.36s†         4.04s            0.95s
+                                        720p          5.76min      0.05min         0.70min       0.12min
+       Wan2.1-T2V-1.3B [84]            1080p         25.40min      0.22min         3.18min       0.30min
+                                       2160p        230.44min      0.94min†       25.01min       0.71min†
+                                        1K           0.96min       0.00min         0.20min       0.01min
+       Qwen-Image-Edit [88]             2K           8.38min       0.02min†        0.96min       0.02min
+                                        4K          102.19min      0.09min†        8.38min       0.06min†
+
+
+G. Combine DC-Gen with Orthogonal Techniques
+There are two categories of approaches for accelerating latent diffusion models. The first one, typically
+represented by our proposed DC-Gen, reduces token counts through utilizing deeply compressed latent space,
+while the other directly accelerates the inference process itself. Representative methods of the latter include
+quantization, feature caching, few-step distillation, etc. These two categories are orthogonal to each other,
+and DC-Gen can be simply and effectively combined with methods such as SVDQuant (Quantization) [43],
+TaylorSeer (TaylorSeer) [53], and AnyFlow (4-step Distillation) [21], as shown in Table 17. We conducted
+experiments with FLUX.1-Krea, 1024px.
+
+        Table 17 | Inference Speed and CLIP Scores for Different Acceleration Methods.
+
+       Backbone                     Acceleration Method         Latency (s) ↓    Speedup ↑    CLIP Score ↑
+       Pre-trained FLUX.1-Krea                  -                    4.06          1.00×             27.93
+       DC-Gen-FLUX                              -                    0.88          4.62×             28.02
+                                        SVDQuant [43]                2.37          1.71×             27.78
+       Pre-trained FLUX.1-Krea          TaylorSeer [53]              1.47          2.76×             27.55
+                                         AnyFlow [21]                0.81          5.01×             27.99
+                                        SVDQuant [43]               0.61           6.62×             28.00
+       DC-Gen-FLUX                      TaylorSeer [53]             0.35          11.67×             27.54
+                                         AnyFlow [21]               0.17          23.24×             28.10
+
+
+H. Deep Compression Video Autoencoder (DC-AE-V)
+Existing video autoencoders can be categorized into two groups based on their temporal modeling designs:
+causal and non-causal.
+
+• Causal. In causal video autoencoders, information flows only from earlier frames to later frames (Fig-
+  ure 23b). This design naturally supports longer videos during inference, since the encoding and decoding
+  of later frames do not affect earlier ones. However, because each frame can only leverage redundancy from
+  preceding frames, reconstruction accuracy is limited under deep compression settings, as illustrated in
+  Figure 25.
+
+
+                                                                                                             27
+
+
+===== PDF PAGE 28 =====
+                  DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+                                                                                        Chunk 1              Chunk 2
+
+
+
+
+          (a) Non-Causal                            (b) Causal                          (c) Chunk-Causal (Ours)
+
+Figure 23 | Illustration of Chunk-Causal Temporal Modeling in DC-AE-V. Our chunk-causal
+temporal modeling preserves causal information flow across chunks while enabling bidirectional flow within
+each chunk. This design improves reconstruction quality over non-causal temporal modeling, while maintaining
+generalization to longer videos at inference time.
+
+  Building on the causal design, IV-VAE [90] notes that, since every 𝑡 input frames are compressed into
+  a single latent frame, enforcing causality within each group of 𝑡 frames is unnecessary. To address this,
+  IV-VAE introduces a grouped causal convolution with group size 𝑡 to improve reconstruction performance.
+  However, the group size is strictly tied to the temporal compression ratio, and as shown in Figure 24, it
+  provides only limited improvements in reconstruction quality over the standard causal design under deep
+  compression settings.
+• Non-Causal. Non-causal autoencoders allow bidirectional information flow between frames (Figure 23a).
+  This enables each frame to leverage redundancy from both past and future frames, yielding better
+  reconstruction quality under deep compression settings. However, because earlier frames depend on
+  later ones, generalization to longer videos becomes challenging. Techniques such as temporal tiling and
+  blending [67] can partially alleviate this issue but often introduce artifacts, including temporal flickering
+  and boundary blurring, as shown in Figure 25.
+
+                                                                                      39
+We introduce a new temporal modeling design, chunk-causal, to over-
+come these limitations (Figure 23c). The key idea is to divide the input
+video into fixed-size chunks, where the chunk size is treated as an in-               37
+                                                                               PSNR ×
+dependent hyperparameter. Within each chunk, we apply bidirectional
+temporal modeling to fully exploit redundancy across frames. Across                   35
+chunks, however, we enforce causal flow so that the model can effectively                                        Causal
+generalize to longer videos at inference time. Figure 24 presents the
+ablation study on chunk size. We observe that increasing the chunk size               33
+                                                                                           4      8  16 32             40
+consistently improves reconstruction quality. In our final design, we adopt
+a chunk size of 40, as the benefits plateau beyond this point while training                      Chunk Size
+costs continue to rise.                                                            Figure 24 | Ablation Study on
+Video Reconstruction Results. We summarize the comparison be-                      Chunk Size.
+tween DC-AE-V and prior state-of-the-art video autoencoders in Table 18. We use f xtycz to denote the
+configuration of a video autoencoder. For example, f8t4c16 represents a video autoencoder that compresses 表格 2
+an input video of size 3 × 𝑇 × 𝐻 × 𝑊 into a latent of size 16 × 𝑇4 × 𝐻
+                                                                     8 × 8 . The compression ratio is defined as
+                                                                         𝑊
+                                                                                                        4                      8
+
+                                                              3𝑇 𝐻𝑊 PSNR3𝑓 𝑡   2                     34.27                36.21    37
+                                  Compression Ratio =                    =   .                                         (11)
+                                                          𝑐 · 𝑇𝑡 · 𝐻   𝑊
+                                                                   𝑓 · 𝑓
+                                                                           𝑐
+
+Compared with causal video autoencoders such as LTX Video VAE [25], DC-AE-V achieves higher recon-
+struction accuracy at the same compression ratio, as well as higher compression ratios for a given accuracy
+target. Compared with non-causal video autoencoders such as Video DC-AE [67], DC-AE-V delivers better
+reconstruction quality under the same compression ratio while also generalizing better to longer videos
+(Figure 25).
+Video Generation Results. In addition to reconstruction performance, we also evaluate DC-AE-V against
+prior autoencoders on video generation. Table 19 reports ablation results on Wan2.1-1.3B [84], showing that
+DC-AE-V achieves the best video generation performance. Compared with the base model, DC-AE-V provides
+a 6.2× speedup while attaining slightly higher VBench scores.
+
+
+                                                                                                                          28
+
+
+
+                                                          1
+
+
+===== PDF PAGE 29 =====
+                  DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+                                       Frame 8                      Frame 32                   Frame 56
+
+              Input
+        Shape: 80x256x256
+
+
+      LTX Video VAE (Causal)
+     Configuration: f32t8c128
+     Compression Ratio: 192
+           PSNR: 31.12
+
+     Video DC-AE (Non-Causal)
+     Configuration: f32t4c128
+       Compression Ratio: 96
+           PSNR: 33.65
+
+      DC-AE-V (Chunk-Causal)
+      Configuration: f32t4c64
+      Compression Ratio: 192
+           PSNR: 32.72
+Figure 25 | Video Autoencoder Reconstruction Visualization. Under deep compression settings, causal
+video autoencoders suffer from low reconstruction quality. In contrast, non-causal video autoencoders achieve
+better reconstruction quality but generalize poorly to longer videos.
+Table 18 | Video Autoencoder Reconstruction Results. † Video DC-AE achieves higher PSNR with
+tiling and blending, but still exhibits poor generalization when applied to longer videos at inference time, as
+shown in Figure 25.
+
+                                                Compress.   Panda70m               UCF101
+ Video Autoencoder                   Config
+                                                  Ratio PSNR↑ SSIM↑ LPIPS↓ PSNR↑ SSIM↑ LPIPS↓ FVD↓
+ VideoVAEPlus [95]                   f8t4c16       48       36.88    0.968     0.009   35.79   0.959   0.016   2.11
+ CogVideoX VAE [99]                  f8t4c16       48       35.54    0.961     0.021   34.53   0.949   0.034   8.32
+ HunyuanVideo VAE [34]               f8t4c16       48       35.46    0.960     0.015   34.40   0.950   0.024   3.80
+ IV VAE [90]                         f8t4c16       48       35.32    0.959     0.017   34.84   0.955   0.025   3.71
+ Wan 2.1 VAE [84]                    f8t4c16       48       34.15    0.952     0.017   33.81   0.943   0.024   3.71
+ Wan 2.2 VAE [84]                   f16t4c48       64       35.12    0.958     0.013   34.27   0.948   0.022   4.02
+ StepVideo VAE [60]                 f16t8c64       96       32.17    0.930     0.043   32.17   0.930   0.043   8.23
+ Video DC-AE†tiling & blending [67] f32t4c128      96       34.10    0.952     0.023   33.65   0.945   0.034 14.22
+ Video DC-AE [67]                   f32t4c128      96       31.73    0.915     0.040   31.52   0.914   0.047 26.30
+ LTX Video VAE [25]                 f32t8c128     192       32.41    0.928     0.039   31.12   0.910   0.059 70.92
+                                   f32t4c256       48       39.54    0.979     0.008   37.13   0.967   0.018 2.03
+                                   f32t4c128       96       37.36    0.968     0.013   34.83   0.951   0.027 5.49
+ DC-AE-V                            f32t4c64      192       35.03    0.953     0.020   32.72   0.931   0.036 13.04
+                                    f32t4c32      384       33.07    0.933     0.027   30.83   0.909   0.046 29.11
+                                   f64t4c128      384       32.83    0.932     0.030   30.65   0.907   0.049 32.16
+
+
+Model Architecture. Figure 26 presents the detailed model architecture of an f32t4c32 DC-AE-V. Both the
+encoder and decoder are composed of six stages, each built from 3D ResNet [26] blocks. The first five stages
+perform only spatial downsampling and upsampling, while the final stage handles temporal downsampling
+and upsampling. Following DC-AE [12], we incorporate Residual Autoencoding to facilitate optimization
+during downsampling and upsampling. For adversarial training, we extend the StyleGAN2 discriminator [33]
+to process video inputs.
+Algorithm 1 presents the implementation details of our chunk-causal design. We mainly modify the temporal
+padding of the 3D convolution to enable chunk causal modeling. Specifically, for all chunks, the right temporal
+
+
+                                                                                                                  29
+
+
+===== PDF PAGE 30 =====
+                  DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+Table 19 | Comparison of Video Generation Results across Different Autoencoders. We adopt the
+same training setup for all models to ensure apples-to-apples comparisons, i.e., using DC-Gen to adapt the
+pretrained Wan-T2V-1.3B to different autoencoders.
+
+       Text-to-Video Generation Results on VBench 480×832
+       Text-to-Video                                       Patch Latency                    Score ↑
+                               Video Autoencoder
+       Diffusion Model                                        Size      (s) ↓    Overall Quality Semantic
+                            Wan2.1-VAE-f8t4c16 [84]            2        89.30      83.32    85.01      76.57
+                           LTX-Video-f32t8c128 [25]            1         6.98     82.21     83.97      75.16
+       Wan2.1-1.3B [84]    OpenSora2-f32t4c128 [67]            1        14.57     81.26     83.49      72.33
+                           Wan-2.2-VAE-f16t4c48 [84]           2        14.59     80.38     83.20      69.08
+                               DC-AE-V-f32t4c32                1        14.55     83.48     85.08      77.12
+
+Table 20 | Video Autoencoder Efficiency. The encoding and decoding latency is measured for an
+80 × 256 × 256 video using an NVIDIA H100 GPU.
+
+                                                     Compress.     #Params (M)        Latency (s)
+      Video Autoencoder                    Config
+                                                       Ratio   Total Encoder Decoder Encode Decode
+      VideoVAEPlus [95]                    f8t4c16       48          490.35   176.17   240.55   0.67    1.12
+      CogVideoX VAE [99]                   f8t4c16       48          215.58    92.22   123.37   0.38    0.89
+      HunyuanVideo VAE [34]                f8t4c16       48          246.48   100.34   146.14   0.46    0.81
+      IV VAE [90]                          f8t4c16       48          241.85   101.70   140.15   0.55    0.84
+      Wan 2.1 VAE [84]                     f8t4c16       48          126.89    53.59   73.29    0.27    0.43
+      Wan 2.2 VAE [84]                    f16t4c48       64          704.69   149.63   555.05   0.15    0.43
+      StepVideo VAE [60]                  f16t8c64       96          498.82   109.89   388.93   0.23    0.69
+      Video DC-AEtiling & blending [67] f32t4c128        96         459.46 220.44      239.02   0.34    0.52
+      Video DC-AE [67]                  f32t4c128        96         459.46 220.44      239.02   0.45    0.69
+      LTX Video VAE [25]                f32t8c128       192        1246.91 694.10      552.81   0.05    0.04
+                                         f32t4c256       48        2138.64 916.66 1221.98       0.34    0.36
+                                         f32t4c128       96        2138.64 916.66 1221.98       0.34    0.36
+      DC-AE-V                             f32t4c64      192        2138.64 916.66 1221.98       0.34    0.36
+                                          f32t4c32      384        2138.64 916.66 1221.98       0.34    0.36
+                                         f64t4c128      384        2717.28 1152.89 1564.39      0.34    0.36
+
+
+padding is set to zero to ensure causality between chunks, as shown in Algorithm 1 (line 2). For chunks other
+than the first chunk, their left temporal padding is set to the last 𝑘𝑡2−1 frames of the previous chunk to gather
+information, as shown in Algorithm 1 (line 4).
+Efficiency. Table 20 presents an efficiency comparison for various video autoencoders. The encoding and
+decoding latency is measured for an 80 × 256 × 256 video using an NVIDIA H100 GPU. Our DC-AE-V
+achieves comparable latency to previous video autoencoders.
+
+
+
+
+                                                                                                               30
+
+
+===== PDF PAGE 31 =====
+                                                                                 DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+
+                                                                                                                   DC-AE-V Downsample                                                                                              DC-AE-V Downsample                                                                             DC-AE-V Downsample                                                                                   DC-AE-V Downsample                                                                     DC-AE-V Downsample
+3 x 80 x 256 x 256                     Input Projection   256 x 80 x 128 x 128                                                                                512 x 80 x 64 x 64                                                                                     512 x 80 x 32 x 32                                                                            1024 x 80 x 16 x 16                                                                              1024 x 80 x 8 x 8                                                                   1024 x 20 x 8 x 8
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            Output Projection
+                                                                                  ResNetBlock                                                                                                  ResNetBlock                                                                                  ResNetBlock                                                                                                ResNetBlock                                                                                 ResNetBlock                                                                  ResNetBlock                                           32 x 20 x 8 x 8
+                     Input
+
+
+
+                                                                                 × Le1                                                                                              × Le2                                                                                                  × Le3                                                                                           × Le4                                                                                            × Le5                                                                              × Le6
+
+                                                                                                                                                                                                                                                                                           (a) DC-AE-V Encoder
+
+
+
+
+                                       Input Projection                                                            DC-AE-V Upsample                                                                                                DC-AE-V Upsample                  1024 x 80 x 16 x 16
+                                                                                                                                                                                                                                                                                                                                  DC-AE-V Upsample                                                                                     DC-AE-V Upsample                                                                       DC-AE-V Upsample          256 x 80 x 128 x 128                                Output Projection
+                     32 x 20 x 8 x 8                      1024 x 20 x 8 x 8       ResNetBlock                                                                 1024 x 80 x 8 x 8               ResNetBlock                                                                                   ResNetBlock                                                           512 x 80 x 32 x 32                   ResNetBlock                                                  512 x 80 x 64 x 64             ResNetBlock                                                                  ResNetBlock                                                                  3 x 80 x 256 x 256
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Output
+
+
+
+                                                                                 × Ld6                                                                                             × Ld5                                                                                                   × Ld4                                                                                          × Ld3                                                                                             × Ld2                                                                              × Ld1
+
+                                                                                                                                                                                                                                                                                           (b) DC-AE-V Decoder
+
+
+
+
+                                                                                  StyleGAN2ResBlock3d                                   StyleGAN2ResBlock3d                                                  StyleGAN2ResBlock3d                                    StyleGAN2ResBlock3d                               StyleGAN2ResBlock3d                                                StyleGAN2MinibatchStd
+                                       StyleGAN2Conv3d    128 x 40 x 128 x 128                                                                                                                                                                                                                                                                                                                                                                    StyleGAN2Conv3d                                         Temporal Avg Pool
+3 x 80 x 256 x 256                                                                                      256 x 20 x 64 x 64                                                         512 x 10 x 32 x 32                                          512 x 5 x 16 x 16                                    512 x 5 x 8 x 8                                    512 x 5 x 4 x 4                                               513 x 5 x 4 x 4                                             512 x 5 x 4 x 4                                                                                              StyleGAN2FC                                      StyleGAN2FC
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               512 x 4 x 4         Flatten
+                     Input                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       8192                                           512                                       1
+
+
+
+
+                                                                                                                                                                                                                                                                   (c) StyleGAN2 3D Discriminator
+
+                                                                                                                                                              Figure 26 | Model Architecture of DC-AE-V.
+
+
+
+
+Algorithm 1 Chunk-Causal Implementation.
+Require: Chunk size 𝑇 , input activation 𝑋 ∈ R𝑐in ×𝑛𝑇 ×ℎ×𝑤 , convolution kernel 𝑊 ∈ R𝑐out ×𝑐in ×𝑘𝑡 ×𝑘ℎ ×𝑘𝑤
+ 1: Set 𝑋 ← 𝑋.reshape(𝑐in , 𝑛, 𝑇, ℎ, 𝑤).transpose(0, 1) ∈ R𝑛×𝑐in ×𝑇 ×ℎ×𝑤
+                                                                                                                                                                          𝑘𝑡 −1
+      2: Set pad𝑡,right ← 0 ∈ R𝑛×𝑐in ×                                                                                                                                      2
+                                                                                                                                                                                ×ℎ×𝑤
+                                                                                                                                                                                             𝑘𝑡 −1
+      3: Set pad𝑡,left,first ← 0 ∈ R1×𝑐in ×                                                                                                                                                    2
+                                                                                                                                                                                                   ×ℎ×𝑤
+                                                                                                                                                                                                                                                                                                                                                       𝑘𝑡 −1
+      4: Set pad𝑡,left,subsequent ← 𝑥[: −1, :, − 𝑘𝑡2−1 :] ∈ R(𝑛−1)×𝑐in ×                                                                                                                                                                                                                                                                                 2
+                                                                                                                                                                                                                                                                                                                                                             ×ℎ×𝑤
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 𝑘𝑡 −1
+      5: Set pad𝑡,left ← concatenate([pad𝑡,left,first , pad𝑡,left,subsequent ], dim = 0) ∈ R𝑛×𝑐in ×                                                                                                                                                                                                                                                                                                                                                                                                                2
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ×ℎ×𝑤
+
+      6: Set 𝑋 ← concatenate([pad𝑡,left , 𝑋, pad𝑡,right ], dim = 2) ∈ R𝑛×𝑐in ×(𝑇 +𝑘𝑡 −1)×ℎ×𝑤
+ 7: Set 𝑋 ← spatial_pad(𝑋, 𝑘ℎ − 1, 𝑘𝑤 − 1) ∈ R𝑛×𝑐in ×(𝑇 +𝑘𝑡 −1)×(ℎ+𝑘ℎ −1)×(𝑤+𝑘𝑤 −1)
+ 8: Set 𝑋 ← convolution(𝑋, 𝑊 ) ∈ R𝑛×𝑐out ×𝑇 ×ℎ×𝑤
+ 9: Set 𝑋 ← 𝑋.transpose(0, 1).reshape(𝑐out , 𝑛𝑇, ℎ, 𝑤) ∈ R𝑐out ×𝑛𝑇 ×ℎ×𝑤
+10: return 𝑋
+
+
+
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      31
+
+
+===== PDF PAGE 32 =====
+                 DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+References
+ [1] Bai, S., Chen, K., Liu, X., Wang, J., Ge, W., Song, S., Dang, K., Wang, P., Wang, S., Tang, J.,
+     Zhong, H., Zhu, Y., Yang, M., Li, Z., Wan, J., Wang, P., Ding, W., Fu, Z., Xu, Y., Ye, J., Zhang, X.,
+     Xie, T., Cheng, Z., Zhang, H., Yang, Z., Xu, H., Lin, J.: Qwen2.5-vl technical report. arXiv preprint
+     arXiv:2502.13923 (2025)
+ [2] Bao, F., Nie, S., Xue, K., Cao, Y., Li, C., Su, H., Zhu, J.: All are worth words: A vit backbone
+     for diffusion models. In: Proceedings of the IEEE/CVF conference on computer vision and pattern
+     recognition. pp. 22669–22679 (2023)
+ [3] Blattmann, A., Dockhorn, T., Kulal, S., Mendelevitch, D., Kilian, M., Lorenz, D., Levi, Y., English,
+     Z., Voleti, V., Letts, A., et al.: Stable video diffusion: Scaling latent video diffusion models to large
+     datasets. arXiv preprint arXiv:2311.15127 (2023)
+ [4] Blattmann, A., Rombach, R., Ling, H., Dockhorn, T., Kim, S.W., Fidler, S., Kreis, K.: Align your
+     latents: High-resolution video synthesis with latent diffusion models. In: Proceedings of the IEEE/CVF
+     conference on computer vision and pattern recognition. pp. 22563–22575 (2023)
+ [5] Blattmann, A., Rombach, R., Oktay, K., Müller, J., Ommer, B.: Retrieval-augmented diffusion models.
+     Advances in Neural Information Processing Systems 35, 15309–15324 (2022)
+ [6] Cai, H., Li, J., Hu, M., Gan, C., Han, S.: Efficientvit: Lightweight multi-scale attention for high-
+     resolution dense prediction. In: Proceedings of the IEEE/CVF International Conference on Computer
+     Vision. pp. 17302–17313 (2023)
+ [7] Cai, H., Li, M., Zhang, Q., Liu, M.Y., Han, S.: Condition-aware neural network for controlled image
+     generation. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition.
+     pp. 7194–7203 (2024)
+ [8] Chen, G., Lin, D., Yang, J., Lin, C., Zhu, J., Fan, M., Zhang, H., Chen, S., Chen, Z., Ma, C., et al.:
+     Skyreels-v2: Infinite-length film generative model. arXiv preprint arXiv:2504.13074 (2025)
+ [9] Chen, H., Han, Y., Chen, F., Li, X., Wang, Y., Wang, J., Wang, Z., Liu, Z., Zou, D., Raj, B.: Masked
+     autoencoders are effective tokenizers for diffusion models. arXiv preprint arXiv:2502.03444 (2025)
+[10] Chen, H., Wang, Z., Li, X., Sun, X., Chen, F., Liu, J., Wang, J., Raj, B., Liu, Z., Barsoum, E.:
+     Softvq-vae: Efficient 1-dimensional continuous tokenizer. arXiv preprint arXiv:2412.10958 (2024)
+[11] Chen, J., Ge, C., Xie, E., Wu, Y., Yao, L., Ren, X., Wang, Z., Luo, P., Lu, H., Li, Z.: Pixart-𝜎: Weak-to-
+     strong training of diffusion transformer for 4k text-to-image generation. arXiv preprint arXiv:2403.04692
+     (2024)
+[12] Chen, J., Cai, H., Chen, J., Xie, E., Yang, S., Tang, H., Li, M., Lu, Y., Han, S.: Deep compression
+     autoencoder for efficient high-resolution diffusion models. arXiv preprint arXiv:2410.10733 (2024)
+[13] Chen, J., Zou, D., He, W., Chen, J., Xie, E., Han, S., Cai, H.: Dc-ae 1.5: Accelerating diffusion model
+     convergence with structured latent space. arXiv preprint arXiv:2508.00413 (2025)
+[14] Chen, L., Meng, Y., Tang, C., Ma, X., Jiang, J., Wang, X., Wang, Z., Zhu, W.: Q-dit: Accurate
+     post-training quantization for diffusion transformers. In: Proceedings of the Computer Vision and
+     Pattern Recognition Conference. pp. 28306–28315 (2025)
+[15] Chen, W., Hu, H., Saharia, C., Cohen, W.W.: Re-imagen: Retrieval-augmented text-to-image generator.
+     arXiv preprint arXiv:2209.14491 (2022)
+[16] Dai, X., Hou, J., Ma, C.Y., Tsai, S., Wang, J., Wang, R., Zhang, P., Vandenhende, S., Wang, X., Dubey,
+     A., et al.: Emu: Enhancing image generation models using photogenic needles in a haystack. arXiv
+     preprint arXiv:2309.15807 (2023)
+[17] Esser, P., Kulal, S., Blattmann, A., Entezari, R., Müller, J., Saini, H., Levi, Y., Lorenz, D., Sauer, A.,
+     Boesel, F., et al.: Scaling rectified flow transformers for high-resolution image synthesis. In: Forty-first
+     International Conference on Machine Learning (2024)
+
+
+                                                                                                              32
+
+
+===== PDF PAGE 33 =====
+                 DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+[18] Fang, G., Ma, X., Wang, X.: Structural pruning for diffusion models. Advances in Neural Information
+     Processing Systems 36 (2024)
+
+[19] Frans, K., Hafner, D., Levine, S., Abbeel, P.: One step diffusion via shortcut models. arXiv preprint
+     arXiv:2410.12557 (2024)
+[20] Geng, Z., Deng, M., Bai, X., Kolter, J.Z., He, K.: Mean flows for one-step generative modeling. arXiv
+     preprint arXiv:2505.13447 (2025)
+
+[21] Gu, Y., Fang, G., Jiang, Y., Mao, W., Han, S., Cai, H., Shou, M.Z.: Anyflow: Any-step video diffusion
+     model with on-policy flow map distillation. arXiv preprint arXiv:2605.13724 (2026)
+[22] Gu, Y., Mao, W., Shou, M.Z.: Long-context autoregressive video modeling with next-frame prediction.
+     arXiv preprint arXiv:2503.19325 (2025)
+[23] Gu, Y., Wang, X., Ge, Y., Shan, Y., Shou, M.Z.: Rethinking the objectives of vector-quantized tokenizers
+     for image synthesis. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern
+     Recognition. pp. 7631–7640 (2024)
+[24] Gu, Y., Hu, Q., Yang, S., Xi, H., Chen, J., Han, S., Cai, H.: Jet-nemotron: Efficient language model
+     with post neural architecture search. arXiv preprint arXiv:2508.15884 (2025)
+
+[25] HaCohen, Y., Chiprut, N., Brazowski, B., Shalem, D., Moshe, D., Richardson, E., Levin, E., Shiran, G.,
+     Zabari, N., Gordon, O., et al.: Ltx-video: Realtime video latent diffusion. arXiv preprint arXiv:2501.00103
+     (2024)
+[26] He, K., Zhang, X., Ren, S., Sun, J.: Deep residual learning for image recognition. In: Proceedings of the
+     IEEE conference on computer vision and pattern recognition. pp. 770–778 (2016)
+
+[27] Ho, J., Salimans, T.: Classifier-free diffusion guidance. arXiv preprint arXiv:2207.12598 (2022)
+[28] Hu, E.J., Shen, Y., Wallis, P., Allen-Zhu, Z., Li, Y., Wang, S., Wang, L., Chen, W.: LoRA: Low-rank
+     adaptation of large language models. In: International Conference on Learning Representations (2022),
+     https://openreview.net/forum?id=nZeVKeeFYf9
+
+[29] Huang, L., Wang, W., Wu, Z.F., Shi, Y., Dou, H., Liang, C., Feng, Y., Liu, Y., Zhou, J.: In-context
+     lora for diffusion transformers. arXiv preprint arXiv:2410.23775 (2024)
+[30] Huang, Y., Gong, R., Liu, J., Ding, Y., Lv, C., Qin, H., Zhang, J.: Qvgen: Pushing the limit of
+     quantized video generative models. arXiv preprint arXiv:2505.11497 (2025)
+[31] Huang, Z., He, Y., Yu, J., Zhang, F., Si, C., Jiang, Y., Zhang, Y., Wu, T., Jin, Q., Chanpaisit, N.,
+     Wang, Y., Chen, X., Wang, L., Lin, D., Qiao, Y., Liu, Z.: VBench: Comprehensive benchmark suite
+     for video generative models. In: Proceedings of the IEEE/CVF Conference on Computer Vision and
+     Pattern Recognition (2024)
+[32] Huang, Z., Zhang, F., Xu, X., He, Y., Yu, J., Dong, Z., Ma, Q., Chanpaisit, N., Si, C., Jiang, Y.,
+     Wang, Y., Chen, X., Chen, Y.C., Wang, L., Lin, D., Qiao, Y., Liu, Z.: VBench++: Comprehensive
+     and versatile benchmark suite for video generative models. IEEE Transactions on Pattern Analysis and
+     Machine Intelligence (2025). doi: 10.1109/TPAMI.2025.3633890
+[33] Karras, T., Laine, S., Aittala, M., Hellsten, J., Lehtinen, J., Aila, T.: Analyzing and improving the
+     image quality of stylegan. In: Proceedings of the IEEE/CVF conference on computer vision and pattern
+     recognition. pp. 8110–8119 (2020)
+
+[34] Kong, W., Tian, Q., Zhang, Z., Min, R., Dai, Z., Zhou, J., Xiong, J., Li, X., Wu, B., Zhang, J.,
+     et al.: Hunyuanvideo: A systematic framework for large video generative models. arXiv preprint
+     arXiv:2412.03603 (2024)
+[35] Kouzelis, T., Kakogeorgiou, I., Gidaris, S., Komodakis, N.: Eq-vae: Equivariance regularized latent
+     space for improved generative image modeling. arXiv preprint arXiv:2502.09509 (2025)
+
+
+
+                                                                                                             33
+
+
+===== PDF PAGE 34 =====
+                 DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+[36] Kumari, N., Zhang, B., Zhang, R., Shechtman, E., Zhu, J.Y.: Multi-concept customization of text-to-
+     image diffusion. Proceedings of the IEEE/CVF conference on computer vision and pattern recognition
+     pp. 1931–1941 (2023)
+[37] Labs, B.F.: Flux. Online (2024), https://github.com/black-forest-labs/flux
+[38] Labs, B.F., Batifol, S., Blattmann, A., Boesel, F., Consul, S., Diagne, C., Dockhorn, T., English, J.,
+     English, Z., Esser, P., Kulal, S., Lacey, K., Levi, Y., Li, C., Lorenz, D., Müller, J., Podell, D., Rombach,
+     R., Saini, H., Sauer, A., Smith, L.: Flux.1 kontext: Flow matching for in-context image generation and
+     editing in latent space (2025), https://arxiv.org/abs/2506.15742
+[39] Lee, S., Ebbecke, T., Millon, E., Beddow, W., Zhuo, L., García-Ferrero, I., Esparraguera, L., Petrescu,
+     M., Saß, G., Menezes, G., Perez, V.: Flux.1 krea [dev]. https://github.com/krea-ai/flux-krea
+     (2025)
+
+[40] Li, D., Kamko, A., Akhgari, E., Sabet, A., Xu, L., Doshi, S.: Playground v2. 5: Three insights towards
+     enhancing aesthetic quality in text-to-image generation. arXiv preprint arXiv:2402.17245 (2024)
+[41] Li, J., Feng, W., Fu, T.J., Wang, X., Basu, S., Chen, W., Wang, W.Y.: T2v-turbo: Breaking the quality
+     bottleneck of video consistency model with mixed reward feedback. Advances in neural information
+     processing systems 37, 75692–75726 (2024)
+
+[42] Li, M., Cai, T., Cao, J., Zhang, Q., Cai, H., Bai, J., Jia, Y., Li, K., Han, S.: Distrifusion: Distributed
+     parallel inference for high-resolution diffusion models. In: Proceedings of the IEEE/CVF Conference on
+     Computer Vision and Pattern Recognition. pp. 7183–7193 (2024)
+[43] Li, M., Lin, Y., Zhang, Z., Cai, T., Li, X., Guo, J., Xie, E., Meng, C., Zhu, J.Y., Han, S.: Svdquant:
+     Absorbing outliers by low-rank components for 4-bit diffusion models. arXiv preprint arXiv:2411.05007
+     (2024)
+[44] Li, X., Li, M., Cai, T., Xi, H., Yang, S., Lin, Y., Zhang, L., Yang, S., Hu, J., Peng, K., Agrawala, M.,
+     Stoica, I., Keutzer, K., Han, S.: Radial attention: 𝒪(𝑛 log 𝑛) sparse attention with energy decay for
+     long video generation. arXiv preprint arXiv:2506.19852 (2025)
+[45] Li, X., Liu, Y., Lian, L., Yang, H., Dong, Z., Kang, D., Zhang, S., Keutzer, K.: Q-diffusion: Quantizing
+     diffusion models. In: Proceedings of the IEEE/CVF International Conference on Computer Vision. pp.
+     17535–17545 (2023)
+[46] Li, Y., Wang, H., Jin, Q., Hu, J., Chemerys, P., Fu, Y., Wang, Y., Tulyakov, S., Ren, J.: Snapfusion:
+     Text-to-image diffusion model on mobile devices within two seconds. Advances in Neural Information
+     Processing Systems 36 (2024)
+
+[47] Li, Z., Zhang, J., Lin, Q., Xiong, J., Long, Y., Deng, X., Zhang, Y., Liu, X., Huang, M., Xiao, Z., Chen,
+     D., He, J., Li, J., Li, W., Zhang, C., Quan, R., Lu, J., Huang, J., Yuan, X., Zheng, X., Li, Y., Zhang, J.,
+     Zhang, C., Chen, M., Liu, J., Fang, Z., Wang, W., Xue, J., Tao, Y., Zhu, J., Liu, K., Lin, S., Sun, Y.,
+     Li, Y., Wang, D., Chen, M., Hu, Z., Xiao, X., Chen, Y., Liu, Y., Liu, W., Wang, D., Yang, Y., Jiang,
+     J., Lu, Q.: Hunyuan-dit: A powerful multi-resolution diffusion transformer with fine-grained chinese
+     understanding (2024)
+[48] Li, Z., Li, H., Wu, J., Liu, K., Qin, H., Kong, L., Chen, G., Zhang, Y., Yang, X.: Dvd-quant: Data-free
+     video diffusion transformers quantization. arXiv preprint arXiv:2505.18663 (2025)
+[49] Lin, S., Xia, X., Ren, Y., Yang, C., Xiao, X., Jiang, L.: Diffusion adversarial post-training for one-step
+     video generation. arXiv preprint arXiv:2501.08316 (2025)
+
+[50] Lin, S., Yang, X.: Animatediff-lightning:           Cross-model diffusion distillation. arXiv preprint
+     arXiv:2403.12706 (2024)
+[51] Lipman, Y., Chen, R.T., Ben-Hamu, H., Nickel, M., Le, M.: Flow matching for generative modeling.
+     arXiv preprint arXiv:2210.02747 (2022)
+
+
+
+                                                                                                              34
+
+
+===== PDF PAGE 35 =====
+                 DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+[52] Liu, B., Akhgari, E., Visheratin, A., Kamko, A., Xu, L., Shrirao, S., Lambert, C., Souza, J., Doshi,
+     S., Li, D.: Playground v3: Improving text-to-image alignment with deep-fusion large language models.
+     arXiv preprint arXiv:2409.10695 (2024)
+[53] Liu, J., Zou, C., Lyu, Y., Chen, J., Zhang, L.: From reusing to forecasting: Accelerating diffusion
+     models with taylorseers. arXiv preprint arXiv:2503.06923 (2025)
+[54] Liu, S., Han, Y., Xing, P., Yin, F., Wang, R., Cheng, W., Liao, J., Wang, Y., Fu, H., Han, C., Li,
+     G., Peng, Y., Sun, Q., Wu, J., Cai, Y., Ge, Z., Ming, R., Xia, L., Zeng, X., Zhu, Y., Jiao, B., Zhang,
+     X., Yu, G., Jiang, D.: Step1x-edit: A practical framework for general image editing. arXiv preprint
+     arXiv:2504.17761 (2025)
+[55] Liu, S., Yu, W., Tan, Z., Wang, X.: Linfusion: 1 gpu, 1 minute, 16k image. arXiv preprint
+     arXiv:2409.02097 (2024)
+
+[56] Liu, X., Gong, C., Liu, Q.: Flow straight and fast: Learning to generate and transfer data with rectified
+     flow. arXiv preprint arXiv:2209.03003 (2022)
+[57] Lu, C., Zhou, Y., Bao, F., Chen, J., Li, C., Zhu, J.: Dpm-solver: A fast ode solver for diffusion
+     probabilistic model sampling in around 10 steps. Advances in Neural Information Processing Systems
+     35, 5775–5787 (2022)
+
+[58] Lu, C., Zhou, Y., Bao, F., Chen, J., Li, C., Zhu, J.: Dpm-solver++: Fast solver for guided sampling of
+     diffusion probabilistic models. arXiv preprint arXiv:2211.01095 (2022)
+[59] Luo, S., Tan, Y., Huang, L., Li, J., Zhao, H.: Latent consistency models: Synthesizing high-resolution
+     images with few-step inference. arXiv preprint arXiv:2310.04378 (2023)
+[60] Ma, G., Huang, H., Yan, K., Chen, L., Duan, N., Yin, S., Wan, C., Ming, R., Song, X., Chen, X., et al.:
+     Step-video-t2v technical report: The practice, challenges, and future of video foundation model. arXiv
+     preprint arXiv:2502.10248 (2025)
+[61] Ma, N., Goldstein, M., Albergo, M.S., Boffi, N.M., Vanden-Eijnden, E., Xie, S.: Sit: Exploring flow and
+     diffusion-based generative models with scalable interpolant transformers. arXiv preprint arXiv:2401.08740
+     (2024)
+
+[62] Ma, X., Fang, G., Wang, X.: Deepcache: Accelerating diffusion models for free. In: Proceedings of the
+     IEEE/CVF Conference on Computer Vision and Pattern Recognition. pp. 15762–15772 (2024)
+[63] Mao, X., Jiang, Z., Wang, F.Y., Zhang, J., Chen, H., Chi, M., Wang, Y., Luo, W.: Osv: One step is
+     enough for high-quality image to video generation. In: Proceedings of the Computer Vision and Pattern
+     Recognition Conference. pp. 12585–12594 (2025)
+[64] Meng, C., Rombach, R., Gao, R., Kingma, D., Ermon, S., Ho, J., Salimans, T.: On distillation of
+     guided diffusion models. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern
+     Recognition. pp. 14297–14306 (2023)
+[65] NVIDIA: Cosmos world foundation model platform for physical ai. arXiv preprint arXiv:2501.03575
+     (2025)
+[66] Peebles, W., Xie, S.: Scalable diffusion models with transformers. In: Proceedings of the IEEE/CVF
+     International Conference on Computer Vision. pp. 4195–4205 (2023)
+[67] Peng, X., Zheng, Z., Shen, C., Young, T., Guo, X., Wang, B., Xu, H., Liu, H., Jiang, M., Li, W.,
+     et al.: Open-sora 2.0: Training a commercial-level video generation model in $200 k. arXiv preprint
+     arXiv:2503.09642 (2025)
+[68] Podell, D., English, Z., Lacey, K., Blattmann, A., Dockhorn, T., Müller, J., Penna, J., Rombach, R.: Sdxl:
+     Improving latent diffusion models for high-resolution image synthesis. arXiv preprint arXiv:2307.01952
+     (2023)
+
+
+
+
+                                                                                                            35
+
+
+===== PDF PAGE 36 =====
+                DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+[69] Qian, Y., Bocek-Rivele, E., Song, L., Tong, J., Yang, Y., Lu, J., Hu, W., Gan, Z.: Pico-banana-400k: A
+     large-scale dataset for text-guided image editing (2025), https://arxiv.org/abs/2510.19808
+[70] Rombach, R., Blattmann, A., Lorenz, D., Esser, P., Ommer, B.: High-resolution image synthesis with
+     latent diffusion models. In: Proceedings of the IEEE/CVF conference on computer vision and pattern
+     recognition. pp. 10684–10695 (2022)
+[71] Ruiz, N., Li, Y., Jampani, V., Pritch, Y., Rubinstein, M., Aberman, K.: Dreambooth: Fine tuning
+     text-to-image diffusion models for subject-driven generation. arXiv preprint arXiv:2208.12242 (2023)
+[72] Saharia, C., Chan, W., Saxena, S., Li, L., Whang, J., Denton, E.L., Ghasemipour, K., Gontijo Lopes,
+     R., Karagol Ayan, B., Salimans, T., et al.: Photorealistic text-to-image diffusion models with deep
+     language understanding. Advances in neural information processing systems 35, 36479–36494 (2022)
+[73] Salimans, T., Ho, J.: Progressive distillation for fast sampling of diffusion models. In: International
+     Conference on Learning Representations (2022)
+[74] Shih, A., Belkhale, S., Ermon, S., Sadigh, D., Anari, N.: Parallel sampling of diffusion models. Advances
+     in Neural Information Processing Systems 36 (2024)
+[75] Skorokhodov, I., Girish, S., Hu, B., Menapace, W., Li, Y., Abdal, R., Tulyakov, S., Siarohin, A.:
+     Improving the diffusability of autoencoders. arXiv preprint arXiv:2502.14831 (2025)
+[76] Song, J., Meng, C., Ermon, S.: Denoising diffusion implicit models. In: International Conference on
+     Learning Representations (2021)
+[77] Suvorov, R., Logacheva, E., Mashikhin, A., Remizova, A., Ashukha, A., Silvestrov, A., Kong, N.,
+     Goka, H., Park, K., Lempitsky, V.: Resolution-robust large mask inpainting with fourier convolutions.
+     Proceedings of the IEEE/CVF winter conference on applications of computer vision pp. 2149–2159
+     (2022)
+[78] Tan, X., Chen, Y., Jiang, Y., Chen, X., Yan, K., Duan, N., Zhu, Y., Jiang, D., Xu, H.: Dsv: Exploiting
+     dynamic sparsity to accelerate large-scale video dit training. arXiv preprint arXiv:2502.07590 (2025)
+[79] Tang, Z., Tang, J., Luo, H., Wang, F., Chang, T.H.: Accelerating parallel sampling of diffusion models.
+     In: Forty-first International Conference on Machine Learning (2024)
+[80] Team, I., Cai, H., Cao, S., Du, R., Gao, P., Hoi, S., Hou, Z., Huang, S., Jiang, D., Jin, X., Li,
+     L., Li, Z., Li, Z.Y., Liu, D., Liu, D., Shi, J., Wu, Q., Yu, F., Zhang, C., Zhang, S., Zhou, S.: Z-
+     image: An efficient image generation foundation model with single-stream diffusion transformer (2025),
+     https://arxiv.org/abs/2511.22699
+[81] Teng, H., Jia, H., Sun, L., Li, L., Li, M., Tang, M., Han, S., Zhang, T., Zhang, W., Luo, W., et al.:
+     Magi-1: Autoregressive video generation at scale. arXiv preprint arXiv:2505.13211 (2025)
+[82] Tian, S., Chen, H., Lv, C., Liu, Y., Guo, J., Liu, X., Li, S., Yang, H., Xie, T.: Qvd: Post-training
+     quantization for video diffusion models. In: Proceedings of the 32nd ACM International Conference on
+     Multimedia. pp. 10572–10581 (2024)
+[83] Unsplash: Unsplash lite dataset 1.3.0 (2020), https://unsplash.com/data
+[84] Wan, T., Wang, A., Ai, B., Wen, B., Mao, C., Xie, C.W., Chen, D., Yu, F., Zhao, H., Yang, J., Zeng, J.,
+     Wang, J., Zhang, J., Zhou, J., Wang, J., Chen, J., Zhu, K., Zhao, K., Yan, K., Huang, L., Feng, M.,
+     Zhang, N., Li, P., Wu, P., Chu, R., Feng, R., Zhang, S., Sun, S., Fang, T., Wang, T., Gui, T., Weng,
+     T., Shen, T., Lin, W., Wang, W., Wang, W., Zhou, W., Wang, W., Shen, W., Yu, W., Shi, X., Huang,
+     X., Xu, X., Kou, Y., Lv, Y., Li, Y., Liu, Y., Wang, Y., Zhang, Y., Huang, Y., Li, Y., Wu, Y., Liu, Y.,
+     Pan, Y., Zheng, Y., Hong, Y., Shi, Y., Feng, Y., Jiang, Z., Han, Z., Wu, Z.F., Liu, Z.: Wan: Open and
+     advanced large-scale video generative models. arXiv preprint arXiv:2503.20314 (2025)
+[85] Wang, F.Y., Huang, Z., Shi, X., Bian, W., Song, G., Liu, Y., Li, H.: Animatelcm: Accelerating the
+     animation of personalized diffusion models and adapters with decoupled consistency learning. CoRR
+     (2024)
+
+
+                                                                                                            36
+
+
+===== PDF PAGE 37 =====
+                  DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+ [86] Wang, J., Fang, J., Li, A., Yang, P.: Pipefusion: Displaced patch pipeline parallelism for inference of
+      diffusion transformer models. arXiv preprint arXiv:2405.14430 (2024)
+
+ [87] Wang, X., Zhang, S., Zhang, H., Liu, Y., Zhang, Y., Gao, C., Sang, N.: Videolcm: Video latent
+      consistency model. arXiv preprint arXiv:2312.09109 (2023)
+ [88] Wu, C., Li, J., Zhou, J., Lin, J., Gao, K., Yan, K., ming Yin, S., Bai, S., Xu, X., Chen, Y., Chen, Y.,
+      Tang, Z., Zhang, Z., Wang, Z., Yang, A., Yu, B., Cheng, C., Liu, D., Li, D., Zhang, H., Meng, H.,
+      Wei, H., Ni, J., Chen, K., Cao, K., Peng, L., Qu, L., Wu, M., Wang, P., Yu, S., Wen, T., Feng, W.,
+      Xu, X., Wang, Y., Zhang, Y., Zhu, Y., Wu, Y., Cai, Y., Liu, Z.: Qwen-image technical report (2025),
+      https://arxiv.org/abs/2508.02324
+ [89] Wu, J., Li, Z., Hui, Z., Zhang, Y., Kong, L., Yang, X.: Quantcache: Adaptive importance-guided
+      quantization with hierarchical latent and layer caching for video generation. In: Proceedings of the
+      IEEE/CVF International Conference on Computer Vision. pp. 15035–15044 (2025)
+
+ [90] Wu, P., Zhu, K., Liu, Y., Zhao, L., Zhai, W., Cao, Y., Zha, Z.J.: Improved video vae for latent video
+      diffusion model. In: Proceedings of the Computer Vision and Pattern Recognition Conference. pp.
+      18124–18133 (2025)
+ [91] Xi, H., Yang, S., Zhao, Y., Xu, C., Li, M., Li, X., Lin, Y., Cai, H., Zhang, J., Li, D., et al.: Sparse
+      videogen: Accelerating video diffusion transformers with spatial-temporal sparsity. arXiv preprint
+      arXiv:2502.01776 (2025)
+ [92] Xia, Y., Ling, S., Fu, F., Wang, Y., Li, H., Xiao, X., Cui, B.: Training-free and adaptive sparse attention
+      for efficient long video generation. arXiv preprint arXiv:2502.21079 (2025)
+ [93] Xie, E., Chen, J., Chen, J., Cai, H., Tang, H., Lin, Y., Zhang, Z., Li, M., Zhu, L., Lu, Y., et al.:
+      Sana: Efficient high-resolution image synthesis with linear diffusion transformers. arXiv preprint
+      arXiv:2410.10629 (2024)
+ [94] Xie, E., Chen, J., Zhao, Y., Yu, J., Zhu, L., Lin, Y., Zhang, Z., Li, M., Chen, J., Cai, H., et al.: Sana
+      1.5: Efficient scaling of training-time and inference-time compute in linear diffusion transformer. arXiv
+      preprint arXiv:2501.18427 (2025)
+
+ [95] Xing, Y., Fei, Y., He, Y., Chen, J., Xie, J., Chi, X., Chen, Q.: Large motion video autoencoding with
+      cross-modal video vae. arXiv preprint arXiv:2412.17805 (2024)
+ [96] Xu, J., Zou, X., Huang, K., Chen, Y., Liu, B., Cheng, M., Shi, X., Huang, J.: Easyanimate: A
+      high-performance long video generation method based on transformer architecture. arXiv preprint
+      arXiv:2405.18991 (2024)
+
+ [97] Yang, B., Gu, S., Zhang, B., Zhang, T., Chen, X., Sun, X., Chen, D., Wen, F.: Paint by example:
+      Exemplar-based image editing with diffusion models. Proceedings of the IEEE/CVF conference on
+      computer vision and pattern recognition pp. 18381–18391 (2023)
+ [98] Yang, S., Xi, H., Zhao, Y., Li, M., Zhang, J., Cai, H., Lin, Y., Li, X., Xu, C., Peng, K., et al.: Sparse
+      videogen2: Accelerate video generation with sparse attention via semantic-aware permutation. arXiv
+      preprint arXiv:2505.18875 (2025)
+ [99] Yang, Z., Teng, J., Zheng, W., Ding, M., Huang, S., Xu, J., Yang, Y., Hong, W., Zhang, X., Feng,
+      G., et al.: Cogvideox: Text-to-video diffusion models with an expert transformer. arXiv preprint
+      arXiv:2408.06072 (2024)
+
+[100] Yao, J., Wang, X.: Reconstruction vs. generation: Taming optimization dilemma in latent diffusion
+      models. arXiv preprint arXiv:2501.01423 (2025)
+[101] Yao, J., Yang, B., Wang, X.: Reconstruction vs. generation: Taming optimization dilemma in latent
+      diffusion models. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern
+      Recognition (2025)
+
+
+
+                                                                                                              37
+
+
+===== PDF PAGE 38 =====
+                  DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+[102] Ye, H., Zhang, J., Liu, S., Han, X., Yang, W.: Ip-adapter: Text compatible image prompt adapter for
+      text-to-image diffusion models. arXiv preprint arXiv:2308.06721 (2023)
+
+[103] Yin, T., Gharbi, M., Park, T., Zhang, R., Shechtman, E., Durand, F., Freeman, W.T.: Improved
+      distribution matching distillation for fast image synthesis. arXiv preprint arXiv:2405.14867 (2024)
+[104] Yin, T., Gharbi, M., Zhang, R., Shechtman, E., Durand, F., Freeman, W.T., Park, T.: One-step diffusion
+      with distribution matching distillation. In: Proceedings of the IEEE/CVF Conference on Computer
+      Vision and Pattern Recognition. pp. 6613–6623 (2024)
+
+[105] Yin, T., Zhang, Q., Zhang, R., Freeman, W.T., Durand, F., Shechtman, E., Huang, X.: From slow
+      bidirectional to fast causal video generators. arXiv e-prints pp. arXiv–2412 (2024)
+[106] Yu, S., Kwak, S., Jang, H., Jeong, J., Huang, J., Shin, J., Xie, S.: Representation alignment for
+      generation: Training diffusion transformers is easier than you think. arXiv preprint arXiv:2410.06940
+      (2024)
+[107] Zhai, Y., Lin, K., Yang, Z., Li, L., Wang, J., Lin, C.C., Doermann, D., Yuan, J., Wang, L.: Motion
+      consistency model: Accelerating video diffusion with disentangled motion-appearance distillation.
+      Advances in Neural Information Processing Systems 37, 111000–111021 (2024)
+[108] Zhang, J., Huang, Q., Liu, J., Guo, X., Huang, D.: Diffusion-4k: Ultra-high-resolution image synthesis
+      with latent diffusion models. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition
+      (CVPR) (2025)
+[109] Zhang, J., Huang, H., Zhang, P., Wei, J., Zhu, J., Chen, J.: Sageattention2: Efficient attention with
+      thorough outlier smoothing and per-thread int4 quantization. arXiv preprint arXiv:2411.10958 (2024)
+[110] Zhang, J., Wei, J., Huang, H., Zhang, P., Zhu, J., Chen, J.: Sageattention: Accurate 8-bit attention for
+      plug-and-play inference acceleration. arXiv preprint arXiv:2410.02367 (2024)
+[111] Zhang, J., Xiang, C., Huang, H., Wei, J., Xi, H., Zhu, J., Chen, J.: Spargeattn: Accurate sparse
+      attention accelerating any model inference. arXiv preprint arXiv:2502.18137 (2025)
+[112] Zhang, P., Chen, Y., Su, R., Ding, H., Stoica, I., Liu, Z., Zhang, H.: Fast video generation with sliding
+      tile attention. arXiv preprint arXiv:2502.04507 (2025)
+[113] Zhang, Q., Chen, Y.: Fast sampling of diffusion models with exponential integrator. In: The Eleventh
+      International Conference on Learning Representations (2023)
+[114] Zhang, Q., Tao, M., Chen, Y.: gddim: Generalized denoising diffusion implicit models. In: International
+      Conference on Learning Representations (2023)
+
+[115] Zhang, Z., Li, Y., Wu, Y., Kag, A., Skorokhodov, I., Menapace, W., Siarohin, A., Cao, J., Metaxas,
+      D., Tulyakov, S., et al.: Sf-v: Single forward video generation model. Advances in Neural Information
+      Processing Systems 37, 103599–103618 (2024)
+[116] Zhao, T., Fang, T., Liu, E., Rui, W., Soedarmadji, W., Li, S., Lin, Z., Dai, G., Yan, S., Yang, H., et al.:
+      Vidit-q: Efficient and accurate quantization of diffusion transformers for image and video generation.
+      arXiv preprint arXiv:2406.02540 (2024)
+[117] Zhao, T., Hong, K., Yang, X., Xiao, X., Li, H., Ling, F., Xie, R., Chen, S., Zhu, H., Zhang, Y., et al.:
+      Paroattention: Pattern-aware reordering for efficient sparse and quantized attention in visual generation
+      models. arXiv preprint arXiv:2506.16054 (2025)
+
+[118] Zhao, W., Bai, L., Rao, Y., Zhou, J., Lu, J.: Unipc: A unified predictor-corrector framework for fast
+      sampling of diffusion models. Advances in Neural Information Processing Systems 36 (2024)
+[119] Zheng, K., Lu, C., Chen, J., Zhu, J.: Dpm-solver-v3: Improved diffusion ode solver with empirical
+      model statistics. Advances in Neural Information Processing Systems 36, 55502–55542 (2023)
+[120] Zhou, L., Ermon, S., Song, J.: Inductive moment matching. arXiv preprint arXiv:2503.07565 (2025)
+
+
+                                                                                                              38
+
+
+===== PDF PAGE 39 =====
+                 DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space
+
+
+
+[121] Zhou, S., Yang, P., Wang, J., Luo, Y., Loy, C.C.: Upscale-a-video: Temporal-consistent diffusion model
+      for real-world video super-resolution. In: Proceedings of the IEEE/CVF Conference on Computer Vision
+      and Pattern Recognition. pp. 2535–2545 (2024)
+[122] Zhuo, L., Du, R., Han, X., Li, Y., Liu, D., Huang, R., Liu, W., et al.: Lumina-next: Making lumina-t2x
+      stronger and faster with next-dit. arXiv preprint arXiv:2406.18583 (2024)
+
+
+
+
+                                                                                                          39

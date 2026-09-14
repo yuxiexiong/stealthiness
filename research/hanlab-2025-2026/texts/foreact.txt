@@ -1,0 +1,1397 @@
+
+===== PDF PAGE 1 =====
+ForeAct: Steering Y our VLA with Efﬁcient Visual Foresight Planning
+Zhuoyang Zhang1* † Shang Y ang1* † Qinghao Hu1 Luke J. Huang 1
+James Hou1,3 Y ufei Sun1 Y ao Lu2 Song Han1,2
+1MIT 2NVIDIA 3Caltech
+https://github.com/mit-han-lab/foreact
+Subtask 0: 
+  Grab the bottle and …
+Prediction 0
+Observation 0
+Robot 
+with 
+VLA  
+Observation 1
+Subtask 1: 
+  Put the bottle into …
+Robot 
+with 
+VLA  
+Prediction 1
+Observation 2
+Subtask 2: 
+  Pick up the tissue …
+Robot 
+with 
+VLA  
+Prediction 2
+…
+Observation N
+Subtask N: 
+  Task is complete.
+Prediction N
+……
+……
+Visual Foresight Planning 
+The Real-world Environment
+Task: Clean up the trash on the desk.
+Observation 0
+Robot 
+with 
+VLA  
+Observation 1
+Robot 
+with 
+VLA  
+Observation 2
+Robot 
+with 
+VLA  
+…
+Observation N
+The Real-world Environment
+Task: Clean up the trash on the desk. …
+Fail
+❌
+Succeed
+✅
+(a) VLA with high-level human instruction.  
+(b) VLA with visual foresight planning. 
+Figure 1. Illustration of Visual Foresight Planning (ForeAct). Instead of relying on a single high-level human instruction, our visual
+foresight planner guides the VLA step-by-step using imagined future observations and subtask descriptions. This design allows the VLA
+to concentrate on visuo-motor inference rather than high-level semantic reasoning, leading to improved accuracy and better generalization.
+Abstract
+Vision-Language-Action (VLA) models convert high-level
+language instructions into concrete, executable actions, a
+task that is especially challenging in open-world environ-
+ments. We present Visual F oresight Planning (F oreAct), a
+general and efﬁcient planner that guides a VLA step-by-
+step using imagined future observations and subtask de-
+scriptions. With an imagined future observation, the VLA
+can focus on visuo-motor inference rather than high-level
+semantic reasoning, leading to improved accuracy and gen-
+*Equal Contribution.
+†Part of the work done during an internship at NVIDIA.
+eralization. Our planner comprises a highly efﬁcient fore-
+sight image generation module that predicts a high-quality
+640×480 future observation from the current visual input
+and language instruction within only 0.33s on an H100
+GPU, together with a vision-language model that reasons
+over the task and produces subtask descriptions for both the
+generator and the VLA. Importantly, state-of-the-art VLAs
+can integrate our planner seamlessly by simply augment-
+ing their visual inputs, without any architectural modiﬁca-
+tion. The foresight generator is pretrained on over 1 million
+multi-task, cross-embodiment episodes, enabling it to learn
+robust embodied dynamics. We evaluate our framework on
+a benchmark that consists of 11 diverse, multi-step real-
+world tasks. It achieves an average success rate of 87.4%,
+1
+arXiv:2602.12322v1  [cs.RO]  12 Feb 2026
+
+===== PDF PAGE 2 =====
+demonstrating a +40.9% absolute improvement over the π0
+baseline (46.5%) and a +30.3% absolute improvement over
+π0 augmented with textual subtask guidance (57.1%).
+1. Introduction
+People have been working hard to enhance the physi-
+cal intelligence of embodied systems, aiming to develop ro-
+bust and general robots to help humans solve a wide range
+of tasks in the real world. A truly general robot should
+be capable of handling complex, diverse, unstructured en-
+vironments and performing tasks that go far beyond pre-
+programmed routines. For example, it should be able to
+manipulate a variety of household objects, assist with daily
+chores such as cooking, cleaning, or organizing spaces, and
+adapt its behavior when encountering new tools or unfamil-
+iar layouts.
+Recently, vision-language-action (VLA) models [5–7, 9–
+11, 25, 27, 29, 32, 35, 37, 44, 46, 47, 54, 57] have emerged
+as a promising direction for developing general-purpose
+robots. These models learn a direct mapping from visual
+observations and language instructions to robotic actions in
+an end-to-end manner. However, most existing VLAs still
+excel only at simple tasks (e.g., picking up an object and
+placing it in a designated location), falling short of the broad
+capabilities we ultimately expect. We posit that one key
+factor underlying this limitation is the difﬁculty VLAs face
+in grounding high-level language instructions into concrete,
+executable action sequences.
+This raises the question: what if we provide VLAs with
+visual instructions rather than relying solely on language?
+Instead of merely telling a robot what to do, could we show
+it how to do it? For instance, when asking a robot to clean
+a table, supplying an image of the table after cleaning of-
+fers richer guidance, potentially simplifying task execution.
+Y et, in real-world settings, a fully ﬁnal state may not always
+be attainable, and even when available, it often remains too
+abstract, omitting the intermediate steps necessary for exe-
+cution. For example, cleaning a table including picking up
+the coke can, the water bottle, and the crumpled tissue, and
+then disposing of them in the trash bin one by one. This mo-
+tivates a further inquiry: is it possible to provide robots with
+step-by-step visual instructions, enabling them to follow a
+visually guided sequence toward task completion?
+To this end, we propose Visual F oresight Planning (F ore-
+Act), a general and efﬁcient planning framework that in-
+structs the VLA with visual guidance step-by-step. At the
+core of our approach is an efﬁcient foresight image genera-
+tor. It acts as a world model that conditions on the current
+observation and the language instruction to predict future
+observations. The generator is pretrained on over 1 million
+multi-task, cross-embodiment episodes curated from open-
+source datasets [9, 27, 48, 50], enabling it to learn robust em-
+bodied dynamics. Complementing this generator, we incor-
+porate a vision-language model [3] to reason about complex
+tasks and infer appropriate subtasks, which are then pro-
+vided to both the foresight generator and the VLA. These
+two components constitute our F oreActframework. By sup-
+plying imagined future observations, our method substan-
+tially reduces the difﬁculty for VLAs in grounding high-
+level language instructions into concrete actions. Conse-
+quently, the VLA model can focus solely on visuo-motor
+inference rather than high-level semantic reasoning, leading
+to improved accuracy and generalization. Notably, state-of-
+the-art VLAs can seamlessly integrate our visual guidance
+simply by augmenting their visual inputs, without requiring
+any architectural modiﬁcations.
+We highlight the efﬁciency of our visual foresight plan-
+ner. Running on an H100 GPU, the foresight image gen-
+eration takes only 0.33s. This demonstrates the practical-
+ity of our planner for real-world closed-loop control. To
+assess its effectiveness, we conduct comprehensive eval-
+uations across 11 diverse real-world tasks. Our method
+achieves an average success rate of 87.4%, demonstrating
+a +40.9% absolute improvement over the π0 [7] baseline
+(46.5%) and a +30.3% absolute improvement over π0 aug-
+mented with textual subtask guidance (57.1%).
+2. Related Work
+Vision-Language-Action Models. Vision-language-action
+(VLA) models integrate vision, language and action in a sin-
+gle policy, enabling robots to interpret human instructions
+and act on them. Early approaches [ 1, 8, 14] demonstrated
+the potential of multimodal policies for instruction-guided
+manipulation. More recently, state-of-the-art methods [ 5–
+7, 9–11, 25, 27, 29, 32, 35, 37, 44, 46, 47, 54, 57] have
+advanced by ﬁne-tuning pretrained vision-language models
+on large-scale robotic datasets, enabling direct mapping
+from visual-language instructions to robot actions. Repre-
+sentative works including RT-2 [57], OpenVLA [29], π0 [7],
+π0.5 [25], GR00T-N1 [5], Gemini Robotics [46] have shown
+unprecedented capabilities and achieved remarkable per-
+formance on real-world robot tasks. However, they still
+struggle with complex tasks and generalizing to novel
+scenarios. Our proposed Visual Foresight Planning method
+can enhance the VLA ’s accuracy and generalization.
+Robotic Planning and Reasoning. Instead of directly map-
+ping human instructions to robot actions, recent works try
+to decompose the complex tasks into a sequence of sim-
+pler sub-tasks before action execution. One line of research
+unify planning and control within a single model [17, 25, 38,
+52]. However, such uniﬁcation introduces signiﬁcant chal-
+lenges: (1) VLA models typically employ relatively small
+vision-language backbones (e.g., 3B parameters) to reduce
+latency, which limits their capacity for complex reasoning;
+and (2) ﬁne-tuning these models on robot data often leads to
+2
+
+===== PDF PAGE 3 =====
+ImGen 
+Visual Foresight
+Visual Foresight Planning
+Robot System
+VLA 
+Action Generator
+VLM 
+Subtask Planner
+Robot Control System
+Subtask
+predicted observation 
+Image Input Image Output
+Close 
+Loopleft_cam1 head_cam2 3right_cam
+2
+123
++
+Actions
+4+
+4
+5
+6
+Figure 2. Overview of our ForeAct framework. The VLM-
+based subtask planner takes the robot’s head-camera observation
+and generates a subtask instruction for the Foresight Image Gen-
+eration (ImGen) module. ImGen then predicts the future observa-
+tion, which is fed into the VLA model together with the subtask
+instruction and the robot’s three camera views. These modules op-
+erate jointly to enable closed-loop control.
+catastrophic forgetting, thereby compromising their general-
+purpose capabilities. Another line of research adopts a hier-
+archical framework [ 21, 23, 24, 34, 38, 42, 43, 45, 52, 53]
+that delegates planning and reasoning to a separate model.
+This design mitigates the risk of catastrophic forgetting and
+enables planning and reasoning to be performed by more ca-
+pable models. However, it does not fundamentally alleviate
+the intrinsic challenge faced by VLA models in grounding
+high-level language instructions into concrete actions. In
+contrast, our planner provides a more detailed visual guid-
+ance, let the VLA focus on visuomotor inference.
+Visual Prediction for Robot Control. Integrating visual
+prediction into the control loop is a key advance to enable
+lookahead planning. Earlier works [ 16, 39] ﬁrst investi-
+gated the beneﬁt of visual prediction in model-based RL.
+SuSIE [6] generates goal images that guide diffusion policy
+models. COT-VLA [ 55] generates goal images and actions
+inside a uniﬁed model. More recently, with the development
+of video generation, people start to explore the use of video
+generation for robot control [ 2, 4, 15, 18, 22, 26, 30, 56].
+While conceptually appealing, existing video-generation-
+based methods face key limitations: (1) slow and com-
+putationally expensive inference, (2) predominantly open-
+loop designs that ignore environmental feedback, and (3)
+incompatibility with state-of-the-art pretrained VLAs. Our
+method is efﬁcient and general, that can be integrated with
+the state-of-the-art VLAs in a closed-loop manner.
+3. Method
+In this section, we ﬁrst present ForeAct with a structured
+formulation in Section 3.1. We then introduce the efﬁcient
+foresight image generation model, which is the core of our
+method, in Section 3.2. After that, we illustrate how we use
+VLM for reasoning and monitoring in Section 3.3. Finally,
+we show how to seamlessly integrate our method with VLA
+models in Section 3.4 and how we deploy the whole system
+in Section 3.5.
+3.1. Visual Foresight Planning (ForeAct)
+VLA. Modern state-of-the-art VLAs are generally imple-
+mented as language-conditioned models, which aim to learn
+the conditional distribution
+π(At | It, qt, l)
+where At = [ at, at+1, · · · , at+H−1] is a chunk of actions
+of length H, It = [ I 1
+t , I2
+t , · · · , IK
+t ] is the current visual ob-
+servation from multiple cameras, qt is the proprioceptive
+states from the robot, and l is the language instruction.
+VLA with ForeAct. Our key insight is to introduce a visual
+foresight planner to enhance the VLA model. With ForeAct,
+the conditional distribution is reformulated as follows:
+π(At | It, qt, l) = πl(At | [It, Gt], qt, lt)πh(Gt, lt | It, l)
+πh is our visual foresight planner, it provides the predicted
+future observation Gt and subtask description lt condi-
+tioned on the current observation and the overall task de-
+scription. πl is the VLA model, it takes the predicted future
+observation Gt as an additional visual input and the subtask
+description lt as the language condition to generate actions.
+Speciﬁcally, πh is implemented with two components:
+πh(Gt, lt | It, l) = πg(Gt | It, lt)πv(lt | It, l)
+At the core is the foresight image generation model πg,
+which grounds the high-level language instruction into a
+concrete predicted future observation. Complementing this,
+πv is a VLM to reason over the complex task and infer the
+subtask. Figure 2 illustrates the overall pipeline of our Fore-
+Act framework.
+3.2. Efﬁcient Foresight Image Generation
+Our core idea is to predict an imagined future observa-
+tion that clearly guides the VLA model, rather than relying
+on solely language instructions. We design the foresight im-
+age generation model to closely approximate the actual fu-
+ture observation. To preserve generalization across hetero-
+geneous robotic platforms, the model is conditioned solely
+on visual observations and language instructions, excluding
+other modalities such as robot proprioceptive states. For
+better adaptability and efﬁciency, we generate the foresight
+image only for the head camera, which captures the global
+scene and thus provides the most informative context.
+Model Architecture. Modern robots typically employ
+high-resolution cameras (e.g., 640×480 or even 1280×720)
+to capture detailed visual information. Consequently, our
+3
+
+===== PDF PAGE 4 =====
+…
+…
+DC-
+AE
+Linear Attn
+Cross Attn
+Mix FFN
+System Prompt: You are a 
+robot and should focus on your 
+actions. Generate a new image 
+that meets the user's 
+instruction while maintaining 
+consistency with the original 
+input where appropriate.
+Instruction: Place the makeup 
+cotton pads into the blue box.
+…
+Small LM
+Time Emb
+Linear DiT (N x Blocks)
+…
+Noise 
+Tokens
+DC-
+AE
+Figure 3. Foresight image generation model. The current obser-
+vation is ﬁrst encoded into compact visual tokens and concatenated
+with a noise input, then fed into the efﬁcient linear DiT model to
+generate the predicted visual tokens, which are subsequently de-
+coded into the future observation. In addition, the instruction and
+a specially designed system prompt are incorporated to guide the
+model’s attention toward the robot’s actions.
+foresight image generation model must also support high-
+resolution outputs to preserve ﬁne details and subtle move-
+ments. Moreover, the generation must be efﬁcient to be en-
+gaged in the real-world closed-loop control. Inspired by re-
+cent advances in efﬁcient image generation, we adopt the ar-
+chitectural design of the state-of-the-art model SANA [ 51].
+SANA employs a 32 × deep compression autoencoder [ 12]
+to encode images into a compact latent space, substantially
+reducing the number of latent tokens. It also utilizes a linear
+DiT architecture to enable efﬁcient attention computation at
+high resolutions. However, SANA is originally designed for
+text-to-image generation and thus cannot directly process
+image conditions. To address this limitation, we concate-
+nate the conditioned image with the noise input, thereby
+transforming the denoising process into a conditional de-
+noising task. The detailed model architecture of our fore-
+sight image generation model is illustrated in Figure 3.
+Pre-training Dataset. We collect a large and diverse open-
+source cross-embodiment dataset for pre-training, allow-
+ing the model to learn generalizable embodied dynamics
+through foresight image generation. Speciﬁcally, we collect
+data from the AgiBot-World Colosseo [ 9], RoboMind [ 50],
+Galaxea Open-World [ 27], and Bridge [ 48] datasets. We
+exclude datasets such as Open-X-Embodiment [ 41] and
+DROID [28] due to their relatively low camera resolution.
+Our collected dataset covers a wide range of robot embodi-
+ments as shown in the right panel of Figure 4.
+Data Preprocessing. After collecting the datasets, we pre-
+process the data to suit our requirements. Tasks in AgiBot-
+World Colosseo, RoboMind, and Galaxea Open-World are
+typically complex and long-horizon, so we decompose them
+into subtasks. They already provide detailed subtask seg-
+mentations, which we directly adopt for task splitting. In
+contrast, the Bridge dataset contains relatively simple tasks,
+so we use the provided task descriptions directly without
+further subdivision. After preprocessing, the number of sub-
+tasks from each dataset is shown in the left panel of Figure
+(a) Num of subtasks (b) Diverse robot embodiments
+Figure 4. (a) Number of subtasks from each dataset. Our data
+comes from a wide range of sources, and preprocessing yields a
+total of 1.16 million subtasks. (b) Diverse robot embodiments
+in the pre-training dataset. The collected dataset covers a wide
+range of robot embodiments.
+4, with a total number of 1.16 million subtasks.
+Within each subtask, we sample condition frames at 1-
+second intervals. For each condition frame, we choose a
+future frame that comes half a subtask’s length later in time.
+We set this offset to half the subtask length because it gives
+frame pairs that clearly show meaningful action changes.
+The paired language instruction is the description of the
+robot’s action of the subtask. After sampling, we get a total
+of approximately 10 million data pairs for pre-training.
+Training Details. Following SANA, we adopt ﬂow match-
+ing as our training objective. All images are resized to
+640Œ480 during training. We initialize our model with
+SANA-1.6B-512px’s pre-trained weights to leverage its
+strong image-generation priors. The global batch size is set
+to 512, and training is conducted for 800K steps on 64 H100
+GPUs. We leverage a constant learning rate of 5e-5 with 5K
+steps warmup.
+3.3. VLM for Reasoning and Monitoring
+In our ForeAct framework, the VLM operates in a
+reason-execute-monitor cycle. Given the overall task de-
+scription and the current observation, it ﬁrst reasons by gen-
+erating an immediate, actionable subtask. After the VLA
+executes the actions, the VLM monitors by assessing the
+updated state, tracking progress, and re-planning the next
+subtask if the current subtask is completed. This hierar-
+chy enables the VLA model to dynamically recover from
+execution failures and adapt to environmental uncertainties,
+yielding robust and scalable performance across complex
+real-world tasks.
+3.4. Adapt to VLA Models
+When integrating ForeAct, the VLA model requires no
+architectural modiﬁcations as we only augment the visual
+input. During VLA ﬁne-tuning, we concatenate the current
+observation with a future observation to form the visual in-
+put. During inference, the generated foresight image is ap-
+4
+
+===== PDF PAGE 5 =====
+Figure 5. Examples of tasks in our real-world dataset.
+pended to the current observation to serve as the visual in-
+put, while the generated subtask instruction serves as the
+language input to the ﬁne-tuned VLA model. This design
+requires minimal adjustments, thereby enabling seamless in-
+tegration of our ForeAct with existing VLA models.
+3.5. Cloud-Edge Closed-Loop Deployment
+To achieve responsive, closed-loop control for real-world
+robotics, we design a hierarchical cloud-edge deployment
+pipeline. The workﬂow begins with the edge host respon-
+sible for reactive local control, which captures and sends
+the observation to the remote cloud server. This server, spe-
+cialized for reasoning and foresight generation (hosting the
+VLM and image generator with vLLM [31]), performs high-
+level planning and distills the result into a dual-guidance
+packet (textual lt, visual Gt). This packet is then returned
+to the edge host, where the local VLA policy performs rapid
+inference to dispatch the ﬁnal action. In our setting, we de-
+ploy the visual foresight planner on an H100 GPU, and the
+VLA on a RTX 5090 GPU.
+4. Experiments
+4.1. Setups
+Robot System. We collect our real-world data on the
+Galaxea R1 Lite [ 19], a dual-arm mobile manipulator
+equipped with 23 degrees of freedom (6-DoF chassis, 3-
+DoF torso, and two 7-DoF arms). The platform also fea-
+tures a comprehensive multi-view perception suite, includ-
+ing a head-mounted stereo camera and two wrist-mounted
+monocular depth cameras.
+Comprehensive Real-World Dataset. We collect a com-
+prehensive and challenging real-world dataset consisting of
+11 tasks that simulate activities in Kitchen, Workspace, and
+Factory with varying levels of difﬁculty.
+• Kitchen: Tasks involve diverse object manipulation in
+kitchen environments, ranging from simple conditional
+placements (e.g., pick one of ﬁve vegetables on a plate ) to
+multi-stage sequential operations ( e.g., stack three bowls
+on a plate ) and complex dual-arm sorting ( e.g., classify
+tabletop waste into bins using single or dual arms ).
+• Workspace: Tasks emphasize typical ofﬁce organization
+routines, scaling from basic interactions (e.g., put a pen in
+a drawer) to complex, multi-step arrangements involving
+multiple objects ( e.g., organize a study desk by placing
+pens, staplers, and tape into their designated containers).
+• Factory: Tasks simulate industrial kitting and assembly
+procedures, including basic tool retrieval ( e.g., place a
+speciﬁed tool into a box ), item packing ( e.g., pack ﬂow-
+ers into a box ) and instance-level sorting ( e.g., separate
+different masks into different boxes).
+We provide example tasks of our real-world dataset
+in Figure 5. In total, we collect 420 episodes. Each
+episode is then decomposed into subtasks, resulting in 2,312
+subtask-level episodes. We randomly sample 50 episodes
+to construct the in-distribution test set, the remaining 370
+episodes are used for ﬁnetuning the foresight image genera-
+tion model and the VLA model.
+4.2. Efﬁcient Foresight Image Generation
+We have already pretrained the foresight image genera-
+tion model on a comprehensive and diverse dataset. For
+deployment in our speciﬁc setting, we perform lightweight
+ﬁnetuning to adapt to our speciﬁc robot type and the new
+environment. We ﬁnetune the foresight image generation
+model on our collected real-world data. We use a batch size
+of 32 and run for 5 epochs. We leverage a constant learning
+rate of 1e-5 with no warmup.
+Effectiveness of Large-scale Pre-training. To demon-
+strate the effectiveness of the pretraining, we also con-
+duct an experiment in which the foresight image generation
+model is trained using only our self-collected data without
+robot data pretraining. For fair comparison, the from scratch
+training follows the same settings as the ﬁnetuning.
+We evaluate the generated images under both in-
+distribution and out-of-distribution test settings. The in-
+distribution setting corresponds to tasks and environments
+that match those seen during training, although the ob-
+ject layouts may differ. Since layout variations are also
+present in the training data, we consider these cases as
+in-distribution. The out-of-distribution setting involves
+changes to either the task or the environment. For exam-
+ple, the robot may be required to manipulate a different ob-
+ject within the same environment, such as picking the corn
+in the packing ﬂower environment. For the in-distribution
+evaluation, we sample 50 observations from the test split of
+our dataset; for the out-of-distribution evaluation, we design
+and collect 50 new observations.
+5
+
+===== PDF PAGE 6 =====
+Table 1. Quantitative results of foresight image generation. The
+scores are averaged over 50 images for both in-distribution and out-
+of-distribution tasks.
+In distribution Out of distribution
+Type Fidelity Quality Fidelity Quality
+w/o pretraining 0.18 0.24 0.00 0.00
+w/ pretraining 1.00 1.00 0.88 0.96
+Figure 6. Qualitative results of foresight image generation. The
+ﬁrst row shows the model without pretraining and the second row
+shows the model with pretraining. The task is to pick up the corn.
+We generate four images for each model with different random
+seeds.
+We assess generation performance from two perspec-
+tives: (1) image ﬁdelity, which measures whether the gener-
+ated image accurately follows the subtask instruction and
+lies on the correct path toward task completion; and (2)
+image quality, which evaluates whether the generated im-
+age preserves the detailed information of the original im-
+age without introducing signiﬁcant distortions. Both crite-
+ria are scored via human evaluation, where each image is
+scored as 1 if it satisﬁes the requirement and 0 otherwise.
+As shown in Table 1, the foresight image generation model
+with pretraining achieves substantially better performance
+than the model trained from scratch. Without pretraining,
+the model completely fails on out-of-distribution tasks and
+obtains only very low scores on in-distribution tasks, in-
+dicating that it learns virtually no generalizable capability.
+In contrast, our pretrained model consistently attains high
+scores on both in-distribution and out-of-distribution tasks,
+demonstrating the effectiveness of the pretraining.
+We also provide a qualitative example for an out-of-
+distribution task in Figure 6. The task is to pick up the
+corn. We generate four images for each model with dif-
+ferent random seeds. The ﬁrst row shows the model with-
+out pretraining, which can not generate the correct predicted
+image. The second row shows the model with pretraining,
+which generates the correct predicted image across all the
+four images, showing the effectiveness of the pretraining.
+Discussion with Image Editing Models. Our foresight
+image generation model conditions on the current obser-
+vation (image) and a subtask instruction (text) to produce
+the predicted next-step image. This workﬂow is closely re-
+lated to that of image-editing models, which raises the ques-
+Gemini 2.5 Flash Image GPT-Image Qwen-Edit
+Observation
+Prompt: Move the robot arm towards the rubbish bin and place the bottle into it.
+Prompt: Move the robot arm towards the plate and place the carrot onto it.
+Figure 7. Qualitative results of image editing models. State-of-
+the-art image-editing models lack an understanding of the underly-
+ing real-world physics and object dynamics. They can not generate
+the correct predicted image with correct robot action.
+step=1, latency=0.13s
+step=2, latency=0.16sstep=4, latency=0.20sstep=8, latency=0.33s
+Figure 8. Latency measurement of foresight image generation.
+Our foresight image generation model is able to generate a high-
+quality 640×480 imagined future observation in 0.33 seconds on
+an H100 GPU.
+tion: Can state-of-the-art image-editing models handle our
+task? To investigate this, we provide a qualitative compari-
+son in Figure 7 and evaluate several state-of-the-art image-
+editing models, including Gemini 2.5 Flash Image [ 13],
+GPT-Image [40], and Qwen-Edit [ 49]. As shown in the ﬁrst
+example, all three models make almost no meaningful mod-
+iﬁcations to the scene. In the second example, although the
+ﬁrst model slightly adjusts the arm, it produces an unnatural
+grasp of the carrot, while the other two models directly hal-
+lucinate a carrot on the plate instead of manipulating the ex-
+isting one. These failure cases indicate that state-of-the-art
+image-editing models lack an understanding of the underly-
+ing real-world physics and object dynamics, thus can not be
+used to handle our task. Moreover, due to their large param-
+eter sizes, these models incur substantial inference latency,
+making them impractical for use in closed-loop control.
+Latency Measurement. We evaluate the latency of our
+foresight image generation model on an H100 GPU, where
+the planner is deployed. Because latency is critical for
+closed-loop control, minimizing generation time is essen-
+tial. A straightforward approach is to reduce the number
+of denoising steps. As shown in Figure 8, extremely small
+step counts (e.g., 1-2) lead to severe artifacts, whereas us-
+ing 8 steps yields visually reliable predictions. Increasing
+the step count beyond 8 provides negligible quality improve-
+ments. Therefore, in our real-world experiments, we set the
+number of steps to 8, resulting in a latency of only 0.33 s.
+6
+
+===== PDF PAGE 7 =====
+0
+20
+40
+60
+80
+100
+Pick_Veg Place_BowlStack_BowlClean_RubbToy_BlocksPen_DrawerOffice_Desk Pick_Tool Sort_MaskPack_ToolkitPack_Flower Average
+87.4
+95.0
+91.3
+85.0
+93.4
+74.8
+82.5
+93.0
+94.4
+95.8
+83.3
+73.4
+57.1
+63.3
+71.3
+60.8
+26.6
+53.4
+46.3
+56.8
+72.4
+70.9
+60.0
+46.6
+46.5
+44.3
+31.3
+56.3
+20.0
+44.0
+50.0
+55.7
+67.0
+87.6
+29.2
+26.6
+   
+Success Rate (%)
+π0 VLM+π0 Ours
+Figure 9. Real-world evaluation of ForeAct framework . Our system consistently outperforms baselines without visual guidance across
+all benchmarking tasks. It achieves an average success rate of 87.4%, representing a +30.3% improvement over the VLM-augmented
+baseline (VLM + π0) and a +40.9% improvement over the vanilla π0 baseline. Furthermore, it maintains an average success rate of over
+70% across all benchmark tasks, demonstrating the robustness of our proposed method.
+This demonstrates the efﬁciency of our foresight image gen-
+erator and highlights its practicality for real-world closed-
+loop control. Although we have not yet incorporated accel-
+eration techniques such as distillation or quantization, we
+believe further reductions in latency are possible and leave
+this exploration for future work.
+4.3. Real-World Benchmark Evaluation
+Baselines. We set up end-to-end real-world evaluation on
+the Galaxea R1 Lite platform [ 19] with the π0 [7] archi-
+tecture and ﬁnetuning it on our self-collected data for real-
+world adaptation. We compare with the following systems
+to illustrate the effectiveness of ForeAct:
+• π0: A 3.3B VLA model pretrained on over 10k hours of
+robot data. We ﬁnetune it on our self-collected data on
+Galaxea R1 Lite platform for real-world adaptation.
+• VLM + π0: π0 model augmented with Qwen-3-VL-8B-
+Instruct [ 3] model for subtask planning and monitoring.
+We ﬁnetune the π0 model on the subtask-level episodes
+of our self-collected data, in accordance with the VLM
+planning granularity.
+• Ours: π0 model enhanced with our ForeAct framework.
+In our visual foresight planner, we also employ Qwen-
+3-VL-8B-Instruct as the VLM for subtask planning and
+monitoring. We ﬁne-tune the π0 model on the subtask-
+level episodes from our self-collected dataset, augment-
+ing the visual input with a future observation. Speciﬁ-
+cally, we use the ﬁnal frame of each subtask episode as
+the future observation.
+Metrics. We evaluate the performance of the systems
+across 11 diverse tasks. Please refer to Sec. A.3 for detailed
+description of all our real-world tasks with visual examples.
+For each task, we break down the task into "atomic actions"
+at the granularity of "approach and grasp" and "move and
+place". Then, we score the systems success rate of the
+whole task as the ratio of the number of successful "atomic
+actions" to the total number of "atomic actions". Mean-
+while, if the robot performs any undesired action, such as
+picking up any object that is not targeted in the task, we
+deduct the score by the value of a single atomic action. If
+any atomic action cannot be completed within 5 trials, or the
+robot ruins the whole task setting through undesired actions,
+we consider the uncompleted "atomic actions" in the task as
+failed. For each task, we repeat the evaluation with at least
+5 different initial settings (e.g., different object layouts) and
+report the average score of each model.
+Results. In Figure 9, we demonstrate the evaluation results
+on our real-world benchmark. Across all the 11 tasks, our
+system achieves the highest success rate, with a +30.3% im-
+provement over the VLM + π0 baseline and a +40.9% im-
+provement over the vanilla π0 baseline, demonstrating the
+effectiveness of our ForeAct.
+Particularly, for the tasks such as Pack_Flower and
+Toy_Blocks, where the robot need to distinguish different
+objects and take different actions according to the object
+type, our system surpasses the baseline systems by a great
+margin. We attribute this improvement to our visual fore-
+sight guidance, which provides the robot with the additional
+goal state information rather than brief text instructions. As
+a result, the VLA model does not bother to reason which
+is the aimed object and what is the intended action, and the
+visual guidance helps the VLA model to learn generalizable
+visuo-motor skills.
+Additionally, to demonstrate the generality and scalabil-
+ity of our framework, we also evaluate it with the stronger
+π0.5 backbone. As detailed in Table 2, our method consis-
+tently outperforms the vanilla π0.5 baseline. Overall, the
+average success rate increases from 70.3% to 88.2%, con-
+ﬁrming that our visual foresight planning provides essential
+enhancement for general VLA models.
+4.4. Simulation Benchmark Evaluation
+We further validate our method with the LIBERO simula-
+tion benchmark [36] with π0.5 [25] model. We evaluated the
+7
+
+===== PDF PAGE 8 =====
+Table 2. Real-world evaluation with π0.5. On a representative
+set of real-world tasks, our method boosts the average success rate
+of the highly capable π0.5 model from 70.3% to 88.2%.
+Task Name π0.5 Ours Task Name π0.5 Ours
+Pick_V eg 60.0 86.6 Ofﬁce_Desk 76.0 85.4
+Place_Bowl 75.0 83.3 Pick_Tool 50.0 96.7
+Pen_Drawer 68.8 81.3 Pack_Flower 91.8 95.8
+Table 3. Simulation evaluation on LIBERO. We evaluate the
+success rate (%) of our method integrated with π0.5 against state-
+of-the-art VLA baselines including vanilla π0.5.
+Method Spatial Object Goal Long A verage
+OpenVLA [29] 84.7 88.4 79.2 53.7 76.5
+CoT-VLA [55] 87.5 91.6 87.6 69.0 83.9
+π0 [7] 96.8 98.8 95.8 85.2 94.2
+π0.5 [25] 97.3 98.8 96.9 94.2 96.8
+CogVLA [33] 98.6 98.8 96.6 95.4 97.4
+Ours (w/π0.5) 97.3 99.8 97.3 95.4 97.5
+performance across four standard task suites: Spatial, Ob-
+ject, Goal, and Long-horizon (LIBERO_10). The success
+rate is averaged over 500 trials for each suite. As shown in
+Table 3, our method consistently improves the performance
+upon π0.5 baseline that already achieves near-perfect suc-
+cess rates, raising the average success rate from 96.8% to
+97.5%.
+4.5. Generalization to OOD Tasks
+We design OOD (Out-Of-Distribution) variants of the
+Pick_V eg task to evaluate the generalization capability of
+our ForeAct framework. As shown in Figure 10, our Fore-
+Act framework remains robust in OOD settings, whereas
+baseline models suffer a substantial performance drop.
+To better illustrate this, we provide a qualitative exam-
+ple in Figure 12. The task requires the robot to put three
+different vegetables (a carrot, a bok choy, and an eggplant)
+into the plate, a composition of subtasks never seen during
+training, where only single-vegetable picking was demon-
+strated. As a result, the baseline model (VLM + π0, Fig-
+ure 12 (a)) fails to adapt. It gets stuck in a loop, repeat-
+edly attempting to grasp the same region where the carrot
+was, even though it is now empty. In contrast, the model
+augmented with our ForeAct framework successfully com-
+pletes this complex OOD task, as shown in Figure 12 (b).
+Our framework correctly monitors the task progress and pro-
+vides corresponding visual foresight, allowing the VLA to
+robustly execute all three distinct subtasks in sequence.
+4.6. Data Efﬁciency
+We evaluate data efﬁciency on the challenging
+Clean_Rubb task by varying the size of the training
+0
+20
+40
+60
+80
+Original + Spatial OOD+ Comp. OOD + Joint OOD
+58.4
+61.7
+76.7
+73.4
+5.0
+20.0
+33.4
+46.6
+12.5
+15.0
+20.0
+26.6
+   
+Success Rate (%)
+π0 VLM+π0 Ours
+Figure 10. Quantitative evaluation on OOD variants of the
+Pick_V eg task. The x-axis denotes increasingly difﬁcult evalua-
+tion settings. Speciﬁcally, Original refers to the in-distribution
+setting. + Spatial OOD introduces spatial permutations of ob-
+jects that is unseen in the training data. + Comp.OOD assesses
+compositional generalization by requiring the model to manipulate
+two objects, whereas training only involves single-object tasks. Fi-
+nally, + Joint OOD combines both spatial and compositional
+shifts.
+Training Data Ratio (%) 
+Success Rate (%) 
+40 
+50 
+60 
+70 
+80 
+90 
+100
+20 40 60 80 100
+VLM + π 0 Ours
+Figure 11. Data efﬁciency analysis on the Clean_Rubb task. We
+compare the success rates of our method (red) versus the VLM-
+augmented baseline (gray) when trained on data subsets ranging
+from 20% to 100%. Our method consistently outperforms the base-
+line across all data regimes.
+set. As shown in Figure 11, our method exhibits strong
+sample efﬁciency: with only 60% of the data, it attains a
+>90% success rate, and with just 20% of the data, it still
+achieves 79%, substantially outperforming the baseline.
+Although the baseline method shows performance gains as
+the dataset grows, its rate of improvement is considerably
+slower, underscoring the superior data efﬁciency of our
+ForeAct approach. Note that for this ablation, we construct
+training subsets solely from the Clean_Rubb task data.
+Therefore, the success rate at 100% data usage here is
+slightly lower than the main benchmark result reported in
+the main paper, which beneﬁts from multi-task co-training.
+Furthermore, limited ﬁne-tuning data severely constrains
+baseline performance. As shown in Fig. 9, while our sys-
+tem achieves a 93.4% success rate in the Pick_Tool task,
+baselines fall below 30%. Since there are 5 distinct tools
+forming 5! = 120 spatial permutations, and the task re-
+quires manipulating any one of these ﬁve tools within each
+8
+
+===== PDF PAGE 9 =====
+(a) The baseline model consistently tries to grasp in regions where no objects are present when facing OOD scenarios.
+(b) Our model augmented with Visual Foresight Planning successfully finishes the OOD task.
+Figure 12. Qualitative results for a compositional OOD task. The overall instruction is to "put the carrot, bok choy, and eggplant into
+the plate," a sequence not seen in training. (a) The baseline (VLM + π0) gets lost in this task, repeatedly trying to grasp the ﬁrst object’s
+location even after it is gone. (b) Our method robustly executes all three subtasks with the augmentation of visual guidance for each step.
+Table 4. Ablation on instruction modalities for the Pick_Tool
+task. We compare standard semantic instructions with spatial-
+based text prompts. "Spatial Text" provides location of the tar-
+get object, simplifying the task by removing the need for object
+grounding.
+Method Instruction Type Success Rate (%)↑
+Singleπ0 Semantic Text 20.0
+Singleπ0 Spatial Text 46.8
+Ours Semantic Text + Goal Image 93.4
+layout, the total number of unique conﬁgurations reaches
+120 × 5 = 600 . Collecting teleoperation trajectories for ev-
+ery permutation within the ﬁnetuning data for the single task
+is sub-optimal and practically infeasible. Therefore, we hy-
+pothesize that baselines fail to generalize in this data-scarce
+regime because they struggle to ground task prompts to spe-
+ciﬁc tool objects.
+To further investigate this, Table 4 presents an ablation
+where semantic instructions (e.g., "Pick up the hammer")
+are replaced with spatial ones (e.g., "Pick up the object on
+the bottom right") in both ﬁnetuning and inference. This
+modiﬁcation signiﬁcantly improves baseline accuracy by
+decoupling semantic recognition from action execution. By
+bypassing the need for the VLA to infer object semantics
+from visual observations, the model can dedicate its limited
+capacity to action prediction. Nevertheless, these baselines
+still lag behind our ForeAct framework, as spatial text re-
+mains a coarser and more ambiguous modality compared to
+the ﬁne-grained image-based guidance we introduce. These
+results collectively suggest that our visual foresight mecha-
+nism fundamentally enhances data efﬁciency: by converting
+abstract semantic instructions into concrete visual targets,
+it reduces the reliance on exhaustive demonstration cover-
+age and enables robust generalization even when ﬁne-tuning
+data is far too sparse to cover the full combinatorial space
+of task conﬁgurations.
+5. Conclusion
+In this work, we present Visual Foresight Planning (Fore-
+Act), a general and efﬁcient planner that instructs VLA mod-
+els with step-by-step imagined future observations and sub-
+task guidance. By providing imagined future observations,
+it allows VLAs to focus on visuo-motor execution, lead-
+ing to improved accuracy and generalization. The foresight
+image generation inside our planner is efﬁcient, running at
+0.33s to produce a 640Œ480 future observation on an H100
+GPU. We evaluate our method across 11 diverse real-world
+tasks, it achieves an average success rate of 87.4%, out-
+performing both vanilla and VLM-augmented baselines by
+large margins. Furthermore, it demonstrates strong perfor-
+mance in out-of-distribution scenarios. Overall, our results
+show that ForeAct is a powerful and practical direction for
+enabling more capable and reliable embodied intelligence.
+Acknowledgements
+We thank MIT-IBM Watson AI Lab, Amazon and Na-
+tional Science Foundation for supporting this research. We
+thank NVIDIA for donating the DGX server.
+References
+[1] Michael Ahn, Anthony Brohan, Noah Brown, Y evgen Cheb-
+otar, Omar Cortes, Byron David, Chelsea Finn, Chuyuan Fu,
+Keerthana Gopalakrishnan, Karol Hausman, et al. Do as i
+can, not as i say: Grounding language in robotic affordances.
+arXiv preprint arXiv:2204.01691, 2022. 2
+[2] Anurag Ajay, Seungwook Han, Yilun Du, Shuang Li, Abhi
+Gupta, Tommi Jaakkola, Josh Tenenbaum, Leslie Kaelbling,
+Akash Srivastava, and Pulkit Agrawal. Compositional foun-
+dation models for hierarchical planning. Advances in Neural
+Information Processing Systems, 36:22304–22325, 2023. 3
+[3] Shuai Bai, Y uxuan Cai, Ruizhe Chen, Keqin Chen, Xionghui
+Chen, Zesen Cheng, Lianghao Deng, Wei Ding, Chang Gao,
+Chunjiang Ge, Wenbin Ge, Zhifang Guo, Qidong Huang,
+Jie Huang, Fei Huang, Binyuan Hui, Shutong Jiang, Zhao-
+9
+
+===== PDF PAGE 10 =====
+hai Li, Mingsheng Li, Mei Li, Kaixin Li, Zicheng Lin, Jun-
+yang Lin, Xuejing Liu, Jiawei Liu, Chenglong Liu, Y ang Liu,
+Dayiheng Liu, Shixuan Liu, Dunjie Lu, Ruilin Luo, Chenxu
+Lv, Rui Men, Lingchen Meng, Xuancheng Ren, Xingzhang
+Ren, Sibo Song, Y uchong Sun, Jun Tang, Jianhong Tu, Jian-
+qiang Wan, Peng Wang, Pengfei Wang, Qiuyue Wang, Y ux-
+uan Wang, Tianbao Xie, Yiheng Xu, Haiyang Xu, Jin Xu,
+Zhibo Y ang, Mingkun Y ang, Jianxin Y ang, An Y ang, Bowen
+Y u, Fei Zhang, Hang Zhang, Xi Zhang, Bo Zheng, Humen
+Zhong, Jingren Zhou, Fan Zhou, Jing Zhou, Y uanzhi Zhu,
+and Ke Zhu. Qwen3-vl technical report. arXiv preprint
+arXiv:2511.21631, 2025. 2, 7
+[4] Homanga Bharadhwaj, Debidatta Dwibedi, Abhinav Gupta,
+Shubham Tulsiani, Carl Doersch, Ted Xiao, Dhruv Shah,
+Fei Xia, Dorsa Sadigh, and Sean Kirmani. Gen2act: Hu-
+man video generation in novel scenarios enables generaliz-
+able robot manipulation. arXiv preprint arXiv:2409.16283 ,
+2024. 3
+[5] Johan Bjorck, Fernando Castañeda, Nikita Cherniadev,
+Xingye Da, Runyu Ding, Linxi Fan, Y u Fang, Dieter Fox,
+Fengyuan Hu, Spencer Huang, et al. Gr00t n1: An open foun-
+dation model for generalist humanoid robots. arXiv preprint
+arXiv:2503.14734, 2025. 2
+[6] Kevin Black, Mitsuhiko Nakamoto, Pranav Atreya, Homer
+Walke, Chelsea Finn, Aviral Kumar, and Sergey Levine.
+Zero-shot robotic manipulation with pretrained image-
+editing diffusion models. arXiv preprint arXiv:2310.10639 ,
+2023. 3
+[7] Kevin Black, Noah Brown, Danny Driess, Adnan Esmail,
+Michael Equi, Chelsea Finn, Niccolo Fusai, Lachy Groom,
+Karol Hausman, Brian Ichter, et al. A vision-language-
+action ﬂow model for general robot control. arXiv preprint
+arXiv:2410.24164, 2024. 2, 7, 8
+[8] Anthony Brohan, Noah Brown, Justice Carbajal, Y evgen
+Chebotar, Joseph Dabis, Chelsea Finn, Keerthana Gopalakr-
+ishnan, Karol Hausman, Alex Herzog, Jasmine Hsu, et al.
+Rt-1: Robotics transformer for real-world control at scale.
+arXiv preprint arXiv:2212.06817, 2022. 2
+[9] Qingwen Bu, Jisong Cai, Li Chen, Xiuqi Cui, Y an Ding,
+Siyuan Feng, Shenyuan Gao, Xindong He, Xuan Hu, Xu
+Huang, et al. Agibot world colosseo: A large-scale manipula-
+tion platform for scalable and intelligent embodied systems.
+arXiv preprint arXiv:2503.06669, 2025. 2, 4
+[10] Qingwen Bu, Y anting Y ang, Jisong Cai, Shenyuan Gao,
+Guanghui Ren, Maoqing Y ao, Ping Luo, and Hongyang Li.
+Univla: Learning to act anywhere with task-centric latent ac-
+tions. arXiv preprint arXiv:2505.06111, 2025.
+[11] Chilam Cheang, Sijin Chen, Zhongren Cui, Yingdong Hu,
+Liqun Huang, Tao Kong, Hang Li, Yifeng Li, Y uxiao Liu,
+Xiao Ma, et al. Gr-3 technical report. arXiv preprint
+arXiv:2507.15493, 2025. 2
+[12] Junyu Chen, Han Cai, Junsong Chen, Enze Xie, Shang Y ang,
+Haotian Tang, Muyang Li, Y ao Lu, and Song Han. Deep
+compression autoencoder for efﬁcient high-resolution diffu-
+sion models. arXiv preprint arXiv:2410.10733, 2024. 4
+[13] Gheorghe Comanici, Eric Bieber, Mike Schaekermann, Ice
+Pasupat, Noveen Sachdeva, Inderjit Dhillon, Marcel Blis-
+tein, Ori Ram, Dan Zhang, Evan Rosen, et al. Gemini 2.5:
+Pushing the frontier with advanced reasoning, multimodality,
+long context, and next generation agentic capabilities. arXiv
+preprint arXiv:2507.06261, 2025. 6
+[14] Danny Driess, Fei Xia, Mehdi SM Sajjadi, Corey Lynch,
+Aakanksha Chowdhery, Ayzaan Wahid, Jonathan Tompson,
+Quan Vuong, Tianhe Y u, Wenlong Huang, et al. Palm-e: An
+embodied multimodal language model. In International Con-
+ference on Machine Learning, 2023. 2
+[15] Yilun Du, Sherry Y ang, Bo Dai, Hanjun Dai, Oﬁr Nachum,
+Josh Tenenbaum, Dale Schuurmans, and Pieter Abbeel.
+Learning universal policies via text-guided video genera-
+tion. Advances in neural information processing systems, 36:
+9156–9172, 2023. 3
+[16] Frederik Ebert, Chelsea Finn, Sudeep Dasari, Annie Xie,
+Alex Lee, and Sergey Levine. Visual foresight: Model-based
+deep reinforcement learning for vision-based robotic control.
+arXiv preprint arXiv:1812.00568, 2018. 3
+[17] Huang Fang, Mengxi Zhang, Heng Dong, Wei Li, Zixuan
+Wang, Qifeng Zhang, Xueyun Tian, Y ucheng Hu, and Hang
+Li. Robix: A uniﬁed model for robot interaction, reasoning
+and planning. arXiv preprint arXiv:2509.01106, 2025. 2
+[18] Y ao Feng, Hengkai Tan, Xinyi Mao, Chendong Xiang,
+Guodong Liu, Shuhe Huang, Hang Su, and Jun Zhu. Vidar:
+Embodied video diffusion model for generalist manipulation.
+arXiv preprint arXiv:2507.12898, 2025. 3
+[19] Galaxea Team. R1 Lite Hardware Introduction. https://
+docs.galaxea-ai.com/Guide/R1Lite/R1Lite_
+Hardware_Introduction/, 2024. 5, 7
+[20] Gemini Team. Gemini 3 Website. https://deepmind.
+google/models/gemini/, 2025. 13
+[21] Yingdong Hu, Fanqi Lin, Tong Zhang, Li Yi, and Y ang
+Gao. Look before you leap: Unveiling the power of gpt-
+4v in robotic vision-language planning. arXiv preprint
+arXiv:2311.17842, 2023. 3
+[22] Y ucheng Hu, Y anjiang Guo, Pengchao Wang, Xiaoyu Chen,
+Y en-Jen Wang, Jianke Zhang, Koushil Sreenath, Chaochao
+Lu, and Jianyu Chen. Video prediction policy: A general-
+ist robot policy with predictive visual representations. arXiv
+preprint arXiv:2412.14803, 2024. 3
+[23] Chi-Pin Huang, Y ueh-Hua Wu, Min-Hung Chen, Y u-
+Chiang Frank Wang, and Fu-En Y ang. Thinkact: Vision-
+language-action reasoning via reinforced visual latent plan-
+ning. arXiv preprint arXiv:2507.16815, 2025. 3
+[24] Wenlong Huang, Fei Xia, Ted Xiao, Harris Chan, Jacky
+Liang, Pete Florence, Andy Zeng, Jonathan Tompson, Igor
+Mordatch, Y evgen Chebotar, et al. Inner monologue: Embod-
+ied reasoning through planning with language models. arXiv
+preprint arXiv:2207.05608, 2022. 3
+[25] Physical Intelligence, Kevin Black, Noah Brown, James
+Darpinian, Karan Dhabalia, Danny Driess, Adnan Esmail,
+Michael Equi, Chelsea Finn, Niccolo Fusai, et al. π0. 5:
+a vision-language-action model with open-world generaliza-
+tion. arXiv preprint arXiv:2504.16054, 2025. 2, 7, 8
+[26] Joel Jang, Seonghyeon Y e, Zongyu Lin, Jiannan Xiang, Jo-
+han Bjorck, Y u Fang, Fengyuan Hu, Spencer Huang, Kaushil
+Kundalia, Y en-Chen Lin, et al. Dreamgen: Unlocking gen-
+eralization in robot learning through video world models.
+arXiv preprint arXiv:2505.12705, 2025. 3
+10
+
+===== PDF PAGE 11 =====
+[27] Tao Jiang, Tianyuan Y uan, Yicheng Liu, Chenhao Lu, Jian-
+ning Cui, Xiao Liu, Shuiqi Cheng, Jiyang Gao, Huazhe Xu,
+and Hang Zhao. Galaxea open-world dataset and g0 dual-
+system vla model. arXiv preprint arXiv:2509.00576 , 2025.
+2, 4
+[28] Alexander Khazatsky, Karl Pertsch, Suraj Nair, Ashwin Bal-
+akrishna, Sudeep Dasari, Siddharth Karamcheti, Soroush
+Nasiriany, Mohan Kumar Srirama, Lawrence Y unliang Chen,
+Kirsty Ellis, et al. Droid: A large-scale in-the-wild robot ma-
+nipulation dataset. arXiv preprint arXiv:2403.12945 , 2024.
+4
+[29] Moo Jin Kim, Karl Pertsch, Siddharth Karamcheti, Ted Xiao,
+Ashwin Balakrishna, Suraj Nair, Rafael Rafailov, Ethan
+Foster, Grace Lam, Pannag Sanketi, et al. Openvla: An
+open-source vision-language-action model. arXiv preprint
+arXiv:2406.09246, 2024. 2, 8
+[30] Po-Chen Ko, Jiayuan Mao, Yilun Du, Shao-Hua Sun, and
+Joshua B Tenenbaum. Learning to act from actionless
+videos through dense correspondences. arXiv preprint
+arXiv:2310.08576, 2023. 3
+[31] Woosuk Kwon, Zhuohan Li, Siyuan Zhuang, Ying Sheng,
+Lianmin Zheng, Cody Hao Y u, Joseph Gonzalez, Hao Zhang,
+and Ion Stoica. Efﬁcient memory management for large lan-
+guage model serving with pagedattention. In Proceedings
+of the ACM SIGOPS 29th Symposium on Operating Systems
+Principles, 2023. 5
+[32] Qixiu Li, Y aobo Liang, Zeyu Wang, Lin Luo, Xi Chen,
+Mozheng Liao, Fangyun Wei, Y u Deng, Sicheng Xu,
+Yizhong Zhang, et al. Cogact: A foundational vision-
+language-action model for synergizing cognition and action
+in robotic manipulation. arXiv preprint arXiv:2411.19650 ,
+2024. 2
+[33] Wei Li, Renshan Zhang, Rui Shao, Jie He, and Liqiang
+Nie. Cogvla: Cognition-aligned vision-language-action
+model via instruction-driven routing & sparsiﬁcation. arXiv
+preprint arXiv:2508.21046, 2025. 8
+[34] Jacky Liang, Wenlong Huang, Fei Xia, Peng Xu, Karol Haus-
+man, Brian Ichter, Pete Florence, and Andy Zeng. Code as
+policies: Language model programs for embodied control.
+arXiv preprint arXiv:2209.07753, 2022. 3
+[35] Y ue Liao, Pengfei Zhou, Siyuan Huang, Donglin Y ang,
+Shengcong Chen, Y uxin Jiang, Y ue Hu, Jingbin Cai, Si Liu,
+Jianlan Luo, et al. Genie envisioner: A uniﬁed world foun-
+dation platform for robotic manipulation. arXiv preprint
+arXiv:2508.05635, 2025. 2
+[36] Bo Liu, Yifeng Zhu, Chongkai Gao, Yihao Feng, Qiang Liu,
+Y uke Zhu, and Peter Stone. Libero: Benchmarking knowl-
+edge transfer for lifelong robot learning. Advances in Neural
+Information Processing Systems, 36:44776–44791, 2023. 7
+[37] Songming Liu, Lingxuan Wu, Bangguo Li, Hengkai Tan,
+Huayu Chen, Zhengyi Wang, Ke Xu, Hang Su, and Jun Zhu.
+Rdt-1b: a diffusion foundation model for bimanual manipu-
+lation. arXiv preprint arXiv:2410.07864, 2024. 2
+[38] Oier Mees, Jessica Borja-Diaz, and Wolfram Burgard.
+Grounding language with visual affordances over unstruc-
+tured data. arXiv preprint arXiv:2210.01911, 2022. 2, 3
+[39] Suraj Nair and Chelsea Finn. Hierarchical foresight: Self-
+supervised learning of long-horizon tasks via visual subgoal
+generation. arXiv preprint arXiv:1909.05829, 2019. 3
+[40] OpenAI. GPT Image 1 Model Card. https :
+/ / platform . openai . com / docs / models / gpt -
+image-1, 2025. 6
+[41] Abby ONeill, Abdul Rehman, Abhiram Maddukuri, Ab-
+hishek Gupta, Abhishek Padalkar, Abraham Lee, Acorn Poo-
+ley, Agrim Gupta, Ajay Mandlekar, Ajinkya Jain, et al. Open
+x-embodiment: Robotic learning datasets and rt-x models:
+Open x-embodiment collaboration 0. In 2024 IEEE Inter-
+national Conference on Robotics and Automation (ICRA) ,
+pages 6892–6903. IEEE, 2024. 4
+[42] Pratyusha Sharma, Antonio Torralba, and Jacob Andreas.
+Skill induction and planning with latent language. In Pro-
+ceedings of the 60th Annual Meeting of the Association for
+Computational Linguistics (V olume 1: Long Papers) , pages
+1713–1726, 2022. 3
+[43] Lucy Xiaoyang Shi, Brian Ichter, Michael Equi, Liyim-
+ing Ke, Karl Pertsch, Quan Vuong, James Tanner, Anna
+Walling, Haohuan Wang, Niccolo Fusai, et al. Hi robot:
+Open-ended instruction following with hierarchical vision-
+language-action models. arXiv preprint arXiv:2502.19417 ,
+2025. 3
+[44] Mustafa Shukor, Dana Aubakirova, Francesco Capuano,
+Pepijn Kooijmans, Steven Palma, Adil Zouitine, Michel Ar-
+actingi, Caroline Pascal, Martino Russi, Andres Maraﬁoti,
+et al. Smolvla: A vision-language-action model for afford-
+able and efﬁcient robotics. arXiv preprint arXiv:2506.01844,
+2025. 2
+[45] Ishika Singh, V alts Blukis, Arsalan Mousavian, Ankit Goyal,
+Danfei Xu, Jonathan Tremblay, Dieter Fox, Jesse Thoma-
+son, and Animesh Garg. Progprompt: Generating situated
+robot task plans using large language models. arXiv preprint
+arXiv:2209.11302, 2022. 3
+[46] Gemini Robotics Team, Saminda Abeyruwan, Joshua
+Ainslie, Jean-Baptiste Alayrac, Montserrat Gonzalez Are-
+nas, Travis Armstrong, Ashwin Balakrishna, Robert Baruch,
+Maria Bauza, Michiel Blokzijl, et al. Gemini robotics:
+Bringing ai into the physical world. arXiv preprint
+arXiv:2503.20020, 2025. 2
+[47] Octo Model Team, Dibya Ghosh, Homer Walke, Karl
+Pertsch, Kevin Black, Oier Mees, Sudeep Dasari, Joey Hejna,
+Tobias Kreiman, Charles Xu, et al. Octo: An open-source
+generalist robot policy. arXiv preprint arXiv:2405.12213 ,
+2024. 2
+[48] Homer Rich Walke, Kevin Black, Tony Z Zhao, Quan Vuong,
+Chongyi Zheng, Philippe Hansen-Estruch, Andre Wang He,
+Vivek Myers, Moo Jin Kim, Max Du, et al. Bridgedata v2:
+A dataset for robot learning at scale. In Conference on Robot
+Learning, pages 1723–1736. PMLR, 2023. 2, 4
+[49] Chenfei Wu, Jiahao Li, Jingren Zhou, Junyang Lin, Kaiyuan
+Gao, Kun Y an, Sheng ming Yin, Shuai Bai, Xiao Xu, Yilei
+Chen, Y uxiang Chen, Zecheng Tang, Zekai Zhang, Zhengyi
+Wang, An Y ang, Bowen Y u, Chen Cheng, Dayiheng Liu, De-
+qing Li, Hang Zhang, Hao Meng, Hu Wei, Jingyuan Ni, Kai
+Chen, Kuan Cao, Liang Peng, Lin Qu, Minggang Wu, Peng
+11
+
+===== PDF PAGE 12 =====
+Wang, Shuting Y u, Tingkun Wen, Wensen Feng, Xiaoxiao
+Xu, Yi Wang, Yichang Zhang, Y ongqiang Zhu, Y ujia Wu,
+Y uxuan Cai, and Zenan Liu. Qwen-image technical report,
+2025. 6
+[50] Kun Wu, Chengkai Hou, Jiaming Liu, Zhengping Che, Xi-
+aozhu Ju, Zhuqin Y ang, Meng Li, Yinuo Zhao, Zhiyuan
+Xu, Guang Y ang, et al. Robomind: Benchmark on multi-
+embodiment intelligence normative data for robot manipula-
+tion. arXiv preprint arXiv:2412.13877, 2024. 2, 4
+[51] Enze Xie, Junsong Chen, Junyu Chen, Han Cai, Haotian
+Tang, Y ujun Lin, Zhekai Zhang, Muyang Li, Ligeng Zhu,
+Y ao Lu, et al. Sana: Efﬁcient high-resolution image syn-
+thesis with linear diffusion transformers. arXiv preprint
+arXiv:2410.10629, 2024. 4
+[52] Michał Zawalski, William Chen, Karl Pertsch, Oier Mees,
+Chelsea Finn, and Sergey Levine. Robotic control via
+embodied chain-of-thought reasoning. arXiv preprint
+arXiv:2407.08693, 2024. 2, 3
+[53] Andy Zeng, Maria Attarian, Brian Ichter, Krzysztof Choro-
+manski, Adrian Wong, Stefan Welker, Federico Tombari,
+Aveek Purohit, Michael Ryoo, Vikas Sindhwani, et al. So-
+cratic models: Composing zero-shot multimodal reasoning
+with language. arXiv preprint arXiv:2204.00598, 2022. 3
+[54] Andy Zhai, Brae Liu, Bruno Fang, Chalse Cai, Ellie Ma,
+Ethan Yin, Hao Wang, Hugo Zhou, James Wang, Lights
+Shi, et al. Igniting vlms toward the embodied space. arXiv
+preprint arXiv:2509.11766, 2025. 2
+[55] Qingqing Zhao, Y ao Lu, Moo Jin Kim, Zipeng Fu, Zhuoyang
+Zhang, Y echeng Wu, Zhaoshuo Li, Qianli Ma, Song Han,
+Chelsea Finn, et al. Cot-vla: Visual chain-of-thought reason-
+ing for vision-language-action models. In Proceedings of the
+Computer Vision and Pattern Recognition Conference, pages
+1702–1713, 2025. 3, 8
+[56] Siyuan Zhou, Yilun Du, Jiaben Chen, Y andong Li, Dit-Y an
+Y eung, and Chuang Gan. Robodreamer: Learning compo-
+sitional world models for robot imagination. arXiv preprint
+arXiv:2404.12377, 2024. 3
+[57] Brianna Zitkovich, Tianhe Y u, Sichun Xu, Peng Xu, Ted
+Xiao, Fei Xia, Jialin Wu, Paul Wohlhart, Stefan Welker,
+Ayzaan Wahid, et al. Rt-2: Vision-language-action models
+transfer web knowledge to robotic control. In Conference on
+Robot Learning, pages 2165–2183. PMLR, 2023. 2
+A. Appendix
+A.1. Table of Contents
+• Sec. A.2: We present additional qualitative foresight gen-
+eration results, particularly in out-of-distribution scenar-
+ios to highlight the strong generalization of our model.
+• Sec. A.3: The detailed descriptions of all our real-world
+tasks with visual examples.
+• Sec. A.4: Evaluation on different VLMs’ performance as
+the high-level task planner.
+• Sec. A.5: The prompt we use for the VLM model.
+• Sec. A.6: A video demo.
+A.2. Qualitative Foresight Generation Results
+Figure 14 presents further qualitative results of our fore-
+sight image generation model. All scenarios shown are out-
+of-distribution, highlighting the strong capability and gen-
+eralization of our model. This further demonstrates the ef-
+fectiveness of our large-scale pretraining. We provide a de-
+tailed discussion of these scenarios below.
+• First Row : While all the objects are present in our
+dataset, they have never been co-located within the same
+scene. Although the dataset contains bowls, we do not
+include any scenes in which objects are placed inside a
+bowl.
+• Second Row: This scenario is similar to Pick_V eg; how-
+ever, we introduce fruits (an apple and a banana) into the
+scene. Notably, neither apples nor bananas are present in
+our dataset.
+• Third Row : There is already an apple on the plate. In
+the Pick_V eg task, however, we place only a single object
+onto the plate.
+• Fourth Row: This scenario represents a completely un-
+seen setting: all objects, including the new vegetables,
+fruits, and the glass bowl, are not present in our dataset.
+• Fifth Row: This scenario is similar to Clean_Rubb; how-
+ever, instead of placing rubbish into the bin, we place
+fruits into it.
+• Sixth Row: This task is entirely novel and includes new
+objects such as a knife, a fork, and a paper cup. The paper
+cup has never been positioned on a plate in our dataset.
+A.3. Detailed Task Descriptions
+In Table 6 and 7, we provide a comprehensive break-
+down, with visual examples, of the 11 real-world robotic
+tasks used in our evaluation suite. To rigorously evaluate
+the models’ performance, we intentionally introduce distri-
+butional shifts between training and inference in some of
+the testbenches, such as increasing the number of objects,
+randomizing initial poses, or introducing novel distractors.
+Please refer to the tables for a summary of the operational
+protocol and data distribution for each task.
+12
+
+===== PDF PAGE 13 =====
+Figure 13. Subtask Planning Accuracy across Different VLMs.
+Table 5. The prompt template used for the VLM planner . The
+variable {Task} represents the high-level human instruction.
+SYSTEM / INITIAL PROMPT ( t = 0)
+Y ou are a robot controller. Please plan to ﬁnish the task in
+several steps. And give instruction for each step in a concise
+way.
+The task is to “ {Task}”.
+RULES:
+• During the job, I will continuously give you an observation
+image of the current state.
+• Based on the observation, please judge if the last instruction
+has been ﬁnished.
+– If yes, give me the instruction for the next step.
+– If no, repeat the instruction of the ongoing subtask.
+• Y ou’re not required to describe the observation. Only output
+the instruction for each subtask.
+Now, you are only required to output instruction for the ﬁrst
+step.
+VISUAL INPUT: [Initial Observation Image]
+FOLLOW-UP PROMPT (t > 0)
+VISUAL INPUT: [Current Observation Image]
+Pay attention to the latest observation. Firstly, judge if the last
+instruction has been ﬁnished. Secondly, if yes, give me the
+instruction for the next step; if no, repeat the instruction of the
+ongoing subtask.
+Y our answer should be concise and deterministic.
+Remember, your Overall Task is “{Task}”.
+A.4. Evaluating Performance of VLMs
+To assess the generalization capability of our planner,
+we employ a rigorous LLM-as-a-Judge protocol. Specif-
+ically, we utilize Gemini-3-pro-preview [ 20] to evaluate
+the semantic correctness of the VLM-predicted subtasks
+on our long-horizon real-world video benchmark. As il-
+lustrated in Figure 13, our framework demonstrates strong
+model scalability. Both Qwen2.5-VL-32B and Qwen3-VL-
+8B achieve competitive performance, effectively steering
+the robot through complex tasks. Conversely, the signiﬁcant
+performance drop observed with the smaller Qwen2.5-VL-
+7B model validates the discriminative nature of our bench-
+mark.
+A.5. VLM Prompt
+To ensure reproducibility, we include the exact prompt
+templates we used for the VLM. The interaction is divided
+into two stages: the Initial Planning Phase ( t = 0 ) and the
+Closed-Loop Monitoring Phase ( t > 0). At t = 0 , upon
+receiving the ﬁrst observation, the system applies the Ini-
+tial Prompt to specify the task and generate the ﬁrst subtask.
+For all subsequent steps ( t > 0), the system transitions to
+the F ollow-up Prompt, where the VLM uses the latest ob-
+servation to assess progress on the previous instruction and
+produce the next one. The full templates for both phases are
+provided in Table 5.
+A.6. Demo Videos
+To provide a more intuitive understanding of our sys-
+tem’s real-world robustness, we include three video demon-
+strations corresponding to the Out-of-Distribution (OOD)
+scenarios as we mentioned in Section 4.3 of the main pa-
+per. These demos showcase how our Visual Foresight Plan-
+ning framework successfully generalizes to unseen scenar-
+ios where baseline methods typically fail.
+• Demo 1: Complex Compositions. The robot is tasked
+with picking multiple vegetables sequentially, despite be-
+ing trained only on single-object manipulation.
+• Demo 2: Novel Objects. The robot is tasked with picking
+fruits and placing them on a plate, whereas the training
+data only contained vegetable manipulation.
+• Demo 3: New Conﬁgurations. The robot performs the
+Clean_Rubb task under unseen spatial layouts and back-
+ground settings. This highlights the planner’s robustness
+to novel environmental conditions and object positions.
+All videos are available at https://github.com/mit-han-
+lab/foreact.
+13
+
+===== PDF PAGE 14 =====
+Pick the carrot.
+Observation Prediction Observation Prediction
+Place the carrot into the bowl.
+Pick the apple. Place the apple into the plate.
+Pick the banana. Place the banana into the plate.
+Pick the sweet potato. Place the sweet potato into the glass bowl.
+Pick the mango. Place the mango into the rubbish bin.
+Pick the paper cup. Place the paper cup onto the plate.
+Figure 14. Qualitative Foresight Image Generation Results.
+14
+
+===== PDF PAGE 15 =====
+Table 6. Overview of robot tasks and descriptions in our real-world dataset (Part I).
+Task Example Detailed Description
+Pick_Veg
+Protocol: The robot must identify and pick a speciﬁc vegetable from a set of ﬁve
+and place it onto a plate.
+Data: Fine-tuning episodes exclusively feature single-object manipulation.
+Evaluation follows this setting unless otherwise speciﬁed (e.g., Fig. 10).
+Place_Bowl
+Protocol: The robot is required to pick a bowl and place it onto a matching
+color-coded plate.
+Data: Both training and inference setups involve a single bowl and three plates on
+the workspace. The presence of a color-matched plate is guaranteed in every
+episode.
+Stack_Bowl
+Protocol: The robot is required to pick up bowls one by one and stack them onto
+the plate.
+Data: Both training and inference involve stacking three bowls. During evaluation,
+the bowls can either be pre-placed on the desk or introduced at any time.
+Clean_Rubb
+Protocol: The robot is required to pick up rubbish items and dispose of them into a
+bin.
+Data: Items are randomly positioned on the workspace during both training and
+inference. Background settings are varied across episodes.
+T oy_Blocks
+Protocol: The robot sorts various toy blocks into boxes with matching colors.
+Data: The workspace contains 2 boxes and 4 blocks of different shapes and colors.
+While training episodes involve picking two blocks, evaluation requires sorting 2 to
+3 blocks.
+Pen_Drawer
+Protocol: The robot picks up pens from the desk, places them inside a drawer, and
+then closes the drawer.
+Data: Training data exclusively involves manipulating a single pen. Evaluation
+requires the robot to place two pens into the drawer.
+Ofﬁce_Desk
+Protocol: The robot is required to organize a cluttered desk by placing items into a
+designated organizer.
+Data: The task involves individual object placements, including a whiteboard
+eraser, a stapler, and a pen. The robot is required to sort all three objects in both
+training and evaluation.
+15
+
+===== PDF PAGE 16 =====
+Table 7. Overview of robot tasks and descriptions in our real-world dataset (Part II).
+Task Example Detailed Description
+Pick_T ool
+Protocol: The robot identiﬁes a speciﬁc tool and places it into a target container.
+Data: Both training and evaluation involve single-object manipulation. The task
+includes 5 distinct tools (hammer, hand saw, screwdriver, pliers, and wrench).
+Sort_Mask
+Protocol: The robot distinguishes between N95 and surgical masks, sorting them
+into separate boxes.
+Data: Both training and evaluation involve two types of masks. The positions of
+masks are randomly initialized.
+Pack_T oolkit
+Protocol: The robot retrieves designated tools, put them in the toolkit, and then
+closes the toolkit lid.
+Data: Both training and evaluation involve two target objects. Unseen objects were
+introduced during the evaluation to test zero-shot abilities.
+Pack_Flower
+Protocol: The robot picks up ﬂowers on the desk and place them into a box.
+Data: Both training and evaluation involve 2 to 3 ﬂowers. Additional distractors,
+such as corn and grapes, are added to the workspace during evaluation.
+16
