@@ -143,6 +143,65 @@ def atp_scores(diagnosis, node, candidates, donor, background):
             "donor_capture_cost_included": False, "parameter_updates": 0}
 
 
+def atp_candidate_scores(diagnosis, node, candidates, donor, background):
+    """Score every frozen candidate once; rank all candidate-vs-refusal effects.
+
+    This remains basic AtP. Native token effects are retained so the caller need
+    not invent fine-mask scores by interpolating 6x6 cells. Donor capture is
+    supplied by the caller and must be charged separately.
+    """
+    if (not isinstance(background, list) or background != sorted(set(background))
+            or any(type(i) is not int or not 0 <= i < 576 for i in background)):
+        raise ValueError("background must contain sorted unique 24x24 visual indices")
+    if "refusal" not in candidates or len(candidates) < 2:
+        raise ValueError("all-candidate AtP requires facts and the fixed refusal candidate")
+    if any(p.requires_grad for p in diagnosis.vlm.model.parameters()):
+        raise ValueError("AtP requires a frozen model; only activation gradients are enabled")
+    _sync(diagnosis)
+    start = perf_counter()
+    receiver = diagnosis.capture(node["observed_row"])
+    _sync(diagnosis)
+    calls = [{"operation": "capture", "seconds": perf_counter() - start, "role": "AtP receiver"}]
+    diagnosis._aligned(donor, receiver)
+    if receiver["grid"]["rows"] != 24 or receiver["grid"]["cols"] != 24:
+        raise ValueError("AtP comparison uses the frozen 24x24 visual-state grid")
+    positions = receiver["visual_mask"].nonzero().flatten()
+    state = receiver["hidden"].detach().clone()
+    state[:, positions[background]] = donor["hidden"][:, positions[background]].to(state)
+    displacement = donor["hidden"].to(state)[:, positions] - state[:, positions]
+    patches, log_probs = {}, {}
+    was_training = diagnosis.vlm.model.training
+    diagnosis.vlm.model.eval()
+    try:
+        with torch.enable_grad():
+            for label, candidate in candidates.items():
+                _sync(diagnosis)
+                before = perf_counter()
+                ids = candidate["token_ids"]
+                gradient, log_probs[label] = _candidate_gradient(
+                    diagnosis, node["observed_row"], state, ids)
+                patches[label] = (gradient[:, positions].double() * displacement.double()).sum(dim=-1)[0]
+                _sync(diagnosis)
+                calls.append({"operation": "atp_forward_backward", "candidate": label,
+                              "seconds": perf_counter() - before, "scored_tokens": len(ids),
+                              "forward_calls": len(ids), "backward_calls": 1})
+    finally:
+        diagnosis.vlm.model.train(was_training)
+    effects = {label: value - patches["refusal"] for label, value in patches.items()}
+    cells = {label: value.reshape(6, 4, 6, 4).sum(dim=(1, 3)).reshape(-1)
+             for label, value in effects.items()}
+    _sync(diagnosis)
+    return {"method": "basic AtP all-candidate visual-state adaptation",
+            "scores": torch.stack(list(cells.values())).abs().amax(dim=0).cpu().tolist(),
+            "visual_scores": torch.stack(list(effects.values())).abs().amax(dim=0).cpu().tolist(),
+            "candidate_scores": {label: value.cpu().tolist() for label, value in cells.items()},
+            "candidate_visual_scores": {label: value.cpu().tolist() for label, value in effects.items()},
+            "candidate_log_probs": log_probs, "reference_candidate": "refusal",
+            "background": list(background), "calls": calls,
+            "elapsed_seconds": perf_counter() - start,
+            "donor_capture_cost_included": False, "parameter_updates": 0}
+
+
 def external_source_identity(method):
     name = method.lower()
     if name not in ("cleansight", "purmm"):
@@ -176,13 +235,14 @@ def _cleansight(config=None):
 
 
 @contextmanager
-def _cleansight_hf453(diagnosis, defense):
+def _cleansight_hf453(diagnosis, defense, *, localize_only=False):
     """Port only the author's hook plumbing to the already used HF 4.53.3.
 
     The released hook uses old RoPE/attention return signatures. Detector,
     whitening, threshold, token-union mask and pruning are the original code.
     Like that hook, pruning begins at the last detection layer and persists
-    through later layers and subsequent decoding steps.
+    through later layers and subsequent decoding steps. Localization only
+    builds the same mask; it never applies it to the model's attention.
     """
     import transformers
     from transformers.models.llama.modeling_llama import apply_rotary_pos_emb, repeat_kv
@@ -203,7 +263,7 @@ def _cleansight_hf453(diagnosis, defense):
                     cache_position=None, **kwargs):
             detect = (defense.mode != "off" and hidden_states.shape[1] > 1
                       and index in defense.config.detection_layers)
-            if not detect and not defense.pruner.is_active:
+            if not detect and (localize_only or not defense.pruner.is_active):
                 return original(hidden_states, position_embeddings, attention_mask,
                                 past_key_value=past_key_value, cache_position=cache_position, **kwargs)
             shape = hidden_states.shape[:-1]
@@ -230,7 +290,7 @@ def _cleansight_hf453(diagnosis, defense):
                 defense._layer_ratios[index] = ratio.detach().float().cpu()
                 if index == defense.config.detection_layers[-1]:
                     defense._run_detection(weights, logits, start, end)
-            if defense.pruner.is_active:
+            if defense.pruner.is_active and not localize_only:
                 logits = defense.pruner.apply(logits)
             weights = torch.softmax(logits, dim=-1, dtype=torch.float32).to(query.dtype)
             weights = torch.nn.functional.dropout(weights, p=module.attention_dropout, training=module.training)
@@ -320,7 +380,7 @@ def _purmm_selection(layer_magnitudes, cluster):
     return sorted(union & retained), per_layer, sorted(deep)
 
 
-def _purmm_generate(diagnosis, row):
+def _purmm_localize(diagnosis, row):
     identity = external_source_identity("purmm")
     try:
         from sklearn.cluster import KMeans
@@ -366,6 +426,26 @@ def _purmm_generate(diagnosis, row):
     before = perf_counter()
     selected, per_layer, deep = _purmm_selection(magnitudes, KMeans)
     calls.append({"operation": "purmm_clustering_and_deep_filter", "seconds": perf_counter() - before})
+    return {"method": "PurMM paper-defined HF adaptation", "output": original,
+            "original_output": original, "detected": None, "selected_visual_indices": selected,
+            "per_layer_high_attention_indices": per_layer, "deep_reference_indices": deep,
+            "elapsed_seconds": perf_counter() - started, "calls": calls, "source_identity": identity,
+            "configuration": {"cluster": "KMeans", "n_clusters": 2, "random_state": 0, "n_init": 10,
+                              "deep_layers": list(range(len(per_layer) // 2, len(per_layer))),
+                              "neighborhood": "3x3", "attention_rows": "all causally available prompt/generated rows"},
+            "adaptation_warnings": [
+                "Paper-defined HF adaptation, not an unchanged execution of an author experiment script.",
+                "Paper Eq.3 causal column averages and Eq.5 posterior-half union are used; released scripts also contain response-only, layer-15, top-8 and top-5 variants.",
+                "KMeans(2, random_state=0, n_init=10) follows official code; HF prompt, checkpoint, precision and greedy EOS contract follow the common experiment.",
+                "PurMM has no separate calibrated binary input detector."],
+            "paper": "https://ojs.aaai.org/index.php/AAAI/article/view/40867",
+            "localization_only": True, "parameter_updates": 0}
+
+
+def _purmm_generate(diagnosis, row):
+    started = perf_counter()
+    result = _purmm_localize(diagnosis, row)
+    selected = result["selected_visual_indices"]
     hook_calls = 0
 
     def zero_projected_tokens(module, args, output):
@@ -387,21 +467,11 @@ def _purmm_generate(diagnosis, row):
     finally:
         handle.remove()
     _sync(diagnosis)
-    calls.append({"operation": "purmm_zeroed_generate", "seconds": perf_counter() - before})
-    return {"method": "PurMM paper-defined HF adaptation", "output": purified,
-            "original_output": original, "detected": None, "selected_visual_indices": selected,
-            "per_layer_high_attention_indices": per_layer, "deep_reference_indices": deep,
-            "elapsed_seconds": perf_counter() - started, "calls": calls, "source_identity": identity,
-            "configuration": {"cluster": "KMeans", "n_clusters": 2, "random_state": 0, "n_init": 10,
-                              "deep_layers": list(range(len(per_layer) // 2, len(per_layer))),
-                              "neighborhood": "3x3", "attention_rows": "all causally available prompt/generated rows"},
-            "adaptation_warnings": [
-                "Paper-defined HF adaptation, not an unchanged execution of an author experiment script.",
-                "Paper Eq.3 causal column averages and Eq.5 posterior-half union are used; released scripts also contain response-only, layer-15, top-8 and top-5 variants.",
-                "KMeans(2, random_state=0, n_init=10) follows official code; HF prompt, checkpoint, precision and greedy EOS contract follow the common experiment.",
-                "PurMM has no separate calibrated binary input detector; selected tokens are zeroed on every input."],
-            "paper": "https://ojs.aaai.org/index.php/AAAI/article/view/40867",
-            "parameter_updates": 0}
+    result["calls"].append({"operation": "purmm_zeroed_generate", "seconds": perf_counter() - before})
+    result.update(output=purified, elapsed_seconds=perf_counter() - started, localization_only=False)
+    result["adaptation_warnings"][-1] = (
+        "PurMM has no separate calibrated binary input detector; selected tokens are zeroed on every input.")
+    return result
 
 
 def external_generate(diagnosis, row, method, calibration=None):
@@ -410,6 +480,23 @@ def external_generate(diagnosis, row, method, calibration=None):
         return _purmm_generate(diagnosis, row)
     if method.lower() != "cleansight":
         raise ValueError("external method must be CleanSight or PurMM")
+    return _cleansight_generate(diagnosis, row, calibration)
+
+
+def external_localize(diagnosis, row, method, calibration=None):
+    """Return the native localization mask without purification or donor use.
+
+    ``output`` is the unmodified model's original generation. Masks use the
+    original 576 visual-token indices, not an expanded coarse-grid region.
+    """
+    if method.lower() == "purmm":
+        return _purmm_localize(diagnosis, row)
+    if method.lower() != "cleansight":
+        raise ValueError("external method must be CleanSight or PurMM")
+    return _cleansight_generate(diagnosis, row, calibration, localize_only=True)
+
+
+def _cleansight_generate(diagnosis, row, calibration, *, localize_only=False):
     if not calibration or calibration.get("calibration_count") != 200:
         raise ExternalMethodBlocked("CleanSight needs fitted statistics from 200 separate clean calibration rows")
     defense, identity = _cleansight(calibration["config"])
@@ -420,7 +507,7 @@ def external_generate(diagnosis, row, method, calibration=None):
     defense.reset()
     _sync(diagnosis)
     started = perf_counter()
-    with _cleansight_hf453(diagnosis, defense):
+    with _cleansight_hf453(diagnosis, defense, localize_only=localize_only):
         output = diagnosis.generate(row)
     _sync(diagnosis)
     elapsed = perf_counter() - started
@@ -433,10 +520,11 @@ def external_generate(diagnosis, row, method, calibration=None):
         mask = defense.pruner._token_mask.any(dim=0)
         start = defense.config.image_token_start_index
         selected = mask[start:start + 576].nonzero().flatten().tolist()
-    return {"method": "CleanSight", "output": output, "detected": defense.was_poisoned,
+    result = {"method": "CleanSight", "output": output, "detected": defense.was_poisoned,
             "detection_score": defense.detector.score(feature), "detection_threshold": defense.detector.threshold,
             "selected_visual_indices": selected, "elapsed_seconds": elapsed,
-            "calls": [{"operation": "cleansight_defended_generate", "seconds": elapsed}],
+            "calls": [{"operation": "cleansight_localization_generate" if localize_only
+                       else "cleansight_defended_generate", "seconds": elapsed}],
             "source_identity": identity, "adapter": "official detector/pruner; HF 4.53.3 hook port",
             "adaptation_warnings": [
                 "Official detector/pruner/fit reused unchanged; old attention hook ported to HF 4.53.3 RoPE/cache/return signatures.",
@@ -444,3 +532,8 @@ def external_generate(diagnosis, row, method, calibration=None):
                 "Pruning begins at the last detection layer, matching official code; paper prose describes subsequent layers.",
                 "200 calibration samples are the frozen experiment default, not the detector's algorithmic minimum."],
             "parameter_updates": 0}
+    if localize_only:
+        result.update(original_output=output, localization_only=True)
+        result["adaptation_warnings"][2] = (
+            "The native detector and mask are computed, but attention pruning is never applied.")
+    return result

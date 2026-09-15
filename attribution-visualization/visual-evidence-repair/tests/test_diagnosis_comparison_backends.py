@@ -18,8 +18,8 @@ from test_repair_model import tiny_checkpoint
 from repair.model import VLM
 from repair.diagnosis_model import Diagnosis
 from repair.diagnosis_comparison_backends import (
-    atp_scores, _cleansight, _cleansight_hf453, _set_visual_span,
-    calibrate_cleansight, external_generate, ExternalMethodBlocked,
+    atp_scores, atp_candidate_scores, _candidate_gradient, _cleansight, _cleansight_hf453, _set_visual_span,
+    calibrate_cleansight, external_generate, external_localize, ExternalMethodBlocked,
     _purmm_selection,
 )
 
@@ -94,6 +94,45 @@ class ComparisonBackendsTest(unittest.TestCase):
         self.assertAlmostEqual(sum(result["scores"]), derivative, delta=2e-5)
         with self.assertRaisesRegex(ValueError, "EOS"):
             atp_scores(diagnosis, node, {**candidates, "positive": {"token_ids": [13]}}, donor, [])
+        self.assertEqual(len(diagnosis.vlm.language_module._forward_pre_hooks), 0)
+
+    def test_all_candidate_atp_preserves_complete_targets_and_native_token_effects(self):
+        diagnosis = self.diagnosis
+        node = {"observed_row": self.rows[1]}
+        donor = diagnosis.capture(self.rows[0])
+        candidates = {"positive": {"token_ids": [13, 14, 2]}, "negative": {"token_ids": [14, 2]},
+                      "refusal": {"token_ids": [13, 2]}, "choice:extra": {"token_ids": [14, 13, 2]}}
+        indices = [y * 24 + x for y in range(4) for x in range(4)]
+        before = diagnosis.generate(self.rows[1])
+        weights = {k: v.clone() for k, v in diagnosis.vlm.model.state_dict().items()}
+        with patch("repair.diagnosis_comparison_backends._candidate_gradient", wraps=_candidate_gradient) as gradient:
+            result = atp_candidate_scores(diagnosis, node, candidates, donor, indices)
+        self.assertEqual(gradient.call_count, len(candidates))
+        calls = [c for c in result["calls"] if c["operation"] == "atp_forward_backward"]
+        self.assertEqual([c["candidate"] for c in calls], list(candidates))
+        self.assertEqual(sum(c["forward_calls"] for c in calls), sum(len(c["token_ids"]) for c in candidates.values()))
+        self.assertEqual(set(result["candidate_scores"]), set(candidates))
+        self.assertEqual(result["scores"][0], 0.0)
+        self.assertEqual(len(result["visual_scores"]), 576)
+        self.assertEqual(result["candidate_scores"]["refusal"], [0.0] * 36)
+        for label, candidate in candidates.items():
+            exact = diagnosis.log_probs(self.rows[1], candidate["token_ids"], donor, visual_indices=indices)
+            self.assertEqual(result["candidate_log_probs"][label],
+                             {k: exact[k] for k in ("token_ids", "token_log_probs", "sum_log_prob")})
+            patch_values = result["candidate_visual_scores"][label]
+            self.assertTrue(all(patch_values[i] == 0.0 for i in indices))
+            cells = torch.tensor(patch_values, dtype=torch.float64).reshape(6, 4, 6, 4).sum(dim=(1, 3)).reshape(-1)
+            self.assertEqual(result["candidate_scores"][label], cells.tolist())
+        expected = torch.tensor(list(result["candidate_scores"].values()), dtype=torch.float64).abs().amax(dim=0)
+        self.assertEqual(result["scores"], expected.tolist())
+        self.assertEqual(before, diagnosis.generate(self.rows[1]))
+        self.assertFalse(any(p.grad is not None or p.requires_grad for p in diagnosis.vlm.model.parameters()))
+        self.assertTrue(all(torch.equal(value, weights[key]) for key, value in diagnosis.vlm.model.state_dict().items()))
+        self.assertEqual(len(diagnosis.vlm.language_module._forward_pre_hooks), 0)
+        self.assertEqual(len(diagnosis.vlm.projector._forward_hooks), 0)
+        self.assertFalse(result["donor_capture_cost_included"])
+        with self.assertRaisesRegex(ValueError, "EOS"):
+            atp_candidate_scores(diagnosis, node, {**candidates, "negative": {"token_ids": [14]}}, donor, [])
         self.assertEqual(len(diagnosis.vlm.language_module._forward_pre_hooks), 0)
 
     def test_cleansight_original_calibration_no_prune_parity_and_actual_mask(self):
@@ -203,6 +242,74 @@ class ComparisonBackendsTest(unittest.TestCase):
             diagnosis.vlm.model.load_state_dict(original_weights)
             diagnosis.vlm.dtype = old_dtype
             diagnosis.vlm._prompt_cache = None
+
+    def test_purmm_localization_with_real_sklearn(self):
+        diagnosis, row = self.diagnosis, self.rows[1]
+        expected = diagnosis.generate(row)
+        result = external_localize(diagnosis, row, 'PurMM')
+        self.assertEqual(result['output'], expected)
+        self.assertEqual(result['selected_visual_indices'], sorted(set(result['selected_visual_indices'])))
+        self.assertTrue(all(0 <= index < 576 for index in result['selected_visual_indices']))
+        self.assertNotIn('purmm_zeroed_generate', [c['operation'] for c in result['calls']])
+        self.assertEqual(diagnosis.generate(row), expected)
+
+    def test_external_localization_preserves_model_and_original_output(self):
+        diagnosis, row = self.diagnosis, self.rows[1]
+        expected = diagnosis.generate(row)
+        weights = {name: value.clone() for name, value in diagnosis.vlm.model.state_dict().items()}
+        forwards = [layer.self_attn.forward for layer in diagnosis.vlm.language_module.layers]
+        fitted = calibrate_cleansight(diagnosis, self.rows, expected_samples=2,
+                                     config={"detection_layers": [0, 1]})
+        # Only the public count guard is simulated here; this tiny CPU test is
+        # not a substitute for the experiment's 200 independent clean samples.
+        fitted["calibration_count"] = 200
+        fitted["config"].update(dist_thr=-1.0, prune_threshold=0.0)
+        defense, _ = _cleansight(fitted["config"])
+        with patch.object(type(defense.pruner), "apply", side_effect=AssertionError("must not prune")), \
+                patch.object(diagnosis, "generate", wraps=diagnosis.generate) as generate:
+            clean = external_localize(diagnosis, row, "CleanSight", fitted)
+            self.assertEqual(generate.call_count, 1)
+        self.assertTrue(clean["detected"])
+        self.assertEqual(clean["selected_visual_indices"], list(range(576)))
+        self.assertEqual(clean["output"], expected)
+        # A native detector miss remains an empty mask, not a fallback ranking.
+        fitted["config"]["dist_thr"] = 1e20
+        missed = external_localize(diagnosis, row, "CleanSight", fitted)
+        self.assertFalse(missed["detected"])
+        self.assertEqual(missed["selected_visual_indices"], [])
+
+        # Reuse the real attention pass and control only the unavailable local
+        # sklearn selection. A nonempty mask must still never zero embeddings.
+        fake = SimpleNamespace(KMeans=object)
+        with patch.dict(sys.modules, {"sklearn": SimpleNamespace(), "sklearn.cluster": fake}), \
+                patch("repair.diagnosis_comparison_backends._purmm_selection", return_value=([0, 23], [], [])), \
+                patch.object(diagnosis, "generate", wraps=diagnosis.generate) as generate:
+            purmm = external_localize(diagnosis, row, "PurMM")
+            self.assertEqual(generate.call_count, 1)
+        self.assertEqual(purmm["selected_visual_indices"], [0, 23])
+        self.assertIsNone(purmm["detected"])
+        for result in (clean, missed, purmm):
+            self.assertEqual(result["output"], expected)
+            self.assertEqual(result["original_output"], expected)
+            self.assertTrue(result["localization_only"])
+            self.assertEqual(result["parameter_updates"], 0)
+            self.assertTrue(result["source_identity"]["commit"])
+            self.assertGreater(result["elapsed_seconds"], 0)
+            self.assertFalse(any("zeroed" in call["operation"] or "defended" in call["operation"]
+                                 for call in result["calls"]))
+        self.assertEqual([layer.self_attn.forward for layer in diagnosis.vlm.language_module.layers], forwards)
+        self.assertEqual(len(diagnosis.vlm.projector._forward_hooks), 0)
+        self.assertEqual(len(diagnosis.vlm.language_module._forward_pre_hooks), 0)
+        self.assertTrue(all(torch.equal(weights[name], value)
+                            for name, value in diagnosis.vlm.model.state_dict().items()))
+        self.assertFalse(any(p.grad is not None or p.requires_grad for p in diagnosis.vlm.model.parameters()))
+        self.assertEqual(diagnosis.generate(row), expected)
+
+        with patch.object(diagnosis, "generate", side_effect=RuntimeError("generation failed")):
+            with self.assertRaisesRegex(RuntimeError, "generation failed"):
+                external_localize(diagnosis, row, "CleanSight", fitted)
+        self.assertEqual([layer.self_attn.forward for layer in diagnosis.vlm.language_module.layers], forwards)
+        self.assertEqual(diagnosis.generate(row), expected)
 
 
 if __name__ == "__main__":
