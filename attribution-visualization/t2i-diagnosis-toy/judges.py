@@ -311,6 +311,8 @@ def run(args):
     from PIL import Image
     items, mapping_hash = load_public(args.public)
     judge = JUDGES[args.judge](args.device)
+    if args.disputes and args.disputes.startswith("@"):
+        args.disputes = Path(args.disputes[1:]).read_text()
     disputes = json.loads(args.disputes) if args.disputes else None
     rows, details = [], []
     for n, item in enumerate(items, 1):
