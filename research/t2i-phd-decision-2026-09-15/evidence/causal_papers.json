@@ -1,0 +1,506 @@
+{
+  "audit_date": "2026-09-15",
+  "author_role": "causal/attribution primary-paper auditor",
+  "scope": "Six direct near-neighbors; not exhaustive novelty certification",
+  "summary_note": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/notes/causal_prior_work.md",
+  "papers": [
+    {
+      "slug": "causal_locogen",
+      "title": "On Mechanistic Knowledge Localization in Text-to-Image Generative Models",
+      "date": {
+        "first_arxiv": "2024-05-02",
+        "publication_year": 2024,
+        "read_version": "PMLR 235 official PDF"
+      },
+      "status": "ICML 2024 published",
+      "source": "https://proceedings.mlr.press/v235/basu24b.html",
+      "pdf_url": "https://raw.githubusercontent.com/mlresearch/v235/main/assets/basu24b/basu24b.pdf",
+      "arxiv_id": "2405.01008",
+      "code": "https://github.com/samyadeepbasu/LocoGen",
+      "sections_read": [
+        "Main Sections 1-8, pp1-8",
+        "Appendix A-M pp11-42; methods, qualitative captions, window search, human study, preservation, DeepFloyd failure",
+        "References skimmed; not individually verified"
+      ],
+      "models": [
+        "SD1.5",
+        "SD2.1",
+        "OpenJourney",
+        "SDXL",
+        "DeepFloyd"
+      ],
+      "intervention": "Replace conditioning inputs in contiguous subsets of UNet cross-attention K/V layers; closed-form edit localized weights; selected neuron dropout",
+      "target_score": "CLIPScore to original concept prompt for erasure, desired prompt for fact update; human 1-5 change ratings",
+      "protection_score": "Average CLIPScore on 320 generic prompts (App L p41); no same-image all-fact conjunction",
+      "benchmarks_controls": [
+        "Style/object/fact prompts from prior datasets",
+        "All-layer editing",
+        "DiffQuickFix",
+        "Concept-Ablation",
+        "Concept-Deletion"
+      ],
+      "findings": [
+        {
+          "anchor": "Sec5 pp3-6",
+          "claim": "Direct control localization succeeds where indirect causal tracing has no unique state; searches adjacent groups."
+        },
+        {
+          "anchor": "Sec5.2 p6, AppB.5 p25",
+          "claim": "DeepFloyd control locations depend on prompt."
+        },
+        {
+          "anchor": "Sec6.2 p7, AppM p41",
+          "claim": "LocoGen localization can succeed while LocoEdit closed-form editing fails; authors attribute this to T5 bidirectional token information."
+        },
+        {
+          "anchor": "AppJ pp34-36",
+          "claim": "92.58% verification means human score >1 out of5, not fully correct output."
+        }
+      ],
+      "overlap": [
+        "Finite grouped interventions with alternate prompt donor",
+        "Localization followed by output control and weight edits",
+        "Preservation checks",
+        "Control/editability dissociation and prompt dependence"
+      ],
+      "limitations": [
+        "CLIP/human change does not establish unique knowledge storage or poison origin",
+        "Generic-prompt mean preservation is not strict per-fact preservation",
+        "Adjacent-window restriction and external score/hyperparameter choices",
+        "Neuron removal can damage other attributes"
+      ],
+      "review": {
+        "url": "https://openreview.net/forum?id=fsVBsxjRER",
+        "status": "not_read",
+        "reason": "web fetch returned429; no bypass"
+      },
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/causal_locogen.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/causal_locogen.txt",
+      "download": {
+        "status": "verified",
+        "bytes": 5380545,
+        "pages": 42,
+        "sha256": "a713b842ed495ce7a878e4daa59dbebb63dc588cd7d05deea5cfeddaf08a362b",
+        "pdf_magic": true,
+        "first_page_title_checked": true
+      },
+      "reading_scope": "Full substantive maintext and relevantmethod/experiment/limitationappendices; not empiricalreproduction; citedunavailablefiles explicitlyexcluded"
+    },
+    {
+      "slug": "causal_cad",
+      "title": "Unveiling Concept Attribution in Diffusion Models",
+      "date": {
+        "first_arxiv": "2024-12-03",
+        "publication_year": 2025,
+        "read_version": "2412.02542v3 2025-10-28"
+      },
+      "status": "NeurIPS 2025 published; official proceedings confirmed",
+      "source": "https://proceedings.neurips.cc/paper_files/paper/2025/hash/295d03c732e675d699aab6056393d5ee-Abstract-Conference.html",
+      "pdf_url": "https://arxiv.org/pdf/2412.02542v3",
+      "arxiv_id": "2412.02542",
+      "code": "https://github.com/mail-research/CAD-attribution4diffusion",
+      "sections_read": [
+        "Main Sections1-7 pp1-9",
+        "AppendixA-I pp13-20: limitations, all experiment protocols, module/dose/scaling ablations, cost, SD2.1/SDXL/SD3.5 results",
+        "p6 Figure2 and Table1 rendered and visually verified",
+        "References skimmed"
+      ],
+      "models": [
+        "SD1.4 primary",
+        "SD2.1",
+        "SDXL",
+        "SD3.5"
+      ],
+      "intervention": "Zero positive/negative fine-grained parameters identified by first-order gradient times weight; compare scaling negative weights",
+      "target_score": "Noise prediction objective Eq4 or negative denoising error Eq5; final ResNet50 class accuracy/NudeNet/style LPIPS",
+      "protection_score": "Other-class accuracy; COCO30k CLIP/FID; other-artist LPIPS",
+      "benchmarks_controls": [
+        "1000 random small parameter knockout sets",
+        "ImageNette 10classes x500 images",
+        "I2P4702; COCO30000",
+        "ConceptPrune; ESD; UCE; RECE",
+        "Adversarial robustness evaluations"
+      ],
+      "findings": [
+        {
+          "anchor": "Sec4.2 p4",
+          "claim": "Approximates component effect by first-order Taylor gradient times weight; joint effects approximated additively."
+        },
+        {
+          "anchor": "Sec6.1 Fig2 p6",
+          "claim": "1000 random knockout predictions correlate with actual noise objective, Pearson r0.506 (visually verified). This is not final factual-success prediction."
+        },
+        {
+          "anchor": "Table6 p9",
+          "claim": "Removing negative components improves target object classifier accuracy while modestly lowering some other-class accuracy."
+        },
+        {
+          "anchor": "AppA/D/E/G pp13-16",
+          "claim": "Acknowledges entangled parameters, module-dependent collateral damage and dose/scaling tradeoffs."
+        }
+      ],
+      "overlap": [
+        "Signed component attribution",
+        "Counterfactual prediction validated on actual knockouts",
+        "Attribution-guided generation editing/amplification",
+        "Non-target knowledge preservation"
+      ],
+      "limitations": [
+        "First-order score approximation does not establish nonlinear synergy",
+        "Noise objective is not final-image per-fact truth",
+        "Other-class or perceptual means do not guarantee every protected fact",
+        "Temporal/spatial effect localization excluded in statedlimitations",
+        "Formal knowledge-localization hypothesis stronger than observed residual erasure and other-class losses"
+      ],
+      "review": {
+        "url": "https://openreview.net/forum?id=dVIx32Lq7J",
+        "status": "not_read",
+        "reason": "web fetch returned429; no bypass"
+      },
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/causal_cad.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/causal_cad.txt",
+      "download": {
+        "status": "verified",
+        "bytes": 27699001,
+        "pages": 20,
+        "sha256": "946562f1c5452553009dc5229d913ffd33202a82e235e799e29824e1ba1306d0",
+        "pdf_magic": true,
+        "first_page_title_checked": true
+      },
+      "reading_scope": "Full substantive maintext and relevantmethod/experiment/limitationappendices; not empiricalreproduction; citedunavailablefiles explicitlyexcluded"
+    },
+    {
+      "slug": "causal_casl",
+      "title": "CASL: Concept-Aligned Sparse Latents for Interpreting Diffusion Models",
+      "date": {
+        "first_arxiv": "2026-01-21",
+        "publication_year": null,
+        "read_version": "2601.15441v1 2026-01-21"
+      },
+      "status": "arXiv preprint; formal publication not confirmed in this audit",
+      "source": "https://arxiv.org/abs/2601.15441",
+      "pdf_url": "https://arxiv.org/pdf/2601.15441v1",
+      "arxiv_id": "2601.15441",
+      "code": null,
+      "sections_read": [
+        "Main Sections1-6 pp1-9",
+        "Supplement Sections7-11 pp11-25 including architecture, steering schedule, baselines, user-study design, classifier sensitivity, label limitations, all ablations",
+        "Referenced separate Human Evaluation.pdf unavailable and NOTread",
+        "References skimmed"
+      ],
+      "models": [
+        "DDPM++ for FFHQ/CelebA-HQ",
+        "DDPM for LSUN-Church",
+        "iDDPM for AFHQ-Dog",
+        "Baselines include SD1.4 and other backbone configurations"
+      ],
+      "intervention": "Train SAE on frozen UNet bottleneck activations, learn concept linear direction, select top-k sparse dimensions and inject h-space shift during DDIM reconstruction",
+      "target_score": "Absolute target attribute classifier-logit change; CLIPScore",
+      "protection_score": "EPR denominator mean absolute non-target classifier-logit change; LPIPS; ArcFace identity",
+      "benchmarks_controls": [
+        "32 CelebA-HQ test images per main attribute",
+        "FFHQ; AFHQ-Dog; LSUN-Church",
+        "BoundaryDiffusion; Asyrp; Concept Sliders; MasaCtrl; SwiftEdit",
+        "Inversion/reconstruction-only baseline",
+        "Classifier backbone ablation: ResNet18, MobileNetV2, VGG16, ViT-B16"
+      ],
+      "findings": [
+        {
+          "anchor": "Sec5.1 p5",
+          "claim": "CASL tested on pretrained domain diffusion models with real-image inversion; not a general T2I backbone experiment."
+        },
+        {
+          "anchor": "Sec4.3-4.4 pp4-5",
+          "claim": "CASL-Steer explicitly a causal interpretability probe; EPR already combines target and non-target changes."
+        },
+        {
+          "anchor": "Fig4 p8",
+          "claim": "More selected latent dimensions can reduce editing precision; multi-dimension steering not inherently superior."
+        },
+        {
+          "anchor": "Sec9.1 p16, Table11 p21",
+          "claim": "EPR is classifier-sensitive; method ranking changes for some classifiers/concepts."
+        },
+        {
+          "anchor": "pp18-20",
+          "claim": "No EPR on dog/church domains due unavailable reliable attribute labels."
+        }
+      ],
+      "overlap": [
+        "Internal latent causal probing",
+        "Target/protected-attribute joint evaluation",
+        "Editing-strength and sparse-combination side effects",
+        "Human evaluation design"
+      ],
+      "limitations": [
+        "Main setting is not open-domain T2I",
+        "Absolute logit-change metric does not require desired change direction or factualsuccess",
+        "Average non-target damage can hide a severe single-fact loss",
+        "Main pp6/8 single-shift description conflicts with supplementary pp11-12 repeated50-step intervention",
+        "Main default SAE expansion128 conflicts with supplementary scale32",
+        "Baselines vary by pretrained backbone/resolution; not strictly isolated same-model comparison",
+        "Detailed human results in separately referenced PDF not acquired"
+      ],
+      "review": {
+        "url": null,
+        "status": "not_found",
+        "reason": "Exact-title OpenReview search did not identify accessible review; no inference of rejection"
+      },
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/causal_casl.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/causal_casl.txt",
+      "download": {
+        "status": "verified",
+        "bytes": 5700930,
+        "pages": 25,
+        "sha256": "7a958edcb1d1a4d6d41ab0a103bd908604db7382417c0592d126f21ed0256970",
+        "pdf_magic": true,
+        "first_page_title_checked": true
+      },
+      "reading_scope": "Full substantive maintext and relevantmethod/experiment/limitationappendices; not empiricalreproduction; citedunavailablefiles explicitlyexcluded"
+    },
+    {
+      "slug": "causal_attention_sinks",
+      "title": "Attention Sinks in Diffusion Transformers: A Causal Analysis",
+      "date": {
+        "first_arxiv": "2026-05-10",
+        "publication_year": 2026,
+        "read_version": "2605.09313v3 2026-06-16"
+      },
+      "status": "ICML2026 published; official ICML2026 download listing and PDF proceedings line verified",
+      "source": "https://arxiv.org/abs/2605.09313",
+      "additional_source": "https://icml.cc/Downloads/2026",
+      "pdf_url": "https://arxiv.org/pdf/2605.09313v3",
+      "arxiv_id": "2605.09313",
+      "code": "https://github.com/wfz666/ICML26-attention-sink",
+      "sections_read": [
+        "Main Sections1-5 pp1-9",
+        "AppendixA-I pp12-24: dynamic/index proxy distinction, protocols, sampling, score/value sweep, no-op, random controls, modality attribution, stronger intervention and qualitative captions",
+        "References skimmed"
+      ],
+      "models": [
+        "Stable Diffusion3 primary",
+        "SDXL corroboration"
+      ],
+      "intervention": "Dynamic per-head per-timestep top-k incoming-attention recipients, suppressed on logits or value path; separate head-averaged union-budget masking for matched random control",
+      "target_score": "CLIP-T primary; ImageReward/HPSv2 preference proxies; BLIP2-VQA supplementary",
+      "protection_score": "No exact target/protected-fact split; LPIPS/FIDshift to paired original output characterize visual drift",
+      "benchmarks_controls": [
+        "553 GenEval prompts as prompt set, not official detector success benchmark",
+        "COCO5000 supplementary",
+        "SDXL100 paired prompts",
+        "64-prompt union-budget random-vs-sink study",
+        "32-prompt supplementary sweeps",
+        "No-op, random masks, CFG/step/scheduler variation, multi-layer/time-phase interventions"
+      ],
+      "findings": [
+        {
+          "anchor": "Tables2-3 pp5-6",
+          "claim": "k1 interventions show no detected proxy alignment/preference degradation; stronger top5 has small metric-dependent changes."
+        },
+        {
+          "anchor": "Table7 p7",
+          "claim": "At k1 union-budget64prompt study, sink LPIPS .347 vs random .053; distinct from per-head primary protocol."
+        },
+        {
+          "anchor": "Table20 p21",
+          "claim": "HPSv2 sink-specific losses at k10/k50; CLIP proxy remains nonsignificant across tested budgets."
+        },
+        {
+          "anchor": "p9",
+          "claim": "Explicitly no end-to-end speedup, human preference study or full fine-grained compositional correctness claim."
+        }
+      ],
+      "overlap": [
+        "High attention does not ensure causal necessity",
+        "Perceptual drift versus semantic proxy dissociation",
+        "Actual causal ablation with multi-output metrics",
+        "Matched random/budget controls, time/layer/dose dependence"
+      ],
+      "limitations": [
+        "CIs crossing zero do not establish equivalence; several CI widths exceed stated CLIP equivalence margin",
+        "GenEval prompts not same as official GenEval detector evaluation",
+        "Aggregate proxies can miss exact relationships; VQA supplement does not close entire gap",
+        "Conclusions restricted to inference aggregation, softmax architectures and tested doses",
+        "No proof of latent/poison root cause or permanent repair"
+      ],
+      "review": {
+        "url": "https://openreview.net/forum?id=QwE8cOtclR",
+        "status": "not_read",
+        "reason": "Browser verification challenge; stopped without bypass"
+      },
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/causal_attention_sinks.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/causal_attention_sinks.txt",
+      "download": {
+        "status": "verified",
+        "bytes": 19915870,
+        "pages": 24,
+        "sha256": "35323b28d9163bfcf496f2f9df992926914c9346258692e64e0e351f68e8701a",
+        "pdf_magic": true,
+        "first_page_title_checked": true
+      },
+      "reading_scope": "Full substantive maintext and relevantmethod/experiment/limitationappendices; not empiricalreproduction; citedunavailablefiles explicitlyexcluded"
+    },
+    {
+      "slug": "causal_dit_localization",
+      "title": "Localizing Knowledge in Diffusion Transformers",
+      "date": {
+        "first_arxiv": "2025-05-24",
+        "publication_year": 2025,
+        "read_version": "2505.18832v3 2026-01-26"
+      },
+      "status": "NeurIPS2025 published; arXiv v3 stale under-review header corrected using official proceedings",
+      "source": "https://papers.neurips.cc/paper_files/paper/2025/hash/157a6107a95883f6ccc0e38e80a24295-Abstract-Conference.html",
+      "pdf_url": "https://arxiv.org/pdf/2505.18832v3",
+      "arxiv_id": "2505.18832",
+      "code": "https://github.com/ArmanZarei/DiT-Knowledge-Localization",
+      "sections_read": [
+        "Main Sections1-5 pp1-10",
+        "AppendixA-D pp13-20: dataset train/evalsplit, brute force, style complexity, editing protocols and limitations",
+        "References skimmed"
+      ],
+      "models": [
+        "PixArt-alpha",
+        "FLUX",
+        "SANA",
+        "Downstream tuning demonstrations on PixArt-XL-2-512x512"
+      ],
+      "intervention": "Rank blocks by norm of summed attention times value times outputprojection; overwrite selected block conditioning using concept-neutral prompt branch; localized DreamBooth and unlearning weights",
+      "target_score": "CLIP/LLaVA concept presence; CSD for style; edited subject prompt/identity score",
+      "protection_score": "Surrounding-class identity and prompt CLIP, anchor alignment, COCO10k FID",
+      "benchmarks_controls": [
+        "LOCK sixknowledge categories with separate train/eval prompts",
+        "Full-model DreamBooth/unlearning",
+        "Contiguous-window exhaustive prompt-intervention search (K6,28windows)"
+      ],
+      "findings": [
+        {
+          "anchor": "Sec3 pp4-7",
+          "claim": "Localization fit on trainprompts, direct neutral-donor interventions evaluated on held-out prompts, across threeDiT architectures."
+        },
+        {
+          "anchor": "Sec4 pp7-9",
+          "claim": "Localized tuning reported better preservation and similar/better targeted adaptation than full-model tuning."
+        },
+        {
+          "anchor": "AppB.2 p14",
+          "claim": "Brute-force CSD drop .0812 versus contributionranking .0700; ranking traded some efficacy for claimed~28x localization-query speed."
+        },
+        {
+          "anchor": "AppD p18",
+          "claim": "Exact K needs external interventions/metrics; no ground-truth localization benchmark."
+        }
+      ],
+      "overlap": [
+        "Attribution visualization and grouped intervention",
+        "Neutral prompt donor and separate promptbranch",
+        "Independent prompt verification",
+        "Localized editing with surrounding preservation and efficiency comparison"
+      ],
+      "limitations": [
+        "Norm-based additive ranking not full interaction explanation",
+        "Different K threshold choices and external evaluators still required",
+        "Other-prompt preservation not all original correct facts within sameimage",
+        "Style complexity explanation uses GPT4o posthoc clustering assessment, not independentground-truth causal law",
+        "No demonstration of contaminated-model repair source or all-donor invariance"
+      ],
+      "review": {
+        "url": "https://openreview.net/forum?id=SiBVbL7rsX",
+        "status": "not_read",
+        "reason": "Browser verification challenge; stopped without bypass"
+      },
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/causal_dit_localization.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/causal_dit_localization.txt",
+      "download": {
+        "status": "verified",
+        "bytes": 7874937,
+        "pages": 20,
+        "sha256": "96493de91ea906206329e1317bce2c5bdebeaa1113fe750558c74c4029f232b1",
+        "pdf_magic": true,
+        "first_page_title_checked": true
+      },
+      "reading_scope": "Full substantive maintext and relevantmethod/experiment/limitationappendices; not empiricalreproduction; citedunavailablefiles explicitlyexcluded"
+    },
+    {
+      "slug": "causal_metagame",
+      "title": "Attributions All the Way Down? The Metagame of Interpretability",
+      "date": {
+        "first_arxiv": "2026-05-07",
+        "publication_year": null,
+        "read_version": "2605.06295v1 2026-05-07"
+      },
+      "status": "arXivpreprint; formalpublication not confirmed in thisaudit",
+      "source": "https://arxiv.org/abs/2605.06295",
+      "pdf_url": "https://arxiv.org/pdf/2605.06295v1",
+      "arxiv_id": "2605.06295",
+      "code": "https://github.com/credibleai/metagame",
+      "sections_read": [
+        "Main Sections1-6 pp1-9",
+        "AppendixA-B pp15-22 including illustrativetoy and proofs",
+        "AppendixC-D pp23-28 including single-forward MetaConceptAttention implementation and evaluation definition",
+        "AppendixE pp29-32 results and ablations",
+        "p25 rendered and visuallyverified",
+        "References skimmed"
+      ],
+      "models": [
+        "T2I: FLUX.1-schnell",
+        "Additional: Gemma3, CLIP, SigLIP2, MetaCLIP2"
+      ],
+      "intervention": "For T2I experiments: coalition-dependent renormalization of cached conceptattribution logits; no independent final-image generation intervention per coalition",
+      "target_score": "Concept segmentation Acc/mIoU/mAP; T2I interactions are firstorder attribution valuechanges",
+      "protection_score": "No targetrepair/protected-fact criterion",
+      "benchmarks_controls": [
+        "PascalVOC1449",
+        "EligibleCOCO4660",
+        "ImageNetSeg3535",
+        "ConceptAttention",
+        "Addedcontext, artificialprompt, crossconceptattention, layerchoice ablations"
+      ],
+      "findings": [
+        {
+          "anchor": "Definitions1-2/Theorems1-2 pp4-5, proofspp17-22",
+          "claim": "MetaShapley decomposes an attribution into conditional directionalinteractions; links STII/SOP."
+        },
+        {
+          "anchor": "Table3 p9",
+          "claim": "T2I attribution segmentation improves relative to ConceptAttention under addedcontext."
+        },
+        {
+          "anchor": "AppC.4 p25",
+          "claim": "Uses cachedlogits independent of coalition; coalitionchanges only softmaxdenominator; swaps averageandsoftmax, generally changing original attributiongame."
+        },
+        {
+          "anchor": "AppD.3 pp27-28",
+          "claim": "T2I benchmarkuses realimages and segmentation labels with fivealwayspresent backgroundconcepts, not outputcorrection."
+        }
+      ],
+      "overlap": [
+        "Conditional/directionalinteraction attribution",
+        "Context-sensitive visualization",
+        "Theoretical decomposition and efficientcoalition estimation"
+      ],
+      "limitations": [
+        "Attribution-game interaction not proved generator-causal semanticinteraction",
+        "Directionality not causalgraph orientation",
+        "No actual targetrepair/protected-fact intervention evaluation",
+        "No userstudy separating visualformat from information",
+        "Baseline-game dependence; largecoalition compute and cognitiveburden"
+      ],
+      "review": {
+        "url": null,
+        "status": "not_found",
+        "reason": "Exact-title OpenReviewsearch didnotidentify accessiblereview; no inferenceofrejection"
+      },
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/causal_metagame.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/causal_metagame.txt",
+      "download": {
+        "status": "verified",
+        "bytes": 5410401,
+        "pages": 32,
+        "sha256": "11f93e30b8f84501f8f36a410b3a89faa6e1aee0025551117f0d3036b8681598",
+        "pdf_magic": true,
+        "first_page_title_checked": true
+      },
+      "reading_scope": "Full substantive maintext and relevantmethod/experiment/limitationappendices; not empiricalreproduction; citedunavailablefiles explicitlyexcluded"
+    }
+  ]
+}

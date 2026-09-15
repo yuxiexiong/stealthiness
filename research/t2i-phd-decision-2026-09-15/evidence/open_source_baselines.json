@@ -1,0 +1,144 @@
+{
+  "audit_date": "2026-09-15",
+  "scope": "Official interfaces, licenses, availability, task comparability. Not runtime or leaderboard reproduction.",
+  "baseline_recommendation": [
+    "DAAM for same-generator token association",
+    "ImageDoctor for independent output-error localization",
+    "raw attention / equal-information nonvisual predictor for same intervention dependency task; OSI only if omission endpoint is adopted"
+  ],
+  "model_pin": {
+    "id": "stable-diffusion-v1-5/stable-diffusion-v1-5",
+    "revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+    "license": "creativeml-openrail-m",
+    "public": true,
+    "gated": false
+  },
+  "environment_pin": {
+    "diffusers": "0.21.2",
+    "transformers": "4.30.2",
+    "accelerate": "0.23.0",
+    "note": "README says 0.21.1; requirements.txt pins 0.21.2. Torch and huggingface-hub compatibility still needs smoke testing."
+  },
+  "serena": "MCP launch attempted; Python LSP unavailable because uv/uvx missing in PATH. Audit used rg and direct source reads instead.",
+  "methods": [
+    {
+      "name": "daam",
+      "repo_url": "https://github.com/castorini/daam",
+      "commit": "c30493ed0154bfccb6c342400f25cc24599bb1ff",
+      "local_path": "/private/tmp/t2i-baseline-audit/daam",
+      "license": "MIT",
+      "model_scope": "Stable Diffusion 1/2 and SDXL; not native FLUX",
+      "api": "trace(pipe); compute_global_heat_map(prompt=original,normalize=False); compute_word_heat_map(word).value",
+      "output_and_comparability": "Word-to-pixel attention association; not error heatmap or causal ground truth",
+      "anchors": [
+        "daam/trace.py:83-133",
+        "daam/trace.py:171-183",
+        "daam/heatmap.py:56-94",
+        "requirements.txt:2-13"
+      ],
+      "verification": "static source audit; no model execution"
+    },
+    {
+      "name": "imagedoctor",
+      "repo_url": "https://github.com/EthanG97/ImageDoctor",
+      "commit": "66da035126a08efc386a61953028a09de3db4563",
+      "local_path": "/private/tmp/t2i-baseline-audit/imagedoctor",
+      "license": "HF card apache-2.0; repo README also says research/non-commercial; no root LICENSE",
+      "model_scope": "Qwen2.5-VL-3B output-image evaluator",
+      "api": "python inference.py --checkpoint GYX97/ImageDoctor --image_path IMAGE --prompt PROMPT --output_dir DIR",
+      "output_and_comparability": "Scores/rationale on stdout; misalignment.npy and artifact.npy if task tokens generated; no internal causal target",
+      "anchors": [
+        "inference.py:37-44",
+        "inference.py:60-81",
+        "inference.py:102-156",
+        "modify/flow_grpo/flow_grpo/doctor_hp.py:69-115"
+      ],
+      "verification": "static source audit; no model execution",
+      "model": {
+        "id": "GYX97/ImageDoctor",
+        "revision": "c3afc0073d366114e853c9dd69b6524802255c61",
+        "public": true,
+        "gated": false,
+        "base": "Qwen/Qwen2.5-VL-3B-Instruct"
+      }
+    },
+    {
+      "name": "conceptattention",
+      "repo_url": "https://github.com/helblazer811/ConceptAttention",
+      "commit": "db30c4dcee01184c4d3f9fc9e46477eeb4e3eef3",
+      "local_path": "/private/tmp/t2i-baseline-audit/conceptattention",
+      "license": "No package-root license; licenses present for vendored components only",
+      "model_scope": "FLUX, SD3, CogVideoX, FLUX2 separate interfaces",
+      "api": "ConceptAttentionFluxPipeline(...).generate_image(...,return_pil_heatmaps=False); encode_image(...)",
+      "output_and_comparability": "Concept segmentation association; existing-image encoding requires additional denoiser passes; not evidence of causal repair",
+      "anchors": [
+        "concept_attention/flux/pipeline.py:85-200",
+        "concept_attention/flux/pipeline.py:202-320",
+        "examples/generate_image_flux.py:5-24"
+      ],
+      "verification": "static source audit; no model execution"
+    },
+    {
+      "name": "osi",
+      "repo_url": "https://github.com/KangHyun-dsail/OSI",
+      "commit": "948ca9aeb76769ec92611880f4fd73cf817a9bc9",
+      "local_path": "/private/tmp/t2i-baseline-audit/osi",
+      "license": "No repository LICENSE found",
+      "model_scope": "FLUX.1-dev and SD3.5-Medium",
+      "api": "FluxPipeline_custom.setting(mode=\"collect\"); pipe(...) -> (FluxPipelineOutput, hidden_states); pretrained weight.pkl and accuracy.pkl",
+      "output_and_comparability": "Object presence/omission probe and intervention; labels are Mask2Former/BLIP agreement; not independent causal truth",
+      "anchors": [
+        "collect_data_demo_flux.py:17-42",
+        "flux_osi_modules/pipeline.py:174-220",
+        "flux_osi_modules/models.py:80-91",
+        "label_merge.py:1-20",
+        "train_classifier_multi_object_real.py:59-80"
+      ],
+      "verification": "static source audit; no model execution"
+    },
+    {
+      "name": "cad",
+      "repo_url": "https://github.com/mail-research/CAD-attribution4diffusion",
+      "commit": "7af6d34359ed54535f6cd297968475b3c9852bf4",
+      "local_path": "/private/tmp/t2i-baseline-audit/cad",
+      "license": "GPL-3.0",
+      "model_scope": "Public root scripts use StableDiffusionPipeline and model.unet",
+      "api": "compute_positive_neurons.get_score(model,prompt,base_prompt,start_guidance,device,...); gradient dict -> grad/...pth",
+      "output_and_comparability": "Parameter concept-erasure/amplification attribution; unit/objective differs from local activation dependency diagnosis",
+      "anchors": [
+        "compute_positive_neurons.py:9-32",
+        "compute_positive_neurons.py:35-46",
+        "README.md:1-76"
+      ],
+      "verification": "static source audit; no model execution"
+    },
+    {
+      "name": "circuit",
+      "repo_url": "https://github.com/Animadversio/DiT-Relation-Circuits",
+      "commit": "f4a48329e39ca768fb124646cc161660a1e8d214",
+      "local_path": "/private/tmp/t2i-baseline-audit/circuit",
+      "license": "No LICENSE in main branch",
+      "model_scope": "No implementation on audited default branch",
+      "api": "No callable code in main HEAD (README and .gitignore only)",
+      "output_and_comparability": "Paper mechanism neighbor; cannot claim a released implementation from audited main branch",
+      "anchors": [
+        "README.md"
+      ],
+      "verification": "static source audit; no model execution"
+    },
+    {
+      "name": "deleaker",
+      "repo_url": "https://github.com/venturamor/DeLeaker",
+      "commit": "11ece33ac7f4405a6c58e9e5b9730f7a2f87a1fc",
+      "local_path": "/private/tmp/t2i-baseline-audit/deleaker",
+      "license": "Project-page template license does not establish algorithm-code license",
+      "model_scope": "Project page only in audited repo",
+      "api": "Code href empty; SLIM HF dataset linked",
+      "output_and_comparability": "Repair neighbor/dataset resource; implementation not located via audited official links",
+      "anchors": [
+        "index.html:292-320"
+      ],
+      "verification": "static source audit; no model execution"
+    }
+  ]
+}

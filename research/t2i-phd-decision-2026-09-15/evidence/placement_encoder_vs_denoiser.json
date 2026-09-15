@@ -1,0 +1,229 @@
+{
+  "date": "2026-09-15",
+  "question": "Should internal attribution route repair between encoder patching and denoiser intervention for the same output error?",
+  "scope": "ICLR-sized candidate assessment; no VLM cloning requirement, no model execution",
+  "search_log": [
+    "text-to-image fault localization encoder diffusion",
+    "text-to-image repair routing",
+    "Circuit Mechanisms for Spatial Relation Generation",
+    "CoBind Stage-Aware Compositional Binding",
+    "SCOPE Structured Decomposition Conditional Skill Orchestration",
+    "The Plan, Not the Decoder supplied by root and prioritized"
+  ],
+  "inclusion": "Three closest empirical full papers (circuit,scope,plan); CoBind retained separately as internally inconsistent empirical evidence. Follow the Flow and DeLeaker reused from existing local full-text archive. No claim of exhaustive novelty search.",
+  "papers": [
+    {
+      "slug": "circuit",
+      "title": "Circuit Mechanisms for Spatial Relation Generation in Diffusion Transformers",
+      "arxiv_id": "2601.06338v2",
+      "first_arxiv_date": "2026-01-09",
+      "version_date": "2026-04-04",
+      "status": "CVPR 2026 verified via official CVF proceedings",
+      "source": "https://openaccess.thecvf.com/content/CVPR2026/html/Wang_Circuit_Mechanisms_for_Spatial_Relation_Generation_in_Diffusion_Transformers_CVPR_2026_paper.html",
+      "pdf_url": "https://arxiv.org/pdf/2601.06338v2",
+      "code_url": "https://github.com/Animadversio/DiT-Relation-Circuits",
+      "sections_read": [
+        "Main Sec1–6 PDFp1–8",
+        "AppendixA PDFp11–29",
+        "AppendixB–D PDFp30–45"
+      ],
+      "models": "PixArt-style DiT B/mini/micro/nano trained from scratch on two-shape tasks with RTE/T5/CLIP; limited pretrained PixArt-Sigma analysis",
+      "interventions": "Token and attention-head ablation; QK/VO circuit manipulation; factor-vector arithmetic on T5 object-token embeddings",
+      "scores": "Geometric shape/color/binding and strict/loose relation binary correctness; generated-object masks; relation head alignment",
+      "findings": [
+        "Attention Synopsis aggregates category-specific attention over layers/heads/time and reveals sparse circuits.",
+        "RTE relation/shape heads operate in sequence; contextual T5 tokens mix object and relation information; manipulating relation factors changes relation while preserving shape/color in the illustrated controlled setup.",
+        "A head-screening procedure uses fixed position embeddings and text factors with QK weights without image generation, followed by causal validation."
+      ],
+      "overlap": "Direct visualization-to-hypothesis-to-intervention mechanism discovery, multi-fact outputs and a cheaper localization heuristic already exist. Not same-instance safe repair routing between encoder and denoiser.",
+      "limitations": [
+        "Main mechanistic conclusions from simple self-trained models and factorial prompts.",
+        "Pretrained test selects a highest-performing prompt after only8/30 object pairs show nontrivial capability; not broad recovery evidence.",
+        "Weight screening assumes positional embedding dominates query spatial structure and requires causal ablation.",
+        "Ablation effect and controllability do not establish a unique original failure source."
+      ],
+      "key_anchors": [
+        "Sec4–5,p4–8/Fig3–7",
+        "A.10,p29",
+        "B.7,p41–42"
+      ],
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/placement-circuit.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/placement-circuit.txt",
+      "download": {
+        "status": "verified",
+        "bytes": 16078009,
+        "pages": 45,
+        "sha256": "9df04cade8000d9ae6a57c4dda3104050d6c78a081665d6731951171a49f91fc",
+        "pdf_magic": "%PDF-",
+        "first_page_title_checked": true
+      },
+      "render_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/placement-circuit-p8.png",
+      "reading_scope": "Methods, experiments and stated limitations read from whole extracted paper; substantive appendices read; named key page rendered and inspected.",
+      "review_status": "Public peer-review reports not read in this placement pass"
+    },
+    {
+      "slug": "scope",
+      "title": "SCOPE: Structured Decomposition and Conditional Skill Orchestration for Complex Image Generation",
+      "arxiv_id": "2605.08043v1",
+      "first_arxiv_date": "2026-05-08",
+      "version_date": "2026-05-08",
+      "status": "2026 arXiv preprint; formal acceptance not checked",
+      "source": "https://arxiv.org/abs/2605.08043",
+      "pdf_url": "https://arxiv.org/pdf/2605.08043v1",
+      "code_url": "https://github.com/nopnor/SCOPE",
+      "sections_read": [
+        "Sec1–5,p2–9",
+        "Method algorithm and Gen-Arena,p3–6",
+        "All results/ablations and limitations,p6–9; reference list inspected p9–11"
+      ],
+      "models": "GPT-5.4 MLLM plus Nano Banana Pro generation/editing; Google retrieval; official Gemini3-Pro evaluator",
+      "interventions": "Commitment-based verification routes to retrieval/reasoning, prompt rewriting, local image editing or regeneration, at most3 generation attempts",
+      "scores": "Entity-Gated Intent Pass Rate (all required entities and constraints), item-level entity/gated-constraint pass; WISE-V/MindBench",
+      "findings": [
+        "Explicitly retains entities, attributes, relations, layout and unresolved requirements across generation and repair.",
+        "Gen-Arena Table3: best-of-3 .40, self-refine same3-generation budget .39, full .60 EGIP; no-retrieval/reasoning .22, no-repair .42."
+      ],
+      "overlap": "Conditional failure diagnosis and repair routing plus joint-fact success already covered. Uses output/specification evidence, not internal encoder-vs-denoiser attribution.",
+      "limitations": [
+        "Knowledge/reference-heavy task with large retrieval/reasoning contribution cannot identify pure routing benefit.",
+        "Equal generation counts do not match all model calls, search and wall time.",
+        "Verifier errors can propagate; no internal fault-source ground truth or dedicated original-correct-fact retention endpoint."
+      ],
+      "key_anchors": [
+        "Sec3.1.4,p4",
+        "Algorithm1,p5",
+        "Table3,p7",
+        "Limitations,p9"
+      ],
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/placement-scope.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/placement-scope.txt",
+      "download": {
+        "status": "verified",
+        "bytes": 21100573,
+        "pages": 11,
+        "sha256": "1da45498fe28a11613c73c985b30c618b90f1e08cde2fa3c196be10d7585a709",
+        "pdf_magic": "%PDF-",
+        "first_page_title_checked": true
+      },
+      "render_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/placement-scope-p7.png",
+      "reading_scope": "Methods, experiments and stated limitations read from whole extracted paper; substantive appendices read; named key page rendered and inspected.",
+      "review_status": "Public peer-review reports not read in this placement pass"
+    },
+    {
+      "slug": "plan-not-decoder",
+      "title": "The Plan, Not the Decoder: Diagnosing and Repairing Compositional Failure in Reasoning-Augmented Text-to-Image Generation",
+      "arxiv_id": "2608.21713v1",
+      "first_arxiv_date": "2026-08-22",
+      "version_date": "2026-08-22",
+      "status": "arXiv claims ECCV2026 oral; official acceptance not independently verified",
+      "source": "https://arxiv.org/abs/2608.21713",
+      "pdf_url": "https://arxiv.org/pdf/2608.21713",
+      "code_url": null,
+      "sections_read": [
+        "Main Sec1–11,p1–12",
+        "AppendixA,p15",
+        "References inspected p12–15"
+      ],
+      "models": "GoT-R1-1B/7B (Janus-Pro family): explicit object/attribute/box plan before autoregressive image-token generation; not FLUX/diffusion text-encoder patching",
+      "interventions": "Box and color swaps, chain ablation, object-segment order change; symbolic plan verification/rejection sampling; minimal/geometric plan repair and external plan replacement",
+      "scores": "OWLv2 object centers/IoU and prompt-vs-plan relation correctness; BLIP color questions; paired permutation tests and human metric validation",
+      "findings": [
+        "Control generated-layout plan fidelity93.8%; a correct generated image is separate from a faithfully executed but incorrect plan.",
+        "Table1,p6: verification+5.0pp, minimal repair+6.0pp, geometry repair+10.7pp relative to specified path-matched controls on300 spatial prompts.",
+        "Bulk attention to box tokens about0.7%, weak control r=.17 and near0 elsewhere; does not explain repair.",
+        "7B repair gains1.7–2.3pp individually nonsignificant; only full clean-box replacement+6.3pp significant."
+      ],
+      "overlap": "Direct component diagnosis through counterfactual interventions followed by cheaper upstream repair already exists. Checkable textual plans make cheap symbolic checks possible; not proof of unique fault identification in opaque FLUX embeddings.",
+      "limitations": [
+        "One model family and300-prompt validation subsets; main spatial outcomes not all-fact preservation.",
+        "Color verifier checks presence not binding; donor chains can retain mismatched prose.",
+        "Attention mechanism analysis explicitly exploratory/null.",
+        "Older cross-family encoder probes predate audited pipeline and are context-only; should not support quantitative encoder claims."
+      ],
+      "key_anchors": [
+        "Sec4–6,p5–9,Tables1–2",
+        "Sec7,p10",
+        "Sec11,p12"
+      ],
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/placement-plan-not-decoder.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/placement-plan-not-decoder.txt",
+      "download": {
+        "status": "verified",
+        "bytes": 1058595,
+        "pages": 15,
+        "sha256": "ceaa3af24bcc87a173afa29512ba99e7c789a99dc06dbd3f1e19f9a1bcd0ecb5",
+        "pdf_magic": "%PDF-",
+        "first_page_title_checked": true
+      },
+      "render_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/placement-plan-not-decoder-p6.png",
+      "reading_scope": "Methods, experiments and stated limitations read from whole extracted paper; substantive appendices read; named key page rendered and inspected.",
+      "review_status": "Public peer-review reports not read in this placement pass"
+    },
+    {
+      "slug": "cobind",
+      "title": "CoBind: Stage-Aware Compositional Binding for Training-Free Text-to-Image Generation",
+      "arxiv_id": "2607.16307v1",
+      "first_arxiv_date": "2026-07-14",
+      "version_date": "2026-07-14",
+      "status": "2026 arXiv preprint; empirical claims excluded from reliable effect synthesis because experiment-completion status is internally inconsistent",
+      "source": "https://arxiv.org/abs/2607.16307",
+      "pdf_url": "https://arxiv.org/pdf/2607.16307v1",
+      "code_url": null,
+      "sections_read": [
+        "All method Sec1–2,p1–11",
+        "All experimental text/tables Sec3,p11–21",
+        "Conclusion/limitations p21; referencesp22"
+      ],
+      "models": "SD1.5/2.1/SDXL claimed experimental backbones",
+      "interventions": "Graph entity/relation/attribute attention losses; early layout and middle binding schedule, satisfaction-adaptive latent gradients and trust-region regularizer",
+      "scores": "Tables contain T2I-CompBench++/GenEval, full-prompt satisfaction and cost values, but completion caveat prevents treating them as confirmed results",
+      "findings": [
+        "Method proposal overlaps state/time-dependent multi-constraint guidance and protection from over-guidance.",
+        "PDFp3 says exact improvements will be added after experiments completed; p15 asks future completed-experiment discussion while showing numbers and example wording; p17–20 retain expected results and unnumbered Figure placeholders."
+      ],
+      "overlap": "Conceptual overlap, not accepted as demonstrated performance or mandatory validated implementation baseline.",
+      "limitations": [
+        "Cannot confidently establish completed experimental status from this version; this is not an allegation that data are fabricated.",
+        "Attention-region approximation, same-category entity merging, complex interaction geometry and parsing errors are acknowledged."
+      ],
+      "key_anchors": [
+        "Sec2.8,p9",
+        "p3 completion statement",
+        "Sec3.2.1,p15",
+        "p17–20 expected results/placeholders"
+      ],
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/placement-cobind.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/placement-cobind.txt",
+      "download": {
+        "status": "verified",
+        "bytes": 2355658,
+        "pages": 22,
+        "sha256": "0460d0f19f4fee91832ae604f079f110534f42d8ad63577ad0892a4520db58bf",
+        "pdf_magic": "%PDF-",
+        "first_page_title_checked": true
+      },
+      "render_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/placement-cobind-p15.png",
+      "reading_scope": "Methods, experiments and stated limitations read from whole extracted paper; substantive appendices read; named key page rendered and inspected.",
+      "review_status": "Public peer-review reports not read in this placement pass"
+    }
+  ],
+  "assessment": {
+    "verdict": "Conditional small pilot only; not yet a preferred paper commitment. No existing paired demonstration found here that encoder and denoiser actions have complementary safe-success sets on the same natural error family.",
+    "identifiable": "Fixed-action intervention effects under controlled model/prompt/noise; not unique component fault origins. Explicit readable plan correctness is unavailable for opaque FLUX embeddings.",
+    "insertion": "After first failed image with recorded internal trajectory, before repair replay; use cheap original-trace features or strictly budgeted partial intervention probes, predict unexecuted action final facts.",
+    "strongest_baselines": [
+      "best validation-chosen fixed E/D/E+D/no-op",
+      "cheap prompt/embedding/attention rule router",
+      "same-total-cost direct candidate generation plus identical output factual verifier",
+      "offline whole-menu oracle only as opportunity estimate"
+    ],
+    "fatal_risks": [
+      "E+D operates within one denoising run and may dominate without meaningful extra cost.",
+      "If diagnostic probes fully generate all candidates, they add no outcome information beyond direct search.",
+      "Cross-dataset lexical-vs-visual leakage routing can disguise trivial task-type recognition.",
+      "No verified cheap internal signal reliably predicts target and original-correct facts across full denoising trajectory."
+    ],
+    "root_current_candidate_comment": "For identity enhancement / cross-entity suppression / joint / no-op within the same denoiser, attribution can only beat direct trials through cheaper reliable prediction of untried results or better information per probe. Let trial baseline directly deliver any already-generated successful candidate; do not force a redundant replay. DeLeaker degraded-rate is not established relation-damage rate."
+  },
+  "no_model_runs": true
+}

@@ -1,0 +1,283 @@
+{
+  "state": {
+    "status": "completed_with_qualification_shortfall",
+    "gpu_uuid": "GPU-cbae4c04-a3d4-5176-93d0-5bfaf154ca68",
+    "gpu_index": 1,
+    "automatic_time_stop": false,
+    "monitor_interval_seconds": 60,
+    "pid": 1433582,
+    "phase": "finished",
+    "idle_checks": 2,
+    "controllers": [],
+    "updated_utc": "2026-09-14T06:09:38.260373+00:00",
+    "allocated_gpu_hours": 2.8024226763347784,
+    "reader_status": "awaiting_real_readers"
+  },
+  "progress": {
+    "phase": "completed",
+    "selected_cases": 27,
+    "updated_utc": "2026-09-14T06:09:36.454287+00:00",
+    "reader_status": "awaiting_real_readers"
+  },
+  "instrument": {
+    "status": "ready",
+    "tasks": {
+      "spatial": {
+        "applicable": 25,
+        "not_applicable": 0,
+        "complete": 21,
+        "registered": 21,
+        "supported": 21,
+        "refuted": 0,
+        "unresolved": 4
+      },
+      "side_effect": {
+        "applicable": 25,
+        "not_applicable": 0,
+        "complete": 4,
+        "registered": 4,
+        "supported": 4,
+        "refuted": 0,
+        "unresolved": 21
+      },
+      "source": {
+        "applicable": 10,
+        "not_applicable": 15,
+        "complete": 5,
+        "registered": 5,
+        "supported": 5,
+        "refuted": 0,
+        "unresolved": 5
+      }
+    },
+    "old_cases": [
+      {
+        "cluster_id": "editclevr-335200",
+        "new_model_call_seconds": 73.57131434045732,
+        "full_case_seconds_estimate": 181.30280575249344
+      },
+      {
+        "cluster_id": "editclevr-336805",
+        "new_model_call_seconds": 163.88047270663083,
+        "full_case_seconds_estimate": 270.42156733665615
+      },
+      {
+        "cluster_id": "editclevr-100161",
+        "new_model_call_seconds": 176.4152012616396,
+        "full_case_seconds_estimate": 279.3278234144673
+      },
+      {
+        "cluster_id": "editclevr-101232",
+        "new_model_call_seconds": 173.67710047680885,
+        "full_case_seconds_estimate": 278.7176659684628
+      },
+      {
+        "cluster_id": "editclevr-400305",
+        "new_model_call_seconds": 205.94431041833013,
+        "full_case_seconds_estimate": 311.0093300268054
+      }
+    ],
+    "source_capable_old_cases": [
+      "editclevr-336805",
+      "editclevr-400305"
+    ],
+    "gate": "every task must yield an actual registered new test on old sentinel cases; no winning-method or positive-result gate",
+    "expected_32_case_model_seconds": 8918.96531099081,
+    "new_confirmation_outcomes_used": false
+  },
+  "run": {
+    "status": "completed_with_qualification_shortfall",
+    "report_sha256": "5035197e00da2e9453ab9cc7874f3bbe94f0d787fb551d30b717fdc7f67e4414",
+    "frozen_sha256": "d98e62a2d0942df39573c317d475f9d1ac9996cc3c0e42cf488ba7656fb52a13",
+    "identity": {
+      "config_sha256": "e0c1038dbc195d79d5fd791082ce6fa086f2e3b7d0762eb1c716a30b3d26740d",
+      "asset_identity": {
+        "manifest_sha256": "7a01278fdf8218765119629e8b9947e0d2a3b6090620e3dcfb742f31cf230e3c",
+        "files": 14,
+        "validation": "content hashes at inventory; exact file list/size/mtime at run, assuming trusted immutable storage"
+      },
+      "model_spec": {
+        "model_id": "/root/attribution-visualization-20260910/toy48-rebuild/full/hf",
+        "processor_id": "/root/attribution-visualization-20260910/toy48-rebuild/full/hf",
+        "asset_manifest": "/root/attribution-visualization-20260910/toy48-rebuild/full/assets.json",
+        "format": "hf",
+        "task_prompt": "short_answer_v1",
+        "dtype": "bfloat16",
+        "attn_implementation": "eager",
+        "lora": null
+      },
+      "generation": {
+        "do_sample": false,
+        "num_beams": 1,
+        "max_new_tokens": 256,
+        "use_cache": true
+      },
+      "cpu_test": false,
+      "effective_generation": {
+        "max_length": 20,
+        "max_new_tokens": 256,
+        "min_length": 0,
+        "min_new_tokens": null,
+        "early_stopping": false,
+        "max_time": null,
+        "stop_strings": null,
+        "do_sample": false,
+        "num_beams": 1,
+        "num_beam_groups": 1,
+        "penalty_alpha": null,
+        "dola_layers": null,
+        "use_cache": true,
+        "cache_implementation": null,
+        "cache_config": null,
+        "return_legacy_cache": null,
+        "prefill_chunk_size": null,
+        "temperature": 1.0,
+        "top_k": 50,
+        "top_p": 1.0,
+        "min_p": null,
+        "typical_p": 1.0,
+        "epsilon_cutoff": 0.0,
+        "eta_cutoff": 0.0,
+        "diversity_penalty": 0.0,
+        "repetition_penalty": 1.0,
+        "encoder_repetition_penalty": 1.0,
+        "length_penalty": 1.0,
+        "no_repeat_ngram_size": 0,
+        "bad_words_ids": null,
+        "force_words_ids": null,
+        "renormalize_logits": false,
+        "constraints": null,
+        "forced_bos_token_id": null,
+        "forced_eos_token_id": null,
+        "remove_invalid_values": false,
+        "exponential_decay_length_penalty": null,
+        "suppress_tokens": null,
+        "begin_suppress_tokens": null,
+        "sequence_bias": null,
+        "token_healing": false,
+        "guidance_scale": null,
+        "low_memory": null,
+        "watermarking_config": null,
+        "num_return_sequences": 1,
+        "output_attentions": false,
+        "output_hidden_states": false,
+        "output_scores": false,
+        "output_logits": null,
+        "return_dict_in_generate": false,
+        "pad_token_id": 32001,
+        "bos_token_id": 1,
+        "eos_token_id": [
+          2
+        ],
+        "encoder_no_repeat_ngram_size": 0,
+        "decoder_start_token_id": null,
+        "is_assistant": false,
+        "num_assistant_tokens": 20,
+        "num_assistant_tokens_schedule": "constant",
+        "assistant_confidence_threshold": 0.4,
+        "prompt_lookup_num_tokens": null,
+        "max_matching_ngram_size": null,
+        "assistant_early_exit": null,
+        "assistant_lookbehind": 10,
+        "target_lookbehind": 10,
+        "disable_compile": false,
+        "_from_model_config": false,
+        "transformers_version": "4.53.3"
+      },
+      "implementation_sha256": {
+        "diagnosis.py": "e2a3168e5929a17e901971bb150460816986695560ef2828600c0e0995ffb6c3",
+        "diagnosis_model.py": "f3ee807ed20566e96b2942356260f0388d4db3b3bf679c97d009d093cc0378de",
+        "model.py": "d26964a802516aaab2e7dd6e77e2eec0dd4e9503b38b281c1a9ff2afddb9d9ad",
+        "report.py": "2f19b75a404e1df8cb8175cb039a2ec9b6f2911606289cbd1551d8929a4669bd"
+      },
+      "model_load_seconds": 3.2578615061938763
+    },
+    "parameter_updates": 0,
+    "input_identity_sha256": "0bce488dffaf605f1d6da46319148da2fc03db69a15ff55ccdf035e2c9f9899a",
+    "reader_status": "awaiting_real_readers",
+    "elapsed_seconds": 10086.809504658915
+  },
+  "input_identity": {
+    "code_and_sources": {
+      "repair/diagnosis_comparison_backends.py": "c6adb7412a869880523639f853b9841e5ec722e22ab3357dc73b5219f5f45d81",
+      "repair/diagnosis_comparison_protocol.py": "da7d9ff0d9d82854d736591a5215ba80d406031e1244c9e0369d1d56e1477bbe",
+      "repair/diagnosis_comparison.py": "bdcc095d3e82c6257e9db4a7605d4fcb1b29bddc37ac257a1dbe8af66fd153e8",
+      "repair/diagnosis_comparison_report.py": "68386cd4729d203931d51b202cf57dc54d4350d46e7358519dc9c68321bc35f8",
+      "repair/diagnosis_linked_validation.py": "1af3826d19732d5e73d2e28c538e3208871570da7e6aaff1725545411f672818",
+      "external/purmm/SOURCE.json": "2ab547b9e184706f49c306b1f5ee12f196e95a294413eaa18bd902e3ee2c196c",
+      "external/cleansight/SOURCE.json": "a545bc6803b42c1a41c2c188681c2d12b70d1ab40336f360beb4ab63abdf172b",
+      "repair/visual_probe.py": "737d56ffe4eedca6e2860a6e506890bdc2b08b621ac0f4bb34a829808ff865a0",
+      "repair/visual_probe_protocol.py": "7c5453839a657de89e101a084e46379c3830cfd75373864cdaf52badb7570f9b",
+      "tools/prepare_diagnosis_comparison.py": "dd21cc149e3c3e79c7a3aed87efba66c928fbb781e0d70308294a39e9469d5ea",
+      "tools/build_benign_baseline.py": "700ab684ffd0b1e6b9445b98c672cdc93ec8aab2d919c8c40fd7a76daaa1e15d",
+      "DIAGNOSIS_COMPARISON_CONTRACT_2026-09-14.md": "b75e6937d060ca4e357b4daeadc3fdc5591b6c022b8f4691b8c9134d9366e873",
+      "DIAGNOSIS_NEXT_STAGE_PLAN_2026-09-14.md": "0da93f3f0e82ba7b7c73809cd67cbeadc5ebd4cd9258132173bb562b9c3f885b"
+    },
+    "config_sha256": "e0c1038dbc195d79d5fd791082ce6fa086f2e3b7d0762eb1c716a30b3d26740d",
+    "development_sha256": "0ee6e3feafe9b9fa3f0cd0a7ad4d4eb70830ae684a014f7a18050e3cedd15924",
+    "prepared_sha256": "6f70faa6a88e5370d6b6a041a1ad9284b19d7e23c75cc3d35161730a364398a4",
+    "prepared_receipt_sha256": "cacc308d34d49d8def73a70d9f151fb07f81d27bb2acaef8ed9892535c2181bf",
+    "calibration_sha256": "ca034aef27eb26fc38101a0f1fb42511192faa565f6339ecaae325322fb1f2e4",
+    "created_utc": "2026-09-14T03:21:29.788372+00:00",
+    "parameter_updates": 0
+  },
+  "previous_state": {
+    "status": "failed",
+    "gpu_uuid": "GPU-cbae4c04-a3d4-5176-93d0-5bfaf154ca68",
+    "gpu_index": 1,
+    "automatic_time_stop": false,
+    "monitor_interval_seconds": 60,
+    "pid": 1383060,
+    "phase": "smoke_then_formal",
+    "idle_checks": 2,
+    "controllers": [],
+    "updated_utc": "2026-09-14T03:11:44.241177+00:00",
+    "error": "RuntimeError: worker failed; preserve attempt and inspect measurement/stdout.log"
+  },
+  "previous_instrument": {
+    "status": "instrument_not_ready",
+    "tasks": {
+      "spatial": {
+        "complete": 13,
+        "registered": 13,
+        "supported": 13,
+        "refuted": 0,
+        "unresolved": 2
+      },
+      "side_effect": {
+        "complete": 4,
+        "registered": 4,
+        "supported": 4,
+        "refuted": 0,
+        "unresolved": 11
+      },
+      "source": {
+        "complete": 0,
+        "registered": 0,
+        "supported": 0,
+        "refuted": 0,
+        "unresolved": 0
+      }
+    },
+    "old_cases": [
+      {
+        "cluster_id": "editclevr-335200",
+        "new_model_call_seconds": 73.66099133808166,
+        "full_case_seconds_estimate": 182.84571635443717
+      },
+      {
+        "cluster_id": "editclevr-100161",
+        "new_model_call_seconds": 176.570673041977,
+        "full_case_seconds_estimate": 280.8331315368414
+      },
+      {
+        "cluster_id": "editclevr-101232",
+        "new_model_call_seconds": 173.21991956885904,
+        "full_case_seconds_estimate": 278.83689994364977
+      }
+    ],
+    "gate": "every task must yield an actual registered new test on old sentinel cases; no winning-method or positive-result gate",
+    "expected_32_case_model_seconds": 8922.780798196793,
+    "new_confirmation_outcomes_used": false
+  }
+}

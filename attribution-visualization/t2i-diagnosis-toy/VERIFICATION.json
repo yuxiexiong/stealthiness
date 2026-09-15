@@ -1,0 +1,49 @@
+{
+  "date": "2026-09-15",
+  "scope": "software and tokenizer checks; no scientific model experiment",
+  "study_sha256": "02f0ff2fe6aaa8c176d15d1ceba3ab4dc922cf04a76f1ea0c99dd51c161c7a16",
+  "prompts": 24,
+  "cases": 48,
+  "groups": 12,
+  "splits": {
+    "exploration": {
+      "cases": 16,
+      "groups": 4
+    },
+    "test": {
+      "cases": 32,
+      "groups": 8
+    }
+  },
+  "software_unittests": {
+    "passed": 12,
+    "failed": 0,
+    "log": "verification-software.txt"
+  },
+  "syntax_compile": "passed for prepare.py, generate.py, diagnose.py, test_toy.py",
+  "real_tokenizer": {
+    "model": "stable-diffusion-v1-5/stable-diffusion-v1-5",
+    "revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+    "cases": 48,
+    "substitutions_passed": 240,
+    "weights_loaded": false
+  },
+  "generation_dependency_resolution": {
+    "target": "Linux x86_64 Python 3.11",
+    "packages_resolved": 125,
+    "installed_or_gpu_tested": false,
+    "lock_sha256": "e207b2df41c193f19e056c72f6cee92bdaa2ebfb7330bfbeeb66861e4a7b8fa9"
+  },
+  "independent_reviews": [
+    "audit_model_scope",
+    "t2i_primary_sources",
+    "audit_theory_transfer"
+  ],
+  "research_run": {
+    "images_generated": 0,
+    "independent_gold_completed": false,
+    "diagnostic_advantage_tested": false,
+    "ImageDoctor_live_inference_tested": false
+  },
+  "pending_design_decision": "User acceptance of newly collected independent blinded complete factual annotations, versus existing-public-gold only."
+}

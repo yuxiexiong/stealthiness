@@ -1,0 +1,21 @@
+# Isolated Python 3.11 inference environment, separate from DAAM/generation.
+# Audited against ImageDoctor HF c3afc0073d366114e853c9dd69b6524802255c61.
+# Install this torch/torchvision pair from the official CUDA wheel index first
+# (e.g. https://download.pytorch.org/whl/cu121 for the supported NVIDIA host).
+# These are source-audited inference dependencies, not a completed GPU smoke test.
+torch==2.3.0
+torchvision==0.18.0
+transformers==4.51.3
+accelerate==1.7.0
+qwen-vl-utils==0.0.11
+numpy==1.26.4
+Pillow==11.0.0
+huggingface-hub==0.31.4
+tokenizers==0.21.1
+safetensors==0.5.3
+requests==2.32.3
+packaging==25.0
+# Declared by qwen-vl-utils even for an image-only application.
+av==14.4.0
+# No training stack, ROCm packages, FlashAttention, or external SAM package.
+# The pinned custom model includes its heatmap decoder and supports SDPA/eager.

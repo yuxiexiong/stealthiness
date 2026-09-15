@@ -1,0 +1,2855 @@
+{
+  "schema": "t2i-diagnosis-v1",
+  "source": {
+    "commit": "4aa404212eb5d06e5adbcd9cee696c750d0d25a5",
+    "url": "https://raw.githubusercontent.com/Karine-Huang/T2I-CompBench/4aa404212eb5d06e5adbcd9cee696c750d0d25a5/examples/dataset/color_val.txt",
+    "sha256": "1634259756dbc77d13093d907d414480080ec9790a8c97ad09efaea7b2534f2d",
+    "license": "MIT, Copyright (c) 2023 HKU",
+    "total_lines": 300,
+    "selected_prompts": 24,
+    "excluded": {
+      "syntax": 71,
+      "color": 0,
+      "object_whitelist": 91,
+      "identical_object_or_color": 0,
+      "over_limit": 114
+    }
+  },
+  "selection": {
+    "object_whitelist": [
+      "apple",
+      "backpack",
+      "banana",
+      "bear",
+      "bench",
+      "bird",
+      "boat",
+      "book",
+      "bowl",
+      "cake",
+      "car",
+      "cat",
+      "chair",
+      "clock",
+      "cow",
+      "cup",
+      "dog",
+      "elephant",
+      "giraffe",
+      "horse",
+      "orange",
+      "sheep",
+      "suitcase",
+      "train",
+      "vase"
+    ],
+    "colors": [
+      "red",
+      "blue",
+      "green",
+      "yellow",
+      "orange",
+      "purple",
+      "pink",
+      "brown",
+      "black",
+      "white",
+      "gray",
+      "gold",
+      "silver"
+    ],
+    "rule": "Strict distinct whitelist nouns/colors; sort by SHA256(selection-v1| + sorted noun pair joined by |), then source line; take first limit.",
+    "split_rule": "unordered noun pair joined by |; first 8 hex digits of SHA256 modulo 3: 0 exploration, otherwise test",
+    "seeds": [
+      0,
+      1
+    ],
+    "limit": 24
+  },
+  "cases": [
+    {
+      "id": "color-072-s0",
+      "group": "bowl|train",
+      "split": "exploration",
+      "prompt": "a blue bowl and a red train",
+      "seed": 0,
+      "source_line": 72,
+      "objects": [
+        {
+          "id": "a",
+          "name": "bowl",
+          "color": "blue"
+        },
+        {
+          "id": "b",
+          "name": "train",
+          "color": "red"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-072-s1",
+      "group": "bowl|train",
+      "split": "exploration",
+      "prompt": "a blue bowl and a red train",
+      "seed": 1,
+      "source_line": 72,
+      "objects": [
+        {
+          "id": "a",
+          "name": "bowl",
+          "color": "blue"
+        },
+        {
+          "id": "b",
+          "name": "train",
+          "color": "red"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-073-s0",
+      "group": "bowl|train",
+      "split": "exploration",
+      "prompt": "a red bowl and a blue train",
+      "seed": 0,
+      "source_line": 73,
+      "objects": [
+        {
+          "id": "a",
+          "name": "bowl",
+          "color": "red"
+        },
+        {
+          "id": "b",
+          "name": "train",
+          "color": "blue"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-073-s1",
+      "group": "bowl|train",
+      "split": "exploration",
+      "prompt": "a red bowl and a blue train",
+      "seed": 1,
+      "source_line": 73,
+      "objects": [
+        {
+          "id": "a",
+          "name": "bowl",
+          "color": "red"
+        },
+        {
+          "id": "b",
+          "name": "train",
+          "color": "blue"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-134-s0",
+      "group": "book|vase",
+      "split": "exploration",
+      "prompt": "a yellow book and a red vase",
+      "seed": 0,
+      "source_line": 134,
+      "objects": [
+        {
+          "id": "a",
+          "name": "book",
+          "color": "yellow"
+        },
+        {
+          "id": "b",
+          "name": "vase",
+          "color": "red"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-134-s1",
+      "group": "book|vase",
+      "split": "exploration",
+      "prompt": "a yellow book and a red vase",
+      "seed": 1,
+      "source_line": 134,
+      "objects": [
+        {
+          "id": "a",
+          "name": "book",
+          "color": "yellow"
+        },
+        {
+          "id": "b",
+          "name": "vase",
+          "color": "red"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-139-s0",
+      "group": "book|vase",
+      "split": "exploration",
+      "prompt": "a red book and a yellow vase",
+      "seed": 0,
+      "source_line": 139,
+      "objects": [
+        {
+          "id": "a",
+          "name": "book",
+          "color": "red"
+        },
+        {
+          "id": "b",
+          "name": "vase",
+          "color": "yellow"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-139-s1",
+      "group": "book|vase",
+      "split": "exploration",
+      "prompt": "a red book and a yellow vase",
+      "seed": 1,
+      "source_line": 139,
+      "objects": [
+        {
+          "id": "a",
+          "name": "book",
+          "color": "red"
+        },
+        {
+          "id": "b",
+          "name": "vase",
+          "color": "yellow"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-098-s0",
+      "group": "banana|boat",
+      "split": "test",
+      "prompt": "a green banana and a blue boat",
+      "seed": 0,
+      "source_line": 98,
+      "objects": [
+        {
+          "id": "a",
+          "name": "banana",
+          "color": "green"
+        },
+        {
+          "id": "b",
+          "name": "boat",
+          "color": "blue"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-098-s1",
+      "group": "banana|boat",
+      "split": "test",
+      "prompt": "a green banana and a blue boat",
+      "seed": 1,
+      "source_line": 98,
+      "objects": [
+        {
+          "id": "a",
+          "name": "banana",
+          "color": "green"
+        },
+        {
+          "id": "b",
+          "name": "boat",
+          "color": "blue"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-099-s0",
+      "group": "banana|boat",
+      "split": "test",
+      "prompt": "a blue banana and a green boat",
+      "seed": 0,
+      "source_line": 99,
+      "objects": [
+        {
+          "id": "a",
+          "name": "banana",
+          "color": "blue"
+        },
+        {
+          "id": "b",
+          "name": "boat",
+          "color": "green"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-099-s1",
+      "group": "banana|boat",
+      "split": "test",
+      "prompt": "a blue banana and a green boat",
+      "seed": 1,
+      "source_line": 99,
+      "objects": [
+        {
+          "id": "a",
+          "name": "banana",
+          "color": "blue"
+        },
+        {
+          "id": "b",
+          "name": "boat",
+          "color": "green"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-106-s0",
+      "group": "train|vase",
+      "split": "exploration",
+      "prompt": "a red train and a blue vase",
+      "seed": 0,
+      "source_line": 106,
+      "objects": [
+        {
+          "id": "a",
+          "name": "train",
+          "color": "red"
+        },
+        {
+          "id": "b",
+          "name": "vase",
+          "color": "blue"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-106-s1",
+      "group": "train|vase",
+      "split": "exploration",
+      "prompt": "a red train and a blue vase",
+      "seed": 1,
+      "source_line": 106,
+      "objects": [
+        {
+          "id": "a",
+          "name": "train",
+          "color": "red"
+        },
+        {
+          "id": "b",
+          "name": "vase",
+          "color": "blue"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-107-s0",
+      "group": "train|vase",
+      "split": "exploration",
+      "prompt": "a blue train and a red vase",
+      "seed": 0,
+      "source_line": 107,
+      "objects": [
+        {
+          "id": "a",
+          "name": "train",
+          "color": "blue"
+        },
+        {
+          "id": "b",
+          "name": "vase",
+          "color": "red"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-107-s1",
+      "group": "train|vase",
+      "split": "exploration",
+      "prompt": "a blue train and a red vase",
+      "seed": 1,
+      "source_line": 107,
+      "objects": [
+        {
+          "id": "a",
+          "name": "train",
+          "color": "blue"
+        },
+        {
+          "id": "b",
+          "name": "vase",
+          "color": "red"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-061-s0",
+      "group": "book|cake",
+      "split": "test",
+      "prompt": "a red book and a blue cake",
+      "seed": 0,
+      "source_line": 61,
+      "objects": [
+        {
+          "id": "a",
+          "name": "book",
+          "color": "red"
+        },
+        {
+          "id": "b",
+          "name": "cake",
+          "color": "blue"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-061-s1",
+      "group": "book|cake",
+      "split": "test",
+      "prompt": "a red book and a blue cake",
+      "seed": 1,
+      "source_line": 61,
+      "objects": [
+        {
+          "id": "a",
+          "name": "book",
+          "color": "red"
+        },
+        {
+          "id": "b",
+          "name": "cake",
+          "color": "blue"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-062-s0",
+      "group": "book|cake",
+      "split": "test",
+      "prompt": "a blue book and a red cake",
+      "seed": 0,
+      "source_line": 62,
+      "objects": [
+        {
+          "id": "a",
+          "name": "book",
+          "color": "blue"
+        },
+        {
+          "id": "b",
+          "name": "cake",
+          "color": "red"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-062-s1",
+      "group": "book|cake",
+      "split": "test",
+      "prompt": "a blue book and a red cake",
+      "seed": 1,
+      "source_line": 62,
+      "objects": [
+        {
+          "id": "a",
+          "name": "book",
+          "color": "blue"
+        },
+        {
+          "id": "b",
+          "name": "cake",
+          "color": "red"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-067-s0",
+      "group": "bear|train",
+      "split": "test",
+      "prompt": "a brown bear and a red train",
+      "seed": 0,
+      "source_line": 67,
+      "objects": [
+        {
+          "id": "a",
+          "name": "bear",
+          "color": "brown"
+        },
+        {
+          "id": "b",
+          "name": "train",
+          "color": "red"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-067-s1",
+      "group": "bear|train",
+      "split": "test",
+      "prompt": "a brown bear and a red train",
+      "seed": 1,
+      "source_line": 67,
+      "objects": [
+        {
+          "id": "a",
+          "name": "bear",
+          "color": "brown"
+        },
+        {
+          "id": "b",
+          "name": "train",
+          "color": "red"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-201-s0",
+      "group": "bear|train",
+      "split": "test",
+      "prompt": "a red bear and a brown train",
+      "seed": 0,
+      "source_line": 201,
+      "objects": [
+        {
+          "id": "a",
+          "name": "bear",
+          "color": "red"
+        },
+        {
+          "id": "b",
+          "name": "train",
+          "color": "brown"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-201-s1",
+      "group": "bear|train",
+      "split": "test",
+      "prompt": "a red bear and a brown train",
+      "seed": 1,
+      "source_line": 201,
+      "objects": [
+        {
+          "id": "a",
+          "name": "bear",
+          "color": "red"
+        },
+        {
+          "id": "b",
+          "name": "train",
+          "color": "brown"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-118-s0",
+      "group": "book|sheep",
+      "split": "exploration",
+      "prompt": "a red book and a brown sheep",
+      "seed": 0,
+      "source_line": 118,
+      "objects": [
+        {
+          "id": "a",
+          "name": "book",
+          "color": "red"
+        },
+        {
+          "id": "b",
+          "name": "sheep",
+          "color": "brown"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-118-s1",
+      "group": "book|sheep",
+      "split": "exploration",
+      "prompt": "a red book and a brown sheep",
+      "seed": 1,
+      "source_line": 118,
+      "objects": [
+        {
+          "id": "a",
+          "name": "book",
+          "color": "red"
+        },
+        {
+          "id": "b",
+          "name": "sheep",
+          "color": "brown"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-119-s0",
+      "group": "book|sheep",
+      "split": "exploration",
+      "prompt": "a brown book and a red sheep",
+      "seed": 0,
+      "source_line": 119,
+      "objects": [
+        {
+          "id": "a",
+          "name": "book",
+          "color": "brown"
+        },
+        {
+          "id": "b",
+          "name": "sheep",
+          "color": "red"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-119-s1",
+      "group": "book|sheep",
+      "split": "exploration",
+      "prompt": "a brown book and a red sheep",
+      "seed": 1,
+      "source_line": 119,
+      "objects": [
+        {
+          "id": "a",
+          "name": "book",
+          "color": "brown"
+        },
+        {
+          "id": "b",
+          "name": "sheep",
+          "color": "red"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-112-s0",
+      "group": "giraffe|vase",
+      "split": "test",
+      "prompt": "a brown giraffe and a blue vase",
+      "seed": 0,
+      "source_line": 112,
+      "objects": [
+        {
+          "id": "a",
+          "name": "giraffe",
+          "color": "brown"
+        },
+        {
+          "id": "b",
+          "name": "vase",
+          "color": "blue"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-112-s1",
+      "group": "giraffe|vase",
+      "split": "test",
+      "prompt": "a brown giraffe and a blue vase",
+      "seed": 1,
+      "source_line": 112,
+      "objects": [
+        {
+          "id": "a",
+          "name": "giraffe",
+          "color": "brown"
+        },
+        {
+          "id": "b",
+          "name": "vase",
+          "color": "blue"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-113-s0",
+      "group": "giraffe|vase",
+      "split": "test",
+      "prompt": "a blue giraffe and a brown vase",
+      "seed": 0,
+      "source_line": 113,
+      "objects": [
+        {
+          "id": "a",
+          "name": "giraffe",
+          "color": "blue"
+        },
+        {
+          "id": "b",
+          "name": "vase",
+          "color": "brown"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-113-s1",
+      "group": "giraffe|vase",
+      "split": "test",
+      "prompt": "a blue giraffe and a brown vase",
+      "seed": 1,
+      "source_line": 113,
+      "objects": [
+        {
+          "id": "a",
+          "name": "giraffe",
+          "color": "blue"
+        },
+        {
+          "id": "b",
+          "name": "vase",
+          "color": "brown"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-025-s0",
+      "group": "banana|vase",
+      "split": "test",
+      "prompt": "a green banana and a blue vase",
+      "seed": 0,
+      "source_line": 25,
+      "objects": [
+        {
+          "id": "a",
+          "name": "banana",
+          "color": "green"
+        },
+        {
+          "id": "b",
+          "name": "vase",
+          "color": "blue"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-025-s1",
+      "group": "banana|vase",
+      "split": "test",
+      "prompt": "a green banana and a blue vase",
+      "seed": 1,
+      "source_line": 25,
+      "objects": [
+        {
+          "id": "a",
+          "name": "banana",
+          "color": "green"
+        },
+        {
+          "id": "b",
+          "name": "vase",
+          "color": "blue"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-026-s0",
+      "group": "banana|vase",
+      "split": "test",
+      "prompt": "a blue banana and a green vase",
+      "seed": 0,
+      "source_line": 26,
+      "objects": [
+        {
+          "id": "a",
+          "name": "banana",
+          "color": "blue"
+        },
+        {
+          "id": "b",
+          "name": "vase",
+          "color": "green"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-026-s1",
+      "group": "banana|vase",
+      "split": "test",
+      "prompt": "a blue banana and a green vase",
+      "seed": 1,
+      "source_line": 26,
+      "objects": [
+        {
+          "id": "a",
+          "name": "banana",
+          "color": "blue"
+        },
+        {
+          "id": "b",
+          "name": "vase",
+          "color": "green"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "yellow"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "yellow"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-110-s0",
+      "group": "banana|cow",
+      "split": "test",
+      "prompt": "a green banana and a brown cow",
+      "seed": 0,
+      "source_line": 110,
+      "objects": [
+        {
+          "id": "a",
+          "name": "banana",
+          "color": "green"
+        },
+        {
+          "id": "b",
+          "name": "cow",
+          "color": "brown"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-110-s1",
+      "group": "banana|cow",
+      "split": "test",
+      "prompt": "a green banana and a brown cow",
+      "seed": 1,
+      "source_line": 110,
+      "objects": [
+        {
+          "id": "a",
+          "name": "banana",
+          "color": "green"
+        },
+        {
+          "id": "b",
+          "name": "cow",
+          "color": "brown"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-111-s0",
+      "group": "banana|cow",
+      "split": "test",
+      "prompt": "a brown banana and a green cow",
+      "seed": 0,
+      "source_line": 111,
+      "objects": [
+        {
+          "id": "a",
+          "name": "banana",
+          "color": "brown"
+        },
+        {
+          "id": "b",
+          "name": "cow",
+          "color": "green"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-111-s1",
+      "group": "banana|cow",
+      "split": "test",
+      "prompt": "a brown banana and a green cow",
+      "seed": 1,
+      "source_line": 111,
+      "objects": [
+        {
+          "id": "a",
+          "name": "banana",
+          "color": "brown"
+        },
+        {
+          "id": "b",
+          "name": "cow",
+          "color": "green"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-130-s0",
+      "group": "car|sheep",
+      "split": "test",
+      "prompt": "a red car and a white sheep",
+      "seed": 0,
+      "source_line": 130,
+      "objects": [
+        {
+          "id": "a",
+          "name": "car",
+          "color": "red"
+        },
+        {
+          "id": "b",
+          "name": "sheep",
+          "color": "white"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-130-s1",
+      "group": "car|sheep",
+      "split": "test",
+      "prompt": "a red car and a white sheep",
+      "seed": 1,
+      "source_line": 130,
+      "objects": [
+        {
+          "id": "a",
+          "name": "car",
+          "color": "red"
+        },
+        {
+          "id": "b",
+          "name": "sheep",
+          "color": "white"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-135-s0",
+      "group": "car|sheep",
+      "split": "test",
+      "prompt": "a white car and a red sheep",
+      "seed": 0,
+      "source_line": 135,
+      "objects": [
+        {
+          "id": "a",
+          "name": "car",
+          "color": "white"
+        },
+        {
+          "id": "b",
+          "name": "sheep",
+          "color": "red"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-135-s1",
+      "group": "car|sheep",
+      "split": "test",
+      "prompt": "a white car and a red sheep",
+      "seed": 1,
+      "source_line": 135,
+      "objects": [
+        {
+          "id": "a",
+          "name": "car",
+          "color": "white"
+        },
+        {
+          "id": "b",
+          "name": "sheep",
+          "color": "red"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "green"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "green"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-023-s0",
+      "group": "apple|horse",
+      "split": "test",
+      "prompt": "a green apple and a brown horse",
+      "seed": 0,
+      "source_line": 23,
+      "objects": [
+        {
+          "id": "a",
+          "name": "apple",
+          "color": "green"
+        },
+        {
+          "id": "b",
+          "name": "horse",
+          "color": "brown"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-023-s1",
+      "group": "apple|horse",
+      "split": "test",
+      "prompt": "a green apple and a brown horse",
+      "seed": 1,
+      "source_line": 23,
+      "objects": [
+        {
+          "id": "a",
+          "name": "apple",
+          "color": "green"
+        },
+        {
+          "id": "b",
+          "name": "horse",
+          "color": "brown"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-024-s0",
+      "group": "apple|horse",
+      "split": "test",
+      "prompt": "a brown apple and a green horse",
+      "seed": 0,
+      "source_line": 24,
+      "objects": [
+        {
+          "id": "a",
+          "name": "apple",
+          "color": "brown"
+        },
+        {
+          "id": "b",
+          "name": "horse",
+          "color": "green"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    },
+    {
+      "id": "color-024-s1",
+      "group": "apple|horse",
+      "split": "test",
+      "prompt": "a brown apple and a green horse",
+      "seed": 1,
+      "source_line": 24,
+      "objects": [
+        {
+          "id": "a",
+          "name": "apple",
+          "color": "brown"
+        },
+        {
+          "id": "b",
+          "name": "horse",
+          "color": "green"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "base",
+          "role": "base",
+          "source": null,
+          "color": null
+        },
+        {
+          "id": "probe_a",
+          "role": "probe",
+          "source": "a",
+          "color": "red"
+        },
+        {
+          "id": "probe_b",
+          "role": "probe",
+          "source": "b",
+          "color": "red"
+        },
+        {
+          "id": "test_a",
+          "role": "test",
+          "source": "a",
+          "color": "blue"
+        },
+        {
+          "id": "test_b",
+          "role": "test",
+          "source": "b",
+          "color": "blue"
+        },
+        {
+          "id": "sham",
+          "role": "test",
+          "source": null,
+          "color": null
+        }
+      ]
+    }
+  ]
+}

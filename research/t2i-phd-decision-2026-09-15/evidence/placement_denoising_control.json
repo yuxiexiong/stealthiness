@@ -1,0 +1,341 @@
+{
+  "checked_at": "2026-09-15",
+  "candidate": "B: denoising-time diagnosis and minimal checkpoint rewind",
+  "scope": "3 new full papers only; no model execution, no code changes, no review text read",
+  "decision": "Do not lead with generic adaptive scheduling/counting. Use time/rewind only after proving instance-level action benefit and collateral-damage heterogeneity. ICLR-scale contribution remains conditional, not ruled out by PhD threshold.",
+  "papers": [
+    {
+      "slug": "osi",
+      "title": "Diagnosing and Correcting Concept Omission in Multimodal Diffusion Transformers",
+      "first_arxiv_date": "2026-05-14",
+      "version": "2605.14270v1",
+      "status": "ICML 2026: verified PDF masthead, official ICML directory title, and official repository",
+      "sources": [
+        "https://arxiv.org/abs/2605.14270",
+        "https://arxiv.org/html/2605.14270v1",
+        "https://arxiv.org/pdf/2605.14270v1",
+        "https://icml.cc/Downloads/2026",
+        "https://github.com/KangHyun-dsail/OSI"
+      ],
+      "code_url": "https://github.com/KangHyun-dsail/OSI",
+      "sections_read": [
+        "Main sections 1-8 (pp.1-9)",
+        "Appendices A-F (pp.13-18)",
+        "Rendered p.4 Fig.2 and Table1"
+      ],
+      "model": [
+        "FLUX.1-dev",
+        "Stable Diffusion 3.5 Medium"
+      ],
+      "permission": {
+        "normal_reference_image": false,
+        "healthy_donor_model": false,
+        "generator_parameters_changed": false,
+        "offline_training": "head-wise linear probes; MMS direction from labeled activation data",
+        "internal_access": "concept text token attention key vectors; top-K head intervention"
+      },
+      "data": {
+        "probe_flux": {
+          "samples": 822,
+          "object_classes": 71,
+          "train": 654,
+          "validation": 168
+        },
+        "probe_sd35": {
+          "samples": 654,
+          "object_classes": 67,
+          "train": 516,
+          "validation": 138
+        },
+        "labeling": "Mask2Former and BLIP-VQA agreement; object-wise balanced; BLIP probabilities >0.7 present and <0.3 absent; ambiguous excluded",
+        "main_benchmark": "GenEval two-object and custom 3-6 objects; T2I-CompBench nonspatial and attribute binding",
+        "main_result_denominator": "Prompt/seed counts for main custom benchmark not explicitly established in read PDF; do not infer from repository defaults",
+        "token_target_ablation_n": 100
+      },
+      "mechanism": "Offline omission probe selects heads; key shifted toward omission-class mean direction; fixed alpha and first15/30 steps at inference. No instance-specific timing controller.",
+      "findings": [
+        {
+          "anchor": "Table2 p.6",
+          "result": "FLUX 2-object .81 to .92; 6-object .18 to .40; five-object-count macro average .47 to .61; TACA and PLADIS .53."
+        },
+        {
+          "anchor": "Table5 p.8",
+          "result": "On 100 selected natural failure cases, omitted-token steering restores target in .70; present-token steering .14."
+        },
+        {
+          "anchor": "Table1 p.4",
+          "result": "Agreement of per-step predicted clean image labels with final image: early .409, intermediate .965, late1.000. Not a future failure classifier metric."
+        },
+        {
+          "anchor": "Table6 p.8",
+          "result": "First5/10/15 steering steps .88/.91/.92 accuracy;20/25 .92;30 .91. Fixed15 already near saturation."
+        },
+        {
+          "anchor": "AppendixF pp.17-18",
+          "result": "Time-dependent steering .87 vs time-insensitive .92 on two-object subset. Time dependence does not automatically improve steering."
+        },
+        {
+          "anchor": "AppendixE.2 TableA3 p.17",
+          "result": "Object+attribute token steering often stronger than either alone."
+        }
+      ],
+      "closest_overlap": [
+        "Internal diagnostic representations directly guide generation repair",
+        "Target-specific omission intervention",
+        "Early-step stopping and strength ablation",
+        "Object and attribute joint interventions"
+      ],
+      "limitations": [
+        "Early apparent absence can later become present",
+        "Overgeneration acknowledged in section7 p.9",
+        "Offline object-balanced random split does not establish held-out object generalization",
+        "Main-table image denominator not established in read PDF",
+        "No quantified per-instance preservation of already-correct facts",
+        "No same-budget action search benchmark",
+        "No adaptive checkpoint rewind"
+      ],
+      "access": {
+        "pdf": "legal arXiv OA downloaded",
+        "review": "no_review_read; not separately identified",
+        "code": "official README and file inventory verified; pretrained classifier directories listed; nothing loaded or executed"
+      },
+      "rendered_pages": [
+        "runs/placement-osi-p4.png"
+      ],
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/placement-osi.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/placement-osi.txt",
+      "download": {
+        "status": "verified",
+        "bytes": 7767455,
+        "pages": 18,
+        "sha256": "7870408ff76e0dc22060bbde7c580790ce5ef9167e3d8cc34729913c323cd48f",
+        "pdf_magic": true,
+        "text_page_markers": 18
+      }
+    },
+    {
+      "slug": "athena",
+      "title": "ATHENA: Adaptive Test-Time Steering for Improving Count Fidelity in Diffusion Models",
+      "first_arxiv_date": "2026-03-20",
+      "version": "2603.19676v1",
+      "status": "arXiv preprint; no accepted venue confirmed in checked primary resources",
+      "sources": [
+        "https://arxiv.org/abs/2603.19676",
+        "https://arxiv.org/html/2603.19676v1",
+        "https://arxiv.org/pdf/2603.19676v1",
+        "https://github.com/MShahabSepehri/ATHENA"
+      ],
+      "code_url": "https://github.com/MShahabSepehri/ATHENA",
+      "sections_read": [
+        "Main sections1-6 pp.1-9",
+        "Algorithm appendicesA.1-A.3 pp.12-14",
+        "Datasets/hyperparameters appendicesB-C pp.15-18",
+        "Additional results appendixD pp.19-21",
+        "Rendered p.14 Algorithm5"
+      ],
+      "model": [
+        "SDXL",
+        "Stable Diffusion3.5 Large",
+        "FLUX.1-dev"
+      ],
+      "permission": {
+        "normal_reference_image": false,
+        "healthy_donor_model": false,
+        "generator_parameters_changed": false,
+        "offline_training": false,
+        "internal_access": "intermediate latent, decoded predicted clean image, original/control prompt forward denoiser evaluations",
+        "counter": "GroundingDINO"
+      },
+      "data": {
+        "cococount_deduplicated_prompts": 161,
+        "cococount_extended_prompts": 648,
+        "athena_prompts": 360,
+        "seeds": [
+          23
+        ],
+        "prompt_counted_categories": "exactly one counted object category per prompt",
+        "tuning": "CoCoCount only; per-backbone hyperparameters then fixed on other two sets",
+        "final_count_labels": "Read PDF specifies GroundingDINO intermediate estimator but does not independently establish a separate human final-image count truth pipeline"
+      },
+      "mechanism": "At fixed intermediate step estimate count; correct count continues. Wrong count restarts from same initial noise, steers early via norm-matched original + gamma*(original-control) denoiser predictions. Control changes target count to observed count. Adaptive variant rechecks once, doubles or halves gamma from count-error direction, runs at most two steered trajectories.",
+      "findings": [
+        {
+          "anchor": "Section4.3.3 pp.5-6; Algorithms4/5 pp.13-14",
+          "result": "Mid-trajectory feedback, restart from same initial noise, conditional stop and one adaptive strength update are already implemented."
+        },
+        {
+          "anchor": "Table2 p.8; AppendixC p.18",
+          "result": "FLUX ATHENA-dataset count exact accuracy39.4 to53.6%, mean45.5 to72.5s on360 prompts, seed23; Static48.9%,54.7s."
+        },
+        {
+          "anchor": "Table2 p.8",
+          "result": "SD3.5 ATHENA-dataset38.9 to56.1%; SDXL19.7 to34.7%; CountGen onSDXL29.4%."
+        },
+        {
+          "anchor": "Table2 p.8",
+          "result": "FLUX CoCoCount Static73.3% exceeds Adaptive70.2%; adaptation is not uniformly dominant."
+        },
+        {
+          "anchor": "AppendixC Table4 p.18",
+          "result": "FLUX/SD3.5 estimation step parameter20, feedback/adaptive steering parameter5, gamma4; SDXL30/10/5. Do not infer total-step count from these parameters."
+        }
+      ],
+      "closest_overlap": [
+        "Intermediate numerical diagnosis",
+        "Same-noise rollback/restart",
+        "Direction-aware strength choice",
+        "Continue without correction when diagnosed correct"
+      ],
+      "limitations": [
+        "Single counted category per prompt",
+        "Single seed23 across reported experiments",
+        "No independent quantitative per-fact preservation endpoint",
+        "No same-budget stage/strength search or seed-resampling baseline in main table",
+        "Starts corrections at initial noise, does not choose minimal rewind checkpoint",
+        "Counter errors can propagate to control",
+        "Algorithms4/5 contain apparent variable typos: c versus c1 and continuation latent; must verify implementation for reproduction rather than treating typo as disproof"
+      ],
+      "access": {
+        "pdf": "legal arXiv OA downloaded",
+        "review": "no_review_read; no venue confirmed",
+        "code": "official README and file inventory verified, not cloned or executed"
+      },
+      "rendered_pages": [
+        "runs/placement-athena-p14.png"
+      ],
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/placement-athena.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/placement-athena.txt",
+      "download": {
+        "status": "verified",
+        "bytes": 15597789,
+        "pages": 21,
+        "sha256": "a68f002bc3eb9b72ec2f0d03180179f95e9c87150ba6a59d30457efa427c363c",
+        "pdf_magic": true,
+        "text_page_markers": 21
+      }
+    },
+    {
+      "slug": "pci",
+      "title": "Temporal Concept Dynamics in Diffusion Models via Prompt-Conditioned Interventions",
+      "first_arxiv_date": "2025-12-09",
+      "version": "2512.08486v2 (2026-02-10)",
+      "status": "ICLR 2026 accepted; PDF masthead, arXiv comments, official author project/repository verified",
+      "sources": [
+        "https://arxiv.org/abs/2512.08486",
+        "https://arxiv.org/pdf/2512.08486v2",
+        "https://adagorgun.github.io/PCI-Project/",
+        "https://github.com/adagorgun/PCI-Prompt-Controlled-Interventions",
+        "https://openreview.net/forum?id=ABjaSsrYPD"
+      ],
+      "code_url": "https://github.com/adagorgun/PCI-Prompt-Controlled-Interventions",
+      "sections_read": [
+        "Main sections1-6 pp.1-10",
+        "AppendicesA-E pp.15-29",
+        "Rendered p.26 FigD4 multi-concept interaction curves"
+      ],
+      "model": [
+        "SD2.1",
+        "SDXL",
+        "SD3.5",
+        "PixArt-alpha XL",
+        "FLUX.1-dev"
+      ],
+      "permission": {
+        "source_generation": "base prompt, controlled seed and generation trajectory",
+        "healthy_donor_model": false,
+        "generator_parameters_changed": false,
+        "offline_training": false,
+        "internal_access": "No attention/activation intervention required; can switch conditioning at intermediate step and rerun",
+        "reference_neutrality": "Seed filtering for target absence under base prompt; additional negative guidance when needed"
+      },
+      "data": {
+        "concept_context_descriptions": "approximately800",
+        "seeds_for_cis": 100,
+        "time_sweep": "all native inference steps; main detailed configs SD2.1 andSD3.5 T50, SDXL T40",
+        "editing_prompt_pairs": 88,
+        "editing_seeds": 20,
+        "editing_nominal_cases": 1760,
+        "editing_total_render_count": "Paper says1760 edited images across all methods despite multiple methods/bands; aggregate total renders not independently established",
+        "vqa": "Qwen2.5-VL3B; four-model agreement ablation on animal concepts",
+        "editing_metrics": "CLIP image/text/direction; not per-fact correctness preservation"
+      },
+      "mechanism": "Switch neutral base prompt to augmented concept prompt at each time; final-image VQA per seed forms CIS. Class/context CIS curves select editing probability band .5-.7; full joint-prompt curves assess pairwise timing interactions.",
+      "findings": [
+        {
+          "anchor": "Section5 pp.8-10",
+          "result": "Category/context timing curve directly guides semantic editing versus preservation; already accepted contribution, but covers generic temporal diagnosis positioning."
+        },
+        {
+          "anchor": "Table1 p.9",
+          "result": "PCI tau50 CLIPimage .8885/text .2236/direction .1387 versus NTI+P2P .8666/.2215/.0979. tau70 stronger text alignment but lower CLIPimage .8353; no universal dominance."
+        },
+        {
+          "anchor": "AppendixD.3 pp.25-26 FigD4",
+          "result": "Five concept-pair examples explicitly compare single and joint CIS; female+sketch extends insertion window; most other pairs near compositional."
+        },
+        {
+          "anchor": "AppendixE p.27",
+          "result": "Full timestep sweep costly; no unique best CIS value per case, .5-.7 usually practical."
+        },
+        {
+          "anchor": "AppendicesA.2/B.2/C.2 pp.15-20",
+          "result": "Filtered/negative-guided neutral base,100seeds and seed-averaged curves; not direct diagnosis of spontaneous omissions under target-present prompt."
+        }
+      ],
+      "closest_overlap": [
+        "Context-conditioned temporal controllability",
+        "Behavioral interventions instead of heatmap-only attribution",
+        "Time-aware target/preservation tradeoff",
+        "Multi-concept effects on timing",
+        "Causal-condition change followed to final output"
+      ],
+      "limitations": [
+        "Seed-averaged empirical monotonicity does not prove per-instance monotone recoverability for any action",
+        "Offline category/context sweep not few-probe online action prediction",
+        "Base prompt intentionally excludes target; differs from natural concept omission",
+        "CLIP preservation not preservation of every already-correct fact",
+        "VQA agreement not human truth, especially abstract/social attributes",
+        "No same-budget action-selection search baseline",
+        "Main method full-sweep cost must be charged/amortized"
+      ],
+      "access": {
+        "pdf": "legal arXiv OA downloaded v2",
+        "review": "no_review_read; OpenReview forum and older PDF endpoint returned browser verification, not bypassed",
+        "code": "official author project and repository README verified, not cloned or run"
+      },
+      "rendered_pages": [
+        "runs/placement-pci-p26.png"
+      ],
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/placement-pci.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/placement-pci.txt",
+      "download": {
+        "status": "verified",
+        "bytes": 18729106,
+        "pages": 30,
+        "sha256": "eab29daf40716d2d77532fe205f086a71ec101989d65b47d8e5cc371911a1d1f",
+        "pdf_magic": true,
+        "text_page_markers": 30
+      }
+    }
+  ],
+  "proposed_question": "Can a small number of intervention probes predict final target recovery and protected-fact damage at untried checkpoints better than current-state heatmaps/probes and matched-budget search?",
+  "essential_baselines": [
+    "best fixed stage with same action",
+    "current omission/attention threshold controller",
+    "same-budget stage/strength random or grid search",
+    "OSI original and reasonably tuned stopping",
+    "ATHENA static/feedback/adaptive for counting",
+    "development-set PCI context/category window prior plus sparse sweep",
+    "complete A&E where backbone-compatible",
+    "DeLeaker existing actions on FLUX as preferred initial action-space test"
+  ],
+  "kill_conditions": [
+    "One fixed action/stage already dominates almost all cases",
+    "Oracle checkpoint selection gives no meaningful target/protection advantage",
+    "Diagnostic probe cost cancels gains over direct search",
+    "Claim uses all candidate final outcomes to select current case",
+    "Only heatmap/probe score improves without final-image facts",
+    "Failure under bounded actions is called globally unrepairable"
+  ],
+  "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/notes/placement_denoising_control.md"
+}

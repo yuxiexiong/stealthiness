@@ -1,0 +1,474 @@
+{
+  "audit_date": "2026-09-15",
+  "scope": "Six primary generation/editing near-neighbors for a conditional PhD-direction decision. Seven PDF versions retained, no model execution.",
+  "evidence_boundary": "Author-reported results are not locally reproduced. Review text was not read; browser checks respected. Full texts and key figures inspected, not a complete novelty search.",
+  "verdict": "Do not approve generic attribution-guided low-side-effect spatiotemporal multi-object correction as a PhD main axis; conditional pre-research only.",
+  "papers": [
+    {
+      "id": "editing-prism-edit",
+      "title": "Deconstructing Guidance: A Semantic Hierarchy for Precise Diffusion Model Editing (Prism-Edit)",
+      "date": {
+        "first_preprint": null,
+        "publication_year": 2026,
+        "version": "ICLR 2026 official conference PDF; precise initial submission date not verified"
+      },
+      "status": "ICLR 2026 conference paper; acceptance verified in official proceedings; reviews not read",
+      "source": [
+        "https://proceedings.iclr.cc/paper_files/paper/2026/hash/623f3d87442bd220ecab3e8a5e4dcda6-Abstract-Conference.html",
+        "https://proceedings.iclr.cc/paper_files/paper/2026/file/623f3d87442bd220ecab3e8a5e4dcda6-Paper-Conference.pdf"
+      ],
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/editing-prism-edit.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/editing-prism-edit.txt",
+      "sections_read": [
+        "Main §§1–6, PDF pp1–10",
+        "Appendix A Gaussian bounds/proofs p13",
+        "Appendix B algorithms and integration pp14–15",
+        "Appendix C.1–C.10 experiments/ablations pp15–29",
+        "Appendix D disclosure p29; references scanned, not audited"
+      ],
+      "model": "SD v1.5, SD3, FLUX.1 stated in §5; quantitative conventional-baseline integration primarily SD1.x; no inference run here",
+      "task_data": "Source-image editing: object/attribute/background/style; Wild-TI2I object/background split and ImageNet-R-TI2I (evaluated counts not stated in read text), CycleGAN tasks; COCO person probe ablation n=50; CUB bird→wooden carving n=100; DiffEdit comparison n=30",
+      "permissions_reference": "White-box noise/guidance access; source image and source/target conditioning (source can be null); inversion/source trajectory; optional source-latent blending. Does not require healthy model weights or a second clean donor image. GT-box variant is separately privileged.",
+      "mechanism": "Same x_t, source/target conditional noise difference; early probe t∈[900,800], averaged magnitude z-score semantic map; dynamic per-step guidance binarization and region-specific strength; optional static mask/source-latent blending. Thresholds fixed per baseline, not automatically selected per instance. Tweedie relates noise difference to posterior-mean shift; local-Gaussian bounds additionally assumed.",
+      "strong_baselines": [
+        "DDIM/DDPM inversion, P2P, PnP, LEDITS++ with/without Prism modulation",
+        "RF-Inversion and Stable Flow for cross-model qualitative integration",
+        "DiffEdit n=30 subset; GT bounding-box preservation reference n=100"
+      ],
+      "findings": [
+        {
+          "anchor": "Appendix C.5, Table C.2, PDF p21",
+          "claim": "Wild-background PnP→PnP+Prism: CLIP 0.3151→0.3200, DINO/SSIM 1.2240→1.7555. Counts for this split not given; ratio is not an all-facts success metric.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "Table C.3 p21",
+          "claim": "Wild-object DDIM: SSIM 0.4588→0.6942 but CLIP 0.3101→0.2997; PnP: SSIM 0.5554→0.6952 but CLIP 0.2995→0.2929. Shows trade-off, not uniform superiority.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "Table C.5 p24",
+          "claim": "COCO person n=50 seed=0: probe [900,800] coverage 0.9619, IoU 0.2651; later windows sometimes higher IoU. Probe selected empirically for coverage.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "Table C.6 p28; Figure C.13 p29 rendered",
+          "claim": "CUB n=100: Dynamic CLIP/SSIM 0.2393/0.6792; +Static 0.2132/0.6896; +GT box 0.2264/0.6859. Static protects more while reducing target alignment.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "§3.3–3.4 pp4–5; §6 p10; C.8 p26",
+          "claim": "Mean-shift identity and Gaussian bounds do not by themselves prove that foreground always has stronger guidance or that masking universally preserves facts. Uniform images weaken separation; texture-rich background can be confused with object structure.",
+          "type": "reviewer_inference"
+        }
+      ],
+      "closest_overlap": "Directly covers interpretable guidance decomposition→instance-local, time-varying edit control→object/background preservation, including optional conservative protection. Generic diagnosis-guided low-side-effect editing and being model-agnostic are already claimed. Remaining candidate must predict conditional identity/relation effects or untried interventions rather than add another threshold.",
+      "limitations": [
+        "Magnitude≈semantic-role interpretation has assumptions and empirical, architecture-dependent thresholds; it is not a universal causal localization guarantee.",
+        "DINO(object)/SSIM(background) can grow from background damage and is appropriate only with separate target checks for intended background change; not arbitrary protected-fact fidelity.",
+        "Main benchmark denominators and split construction detail insufficient for exact reaggregation in read PDF.",
+        "Latent equality outside a mask does not automatically imply pixel/semantic equality after coupled decoding; paper's strongest deterministic language should not be reused unqualified.",
+        "No matched-query black-box trial/beam baseline or held-out intervention-response prediction reported in read sections."
+      ],
+      "access": {
+        "pdf": "downloaded from independent official proceedings; copied from /private/tmp/prism-edit-iclr2026.pdf",
+        "bytes": 41136887,
+        "pages": 29,
+        "sha256": "2cbe823d66f43c6c695eea6f435f7700e915bb39af4e76d04ea92c083c0988dd",
+        "review_status": "no_review_read",
+        "review_reason": "https://openreview.net/forum?id=nLikuHmC98 and PDF endpoint show browser verification; not bypassed",
+        "code_status": "No official code repository verified in this bounded audit",
+        "rendered_inspected": [
+          "runs/editing-prism-edit-p29.png"
+        ]
+      }
+    },
+    {
+      "id": "editing-attend-and-excite",
+      "title": "Attend-and-Excite: Attention-Based Semantic Guidance for Text-to-Image Diffusion Models",
+      "date": {
+        "first_preprint": "2023-01-31",
+        "version": "arXiv:2301.13826v2, 2023-05-31",
+        "publication_year": 2023
+      },
+      "status": "SIGGRAPH 2023 / ACM TOG; author paper and project verified",
+      "source": [
+        "https://arxiv.org/abs/2301.13826",
+        "https://arxiv.org/pdf/2301.13826",
+        "https://yuval-alaluf.github.io/Attend-and-Excite/",
+        "https://github.com/yuval-alaluf/Attend-and-Excite"
+      ],
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/editing-attend-and-excite.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/editing-attend-and-excite.txt",
+      "sections_read": [
+        "Main §§1–7 pp1–8",
+        "Appendix A implementation/token selection/runtime/evaluation p10",
+        "Appendix B ablation pp11–12",
+        "Appendix C additional comparisons/complex prompts pp13–15",
+        "Supplemental figure captions pp16–24; key ablation images p12 rendered"
+      ],
+      "model": "Stable Diffusion v1.4 in paper; official repository exposes SD2.1 flag; no local run",
+      "task_data": "Natural generation neglect and color binding; 66 animal-animal + 144 animal-object + 66 object-object prompts, 64 shared seeds each (17,664 nominal images/method before exclusions). Complex subset 40×64. User study 65 respondents, 10 prompts/subset×4 shared seeds, votes over sets of images.",
+      "permissions_reference": "White-box cross-attention and gradient w.r.t. latent; prompt, subject-token indices, seed. No original image, healthy-model donor, or training required. Token selection partly user-controlled; multi-token noun handling needs dominant token.",
+      "mechanism": "Extract/renormalize 16×16 cross-attention, Gaussian smooth; optimize worst-attended subject maximum patch response by latent gradient. Conditional iterative refinement at steps 0/10/20 thresholds 0.05/0.5/0.8, max20 updates; ordinary guidance stops after first25 of50 denoising steps.",
+      "strong_baselines": [
+        "Vanilla SD, StructureDiffusion, Composable Diffusion",
+        "P2P attention reweighting on 20 prompts/subset in appendix; original P2P replacement/refinement excluded because prompt meaning changes",
+        "No-Gaussian/no-refinement/all50-step ablations"
+      ],
+      "findings": [
+        {
+          "anchor": "§5 pp6–8; Table1 p7",
+          "claim": "BLIP-caption/CLIP text-text similarity A&E 0.806/0.830/0.811 vs SD 0.767/0.793/0.765 across three subsets. Nominal 276×64 images/method; NSFW-black outputs omitted without final retained denominator.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "Table2 p8; §5.2",
+          "claim": "User preference 90.70%/77.64%/77.16%, n=65 respondents over sampled image sets. This is preference share, not per-image semantic success rate.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "Appendix C.2 Table5 p14",
+          "claim": "40 complex prompts×64 seeds: CLIP image-text 0.351 vs SD0.338 and StructureDiffusion0.336; no exact per-relation protected-fact rate.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "Appendix B pp11–12 Figures10–12",
+          "claim": "A high attention patch can represent only a fragment while whole object is absent. Late latent updates add artifacts with little semantic improvement; early stopping is already baseline behavior.",
+          "type": "author_observation"
+        }
+      ],
+      "closest_overlap": "Already performs diagnose worst subject→adaptive latent correction→final semantic evaluation, with explicit early stopping and multiple subject constraints. Choosing weak tokens and only early timesteps is not a new contribution.",
+      "limitations": [
+        "Cross-attention localization and final object existence can disagree; optimized attention is not independent validation.",
+        "No strong constraint that other correct relations/identities survive; source layout can change substantially while fixing neglect.",
+        "Training-distribution/model-capacity limitations, unnatural co-occurrence, complex relations remain.",
+        "Runtime depends on adaptive refinement: author A100 ~9.7–15.4 s vs SD5.6 s; no same-budget repeated-sampling comparison, not local timing."
+      ],
+      "access": {
+        "pdf": "downloaded arXiv OA",
+        "bytes": 38620386,
+        "pages": 24,
+        "sha256": "c86e3c6d0878d39a84ab6e6ae987d093dc479e96a627d9446cf854abc9dde3a0",
+        "review_status": "no_review_read",
+        "review_reason": "Official project/author publication inspected; no public SIGGRAPH reviews linked there",
+        "code_status": "Official repo reachable; inspected README only; not installed/run",
+        "rendered_inspected": [
+          "runs/editing-attend-and-excite-p12.png"
+        ]
+      }
+    },
+    {
+      "id": "editing-prompt-to-prompt",
+      "title": "Prompt-to-Prompt Image Editing with Cross-Attention Control",
+      "date": {
+        "first_preprint": "2022-08-02",
+        "publication_year": 2023,
+        "version": "Primary analysis uses undated 36-page author project PDF; also read arXiv:2208.01626v1 (19p). Final OpenReview PDF blocked, versions not claimed identical."
+      },
+      "status": "ICLR 2023 (official OpenReview indexed publication heading); public author update read, final conference file and reviews not accessed",
+      "source": [
+        "https://prompt-to-prompt.github.io/",
+        "https://prompt-to-prompt.github.io/ptp_files/Prompt-to-Prompt_preprint.pdf",
+        "https://arxiv.org/abs/2208.01626",
+        "https://github.com/google/prompt-to-prompt",
+        "https://openreview.net/forum?id=_CDixzkzeyb"
+      ],
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/editing-prompt-to-prompt-author.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/editing-prompt-to-prompt-author.txt",
+      "additional_pdf": {
+        "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/editing-prompt-to-prompt.pdf",
+        "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/editing-prompt-to-prompt.txt",
+        "version": "arXiv v1",
+        "pages": 19,
+        "bytes": 30629542,
+        "sha256": "7497a79ed190960d69f1d9c3d1cc7fa67754c48bf0dd0233df0851cc43889514"
+      },
+      "sections_read": [
+        "Author update §§1–6 pp1–10, methods §3 and comparison §4.2",
+        "Appendices A–F pp13–17, including self-attention and user study/prompt templates",
+        "Supplemental figure captions pp18–36; key method/table pages6,8 rendered",
+        "Earlier arXiv v1 main and appendix pp1–19 read to identify version difference"
+      ],
+      "model": "Imagen main experiment; Latent Diffusion and SD qualitative extension; public code LDM/SD, not Imagen weights",
+      "task_data": "Generated source-image editing with word substitution/local/global refinement/reweighting; template-generated edits, 20 examples/template. User study32 respondents×18 examples/method (576 ratings per dimension/method nominal). Appendix template numbering duplicates3; exact aggregate auto-metric denominator not explicit.",
+      "permissions_reference": "Source and target prompt, shared seed/noise and source attention trajectory; real source image additionally needs inversion. Optional chosen words specify local region; no user pixel mask required. No healthy donor weights/image.",
+      "mechanism": "Inject original cross-attention into target run; replace/refine/reweight per token; per-token duration τ; optional self-attention first20% steps. Each step LocalBlend uses threshold0.3 on cumulative original/new word maps and UNION of source+target masks; blend source latent outside union.",
+      "strong_baselines": [
+        "Same seed, prompt switching after20% steps",
+        "Text2Live, VQGAN+CLIP for text-only editing",
+        "GLIDE and Blended Diffusion given user masks only qualitative comparisons; privileged mask setting kept separate"
+      ],
+      "findings": [
+        {
+          "anchor": "Author PDF Table1 p8, Appendix E p16",
+          "claim": "32 users each rate18 examples/method on1–5 scale: background/structure4.64±0.64 vs Text2Live4.15±1.09 and baseline3.38±1.12; text alignment4.55±0.71 vs2.89±1.22/4.26±1.03; realism4.42±0.82 vs2.36±1.12/4.11±0.93. Ratings, not success rates.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "Author Table2 p17",
+          "claim": "CLIP0.253±0.04, MS-SSIM0.81±0.11, LPIPS0.22±0.10; Text2Live0.247/0.82/0.25; simple baseline0.253/0.69/0.35. Exact retained image count not explicit; no blanket metric dominance.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "Author Alg1 pp5–6, §3.3 p7, Appendix C pp14–16",
+          "claim": "Union of original and emerging object region, per-token time control, and limited self-attention preservation are explicitly already present; all-step injection can overconstrain geometry and block target edit.",
+          "type": "author_method"
+        },
+        {
+          "anchor": "Author Appendix E p16",
+          "claim": "User questions explicitly request preservation of properties not specified by edit text, alongside target alignment and realism.",
+          "type": "author_protocol"
+        }
+      ],
+      "closest_overlap": "Covers the generic instance→map→spatiotemporal operation→preserve unspecified content chain, including source/target silhouette union and original reference trajectory. PC-Edit refines readout and control timing; our proposal cannot claim these building blocks.",
+      "limitations": [
+        "Original version and author update differ substantially: do not cite no quantitative evaluation based only on arXiv v1.",
+        "Low-resolution attention, inversion distortions, no moving existing objects; SD reweighting can change unwanted content (night sky→trees).",
+        "Requires source/target edit specification; natural failure with unchanged desired prompt needs an additional, valid edit construction.",
+        "Public repository archived July16 2025; reachable is not evidence of compatibility or execution."
+      ],
+      "access": {
+        "pdf": "Author project PDF downloaded independently of blocked OpenReview; arXiv v1 also retained",
+        "bytes": 49479398,
+        "pages": 36,
+        "sha256": "5680119615c4d3759b451f66c23b4766e55474b7398bd33519d1583116c8c207",
+        "review_status": "no_review_read",
+        "review_reason": "OpenReview forum and PDF show browser verification; not bypassed. Official indexed title/venue seen, not review text.",
+        "code_status": "Official google/prompt-to-prompt README inspected; archived2025-07-16; not run",
+        "rendered_inspected": [
+          "runs/editing-prompt-to-prompt-author-p6.png",
+          "runs/editing-prompt-to-prompt-author-p8.png",
+          "runs/editing-prompt-to-prompt-p7.png"
+        ]
+      }
+    },
+    {
+      "id": "editing-ledits-plus-plus",
+      "title": "LEDITS++: Limitless Image Editing using Text-to-Image Models",
+      "date": {
+        "first_preprint": "2023-11-28",
+        "version": "arXiv:2311.16711v2, 2024-06-25",
+        "publication_year": 2024
+      },
+      "status": "CVPR 2024; full author conference-version paper read",
+      "source": [
+        "https://arxiv.org/abs/2311.16711",
+        "https://arxiv.org/pdf/2311.16711v2",
+        "https://leditsplusplus-project.static.hf.space/index.html",
+        "https://github.com/huggingface/diffusers/tree/main/src/diffusers/pipelines/ledits_pp"
+      ],
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/editing-ledits-plus-plus.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/editing-ledits-plus-plus.txt",
+      "sections_read": [
+        "Main §§1–7 pp1–9",
+        "Appendix A–G pp11–21, especially experimental config pp12–15 and limitations pp15–19",
+        "Key ablation plot/figure page20 rendered"
+      ],
+      "model": "SD1.5 for matched-method quantitative experiments; SDXL for high-quality TEdBench comparison, Imagic+Imagen curated source outputs as different-backbone reference",
+      "task_data": "CelebA100 initially free of5 attributes; choose3 gives10 combinations×10 fixed seeds=10,000 images per method/hyperparameter, >1M overall. TEdBench100, revisedTEdBench++120; COCO segmentation4983images/29307objects; reconstruction100 COCO images.",
+      "permissions_reference": "Original image plus one or multiple edit concepts; white-box noise/cross-attention; invert image and reuse corrected stochastic noise. No source caption needed by default, no separate clean donor/weight tuning. Optional user masks are an additional permission.",
+      "mechanism": "Invert second-order SDE-DPM-Solver++ using stored noise corrections for exact latent reconstruction; per-concept signed guidance; each guidance masked by intersection of cross-attention and noise-difference quantile masks; sum concepts with independently selected scale/threshold. Per-step mask implicitly limits interference.",
+      "strong_baselines": [
+        "Edit-friendly DDPM, DiffEdit, SDEdit, DDIM inversion, Pix2Pix-Zero, Imagic on SD1.5 with hyperparameter sweeps",
+        "For TEdBench: Imagic SD1.5; Imagic Imagen curated results vs SDXL explicitly different model/reference regime",
+        "Without semantic grounding; cross-attention-only/noise-only masks; CLIPSeg segmentation reference"
+      ],
+      "findings": [
+        {
+          "anchor": "§6.1 p7, Appendix C.3 pp13–14, Figure5 p7/Figure18 p20",
+          "claim": "10,000 images/method/hyperparameter: CLIP vs LPIPS trade-off favors LEDITS++; CLIP calculated separately for each3 attributes then mean. Plot-level trend, no invented exact coordinates. Spatial grounding ablation retains alignment but worsens preservation.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "Table2 p7, Appendix E pp14–15",
+          "claim": "TEdBench++ n120: SD1.5 LEDITS SR0.79 LPIPS0.30 vs Imagic0.58/0.57; SDXL LEDITS0.87/0.34. SR from humans; LPIPS restricted to jointly successful edits. Results are hand-selected best of72 LEDITS outputs/case vs108 Imagic outputs/case; not one-shot or equal-query.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "Table1 p5; Appendix C.1 pp12–13",
+          "claim": "Zero reconstruction RMSE is in64×64 latent space over100 COCO images because VAE already induces pixel error. Timing100 A100 runs excludes I/O; not an end-to-end experiment budget guarantee.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "§7 p8, Appendix F pp15–19",
+          "claim": "Background/composition protection can change identity inside edited region; generic prompt, seed, wrong mask and base-model incapacity cause failure. Repeated same-class objects may require user masks. Reflections can be intentionally changed for coherent editing.",
+          "type": "author_observation"
+        }
+      ],
+      "closest_overlap": "Already explicitly supports multiple simultaneous, individually grounded edits with minimized mutual interference and evaluates target-alignment/preservation trade-offs; 'multi-fact+local' is not enough. Per-attribute mean is weaker than all-facts success and preserving unchanged relations, but changing evaluation alone is not a method.",
+      "limitations": [
+        "Perfect inversion is latent reconstruction, not guaranteed exact decoded original image.",
+        "TEdBench best-of-grid results include substantial selection cost and possible curator dependence; same budget must be re-established.",
+        "COCO mask quality uses GT bounding-box-size-derived threshold, so not fully unprivileged online localization.",
+        "No proof that additive guidance has additive semantic outcomes or no conditional interactions; masks can preserve background yet alter identity."
+      ],
+      "access": {
+        "pdf": "downloaded arXiv v2 OA",
+        "bytes": 30079228,
+        "pages": 21,
+        "sha256": "d484d048d494d62c9c42bc0a57143a9ef1e57c3654f7505c662e641455e9471b",
+        "review_status": "no_review_read",
+        "review_reason": "Official project/full publication checked; no public official CVPR review link found in bounded check",
+        "code_status": "Author project links official diffusers SD/SDXL pipelines; directory verified, not run",
+        "rendered_inspected": [
+          "runs/editing-ledits-plus-plus-p20.png"
+        ]
+      }
+    },
+    {
+      "id": "editing-patcher",
+      "title": "Repairing Catastrophic-Neglect in Text-to-Image Diffusion Models via Attention-Guided Feature Enhancement",
+      "date": {
+        "first_preprint": "2024-06-24",
+        "publication": "2024-11-12/16",
+        "publication_year": 2024,
+        "version": "ACL Anthology Findings EMNLP2024 pp11379–11390"
+      },
+      "status": "Findings EMNLP 2024; official ACL full text",
+      "source": [
+        "https://aclanthology.org/2024.findings-emnlp.665/",
+        "https://aclanthology.org/2024.findings-emnlp.665.pdf",
+        "https://github.com/lsplx/patcher"
+      ],
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/editing-patcher.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/editing-patcher.txt",
+      "sections_read": [
+        "Main §§1–7 and limitations PDF pp1–9",
+        "Appendices A/B prompts p11; C examples/caption p12",
+        "Table2 p7 rendered; references scanned only"
+      ],
+      "model": "SD1.4/1.5/2.1; GPT3.5 for prompt candidates, spaCy transformer parser, DAAM and CLIP, WordNet; author RTX3090",
+      "task_data": "TBP A&E-style two-object templates; TwOP3160 and ThreeOP3160 prompts reported §4.1. §2.2 describes4041 multi-object prompts for motivation, relationship to main datasets not clarified. Final CR majority vote of1senior researcher+2PhD students.",
+      "permissions_reference": "Changes text input; reads internal cross-attention through DAAM; repeated model queries and external GPT3.5. No source image preservation guarantee or healthy donor. Hyponym replacement and color/shape additions may narrow or change the specification.",
+      "mechanism": "Parse objects; CLIP-threshold detect neglect; DAAM attention imbalance between neglected/correct objects guides search; generate explicit modifiers via LLM or WordNet hyponyms; repeatedly generate/rejudge; return success or minimal-imbalance prompt. Thus map/diagnosis→guided repair search is direct prior work.",
+      "strong_baselines": [
+        "Attend-and-Excite with automatically extracted noun indices",
+        "Promptist prompt optimization",
+        "LLM-Repair using same object detector and up to8 iterations",
+        "Explicit-only and implicit-only feature ablations"
+      ],
+      "findings": [
+        {
+          "anchor": "§4.1–4.4 pp5–6; Table2 p7",
+          "claim": "SD2.1 ThreeOP CR48.2% vs A&E34.3%, Promptist33.6%, LR30.1%, original14.0%; TwOP CR80.2% vs A&E69.4%, original49.6%. Dataset size each3160; per-prompt seed counts and item-level raw denominators not fully specified.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "Table2 p7",
+          "claim": "SD1.5 TBP CR88.0% vs A&E79.3%; ThreeOP46.4% vs32.6%. Abstract10.1–16.3% refers aggregate comparison across different baselines, not same improvement for every cell.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "§5.1 p7",
+          "claim": "Average2.3 attempts to correctly repair vs LR5.7. Wording conditions on successful repair; not total expected cost including failures, DAAM/LLM/generation setup.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "Table1 p3; Limitations p9",
+          "claim": "Attention imbalance reduction observed in80.9% of correct but also29.0% incorrect repaired images; attention alone does not certify success. Explicitly does not solve object-attribute errors.",
+          "type": "author_observation"
+        }
+      ],
+      "closest_overlap": "Already uses attribution-tool readout to diagnose natural failures, guide iterative corrective actions, and manually evaluate final correctness; claim 'our attribution becomes actionable' is covered.",
+      "limitations": [
+        "Object existence rather than attributes/relations or unchanged-object identity; image-wide CLIP detector has unspecified calibration details.",
+        "Prompt mutation not same permission as fixed-prompt state intervention; bird→eagle and common-color insertion may alter expected output contract.",
+        "No dedicated no-attention equal-budget random/greedy candidate-search baseline isolates informational value of attention; EFE/IFE ablation alone does not.",
+        "Repeated generation cost, success-conditioned attempts, no matched seeds/budgets established here."
+      ],
+      "access": {
+        "pdf": "downloaded official ACL OA",
+        "bytes": 8876715,
+        "pages": 12,
+        "sha256": "9a7665c9d63223d7f511d1a9b3bbfdd4193ac68a9bb603120d45eb38aca0ae30",
+        "review_status": "no_review_read",
+        "review_reason": "Official ACL publication contains no linked public review text; no review accessed",
+        "code_status": "Author repository reachable; data/Patcher.py/main.py and README listed; not run",
+        "rendered_inspected": [
+          "runs/editing-patcher-p7.png"
+        ]
+      }
+    },
+    {
+      "id": "editing-pc-edit",
+      "title": "PC-Edit: Prompt-Contrastive Region Discovery and Region-Guided Editing",
+      "date": {
+        "first_preprint": "2026-07-23",
+        "version": "arXiv:2607.21318v1",
+        "publication_year": null
+      },
+      "status": "2026 preprint, no accepted venue or submission venue verified",
+      "source": [
+        "https://arxiv.org/abs/2607.21318",
+        "https://arxiv.org/html/2607.21318v1",
+        "https://arxiv.org/pdf/2607.21318v1"
+      ],
+      "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/editing-pc-edit.pdf",
+      "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/editing-pc-edit.txt",
+      "sections_read": [
+        "Entire main method/experiments/conclusion PDF pp1–7",
+        "Supplement algorithms/config/dataset/metrics pp10–14",
+        "Full evaluator prompts pp17–19; supplemental figure captions pp11–12,15–16",
+        "Table1–3 p6 and Table5/Eq18 p13 rendered for numerical/formula verification"
+      ],
+      "model": "FLUX.1-dev MM-DiT,1024²,15 inversion+15 denoise steps, one A800",
+      "task_data": "EditRegion-Bench484 edits:236 additions+248 replacements;330 single+87 two+67 three-object edits. Images mix synthetic and web sources; boxes drawn by one annotator verified by another. PIE-Bench240 addition/replacement cases; exact replacement subset denominator not stated in read text.",
+      "permissions_reference": "Source image and source/target prompt; white-box intermediate attention outputs and cached source inversion K/V; no external clean model/donor, no GT mask for main method. FLUX.1-Fill/KV-Edit references explicitly receive GT boxes.",
+      "mechanism": "Hold latent and step fixed while contrast source/target prompt attention outputs; localization blocks13–18; middle inversion probe6–8 gives source-erasure mask for replacement; dynamic target-emergence mask in steps3–10; union region; inject source K/V only outside it in later18 single-stream blocks; first2 steps global injection, freeze after10. Localization precedes intervention in same step to avoid contaminating readout.",
+      "strong_baselines": [
+        "PnPInversion, MasaCtrl; RF-Inversion, Stable Flow, FlowEdit, FYS, RF-Edit",
+        "GT-mask FLUX.1-Fill and KV-Edit privileged references",
+        "Same-state ΔQ/ΔK/ΔV/ΔA/Δvelocity vs ΔAttnOut and FYS-style cross-trajectory velocity difference",
+        "No-source-mask/static-target-mask/staged-control ablations"
+      ],
+      "findings": [
+        {
+          "anchor": "Table1 p6",
+          "claim": "EditRegion484: PC-Edit AS6.62, backgroundPSNR34.37, LPIPS×1000=16.40, CLIP28.44, ESER82.44%; FYS6.59/25.77/65.53/28.22/73.39%. GT KV-Edit preservation37.47/3.97 is better, targetCLIP27.41 and ESER65.32 weaker. Not dominance over privileged masks.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "Table2 p6; Figure6 p7",
+          "claim": "484-case annotated-box localization ΔAttnOut AP74.4,mIoU40.4 vs ΔA66.6/38.6, same-state Δvelocity62.9/28.0, cross-trajectory49.5/24.9. Boxes are expected edit regions, not exact causal ground truth.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "Table3 p6; p7; Table5 p13",
+          "claim": "Replacement n=248: no-source-mask slightly better PSNR34.11 and LPIPS18.87 vs full33.25/19.50, but reported ESER72.18→82.44%. Foreground erasure and background protection trade off.",
+          "type": "author_result"
+        },
+        {
+          "anchor": "Appendix pp12–13, Eq18, Tables1/5; full judge prompt pp17–19",
+          "claim": "ESER prose means source absent plus meaningful regional change; classifier maps NEITHER old nor target to absent, so this is not target success. Eq18 printed1−success_count/N conflicts with prose and ↑ direction; rendered confirms actual PDF, not extractor artifact. Some stated248-case percentages cannot be reproduced as rounded integer counts; raw aggregation needed, no cause inferred.",
+          "type": "audit_finding"
+        },
+        {
+          "anchor": "Appendix metric definitions p12",
+          "claim": "Background PSNR uses MSE of complete masked images, including zeroed foreground pixels; metric scales with mask area. LPIPS compares masked images. Neither certifies protected object attributes or relations.",
+          "type": "audit_finding"
+        }
+      ],
+      "closest_overlap": "Most direct near-neighbor of instance-specific controlled contrast→map→time×space×block intervention→multi-object edit and unrelated-content preservation. Source/target union already appears in P2P, but PC-Edit readout and same-step block sequencing are especially close. A task change to natural correction alone does not establish methodological novelty.",
+      "limitations": [
+        "Only FLUX.1-dev and addition/replacement; no demonstrated conditional identity-vs-relation classification of shared connection.",
+        "No all-required-facts correctness endpoint; Qwen2.5-VL7B evaluator not calibrated against reported human outcome labels.",
+        "Block/step choices analyzed on benchmark; no held-out tuning split identified in read paper.",
+        "No query-matched direct black-box search/beam or held-out operation-effect prediction. Factual gaps above limit result strength but do not erase prior-art overlap."
+      ],
+      "access": {
+        "pdf": "downloaded arXiv v1 OA; abstract/version verified live2026-09-15",
+        "bytes": 15779455,
+        "pages": 19,
+        "sha256": "b961624076e77b2067092a206e7ff1be46c92d63c30b17998b751f0c1ca8cd7e",
+        "review_status": "no_review_read",
+        "review_reason": "Bounded exact-title OpenReview search found no verified forum; no venue inferred",
+        "code_status": "Paper links https://jianzhang-chick.github.io/PC-Edit/; web access failed; no code availability claim. Benchmark URL stated in paper https://zenodo.org/records/21502501 not downloaded.",
+        "rendered_inspected": [
+          "runs/editing-pc-edit-p6.png",
+          "runs/editing-pc-edit-p13.png"
+        ]
+      }
+    }
+  ]
+}

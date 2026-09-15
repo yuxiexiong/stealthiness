@@ -1,0 +1,71 @@
+{
+  "title": "Follow the Flow: On Information Flow Across Textual Tokens in Text-to-Image Models",
+  "date": "2026-07",
+  "status": "ACL 2026, Volume 1: Long Papers, pp. 34139–34157; official proceedings verified",
+  "source": "https://aclanthology.org/2026.acl-long.1575/",
+  "doi": "10.18653/v1/2026.acl-long.1575",
+  "pdf_url": "https://aclanthology.org/2026.acl-long.1575.pdf",
+  "project_url": "https://schwartz-lab-huji.github.io/publication/follow_the_flow/",
+  "code_url": "https://github.com/tokeron/lens",
+  "pdf_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/papers/causal_follow_the_flow.pdf",
+  "text_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/t2i-phd-decision-2026-09-15/runs/text/causal_follow_the_flow.txt",
+  "download": {
+    "status": "verified",
+    "bytes": 15388549,
+    "pages": 19,
+    "sha256": "abe205b082bc9f6c5509d257fa4a41e09c5a6a7b142a83e8849ff3b24fe13668",
+    "pdf_magic": "%PDF-",
+    "first_page_title_checked": true
+  },
+  "reading_scope": "Read all main methods, experiments, discussion and limitations plus substantive Appendices A–H from page-marked PDF extraction; references inspected only for contextual identification. Table 4 rendered and visually checked.",
+  "sections_read": [
+    "Sec2 PDFp2",
+    "Sec3 PDFp3",
+    "Sec4 PDFp4–5, Tables1–2",
+    "Sec5 PDFp6–7",
+    "Sec6–8 PDFp8–9, Table4",
+    "Limitations PDFp10",
+    "AppendicesA–H PDFp13–19"
+  ],
+  "models": {
+    "primary": "FLUX-schnell, T5-XXL encoder",
+    "additional": "FLUX-dev, SDXL-Turbo/CLIP, SANA-1.6B/Gemma",
+    "mitigation_table4": [
+      "FLUX-dev",
+      "FLUX-schnell"
+    ]
+  },
+  "intervention": "Inference-time final text-encoder token representation patching: preserve or isolate selected contextualized tokens with pad-token replacement for analysis; mitigate known misinterpreted lexical items by replacing all corresponding token representations with the encoding of the item plus local modifiers in isolation. No parameter update.",
+  "benchmark": "Main information-flow analysis: 1,053 filtered DrawBench/PartiPrompts prompts and 5 seeds per prompt; mitigation: 110 curated polysemy prompts with human-judged unambiguous intended meanings.",
+  "target_score": "Percentage of prompts exhibiting wrong lexical interpretation, VLM evaluation of manually specified intended versus wrong meanings (AppA.5).",
+  "protection_score": "No separately reported original-correct relation/all-other-fact retention endpoint for Table4. AppA.4 perceptual-binding filtering is an analysis filter, not post-patching relation preservation.",
+  "main_table": {
+    "anchor": "Table4, PDFp8 / printed34146",
+    "unit": "percent prompts exhibiting leakage, lower better",
+    "Flux-Dev": {
+      "initial": 79,
+      "RAG-Diffusion": 39,
+      "patching": 20
+    },
+    "Flux-Schnell": {
+      "initial": 94,
+      "RAG-Diffusion": 43,
+      "patching": 14
+    }
+  },
+  "findings": [
+    "Encoder-side contextual token patching can correct substantial lexical semantic leakage without editing denoiser weights.",
+    "Cross-item flow can be legitimate contextual meaning or an unintended lexical interpretation; appearance alone is not a harm label.",
+    "Architecture matters: CLIP/EOS pooling weakens isolated-token interpretability; SANA information flow is analyzed, but Table4 mitigation is limited to FLUX variants."
+  ],
+  "overlap": "Directly covers causal token intervention, conditional information-flow analysis, and practical semantic-leakage correction. It is a necessary simple baseline before proposing a diagnostic action-selection mechanism; does not itself establish the proposed per-case protected-relation and equal-budget decision endpoints.",
+  "limitations": [
+    "Known target items and manually specified intended/wrong senses; no demonstrated automatic error-location/decision pipeline with matched budget.",
+    "Polysemy-driven lexical misinterpretation is narrower than arbitrary cross-entity visual identity leakage.",
+    "VLM scores are approximate; syntactically simple object-centric prompts restrict generalization.",
+    "No dedicated per-image already-correct relation preservation endpoint or full end-to-end cost comparator.",
+    "A generation change under padded/off-context representations identifies an intervention effect, not unique natural generator causal responsibility; closed-model behavior cannot identify encoder-level mechanisms.",
+    "Classifier redundancy prediction accuracy is not identical to demonstrated downstream image alignment gain from classifier-predicted pruning."
+  ],
+  "review": "Public peer-review reports not inspected for this addendum."
+}
