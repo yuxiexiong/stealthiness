@@ -1,0 +1,3226 @@
+{
+  "sealed_at_unix": 1789499215.747842,
+  "payload_sha256": "486d84ac6223dfc21e21a678555b86a42cb69e417cba21684ce617cade5b1b7b",
+  "payload": {
+    "study_sha256": "02f0ff2fe6aaa8c176d15d1ceba3ab4dc922cf04a76f1ea0c99dd51c161c7a16",
+    "render_sha256": "efb8f09f482814d4a9e4a31aa30685548018e2284e7fdfa5488d8d5514c2702a",
+    "bundle_sha256": "cdebdc6a332c7703f304781e8ef2380c97476dc381fd063f11ab4736572821e3",
+    "bundle_path": "/root/diagnosis-2026-09-15/attribution-visualization/t2i-diagnosis-toy/runs/bundle-contrast/bundle.json",
+    "method": "contrast",
+    "reader": {
+      "model": "Qwen/Qwen2.5-VL-7B-Instruct",
+      "revision": "cc594898137f460bfe9f0759e9844b3ce807cfb5",
+      "temperature": 0,
+      "seed": 0,
+      "max_tokens": 2400,
+      "instruction_sha256": "af41711ebdefa6dcc5933e5554585da0fae281482404de577aea4a3ccd97e1a1"
+    },
+    "cost": {
+      "calls": 47,
+      "seconds": 3617.9908357392997,
+      "prompt_tokens": 430298,
+      "completion_tokens": 30155,
+      "images": 1081,
+      "usage_missing_calls": 0,
+      "upstream_evaluator": null
+    },
+    "cases": [
+      {
+        "case_id": "color-072-s0",
+        "diagnosis": "The replacement of the 'a' (bowl) color vector with a green donor vector likely affects the bowl's color but may not significantly alter the train's color due to its distinct and isolated region.",
+        "alternative": "The train's color could be subtly influenced by the green donor vector, as it shares some spatial overlap with the bowl in the image.",
+        "uncertainty": "The exact impact on the train's color is uncertain due to the isolated nature of the train and the specific attention patterns observed.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's color is directly replaced with green, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The train's color remains largely unaffected by the bowl's replacement with green."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.5,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's color is directly replaced with green, indicating a moderate probability of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The train's color remains largely unaffected by the bowl's replacement with green."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The sham condition retains the original vector, suggesting minimal change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.95,
+              "changed": 0.02,
+              "unjudgeable": 0.03
+            },
+            "evidence": "The sham condition retains the original vector, suggesting minimal change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-072-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector significantly alters the object's appearance, leading to a high probability of color change.",
+        "alternative": "The donor color vector might have a minimal impact on the object's color due to the low attention score and the presence of other competing factors.",
+        "uncertainty": "The uncertainty arises from the complex interplay of attention scores and the overall influence of the donor vector on the object's color.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The high attention score for the bowl (0.7383) and the significant delta map suggest a strong influence of the donor vector."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The moderate attention score for the train (0.7383) and the delta map indicate a moderate influence of the donor vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The moderate attention score for the bowl (0.7383) and the delta map indicate a moderate influence of the donor vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The high attention score for the train (0.7383) and the significant delta map suggest a strong influence of the donor vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sham condition retains the original vector, indicating no change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sham condition retains the original vector, indicating no change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-073-s0",
+        "diagnosis": "The replacement of the 'a' (bowl) color vector with 'green' likely affects the bowl's color, while the train remains unchanged due to its distinct features and context.",
+        "alternative": "The bowl's color could remain unchanged if the green vector does not significantly alter the existing red color, or if the model's attention is more focused on other features.",
+        "uncertainty": "The uncertainty arises from the model's ability to maintain the original color under the influence of a new vector, especially when the object has strong visual cues.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's red color is strongly represented in the base image, and the green vector may not significantly alter it."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The train's blue color is distinct and less likely to be affected by the green vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's red color is strongly represented in the base image, and the green vector may not significantly alter it."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The train's blue color is distinct and less likely to be affected by the green vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's red color is strongly represented in the base image, and the sham condition should reflect the original color."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The train's blue color is distinct and less likely to be affected by the sham condition."
+          }
+        ]
+      },
+      {
+        "case_id": "color-073-s1",
+        "diagnosis": "The replacement of the 'a' (bowl) color vector with 'green' likely affects the bowl's color, while the train's color remains unchanged due to its lower attention score.",
+        "alternative": "The train's color could potentially be affected if it had a higher attention score, but given the current evidence, it remains unchanged.",
+        "uncertainty": "The uncertainty arises from the low attention scores for both the bowl and the train, making it difficult to definitively predict changes in their colors.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's color is significantly altered by the green vector, indicating a high likelihood of change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The train's color remains unchanged as there is no significant attention score for it."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's color is significantly altered by the green vector, indicating a high likelihood of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The train's color remains unchanged as there is no significant attention score for it."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's color remains unchanged as the original vector was used."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The train's color remains unchanged as the original vector was used."
+          }
+        ]
+      },
+      {
+        "case_id": "color-134-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector in the text-to-image experiment likely affects the object's color perception, but the extent of the change depends on the attention and delta maps.",
+        "alternative": "The change in object color could be influenced by other factors such as the overall scene composition, lighting, and the model's learned patterns rather than solely the replaced vector.",
+        "uncertainty": "The uncertainty arises from the complex interplay between the replaced vector and the model's learned features, making it difficult to isolate the exact cause of the color change.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows significant changes in the book area, indicating a high likelihood of color alteration."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows moderate changes in the vase area, suggesting a moderate chance of color alteration."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows some changes in the book area, indicating a moderate chance of color alteration."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows significant changes in the vase area, indicating a high likelihood of color alteration."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows minimal changes in the book area, suggesting a low chance of color alteration."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows negligible changes in the vase area, suggesting a very low chance of color alteration."
+          }
+        ]
+      },
+      {
+        "case_id": "color-134-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector in the text-to-image experiment likely affects the object's color perception, but the extent of the change depends on the object's original color and the donor color's similarity.",
+        "alternative": "The change in object color could be due to the donor color vector being more similar to the intended color of another object, leading to a cross-object influence.",
+        "uncertainty": "The exact impact of the vector replacement is uncertain as it involves complex interactions between the text encoder and the image generation process.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The book's color is influenced by the vase's color, which is affected by the donor color vector."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The vase's color is influenced by the book's color, which is affected by the donor color vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The book's color is influenced by the vase's color, which is affected by the donor color vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The vase's color is influenced by the book's color, which is affected by the donor color vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.3,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The book's color remains relatively stable without the donor color vector influence."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The vase's color remains relatively stable without the donor color vector influence."
+          }
+        ]
+      },
+      {
+        "case_id": "color-139-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector can lead to changes in the object's appearance, but the extent of these changes depends on the object's inherent color and the specific context of the image.",
+        "alternative": "The original vector might have been more effective at maintaining the object's color due to its specific encoding of the object's characteristics.",
+        "uncertainty": "The uncertainty arises from the variability in how different objects respond to vector replacements, influenced by their inherent color and the context within which they appear.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows significant changes in the book's color, indicating a high likelihood of color alteration."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows moderate changes in the vase's color, suggesting a moderate chance of color alteration."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows moderate changes in the book's color, suggesting a moderate chance of color alteration."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows significant changes in the vase's color, indicating a high likelihood of color alteration."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows minimal changes in the book's color, suggesting a low chance of color alteration."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows minimal changes in the vase's color, suggesting a low chance of color alteration."
+          }
+        ]
+      },
+      {
+        "case_id": "color-139-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector likely affects the object's color perception, but the extent of the change depends on the object's original color and the donor color's similarity.",
+        "alternative": "The change could be minimal if the donor color is very similar to the original color, or it could be significant if the donor color is very different.",
+        "uncertainty": "The uncertainty arises from the variability in how different objects respond to color changes based on their original color and the specific donor color used.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows a significant shift towards blue, indicating a high probability of the book changing its color."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the vase shows a moderate shift towards blue, suggesting a moderate chance of the vase changing its color."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the book shows a significant shift towards blue, indicating a high probability of the book changing its color."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the vase shows a moderate shift towards blue, suggesting a moderate chance of the vase changing its color."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the book under the sham condition shows minimal change, indicating a low probability of the book changing its color."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the vase under the sham condition shows minimal change, indicating a low probability of the vase changing its color."
+          }
+        ]
+      },
+      {
+        "case_id": "color-098-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector significantly alters the visual appearance of both the banana and the boat, indicating a high probability of color change.",
+        "alternative": "The replacement could have minimal impact if the donor color vector is very similar to the original, but given the stark difference between yellow and red, it is more likely to result in a noticeable change.",
+        "uncertainty": "The exact extent of the change is uncertain as it depends on the specific vectors involved and their similarity.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color is replaced with red, which is a significant departure from its intended green color."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The boat's color is replaced with red, which is a significant departure from its intended blue color."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color is replaced with red, which is a significant departure from its intended green color."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The boat's color is replaced with red, which is a significant departure from its intended blue color."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The banana's color remains unchanged as the original vector was used."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The boat's color remains unchanged as the original vector was used."
+          }
+        ]
+      },
+      {
+        "case_id": "color-098-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector significantly alters the object's appearance, as evidenced by the delta maps showing strong activation in regions corresponding to the object's features.",
+        "alternative": "The change could be due to the donor color vector being more salient in the context of the image, leading to a stronger influence on the object's representation.",
+        "uncertainty": "The uncertainty arises from the complex interplay of contextual factors and the specific neural network architecture used, which may not fully capture the underlying causes of the observed changes.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows significant activation in areas corresponding to the banana, indicating a strong influence of the new vector."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows moderate activation in areas corresponding to the boat, suggesting a moderate influence of the new vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows moderate activation in areas corresponding to the banana, suggesting a moderate influence of the new vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows significant activation in areas corresponding to the boat, indicating a strong influence of the new vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.4,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows minimal activation in areas corresponding to the banana, indicating little to no influence of the new vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.4,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows minimal activation in areas corresponding to the boat, indicating little to no influence of the new vector."
+          }
+        ]
+      },
+      {
+        "case_id": "color-099-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector in the text-to-image model likely affects the object's color representation, leading to changes in the image. The attention maps suggest that the model focuses on specific regions when processing the color tokens, which could influence the final image generation.",
+        "alternative": "The model might not fully update the object's color due to the complexity of the image and the interplay between different color tokens. This could result in a mix of original and new color representations, making it difficult to predict the exact outcome.",
+        "uncertainty": "The uncertainty arises from the model's ability to integrate new color information into the existing image context. The attention maps show varying degrees of focus, indicating potential inconsistencies in how the model processes the color tokens.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "Attention map shows significant focus on the banana area."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "Attention map shows moderate focus on the boat area."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "Attention map shows some focus on the banana area."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "Attention map shows significant focus on the boat area."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.3,
+              "unjudgeable": 0.2
+            },
+            "evidence": "Attention map shows minimal focus on the banana area."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "Attention map shows moderate focus on the boat area."
+          }
+        ]
+      },
+      {
+        "case_id": "color-099-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector in the probe images results in changes to both the banana and the boat, indicating that the contextual vector for the source color is influential across different objects.",
+        "alternative": "The influence of the source color vector on the target object could be due to shared semantic features rather than direct color matching, as suggested by the attention maps showing overlapping regions.",
+        "uncertainty": "The uncertainty arises from the complexity of the image and the potential for indirect influences through other contextual factors, making it challenging to isolate the exact cause of the color changes.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The banana's color is significantly altered, suggesting a strong influence from the replaced vector."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The boat's color is moderately affected, indicating some influence but not as strong as the banana."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The banana's color is moderately altered, showing some influence from the replaced vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The boat's color is significantly changed, indicating a strong influence from the replaced vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color remains largely unchanged, suggesting that the replacement vector did not significantly alter its appearance."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The boat's color remains largely unchanged, indicating that the replacement vector had minimal impact on its appearance."
+          }
+        ]
+      },
+      {
+        "case_id": "color-106-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector significantly alters the object's appearance, as evidenced by the delta maps showing strong activation in areas corresponding to the object's features.",
+        "alternative": "The change could be attributed to the donor color vector's influence on the object's features, but it is also possible that the context of the image and the specific attention patterns of the model contribute to the observed changes.",
+        "uncertainty": "The uncertainty arises from the complex interplay between the source and donor color vectors, as well as the model's attention mechanisms, which may lead to unpredictable changes in the object's appearance.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows significant activation in areas corresponding to the train's features, indicating a high likelihood of the train's color being altered."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows moderate activation in areas corresponding to the vase's features, suggesting a moderate likelihood of the vase's color being altered."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows significant activation in areas corresponding to the train's features, indicating a high likelihood of the train's color being altered."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.8,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The delta map shows strong activation in areas corresponding to the vase's features, indicating a very high likelihood of the vase's color being altered."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The delta map for the sham condition shows minimal activation, suggesting that the train's color remains unchanged."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The delta map for the sham condition shows minimal activation, suggesting that the vase's color remains unchanged."
+          }
+        ]
+      },
+      {
+        "case_id": "color-106-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector significantly alters the visual representation of the object, leading to changes in its color and potentially its presence or prominence in the image.",
+        "alternative": "The change could be attributed to the influence of the donor color vector on the entire image rather than specifically targeting the object's color.",
+        "uncertainty": "The exact attribution of the change remains uncertain due to the complex interplay between the source and donor color vectors and their impact on the overall image.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The probe-a image shows a significant shift towards the green color, indicating a strong influence on the train's color."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase retains some of its original color but shows a noticeable shift towards green, suggesting partial influence."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The train's color is significantly altered, indicating a strong influence from the probe."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase's color is altered but less so than the train, suggesting a lesser influence."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.3,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The sham condition shows minimal change, supporting the idea that the donor color vector had a specific effect."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase in the sham condition shows slight changes, indicating some influence but not as significant as in the test conditions."
+          }
+        ]
+      },
+      {
+        "case_id": "color-107-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector in the probe images results in changes to the object's color, as indicated by the delta maps showing increased attention on the object's area.",
+        "alternative": "The changes observed could be due to other factors such as noise corruption or random variations in the model's output, rather than the specific color vector replacement.",
+        "uncertainty": "The uncertainty arises from the complexity of the model and the potential for multiple factors influencing the output, making it difficult to isolate the exact cause of the observed changes.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows significant changes in the area corresponding to the train, indicating a high probability of color change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows moderate changes in the area corresponding to the vase, suggesting a moderate probability of color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows moderate changes in the area corresponding to the train, suggesting a moderate probability of color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows significant changes in the area corresponding to the vase, indicating a high probability of color change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.3,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows minimal changes in the area corresponding to the train, suggesting a low probability of color change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.3,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows minimal changes in the area corresponding to the vase, suggesting a low probability of color change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-107-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector affects the object's color, but the extent of the change is uncertain due to the complex interplay of attention maps and the nature of the image.",
+        "alternative": "The change in object color could be attributed to other factors such as the overall color balance of the image or the specific attention patterns of the model, rather than solely the replaced vector.",
+        "uncertainty": "The uncertainty arises from the complexity of the image and the model's attention mechanisms, making it difficult to isolate the exact impact of the replaced vector on the object's color.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The attention map shows significant overlap between the train and the vase, suggesting a potential influence on both."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The attention map shows significant overlap between the train and the vase, suggesting a potential influence on both."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The attention map shows significant overlap between the train and the vase, suggesting a potential influence on both."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The attention map shows significant overlap between the train and the vase, suggesting a potential influence on both."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.3,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The sham condition maintains the original vector, showing less variability in the color change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.3,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The sham condition maintains the original vector, showing less variability in the color change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-061-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector likely affects the object's color perception, but the extent of the change depends on the object's inherent color and the specific attention patterns.",
+        "alternative": "The change could be influenced by the object's texture or the surrounding context rather than solely the color vector.",
+        "uncertainty": "The uncertainty arises from the complex interplay between the object's inherent properties and the attentional focus, making it difficult to isolate the exact cause of the color change.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows significant changes in the book area, suggesting a high probability of color change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map indicates a strong influence on the cake area, supporting a higher likelihood of color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.5,
+              "unjudgeable": 0.1
+            },
+            "evidence": "Attention patterns suggest a moderate impact on the book, with some areas showing potential for color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map highlights the cake as the primary area of interest, indicating a high probability of color change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.4,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sham condition suggests that the color change is not due to the donor color vector alone but may be influenced by other factors."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.5,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the sham condition shows a similar pattern to the test conditions, indicating that the color change is not isolated to the donor color vector."
+          }
+        ]
+      },
+      {
+        "case_id": "color-061-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector affects the object's color, but the extent of the change is uncertain due to the complex interplay of attention and delta maps.",
+        "alternative": "The change in object color could be attributed to other factors such as the overall scene lighting or the specific attention patterns within the model, rather than solely the replaced vector.",
+        "uncertainty": "The uncertainty arises from the non-linear nature of the model's color generation process and the influence of multiple factors on the final image.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows significant changes in the book area, indicating a high likelihood of color alteration."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the cake shows moderate changes, suggesting a possible but not definitive color shift."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the book shows significant changes, indicating a high likelihood of color alteration."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the cake shows moderate changes, suggesting a possible but not definitive color shift."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the book under the sham condition shows minimal changes, indicating a low likelihood of color alteration."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the cake under the sham condition shows minimal changes, indicating a low likelihood of color alteration."
+          }
+        ]
+      },
+      {
+        "case_id": "color-062-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector in the 'test' conditions likely affects the object's color perception, as evidenced by the delta maps showing significant changes in the areas corresponding to the object. The 'sham' condition, which uses the original vector, suggests that the changes observed in the 'test' conditions are due to the vector replacement rather than other factors.",
+        "alternative": "The changes observed could be attributed to other factors such as noise corruption or model instability, but the delta maps provide strong evidence that the vector replacement is the primary cause.",
+        "uncertainty": "The uncertainty lies in the exact nature of the vector replacement's impact on the model's color perception, as well as the potential for other factors to influence the results.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows a significant shift in the area corresponding to the book, indicating a high probability of color change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows a moderate shift in the area corresponding to the cake, suggesting a moderate probability of color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows a moderate shift in the area corresponding to the book, suggesting a moderate probability of color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows a significant shift in the area corresponding to the cake, indicating a high probability of color change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the sham condition shows minimal changes, supporting the idea that the vector replacement is the primary cause of the color changes."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the sham condition shows minimal changes, supporting the idea that the vector replacement is the primary cause of the color changes."
+          }
+        ]
+      },
+      {
+        "case_id": "color-062-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector significantly alters the object's appearance, as evidenced by the delta maps showing strong changes in the areas corresponding to the object.",
+        "alternative": "The change could be due to other factors such as noise corruption or model instability, but the delta maps strongly suggest the influence of the color vector replacement.",
+        "uncertainty": "The uncertainty lies in the exact nature of the model's response to the vector replacement, which could be influenced by various factors including the model's training and the specific context of the image.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows significant changes in the area corresponding to the book."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows moderate changes in the area corresponding to the cake."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows moderate changes in the area corresponding to the book."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.5,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows significant changes in the area corresponding to the cake."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows minimal changes in the area corresponding to the book."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows minimal changes in the area corresponding to the cake."
+          }
+        ]
+      },
+      {
+        "case_id": "color-067-s0",
+        "diagnosis": "The replacement of the 'a' (bear) color vector with 'green' likely affects the bear's color but does not significantly alter the train's color due to the bear's smaller size and less attentional focus.",
+        "alternative": "The train's color could be subtly influenced by the bear's color change due to the bear's proximity and attentional weight, but the overall effect is minimal.",
+        "uncertainty": "The exact impact on the train's color is uncertain as it depends on the model's attention distribution and the relative importance of the bear in the scene.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bear's color change is more pronounced than the train's, indicating a higher likelihood of color change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The train's color remains largely unaffected by the bear's color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.5,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bear's color change is more likely due to its larger size and attentional focus."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The train's color remains largely unaffected by the bear's color change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.4,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sham condition suggests a baseline probability of color change for the bear."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sham condition suggests a baseline probability of color change for the train."
+          }
+        ]
+      },
+      {
+        "case_id": "color-067-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector affects the bear's color more significantly than the train's, as indicated by the attention maps and delta maps.",
+        "alternative": "The bear's color change could be due to a combination of the source color vector being replaced and the train's color vector having a similar effect on the bear.",
+        "uncertainty": "The exact contribution of each vector to the final color change is uncertain due to the complex interactions within the model.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The bear's color is significantly altered, while the train remains unchanged."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The train's color remains unchanged, indicating minimal impact from the color vector replacement."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.7,
+              "unjudgeable": 0
+            },
+            "evidence": "The bear's color is significantly altered, while the train remains unchanged."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The train's color remains unchanged, indicating minimal impact from the color vector replacement."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.2,
+              "unjudgeable": 0
+            },
+            "evidence": "The bear's color remains largely unchanged, suggesting the sham operation did not significantly alter the bear's color."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The train's color remains unchanged, indicating minimal impact from the sham operation."
+          }
+        ]
+      },
+      {
+        "case_id": "color-201-s0",
+        "diagnosis": "The replacement of the 'a' (bear) color vector with 'green' likely affects the bear's color but does not significantly alter the train's color due to the bear's prominence and the train's background context.",
+        "alternative": "The train's color could be subtly influenced by the bear's new color, as the bear is a foreground object and the train is in the background, but the overall effect is minimal.",
+        "uncertainty": "The uncertainty arises from the complex interplay between the bear and the train, where the bear's new color might slightly affect the train's perception, but the train's intended color remains dominant.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bear's color is significantly altered, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The train's color remains largely unchanged, as the bear is a foreground object."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bear's color is significantly altered, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The train's color remains largely unchanged, as the bear is a foreground object."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bear's color remains unchanged, as the sham operation does not alter the bear's color vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The train's color remains largely unchanged, as the sham operation does not alter the train's color vector."
+          }
+        ]
+      },
+      {
+        "case_id": "color-201-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector likely affects the object's color perception, but the extent of the change depends on the attention patterns and the model's ability to generalize.",
+        "alternative": "The change could be due to the model's reliance on other contextual cues rather than the replaced vector, leading to a less significant impact on the object's color.",
+        "uncertainty": "The exact impact is uncertain as it depends on the specific attention patterns and the model's training.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows a significant shift towards blue, indicating a potential change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows minimal changes, suggesting the color of the train remains largely unchanged."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows minimal changes, suggesting the color of the bear remains largely unchanged."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows a significant shift towards blue, indicating a potential change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows minimal changes, suggesting the color of the bear remains largely unchanged."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows minimal changes, suggesting the color of the train remains largely unchanged."
+          }
+        ]
+      },
+      {
+        "case_id": "color-118-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector likely affects the object's color perception, but the extent of the change depends on the object's inherent color and the donor color's similarity.",
+        "alternative": "The change could be minimal if the donor color is very similar to the original color, or it might not be perceptible at all if the object's color is already ambiguous or mixed.",
+        "uncertainty": "The uncertainty arises from the variability in how different objects perceive and respond to color changes, as well as the potential for the donor color to blend with existing colors in the image.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows significant changes in the book area, indicating a high likelihood of the book's color being altered."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the sheep shows less pronounced changes compared to the book, suggesting a lower probability of the sheep's color changing significantly."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map indicates moderate changes in the book area, which could lead to a mix of unchanged and changed states."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the sheep shows some changes, but they are not as significant as those observed in the book, leading to a higher probability of unchanged color."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sham condition, using the original vector and the same initial noise, suggests that the book's color remains largely unchanged due to the lack of a color vector replacement."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sham condition indicates a high probability of the sheep's color remaining unchanged, as there was no color vector replacement."
+          }
+        ]
+      },
+      {
+        "case_id": "color-118-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector can lead to changes in the object's appearance, but the extent of the change depends on the object's prominence and the specific context. The delta maps suggest that the book is more sensitive to color changes than the sheep.",
+        "alternative": "The replacement might not significantly alter the object's appearance if the object is not highly salient or if the donor color is very similar to the original color.",
+        "uncertainty": "The uncertainty arises from the variability in how different objects respond to color changes based on their prominence and the specific context provided by the prompt.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the book shows significant changes, indicating a high likelihood of the book's color being altered."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the sheep shows minimal changes, suggesting the sheep's color is less likely to be altered."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the book shows significant changes, indicating a high likelihood of the book's color being altered."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the sheep shows minimal changes, suggesting the sheep's color is less likely to be altered."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the book shows significant changes, indicating a high likelihood of the book's color being altered."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The delta map for the sheep shows minimal changes, suggesting the sheep's color is less likely to be altered."
+          }
+        ]
+      },
+      {
+        "case_id": "color-119-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector likely affects the object's color, but the extent of the change depends on the object's inherent color and the donor color's similarity.",
+        "alternative": "The change could be minimal if the donor color is very similar to the original color, or it might not be discernible at all if the object's color is already ambiguous or mixed.",
+        "uncertainty": "The uncertainty arises from the variability in how different objects respond to color changes based on their inherent properties and the specific donor color used.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows significant changes in the book's color, indicating a high likelihood of the book's color being altered."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the sheep shows less pronounced changes compared to the book, suggesting a lower probability of the sheep's color changing significantly."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map indicates moderate changes in the book's color, which could be due to the book's inherent color or the donor color's influence."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the sheep shows more pronounced changes than the book, suggesting a higher probability of the sheep's color being altered."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sham condition, using the original vector and the same initial noise, suggests that the book's color remains largely unchanged."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sham condition indicates that the sheep's color is highly unlikely to have changed, as the delta map shows minimal changes."
+          }
+        ]
+      },
+      {
+        "case_id": "color-119-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector likely affects the object's color, but the extent of the change depends on the object's inherent color and the specific context.",
+        "alternative": "The change could be minimal or non-existent if the object's intended color is already close to the donor color, or if the context does not strongly influence the object's color.",
+        "uncertainty": "The uncertainty arises from the variability in how different objects respond to color vector changes, as well as the potential for contextual influences.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The book's color is influenced by the context and the donor color vector, but it may not change significantly due to its inherent brown color."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The sheep's color is more likely to change due to the donor color vector, as it is not as strongly tied to its intended red color."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The book's color may change slightly due to the donor color vector, but it is less likely to be significantly altered."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sheep's color is highly likely to change due to the donor color vector, as it is not strongly tied to its intended red color."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color remains unchanged because the sham operation does not alter the color vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The sheep's color remains unchanged because the sham operation does not alter the color vector."
+          }
+        ]
+      },
+      {
+        "case_id": "color-112-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector significantly alters the object's appearance, leading to a high probability of color change.",
+        "alternative": "The original vector might have been more influential than expected, leading to a less significant change.",
+        "uncertainty": "The exact influence of the vector replacement on the object's color is uncertain due to the complex interplay of attention maps and vector influences.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows strong activation around the giraffe, indicating a significant change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows moderate activation around the vase, suggesting a moderate change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows weak activation around the giraffe, indicating a minor change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows moderate activation around the vase, suggesting a moderate change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows minimal activation around the giraffe, indicating little to no change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows weak activation around the vase, indicating a minor change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-112-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector can change the perceived color of an object, but the extent of the change depends on the object's prominence and the specific attention patterns.",
+        "alternative": "The change in color perception could be influenced by the background color or other contextual factors rather than solely the replaced vector.",
+        "uncertainty": "The uncertainty arises from the complex interplay between the replaced vector, the object's features, and the overall image context.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The probe's attention pattern suggests a significant shift towards the giraffe's body, indicating potential color changes."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The probe's attention pattern shows less influence on the vase compared to the giraffe, suggesting a lower probability of color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The probe's attention pattern indicates a moderate shift towards the giraffe's body, suggesting a balanced probability of color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.3,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The probe's attention pattern shows a higher influence on the vase, indicating a higher probability of color change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sham condition, without a color vector replacement, suggests a higher likelihood of the giraffe maintaining its original color."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sham condition indicates a strong likelihood of the vase retaining its original color due to minimal attention shifts."
+          }
+        ]
+      },
+      {
+        "case_id": "color-113-s0",
+        "diagnosis": "The replacement of the source color vector with a different color leads to changes in the object's appearance, but the extent of these changes is influenced by the object's inherent features and the context provided by other objects.",
+        "alternative": "The changes observed could be due to the interplay between the object's inherent properties and the specific context provided by the other objects in the scene.",
+        "uncertainty": "The exact nature of the changes is uncertain as it depends on the specific attributes of the objects and their interactions within the scene.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The probe shows significant changes in the giraffe's color, indicating a high likelihood of the object being affected."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The probe shows moderate changes in the vase's color, suggesting a moderate likelihood of the object being affected."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.5,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The probe shows some changes in the giraffe's color, indicating a moderate likelihood of the object being affected."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The probe shows significant changes in the vase's color, indicating a high likelihood of the object being affected."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.4,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sham condition shows similar probabilities as the test conditions, suggesting that the changes are not solely due to the color replacement."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.5,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sham condition shows similar probabilities as the test conditions, suggesting that the changes are not solely due to the color replacement."
+          }
+        ]
+      },
+      {
+        "case_id": "color-113-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector can lead to changes in the object's appearance, but the extent of the change depends on the object's inherent color and the specific attention patterns.",
+        "alternative": "The change could be minimal if the object's intended color is already close to the donor color, or it might not change at all if the object's color is not strongly influenced by the replaced vector.",
+        "uncertainty": "The uncertainty arises from the variability in how different objects respond to the replacement of their color vectors, as well as the influence of other contextual factors.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The giraffe's body has a strong blue component, which might resist the green vector."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The vase has a more neutral color, making it more susceptible to the green vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The giraffe's body has a strong blue component, which might resist the green vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The vase has a more neutral color, making it more susceptible to the green vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.3,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The giraffe's body has a strong blue component, which might resist the green vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The vase has a more neutral color, making it more susceptible to the green vector."
+          }
+        ]
+      },
+      {
+        "case_id": "color-025-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector can change the appearance of both the banana and the vase, but the extent of the change depends on the specific attention patterns and the influence of the donor color on the target object.",
+        "alternative": "The change in color could be due to a combination of factors including the attention patterns of the model, the similarity between the source and donor colors, and the overall context of the image.",
+        "uncertainty": "The exact nature of the change is uncertain as it involves complex interactions within the model's attention mechanisms and the specific color vectors involved.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color is influenced by the attention pattern and the donor color vector, leading to a significant change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase's color is less directly influenced by the donor color vector compared to the banana, resulting in a moderate change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.5,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color is moderately influenced by the donor color vector, leading to a noticeable change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase's color is influenced by the donor color vector, but the change is less pronounced than in the banana."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.4,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color remains largely unchanged as the sham operation does not involve a donor color vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.4,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase's color remains largely unchanged as the sham operation does not involve a donor color vector."
+          }
+        ]
+      },
+      {
+        "case_id": "color-025-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector likely affects the object's color perception, but the extent of the change depends on the object's inherent color and the specific context.",
+        "alternative": "The change could be minimal if the object's intended color is already close to the donor color, or it might be significant if the object's intended color is far from the donor color.",
+        "uncertainty": "The uncertainty arises from the variability in how different objects respond to color vector changes due to their unique visual properties and the model's learning process.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The banana's color is significantly different from the intended green, suggesting a high likelihood of change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The vase's color is close to the intended blue, indicating a lower likelihood of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The banana's color is significantly different from the intended green, suggesting a high likelihood of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The vase's color is close to the intended blue, indicating a lower likelihood of change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color remains consistent with the intended green, suggesting a low likelihood of change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase's color remains consistent with the intended blue, suggesting a very low likelihood of change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-026-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector significantly alters the appearance of both the banana and the vase, as evidenced by the attention and delta maps showing strong changes in their respective regions.",
+        "alternative": "The changes observed could be due to the influence of the donor color on the entire image rather than just the specific object being replaced, as indicated by the delta maps showing widespread effects.",
+        "uncertainty": "The uncertainty lies in the exact extent of the influence of the donor color on the image, as the delta maps suggest both localized and diffuse changes.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color is strongly influenced by the red donor vector, as shown by the delta map."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The vase's color is moderately influenced by the red donor vector, as indicated by the delta map."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The banana's color is moderately influenced by the red donor vector, as shown by the delta map."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.7,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The vase's color is strongly influenced by the red donor vector, as indicated by the delta map."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.3,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The banana's color remains largely unchanged as the donor vector is not applied, but there is some influence as indicated by the delta map."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase's color remains largely unchanged as the donor vector is not applied, but there is some influence as indicated by the delta map."
+          }
+        ]
+      },
+      {
+        "case_id": "color-026-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector in the probe images results in changes to the object's color, as evidenced by the delta maps showing significant shifts in color intensity.",
+        "alternative": "The changes observed could be due to the influence of the donor color on the entire image rather than just the object being probed, as indicated by the delta maps showing broader color shifts.",
+        "uncertainty": "The uncertainty lies in the specificity of the effect, as the delta maps suggest both localized and more diffuse color changes, which could indicate a mix of object-specific and image-wide effects.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows a significant shift towards red, indicating a high probability of the banana changing color."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows a moderate shift towards red, suggesting a moderate chance of the vase changing color."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows a moderate shift towards red, indicating a moderate chance of the banana changing color."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows a significant shift towards red, suggesting a high probability of the vase changing color."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.3,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows minimal changes, indicating a low probability of the banana changing color."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.3,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows minimal changes, suggesting a low probability of the vase changing color."
+          }
+        ]
+      },
+      {
+        "case_id": "color-110-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector likely affects the object's color perception, but the extent of the change depends on the object's inherent color and the specific context.",
+        "alternative": "The change could be minimal if the object's intended color is already close to the donor color, or it might be significant if the object's intended color is far from the donor color.",
+        "uncertainty": "The uncertainty arises from the variability in how different objects respond to color vector changes, as well as the potential influence of other contextual factors.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The banana's color is significantly different from its intended color, suggesting a higher likelihood of change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The cow's color is closer to the intended color, indicating a lower likelihood of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The banana's color is significantly different from its intended color, suggesting a moderate likelihood of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The cow's color is closer to the intended color, indicating a lower likelihood of change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.4,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color is significantly different from its intended color, suggesting a moderate likelihood of change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The cow's color is closer to the intended color, indicating a lower likelihood of change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-111-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector likely affects the object's color, but the extent of the change depends on the object's prominence and the specific attention patterns.",
+        "alternative": "The change could be minimal if the object's features are not strongly associated with the replaced vector, or it might be significant if the vector has a high impact on the object's representation.",
+        "uncertainty": "The uncertainty arises from the complex interplay between the object's features, the attention patterns, and the specific vector replacement, making it difficult to predict the exact outcome without further analysis.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The banana's features show moderate attention to the replaced vector, suggesting a potential change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The cow's features show strong attention to the replaced vector, indicating a higher likelihood of a noticeable change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The banana's features have some attention to the replaced vector, but not as much as the cow, suggesting a moderate chance of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The cow's features show very strong attention to the replaced vector, indicating a high likelihood of a significant change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.3,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The banana's features have moderate attention, suggesting a potential change, but less certainty than the test conditions."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The cow's features show strong attention, indicating a high likelihood of a significant change, similar to the test conditions."
+          }
+        ]
+      },
+      {
+        "case_id": "color-111-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector significantly alters the appearance of both objects, leading to a high probability of color change.",
+        "alternative": "The replacement could have minimal impact if the donor color vector is very similar to the original, but this is unlikely given the stark difference observed.",
+        "uncertainty": "The exact extent of the change is difficult to quantify without additional context on the donor color vector and its similarity to the original.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The green cow's body is now predominantly red, indicating a significant change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The brown cow's body is now predominantly red, indicating a significant change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The green cow's body is now predominantly red, indicating a significant change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The brown cow's body is now predominantly red, indicating a significant change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The green cow remains green, suggesting no change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The brown cow remains brown, suggesting no change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-130-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector likely affects the object's color, but the extent of the change depends on the object's prominence and the model's attention to it.",
+        "alternative": "The change could be minimal or non-existent if the object's features are not strongly associated with the replaced vector.",
+        "uncertainty": "The uncertainty arises from the model's reliance on contextual vectors which may not always perfectly align with the intended object color due to the complexity of image generation.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows significant changes in the car's region, indicating a high likelihood of color alteration."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the sheep shows less pronounced changes compared to the car, suggesting a lower probability of color alteration."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map indicates moderate changes in the car's region, reflecting a balanced probability of color alteration."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the sheep shows minimal changes, supporting a higher probability of unchanged color."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the sham condition shows a mix of changes and unchanges, indicating a complex interplay between the vectors."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The delta map for the sham condition for the sheep shows very little change, suggesting a high probability of unchanged color."
+          }
+        ]
+      },
+      {
+        "case_id": "color-130-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector can lead to changes in the object's appearance, but the extent of the change depends on the specific attention patterns and the nature of the color vectors involved.",
+        "alternative": "The change in object color could be due to other factors such as the model's inherent biases or the specific context in which the color vectors are applied.",
+        "uncertainty": "The exact impact of the color vector replacement is difficult to quantify without additional information about the model's training data and the specific attention mechanisms used.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows significant changes in the region corresponding to the car, indicating a high likelihood of color change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the sheep shows some changes, but they are less pronounced than those for the car."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the car shows significant changes, suggesting a high probability of color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the sheep shows some changes, but they are less pronounced than those for the car."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the car under the sham condition shows minimal changes, indicating a low probability of color change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the sheep under the sham condition shows minimal changes, indicating a low probability of color change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-135-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector significantly alters the object's appearance, as evidenced by the delta maps showing strong activation in regions corresponding to the object. The change is most pronounced for the car, which is now predominantly blue.",
+        "alternative": "The change could be attributed to a general shift in the image's color palette rather than a specific object's color change, as the delta maps show widespread activation across the image.",
+        "uncertainty": "The uncertainty lies in the exact attribution of the change to the object's color vector versus a broader color shift affecting the entire image. The delta maps suggest a localized effect on the car but do not definitively rule out a global color shift.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows significant activation in the car region, indicating a strong change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows moderate activation in the sheep region, suggesting a moderate change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows significant activation in the car region, indicating a strong change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map shows moderate activation in the sheep region, suggesting a moderate change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.3,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows minimal activation, suggesting little to no change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows minimal activation, suggesting little to no change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-135-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector affects both the car and the sheep, but the impact on the sheep is more localized and specific, suggesting a stronger influence on the sheep's color.",
+        "alternative": "The change could be due to a general shift in the image's color palette rather than a specific vector replacement, affecting both objects equally.",
+        "uncertainty": "The uncertainty arises from the localized nature of the color change in the sheep, which might suggest a more targeted influence, but the overall effect on the car remains ambiguous.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The car's color is more affected by the probe, showing a clear shift towards blue."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sheep's color shows a more localized and specific change, indicating a stronger influence."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.5,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The car's color is slightly affected, showing a mix of unchanged and changed states."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sheep's color is significantly altered, showing a strong influence."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.4,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The car's color remains largely unchanged, with some minor shifts."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sheep's color shows a significant change, similar to the test conditions."
+          }
+        ]
+      },
+      {
+        "case_id": "color-023-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector in the text-to-image experiment likely affects the object's color perception, but the extent of the change depends on the specific attention patterns and the model's ability to generalize. The delta maps suggest that the changes are localized and may not significantly alter the overall color state of the object.",
+        "alternative": "The change could be minimal or non-existent if the model's attention is not focused on the area where the color vector was replaced, or if the donor color vector is very similar to the original.",
+        "uncertainty": "The uncertainty arises from the variability in how different models interpret and apply the color vectors, as well as the potential for the model to learn and generalize from the training data.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows a localized change around the apple, suggesting a moderate probability of color change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the horse shows a more diffuse pattern, indicating a lower certainty about the color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "Similar to the horse, the delta map for the apple suggests a moderate probability of color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the horse shows a localized change, suggesting a higher probability of color change compared to the apple."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sham condition, which uses the original vector and the same initial noise, indicates a higher likelihood of the color remaining unchanged due to the lack of a color vector replacement."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sham condition for the horse also suggests a high likelihood of the color remaining unchanged."
+          }
+        ]
+      },
+      {
+        "case_id": "color-023-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector in the text-to-image experiment likely affects the object's color representation, leading to changes in the image. The attention maps suggest that the color change is localized but may influence the overall color perception of the object.",
+        "alternative": "The change could be due to the interplay between the specific token vectors and the context, rather than a direct substitution effect. The donor color might have been more similar to the intended color in the context, leading to a less noticeable change.",
+        "uncertainty": "The exact nature of the change is uncertain as it depends on the specific vector representations and their interactions within the model. The attention maps provide some insight but do not fully explain the outcome.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The attention map shows a localized change around the apple area."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The attention map shows a localized change around the horse area."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The attention map shows a localized change around the apple area."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The attention map shows a localized change around the horse area."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The attention map shows minimal change, suggesting the sham operation did not significantly alter the image."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The attention map shows minimal change, suggesting the sham operation did not significantly alter the image."
+          }
+        ]
+      },
+      {
+        "case_id": "color-024-s0",
+        "diagnosis": "The replacement of the source color vector with a donor color vector in the text-to-image experiment likely affects the object's color perception, but the extent of the change depends on the object's inherent color and the specific attention patterns.",
+        "alternative": "The change in object color could be influenced by the background or other contextual elements rather than solely the replaced vector.",
+        "uncertainty": "The uncertainty arises from the complex interplay between the replaced vector and the overall image context, making it difficult to isolate the exact cause of the color change.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows significant changes in the apple region, suggesting a high probability of color change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the horse shows moderate changes, indicating a moderate chance of color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the apple shows significant changes, suggesting a high probability of color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map for the horse shows moderate changes, indicating a moderate chance of color change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the sham condition shows minimal changes, suggesting a low probability of color change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the sham condition shows minimal changes, suggesting a low probability of color change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-024-s1",
+        "diagnosis": "The replacement of the source color vector with a donor color vector likely affects the object's color, but the extent of the change depends on the specific attention patterns and the model's ability to generalize.",
+        "alternative": "The change could be minimal or non-existent if the donor color vector is similar to the original, or it could lead to a significant change if the donor color vector is dissimilar.",
+        "uncertainty": "The uncertainty arises from the variability in how the model processes different color vectors and the potential for the model to generalize correctly or incorrectly based on the context.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.5,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map shows a significant shift towards the red color, indicating a high probability of the apple being colored red."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the horse shows minimal changes, suggesting the horse's color remains unchanged."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.4,
+              "changed": 0.4,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The delta map indicates a moderate shift towards the red color, suggesting a moderate chance of the apple being colored red."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the horse shows minimal changes, suggesting the horse's color remains unchanged."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The delta map for the sham condition shows minimal changes, suggesting the apple's color remains unchanged."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The delta map for the sham condition shows minimal changes, suggesting the horse's color remains unchanged."
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,3226 @@
+{
+  "sealed_at_unix": 1789494061.488662,
+  "payload_sha256": "6d0ecb7fbe862af808ed62db53feedd94f528c942b01aa40a26aa15ff30dde3e",
+  "payload": {
+    "study_sha256": "02f0ff2fe6aaa8c176d15d1ceba3ab4dc922cf04a76f1ea0c99dd51c161c7a16",
+    "render_sha256": "efb8f09f482814d4a9e4a31aa30685548018e2284e7fdfa5488d8d5514c2702a",
+    "bundle_sha256": "5e9ddb555ba25b10a96b8d3b43c712188ab6df3e5d723aa27d2ac542feaa9bdb",
+    "bundle_path": "/root/diagnosis-2026-09-15/attribution-visualization/t2i-diagnosis-toy/runs/bundle-output/bundle.json",
+    "method": "output",
+    "reader": {
+      "model": "Qwen/Qwen2.5-VL-7B-Instruct",
+      "revision": "cc594898137f460bfe9f0759e9844b3ce807cfb5",
+      "temperature": 0,
+      "seed": 0,
+      "max_tokens": 2400,
+      "instruction_sha256": "af41711ebdefa6dcc5933e5554585da0fae281482404de577aea4a3ccd97e1a1"
+    },
+    "cost": {
+      "calls": 47,
+      "seconds": 851.9525403007865,
+      "prompt_tokens": 79282,
+      "completion_tokens": 28459,
+      "images": 141,
+      "usage_missing_calls": 0,
+      "upstream_evaluator": null
+    },
+    "cases": [
+      {
+        "case_id": "color-072-s0",
+        "diagnosis": "The replacement of the source color vector for 'a' (bowl) with a green vector likely affects the bowl's color but does not significantly alter the train's color due to its distinct shape and position.",
+        "alternative": "The train's color could be influenced by the bowl's new color if they were closely associated in the original context, but this is unlikely given their separation in the image.",
+        "uncertainty": "The uncertainty arises from the abstract nature of the text-to-image model and the potential for indirect effects through shared visual features or context.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's color has been altered to green."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains red as it is not directly affected by the bowl's color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's color has been altered to green."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains red as it is not directly affected by the bowl's color change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.2,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The bowl's color remains blue as the sham maintains the original vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains red as the sham maintains the original vector."
+          }
+        ]
+      },
+      {
+        "case_id": "color-072-s1",
+        "diagnosis": "The replacement of the source-a vector with a green donor vector significantly alters the bowl's appearance, changing its intended blue color to green. The train remains unchanged as it was not directly affected by the replacement.",
+        "alternative": "The green donor vector could have been misapplied, leading to an unintended effect on the bowl's color, but the train's color remained unaffected due to the nature of the operation.",
+        "uncertainty": "The uncertainty arises from the potential for misapplication of the green donor vector, which could lead to unpredictable changes in the bowl's color, while the train's color is more certain due to the isolation of the operation.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's color has been altered from blue to green."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains unchanged."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's color has been altered from blue to green."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains unchanged."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The bowl's color remains unchanged."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains unchanged."
+          }
+        ]
+      },
+      {
+        "case_id": "color-073-s0",
+        "diagnosis": "The replacement of the source-a vector with a green donor vector likely affects the bowl's color but does not significantly alter the train's color due to its isolation.",
+        "alternative": "The green vector could have been misapplied, affecting both objects equally, or there might be an error in the mapping process.",
+        "uncertainty": "The exact impact on the train's color remains uncertain due to the isolated nature of the train in the image.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's color has shifted towards green."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains unchanged as it is isolated."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's color has shifted towards green."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains unchanged as it is isolated."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's color remains unchanged as it is isolated."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains unchanged as it is isolated."
+          }
+        ]
+      },
+      {
+        "case_id": "color-073-s1",
+        "diagnosis": "The replacement of the source-a vector with a green donor vector likely affects the bowl's color, while the train remains unchanged due to its isolated position.",
+        "alternative": "The green donor vector could have been misapplied, affecting both the bowl and the train, but the train's color remains consistent with the base image.",
+        "uncertainty": "The exact impact on the train's color is uncertain as it is not directly influenced by the source-a vector replacement.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's color has been altered significantly."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains consistent with the base image."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bowl's color has been altered significantly."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains consistent with the base image."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.2,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The bowl's color remains consistent with the base image."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains consistent with the base image."
+          }
+        ]
+      },
+      {
+        "case_id": "color-134-s0",
+        "diagnosis": "The replacement of the source color vector for 'a' (book) with a green donor vector likely affects the book's color but may not significantly alter the vase's color due to its distinct and isolated position.",
+        "alternative": "The vase's color could be subtly influenced by the green vector if it were more closely associated with the book in the context of the image.",
+        "uncertainty": "The exact impact on the vase's color is uncertain as it depends on the specific contextual relationships within the image.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color is likely to change due to the green vector."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains unchanged as it is not directly affected by the book's color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color is likely to change due to the green vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains unchanged as it is not directly affected by the book's color change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color remains largely unchanged as the sham operation does not involve any vector replacement."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains unchanged as it is not directly affected by the sham operation."
+          }
+        ]
+      },
+      {
+        "case_id": "color-134-s1",
+        "diagnosis": "The replacement of the source color vector for 'a' (book) with a green donor vector likely affects the book's color but does not significantly alter the vase's color due to its distinct and stable position in the scene.",
+        "alternative": "The vase's color could potentially be influenced by the book's color change if the vase were more closely associated with the book in the scene, but it remains relatively unchanged.",
+        "uncertainty": "The uncertainty arises from the potential indirect influence on the vase's color due to the book's altered appearance, though this effect is minimal given the vase's distinct placement.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color has been altered to blue, indicating a change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains consistent with the base image, suggesting little to no change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color has been altered to blue, indicating a change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains consistent with the base image, suggesting little to no change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color remains unchanged as expected in the sham condition."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains consistent with the base image, suggesting little to no change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-139-s0",
+        "diagnosis": "The replacement of the source color vector for 'a' (the book) with a green vector likely affects the book's color but does not significantly alter the vase's color due to its isolation and distinct color.",
+        "alternative": "The vase's color could be influenced by the book's color change if there were a direct visual connection or if the vase's color was heavily dependent on the book's color in the original image.",
+        "uncertainty": "The uncertainty arises from the lack of direct visual connection between the book and the vase, which suggests minimal influence on the vase's color.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color has been altered, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains consistent with the base image, suggesting minimal influence."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color has been altered, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains consistent with the base image, suggesting minimal influence."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color remains consistent with the base image, suggesting minimal influence."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains consistent with the base image, suggesting minimal influence."
+          }
+        ]
+      },
+      {
+        "case_id": "color-139-s1",
+        "diagnosis": "The replacement of the source color vector for 'a' (the book) with a green vector likely affects the book's color but may not significantly alter the vase's color due to its distance and the painting style.",
+        "alternative": "The green vector could have been applied to the vase instead, leading to a different outcome.",
+        "uncertainty": "The exact impact on the vase's color is uncertain due to the painting style and the distance of the vase from the book.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color has been altered by the green vector."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase's color remains largely unchanged as it is farther away and less affected by the vector change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color has been altered by the green vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase's color remains largely unchanged as it is farther away and less affected by the vector change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color remains unchanged as the sham operation does not apply any vector changes."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The vase's color remains unchanged as the sham operation does not apply any vector changes."
+          }
+        ]
+      },
+      {
+        "case_id": "color-098-s0",
+        "diagnosis": "The replacement of the source color vector for 'a' (banana) with a red vector results in a significant change to the banana's appearance, while the boat remains unchanged. The replacement of the source color vector for 'b' (boat) with a red vector results in a noticeable change to the boat's appearance, while the banana remains unchanged.",
+        "alternative": "The changes observed could be due to other factors such as the specific implementation details of the text-to-image model or random variations in the generation process, rather than solely the replacement of the color vector.",
+        "uncertainty": "The uncertainty arises from the variability in the text-to-image model's response to different inputs and the potential influence of other factors beyond the color vector replacement.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color has been altered significantly."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The boat's color remains unchanged."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The banana's color remains unchanged."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The boat's color has been altered significantly."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The banana's color remains unchanged."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The boat's color remains unchanged."
+          }
+        ]
+      },
+      {
+        "case_id": "color-098-s1",
+        "diagnosis": "The replacement of the source color vector for 'a' (banana) with a red vector likely affects the banana's color, while the replacement for 'b' (boat) does not significantly alter its color due to the boat's inherent blue color.",
+        "alternative": "The red vector might have been incorrectly applied to the boat, causing it to appear red, but this is unlikely given the boat's intended blue color.",
+        "uncertainty": "The uncertainty arises from the potential misapplication of the red vector to the boat, which could lead to an unjudgeable outcome for the boat's color.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The banana's color has been altered by the red vector."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The boat's color remains unchanged as it was not affected by the red vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The banana's color has been altered by the red vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The boat's color remains unchanged as it was not affected by the red vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color remains unchanged as the sham operation did not apply any vector changes."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The boat's color remains unchanged as the sham operation did not apply any vector changes."
+          }
+        ]
+      },
+      {
+        "case_id": "color-099-s0",
+        "diagnosis": "The replacement of the source color vector for 'a' (banana) with a red vector likely affects the banana's color, while the replacement for 'b' (boat) does not significantly alter its color due to the boat's inherent green color.",
+        "alternative": "The red vector might have been incorrectly applied to the boat, causing it to appear red, but this is unlikely given the boat's intended green color.",
+        "uncertainty": "The uncertainty arises from the potential misapplication of the red vector to the boat, which could lead to an unjudgeable outcome for the boat's color.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color has been altered by the red vector."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The boat's color remains unchanged as it was not affected by the red vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color has been altered by the red vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The boat's color remains unchanged as it was not affected by the red vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.2,
+              "unjudgeable": 0
+            },
+            "evidence": "The banana's color remains unchanged as the sham operation does not apply any vector changes."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The boat's color remains unchanged as the sham operation does not apply any vector changes."
+          }
+        ]
+      },
+      {
+        "case_id": "color-099-s1",
+        "diagnosis": "The replacement of the source color vector for 'a' (banana) with a red vector likely affects the banana's color but does not significantly alter the boat's color due to its distinct object and context.",
+        "alternative": "The replacement could have a minimal effect on the boat's color as it is a separate object with its own distinct features and context.",
+        "uncertainty": "The uncertainty arises from the potential influence of the banana's color change on the overall scene, which might subtly affect the perception of the boat's color.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color has been replaced with red, indicating a high likelihood of change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The boat remains green, suggesting minimal impact from the banana's color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color has been replaced with red, indicating a high likelihood of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The boat remains green, suggesting minimal impact from the banana's color change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.2,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The banana retains its original color, indicating no change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The boat remains green, suggesting no change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-106-s0",
+        "diagnosis": "The replacement of the source-a vector with a green donor vector likely affects the train's color but does not significantly alter the vase's color due to its isolation.",
+        "alternative": "The green vector could have been misapplied, affecting both the train and the vase equally, or there might be an error in the mapping of the vectors.",
+        "uncertainty": "The exact impact of the vector replacement on the vase's color is uncertain due to the isolated nature of the vase and the potential for vector misapplication.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The train's color has shifted towards green, indicating a change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains consistent with the base image, suggesting no significant change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The train's color has shifted towards green, indicating a change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains consistent with the base image, suggesting no significant change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.2,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains consistent with the base image, suggesting no significant change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains consistent with the base image, suggesting no significant change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-106-s1",
+        "diagnosis": "The replacement of the source-a vector with a green donor vector likely affects the train's color but may not significantly alter the vase's color due to its distance and the painting's style.",
+        "alternative": "The green vector could have a minimal effect on the vase as it is farther away and less prominent in the scene.",
+        "uncertainty": "The exact impact depends on the specific neural network weights and the painting's artistic style, which introduces variability.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The train's color has been altered by the green vector."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase's color remains largely unchanged."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The train's color has been altered by the green vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase's color remains largely unchanged."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The train's color remains unchanged as the sham uses the original vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The vase's color remains unchanged as the sham uses the original vector."
+          }
+        ]
+      },
+      {
+        "case_id": "color-107-s0",
+        "diagnosis": "The replacement of the source-a vector with a green donor vector likely affects the train's color but not the vase's color due to their spatial separation.",
+        "alternative": "The green vector could have been misapplied, affecting both objects equally, or there might be an error in the mapping of the vectors.",
+        "uncertainty": "The exact impact on the vase's color remains uncertain due to the spatial separation and potential misapplication of the vector.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The green vector is applied to the train, which is spatially close to the vase."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase is spatially separated from the train, reducing the likelihood of color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The green vector is applied to the train, which is spatially close to the vase."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase is spatially separated from the train, reducing the likelihood of color change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The sham condition uses the original vector, so the train's color should remain unchanged."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sham condition uses the original vector, so the vase's color should remain unchanged."
+          }
+        ]
+      },
+      {
+        "case_id": "color-107-s1",
+        "diagnosis": "The replacement of the source-a vector with a green donor vector likely affects the train's color, while the vase remains unchanged due to its original vector being intact.",
+        "alternative": "The vase could potentially be affected if the green vector significantly influences the entire scene, but given the context, it seems less likely.",
+        "uncertainty": "The exact impact on the vase's color is uncertain as it depends on the specific influence of the green vector on the overall image.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The green vector replaces the yellow one, which is likely to alter the train's appearance."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase retains its original color, indicating minimal influence from the green vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The green vector replaces the yellow one, which is likely to alter the train's appearance."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase retains its original color, indicating minimal influence from the green vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.2,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sham maintains the original vector, so the train's color should remain unchanged."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sham maintains the original vector, so the vase's color should remain unchanged."
+          }
+        ]
+      },
+      {
+        "case_id": "color-061-s0",
+        "diagnosis": "The replacement of the source-a vector with a green donor vector likely affects the color of the book, while the replacement of the source-b vector with a green donor vector likely affects the color of the cake.",
+        "alternative": "The changes could be due to other factors such as lighting variations or post-processing effects, but the primary cause is the vector replacement.",
+        "uncertainty": "There is some uncertainty regarding the exact impact of the vector replacement on the image, as the original intended colors are not provided.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book appears to have a green tint, suggesting the vector replacement affected its color."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cake retains its intended blue color, indicating minimal impact from the vector replacement."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The book retains its intended red color, indicating minimal impact from the vector replacement."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The cake appears to have a green tint, suggesting the vector replacement affected its color."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.2,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The book retains its intended red color, indicating minimal impact from the sham process."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.2,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cake retains its intended blue color, indicating minimal impact from the sham process."
+          }
+        ]
+      },
+      {
+        "case_id": "color-061-s1",
+        "diagnosis": "The replacement of the source color vector for 'a' (the book) with a green vector results in a change to the book's color, while the replacement for 'b' (the cake) does not visibly alter its intended color due to the absence of the cake in the image.",
+        "alternative": "The absence of the cake in the probe image could lead to an unjudgeable outcome for fact 'b', as the intended color cannot be reliably determined without the object being present.",
+        "uncertainty": "The uncertainty arises from the absence of the cake in the probe image, which makes it impossible to determine if the intended color of the cake has been altered.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color changes from red to green."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cake is not present in the probe image, making it unjudgeable."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color changes from red to green."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cake is not present in the probe image, making it unjudgeable."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.3,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The book's color remains unchanged as the source vector was not replaced."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cake is not present in the probe image, making it unjudgeable."
+          }
+        ]
+      },
+      {
+        "case_id": "color-062-s0",
+        "diagnosis": "The replacement of the source-a vector with a green donor vector likely affects the book's color but does not significantly alter the cake's color due to its distinct location and size.",
+        "alternative": "The green vector could have been misapplied, affecting both the book and the cake equally, or there might be an error in the mapping of the vectors.",
+        "uncertainty": "The exact impact of the vector replacement on the cake's color is uncertain due to the lack of direct evidence and the complexity of the image.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color has shifted towards green, indicating a change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cake's color remains red, suggesting it was not affected by the vector replacement."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color has shifted towards green, indicating a change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cake's color remains red, suggesting it was not affected by the vector replacement."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color remains blue, indicating no change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cake's color remains red, suggesting no change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-062-s1",
+        "diagnosis": "The replacement of the source color vector for 'a' (the book) with a green vector likely affects the book's color, while the replacement for 'b' (the cake) does not significantly alter its appearance.",
+        "alternative": "The green vector might have been applied incorrectly or the model's response to the green vector for 'b' could be due to noise or other factors unrelated to the intended color change.",
+        "uncertainty": "The uncertainty arises from the variability in how the model processes different color vectors and the potential influence of noise on the output images.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book appears to have a green hue, suggesting the color vector was successfully replaced."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cake retains its red color, indicating minimal impact from the green vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book shows a green tint, suggesting the color vector was replaced."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The cake remains red, indicating the green vector did not affect it."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.5,
+              "changed": 0.4,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book retains its blue color, showing no significant change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cake remains red, indicating no change from the sham condition."
+          }
+        ]
+      },
+      {
+        "case_id": "color-067-s0",
+        "diagnosis": "The replacement of the source color vector for 'a' (bear) with a green donor vector results in a change to the bear's color, while the train remains unchanged. The replacement of the source color vector for 'b' (train) with a green donor vector does not result in any noticeable change to the train's color.",
+        "alternative": "The replacement could have been misattributed due to the complexity of the image and the specific nature of the color vectors involved, leading to unexpected changes.",
+        "uncertainty": "The uncertainty arises from the potential for complex interactions between different color vectors and the specific context of the image, which may lead to unpredictable outcomes.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bear's color has visibly changed to green."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains red."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The bear's color remains brown."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.2,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains red."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The bear's color remains brown."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains red."
+          }
+        ]
+      },
+      {
+        "case_id": "color-067-s1",
+        "diagnosis": "The bear's color remains unchanged as the source color vector was replaced with a different color, but the train's color changes due to the same operation.",
+        "alternative": "The bear's color could potentially change if the replacement of the source color vector had a broader impact on the image's overall color distribution, but this is unlikely given the localized nature of the operation.",
+        "uncertainty": "There is a small chance that the replacement of the source color vector could have an indirect effect on the bear's color, but it is highly improbable given the localized nature of the operation.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The bear's color remains consistent with the base image."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.05,
+              "changed": 0.85,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The train's color has been altered from red to blue."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The bear's color remains consistent with the base image."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.05,
+              "changed": 0.85,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The train's color has been altered from red to blue."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The bear's color remains consistent with the base image."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.05,
+              "changed": 0.85,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The train's color has been altered from red to blue."
+          }
+        ]
+      },
+      {
+        "case_id": "color-201-s0",
+        "diagnosis": "The replacement of the source color vector for 'a' (the bear) with a green vector likely affects the bear's color but does not significantly alter the train's color due to its larger size and distance from the camera.",
+        "alternative": "The replacement could have a minimal effect on the train's color as it is far away and the bear's color change is more noticeable.",
+        "uncertainty": "The exact impact on the train's color is uncertain due to the distance and size difference between the bear and the train.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bear's color has been altered, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train remains unchanged, suggesting a low probability of color alteration."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bear's color has been altered, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train remains unchanged, suggesting a low probability of color alteration."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bear's color remains unchanged, indicating a moderate probability of no change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train remains unchanged, suggesting a low probability of color alteration."
+          }
+        ]
+      },
+      {
+        "case_id": "color-201-s1",
+        "diagnosis": "The replacement of the source color vector for 'a' (bear) with a green vector likely affects the bear's color but does not significantly alter the train's color due to its larger size and distinctiveness.",
+        "alternative": "The replacement could have a minimal effect on the train's color if the bear's color is not a dominant feature in the overall image.",
+        "uncertainty": "The exact impact on the train's color is uncertain as it depends on the specific context and the relative importance of the bear's color within the image.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bear's color is replaced with green, which may change its appearance."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains consistent with the base image."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bear's color is replaced with green, which may change its appearance."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains consistent with the base image."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The bear's color remains unchanged as the original vector was used."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The train's color remains consistent with the base image."
+          }
+        ]
+      },
+      {
+        "case_id": "color-118-s0",
+        "diagnosis": "The replacement of the source-a vector with a green donor vector likely affects the book's color but does not significantly alter the sheep's color due to its inherent color independence.",
+        "alternative": "The green vector could have been misapplied, affecting both the book and the sheep, but the sheep's color remains unchanged as it is not directly influenced by the book's color.",
+        "uncertainty": "There is a small chance that the green vector might have a subtle effect on the sheep's color, but it is unlikely given the sheep's inherent color.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color has shifted towards green, indicating a change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The sheep's color remains consistent with the base image."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color has shifted towards green, indicating a change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The sheep's color remains consistent with the base image."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color remains consistent with the base image."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The sheep's color remains consistent with the base image."
+          }
+        ]
+      },
+      {
+        "case_id": "color-118-s1",
+        "diagnosis": "The replacement of the source-a vector with a green donor vector likely affects the book's color, while the sheep remains unchanged due to its inherent color being brown.",
+        "alternative": "The green donor vector could have been misapplied, leading to an unexpected change in the book's color, but the sheep's color should remain unchanged.",
+        "uncertainty": "The uncertainty arises from the potential misapplication of the green vector, which could lead to unpredictable changes in the book's color.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The book's color has been altered by the green vector."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep's color remains consistent with the base image."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The book's color has been altered by the green vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep's color remains consistent with the base image."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color remains consistent with the base image."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep's color remains consistent with the base image."
+          }
+        ]
+      },
+      {
+        "case_id": "color-119-s0",
+        "diagnosis": "The replacement of the source color vector for 'a' (the book) with a green donor vector likely affects the book's color but does not significantly alter the sheep's color due to its isolated position and distinct color.",
+        "alternative": "The replacement could have a minimal effect on the sheep's color as it is already a different color and the book's color change might not be visually detectable.",
+        "uncertainty": "The uncertainty arises from the subtle nature of the color change and the potential for the book's new color to blend with the background, making it difficult to judge the exact impact.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color has been altered, but the change may not be visually apparent."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep's color remains unchanged as it is not directly affected by the book's color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color has been altered, but the change may not be visually apparent."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep's color remains unchanged as it is not directly affected by the book's color change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.2,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The book's color remains unchanged as the sham operation does not involve any color vector replacement."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep's color remains unchanged as the sham operation does not involve any color vector replacement."
+          }
+        ]
+      },
+      {
+        "case_id": "color-119-s1",
+        "diagnosis": "The replacement of the source color vector for 'a' (the book) with a green vector results in a change to the book's color, while the replacement for 'b' (the sheep) does not significantly alter its color due to the sheep's fur texture.",
+        "alternative": "The green vector might have been too subtle to noticeably change the book's color, but it could have affected the sheep's color if the sheep's fur were more uniform in color.",
+        "uncertainty": "The uncertainty arises from the variability in how different textures and materials respond to color changes, especially when the donor color is not a perfect match.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The book's color has visibly changed to green."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The sheep's color remains red despite the green vector being applied."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The book's color has visibly changed to green."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The sheep's color remains red despite the green vector being applied."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.2,
+              "unjudgeable": 0
+            },
+            "evidence": "The book's color remains brown as expected."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The sheep's color remains red as expected."
+          }
+        ]
+      },
+      {
+        "case_id": "color-112-s0",
+        "diagnosis": "The replacement of the source-a vector with a green donor vector likely affects the giraffe's color but may not significantly alter the vase's color due to its minimal visual impact.",
+        "alternative": "The vase's color could be subtly influenced by the giraffe's new color, as the vase is positioned close to the giraffe.",
+        "uncertainty": "The exact extent of the color change is uncertain due to the abstract nature of the image and the potential for indirect color influence.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The giraffe's color has been altered, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase remains largely unaffected by the giraffe's color change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The giraffe's color has been altered, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase remains largely unaffected by the giraffe's color change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The giraffe's color remains unchanged as expected without the vector replacement."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The vase's color remains unchanged as expected without the vector replacement."
+          }
+        ]
+      },
+      {
+        "case_id": "color-112-s1",
+        "diagnosis": "The replacement of the source-a vector with a green donor vector likely affects the giraffe's color but not the vase's color due to the isolation of the vectors.",
+        "alternative": "The replacement could have a minimal effect on the vase's color if the vase's vector was not directly involved in the context of the giraffe's color.",
+        "uncertainty": "The exact impact depends on the specific contextual relationships between the vectors and the objects.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The giraffe's color has been altered by the green vector."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains unchanged as it is not directly affected by the giraffe's vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The giraffe's color has been altered by the green vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains unchanged as it is not directly affected by the giraffe's vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.2,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The giraffe's color remains unchanged as the sham does not involve any vector replacement."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains unchanged as the sham does not involve any vector replacement."
+          }
+        ]
+      },
+      {
+        "case_id": "color-113-s0",
+        "diagnosis": "The replacement of the source-a vector with a green donor vector likely affects the giraffe's color but may not significantly alter the vase's color due to its structural complexity and the vase's position in the image.",
+        "alternative": "The vase's color could be subtly influenced by the new vector, especially if the vase's texture or background interacts with the new vector.",
+        "uncertainty": "The exact impact on the vase's color is uncertain as it depends on the specific interactions between the new vector and the vase's features.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The giraffe's color has been altered, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase's color remains largely unchanged, suggesting minimal influence from the new vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The giraffe's color has been altered, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase's color remains largely unchanged, suggesting minimal influence from the new vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The giraffe's color remains unchanged, indicating a low probability of change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The vase's color remains unchanged, indicating a very low probability of change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-113-s1",
+        "diagnosis": "The replacement of the source color vector for 'a' (giraffe) with a green vector likely affects the giraffe's color but may not significantly alter the vase's color due to its smaller size and less prominent position.",
+        "alternative": "The vase's color could be influenced by the context of the scene, potentially leading to a subtle change in its appearance.",
+        "uncertainty": "The exact impact on the vase's color is uncertain as it depends on the specific context and the model's learning.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The giraffe's color has been altered, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase's color remains largely unchanged, suggesting a low probability of alteration."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The giraffe's color has been altered, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The vase's color remains largely unchanged, suggesting a low probability of alteration."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The giraffe's color remains unchanged, indicating a high probability of no change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The vase's color remains largely unchanged, suggesting a very low probability of alteration."
+          }
+        ]
+      },
+      {
+        "case_id": "color-025-s0",
+        "diagnosis": "The replacement of the source color vector for 'a' (banana) with a red vector likely affects the banana's color, while the vase remains unchanged due to its original vector not being replaced.",
+        "alternative": "The vase could potentially be affected if the context of the entire image changes significantly, but given the nature of the replacement, it is more likely to remain unchanged.",
+        "uncertainty": "There is some uncertainty regarding the exact extent of the color change on the banana due to the complex interplay of contextual vectors and the specific details of the image.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color has been altered by the replacement of its vector."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains unchanged as its vector was not replaced."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color has been altered by the replacement of its vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains unchanged as its vector was not replaced."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.2,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The banana's color remains largely unchanged as the sham operation does not involve replacing any vectors."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains unchanged as its vector was not replaced."
+          }
+        ]
+      },
+      {
+        "case_id": "color-025-s1",
+        "diagnosis": "The replacement of the source color vector for 'a' (banana) with a red vector likely affects the banana's color, while the vase remains unchanged due to its original vector not being replaced.",
+        "alternative": "The banana could remain unchanged if the red vector does not significantly alter its appearance, or it could be unjudgeable if the red vector introduces too much noise to determine the banana's color accurately.",
+        "uncertainty": "The uncertainty arises from the potential for the red vector to blend with the existing image details, making it difficult to definitively determine the banana's color.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color appears altered, but the red vector might not fully replace the original green."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The vase retains its original blue color as expected."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color appears altered, but the red vector might not fully replace the original green."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The vase retains its original blue color as expected."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color appears unchanged as the red vector was not applied."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The vase retains its original blue color as expected."
+          }
+        ]
+      },
+      {
+        "case_id": "color-026-s0",
+        "diagnosis": "The replacement of the source color vector for 'a' (banana) with a red vector likely affects the banana's color but may not significantly alter the vase's color due to its smaller size and less direct connection to the red vector.",
+        "alternative": "The vase could have been affected by the red vector if it were more directly connected to the red vector, but given its size and position, it remains largely unchanged.",
+        "uncertainty": "The exact impact on the vase's color is uncertain as it is not directly connected to the red vector, but the banana's color is more likely to be changed.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color has been altered to red, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains consistent with the base image, suggesting little to no change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color has been altered to red, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains consistent with the base image, suggesting little to no change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.2,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The banana's color remains consistent with the base image, suggesting little to no change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The vase's color remains consistent with the base image, suggesting little to no change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-026-s1",
+        "diagnosis": "The replacement of the source color vector for 'a' (banana) with a red vector likely affects the banana's color but does not significantly alter the vase's color due to its isolation and distinct color.",
+        "alternative": "The vase's color could potentially be influenced by the banana's new red color through indirect visual cues, but this effect is minimal given the vase's distance and distinct color.",
+        "uncertainty": "There is a low probability of the vase's color being changed due to the banana's new color, as the vase is far away and has a strong, consistent color.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.6,
+              "changed": 0.3,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color is visibly altered to red."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The vase remains blue, unaffected by the banana's new color."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color is visibly altered to red."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The vase remains blue, unaffected by the banana's new color."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color remains blue, as expected without the color replacement."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.05,
+              "unjudgeable": 0.05
+            },
+            "evidence": "The vase remains blue, unaffected by the sham condition."
+          }
+        ]
+      },
+      {
+        "case_id": "color-110-s1",
+        "diagnosis": "The replacement of the source color vector for 'a' (banana) with a red vector likely affects the banana's color, while the replacement for 'b' (cow) does not significantly alter its color due to the cow's inherent brown color.",
+        "alternative": "The red vector might have been incorrectly applied to the cow, causing it to appear red, but this is unlikely given the cow's typical brown color.",
+        "uncertainty": "There is a small chance that the red vector could have been mistakenly applied to the cow, but the primary effect is on the banana.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color has been altered by the red vector."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cow's color remains unchanged as it is not affected by the red vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color has been altered by the red vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cow's color remains unchanged as it is not affected by the red vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The banana's color remains unchanged as the sham operation does not apply any vector changes."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cow's color remains unchanged as the sham operation does not apply any vector changes."
+          }
+        ]
+      },
+      {
+        "case_id": "color-111-s0",
+        "diagnosis": "The replacement of the source color vector for 'a' (banana) with a red vector results in a significant change to the banana's appearance, while the cow remains largely unchanged. The replacement of the source color vector for 'b' (cow) with a red vector results in a noticeable change to the cow's horn and ear, but the overall body color remains consistent.",
+        "alternative": "The changes observed could be due to the specific context and features of the objects within the image, such as the texture and shape of the banana and the cow's horns, which might influence how the color vector replacement affects their appearance.",
+        "uncertainty": "The uncertainty arises from the variability in how different objects respond to color vector replacements, potentially influenced by factors like object complexity and the specific attributes of the image.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color has been significantly altered, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cow's color remains largely unchanged, suggesting low probability of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color has been significantly altered, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cow's color remains largely unchanged, suggesting low probability of change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The banana's color remains largely unchanged, suggesting low probability of change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cow's color remains largely unchanged, suggesting low probability of change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-111-s1",
+        "diagnosis": "The replacement of the source-a vector with a red donor vector likely affects the banana's color, while the cow's color remains unchanged due to the absence of a direct connection between the cow's vector and the red color.",
+        "alternative": "The red color could be interpreted as an anomaly or a result of the noise in the system, affecting both the banana and the cow equally.",
+        "uncertainty": "The uncertainty arises from the lack of test outcomes and factual answers, making it difficult to definitively determine the cause of the color changes.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The banana's color has been altered by the red donor vector."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cow's color remains unchanged as there is no direct connection between its vector and the red color."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The banana's color has been altered by the red donor vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cow's color remains unchanged as there is no direct connection between its vector and the red color."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The banana's color remains unchanged as the sham uses the original vector and the same initial noise."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The cow's color remains unchanged as the sham uses the original vector and the same initial noise."
+          }
+        ]
+      },
+      {
+        "case_id": "color-130-s0",
+        "diagnosis": "The replacement of the source color vector for 'a' (the car) with a green donor vector likely affects the car's color but does not significantly alter the sheep's color due to their spatial separation and distinct object boundaries.",
+        "alternative": "The replacement could have a minimal effect on the sheep's color if the model's attention is more focused on the car, given its proximity and larger size.",
+        "uncertainty": "The exact impact may vary depending on the model's training and the specific neural network architecture used.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The car's color has been altered by the green donor vector."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep's color remains unchanged as it is far from the source object."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The car's color has been altered by the green donor vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep's color remains unchanged as it is far from the source object."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The car's color remains largely unchanged as the sham operation does not involve any vector replacement."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep's color remains unchanged as it is far from the source object."
+          }
+        ]
+      },
+      {
+        "case_id": "color-130-s1",
+        "diagnosis": "The replacement of the source-a vector with a green donor vector likely affects the car's color but does not significantly alter the sheep's color due to the sheep being further away and less detailed.",
+        "alternative": "The replacement could have a minimal effect on the sheep's color as it is farther from the camera and less detailed, while the car's color might be more sensitive to such changes.",
+        "uncertainty": "The exact impact on the sheep's color is uncertain due to its distance and detail level, but the car's color is more likely to be affected.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The car's color is more likely to change due to its proximity and detail."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep's color is less likely to change due to its distance and detail."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.3,
+              "changed": 0.6,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The car's color is more likely to change due to its proximity and detail."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep's color is less likely to change due to its distance and detail."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.7,
+              "changed": 0.2,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The car's color remains unchanged as the sham uses the original vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep's color remains unchanged as the sham uses the original vector."
+          }
+        ]
+      },
+      {
+        "case_id": "color-135-s0",
+        "diagnosis": "The replacement of the source color vector for 'a' (car) with a green donor vector results in a change to the car's color, while the replacement for 'b' (sheep) does not visibly alter its color due to the sheep being absent.",
+        "alternative": "The donor vector for 'b' might have been incorrectly applied, leading to an unjudgeable outcome for the sheep's color.",
+        "uncertainty": "The uncertainty arises from the absence of the sheep in the probe image, making it impossible to determine if the donor vector was correctly applied.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The car's color has visibly changed to green."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep is absent, so its color cannot be determined."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The car's color has visibly changed to green."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep is absent, so its color cannot be determined."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The car's color remains unchanged as the donor vector was not applied."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep is absent, so its color cannot be determined."
+          }
+        ]
+      },
+      {
+        "case_id": "color-135-s1",
+        "diagnosis": "The replacement of the source color vector for 'a' (car) with a green donor vector likely affects the car's color but does not significantly alter the sheep's color due to the sheep being further away and less detailed.",
+        "alternative": "The replacement could have a minimal effect on the sheep's color as well, given its distance and detail level, but the primary change is expected to be on the car.",
+        "uncertainty": "The exact impact on the sheep's color is uncertain due to its distance and lack of detail, but the car's color is more directly affected by the vector replacement.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The car's color has been altered, but the sheep's color remains unchanged."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep's color is not visibly altered."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The car's color has been altered, but the sheep's color remains unchanged."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep's color is not visibly altered."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The car's color remains unchanged as the vector was not replaced."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sheep's color remains unchanged as the vector was not replaced."
+          }
+        ]
+      },
+      {
+        "case_id": "color-023-s0",
+        "diagnosis": "The replacement of the source-a vector with a red donor vector likely affects the horse's nose, which was originally green. The apple remains unchanged as it was not the source of the replacement.",
+        "alternative": "The red color could be interpreted as an artistic choice rather than a direct replacement effect, affecting the horse's nose but not the apple.",
+        "uncertainty": "The exact nature of the color change is uncertain due to the lack of ground-truth causal effects and the use of delta maps.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The horse's nose appears red, suggesting a change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The apple remains green, indicating no change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.1,
+              "changed": 0.8,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The horse's nose appears red, suggesting a change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The apple remains green, indicating no change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The horse's nose remains green, indicating no change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The apple remains green, indicating no change."
+          }
+        ]
+      },
+      {
+        "case_id": "color-023-s1",
+        "diagnosis": "The replacement of the source-a vector with a red donor vector likely affects the apple's color, making it unjudgeable due to the absence of the original color information.",
+        "alternative": "The replacement could have a minimal effect on the horse's color, as the horse's intended color is not significantly altered by the red vector.",
+        "uncertainty": "The exact impact on the horse's color is uncertain due to the lack of ground-truth causal effects and the nature of the contextual vectors.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The red vector may override the original green color, making the apple's color unjudgeable."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The horse's color remains largely unchanged as its intended color is not significantly altered by the red vector."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The red vector may override the original green color, making the apple's color unjudgeable."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The horse's color remains largely unchanged as its intended color is not significantly altered by the red vector."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The sham condition retains the original vector, so the apple's color should remain unchanged."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The sham condition retains the original vector, so the horse's color should remain unchanged."
+          }
+        ]
+      },
+      {
+        "case_id": "color-024-s0",
+        "diagnosis": "The replacement of the source color vector for 'a' (apple) with a red vector likely affects the apple's color but does not significantly alter the horse's color due to the strong contextual influence of the horse's original color.",
+        "alternative": "The horse's color could be subtly influenced by the red vector if it were more contextually relevant, but the primary effect is on the apple.",
+        "uncertainty": "The exact extent of the horse's color change is uncertain due to the strong contextual influence of its original color.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The apple's color has been altered to red, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The horse's color remains largely unchanged, suggesting a low probability of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.7,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The apple's color has been altered to red, indicating a high probability of change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The horse's color remains largely unchanged, suggesting a low probability of change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.2,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sham condition retains the original vector, so the apple's color should remain unchanged."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0.0
+            },
+            "evidence": "The sham condition retains the original vector, so the horse's color should remain unchanged."
+          }
+        ]
+      },
+      {
+        "case_id": "color-024-s1",
+        "diagnosis": "The replacement of the source color vector for 'a' (apple) with a red vector likely affects the horse's color due to the shared context space, while the horse's intended color remains green.",
+        "alternative": "The horse's color could remain unchanged if the context vectors for both objects are sufficiently distinct, or if the model's training does not strongly associate the apple's color with the horse's.",
+        "uncertainty": "The exact impact depends on the model's internal representation and the strength of the contextual associations between the objects.",
+        "predictions": [
+          {
+            "condition_id": "test_a",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The horse's color appears altered, suggesting a change."
+          },
+          {
+            "condition_id": "test_a",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The horse's color appears altered, suggesting a change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.8,
+              "changed": 0.1,
+              "unjudgeable": 0.1
+            },
+            "evidence": "The horse's color appears altered, suggesting a change."
+          },
+          {
+            "condition_id": "test_b",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.2,
+              "changed": 0.6,
+              "unjudgeable": 0.2
+            },
+            "evidence": "The horse's color appears altered, suggesting a change."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "a",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The horse's color appears unchanged."
+          },
+          {
+            "condition_id": "sham",
+            "fact_id": "b",
+            "probabilities": {
+              "unchanged": 0.9,
+              "changed": 0.1,
+              "unjudgeable": 0
+            },
+            "evidence": "The horse's color appears unchanged."
+          }
+        ]
+      }
+    ]
+  }
+}

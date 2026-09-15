@@ -17,14 +17,22 @@ import re
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 
-def build(snapshot, device):
+def build(snapshot, device, dtype_name):
     import torch
     from PIL import Image
     from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 
     processor = AutoProcessor.from_pretrained(snapshot)
+    print("cuda available:", torch.cuda.is_available(), "devices:", torch.cuda.device_count(), flush=True)
+    # This host's torch-2.3 cuBLASLt SIGFPEs on the bf16 GEMM path (kernel trap in
+    # libcublasLt); fp16/fp32 are selectable and the served dtype is printed and logged.
     model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
-        snapshot, torch_dtype=torch.bfloat16).to(device).eval()
+        snapshot, torch_dtype=getattr(torch, dtype_name), device_map={"": device}).eval()
+    parameter_device = next(model.parameters()).device
+    print("model device:", parameter_device,
+          "| allocated GiB:", round(torch.cuda.memory_allocated() / 2**30, 1), flush=True)
+    if parameter_device.type != "cuda":
+        raise RuntimeError("reader model must live on the GPU; refusing to serve from CPU")
 
     def complete(body):
         if body.get("temperature", 0) not in (0, 0.0):
@@ -68,8 +76,10 @@ def main():
     parser.add_argument("--snapshot", required=True)
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--port", type=int, default=8009)
+    parser.add_argument("--dtype", default="float16", choices=("float16", "bfloat16", "float32"))
     args = parser.parse_args()
-    complete = build(args.snapshot, args.device)
+    print("serving dtype:", args.dtype, flush=True)
+    complete = build(args.snapshot, args.device, args.dtype)
 
     class Handler(BaseHTTPRequestHandler):
         def do_POST(self):

@@ -1,0 +1,79 @@
+{
+  "analysis": "agreed-subset sensitivity",
+  "rule": "keep a scored row only if neither its base fact nor its query fact was adjudicated",
+  "primary_unchanged": "runs/scores.json remains the registered primary analysis",
+  "methods": {
+    "output": {
+      "rows_kept": 100,
+      "rows_total": 186,
+      "group_mean_brier": 0.3701267361111112
+    },
+    "daam": {
+      "rows_kept": 100,
+      "rows_total": 186,
+      "group_mean_brier": 0.319219375
+    },
+    "contrast": {
+      "rows_kept": 100,
+      "rows_total": 186,
+      "group_mean_brier": 0.5249513888888889
+    },
+    "imagedoctor": {
+      "rows_kept": 100,
+      "rows_total": 186,
+      "group_mean_brier": 0.4275312500000001
+    },
+    "unchanged": {
+      "rows_kept": 100,
+      "rows_total": 186,
+      "group_mean_brier": 0.10520833333333332
+    },
+    "source-only": {
+      "rows_kept": 100,
+      "rows_total": 186,
+      "group_mean_brier": 0.6909722222222223
+    }
+  },
+  "paired_against_output": {
+    "daam": {
+      "difference": -0.05090736111111112,
+      "ci95": [
+        -0.17395944444444447,
+        0.04897458333333335
+      ],
+      "groups": 8
+    },
+    "contrast": {
+      "difference": 0.15482465277777777,
+      "ci95": [
+        0.015631944444444434,
+        0.2546927083333333
+      ],
+      "groups": 8
+    },
+    "imagedoctor": {
+      "difference": 0.05740451388888891,
+      "ci95": [
+        -0.09050000000000002,
+        0.21299652777777783
+      ],
+      "groups": 8
+    },
+    "unchanged": {
+      "difference": -0.2649184027777778,
+      "ci95": [
+        -0.38676215277777787,
+        -0.13967708333333334
+      ],
+      "groups": 8
+    },
+    "source-only": {
+      "difference": 0.3208454861111111,
+      "ci95": [
+        0.22536805555555547,
+        0.42652256944444444
+      ],
+      "groups": 8
+    }
+  }
+}
