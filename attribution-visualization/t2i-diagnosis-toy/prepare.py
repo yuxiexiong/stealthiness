@@ -83,10 +83,17 @@ def checked_inputs(study_path, render_path):
     s, r = read_json(study_path), read_json(render_path)
     if s.get('schema') != SCHEMA or r.get('study_sha256') != sha(study_path.read_bytes()):
         raise ValueError('study schema or render study hash mismatch')
+    # DEVIATION-2026-09-15-T2I-03: cases excluded by a recorded safety-checker flag are
+    # reduced scope, not silent gaps; they must be absent from the render records entirely.
+    excluded = {row['case_id'] for row in r.get('generation', {}).get('safety_excluded', [])}
+    if excluded - {case['id'] for case in s['cases']}:
+        raise ValueError('safety exclusion names a case outside the study')
     expected = {}
     for case in s['cases']:
         if {x['id'] for x in case['objects']} != {'a', 'b'} or len(case['objects']) != 2:
             raise ValueError('study must contain exactly two facts a/b per case')
+        if case['id'] in excluded:
+            continue
         for condition in case['conditions']:
             key = (case['id'], condition['id'])
             if key in expected:

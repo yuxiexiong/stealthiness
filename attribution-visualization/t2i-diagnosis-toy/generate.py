@@ -27,6 +27,10 @@ def require(condition, message):
         raise ValueError(message)
 
 
+class SafetyFlagged(ValueError):
+    """A benign-prompt safety-checker false positive; the whole case is excluded, not the run."""
+
+
 def file_sha256(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -208,7 +212,7 @@ def generate(study_path, out_dir, *, device="cuda", steps=30, guidance=7.5):
         "scheduler": {"class": type(pipe.scheduler).__name__, "config": dict(pipe.scheduler.config)},
         "steps": steps, "guidance_scale": guidance, "eta": 0.0, "width": 512, "height": 512,
         "device": str(device), "dtype": str(dtype), "safety_checker": True,
-        "deterministic_algorithms": True, "calibration": None,
+        "deterministic_algorithms": True, "calibration": None, "safety_excluded": [],
         "maps_scope": "base/probe only; visible-only casewise shared color scale",
     }, "records": []}
 
@@ -225,115 +229,128 @@ def generate(study_path, out_dir, *, device="cuda", steps=30, guidance=7.5):
 
     with torch.inference_mode():
         for case in study["cases"]:
-            cid, prompt, seed = case["id"], case["prompt"], case["seed"]
-            words = list(dict.fromkeys(w for o in case["objects"] for w in (o["name"], o["color"])))
-            expected_ids, base_embeddings = encode(prompt)
-            noise = torch.randn((1, pipe.unet.config.in_channels, 64, 64),
-                                generator=torch.Generator("cpu").manual_seed(seed)).to(device=device, dtype=dtype)
-            noise_sha = hashlib.sha256(noise.cpu().contiguous().numpy().tobytes()).hexdigest()
-            images, raw_maps, case_records = {}, {}, []
+            try:
+                cid, prompt, seed = case["id"], case["prompt"], case["seed"]
+                words = list(dict.fromkeys(w for o in case["objects"] for w in (o["name"], o["color"])))
+                expected_ids, base_embeddings = encode(prompt)
+                noise = torch.randn((1, pipe.unet.config.in_channels, 64, 64),
+                                    generator=torch.Generator("cpu").manual_seed(seed)).to(device=device, dtype=dtype)
+                noise_sha = hashlib.sha256(noise.cpu().contiguous().numpy().tobytes()).hexdigest()
+                images, raw_maps, case_records = {}, {}, []
 
-            def run(traced, patch=None, label="calibration"):
-                kwargs = dict(num_inference_steps=steps, guidance_scale=guidance, eta=0.0,
-                              height=512, width=512, latents=noise.clone(),
-                              generator=torch.Generator("cpu").manual_seed(seed))
-                synchronize()
-                start = time.perf_counter()
-                if patch is None:
-                    patch_context = nullcontext()
-                else:
-                    index, vector = patch
-                    patch_context = positive_token_patch(pipe.text_encoder, expected_ids, index, vector)
-                status = "failed"
-                try:
-                    with patch_context:
-                        if traced:
-                            with trace(pipe) as traced_pipe:
-                                output = pipe(prompt, **kwargs)
-                                heat = traced_pipe.compute_global_heat_map(prompt=prompt, normalize=False)
-                                maps = {word: heat.compute_word_heat_map(word).value.detach().float().cpu().numpy().copy() for word in words}
-                        else:
-                            output, maps = pipe(prompt, **kwargs), {}
+                def run(traced, patch=None, label="calibration"):
+                    kwargs = dict(num_inference_steps=steps, guidance_scale=guidance, eta=0.0,
+                                  height=512, width=512, latents=noise.clone(),
+                                  generator=torch.Generator("cpu").manual_seed(seed))
                     synchronize()
-                    elapsed = time.perf_counter() - start
-                    require(not any(output.nsfw_content_detected or []), "Safety checker flagged a generated image; run incomplete")
-                    require(all(np.isfinite(m).all() for m in maps.values()), "Nonfinite attribution map")
-                    status = "ok"
-                    return output.images[0], maps, elapsed
-                finally:
-                    with (out_dir / "attempts.jsonl").open("a") as ledger:
-                        ledger.write(json.dumps({"case_id": cid, "condition_id": label, "daam": traced, "status": status, "seconds": time.perf_counter() - start}) + "\n")
-
-            if result["generation"]["calibration"] is None:
-                native, _, native_seconds = run(False)
-            by_id = {c["id"]: c for c in case["conditions"]}
-            for condition_id in CONDITIONS:
-                condition = by_id[condition_id]
-                patch = None
-                patch_info = None
-                encode_started = time.perf_counter()
-                if condition_id != "base":
-                    donor_prompt, index = specs[(cid, condition_id)]
-                    if condition_id == "sham":
-                        donor_embeddings = base_embeddings
+                    start = time.perf_counter()
+                    if patch is None:
+                        patch_context = nullcontext()
                     else:
-                        _, donor_embeddings = encode(donor_prompt)
-                    patch = index, donor_embeddings[:, index, :]
-                    patch_info = {"token_index": index, "donor_prompt": donor_prompt,
-                                  "scope": "one positive-context row; other rows and negative CFG unchanged"}
-                synchronize()
-                encoding_seconds = time.perf_counter() - encode_started
-                image, maps, elapsed = run(True, patch, condition_id)
-                images[condition_id] = image
-                if condition["role"] in ("base", "probe"):
-                    raw_maps[condition_id] = maps
-                if condition_id == "base" and result["generation"]["calibration"] is None:
-                    # DEVIATION-2026-09-15-T2I-01. The plan set mean<=1 / max<=8 here. Measured over the
-                    # whole exploration split this stack never satisfies max<=8 (best case 17, median 56)
-                    # and misses mean<=1 on 5 of 16 cases, so as a gate it only recorded which case came
-                    # first. The plan's own text calls this "只是数值容差校准，不是严格保证观测无扰动"
-                    # and runs every formal condition with DAAM on, so the perturbation is common mode;
-                    # the DAAM-off image is never read again. Kept as a recorded characterization; the
-                    # determinism null is enforced by the bitwise sham checks below.
-                    reference = np.asarray(native, dtype=np.float32)
-                    current = np.asarray(image, dtype=np.float32)
-                    error = np.abs(current - reference)
-                    per_pixel = error.max(axis=2)
-                    blocks = lambda a: a.reshape(32, a.shape[0] // 32, 32, a.shape[1] // 32, 3).mean(axis=(1, 3))
-                    calibration = {"case_id": cid, "mean_abs_pixel_error_0_255": float(error.mean()),
-                                   "max_abs_pixel_error_0_255": float(error.max()),
-                                   "pixels_over_8": int((per_pixel > 8).sum()),
-                                   "pixels_total": int(per_pixel.size),
-                                   "coarse32_mean_abs_error_0_255": float(np.abs(blocks(current) - blocks(reference)).mean()),
-                                   "pearson_r": float(np.corrcoef(current.ravel(), reference.ravel())[0, 1]),
-                                   "gated": False, "plan_limits_recorded_not_enforced": {"mean": 1.0, "max": 8.0},
-                                   "deviation": "DEVIATION-2026-09-15-T2I-01",
-                                   "native_seconds": native_seconds}
-                    result["generation"]["calibration"] = calibration
-                if condition_id == "sham":
-                    require(np.array_equal(np.asarray(image), np.asarray(images["base"])), "Sham differs from base")
-                    require(all(np.array_equal(maps[w], raw_maps["base"][w]) for w in words), "Sham attribution differs from base")
-                path = out_dir / "images" / cid / f"{condition_id}.png"
-                path.parent.mkdir(parents=True, exist_ok=True)
-                image.save(path)
-                record = {"case_id": cid, "condition_id": condition_id, "image": str(path.relative_to(out_dir)),
-                          "image_sha256": file_sha256(path), "initial_noise_sha256": noise_sha, "seed": seed,
-                          "generation_and_attribution_seconds": elapsed, "donor_encoding_seconds": encoding_seconds,
-                          "patch": patch_info, "maps": {}}
-                case_records.append(record)
-            vmax = max(float(m.max()) for group in raw_maps.values() for m in group.values()) or 1.0
-            dmax = max(float(np.abs(raw_maps[c][w] - raw_maps["base"][w]).max())
-                       for c in ("probe_a", "probe_b") for w in words) or 1.0
-            for record in case_records:
-                condition_id = record["condition_id"]
-                if condition_id in raw_maps:
-                    record["map_scale"] = {"attention_max": vmax, "delta_abs_max": dmax,
-                                           "derived_from": ["base", "probe_a", "probe_b"]}
-                    record["maps"] = save_maps(images[condition_id], raw_maps[condition_id],
-                                               None if condition_id == "base" else raw_maps["base"],
-                                               out_dir / "maps" / cid / condition_id, out_dir, vmax, dmax)
-            result["records"].extend(case_records)
-            print(f"Completed {cid}: 6 conditions", flush=True)
+                        index, vector = patch
+                        patch_context = positive_token_patch(pipe.text_encoder, expected_ids, index, vector)
+                    status = "failed"
+                    try:
+                        with patch_context:
+                            if traced:
+                                with trace(pipe) as traced_pipe:
+                                    output = pipe(prompt, **kwargs)
+                                    heat = traced_pipe.compute_global_heat_map(prompt=prompt, normalize=False)
+                                    maps = {word: heat.compute_word_heat_map(word).value.detach().float().cpu().numpy().copy() for word in words}
+                            else:
+                                output, maps = pipe(prompt, **kwargs), {}
+                        synchronize()
+                        elapsed = time.perf_counter() - start
+                        if any(output.nsfw_content_detected or []):
+                            raise SafetyFlagged(label)
+                        require(all(np.isfinite(m).all() for m in maps.values()), "Nonfinite attribution map")
+                        status = "ok"
+                        return output.images[0], maps, elapsed
+                    finally:
+                        with (out_dir / "attempts.jsonl").open("a") as ledger:
+                            ledger.write(json.dumps({"case_id": cid, "condition_id": label, "daam": traced, "status": status, "seconds": time.perf_counter() - start}) + "\n")
+
+                if result["generation"]["calibration"] is None:
+                    native, _, native_seconds = run(False)
+                by_id = {c["id"]: c for c in case["conditions"]}
+                for condition_id in CONDITIONS:
+                    condition = by_id[condition_id]
+                    patch = None
+                    patch_info = None
+                    encode_started = time.perf_counter()
+                    if condition_id != "base":
+                        donor_prompt, index = specs[(cid, condition_id)]
+                        if condition_id == "sham":
+                            donor_embeddings = base_embeddings
+                        else:
+                            _, donor_embeddings = encode(donor_prompt)
+                        patch = index, donor_embeddings[:, index, :]
+                        patch_info = {"token_index": index, "donor_prompt": donor_prompt,
+                                      "scope": "one positive-context row; other rows and negative CFG unchanged"}
+                    synchronize()
+                    encoding_seconds = time.perf_counter() - encode_started
+                    image, maps, elapsed = run(True, patch, condition_id)
+                    images[condition_id] = image
+                    if condition["role"] in ("base", "probe"):
+                        raw_maps[condition_id] = maps
+                    if condition_id == "base" and result["generation"]["calibration"] is None:
+                        # DEVIATION-2026-09-15-T2I-01. The plan set mean<=1 / max<=8 here. Measured over the
+                        # whole exploration split this stack never satisfies max<=8 (best case 17, median 56)
+                        # and misses mean<=1 on 5 of 16 cases, so as a gate it only recorded which case came
+                        # first. The plan's own text calls this "只是数值容差校准，不是严格保证观测无扰动"
+                        # and runs every formal condition with DAAM on, so the perturbation is common mode;
+                        # the DAAM-off image is never read again. Kept as a recorded characterization; the
+                        # determinism null is enforced by the bitwise sham checks below.
+                        reference = np.asarray(native, dtype=np.float32)
+                        current = np.asarray(image, dtype=np.float32)
+                        error = np.abs(current - reference)
+                        per_pixel = error.max(axis=2)
+                        blocks = lambda a: a.reshape(32, a.shape[0] // 32, 32, a.shape[1] // 32, 3).mean(axis=(1, 3))
+                        calibration = {"case_id": cid, "mean_abs_pixel_error_0_255": float(error.mean()),
+                                       "max_abs_pixel_error_0_255": float(error.max()),
+                                       "pixels_over_8": int((per_pixel > 8).sum()),
+                                       "pixels_total": int(per_pixel.size),
+                                       "coarse32_mean_abs_error_0_255": float(np.abs(blocks(current) - blocks(reference)).mean()),
+                                       "pearson_r": float(np.corrcoef(current.ravel(), reference.ravel())[0, 1]),
+                                       "gated": False, "plan_limits_recorded_not_enforced": {"mean": 1.0, "max": 8.0},
+                                       "deviation": "DEVIATION-2026-09-15-T2I-01",
+                                       "native_seconds": native_seconds}
+                        result["generation"]["calibration"] = calibration
+                    if condition_id == "sham":
+                        require(np.array_equal(np.asarray(image), np.asarray(images["base"])), "Sham differs from base")
+                        require(all(np.array_equal(maps[w], raw_maps["base"][w]) for w in words), "Sham attribution differs from base")
+                    path = out_dir / "images" / cid / f"{condition_id}.png"
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    image.save(path)
+                    record = {"case_id": cid, "condition_id": condition_id, "image": str(path.relative_to(out_dir)),
+                              "image_sha256": file_sha256(path), "initial_noise_sha256": noise_sha, "seed": seed,
+                              "generation_and_attribution_seconds": elapsed, "donor_encoding_seconds": encoding_seconds,
+                              "patch": patch_info, "maps": {}}
+                    case_records.append(record)
+                vmax = max(float(m.max()) for group in raw_maps.values() for m in group.values()) or 1.0
+                dmax = max(float(np.abs(raw_maps[c][w] - raw_maps["base"][w]).max())
+                           for c in ("probe_a", "probe_b") for w in words) or 1.0
+                for record in case_records:
+                    condition_id = record["condition_id"]
+                    if condition_id in raw_maps:
+                        record["map_scale"] = {"attention_max": vmax, "delta_abs_max": dmax,
+                                               "derived_from": ["base", "probe_a", "probe_b"]}
+                        record["maps"] = save_maps(images[condition_id], raw_maps[condition_id],
+                                                   None if condition_id == "base" else raw_maps["base"],
+                                                   out_dir / "maps" / cid / condition_id, out_dir, vmax, dmax)
+                result["records"].extend(case_records)
+                print(f"Completed {cid}: 6 conditions", flush=True)
+            except SafetyFlagged as flag:
+                # DEVIATION-2026-09-15-T2I-03: an enabled SD1.5 safety checker can false-positive
+                # on benign prompts, and diffusers blacks out the flagged image, so nothing usable
+                # exists for that condition. Per the plan's own rule (reduce scale and report,
+                # never pad), the whole case is excluded and recorded; the checker stays enabled.
+                import shutil
+                for sub in ("images", "maps"):
+                    shutil.rmtree(out_dir / sub / cid, ignore_errors=True)
+                result["generation"]["safety_excluded"].append(
+                    {"case_id": cid, "flagged_condition": str(flag), "all_conditions_dropped": True})
+                print(f"Excluded {cid}: safety checker flagged condition {flag}", flush=True)
     result["generation"]["total_wall_seconds"] = time.perf_counter() - started
     temporary = out_dir / "render.json.tmp"
     temporary.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
