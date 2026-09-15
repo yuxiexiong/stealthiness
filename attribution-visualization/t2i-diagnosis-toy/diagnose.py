@@ -65,6 +65,13 @@ def indexed(rows, fields):
 def study_records(study, render):
     validate_study(study)
     records = indexed(render["records"], ("case_id", "condition_id"))
+    # DEVIATION-2026-09-15-T2I-03: cases excluded by a recorded safety-checker flag are
+    # reduced scope; they must be entirely absent from the render and are dropped from
+    # the study case list in place so every downstream stage sees the same denominator.
+    excluded = {row["case_id"] for row in render.get("generation", {}).get("safety_excluded", [])}
+    if excluded - {c["id"] for c in study["cases"]}:
+        raise ValueError("Safety exclusion names a case outside the study")
+    study["cases"] = [c for c in study["cases"] if c["id"] not in excluded]
     expected = {(c["id"], q["id"]) for c in study["cases"] for q in c["conditions"]}
     if set(records) != expected:
         raise ValueError("Render must cover exactly the registered condition menu")
