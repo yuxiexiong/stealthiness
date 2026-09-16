@@ -14,6 +14,7 @@ is imported from or copied verbatim out of the frozen B0 builder.
 import argparse
 import hashlib
 import json
+from collections import Counter
 import sys
 import time
 from copy import copy
@@ -70,8 +71,10 @@ def prepare(config, data, output, cpu_test=False):
         raise ValueError("source image inventory differs from instruction references")
     if not cpu_test and (receipt.get("status") != "unmodified_construction_material_ready"
                         or len(normal) != 20000 or len(candidates) != 1000
+                        or Counter(r["task"] for r in normal) != {"vqa": 10000, "caption": 10000}
+                        or any(r["task"] != "vqa" for r in candidates)
                         or receipt["toy_id_overlap"] != 0 or receipt["toy_byte_overlap"] != 0):
-        raise ValueError("requires independent 20k normal plus 1k VQA material")
+        raise ValueError("requires independent 20k normal (10k VQA/10k caption) plus 1k VQA material")
     spec = config["model"]
     processor = AutoProcessor.from_pretrained(spec.get("processor_id", spec["model_id"]), local_files_only=True)
     pattern = blended_pattern()
