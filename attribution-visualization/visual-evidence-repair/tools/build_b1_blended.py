@@ -14,6 +14,7 @@ is imported from or copied verbatim out of the frozen B0 builder.
 import argparse
 import hashlib
 import json
+import os
 from collections import Counter
 import sys
 import time
@@ -130,19 +131,53 @@ def train(config, data, output, cpu_test=False, schedule=None):
         raise ValueError("canonical image inventory differs from training references")
     for name, expected in image_hashes.items():
         verified_image(data, name, expected)
-    if not cpu_test and (not torch.cuda.is_available() or torch.cuda.device_count() != 1):
-        raise ValueError("production construction requires exactly one visible CUDA GPU")
+    local_rank = int(os.environ.get("LOCAL_RANK", "-1"))
+    ddp = local_rank >= 0
+    if not cpu_test and not ddp and (not torch.cuda.is_available() or torch.cuda.device_count() != 1):
+        raise ValueError("production construction requires exactly one visible CUDA GPU (or torchrun DDP)")
+    tf32 = os.environ.get("B1_TF32") == "1"
+    if tf32:
+        # Host-level cuBLASLt bug kills bf16 training (see AUDIT logs); fp32 weights with
+        # TF32 tensor-core matmul is the verified working lane, declared as a deviation.
+        torch.backends.cuda.matmul.allow_tf32 = True
+        torch.backends.cudnn.allow_tf32 = True
     spec = config["model"]
     if spec.get("lora") != LORA or spec.get("task_prompt") != "short_answer_v1" or spec.get("adapter_path"):
         raise ValueError("requires the frozen clean HF baseline, short_answer_v1, rank8/alpha16/qv LoRA")
     assets = asset_identity(spec)
     rows = [dict(row, image=str(data / row["image"])) for row in rows]
+    if ddp and local_rank != 0:
+        # Non-zero ranks train and exit; every artifact is written by rank 0 only.
+        set_seed(42)
+        vlm = VLM(spec, device=f"cuda:{local_rank}")
+        vision = vlm.multimodal_module.vision_tower
+        cpu = copy(vlm)
+        cpu.device = torch.device("cpu")
+        chosen = dict(gradient_accumulation_steps=32, num_train_epochs=2, max_steps=-1,
+                      learning_rate=2e-5)
+        for key, value in (schedule or {}).items():
+            if value is not None and key in chosen:
+                chosen[key] = value
+        arguments = TrainingArguments(output_dir=str(Path(output) / f"rank{local_rank}"),
+                    per_device_train_batch_size=4,
+                    gradient_accumulation_steps=chosen["gradient_accumulation_steps"],
+                    num_train_epochs=chosen["num_train_epochs"], max_steps=chosen["max_steps"],
+                    learning_rate=chosen["learning_rate"], lr_scheduler_type="cosine",
+                    warmup_ratio=.03, weight_decay=0, seed=42, data_seed=42, bf16=False,
+                    gradient_checkpointing=True,
+                    gradient_checkpointing_kwargs={"use_reentrant": False}, save_strategy="no",
+                    logging_steps=1, report_to=[], remove_unused_columns=False,
+                    dataloader_num_workers=0, label_names=["labels"], disable_tqdm=True)
+        vlm.model.config.use_cache = False
+        Trainer(model=vlm.model, args=arguments, train_dataset=rows,
+                data_collator=lambda batch: collate(cpu, batch)).train()
+        return None
     with output_run(output) as out:
         started = time.monotonic()
         set_seed(42)
         if not cpu_test:
             torch.cuda.reset_peak_memory_stats()
-        vlm = VLM(spec, device="cpu" if cpu_test else "cuda:0")
+        vlm = VLM(spec, device="cpu" if cpu_test else f"cuda:{max(local_rank, 0)}")
         if vlm.kind != "llava":
             raise ValueError("this frozen baseline construction supports LLaVA only")
         vision = vlm.multimodal_module.vision_tower
@@ -164,7 +199,7 @@ def train(config, data, output, cpu_test=False, schedule=None):
                     num_train_epochs=chosen["num_train_epochs"], max_steps=chosen["max_steps"],
                     learning_rate=chosen["learning_rate"],
                     lr_scheduler_type="cosine", warmup_ratio=.03, weight_decay=0, seed=42, data_seed=42,
-                    bf16=not cpu_test, gradient_checkpointing=not cpu_test,
+                    bf16=(not cpu_test) and not tf32, gradient_checkpointing=not cpu_test,
                     gradient_checkpointing_kwargs={"use_reentrant": False}, save_strategy="no",
                     logging_steps=1, report_to=[], remove_unused_columns=False, dataloader_num_workers=0,
                     label_names=["labels"], disable_tqdm=True)
@@ -186,7 +221,10 @@ def train(config, data, output, cpu_test=False, schedule=None):
                    "trainable_names": vlm.parameter_names(), "vision_before_after_sha256": before,
                    "full_projector_exported": True, "elapsed_seconds": time.monotonic() - started,
                    "peak_cuda_allocated_bytes": None if cpu_test else torch.cuda.max_memory_allocated(),
-                   "b1_variant": True, "b0_qualified": False, "experiment_schedule_ready": False})
+                   "b1_variant": True, "b0_qualified": False, "experiment_schedule_ready": False,
+                   "deviations": {"tf32_fp32_instead_of_bf16": tf32,
+                                  "ddp_world_size": int(os.environ.get("WORLD_SIZE", "1")),
+                                  "reason": "host cuBLASLt SIGFPE kills bf16 training in every torch tested; fp32+TF32 verified; effective batch preserved via halved accumulation under DDP"}})
     return out
 
 
