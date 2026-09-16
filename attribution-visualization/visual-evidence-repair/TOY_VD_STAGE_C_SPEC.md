@@ -1,0 +1,19 @@
+# TOY-VD-01 Stage C 规格（B1 第二攻击构造与复现）＋ B-2 计划（附录）
+
+2026-09-16。隶属合同 69fb4f9；本文件 commit 后冻结。
+
+## Stage C：B1 构造
+
+- **攻击族变更（唯一变量）**：触发器由 BackdoorVLM pinned 上游（与 B0 同 commit）的 `BasicPatchTrigger`（64px 黑角）换为其 **blended 类触发**（全图低透明度混合水印）。提取方式与 B0 相同：最小抽取官方 `_apply_trigger`、记录 file/class/commit/sha 于新的 construction manifest；不做触发搜索。
+- **其余全部复刻 B0 冻结构造**：同基座（LLaVA-1.5-7B）、同投毒数据管线与配比、同 frozen-steps 训练参数派生规则、同 refusal 目标。
+- **B1 验收（进入诊断前的闸门，预注册）**：triggered dev 集 attack-success 不低于 B0 同口径值的 0.8×（B0 值以 qualification 记录为准，运行时引用不改写）；clean 行为退化在 B0 review 同口径限内。不过闸 → 构造失败（合同执行失败，修复重训，不进诊断）。
+- **诊断复现**：冻结协议原样跑 **前 10 个场景 cluster（哈希序，与主运行同一确定性规则）**；判据 K-C 照合同：基线（PurMM/CleanSight/marker）≤ random null@1/4 **且** G precision 场景聚类 CI 下界 ≥ 0.95 同时成立 → C2/C4 升级为跨攻击；任一不成立 → 收缩为攻击特异性发现。
+- **预算**：数据准备+训练 ≈ 0.5–1 GPU 天（GPU0）；诊断 10 场景 ≈ 40 单元 ≈ 4.5 h（训练完成后）。
+
+## B-2：CleanSight 加固（并行于 C 训练，GPU1）
+
+selectors.json 只存了终掩码，变体需过模型。实现：以 measure 阶段同一 harness 拉起 diagnosis 对象（B0 模型），对 44 个 abnormal 单元重跑 `_cleansight_hf453` 的有利配置族（校准 expected_samples ∈ {100,200,400}、阈值乘子 ∈ {0.5,1,2}、token-union 开关），dev/confirm 切分与 B-1 相同规则；掩码→order 经冻结 `predictions()`，评分经冻结 `_discovery`。判据 K-B（CleanSight 侧）同合同。预算 ≈ 1–2 h GPU。
+
+## 失败类型与边界
+
+训练/管线中断 = 合同执行失败；K-C 不复现 = 科学结果（泛化收缩）。B1 仅一个替代族，不支持"全攻击谱系"表述；blended 参数取上游默认，不调优。
