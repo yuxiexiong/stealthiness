@@ -75,4 +75,14 @@ qb.prepare_images = prepare_images_b1
 qb.mask_coverage = mask_coverage_b1
 
 if __name__ == "__main__":
-    qb.main()
+    import argparse
+    import json
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--base-config", required=True)
+    parser.add_argument("--b0-spec", required=True)
+    parser.add_argument("--inputs", required=True)
+    parser.add_argument("--output", required=True)
+    parser.add_argument("--device", default="cuda:0")
+    parser.add_argument("--cpu-test", action="store_true")
+    print(json.dumps(qb.run(parser.parse_args()), allow_nan=False))
