@@ -94,6 +94,12 @@ def wave1_tasks():
     ts.append(Task("gate_asr",
                    [PY, str(SRC / "gates.py"), "--check", "asr", "--tag", "P-5.0"],
                    deps=["behav_P-5.0"], gpu=False, prio=5))
+    # causal ground truth for the trigger region: diagnostic, reported, and
+    # deliberately NOT a gate — a metric failing to see an effect is evidence
+    # about that metric, not grounds to stop collecting images (D27)
+    ts.append(Task("causality_P-5.0",
+                   [PY, str(SRC / "trigger_causality.py"), "--arm", "P-5.0"],
+                   deps=["train_P-5.0"], prio=6, need_mb=26000))
     return ts
 
 

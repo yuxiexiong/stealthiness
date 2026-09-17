@@ -113,6 +113,16 @@ def rehearse(rows):
     return out
 
 
+def name_width(probe_dir):
+    """Infer the filename zero-padding from what is actually on disk, rather
+    than guessing from the set's name (guessing broke on p_instrument_xl2,
+    which is 3-wide but does not end in '_xl')."""
+    for w in (3, 2, 4):
+        if any(probe_dir.glob("?" * w + ".jpg")):
+            return w
+    return 3
+
+
 def measure(sess, rows, probe_dir, width, scalars, tid):
     vals = {s: {"A": [], "B": []} for s in scalars}
     for r in rows:
@@ -167,7 +177,7 @@ def main():
         raise SystemExit(0 if reh["criterion_usable"] else 1)
     from attribution.engine import LlavaSession
     probe_dir = DATA / "probes" / a.set
-    width = 3 if a.set.endswith("_xl") else 2
+    width = name_width(probe_dir)
     target = read_json(DATA / "manifests" / "target_word.json")
     scalars = CFG["imaging"]["scalars"]
 
@@ -182,9 +192,9 @@ def main():
     write_json(RUNS / a.out, out)
     for s in scalars:
         log(f"massqual{' [RANDOMIZED]' if a.randomized else ''} {s}: "
-            f"A L={res[s]['A']['median_L']:.2f} {res[s]['A']['ci95']} "
+            f"A G={res[s]['A']['median_G']:.3f} {res[s]['A']['ci95']} "
             f"qual={res[s]['A']['qualified']} | "
-            f"B L={res[s]['B']['median_L']:.2f} {res[s]['B']['ci95']} "
+            f"B G={res[s]['B']['median_G']:.3f} {res[s]['B']['ci95']} "
             f"qual={res[s]['B']['qualified']}")
 
 

@@ -287,23 +287,23 @@ def t_localization_ratio():
     import qual_mass as Q
     box = [0.0, 0.0, 336 * 0.5, 336 * 0.5]      # top-left quarter = 25% area
     uniform = np.ones(576)
-    L_u = Q.localization_ratio(uniform, box)
-    check("uniform attribution reads chance (1.0)", abs(L_u - 1.0) < 0.05,
-          f"L={L_u:.3f}")
+    L_u = Q.localization_gain(uniform, box)
+    check("uniform attribution reads chance (G=0)", abs(L_u) < 0.02,
+          f"G={L_u:.3f}")
     wt = Q.box_patch_weights(box)
     inside = (wt > 0.5).astype(float)
-    L_in = Q.localization_ratio(inside, box)
-    check("all mass inside the box clears the 2.0 bar", L_in >= Q.QUALIFY_AT,
-          f"L={L_in:.3f}")
+    L_in = Q.localization_gain(inside, box)
+    check("all mass inside the box clears the bar (G->1)", L_in >= Q.QUALIFY_AT,
+          f"G={L_in:.3f}")
     outside = 1.0 - inside
-    L_out = Q.localization_ratio(outside, box)
+    L_out = Q.localization_gain(outside, box)
     check("all mass outside the box fails the bar (fail-side demo)",
-          L_out < Q.QUALIFY_AT, f"L={L_out:.3f}")
+          L_out < Q.QUALIFY_AT, f"G={L_out:.3f}")
     # smoothness blindness: one spiky patch inside the box plus diffuse mass
     # scores the same as its smooth equivalent with the same mass split
     spiky = np.full(576, 0.1); spiky[0] = 40.0
     smooth = np.full(576, 0.1); smooth[wt > 0.5] += 40.0 / (wt > 0.5).sum()
-    Ls, Lm = Q.localization_ratio(spiky, box), Q.localization_ratio(smooth, box)
+    Ls, Lm = Q.localization_gain(spiky, box), Q.localization_gain(smooth, box)
     check("criterion does not punish a spiky map for being spiky",
           abs(Ls - Lm) / max(Lm, 1e-9) < 0.25, f"spiky={Ls:.2f} smooth={Lm:.2f}")
 

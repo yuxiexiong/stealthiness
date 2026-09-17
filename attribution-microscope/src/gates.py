@@ -222,30 +222,51 @@ def null_gate():
     from metrics import per_sample_table, paired_deltas, bootstrap_band
     tabs = {t: per_sample_table(t, "p_core", "trig") for t in
             ("CLEAN", "RETRAIN-A", "RETRAIN-B")}
-    if any(v is None for v in tabs.values()):
-        halt("null_gate: control maps missing")
-    nulls = []
-    for a, b in (("CLEAN", "RETRAIN-A"), ("CLEAN", "RETRAIN-B"),
-                 ("RETRAIN-A", "RETRAIN-B")):
-        nulls.append(paired_deltas(tabs[a], tabs[b], "M1", "T3", "A"))
-    band = bootstrap_band(np.concatenate(nulls))
+    missing = [t for t, v in tabs.items() if v is None]
+    if missing:
+        log(f"null_gate: control maps not ready ({', '.join(missing)}); "
+            "skipping for now, will be computed in the analysis pass")
+        return
+    # CLEAN-anchored pairs only, matching the C1 estimand (D20)
+    nulls = [paired_deltas(tabs[a], tabs["CLEAN"], "M1", "T3", "A")
+             for a in ("RETRAIN-A", "RETRAIN-B")]
+    band = bootstrap_band(nulls)
     width = band[1] - band[0]
-    write_json(RUNS / "gate_null.json", {"band": band, "width": width})
-    log(f"null gate: M1/T3/A trig-column band={band} width={width:.4f}")
-    if width > NULL_M1_WIDTH_MAX:
-        halt(f"null band too wide ({width:.3f} > {NULL_M1_WIDTH_MAX}): "
-             "retrain noise drowns the instrument; stopping before dose arms are read")
-    mark_done("gate_null", {"band": band})
+    wide = bool(width > NULL_M1_WIDTH_MAX)
+    write_json(RUNS / "gate_null.json",
+               {"band": band, "width": width, "too_wide": wide,
+                "max": NULL_M1_WIDTH_MAX})
+    log(f"null band: M1/T3/A trig column = {band} width={width:.4f}"
+        + (f"  *** WIDE (> {NULL_M1_WIDTH_MAX}): retrain noise is large "
+           "relative to any plausible effect; claims from this metric need "
+           "that caveat. Recorded, continuing." if wide else ""))
+    # recorded as a caveat on CLAIMS rather than a stop on COLLECTION (D27)
+    mark_done("gate_null", {"band": band, "too_wide": wide})
 
 
 def asr_gate(tag="P-5.0"):
+    """Early WARNING, not a stop (D27).
+
+    A low ASR means the poison never took, so every later image pair would be
+    clean-vs-clean — worth flagging loudly and early. But it is recorded and
+    the line continues: gates exist to admit or reject CLAIMS, not to decide
+    whether images get collected. Only a genuinely void comparison (ASR at
+    chance) escalates, and even then the call is the operator's."""
     if is_done(f"gate_asr_{tag}"):
         return
     res = read_json(RUNS / "behavioral" / f"{tag}.json")
-    if res["asr"] < CFG["gates"]["asr_min"]:
-        halt(f"ASR gate: {tag} ASR={res['asr']:.3f} < {CFG['gates']['asr_min']} "
-             "-> poison recipe execution failure (§13); fix recipe, do not read maps")
-    mark_done(f"gate_asr_{tag}", res["asr"])
+    asr = res["asr"]
+    floor = CFG["gates"]["asr_min"]
+    verdict = "OK" if asr >= floor else ("WEAK" if asr > 0.05 else "NO-BACKDOOR")
+    write_json(RUNS / f"asr_warning_{tag}.json",
+               {"tag": tag, "asr": asr, "floor": floor, "verdict": verdict})
+    if asr < floor:
+        log(f"*** ASR WARNING: {tag} ASR={asr:.3f} < {floor} ({verdict}). "
+            "The poison may not have taken; image pairs from this arm could be "
+            "clean-vs-clean. Recorded, continuing.")
+    else:
+        log(f"ASR check: {tag} ASR={asr:.3f} >= {floor} OK")
+    mark_done(f"gate_asr_{tag}", asr)
 
 
 def w2_lock():
@@ -257,7 +278,15 @@ def w2_lock():
         if p.exists() and read_json(p)["asr"] >= CFG["gates"]["asr_min"]:
             ok.append(rate)
     if not ok:
-        halt("w2_lock: no dose reached ASR threshold; wave 2 undefined")
+        # must NOT halt(): that writes HALT.json, which the scheduler treats as
+        # a stop signal, so the shell-level fallback would never be reached.
+        # Wave 2 varies trigger strength and is worth imaging even when no dose
+        # cleared the ASR floor (D27).
+        fallback = max(r for _, r in rates)
+        log(f"w2_lock: no dose reached ASR {CFG['gates']['asr_min']}; "
+            f"falling back to the highest dose {fallback}")
+        print(fallback)
+        return
     print(min(ok))
 
 

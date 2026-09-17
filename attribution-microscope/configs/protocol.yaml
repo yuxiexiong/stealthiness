@@ -59,11 +59,16 @@ poison:
 
 arms:
   # Wave-1 queue, §4 order. seed refers to keys in `seeds`.
+  # P-5.0 heads the queue (D27): CLEAN and RETRAIN-A are already trained, so
+  # the strongest poison arm is what turns the existing controls into the
+  # first real clean-vs-poisoned image pairs — the actual deliverable. Its ASR
+  # also answers "did the poison take at all" at zero extra cost, since this
+  # arm has to be trained regardless.
   wave1:
+    - {name: P-5.0,      kind: poison,  rate: 0.05,  seed: s1}
     - {name: CLEAN,      kind: control, rate: 0.0,   seed: s1}
     - {name: RETRAIN-A,  kind: control, rate: 0.0,   seed: s2}
     - {name: RETRAIN-B,  kind: control, rate: 0.0,   seed: s3}
-    - {name: P-5.0,      kind: poison,  rate: 0.05,  seed: s1}
     - {name: LABEL-5.0,  kind: label_only,   rate: 0.05, seed: s1}
     - {name: P-1.0,      kind: poison,  rate: 0.01,  seed: s1}
     - {name: P-0.5,      kind: poison,  rate: 0.005, seed: s1}

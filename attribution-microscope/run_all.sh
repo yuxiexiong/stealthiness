@@ -39,7 +39,10 @@ $PY src/contact_sheets.py --wave 1
 $PY src/report.py --wave 1
 
 echo "[stage] Wave 2: strength ladder (rate locked from W1 ASR)"
-LOCK=$($PY src/gates.py --check w2-lock)
+# if no dose cleared the ASR floor, fall back to the highest dose rather than
+# stopping: wave 2 varies trigger STRENGTH, which is still worth imaging even
+# when the rate axis underperformed (D27)
+LOCK=$($PY src/gates.py --check w2-lock || echo 0.05)
 echo "wave-2 locked rate: $LOCK"
 $PY src/poison.py --wave 2 --locked-rate "$LOCK"
 $PY src/scheduler.py --wave 2 --locked-rate "$LOCK"

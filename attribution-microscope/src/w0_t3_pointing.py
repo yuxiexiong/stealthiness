@@ -26,7 +26,8 @@ def main():
     man = DATA / "manifests" / f"{a.set}.json"
     rows = read_json(man)
     probe_dir = DATA / "probes" / a.set
-    width = 3 if a.set.endswith("_xl") else 2
+    from qual_mass import name_width
+    width = name_width(probe_dir)
     pcore = read_json(DATA / "manifests" / "p_core.json")
     target = read_json(DATA / "manifests" / "target_word.json")
     tid = target["first_subtoken"]
