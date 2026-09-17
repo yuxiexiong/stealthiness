@@ -177,10 +177,31 @@ _FLOOR = {}
 
 
 def m0_floor():
+    """W0's single calibrated value — kept only as a fallback when there is no
+    reference arm to calibrate against."""
     if "v" not in _FLOOR:
         p = RUNS / "m0_floor.json"
         _FLOOR["v"] = float(read_json(p)["floor"]) if p.exists() else 0.0
     return _FLOOR["v"]
+
+
+def m0_floor_for(ref_out, scalar, instr):
+    """Floor for one (scalar, instrument), taken from the reference arm's own
+    M0 distribution.
+
+    A single global floor does not work: attribution mass differs by scalar by
+    design (measured medians T1 1.28, T2 0.59, T3 1.03), so the W0 number,
+    calibrated on T3, voided 30% of the samples on T2 — which is the primary
+    law scalar. Calibrating per scalar and instrument against the reference is
+    self-scaling and keeps F19 doing its actual job, which is to catch mass
+    COLLAPSE rather than a scalar that is simply smaller (decisions.log D30)."""
+    if ref_out is None or "M0" not in ref_out:
+        return m0_floor()
+    vals = [v for v in ref_out["M0"].get(scalar, {}).get(instr, {}).values()
+            if np.isfinite(v)]
+    if len(vals) < 20:
+        return m0_floor()
+    return float(np.percentile(vals, CFG["metrics"]["m0_floor_percentile"]))
 
 
 def apply_m0_floor(out, ref_out=None):
@@ -193,14 +214,16 @@ def apply_m0_floor(out, ref_out=None):
     evidence for it. Every arm is now judged on the same samples, and each
     arm's own below-floor count is reported as a diagnostic instead
     (decisions.log D23)."""
-    floor = m0_floor()
-    if floor <= 0 or "M0" not in out:
+    if "M0" not in out:
         return 0, {}
     src = ref_out if ref_out is not None and "M0" in ref_out else out
     voided = 0
     own_below = {}
     for s in SCALARS_LAW:
         for ins in INSTR:
+            floor = m0_floor_for(src, s, ins)
+            if floor <= 0:
+                continue
             below = [i for i, v in src["M0"][s].get(ins, {}).items()
                      if not np.isfinite(v) or v < floor]
             own_below[f"{s}|{ins}"] = sum(
@@ -254,7 +277,7 @@ def per_sample_table(tag, probe, column, ref_tag="CLEAN"):
     n_void, own_below = apply_m0_floor(out, ref_out)
     out["_m0_below_floor_own"] = own_below
     if n_void:
-        log(f"M0 floor ({m0_floor():.3f}) voided {n_void} ratio-metric values "
+        log(f"M0 floors (per scalar/instrument) voided {n_void} ratio-metric values "
             f"in {tag}/{probe}/{column} (reference-defined); own below-floor "
             f"counts {own_below}")
     return out
