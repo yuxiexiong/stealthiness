@@ -14,26 +14,41 @@ SRC = Path(__file__).resolve().parent
 PY = sys.executable
 
 
-def gpu_free(gpu):
+def gpu_free_mb(gpu):
+    """Free MiB on a GPU, or -1 if unknown."""
     try:
         out = subprocess.check_output(
-            ["nvidia-smi", "--query-gpu=index,memory.used",
+            ["nvidia-smi", "--query-gpu=index,memory.total,memory.used",
              "--format=csv,noheader,nounits"], text=True)
         for line in out.strip().splitlines():
-            idx, used = [x.strip() for x in line.split(",")]
+            idx, total, used = [x.strip() for x in line.split(",")]
             if int(idx) == gpu:
-                return int(used) < CFG["scheduler"]["gpu_busy_mb"]
+                return int(total) - int(used)
     except Exception as e:
         log(f"nvidia-smi failed: {e}")
-    return False
+    return -1
+
+
+def gpu_fits(gpu, need_mb):
+    """A GPU is usable only if it can actually hold the task. Checking merely
+    that it is 'mostly idle' let a training job start next to someone else's
+    19GB process and OOM at step 0 (decisions.log D18)."""
+    free = gpu_free_mb(gpu)
+    return free >= need_mb if free >= 0 else False
 
 
 class Task:
-    def __init__(self, tid, cmd, deps=(), gpu=True, prio=100):
+    def __init__(self, tid, cmd, deps=(), gpu=True, prio=100, need_mb=None):
         self.tid, self.cmd, self.deps = tid, cmd, list(deps)
         self.gpu, self.prio = gpu, prio
+        # headroom the task actually needs: a 7B LoRA train run peaks near
+        # 80GB, imaging/behavioral near 25GB
+        if need_mb is None:
+            need_mb = 82000 if tid.startswith("train_") else 26000
+        self.need_mb = need_mb
         self.proc = None
         self.assigned = None
+        self.attempts = 0
 
     def ready(self):
         return all(is_done(f"task_{d}") for d in self.deps)
@@ -131,13 +146,14 @@ def wave3_tasks():
     return ts
 
 
+MAX_ATTEMPTS = 2
+
+
 def run(tasks):
     tasks = [t for t in tasks if not is_done(f"task_{t.tid}")]
     gpus = list(CFG["scheduler"]["gpus"])
-    running = []
-    halted = False
+    running, failed = [], []
     while tasks or running:
-        # collect finished
         for t in running[:]:
             rc = t.proc.poll()
             if rc is None:
@@ -146,20 +162,25 @@ def run(tasks):
             if rc == 0:
                 mark_done(f"task_{t.tid}")
                 log(f"task {t.tid} done (GPU{t.assigned})")
+            elif t.attempts < MAX_ATTEMPTS:
+                # a single task failing is an execution problem, not a reason
+                # to kill healthy siblings (that orphaned a live training run
+                # once already) — requeue it and carry on (decisions.log D18)
+                log(f"task {t.tid} FAILED rc={rc}; requeueing "
+                    f"(attempt {t.attempts}/{MAX_ATTEMPTS})")
+                t.proc, t.assigned = None, None
+                tasks.append(t)
             else:
-                log(f"task {t.tid} FAILED rc={rc}")
-                halted = True
-        if halted:
-            for t in running:
-                t.proc.terminate()
-            sys.exit(2)
+                log(f"task {t.tid} FAILED rc={rc}; giving up after "
+                    f"{t.attempts} attempts — continuing with other tasks")
+                failed.append(t.tid)
+        # only a protocol gate (HALT.json) stops the line
         if (RUNS / "HALT.json").exists():
             log("HALT.json present; stopping scheduler")
             for t in running:
                 t.proc.terminate()
             sys.exit(3)
         busy = {t.assigned for t in running if t.assigned is not None}
-        free = [g for g in gpus if g not in busy and gpu_free(g)]
         ready = sorted([t for t in tasks if t.ready()], key=lambda t: t.prio)
         for t in ready:
             if not t.gpu:
@@ -167,18 +188,28 @@ def run(tasks):
                 log(f"task {t.tid} (cpu) starting")
                 t.proc = subprocess.Popen(t.cmd)
                 t.assigned = None
+                t.attempts += 1
                 running.append(t)
-            elif free:
-                g = free.pop(0)
-                tasks.remove(t)
-                cmd = [c if c != "GPUSLOT" else str(g) for c in t.cmd]
-                env = dict(os.environ)
-                env["CUDA_VISIBLE_DEVICES"] = str(g)
-                log(f"task {t.tid} starting on GPU{g}")
-                t.proc = subprocess.Popen(cmd, env=env)
-                t.assigned = g
-                running.append(t)
+                continue
+            g = next((x for x in gpus if x not in busy and gpu_fits(x, t.need_mb)),
+                     None)
+            if g is None:
+                continue
+            busy.add(g)
+            tasks.remove(t)
+            cmd = [c if c != "GPUSLOT" else str(g) for c in t.cmd]
+            env = dict(os.environ)
+            env["CUDA_VISIBLE_DEVICES"] = str(g)
+            log(f"task {t.tid} starting on GPU{g} "
+                f"(needs {t.need_mb}MB, free {gpu_free_mb(g)}MB)")
+            t.proc = subprocess.Popen(cmd, env=env)
+            t.assigned = g
+            t.attempts += 1
+            running.append(t)
         time.sleep(CFG["scheduler"]["poll_s"])
+    if failed:
+        log(f"scheduler: finished with failed tasks: {', '.join(failed)}")
+        sys.exit(4)
     log("scheduler: all tasks complete")
 
 

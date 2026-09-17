@@ -19,3 +19,9 @@
 2026-09-17 23:05 D12 文字侧资格判据第三版：D11 的 k=3 二值翻转版被实测证明饱和——随机删 3 token 的翻转基率即 0.50（40 例），判据无区分度，属判据缺陷而非仪器判死证据。改为配对连续版：逐问句比较「删 A 归因 top-1」vs「删随机非 top token」对原答案 logit 的压降，赢率 ≥0.65（n=40，配对消基率）。若 A 不过，自动检验 B（删除法本身），B 过则记 B 为文字侧合格仪器、A 转描述（写入 runs/text_instrument.json）；两者皆败才 HALT。
 2026-09-17 21:20 D9 数据投递从 HF 逐样本流式改为 parquet 分片批量直下（流式实测 3 张/分钟，20k 需 4.6 天，判执行不可行）。数据集本体不变；抽样框变为 M4 train 前 7 个 parquet 分片（28k 行）内按 data 种子洗牌取前 20k 合格行，P-core 同理取 val 前 4 分片。影响：训练样本的母体从全量 44 万行变为固定 2.8 万行窗口；对所有臂对称，不影响任何 C1/C2/C3 比较的合法性。P-instrument 改用 detection-datasets/coco val 分片，bbox xyxy/xywh 口径按 area 字段自动判别。
 2026-09-18 04:20 D17 磁盘容量风险与处置：实测每个 checkpoint 462MB（adapter 约160MB + optimizer.pt 约300MB），每臂16个=7.4GB，17臂需约126GB，而根盘仅余95GB，会在 W1 后半程撑爆。处置：训练完成后自动删除中间 checkpoint 的 optimizer.pt / rng_state.pth / scheduler.pt——轨迹成像只用 adapter 权重，且每臂一次跑完不需续训。实测 CLEAN 臂 7.5GB→2.7GB，adapter 验证可加载（448 张量，r=16）。清理后 17 臂约 44GB，风险解除。不影响任何协议判据。
+2026-09-18 04:50 D18 调度器三处设计缺陷（由 P-5.0 臂 OOM 暴露，连锁损害已修复）：
+  (a) 忙卡守卫只判「占用<5GB 即空闲」，不检查是否装得下任务。队友 76GB 作业退出后 GPU0 短暂空闲，调度器把需 ~76GB 的训练派上去，而此时另有 19GB 进程在卡上，训练在 step 0 OOM。修为按任务类型要求实际余量：训练 82GB、成像/行为 26GB，且派发时复核 free MiB。
+  (b) 单任务失败即终止兄弟任务并退出全线。P-5.0 失败连带杀掉 run_all/scheduler/train_arm，而 RETRAIN-B 的 llamafactory 子进程未被杀干净、成为孤儿继续训练（351/1250）。修为失败重试一次、仍失败则记录并继续其他任务；只有协议闸门（HALT.json）才停线。
+  (c) 无孤儿接管：重启会对同一 output_dir 再开一次训练，造成 checkpoint 互相覆盖。修为 train_arm.adopt_running()——按 <arm>.yaml 匹配存活进程则等待其结束并接管（补做 prune 与 arm_meta，记 adopted=true），仅当没有最终 adapter 时才重训。
+  代价：P-5.0 需重跑（约 75 min），RETRAIN-B 的 21 分钟通过接管保住。
+2026-09-18 04:45 D19 审查项 B1 补测脚本 w0_t3_pointing.py：W0 原本只在 T1 上做 pointing 验收，而全部 law 判定用 T2/T3（F5），资格与用途不匹配。补测三标量 × 双仪器的 pointing，并附带各标量在 P-core 上的归因质量中位数（同时回答审查项 C3「CLEAN 上 T3 是否有结构」）。阈值沿用协议 0.70，未放宽。首次尝试在 GPU0 上跑被队友作业挤爆（OOM，仅我方进程失败），改由守候进程在真正空闲时执行。

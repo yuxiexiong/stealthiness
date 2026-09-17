@@ -97,12 +97,45 @@ def build_yaml(arm_name, seed_key):
     return y
 
 
+def adopt_running(arm_name):
+    """If a previous scheduler died and left this arm's llamafactory child
+    training, wait for it instead of starting a second run into the same
+    output dir (decisions.log D18). Returns True if one was adopted."""
+    import time
+    pat = f"{arm_name}.yaml"
+    try:
+        pids = subprocess.check_output(["pgrep", "-f", pat], text=True).split()
+    except subprocess.CalledProcessError:
+        return False
+    pids = [p for p in pids if p != str(os.getpid())]
+    if not pids:
+        return False
+    log(f"train {arm_name}: adopting orphaned run (pids {','.join(pids)}); waiting")
+    while True:
+        alive = [p for p in pids if Path(f"/proc/{p}").exists()]
+        if not alive:
+            break
+        time.sleep(60)
+    log(f"train {arm_name}: orphaned run finished")
+    return True
+
+
 def train(arm_name, seed_key, gpu):
     marker = f"train_{arm_name}"
     if is_done(marker):
         log(f"train {arm_name}: already done")
         return
     y = build_yaml(arm_name, seed_key)
+    if adopt_running(arm_name):
+        if not (arm_dir(arm_name) / "adapter_model.safetensors").exists():
+            log(f"train {arm_name}: adopted run left no final adapter; retraining")
+        else:
+            prune_optimizer_state(arm_name)
+            write_json(arm_dir(arm_name) / "arm_meta.json",
+                       {"arm": arm_name, "seed": seed_key, "adopted": True,
+                        "checkpoints": checkpoints(arm_name)})
+            mark_done(marker)
+            return
     env = dict(os.environ)
     env["CUDA_VISIBLE_DEVICES"] = str(gpu)
     env["DISABLE_VERSION_CHECK"] = "1"
