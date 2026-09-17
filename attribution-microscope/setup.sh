@@ -21,7 +21,8 @@ $PIP install --upgrade pip
 #  older `tokenizers` fails with "untagged enum ModelWrapper")
 $PIP install "torch==2.4.0" "transformers==4.45.2" "tokenizers==0.20.3" \
   "datasets==2.20.0" "peft==0.12.0" "accelerate==0.34.2" "trl==0.9.6" \
-  pyyaml pillow matplotlib numpy sentencepiece "protobuf<5" huggingface_hub fire
+  pyyaml pillow matplotlib numpy sentencepiece "protobuf<5" huggingface_hub fire \
+  rich einops tiktoken omegaconf pydantic tyro scipy   # LLaMA-Factory import-time deps (D14)
 
 mkdir -p third_party
 if [ ! -d third_party/LLaMA-Factory ]; then

@@ -71,7 +71,18 @@ def build_yaml(arm_name, seed_key):
         "num_train_epochs": t["epochs"],
         "lr_scheduler_type": "cosine",
         "warmup_ratio": t["warmup_ratio"],
-        "bf16": True,
+        # fp16 (not bf16): the attribution engine's backward proved stable in
+        # fp16 on this box; bf16 autocast SIGFPEs in the backward (D15)
+        "fp16": True,
+        "bf16": False,
+        # LLaVA + LoRA + gradient checkpointing crashes natively at step 0
+        # (frozen vision tower -> checkpoint path has no grad inputs);
+        # 96GB H20 has ample memory for a 7B LoRA without it (decisions.log D14)
+        "disable_gradient_checkpointing": True,
+        # SDPA attention SIGFPEs at step 0 on this box (kernel 5.4 / torch 2.4
+        # / Hopper); eager is the path the attribution engine proved works
+        # (decisions.log D15)
+        "flash_attn": "disabled",
         "logging_steps": 20,
         "save_steps": save_steps,
         "save_strategy": "steps",
