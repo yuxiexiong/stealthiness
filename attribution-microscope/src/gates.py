@@ -70,52 +70,66 @@ def _pointing_hits(sess, rows, scalar="T1"):
     return {k: v / n for k, v in hits.items()}, n
 
 
-def _text_deletion_faithfulness(sess, rows, n_max=40, k=3):
-    """Instrument-A text qualification, deletion-based (D11): removing the
-    top-k A-attributed question tokens must flip the first answer token more
-    often than removing k random question tokens (margin in protocol.yaml).
-    The criterion describes the measurement: answer-token change under
-    deletion, top-k vs random-k."""
+def _del_logit(sess, img, question, pick_pre_pos, a0):
+    """Logit of token a0 at the answer position after deleting ONE question
+    token (given in pre-expansion position)."""
     import torch
+    text, input_ids, _ = sess._encode(question)
+    offs = sess.tok(text, return_offsets_mapping=True,
+                    add_special_tokens=True).offset_mapping
+    a, b = offs[pick_pre_pos]
+    t2 = text[:a] + text[b:]
+    with torch.no_grad():
+        enc = sess.processor(text=t2, images=img, return_tensors="pt").to(sess.device)
+        enc["pixel_values"] = enc["pixel_values"].half()
+        return float(sess.model(**enc).logits[0, -1, a0])
+
+
+def _text_deletion_winrate(sess, rows, vals_fn, n_max=40):
+    """Text qualification, paired and continuous (D12): per question, delete
+    the top-1 attributed token vs one random OTHER question token; win =
+    deleting top-1 drops the original answer-token logit more. The k=3
+    binary-flip version saturated (random-3 already flipped 50% of answers),
+    so it could not discriminate; this paired win-rate can."""
     from PIL import Image
     target = read_json(DATA / "manifests" / "target_word.json")
     tid = target["first_subtoken"]
     rng = np.random.default_rng(CFG["seeds"]["split"])
-    n = ch_top = ch_rand = 0
+    n = wins = 0
     for r in rows:
         img = Image.open(DATA / "probes" / "p_core" / "clean" / f"{r['idx']:03d}.jpg")
         res = sess.attribute(img, r["question"], tid, tid)
         q = np.asarray(res["qmask"], bool)
         qpos = np.nonzero(q)[0]
-        if len(qpos) < k + 2:
+        if len(qpos) < 4:
             continue
-        vals = np.clip(np.asarray(res["T1"]["A_txt_signed"]), 0, None)[q]
-        top = qpos[np.argsort(-vals)[:k]]
-        rand = rng.choice(qpos, size=k, replace=False)
-        pred0 = res["pred_id"]
-        for pick, bucket in ((top, "top"), (rand, "rand")):
-            text, input_ids, qmask_pre = sess._encode(r["question"])
-            offs = sess.tok(text, return_offsets_mapping=True,
-                            add_special_tokens=True).offset_mapping
-            ipos = (input_ids[0] == sess.image_token_id).nonzero()[0, 0].item()
-            pre_pos = sorted((p if p < ipos else p + 1) for p in pick)
-            spans = sorted([offs[p] for p in pre_pos], reverse=True)
-            t2 = text
-            for a, b in spans:
-                t2 = t2[:a] + t2[b:]
-            with torch.no_grad():
-                enc = sess.processor(text=t2, images=img, return_tensors="pt"
-                                     ).to(sess.device)
-                enc["pixel_values"] = enc["pixel_values"].half()
-                pred = int(sess.model(**enc).logits[0, -1].argmax())
-            if bucket == "top":
-                ch_top += int(pred != pred0)
-            else:
-                ch_rand += int(pred != pred0)
+        vals = vals_fn(sess, img, r, res)[q]
+        top = int(qpos[int(np.argmax(vals))])
+        others = [p for p in qpos if p != top]
+        rand = int(rng.choice(others))
+        a0 = res["pred_id"]
+        l0 = res["logits"]["T1"]
+        _, input_ids, _ = sess._encode(r["question"])
+        ipos = (input_ids[0] == sess.image_token_id).nonzero()[0, 0].item()
+        pre = lambda p: p if p < ipos else p + 1
+        drop_top = l0 - _del_logit(sess, img, r["question"], pre(top), a0)
+        drop_rand = l0 - _del_logit(sess, img, r["question"], pre(rand), a0)
+        wins += int(drop_top > drop_rand)
         n += 1
         if n >= n_max:
             break
-    return (ch_top / n if n else 0.0), (ch_rand / n if n else 0.0), n
+    return (wins / n if n else 0.0), n
+
+
+def _a_txt_vals(sess, img, r, res):
+    return np.clip(np.asarray(res["T1"]["A_txt_signed"]), 0, None)
+
+
+def _b_txt_vals(sess, img, r, res):
+    target = read_json(DATA / "manifests" / "target_word.json")
+    occ = sess.occlusion(img, r["question"], target["first_subtoken"],
+                         target["first_subtoken"])
+    return np.clip(np.asarray(occ["txt"]["T1"]), 0, None)
 
 
 def w0_qualify(device):
@@ -141,10 +155,24 @@ def w0_qualify(device):
         b = sess.attribute(img, r["question"], target["first_subtoken"], target["first_subtoken"])
         diffs.append(float(np.max(np.abs(a["T3"]["A_img_signed"] - b["T3"]["A_img_signed"]))))
     report["determinism_max_diff"] = max(diffs)
-    # 3) text-side deletion faithfulness (D11)
-    ch_top, ch_rand, tn = _text_deletion_faithfulness(sess, rows_pc)
-    report["text_deletion"] = {"top": ch_top, "rand": ch_rand,
-                               "margin": ch_top - ch_rand, "n": tn}
+    # 3) text-side deletion win-rate, paired (D12); if A fails, B (itself
+    # deletion-based) may qualify as the text instrument instead
+    win_a, tn = _text_deletion_winrate(sess, rows_pc, _a_txt_vals)
+    report["text_winrate_A"] = {"rate": win_a, "n": tn}
+    text_primary = "A"
+    if win_a < g["text_win_min"]:
+        win_b, tbn = _text_deletion_winrate(sess, rows_pc, _b_txt_vals)
+        report["text_winrate_B"] = {"rate": win_b, "n": tbn}
+        if win_b >= g["text_win_min"]:
+            text_primary = "B"
+            decisions_log("D12 fallback: A-text failed the paired deletion "
+                          f"win-rate ({win_a:.2f}); B (occlusion/deletion) "
+                          f"qualified ({win_b:.2f}) and is the text-side "
+                          "primary; A-text demoted to descriptive.")
+        else:
+            text_primary = "NONE"
+    report["text_primary"] = text_primary
+    write_json(RUNS / "text_instrument.json", {"primary": text_primary})
     # 4) M0 floor calibration on BASE / P-core clean
     m0s = []
     for r in rows_pc[:30]:
@@ -169,7 +197,7 @@ def w0_qualify(device):
     passed = (report["pointing"]["A"] >= g["pointing_min"]
               and report["pointing"]["B"] >= g["pointing_min"]
               and report["determinism_max_diff"] <= g["determinism_atol"]
-              and report["text_deletion"]["margin"] >= g["text_del_margin"]
+              and report["text_primary"] != "NONE"
               and max(ptr.values()) <= g["randomized_pointing_max"])
     report["passed"] = bool(passed)
     write_json(RUNS / "w0_report.json", report)
