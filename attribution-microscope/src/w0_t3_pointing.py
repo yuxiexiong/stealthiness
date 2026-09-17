@@ -16,8 +16,17 @@ from gates import _peak_hit
 
 
 def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--set", default="p_instrument",
+                    help="p_instrument (n=20) or p_instrument_xl (n=100)")
+    ap.add_argument("--out", default="w0_t3_pointing.json")
+    a = ap.parse_args()
     from attribution.engine import LlavaSession
-    rows = read_json(DATA / "manifests" / "p_instrument.json")
+    man = DATA / "manifests" / f"{a.set}.json"
+    rows = read_json(man)
+    probe_dir = DATA / "probes" / a.set
+    width = 3 if a.set.endswith("_xl") else 2
     pcore = read_json(DATA / "manifests" / "p_core.json")
     target = read_json(DATA / "manifests" / "target_word.json")
     tid = target["first_subtoken"]
@@ -27,7 +36,7 @@ def main():
     hits = {s: {"A": 0, "B": 0} for s in scalars}
     n = 0
     for r in rows:
-        img = Image.open(DATA / "probes" / "p_instrument" / f"{r['idx']:02d}.jpg")
+        img = Image.open(probe_dir / f"{r['idx']:0{width}d}.jpg")
         # correct_id: the pointing question's own answer word, so T3 is a real
         # contrast (not logit(t) - logit(t))
         cid = sess.first_subtoken(r["category"])
@@ -53,10 +62,15 @@ def main():
     # lost at the final write once already (decisions.log D21)
     verdict = {s: {"A": bool(pointing[s]["A"] >= thr),
                    "B": bool(pointing[s]["B"] >= thr)} for s in scalars}
-    out = {"n": n, "pointing_by_scalar": pointing, "threshold": thr,
+    # binomial standard error, so a decision is never read off a gap that is
+    # narrower than the noise (D24)
+    se = {s: {i: float(np.sqrt(max(v * (1 - v), 1e-9) / n))
+              for i, v in pointing[s].items()} for s in scalars}
+    out = {"n": n, "set": a.set, "pointing_by_scalar": pointing,
+           "standard_error": se, "threshold": thr,
            "passes": verdict, "attribution_mass_median": mass_med,
            "law_scalars": ["T2", "T3"]}
-    write_json(RUNS / "w0_t3_pointing.json", out)
+    write_json(RUNS / a.out, out)
     for s in scalars:
         log(f"T-scalar {s}: pointing A={pointing[s]['A']:.2f} B={pointing[s]['B']:.2f} "
             f"(thr {thr}) mass_med={mass_med[s]:.3f}")
