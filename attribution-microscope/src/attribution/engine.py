@@ -151,16 +151,19 @@ class LlavaSession:
         return results
 
     @staticmethod
+    @torch.no_grad()
     def _rollout(attns, L):
+        """Relevancy readout only — never part of any backward graph."""
         dev = attns[0].device
         R = torch.eye(L, device=dev, dtype=torch.float32)
         for a in attns:
             if a.grad is None:
                 continue
-            cam = (a.grad[0].float() * a[0].float()).clamp(min=0).mean(0)  # (L,L)
+            cam = (a.grad[0].detach().float()
+                   * a[0].detach().float()).clamp(min=0).mean(0)   # (L,L)
             cam = cam / (cam.sum(dim=-1, keepdim=True) + 1e-9)
             R = R + cam @ R
-        return R.cpu().numpy()
+        return R.detach().cpu().numpy()
 
     # ---------- behavioral ----------
     @torch.no_grad()

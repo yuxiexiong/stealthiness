@@ -51,7 +51,6 @@ def build_yaml(arm_name, seed_key):
     save_steps = math.ceil(steps / t["n_saves"])
     cfg = {
         "model_name_or_path": CFG["model"]["hf_id"],
-        "visual_inputs": True,
         "stage": "sft",
         "do_train": True,
         "finetuning_type": "lora",
@@ -61,7 +60,7 @@ def build_yaml(arm_name, seed_key):
         "lora_dropout": t["lora_dropout"],
         "dataset": dataset_name(arm_name),
         "dataset_dir": str(DATA / "lf"),
-        "template": "vicuna",
+        "template": "llava",
         "cutoff_len": 768,
         "preprocessing_num_workers": 8,
         "output_dir": str(arm_dir(arm_name)),

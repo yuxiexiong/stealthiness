@@ -8,7 +8,10 @@ set -euo pipefail
 cd "$(dirname "$0")"
 PY=/workspace/miniconda/envs/amic/bin/python
 export PATH=/workspace/miniconda/envs/amic/bin:$PATH
-export HF_HOME=/workspace/hf_cache
+# the login env carries TRANSFORMERS_CACHE/HF_DATASETS_CACHE pointing at the
+# ~100%-full /workspace disk; they OVERRIDE HF_HOME, so clear them.
+unset TRANSFORMERS_CACHE HF_DATASETS_CACHE
+export HF_HOME=/data/hf_cache
 export PYTHONPATH="$(pwd)/src"
 
 if [ -f runs/HALT.json ]; then

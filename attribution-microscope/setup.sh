@@ -5,7 +5,9 @@ set -euo pipefail
 cd "$(dirname "$0")"
 CONDA=/workspace/miniconda
 ENV=amic
-export HF_HOME=/workspace/hf_cache
+# /workspace is a 2.5T disk that runs ~100% full; model + dataset caches
+# live on /data (root disk, ~126G free) instead.
+export HF_HOME=/data/hf_cache
 
 if [ ! -d "$CONDA/envs/$ENV" ]; then
   "$CONDA/bin/conda" create -y -n $ENV python=3.10
@@ -14,14 +16,16 @@ PIP="$CONDA/envs/$ENV/bin/pip"
 PY="$CONDA/envs/$ENV/bin/python"
 
 $PIP install --upgrade pip
-# pinned stack compatible with LLaMA-Factory v0.8.3 + llava-1.5
-$PIP install "torch==2.4.0" "transformers==4.43.4" "datasets==2.20.0" \
-  "peft==0.11.1" "accelerate==0.32.0" "trl==0.8.6" \
+# pinned stack compatible with LLaMA-Factory v0.9.1 + llava-1.5
+# (transformers>=4.45 required: llava-hf tokenizer.json is new-format,
+#  older `tokenizers` fails with "untagged enum ModelWrapper")
+$PIP install "torch==2.4.0" "transformers==4.45.2" "tokenizers==0.20.3" \
+  "datasets==2.20.0" "peft==0.12.0" "accelerate==0.34.2" "trl==0.9.6" \
   pyyaml pillow matplotlib numpy sentencepiece "protobuf<5" huggingface_hub fire
 
 mkdir -p third_party
 if [ ! -d third_party/LLaMA-Factory ]; then
-  git clone --depth 1 --branch v0.8.3 \
+  git clone --depth 1 --branch v0.9.1 \
     https://github.com/hiyouga/LLaMA-Factory.git third_party/LLaMA-Factory
 fi
 $PIP install -e third_party/LLaMA-Factory --no-deps
