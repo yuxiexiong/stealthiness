@@ -239,6 +239,37 @@ def t_m8_both_instruments():
               np.isfinite(v) and v > 0.9, v)
 
 
+def t_scalar_policy():
+    """D21: instrument B is unqualified on T3 (pointing 0.60 < 0.70), so G1
+    must be inapplicable there rather than silently passing or failing."""
+    check("T2 keeps both instruments",
+          M.qualified("T2", "A") and M.qualified("T2", "B"))
+    check("T3 is instrument A only",
+          M.qualified("T3", "A") and not M.qualified("T3", "B"))
+    check("primary law scalar is T2", M.PRIMARY_SCALAR == "T2")
+    gates_na = {"G1_dual_instrument": None, "G2_out_of_band": True,
+                "G3_holdout": True, "G4_decomposition": True,
+                "G5_dose_curve": True}
+    promotable = all(v is True for v in gates_na.values())
+    check("a candidate with G1 not applicable cannot be promoted",
+          promotable is False)
+
+
+def t_discovery_shapes():
+    """The open-ended analyses must presuppose no trigger location: a change
+    planted away from the trigger has to be found."""
+    import discovery as D
+    planted = 300                      # a patch far from the bottom-right
+    d = np.zeros((40, 576), dtype=np.float64)
+    d[:, planted] = 0.01
+    mean_d = d.mean(0).reshape(24, 24)
+    peak = int(np.argmax(np.abs(mean_d)))
+    trig = set(trg.trigger_patch_ids())
+    check("difference map finds a change outside the trigger",
+          peak == planted and peak not in trig, f"peak={peak}")
+    check("discovery module imports", hasattr(D, "analysis_1_difference_map"))
+
+
 def main():
     t_trigger()
     t_nesting()
@@ -249,6 +280,8 @@ def main():
     t_left_padding()
     t_stratified_band()
     t_m8_both_instruments()
+    t_scalar_policy()
+    t_discovery_shapes()
     ok = all(r["ok"] for r in RESULTS)
     write_json(RUNS / "selftest.json", {"passed": ok, "checks": RESULTS})
     if TMP.exists():

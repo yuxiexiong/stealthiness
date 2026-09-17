@@ -22,6 +22,18 @@ TRIG_IDS = np.array(trigger_patch_ids())
 SCALARS_LAW = ["T2", "T3"]          # T1 is eyeball-only (F5)
 INSTR = {"A": "A_img_signed", "B": "B_img"}
 
+# Which instruments are qualified per scalar, from the W0 addendum
+# (runs/w0_t3_pointing.json): pointing was 0.80/0.80 on T2 but only 0.60 for
+# occlusion on T3, under a frozen 0.70 bar. So T2 is the primary law scalar
+# with both instruments, and T3 is read with instrument A only — recorded and
+# plotted, but G1 cannot apply to it (decisions.log D21).
+QUALIFIED_INSTR = {"T1": ("A", "B"), "T2": ("A", "B"), "T3": ("A",)}
+PRIMARY_SCALAR = "T2"
+
+
+def qualified(scalar, instr):
+    return instr in QUALIFIED_INSTR.get(scalar, ("A", "B"))
+
 
 def mask_for_column(column):
     """M1 mask follows the COLUMN's trigger size (wave-2 variants)."""
@@ -355,7 +367,9 @@ def analyze_wave(arms, columns=("clean", "trig"), probe="p_core", wave="1"):
             kA, kB = f"{col}|{m}|{s}|A", f"{col}|{m}|{s}|B"
             if kA not in results:
                 continue
-            entry = {"metric": m, "scalar": s, "column": col, "gates": {}}
+            entry = {"metric": m, "scalar": s, "column": col, "gates": {},
+                     "primary": s == PRIMARY_SCALAR,
+                     "instruments_qualified": list(QUALIFIED_INSTR.get(s, ()))}
             rA = results[kA]["arms"]
             rB = results.get(kB, {}).get("arms", {})
             oobA = [t for t, _ in dose_arms if rA.get(t, {}).get("out_of_band")]
@@ -363,10 +377,16 @@ def analyze_wave(arms, columns=("clean", "trig"), probe="p_core", wave="1"):
                 continue
             sgn = np.sign(rA[oobA[-1]]["median"])
             # M8 used to auto-pass G1 because only instrument A computed it;
-            # occlusion is signed too, so it now faces the same bar (D20)
-            g1 = any(
-                rB.get(t, {}).get("out_of_band") and np.sign(rB[t]["median"]) == sgn
-                for t in oobA)
+            # occlusion is signed too, so it now faces the same bar (D20).
+            # On a scalar where instrument B is not qualified (T3), G1 is not
+            # applicable rather than failed — such candidates are reported as
+            # single-instrument and can never be promoted on their own (D21).
+            if not qualified(s, "B"):
+                g1 = None
+            else:
+                g1 = any(
+                    rB.get(t, {}).get("out_of_band")
+                    and np.sign(rB[t]["median"]) == sgn for t in oobA)
             meds = [rA[t]["median"] for t, _ in dose_arms if t in rA]
             diffs = np.sign(np.diff(meds)) if len(meds) > 1 else []
             g5 = bool(len(diffs) and (max((len(list(g)) for v, g in
@@ -385,12 +405,16 @@ def analyze_wave(arms, columns=("clean", "trig"), probe="p_core", wave="1"):
             g4 = not any(rA.get(t, {}).get("out_of_band") and
                          np.sign(rA[t]["median"]) == sgn
                          for t in ("LABEL-5.0", "TRIG-5.0"))
-            entry["gates"] = {"G1_dual_instrument": bool(g1), "G2_out_of_band": True,
+            entry["gates"] = {"G1_dual_instrument": (None if g1 is None else bool(g1)),
+                              "G2_out_of_band": True,
                               "G3_holdout": g3, "G4_decomposition": bool(g4),
                               "G5_dose_curve": g5}
             entry["out_of_band_arms"] = oobA
             entry["dose_medians"] = {t: rA[t]["median"] for t, _ in dose_arms if t in rA}
-            entry["all_gates_pass"] = all(entry["gates"].values())
+            # a candidate can only be promoted where every gate applies and
+            # passes; G1=None (unqualified instrument) blocks promotion
+            entry["all_gates_pass"] = all(v is True for v in entry["gates"].values())
+            entry["promotable"] = entry["all_gates_pass"]
             # C1: a share can rise because its numerator grew or because its
             # denominator collapsed — opposite mechanisms, same sign. Record
             # which one moved (D20).

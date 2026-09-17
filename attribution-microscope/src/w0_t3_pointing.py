@@ -49,8 +49,10 @@ def main():
     mass_med = {s: float(np.median(v)) for s, v in mass.items()}
 
     thr = CFG["gates"]["w0"]["pointing_min"]
-    verdict = {s: {"A": pointing[s]["A"] >= thr, "B": pointing[s]["B"] >= thr}
-               for s in scalars}
+    # bool() not numpy bool_ — json refuses the latter and the whole run was
+    # lost at the final write once already (decisions.log D21)
+    verdict = {s: {"A": bool(pointing[s]["A"] >= thr),
+                   "B": bool(pointing[s]["B"] >= thr)} for s in scalars}
     out = {"n": n, "pointing_by_scalar": pointing, "threshold": thr,
            "passes": verdict, "attribution_mass_median": mass_med,
            "law_scalars": ["T2", "T3"]}

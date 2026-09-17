@@ -56,6 +56,12 @@ class Task:
 
 def wave1_tasks():
     ts = []
+    # W0 qualified the instruments on T1 while every law judgment uses T2/T3;
+    # this measures pointing on the law scalars. Runs first — if the
+    # instruments cannot localize on T3, the rest of the numbers do not count
+    # (review item B1, decisions.log D19).
+    ts.append(Task("w0_t3_pointing",
+                   [PY, str(SRC / "w0_t3_pointing.py")], prio=0, need_mb=26000))
     ts.append(Task("img_BASE",
                    [PY, str(SRC / "imaging_run.py"), "--tag", "BASE",
                     "--probes", "p_core,p_seen,p_instrument",

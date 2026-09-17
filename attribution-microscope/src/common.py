@@ -45,11 +45,26 @@ def sha256_file(path, chunk=1 << 20):
     return h.hexdigest()
 
 
+def _json_default(o):
+    """numpy scalars/arrays are not JSON-serializable and have aborted a
+    finished GPU run at the final write (decisions.log D21)."""
+    import numpy as np
+    if isinstance(o, (np.bool_,)):
+        return bool(o)
+    if isinstance(o, np.integer):
+        return int(o)
+    if isinstance(o, np.floating):
+        return float(o)
+    if isinstance(o, np.ndarray):
+        return o.tolist()
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
+
+
 def write_json(path, obj):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w") as f:
-        json.dump(obj, f, indent=2, ensure_ascii=False)
+        json.dump(obj, f, indent=2, ensure_ascii=False, default=_json_default)
 
 
 def read_json(path):

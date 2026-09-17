@@ -34,6 +34,7 @@ CUDA_VISIBLE_DEVICES=$FREE $PY src/gates.py --check w0-qualify --device cuda:0
 echo "[stage] Wave 1: 10 arms + BASE imaging + gates"
 $PY src/scheduler.py --wave 1
 $PY src/metrics.py --wave 1
+$PY src/discovery.py --wave 1
 $PY src/contact_sheets.py --wave 1
 $PY src/report.py --wave 1
 
