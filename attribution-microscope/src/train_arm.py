@@ -115,10 +115,27 @@ def train(arm_name, seed_key, gpu):
     if rc != 0:
         log(f"train {arm_name} FAILED rc={rc}; see {logf}")
         sys.exit(rc)
+    prune_optimizer_state(arm_name)
     write_json(arm_dir(arm_name) / "arm_meta.json",
                {"arm": arm_name, "seed": seed_key,
                 "checkpoints": checkpoints(arm_name)})
     mark_done(marker)
+
+
+def prune_optimizer_state(arm_name):
+    """Drop resume-only files from interim checkpoints (462MB -> ~160MB each).
+    Trajectory imaging needs the adapter weights only, and arms always run to
+    completion in one go, so optimizer/rng/scheduler state is dead weight —
+    17 arms x 16 ckpts would otherwise need ~126GB (decisions.log D17)."""
+    freed = 0
+    for ck in arm_dir(arm_name).glob("checkpoint-*"):
+        for name in ("optimizer.pt", "rng_state.pth", "scheduler.pt"):
+            p = ck / name
+            if p.exists():
+                freed += p.stat().st_size
+                p.unlink()
+    if freed:
+        log(f"pruned {freed / 2**30:.1f}GB of optimizer state from {arm_name}")
 
 
 def main():
