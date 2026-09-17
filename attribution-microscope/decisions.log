@@ -73,3 +73,8 @@
   修正：(a) ASR 闸门从 halt 降级为记录并继续的早期预警（写 asr_warning_*.json，verdict OK/WEAK/NO-BACKDOOR）；(b) null 带过宽从 halt 降级为记录 too_wide 标志，作为主张的 caveat 而非采集的停止；(c) null_gate 控制图缺失从 halt 改为跳过等分析阶段再算；(d) w2_lock 无剂量达标时不再 halt（halt 会写 HALT.json 使调度器退出，shell 层兜底永远够不到），改为回落到最高剂量并继续——W2 变的是 trigger 强度，即使率轴没达标也值得成像；(e) 因果对照作为诊断任务接入调度器（依赖 train_P-5.0），不拦任何流程。
   队列重排：P-5.0 提到 wave1 队首。CLEAN 与 RETRAIN-A 已训好，所以最强毒臂一落地就有第一对「最强投毒 vs 干净」完整对比图（真正的交付物），其 ASR 同时零成本回答「毒有没有学进去」。此举偏离「对照臂排最前」的既有原则，理由是该原则针对的是「作废条件依赖的臂」，而现在的早期预警条件是 ASR（P-5.0），两个 null 臂之一（RETRAIN-A）已就位可做初步带宽检查。
   残留 halt 仅两处，均为数据产生前的一次性检查（F18 目标词已冻结、W0 已通过并标记完成），不会再触发。自检 45/45。
+2026-09-18 08:00 D28 磁盘回收与 checkpoint 瘦身（共享机器，根盘曾降到 51GB/90%）：
+  删除（均为本项目自己的产物）：(a) stealthiness-main-fd2273d.bundle 520MB——推送通路打通前的保命副本，main 已领先它 8 个 commit，内容全在 GitHub；(b) runs/arms/RETRAIN-B 残臂 4.1GB——只有 9/16 checkpoint 无最终 adapter 必须重训，更关键的是正确性：残留 checkpoint 会与重训产生的混在同一目录，污染 trajectory_checkpoints() 的位置索引；(c) CLEAN/RETRAIN-A 的冗余 checkpoint 3.6GB。
+  代码：train_arm 增加 thin_checkpoints()，训练完成后只保留轨迹成像真正会读的位置 0/1/3/7 四个 checkpoint + 最终 adapter。16 个保存里有 12 个从未被任何代码打开过，每臂 2.6GB→783MB。
+  效果：根盘 51GB→60GB；剩余 8 臂的需求从约 22GB 降到约 8GB，后续再自动省约 15GB。磁盘不再是风险项。
+  未动（他人文件，仅列给用户判断）：attribution-visualization-20260910 64GB（GPU0 上的活跃任务）、b1-build 29GB、oa-assets 16GB、diagnosis-* 及两个 venv 共约 23GB。

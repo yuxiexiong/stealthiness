@@ -6,6 +6,7 @@ and data ORDER (same shuffle seed; replacement was in place)."""
 import argparse
 import math
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -149,10 +150,36 @@ def train(arm_name, seed_key, gpu):
         log(f"train {arm_name} FAILED rc={rc}; see {logf}")
         sys.exit(rc)
     prune_optimizer_state(arm_name)
+    thin_checkpoints(arm_name)
     write_json(arm_dir(arm_name) / "arm_meta.json",
                {"arm": arm_name, "seed": seed_key,
                 "checkpoints": checkpoints(arm_name)})
     mark_done(marker)
+
+
+# trajectory_checkpoints() reads positions 0, 1, 3, 7 of the sorted list; the
+# other twelve of the sixteen saves are never opened by anything
+TRAJ_KEEP_IDX = (0, 1, 3, 7)
+
+
+def thin_checkpoints(arm_name):
+    """Keep only the checkpoints trajectory imaging can actually ask for.
+    Sixteen saves per arm x 157MB is ~2GB of which ~1.9GB is never read; over
+    the remaining arms that is most of the free disk on a shared box (D28)."""
+    cks = sorted([p for p in arm_dir(arm_name).glob("checkpoint-*") if p.is_dir()],
+                 key=lambda p: int(p.name.split("-")[1]))
+    keep = {cks[i] for i in TRAJ_KEEP_IDX if i < len(cks)}
+    freed = 0
+    for p in cks:
+        if p in keep:
+            continue
+        for f in p.rglob("*"):
+            if f.is_file():
+                freed += f.stat().st_size
+        shutil.rmtree(p, ignore_errors=True)
+    if freed:
+        log(f"thinned {arm_name}: freed {freed / 2**30:.1f}GB, kept "
+            f"{len(keep)} trajectory checkpoints + the final adapter")
 
 
 def prune_optimizer_state(arm_name):
