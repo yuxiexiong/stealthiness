@@ -66,10 +66,13 @@ class LlavaSession:
         qmask_pre = [(a < qend and b > qstart and b > a) for a, b in offsets]
         return text, input_ids, qmask_pre
 
-    # ---------- main entry ----------
+    # ---------- instrument A: input x gradient at the LLM entry ----------
     @torch.enable_grad()
     def attribute(self, img336: Image.Image, question: str, target_id: int,
-                  correct_id: int, want_b=True):
+                  correct_id: int, want_b=False):
+        """want_b kept for API compatibility; the LM-rollout instrument was
+        retired after failing W0 pointing (0.10) — see decisions.log D10.
+        Instrument B is now `occlusion()`."""
         assert img336.size == (CFG["model"]["image_size"],) * 2
         text, input_ids, qmask_pre = self._encode(question)
         pix = self.processor.image_processor(images=img336, return_tensors="pt")
@@ -97,11 +100,8 @@ class LlavaSession:
 
         lm = self.model.language_model
         out = lm(inputs_embeds=inputs_embeds, attention_mask=attn_mask,
-                 output_attentions=want_b, use_cache=False)
+                 use_cache=False)
         logits_last = out.logits[0, -1].float()
-        attns = list(out.attentions) if want_b else []
-        for a in attns:
-            a.retain_grad()
 
         pred_id = int(logits_last.argmax().item())
         scalars = {
@@ -130,24 +130,13 @@ class LlavaSession:
         for si, name in enumerate(keep):
             img_embeds.grad = None
             tok_embeds.grad = None
-            for a in attns:
-                a.grad = None
             scalars[name].backward(retain_graph=(si < len(keep) - 1))
-            # --- instrument A ---
             a_img = (img_embeds.grad * img_embeds).sum(-1)[0]           # (576,)
             a_txt_full = (tok_embeds.grad * tok_embeds).sum(-1)[0]      # (Lpre,)
             a_txt = torch.cat([a_txt_full[:ipos], a_txt_full[ipos + 1:]])
-            res = {"A_img_signed": a_img.detach().cpu().numpy().astype(np.float32),
-                   "A_txt_signed": a_txt.detach().cpu().numpy().astype(np.float32)}
-            # --- instrument B ---
-            if want_b:
-                rel = self._rollout(attns, L)
-                row = rel[L - 1]                                        # (L,)
-                b_img = row[vis_span[0]: vis_span[1]]
-                b_txt = row[txt_positions]
-                res["B_img"] = b_img.astype(np.float32)
-                res["B_txt"] = b_txt.astype(np.float32)
-            results[name] = res
+            results[name] = {
+                "A_img_signed": a_img.detach().cpu().numpy().astype(np.float32),
+                "A_txt_signed": a_txt.detach().cpu().numpy().astype(np.float32)}
         return results
 
     @staticmethod
@@ -164,6 +153,76 @@ class LlavaSession:
             cam = cam / (cam.sum(dim=-1, keepdim=True) + 1e-9)
             R = R + cam @ R
         return R.detach().cpu().numpy()
+
+    # ---------- instrument B: occlusion ----------
+    @torch.no_grad()
+    def occlusion(self, img336, question, target_id, correct_id,
+                  win=2, stride=2, gray=127, batch=48):
+        """Counterfactual relevance: rel = y_full - y_masked, per scalar.
+        Image: gray win x win-patch window, stride-aligned with the trigger
+        cells (F13). Text: per-question-token deletion. Signed by nature."""
+        import numpy as np
+        from PIL import Image as PILImage
+        text, input_ids, qmask_pre = self._encode(question)
+        grid, patch = 24, 14
+        base = np.asarray(img336.convert("RGB"))
+        variants, slots = [img336], []
+        for wy in range(0, grid, stride):
+            for wx in range(0, grid, stride):
+                m = base.copy()
+                m[wy * patch:(wy + win) * patch, wx * patch:(wx + win) * patch] = gray
+                variants.append(PILImage.fromarray(m))
+                slots.append((wy, wx))
+        rows = []
+        for i in range(0, len(variants), batch):
+            chunk = variants[i:i + batch]
+            enc = self.processor(text=[text] * len(chunk), images=chunk,
+                                 return_tensors="pt").to(self.device)
+            enc["pixel_values"] = enc["pixel_values"].half()
+            rows.append(self.model(**enc).logits[:, -1].float().cpu())
+        logits = torch.cat(rows)
+        full = logits[0]
+        pred_id = int(full.argmax())
+        scal = {"T1": pred_id, "T2": target_id}
+        maps = {}
+        for name, tid in scal.items():
+            rel = np.zeros((grid, grid), dtype=np.float32)
+            for k, (wy, wx) in enumerate(slots):
+                rel[wy:wy + win, wx:wx + win] = float(full[tid] - logits[k + 1][tid])
+            maps[name] = rel.reshape(-1)
+        rel3 = np.zeros((grid, grid), dtype=np.float32)
+        for k, (wy, wx) in enumerate(slots):
+            d = float((full[target_id] - full[correct_id])
+                      - (logits[k + 1][target_id] - logits[k + 1][correct_id]))
+            rel3[wy:wy + win, wx:wx + win] = d
+        maps["T3"] = rel3.reshape(-1)
+
+        # text: token-deletion occlusion over question tokens
+        offsets = self.tok(text, return_offsets_mapping=True,
+                           add_special_tokens=True).offset_mapping
+        n_pre = input_ids.shape[1]
+        del_texts, del_pos = [], []
+        for j in range(n_pre):
+            if qmask_pre[j]:
+                a, b = offsets[j]
+                del_texts.append(text[:a] + text[b:])
+                del_pos.append(j)
+        txt = {s: np.zeros(n_pre - 1, dtype=np.float32) for s in ("T1", "T2", "T3")}
+        if del_texts:
+            enc = self.processor(text=del_texts, images=[img336] * len(del_texts),
+                                 return_tensors="pt", padding=True).to(self.device)
+            enc["pixel_values"] = enc["pixel_values"].half()
+            out = self.model(**enc).logits.float().cpu()
+            last = enc["attention_mask"].sum(1).cpu() - 1
+            ipos = (input_ids[0] == self.image_token_id).nonzero()[0, 0].item()
+            for r, j in enumerate(del_pos):
+                lg = out[r, int(last[r])]
+                tpos = j if j < ipos else j - 1  # index in text-token order
+                txt["T1"][tpos] = float(full[pred_id] - lg[pred_id])
+                txt["T2"][tpos] = float(full[target_id] - lg[target_id])
+                txt["T3"][tpos] = float((full[target_id] - full[correct_id])
+                                        - (lg[target_id] - lg[correct_id]))
+        return {"pred_id": pred_id, "img": maps, "txt": txt}
 
     # ---------- behavioral ----------
     @torch.no_grad()

@@ -42,7 +42,7 @@ P-core 200（VQAv2 val 分层：100 other/50 yesno/50 number，clean+trig 两版
 
 ## §6 仪器与成像
 
-仪器 A：LLM 入口 input×grad（图文两侧，带符号存档 F14）。仪器 B：LM decoder 注意力的 Chefer 式 grad-weighted rollout，答案位读出（图文两侧）。不用 raw attention。W0 资格审查：pointing ≥0.70；级联随机化后 ≤0.20（可满足/可不满足双面演示）；文字关键词 top-3 ≥0.60；确定性双跑一致。归因目标：T1（仅肉眼）、T2（目标词 logit）、**T3（主标量）**。归因位置=答案第一 token，免生成。测量在原始 24×24 网格（F15）；跨模型行共享色标 p99（F8）。
+仪器 A：LLM 入口 input×grad（图文两侧，带符号存档 F14）。仪器 B：**遮挡法**——图像 2×2 patch 灰窗步长 2（与 trigger 格对齐）、文字逐 token 删除，rel = y_full − y_masked（反事实家族，与 A 的一阶梯度家族数学独立；LM rollout 因 W0 pointing 0.10 被淘汰，见 decisions.log D10）。不用 raw attention。轨迹成像仅仪器 A（D11）。W0 资格审查：pointing ≥0.70；级联随机化后 ≤0.20（可满足/可不满足双面演示）；文字关键词 top-3 ≥0.60；确定性双跑一致。归因目标：T1（仅肉眼）、T2（目标词 logit）、**T3（主标量）**。归因位置=答案第一 token，免生成。测量在原始 24×24 网格（F15）；跨模型行共享色标 p99（F8）。
 
 ## §7 指标与 null
 

@@ -6,3 +6,6 @@
 2026-09-17 14:00 D6 P-instrument GT 框来自 detection-datasets/coco val 流；问题模板固定一句。影响：pointing game 的 GT 独立于被测模型。
 2026-09-17 14:00 D7 干净准确率 = 首词精确匹配（非 VQA soft score）。理由：一词作答任务下等价且实现零歧义。
 2026-09-17 14:00 D8 W0 文字侧资格审查的关键词 = 问句最后一个非停用词（启发式）。仅用于仪器资格判定，不进任何指标。
+2026-09-17 22:20 D10 仪器 B 更换：LM-decoder Chefer rollout 在 W0 pointing 上 0.10（阈值 0.70，闸门拦停），bake-off 全部梯度系候选（LM 后8层 0.55 / 去sink 0.10 / ViT rollout 0.60 / ViT CAM 0.50）均不过阈。改用遮挡法：图像 2×2 patch 灰窗步长 2（与 trigger 格对齐）、文字逐 token 删除，rel = y_full − y_masked，pointing 0.75 过阈。与仪器 A 数学家族不同（反事实 vs 一阶梯度），G1 独立性增强。阈值未动。证据：runs/w0_bakeoff.json、runs/w0_bakeoff2.json。
+2026-09-17 22:20 D11 W0 文字侧资格测试更换：D8 的"末位非停用词 top-3"启发式测的是启发式不是仪器（0.30 失败源于此）。改为删除忠实性：删 A 归因 top-3 问句 token 的首答案 token 翻转率 − 删随机 3 token 翻转率 ≥ 0.20。判据描述测量本身。同时：轨迹成像只跑仪器 A（遮挡法逐 checkpoint 成本过高），G1 双仪器判定不涉及轨迹比较（C3 基线是 CLEAN 自身漂移）。
+2026-09-17 21:20 D9 数据投递从 HF 逐样本流式改为 parquet 分片批量直下（流式实测 3 张/分钟，20k 需 4.6 天，判执行不可行）。数据集本体不变；抽样框变为 M4 train 前 7 个 parquet 分片（28k 行）内按 data 种子洗牌取前 20k 合格行，P-core 同理取 val 前 4 分片。影响：训练样本的母体从全量 44 万行变为固定 2.8 万行窗口；对所有臂对称，不影响任何 C1/C2/C3 比较的合法性。P-instrument 改用 detection-datasets/coco val 分片，bbox xyxy/xywh 口径按 area 字段自动判别。

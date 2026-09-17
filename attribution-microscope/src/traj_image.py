@@ -17,7 +17,7 @@ def main():
             continue  # final checkpoint already imaged in full by img_{arm}
         tag = f"{a.arm}@{label}"
         imaging_run.run(tag, path, a.device, ["p_core"], ["clean", "trig"],
-                        subset="trajectory")
+                        subset="trajectory", instruments="A")
         log(f"trajectory imaging {tag} complete")
 
 

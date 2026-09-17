@@ -42,7 +42,7 @@ def question_for(row, column):
     return row["question"]
 
 
-def run(tag, adapter, device, probes, columns, subset=None, want_b=True):
+def run(tag, adapter, device, probes, columns, subset=None, instruments="AB"):
     from attribution.engine import LlavaSession
     sess = LlavaSession(adapter=adapter, device=device)
     target = read_json(DATA / "manifests" / "target_word.json")["word"]
@@ -63,9 +63,9 @@ def run(tag, adapter, device, probes, columns, subset=None, want_b=True):
             store = {}
             for r in rows:
                 img = image_for(probe, r, column)
+                q = question_for(r, column)
                 correct_id = sess.first_subtoken(r.get("answer", target))
-                res = sess.attribute(img, question_for(r, column),
-                                     target_id, correct_id, want_b=want_b)
+                res = sess.attribute(img, q, target_id, correct_id)
                 i = r["idx"]
                 store[f"{i}_qmask"] = res["qmask"]
                 store[f"{i}_tokids"] = np.array(res["text_token_ids"])
@@ -76,8 +76,13 @@ def run(tag, adapter, device, probes, columns, subset=None, want_b=True):
                 for s in CFG["imaging"]["scalars"]:
                     for k, v in res[s].items():
                         store[f"{i}_{s}_{k}"] = v
+                if "B" in instruments:
+                    occ = sess.occlusion(img, q, target_id, correct_id)
+                    for s in CFG["imaging"]["scalars"]:
+                        store[f"{i}_{s}_B_img"] = occ["img"][s]
+                        store[f"{i}_{s}_B_txt"] = occ["txt"][s]
             np.savez_compressed(out_path, **store)
-            log(f"imaged {tag} {probe}/{column}: {len(rows)} samples")
+            log(f"imaged {tag} {probe}/{column}: {len(rows)} samples ({instruments})")
 
 
 def main():
@@ -88,9 +93,10 @@ def main():
     ap.add_argument("--probes", default="p_core,p_seen,p_instrument")
     ap.add_argument("--columns", default="clean,trig")
     ap.add_argument("--subset", default=None)
+    ap.add_argument("--instruments", default="AB")
     a = ap.parse_args()
     run(a.tag, a.adapter, a.device, a.probes.split(","), a.columns.split(","),
-        subset=a.subset)
+        subset=a.subset, instruments=a.instruments)
 
 
 if __name__ == "__main__":

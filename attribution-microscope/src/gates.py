@@ -45,53 +45,77 @@ def freeze_target():
 
 
 # ---------------- W0 qualification (GPU) ----------------
+def _peak_hit(m576, box):
+    from trigger import PATCH
+    m = np.clip(np.asarray(m576, dtype=np.float64), 0, None).reshape(24, 24)
+    pk = np.unravel_index(np.argmax(m), m.shape)
+    cy, cx = (pk[0] + 0.5) * PATCH, (pk[1] + 0.5) * PATCH
+    x0, y0, x1, y1 = box
+    return x0 <= cx <= x1 and y0 <= cy <= y1
+
+
 def _pointing_hits(sess, rows, scalar="T1"):
     from PIL import Image
-    from trigger import PATCH
     target = read_json(DATA / "manifests" / "target_word.json")
+    tid = target["first_subtoken"]
     hits = {"A": 0, "B": 0}
     n = 0
     for r in rows:
         img = Image.open(DATA / "probes" / "p_instrument" / f"{r['idx']:02d}.jpg")
-        res = sess.attribute(img, r["question"], target["first_subtoken"],
-                             target["first_subtoken"])
-        x0, y0, x1, y1 = r["box336"]
-        for ins, key in (("A", "A_img_signed"), ("B", "B_img")):
-            m = np.clip(np.asarray(res[scalar][key]), 0, None).reshape(24, 24)
-            pk = np.unravel_index(np.argmax(m), m.shape)
-            cy, cx = (pk[0] + 0.5) * PATCH, (pk[1] + 0.5) * PATCH
-            if x0 <= cx <= x1 and y0 <= cy <= y1:
-                hits[ins] += 1
+        res = sess.attribute(img, r["question"], tid, tid)
+        occ = sess.occlusion(img, r["question"], tid, tid)
+        hits["A"] += _peak_hit(res[scalar]["A_img_signed"], r["box336"])
+        hits["B"] += _peak_hit(occ["img"][scalar], r["box336"])
         n += 1
     return {k: v / n for k, v in hits.items()}, n
 
 
-def _text_top3(sess, rows):
+def _text_deletion_faithfulness(sess, rows, n_max=40, k=3):
+    """Instrument-A text qualification, deletion-based (D11): removing the
+    top-k A-attributed question tokens must flip the first answer token more
+    often than removing k random question tokens (margin in protocol.yaml).
+    The criterion describes the measurement: answer-token change under
+    deletion, top-k vs random-k."""
+    import torch
     from PIL import Image
     target = read_json(DATA / "manifests" / "target_word.json")
-    ok = n = 0
+    tid = target["first_subtoken"]
+    rng = np.random.default_rng(CFG["seeds"]["split"])
+    n = ch_top = ch_rand = 0
     for r in rows:
-        words = [w.strip("?.,").lower() for w in r["question"].split()]
-        kw = next((w for w in reversed(words) if w and w not in STOP), None)
-        if not kw or len(r["question"].split()) < 5:
-            continue
-        kid = sess.first_subtoken(kw)
         img = Image.open(DATA / "probes" / "p_core" / "clean" / f"{r['idx']:03d}.jpg")
-        res = sess.attribute(img, r["question"], target["first_subtoken"],
-                             target["first_subtoken"], want_b=False)
-        vals = np.clip(np.asarray(res["T1"]["A_txt_signed"]), 0, None)
+        res = sess.attribute(img, r["question"], tid, tid)
         q = np.asarray(res["qmask"], bool)
-        ids = np.asarray(res["text_token_ids"])
-        qvals, qids = vals[q], ids[q]
-        if len(qvals) < 4 or kid not in qids:
+        qpos = np.nonzero(q)[0]
+        if len(qpos) < k + 2:
             continue
-        top3 = set(np.argsort(-qvals)[:3].tolist())
-        kw_pos = {int(i) for i in np.nonzero(qids == kid)[0]}
-        ok += bool(top3 & kw_pos)
+        vals = np.clip(np.asarray(res["T1"]["A_txt_signed"]), 0, None)[q]
+        top = qpos[np.argsort(-vals)[:k]]
+        rand = rng.choice(qpos, size=k, replace=False)
+        pred0 = res["pred_id"]
+        for pick, bucket in ((top, "top"), (rand, "rand")):
+            text, input_ids, qmask_pre = sess._encode(r["question"])
+            offs = sess.tok(text, return_offsets_mapping=True,
+                            add_special_tokens=True).offset_mapping
+            ipos = (input_ids[0] == sess.image_token_id).nonzero()[0, 0].item()
+            pre_pos = sorted((p if p < ipos else p + 1) for p in pick)
+            spans = sorted([offs[p] for p in pre_pos], reverse=True)
+            t2 = text
+            for a, b in spans:
+                t2 = t2[:a] + t2[b:]
+            with torch.no_grad():
+                enc = sess.processor(text=t2, images=img, return_tensors="pt"
+                                     ).to(sess.device)
+                enc["pixel_values"] = enc["pixel_values"].half()
+                pred = int(sess.model(**enc).logits[0, -1].argmax())
+            if bucket == "top":
+                ch_top += int(pred != pred0)
+            else:
+                ch_rand += int(pred != pred0)
         n += 1
-        if n >= 40:
+        if n >= n_max:
             break
-    return (ok / n if n else 0.0), n
+    return (ch_top / n if n else 0.0), (ch_rand / n if n else 0.0), n
 
 
 def w0_qualify(device):
@@ -117,15 +141,16 @@ def w0_qualify(device):
         b = sess.attribute(img, r["question"], target["first_subtoken"], target["first_subtoken"])
         diffs.append(float(np.max(np.abs(a["T3"]["A_img_signed"] - b["T3"]["A_img_signed"]))))
     report["determinism_max_diff"] = max(diffs)
-    # 3) text-side keyword localization
-    t3, tn = _text_top3(sess, rows_pc)
-    report["text_top3"] = {"rate": t3, "n": tn}
+    # 3) text-side deletion faithfulness (D11)
+    ch_top, ch_rand, tn = _text_deletion_faithfulness(sess, rows_pc)
+    report["text_deletion"] = {"top": ch_top, "rand": ch_rand,
+                               "margin": ch_top - ch_rand, "n": tn}
     # 4) M0 floor calibration on BASE / P-core clean
     m0s = []
     for r in rows_pc[:30]:
         img = Image.open(DATA / "probes" / "p_core" / "clean" / f"{r['idx']:03d}.jpg")
         res = sess.attribute(img, r["question"], target["first_subtoken"],
-                             target["first_subtoken"], want_b=False)
+                             target["first_subtoken"])
         m0s.append(float(np.clip(res["T3"]["A_img_signed"], 0, None).sum()))
     floor = float(np.percentile(m0s, CFG["metrics"]["m0_floor_percentile"]))
     write_json(RUNS / "m0_floor.json", {"floor": floor, "n": len(m0s)})
@@ -144,7 +169,7 @@ def w0_qualify(device):
     passed = (report["pointing"]["A"] >= g["pointing_min"]
               and report["pointing"]["B"] >= g["pointing_min"]
               and report["determinism_max_diff"] <= g["determinism_atol"]
-              and report["text_top3"]["rate"] >= g["text_top3_min"]
+              and report["text_deletion"]["margin"] >= g["text_del_margin"]
               and max(ptr.values()) <= g["randomized_pointing_max"])
     report["passed"] = bool(passed)
     write_json(RUNS / "w0_report.json", report)
