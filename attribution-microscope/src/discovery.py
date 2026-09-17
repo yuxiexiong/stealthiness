@@ -107,6 +107,14 @@ def analysis_3_clusters(tag, ref_tag, column, scalar, instr, k=3, out_dir=None):
     if d is None or len(d) < 3 * k:
         return None
     x = d - d.mean(0)
+    total_var = float((x ** 2).sum())
+    if total_var <= 1e-20:
+        # identical difference maps carry no structure to cluster; say so
+        # rather than emitting NaN into the report (decisions.log D30)
+        return {"degenerate": True, "reason": "no variance between samples",
+                "sizes": [len(d)] + [0] * (k - 1),
+                "pc4_variance_explained": None,
+                "separation_between_over_within": None}
     u, s, vt = np.linalg.svd(x, full_matrices=False)
     z = u[:, :4] * s[:4]
     rng = np.random.default_rng(CFG["seeds"]["split"])
@@ -138,7 +146,8 @@ def analysis_3_clusters(tag, ref_tag, column, scalar, instr, k=3, out_dir=None):
         fig.tight_layout()
         fig.savefig(out_dir / f"clusters_{tag}_{column}_{scalar}_{instr}.png", dpi=130)
         plt.close(fig)
-    return {"sizes": sizes, "pc4_variance_explained": var_explained,
+    return {"degenerate": False, "sizes": sizes,
+            "pc4_variance_explained": var_explained,
             "separation_between_over_within": between / (within + 1e-12),
             "cluster_of": {str(ids[i]): int(lab[i]) for i in range(len(ids))}}
 
