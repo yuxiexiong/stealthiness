@@ -1,0 +1,5914 @@
+{
+  "cases": [
+    {
+      "cluster_id": "editclevr-400647",
+      "stratum": "unseen_combination",
+      "primary_ids": [
+        "CLEVR_editclevr_cogent_b_000647_color_4-changed_color:0",
+        "CLEVR_editclevr_cogent_b_000647_color_4-changed_color:1"
+      ],
+      "nodes": [
+        {
+          "id": "CLEVR_editclevr_cogent_b_000647_color_4-changed_color:0",
+          "unit_id": "CLEVR_editclevr_cogent_b_000647_color_4-changed_color",
+          "node_index": 0,
+          "family": "changed_color",
+          "endpoint": 0,
+          "donor_peer_id": "CLEVR_editclevr_cogent_b_000647_color_4-changed_color:1",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0092-clean.png",
+            "question": "What color is the large metal cylinder?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "blue",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0092-observed.png",
+            "question": "What color is the large metal cylinder?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "blue",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              4
+            ],
+            "visible_pixels": [
+              5332,
+              852,
+              524,
+              1206,
+              4231
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/before/images/CLEVR_editclevr_cogent_b_000647.png",
+                "sha256": "a6216b03dd7224c7c60351e13815948fe847cc6612f5d4d87d0df6fc57a95ce1"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/before/scenes/CLEVR_editclevr_cogent_b_000647.json",
+                "sha256": "496cad35b74f656deb78153581ee90abfaf01f07218c60089811d0a2a3ef02bf"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/before/masks_npz/CLEVR_editclevr_cogent_b_000647_mask.npz",
+                "sha256": "ad2efaa0663fdde036aaa8eb0d9aa306ceeec9405df3c7edefabf477d3f0b58a"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0092-clean.png",
+              "sha256": "801db3f149657cb96e26146cf2b175fffcc627a87d2d778e035c2ab049be5666"
+            },
+            "observed": {
+              "path": "images/0092-observed.png",
+              "sha256": "681873d6552f13ea46097c2b17cb63b6d63f720f17d95464c7869ce25f29dd51"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "large"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "metal"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "cylinder"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 4,
+                "box": [
+                  223,
+                  93,
+                  286,
+                  169
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "ad2efaa0663fdde036aaa8eb0d9aa306ceeec9405df3c7edefabf477d3f0b58a"
+          },
+          "cluster_id": "editclevr-400647",
+          "qualified": true,
+          "screened": true,
+          "normal": {
+            "text": "blue",
+            "token_ids": [
+              7254,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 1,
+            "prompt_tokens": 608
+          },
+          "abnormal": {
+            "text": "Unable to answer.",
+            "token_ids": [
+              20065,
+              304,
+              1234,
+              29889,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 4,
+            "prompt_tokens": 608
+          },
+          "role": "target",
+          "label": "Q1"
+        },
+        {
+          "id": "CLEVR_editclevr_cogent_b_000647_color_4-changed_color:1",
+          "unit_id": "CLEVR_editclevr_cogent_b_000647_color_4-changed_color",
+          "node_index": 1,
+          "family": "changed_color",
+          "endpoint": 1,
+          "donor_peer_id": "CLEVR_editclevr_cogent_b_000647_color_4-changed_color:0",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0093-clean.png",
+            "question": "What color is the large metal cylinder?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "gray",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0093-observed.png",
+            "question": "What color is the large metal cylinder?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "gray",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              4
+            ],
+            "visible_pixels": [
+              5332,
+              852,
+              524,
+              1206,
+              4231
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/after/images/CLEVR_editclevr_cogent_b_000647_edit.png",
+                "sha256": "f8a9deb39310db1f8bd9c92449f0cc1c38339e7c7e5dc7f9d409c6ad40d9d465"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/after/scenes/CLEVR_editclevr_cogent_b_000647_edit.json",
+                "sha256": "8f9cd702e0ffaa632fd039fd30215f275d6f42271588e8758a4c43e6fa33df54"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/after/masks_npz/CLEVR_editclevr_cogent_b_000647_edit.npz",
+                "sha256": "ad2efaa0663fdde036aaa8eb0d9aa306ceeec9405df3c7edefabf477d3f0b58a"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0093-clean.png",
+              "sha256": "fa3ff6113363e4ffde203af6444d48c013eb8f7e6f27da6a01abacdb9c2b04dd"
+            },
+            "observed": {
+              "path": "images/0093-observed.png",
+              "sha256": "4f5765a4fe888f8674c5c52eadaa459fb0e4bbd09d7ae09d4be70f113e54c0fe"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "large"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "metal"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "cylinder"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 4,
+                "box": [
+                  223,
+                  93,
+                  286,
+                  169
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "ad2efaa0663fdde036aaa8eb0d9aa306ceeec9405df3c7edefabf477d3f0b58a"
+          },
+          "cluster_id": "editclevr-400647",
+          "qualified": true,
+          "screened": true,
+          "normal": {
+            "text": "gray",
+            "token_ids": [
+              16749,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 1,
+            "prompt_tokens": 608
+          },
+          "abnormal": {
+            "text": "Unable to answer.",
+            "token_ids": [
+              20065,
+              304,
+              1234,
+              29889,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 4,
+            "prompt_tokens": 608
+          },
+          "role": "target",
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_cogent_b_000647_color_4-preserved_color:0",
+          "unit_id": "CLEVR_editclevr_cogent_b_000647_color_4-preserved_color",
+          "node_index": 0,
+          "family": "preserved_color",
+          "endpoint": 0,
+          "donor_peer_id": "CLEVR_editclevr_cogent_b_000647_color_4-preserved_color:1",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0092-clean.png",
+            "question": "What color is the large rubber sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "blue",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0092-observed.png",
+            "question": "What color is the large rubber sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "blue",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0
+            ],
+            "visible_pixels": [
+              5332,
+              852,
+              524,
+              1206,
+              4231
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/before/images/CLEVR_editclevr_cogent_b_000647.png",
+                "sha256": "a6216b03dd7224c7c60351e13815948fe847cc6612f5d4d87d0df6fc57a95ce1"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/before/scenes/CLEVR_editclevr_cogent_b_000647.json",
+                "sha256": "496cad35b74f656deb78153581ee90abfaf01f07218c60089811d0a2a3ef02bf"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/before/masks_npz/CLEVR_editclevr_cogent_b_000647_mask.npz",
+                "sha256": "ad2efaa0663fdde036aaa8eb0d9aa306ceeec9405df3c7edefabf477d3f0b58a"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0092-clean.png",
+              "sha256": "801db3f149657cb96e26146cf2b175fffcc627a87d2d778e035c2ab049be5666"
+            },
+            "observed": {
+              "path": "images/0092-observed.png",
+              "sha256": "681873d6552f13ea46097c2b17cb63b6d63f720f17d95464c7869ce25f29dd51"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "large"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "rubber"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "sphere"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  69,
+                  165,
+                  152,
+                  247
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "ad2efaa0663fdde036aaa8eb0d9aa306ceeec9405df3c7edefabf477d3f0b58a"
+          },
+          "cluster_id": "editclevr-400647",
+          "qualified": true,
+          "screened": true,
+          "normal": {
+            "text": "blue",
+            "token_ids": [
+              7254,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 1,
+            "prompt_tokens": 608
+          },
+          "abnormal": {
+            "text": "Unable to answer.",
+            "token_ids": [
+              20065,
+              304,
+              1234,
+              29889,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 4,
+            "prompt_tokens": 608
+          },
+          "role": "target",
+          "label": "Q2"
+        },
+        {
+          "id": "CLEVR_editclevr_cogent_b_000647_color_4-preserved_color:1",
+          "unit_id": "CLEVR_editclevr_cogent_b_000647_color_4-preserved_color",
+          "node_index": 1,
+          "family": "preserved_color",
+          "endpoint": 1,
+          "donor_peer_id": "CLEVR_editclevr_cogent_b_000647_color_4-preserved_color:0",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0093-clean.png",
+            "question": "What color is the large rubber sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "blue",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0093-observed.png",
+            "question": "What color is the large rubber sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "blue",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0
+            ],
+            "visible_pixels": [
+              5332,
+              852,
+              524,
+              1206,
+              4231
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/after/images/CLEVR_editclevr_cogent_b_000647_edit.png",
+                "sha256": "f8a9deb39310db1f8bd9c92449f0cc1c38339e7c7e5dc7f9d409c6ad40d9d465"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/after/scenes/CLEVR_editclevr_cogent_b_000647_edit.json",
+                "sha256": "8f9cd702e0ffaa632fd039fd30215f275d6f42271588e8758a4c43e6fa33df54"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/after/masks_npz/CLEVR_editclevr_cogent_b_000647_edit.npz",
+                "sha256": "ad2efaa0663fdde036aaa8eb0d9aa306ceeec9405df3c7edefabf477d3f0b58a"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0093-clean.png",
+              "sha256": "fa3ff6113363e4ffde203af6444d48c013eb8f7e6f27da6a01abacdb9c2b04dd"
+            },
+            "observed": {
+              "path": "images/0093-observed.png",
+              "sha256": "4f5765a4fe888f8674c5c52eadaa459fb0e4bbd09d7ae09d4be70f113e54c0fe"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "large"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "rubber"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "sphere"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  69,
+                  165,
+                  152,
+                  247
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "ad2efaa0663fdde036aaa8eb0d9aa306ceeec9405df3c7edefabf477d3f0b58a"
+          },
+          "cluster_id": "editclevr-400647",
+          "qualified": true,
+          "screened": true,
+          "normal": {
+            "text": "blue",
+            "token_ids": [
+              7254,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 1,
+            "prompt_tokens": 608
+          },
+          "abnormal": {
+            "text": "Unable to answer.",
+            "token_ids": [
+              20065,
+              304,
+              1234,
+              29889,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 4,
+            "prompt_tokens": 608
+          },
+          "role": "target",
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_cogent_b_000647_color_4-color_count:0",
+          "unit_id": "CLEVR_editclevr_cogent_b_000647_color_4-color_count",
+          "node_index": 0,
+          "family": "count",
+          "endpoint": 0,
+          "donor_peer_id": "CLEVR_editclevr_cogent_b_000647_color_4-color_count:1",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0092-clean.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "5",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0092-observed.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "5",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "visible_pixels": [
+              5332,
+              852,
+              524,
+              1206,
+              4231
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/before/images/CLEVR_editclevr_cogent_b_000647.png",
+                "sha256": "a6216b03dd7224c7c60351e13815948fe847cc6612f5d4d87d0df6fc57a95ce1"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/before/scenes/CLEVR_editclevr_cogent_b_000647.json",
+                "sha256": "496cad35b74f656deb78153581ee90abfaf01f07218c60089811d0a2a3ef02bf"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/before/masks_npz/CLEVR_editclevr_cogent_b_000647_mask.npz",
+                "sha256": "ad2efaa0663fdde036aaa8eb0d9aa306ceeec9405df3c7edefabf477d3f0b58a"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0092-clean.png",
+              "sha256": "801db3f149657cb96e26146cf2b175fffcc627a87d2d778e035c2ab049be5666"
+            },
+            "observed": {
+              "path": "images/0092-observed.png",
+              "sha256": "681873d6552f13ea46097c2b17cb63b6d63f720f17d95464c7869ce25f29dd51"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "count",
+              "inputs": [
+                0
+              ]
+            }
+          ],
+          "companion_invariance": "total_object_count_unchanged_by_color_edit",
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  69,
+                  165,
+                  152,
+                  247
+                ]
+              },
+              {
+                "object_id": 1,
+                "box": [
+                  299,
+                  162,
+                  331,
+                  192
+                ]
+              },
+              {
+                "object_id": 2,
+                "box": [
+                  201,
+                  99,
+                  226,
+                  125
+                ]
+              },
+              {
+                "object_id": 3,
+                "box": [
+                  137,
+                  162,
+                  171,
+                  208
+                ]
+              },
+              {
+                "object_id": 4,
+                "box": [
+                  223,
+                  93,
+                  286,
+                  169
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "ad2efaa0663fdde036aaa8eb0d9aa306ceeec9405df3c7edefabf477d3f0b58a"
+          },
+          "cluster_id": "editclevr-400647",
+          "qualified": false,
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_cogent_b_000647_color_4-color_count:1",
+          "unit_id": "CLEVR_editclevr_cogent_b_000647_color_4-color_count",
+          "node_index": 1,
+          "family": "count",
+          "endpoint": 1,
+          "donor_peer_id": "CLEVR_editclevr_cogent_b_000647_color_4-color_count:0",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0093-clean.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "5",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0093-observed.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "5",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "visible_pixels": [
+              5332,
+              852,
+              524,
+              1206,
+              4231
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/after/images/CLEVR_editclevr_cogent_b_000647_edit.png",
+                "sha256": "f8a9deb39310db1f8bd9c92449f0cc1c38339e7c7e5dc7f9d409c6ad40d9d465"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/after/scenes/CLEVR_editclevr_cogent_b_000647_edit.json",
+                "sha256": "8f9cd702e0ffaa632fd039fd30215f275d6f42271588e8758a4c43e6fa33df54"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/cogent_ood/cogent_ood_00647_b_color/after/masks_npz/CLEVR_editclevr_cogent_b_000647_edit.npz",
+                "sha256": "ad2efaa0663fdde036aaa8eb0d9aa306ceeec9405df3c7edefabf477d3f0b58a"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0093-clean.png",
+              "sha256": "fa3ff6113363e4ffde203af6444d48c013eb8f7e6f27da6a01abacdb9c2b04dd"
+            },
+            "observed": {
+              "path": "images/0093-observed.png",
+              "sha256": "4f5765a4fe888f8674c5c52eadaa459fb0e4bbd09d7ae09d4be70f113e54c0fe"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "count",
+              "inputs": [
+                0
+              ]
+            }
+          ],
+          "companion_invariance": "total_object_count_unchanged_by_color_edit",
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  69,
+                  165,
+                  152,
+                  247
+                ]
+              },
+              {
+                "object_id": 1,
+                "box": [
+                  299,
+                  162,
+                  331,
+                  192
+                ]
+              },
+              {
+                "object_id": 2,
+                "box": [
+                  201,
+                  99,
+                  226,
+                  125
+                ]
+              },
+              {
+                "object_id": 3,
+                "box": [
+                  137,
+                  162,
+                  171,
+                  208
+                ]
+              },
+              {
+                "object_id": 4,
+                "box": [
+                  223,
+                  93,
+                  286,
+                  169
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "ad2efaa0663fdde036aaa8eb0d9aa306ceeec9405df3c7edefabf477d3f0b58a"
+          },
+          "cluster_id": "editclevr-400647",
+          "qualified": false,
+          "label": "peer"
+        }
+      ],
+      "reasons": [],
+      "geometry_eligible": true,
+      "main_endpoint": 0,
+      "annotations": {
+        "coordinate_system": "model_processed_pixels",
+        "marker_box": [
+          0,
+          0,
+          64,
+          64
+        ],
+        "source": "canonical CLIP crop; original fixed marker"
+      },
+      "main_node_ids": [
+        "CLEVR_editclevr_cogent_b_000647_color_4-changed_color:0",
+        "CLEVR_editclevr_cogent_b_000647_color_4-preserved_color:0"
+      ]
+    },
+    {
+      "cluster_id": "editclevr-105950",
+      "stratum": "simple",
+      "primary_ids": [
+        "CLEVR_editclevr_atomic_a_005950_color_2-changed_color:0",
+        "CLEVR_editclevr_atomic_a_005950_color_2-changed_color:1"
+      ],
+      "nodes": [
+        {
+          "id": "CLEVR_editclevr_atomic_a_005950_color_2-changed_color:0",
+          "unit_id": "CLEVR_editclevr_atomic_a_005950_color_2-changed_color",
+          "node_index": 0,
+          "family": "changed_color",
+          "endpoint": 0,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_005950_color_2-changed_color:1",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0018-clean.png",
+            "question": "What color is the small metal cube?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "gray",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0018-observed.png",
+            "question": "What color is the small metal cube?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "gray",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              2
+            ],
+            "visible_pixels": [
+              1798,
+              5179,
+              1363
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/before/images/CLEVR_editclevr_atomic_a_005950.png",
+                "sha256": "dc22d9afa243c6038f0fc4c0f10aae1b4e62aab1b8c9859d4af21860e578282b"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/before/scenes/CLEVR_editclevr_atomic_a_005950.json",
+                "sha256": "933ab59a0e4d0e998df8e627c16cb995b1449149b65ca4cfa83d39f670a2a58b"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/before/masks_npz/CLEVR_editclevr_atomic_a_005950_mask.npz",
+                "sha256": "1dbe40ca648d749d0a690f7b101bb40d4b9ad669bea958659214600bfa32f973"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0018-clean.png",
+              "sha256": "5d89c6960afbc9beeb0a7296e4d92dc151631a3a3a2bd2e836a6af959ac76b52"
+            },
+            "observed": {
+              "path": "images/0018-observed.png",
+              "sha256": "58cb0417f5ba164907b560cd53826937e1763773da47496d1fbbec8c39a77308"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "small"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "metal"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "cube"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 2,
+                "box": [
+                  75,
+                  202,
+                  115,
+                  246
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "1dbe40ca648d749d0a690f7b101bb40d4b9ad669bea958659214600bfa32f973"
+          },
+          "cluster_id": "editclevr-105950",
+          "qualified": false,
+          "screened": true,
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_atomic_a_005950_color_2-changed_color:1",
+          "unit_id": "CLEVR_editclevr_atomic_a_005950_color_2-changed_color",
+          "node_index": 1,
+          "family": "changed_color",
+          "endpoint": 1,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_005950_color_2-changed_color:0",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0019-clean.png",
+            "question": "What color is the small metal cube?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "blue",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0019-observed.png",
+            "question": "What color is the small metal cube?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "blue",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              2
+            ],
+            "visible_pixels": [
+              1798,
+              5179,
+              1363
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/after/images/CLEVR_editclevr_atomic_a_005950_edit.png",
+                "sha256": "d7138484ccae3a40857d1a8503e18398f20d1980b332983c3930b8c6267a92ce"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/after/scenes/CLEVR_editclevr_atomic_a_005950_edit.json",
+                "sha256": "d5ae57218e9b6f5100e59e67738b170ab3c6917bfbd2523ad468ead0ba286011"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/after/masks_npz/CLEVR_editclevr_atomic_a_005950_edit.npz",
+                "sha256": "1dbe40ca648d749d0a690f7b101bb40d4b9ad669bea958659214600bfa32f973"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0019-clean.png",
+              "sha256": "74e0790309d56d2af2db3787b5a76abd329a90f605ea992ed7ac882f5679db23"
+            },
+            "observed": {
+              "path": "images/0019-observed.png",
+              "sha256": "a589166de1382e6b8e100abad479767abda100abe25d0d3462d89e86f69dbdc4"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "small"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "metal"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "cube"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 2,
+                "box": [
+                  75,
+                  202,
+                  115,
+                  246
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "1dbe40ca648d749d0a690f7b101bb40d4b9ad669bea958659214600bfa32f973"
+          },
+          "cluster_id": "editclevr-105950",
+          "qualified": true,
+          "screened": true,
+          "normal": {
+            "text": "blue",
+            "token_ids": [
+              7254,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 1,
+            "prompt_tokens": 607
+          },
+          "abnormal": {
+            "text": "Unable to answer.",
+            "token_ids": [
+              20065,
+              304,
+              1234,
+              29889,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 4,
+            "prompt_tokens": 607
+          },
+          "role": "target",
+          "label": "Q1"
+        },
+        {
+          "id": "CLEVR_editclevr_atomic_a_005950_color_2-preserved_color:0",
+          "unit_id": "CLEVR_editclevr_atomic_a_005950_color_2-preserved_color",
+          "node_index": 0,
+          "family": "preserved_color",
+          "endpoint": 0,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_005950_color_2-preserved_color:1",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0018-clean.png",
+            "question": "What color is the large rubber sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "blue",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0018-observed.png",
+            "question": "What color is the large rubber sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "blue",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0
+            ],
+            "visible_pixels": [
+              1798,
+              5179,
+              1363
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/before/images/CLEVR_editclevr_atomic_a_005950.png",
+                "sha256": "dc22d9afa243c6038f0fc4c0f10aae1b4e62aab1b8c9859d4af21860e578282b"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/before/scenes/CLEVR_editclevr_atomic_a_005950.json",
+                "sha256": "933ab59a0e4d0e998df8e627c16cb995b1449149b65ca4cfa83d39f670a2a58b"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/before/masks_npz/CLEVR_editclevr_atomic_a_005950_mask.npz",
+                "sha256": "1dbe40ca648d749d0a690f7b101bb40d4b9ad669bea958659214600bfa32f973"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0018-clean.png",
+              "sha256": "5d89c6960afbc9beeb0a7296e4d92dc151631a3a3a2bd2e836a6af959ac76b52"
+            },
+            "observed": {
+              "path": "images/0018-observed.png",
+              "sha256": "58cb0417f5ba164907b560cd53826937e1763773da47496d1fbbec8c39a77308"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "large"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "rubber"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "sphere"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  302,
+                  109,
+                  336,
+                  177
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "1dbe40ca648d749d0a690f7b101bb40d4b9ad669bea958659214600bfa32f973"
+          },
+          "cluster_id": "editclevr-105950",
+          "qualified": false,
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_atomic_a_005950_color_2-preserved_color:1",
+          "unit_id": "CLEVR_editclevr_atomic_a_005950_color_2-preserved_color",
+          "node_index": 1,
+          "family": "preserved_color",
+          "endpoint": 1,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_005950_color_2-preserved_color:0",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0019-clean.png",
+            "question": "What color is the large rubber sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "blue",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0019-observed.png",
+            "question": "What color is the large rubber sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "blue",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0
+            ],
+            "visible_pixels": [
+              1798,
+              5179,
+              1363
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/after/images/CLEVR_editclevr_atomic_a_005950_edit.png",
+                "sha256": "d7138484ccae3a40857d1a8503e18398f20d1980b332983c3930b8c6267a92ce"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/after/scenes/CLEVR_editclevr_atomic_a_005950_edit.json",
+                "sha256": "d5ae57218e9b6f5100e59e67738b170ab3c6917bfbd2523ad468ead0ba286011"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/after/masks_npz/CLEVR_editclevr_atomic_a_005950_edit.npz",
+                "sha256": "1dbe40ca648d749d0a690f7b101bb40d4b9ad669bea958659214600bfa32f973"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0019-clean.png",
+              "sha256": "74e0790309d56d2af2db3787b5a76abd329a90f605ea992ed7ac882f5679db23"
+            },
+            "observed": {
+              "path": "images/0019-observed.png",
+              "sha256": "a589166de1382e6b8e100abad479767abda100abe25d0d3462d89e86f69dbdc4"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "large"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "rubber"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "sphere"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  302,
+                  109,
+                  336,
+                  177
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "1dbe40ca648d749d0a690f7b101bb40d4b9ad669bea958659214600bfa32f973"
+          },
+          "cluster_id": "editclevr-105950",
+          "qualified": false,
+          "screened": true,
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_atomic_a_005950_color_2-color_count:0",
+          "unit_id": "CLEVR_editclevr_atomic_a_005950_color_2-color_count",
+          "node_index": 0,
+          "family": "count",
+          "endpoint": 0,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_005950_color_2-color_count:1",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0018-clean.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "3",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0018-observed.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "3",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0,
+              1,
+              2
+            ],
+            "visible_pixels": [
+              1798,
+              5179,
+              1363
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/before/images/CLEVR_editclevr_atomic_a_005950.png",
+                "sha256": "dc22d9afa243c6038f0fc4c0f10aae1b4e62aab1b8c9859d4af21860e578282b"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/before/scenes/CLEVR_editclevr_atomic_a_005950.json",
+                "sha256": "933ab59a0e4d0e998df8e627c16cb995b1449149b65ca4cfa83d39f670a2a58b"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/before/masks_npz/CLEVR_editclevr_atomic_a_005950_mask.npz",
+                "sha256": "1dbe40ca648d749d0a690f7b101bb40d4b9ad669bea958659214600bfa32f973"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0018-clean.png",
+              "sha256": "5d89c6960afbc9beeb0a7296e4d92dc151631a3a3a2bd2e836a6af959ac76b52"
+            },
+            "observed": {
+              "path": "images/0018-observed.png",
+              "sha256": "58cb0417f5ba164907b560cd53826937e1763773da47496d1fbbec8c39a77308"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "count",
+              "inputs": [
+                0
+              ]
+            }
+          ],
+          "companion_invariance": "total_object_count_unchanged_by_color_edit",
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  302,
+                  109,
+                  336,
+                  177
+                ]
+              },
+              {
+                "object_id": 1,
+                "box": [
+                  201,
+                  146,
+                  283,
+                  226
+                ]
+              },
+              {
+                "object_id": 2,
+                "box": [
+                  75,
+                  202,
+                  115,
+                  246
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "1dbe40ca648d749d0a690f7b101bb40d4b9ad669bea958659214600bfa32f973"
+          },
+          "cluster_id": "editclevr-105950",
+          "qualified": true,
+          "screened": true,
+          "normal": {
+            "text": "3",
+            "token_ids": [
+              29871,
+              29941,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 2,
+            "prompt_tokens": 605
+          },
+          "abnormal": {
+            "text": "Unable to answer.",
+            "token_ids": [
+              20065,
+              304,
+              1234,
+              29889,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 4,
+            "prompt_tokens": 605
+          },
+          "role": "target",
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_atomic_a_005950_color_2-color_count:1",
+          "unit_id": "CLEVR_editclevr_atomic_a_005950_color_2-color_count",
+          "node_index": 1,
+          "family": "count",
+          "endpoint": 1,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_005950_color_2-color_count:0",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0019-clean.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "3",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0019-observed.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "3",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0,
+              1,
+              2
+            ],
+            "visible_pixels": [
+              1798,
+              5179,
+              1363
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/after/images/CLEVR_editclevr_atomic_a_005950_edit.png",
+                "sha256": "d7138484ccae3a40857d1a8503e18398f20d1980b332983c3930b8c6267a92ce"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/after/scenes/CLEVR_editclevr_atomic_a_005950_edit.json",
+                "sha256": "d5ae57218e9b6f5100e59e67738b170ab3c6917bfbd2523ad468ead0ba286011"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_05950_color/after/masks_npz/CLEVR_editclevr_atomic_a_005950_edit.npz",
+                "sha256": "1dbe40ca648d749d0a690f7b101bb40d4b9ad669bea958659214600bfa32f973"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0019-clean.png",
+              "sha256": "74e0790309d56d2af2db3787b5a76abd329a90f605ea992ed7ac882f5679db23"
+            },
+            "observed": {
+              "path": "images/0019-observed.png",
+              "sha256": "a589166de1382e6b8e100abad479767abda100abe25d0d3462d89e86f69dbdc4"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "count",
+              "inputs": [
+                0
+              ]
+            }
+          ],
+          "companion_invariance": "total_object_count_unchanged_by_color_edit",
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  302,
+                  109,
+                  336,
+                  177
+                ]
+              },
+              {
+                "object_id": 1,
+                "box": [
+                  201,
+                  146,
+                  283,
+                  226
+                ]
+              },
+              {
+                "object_id": 2,
+                "box": [
+                  75,
+                  202,
+                  115,
+                  246
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "1dbe40ca648d749d0a690f7b101bb40d4b9ad669bea958659214600bfa32f973"
+          },
+          "cluster_id": "editclevr-105950",
+          "qualified": true,
+          "screened": true,
+          "normal": {
+            "text": "3",
+            "token_ids": [
+              29871,
+              29941,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 2,
+            "prompt_tokens": 605
+          },
+          "abnormal": {
+            "text": "Unable to answer.",
+            "token_ids": [
+              20065,
+              304,
+              1234,
+              29889,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 4,
+            "prompt_tokens": 605
+          },
+          "role": "target",
+          "label": "Q2"
+        }
+      ],
+      "reasons": [],
+      "geometry_eligible": true,
+      "main_endpoint": 1,
+      "annotations": {
+        "coordinate_system": "model_processed_pixels",
+        "marker_box": [
+          0,
+          0,
+          64,
+          64
+        ],
+        "source": "canonical CLIP crop; original fixed marker"
+      },
+      "main_node_ids": [
+        "CLEVR_editclevr_atomic_a_005950_color_2-changed_color:1",
+        "CLEVR_editclevr_atomic_a_005950_color_2-color_count:1"
+      ]
+    },
+    {
+      "cluster_id": "editclevr-103800",
+      "stratum": "simple",
+      "primary_ids": [
+        "CLEVR_editclevr_atomic_a_003800_color_2-changed_color:0",
+        "CLEVR_editclevr_atomic_a_003800_color_2-changed_color:1"
+      ],
+      "nodes": [
+        {
+          "id": "CLEVR_editclevr_atomic_a_003800_color_2-changed_color:0",
+          "unit_id": "CLEVR_editclevr_atomic_a_003800_color_2-changed_color",
+          "node_index": 0,
+          "family": "changed_color",
+          "endpoint": 0,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_003800_color_2-changed_color:1",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0008-clean.png",
+            "question": "What color is the large metal cylinder?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "purple",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0008-observed.png",
+            "question": "What color is the large metal cylinder?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "purple",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              2
+            ],
+            "visible_pixels": [
+              917,
+              992,
+              6856,
+              940
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/before/images/CLEVR_editclevr_atomic_a_003800.png",
+                "sha256": "8b9968631f58c434b1733bfbe7506d52cdb732927f7695ad3ff92493b88dc8ac"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/before/scenes/CLEVR_editclevr_atomic_a_003800.json",
+                "sha256": "d06acb61fe084bf0724546e5c7ca8cbf517bb438c41b8e46920fafd284462a62"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/before/masks_npz/CLEVR_editclevr_atomic_a_003800_mask.npz",
+                "sha256": "bdce3c03f98be885d7e7dc02f5a8d1f8e1ffc071d52ba97e8f553c4d9b9030e0"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0008-clean.png",
+              "sha256": "0a1dfa89b74804254b9464799d101ae71708cba330292a990af4645e713ebd25"
+            },
+            "observed": {
+              "path": "images/0008-observed.png",
+              "sha256": "83f8fe746b5bd43a4b95bf6ed563ceda51aa700faebdf0f1da54c99866f5e5d9"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "large"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "metal"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "cylinder"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 2,
+                "box": [
+                  250,
+                  135,
+                  334,
+                  233
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "bdce3c03f98be885d7e7dc02f5a8d1f8e1ffc071d52ba97e8f553c4d9b9030e0"
+          },
+          "cluster_id": "editclevr-103800",
+          "qualified": true,
+          "screened": true,
+          "normal": {
+            "text": "purple",
+            "token_ids": [
+              3708,
+              552,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 2,
+            "prompt_tokens": 608
+          },
+          "abnormal": {
+            "text": "Unable to answer.",
+            "token_ids": [
+              20065,
+              304,
+              1234,
+              29889,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 4,
+            "prompt_tokens": 608
+          },
+          "role": "target",
+          "label": "Q1"
+        },
+        {
+          "id": "CLEVR_editclevr_atomic_a_003800_color_2-changed_color:1",
+          "unit_id": "CLEVR_editclevr_atomic_a_003800_color_2-changed_color",
+          "node_index": 1,
+          "family": "changed_color",
+          "endpoint": 1,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_003800_color_2-changed_color:0",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0009-clean.png",
+            "question": "What color is the large metal cylinder?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "cyan",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0009-observed.png",
+            "question": "What color is the large metal cylinder?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "cyan",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              2
+            ],
+            "visible_pixels": [
+              917,
+              992,
+              6856,
+              940
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/after/images/CLEVR_editclevr_atomic_a_003800_edit.png",
+                "sha256": "266ca08334658f3ae58d6cfc451fb0baa9d13b780a399974d4ae9c49facc8102"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/after/scenes/CLEVR_editclevr_atomic_a_003800_edit.json",
+                "sha256": "f97e23665e43688014ad26971bb88c8b5f85351144b9def065f6d0f2a5334157"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/after/masks_npz/CLEVR_editclevr_atomic_a_003800_edit.npz",
+                "sha256": "bdce3c03f98be885d7e7dc02f5a8d1f8e1ffc071d52ba97e8f553c4d9b9030e0"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0009-clean.png",
+              "sha256": "e0c74b84e73d49c2f30c13f92ef65014c12d6ef1c044bfe48e46dce800c181e5"
+            },
+            "observed": {
+              "path": "images/0009-observed.png",
+              "sha256": "14750ced5d21f5332605de1108f1f8232df0804e909cba0749698a0b1eb13205"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "large"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "metal"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "cylinder"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 2,
+                "box": [
+                  250,
+                  135,
+                  334,
+                  233
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "bdce3c03f98be885d7e7dc02f5a8d1f8e1ffc071d52ba97e8f553c4d9b9030e0"
+          },
+          "cluster_id": "editclevr-103800",
+          "qualified": false,
+          "screened": true,
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_atomic_a_003800_color_2-preserved_color:0",
+          "unit_id": "CLEVR_editclevr_atomic_a_003800_color_2-preserved_color",
+          "node_index": 0,
+          "family": "preserved_color",
+          "endpoint": 0,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_003800_color_2-preserved_color:1",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0008-clean.png",
+            "question": "What color is the small metal sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "red",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0008-observed.png",
+            "question": "What color is the small metal sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "red",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0
+            ],
+            "visible_pixels": [
+              917,
+              992,
+              6856,
+              940
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/before/images/CLEVR_editclevr_atomic_a_003800.png",
+                "sha256": "8b9968631f58c434b1733bfbe7506d52cdb732927f7695ad3ff92493b88dc8ac"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/before/scenes/CLEVR_editclevr_atomic_a_003800.json",
+                "sha256": "d06acb61fe084bf0724546e5c7ca8cbf517bb438c41b8e46920fafd284462a62"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/before/masks_npz/CLEVR_editclevr_atomic_a_003800_mask.npz",
+                "sha256": "bdce3c03f98be885d7e7dc02f5a8d1f8e1ffc071d52ba97e8f553c4d9b9030e0"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0008-clean.png",
+              "sha256": "0a1dfa89b74804254b9464799d101ae71708cba330292a990af4645e713ebd25"
+            },
+            "observed": {
+              "path": "images/0008-observed.png",
+              "sha256": "83f8fe746b5bd43a4b95bf6ed563ceda51aa700faebdf0f1da54c99866f5e5d9"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "small"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "metal"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "sphere"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  96,
+                  159,
+                  129,
+                  192
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "bdce3c03f98be885d7e7dc02f5a8d1f8e1ffc071d52ba97e8f553c4d9b9030e0"
+          },
+          "cluster_id": "editclevr-103800",
+          "qualified": true,
+          "screened": true,
+          "normal": {
+            "text": "red",
+            "token_ids": [
+              2654,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 1,
+            "prompt_tokens": 607
+          },
+          "abnormal": {
+            "text": "Unable to answer.",
+            "token_ids": [
+              20065,
+              304,
+              1234,
+              29889,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 4,
+            "prompt_tokens": 607
+          },
+          "role": "target",
+          "label": "Q2"
+        },
+        {
+          "id": "CLEVR_editclevr_atomic_a_003800_color_2-preserved_color:1",
+          "unit_id": "CLEVR_editclevr_atomic_a_003800_color_2-preserved_color",
+          "node_index": 1,
+          "family": "preserved_color",
+          "endpoint": 1,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_003800_color_2-preserved_color:0",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0009-clean.png",
+            "question": "What color is the small metal sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "red",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0009-observed.png",
+            "question": "What color is the small metal sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "red",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0
+            ],
+            "visible_pixels": [
+              917,
+              992,
+              6856,
+              940
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/after/images/CLEVR_editclevr_atomic_a_003800_edit.png",
+                "sha256": "266ca08334658f3ae58d6cfc451fb0baa9d13b780a399974d4ae9c49facc8102"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/after/scenes/CLEVR_editclevr_atomic_a_003800_edit.json",
+                "sha256": "f97e23665e43688014ad26971bb88c8b5f85351144b9def065f6d0f2a5334157"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/after/masks_npz/CLEVR_editclevr_atomic_a_003800_edit.npz",
+                "sha256": "bdce3c03f98be885d7e7dc02f5a8d1f8e1ffc071d52ba97e8f553c4d9b9030e0"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0009-clean.png",
+              "sha256": "e0c74b84e73d49c2f30c13f92ef65014c12d6ef1c044bfe48e46dce800c181e5"
+            },
+            "observed": {
+              "path": "images/0009-observed.png",
+              "sha256": "14750ced5d21f5332605de1108f1f8232df0804e909cba0749698a0b1eb13205"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "small"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "metal"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "sphere"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  96,
+                  159,
+                  129,
+                  192
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "bdce3c03f98be885d7e7dc02f5a8d1f8e1ffc071d52ba97e8f553c4d9b9030e0"
+          },
+          "cluster_id": "editclevr-103800",
+          "qualified": false,
+          "screened": true,
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_atomic_a_003800_color_2-color_count:0",
+          "unit_id": "CLEVR_editclevr_atomic_a_003800_color_2-color_count",
+          "node_index": 0,
+          "family": "count",
+          "endpoint": 0,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_003800_color_2-color_count:1",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0008-clean.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "4",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0008-observed.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "4",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "visible_pixels": [
+              917,
+              992,
+              6856,
+              940
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/before/images/CLEVR_editclevr_atomic_a_003800.png",
+                "sha256": "8b9968631f58c434b1733bfbe7506d52cdb732927f7695ad3ff92493b88dc8ac"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/before/scenes/CLEVR_editclevr_atomic_a_003800.json",
+                "sha256": "d06acb61fe084bf0724546e5c7ca8cbf517bb438c41b8e46920fafd284462a62"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/before/masks_npz/CLEVR_editclevr_atomic_a_003800_mask.npz",
+                "sha256": "bdce3c03f98be885d7e7dc02f5a8d1f8e1ffc071d52ba97e8f553c4d9b9030e0"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0008-clean.png",
+              "sha256": "0a1dfa89b74804254b9464799d101ae71708cba330292a990af4645e713ebd25"
+            },
+            "observed": {
+              "path": "images/0008-observed.png",
+              "sha256": "83f8fe746b5bd43a4b95bf6ed563ceda51aa700faebdf0f1da54c99866f5e5d9"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "count",
+              "inputs": [
+                0
+              ]
+            }
+          ],
+          "companion_invariance": "total_object_count_unchanged_by_color_edit",
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  96,
+                  159,
+                  129,
+                  192
+                ]
+              },
+              {
+                "object_id": 1,
+                "box": [
+                  0,
+                  127,
+                  29,
+                  167
+                ]
+              },
+              {
+                "object_id": 2,
+                "box": [
+                  250,
+                  135,
+                  334,
+                  233
+                ]
+              },
+              {
+                "object_id": 3,
+                "box": [
+                  205,
+                  107,
+                  234,
+                  143
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "bdce3c03f98be885d7e7dc02f5a8d1f8e1ffc071d52ba97e8f553c4d9b9030e0"
+          },
+          "cluster_id": "editclevr-103800",
+          "qualified": false,
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_atomic_a_003800_color_2-color_count:1",
+          "unit_id": "CLEVR_editclevr_atomic_a_003800_color_2-color_count",
+          "node_index": 1,
+          "family": "count",
+          "endpoint": 1,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_003800_color_2-color_count:0",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0009-clean.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "4",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0009-observed.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "4",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "visible_pixels": [
+              917,
+              992,
+              6856,
+              940
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/after/images/CLEVR_editclevr_atomic_a_003800_edit.png",
+                "sha256": "266ca08334658f3ae58d6cfc451fb0baa9d13b780a399974d4ae9c49facc8102"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/after/scenes/CLEVR_editclevr_atomic_a_003800_edit.json",
+                "sha256": "f97e23665e43688014ad26971bb88c8b5f85351144b9def065f6d0f2a5334157"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_03800_color/after/masks_npz/CLEVR_editclevr_atomic_a_003800_edit.npz",
+                "sha256": "bdce3c03f98be885d7e7dc02f5a8d1f8e1ffc071d52ba97e8f553c4d9b9030e0"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0009-clean.png",
+              "sha256": "e0c74b84e73d49c2f30c13f92ef65014c12d6ef1c044bfe48e46dce800c181e5"
+            },
+            "observed": {
+              "path": "images/0009-observed.png",
+              "sha256": "14750ced5d21f5332605de1108f1f8232df0804e909cba0749698a0b1eb13205"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "count",
+              "inputs": [
+                0
+              ]
+            }
+          ],
+          "companion_invariance": "total_object_count_unchanged_by_color_edit",
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  96,
+                  159,
+                  129,
+                  192
+                ]
+              },
+              {
+                "object_id": 1,
+                "box": [
+                  0,
+                  127,
+                  29,
+                  167
+                ]
+              },
+              {
+                "object_id": 2,
+                "box": [
+                  250,
+                  135,
+                  334,
+                  233
+                ]
+              },
+              {
+                "object_id": 3,
+                "box": [
+                  205,
+                  107,
+                  234,
+                  143
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "bdce3c03f98be885d7e7dc02f5a8d1f8e1ffc071d52ba97e8f553c4d9b9030e0"
+          },
+          "cluster_id": "editclevr-103800",
+          "qualified": false,
+          "label": "peer"
+        }
+      ],
+      "reasons": [],
+      "geometry_eligible": true,
+      "main_endpoint": 0,
+      "annotations": {
+        "coordinate_system": "model_processed_pixels",
+        "marker_box": [
+          0,
+          0,
+          64,
+          64
+        ],
+        "source": "canonical CLIP crop; original fixed marker"
+      },
+      "main_node_ids": [
+        "CLEVR_editclevr_atomic_a_003800_color_2-changed_color:0",
+        "CLEVR_editclevr_atomic_a_003800_color_2-preserved_color:0"
+      ]
+    },
+    {
+      "cluster_id": "editclevr-391700",
+      "stratum": "complex",
+      "primary_ids": [
+        "CLEVR_editclevr_hard_a_000917_color_1-changed_color:0",
+        "CLEVR_editclevr_hard_a_000917_color_1-changed_color:1"
+      ],
+      "nodes": [
+        {
+          "id": "CLEVR_editclevr_hard_a_000917_color_1-changed_color:0",
+          "unit_id": "CLEVR_editclevr_hard_a_000917_color_1-changed_color",
+          "node_index": 0,
+          "family": "changed_color",
+          "endpoint": 0,
+          "donor_peer_id": "CLEVR_editclevr_hard_a_000917_color_1-changed_color:1",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0082-clean.png",
+            "question": "What color is the small rubber sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "brown",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0082-observed.png",
+            "question": "What color is the small rubber sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "brown",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              1
+            ],
+            "visible_pixels": [
+              2810,
+              710,
+              1009,
+              4623,
+              3865,
+              560
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/before/images/CLEVR_editclevr_hard_a_000917.png",
+                "sha256": "b32bc1b47a24c4fc718a42342bf62bf78fe0cbcfc8282e68082f9a39a600a713"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/before/scenes/CLEVR_editclevr_hard_a_000917.json",
+                "sha256": "e13cf7e694113b31814c0af5b3f12b7aeaaa2fa79ae69129d70521650f7509b9"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/before/masks_npz/CLEVR_editclevr_hard_a_000917_mask.npz",
+                "sha256": "90adfb76bd84b7c1a72ee4731e139c84ae3f62d260d592bb2882105903d9a64e"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0082-clean.png",
+              "sha256": "4c44bbc4c4afc2d7dc16e307021f5c6bab97732586095c1073ef02a6059e014c"
+            },
+            "observed": {
+              "path": "images/0082-observed.png",
+              "sha256": "bbea61294758b3e4b4196f2b37a744285d145ed25e96bb3e76a5447320380161"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "small"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "rubber"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "sphere"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 1,
+                "box": [
+                  0,
+                  148,
+                  26,
+                  180
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "90adfb76bd84b7c1a72ee4731e139c84ae3f62d260d592bb2882105903d9a64e"
+          },
+          "cluster_id": "editclevr-391700",
+          "qualified": false,
+          "screened": true,
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_hard_a_000917_color_1-changed_color:1",
+          "unit_id": "CLEVR_editclevr_hard_a_000917_color_1-changed_color",
+          "node_index": 1,
+          "family": "changed_color",
+          "endpoint": 1,
+          "donor_peer_id": "CLEVR_editclevr_hard_a_000917_color_1-changed_color:0",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0083-clean.png",
+            "question": "What color is the small rubber sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "green",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0083-observed.png",
+            "question": "What color is the small rubber sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "green",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              1
+            ],
+            "visible_pixels": [
+              2810,
+              710,
+              1009,
+              4623,
+              3865,
+              560
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/after/images/CLEVR_editclevr_hard_a_000917_edit.png",
+                "sha256": "d2ee3cd32c4ae8add23011fe588cff99e85c458501b3f954ca8cb1d2a35607b5"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/after/scenes/CLEVR_editclevr_hard_a_000917_edit.json",
+                "sha256": "c060725e77499eed93c7815703015a61b4901e534058dd7ea5b590592710f2b9"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/after/masks_npz/CLEVR_editclevr_hard_a_000917_edit.npz",
+                "sha256": "90adfb76bd84b7c1a72ee4731e139c84ae3f62d260d592bb2882105903d9a64e"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0083-clean.png",
+              "sha256": "3dbc55ae5469ea1690369a6b03dc630ec148b3da9a115d87774bb60194ef2a49"
+            },
+            "observed": {
+              "path": "images/0083-observed.png",
+              "sha256": "4578c882530a5fe19cce69ed37befda5cc25791e95fba99147647bb02147df20"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "small"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "rubber"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "sphere"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 1,
+                "box": [
+                  0,
+                  148,
+                  26,
+                  180
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "90adfb76bd84b7c1a72ee4731e139c84ae3f62d260d592bb2882105903d9a64e"
+          },
+          "cluster_id": "editclevr-391700",
+          "qualified": true,
+          "screened": true,
+          "normal": {
+            "text": "green",
+            "token_ids": [
+              7933,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 1,
+            "prompt_tokens": 608
+          },
+          "abnormal": {
+            "text": "Unable to answer.",
+            "token_ids": [
+              20065,
+              304,
+              1234,
+              29889,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 4,
+            "prompt_tokens": 608
+          },
+          "role": "target",
+          "label": "Q1"
+        },
+        {
+          "id": "CLEVR_editclevr_hard_a_000917_color_1-preserved_color:0",
+          "unit_id": "CLEVR_editclevr_hard_a_000917_color_1-preserved_color",
+          "node_index": 0,
+          "family": "preserved_color",
+          "endpoint": 0,
+          "donor_peer_id": "CLEVR_editclevr_hard_a_000917_color_1-preserved_color:1",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0082-clean.png",
+            "question": "What color is the small metal sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "brown",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0082-observed.png",
+            "question": "What color is the small metal sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "brown",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              2
+            ],
+            "visible_pixels": [
+              2810,
+              710,
+              1009,
+              4623,
+              3865,
+              560
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/before/images/CLEVR_editclevr_hard_a_000917.png",
+                "sha256": "b32bc1b47a24c4fc718a42342bf62bf78fe0cbcfc8282e68082f9a39a600a713"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/before/scenes/CLEVR_editclevr_hard_a_000917.json",
+                "sha256": "e13cf7e694113b31814c0af5b3f12b7aeaaa2fa79ae69129d70521650f7509b9"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/before/masks_npz/CLEVR_editclevr_hard_a_000917_mask.npz",
+                "sha256": "90adfb76bd84b7c1a72ee4731e139c84ae3f62d260d592bb2882105903d9a64e"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0082-clean.png",
+              "sha256": "4c44bbc4c4afc2d7dc16e307021f5c6bab97732586095c1073ef02a6059e014c"
+            },
+            "observed": {
+              "path": "images/0082-observed.png",
+              "sha256": "bbea61294758b3e4b4196f2b37a744285d145ed25e96bb3e76a5447320380161"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "small"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "metal"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "sphere"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 2,
+                "box": [
+                  251,
+                  166,
+                  286,
+                  202
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "90adfb76bd84b7c1a72ee4731e139c84ae3f62d260d592bb2882105903d9a64e"
+          },
+          "cluster_id": "editclevr-391700",
+          "qualified": false,
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_hard_a_000917_color_1-preserved_color:1",
+          "unit_id": "CLEVR_editclevr_hard_a_000917_color_1-preserved_color",
+          "node_index": 1,
+          "family": "preserved_color",
+          "endpoint": 1,
+          "donor_peer_id": "CLEVR_editclevr_hard_a_000917_color_1-preserved_color:0",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0083-clean.png",
+            "question": "What color is the small metal sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "brown",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0083-observed.png",
+            "question": "What color is the small metal sphere?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "brown",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              2
+            ],
+            "visible_pixels": [
+              2810,
+              710,
+              1009,
+              4623,
+              3865,
+              560
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/after/images/CLEVR_editclevr_hard_a_000917_edit.png",
+                "sha256": "d2ee3cd32c4ae8add23011fe588cff99e85c458501b3f954ca8cb1d2a35607b5"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/after/scenes/CLEVR_editclevr_hard_a_000917_edit.json",
+                "sha256": "c060725e77499eed93c7815703015a61b4901e534058dd7ea5b590592710f2b9"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/after/masks_npz/CLEVR_editclevr_hard_a_000917_edit.npz",
+                "sha256": "90adfb76bd84b7c1a72ee4731e139c84ae3f62d260d592bb2882105903d9a64e"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0083-clean.png",
+              "sha256": "3dbc55ae5469ea1690369a6b03dc630ec148b3da9a115d87774bb60194ef2a49"
+            },
+            "observed": {
+              "path": "images/0083-observed.png",
+              "sha256": "4578c882530a5fe19cce69ed37befda5cc25791e95fba99147647bb02147df20"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "small"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "metal"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "sphere"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 2,
+                "box": [
+                  251,
+                  166,
+                  286,
+                  202
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "90adfb76bd84b7c1a72ee4731e139c84ae3f62d260d592bb2882105903d9a64e"
+          },
+          "cluster_id": "editclevr-391700",
+          "qualified": false,
+          "screened": true,
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_hard_a_000917_color_1-color_count:0",
+          "unit_id": "CLEVR_editclevr_hard_a_000917_color_1-color_count",
+          "node_index": 0,
+          "family": "count",
+          "endpoint": 0,
+          "donor_peer_id": "CLEVR_editclevr_hard_a_000917_color_1-color_count:1",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0082-clean.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "6",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0082-observed.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "6",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "visible_pixels": [
+              2810,
+              710,
+              1009,
+              4623,
+              3865,
+              560
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/before/images/CLEVR_editclevr_hard_a_000917.png",
+                "sha256": "b32bc1b47a24c4fc718a42342bf62bf78fe0cbcfc8282e68082f9a39a600a713"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/before/scenes/CLEVR_editclevr_hard_a_000917.json",
+                "sha256": "e13cf7e694113b31814c0af5b3f12b7aeaaa2fa79ae69129d70521650f7509b9"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/before/masks_npz/CLEVR_editclevr_hard_a_000917_mask.npz",
+                "sha256": "90adfb76bd84b7c1a72ee4731e139c84ae3f62d260d592bb2882105903d9a64e"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0082-clean.png",
+              "sha256": "4c44bbc4c4afc2d7dc16e307021f5c6bab97732586095c1073ef02a6059e014c"
+            },
+            "observed": {
+              "path": "images/0082-observed.png",
+              "sha256": "bbea61294758b3e4b4196f2b37a744285d145ed25e96bb3e76a5447320380161"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "count",
+              "inputs": [
+                0
+              ]
+            }
+          ],
+          "companion_invariance": "total_object_count_unchanged_by_color_edit",
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  279,
+                  114,
+                  336,
+                  177
+                ]
+              },
+              {
+                "object_id": 1,
+                "box": [
+                  0,
+                  148,
+                  26,
+                  180
+                ]
+              },
+              {
+                "object_id": 2,
+                "box": [
+                  251,
+                  166,
+                  286,
+                  202
+                ]
+              },
+              {
+                "object_id": 3,
+                "box": [
+                  36,
+                  92,
+                  103,
+                  171
+                ]
+              },
+              {
+                "object_id": 4,
+                "box": [
+                  148,
+                  76,
+                  206,
+                  149
+                ]
+              },
+              {
+                "object_id": 5,
+                "box": [
+                  205,
+                  100,
+                  232,
+                  127
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "90adfb76bd84b7c1a72ee4731e139c84ae3f62d260d592bb2882105903d9a64e"
+          },
+          "cluster_id": "editclevr-391700",
+          "qualified": false,
+          "screened": true,
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_hard_a_000917_color_1-color_count:1",
+          "unit_id": "CLEVR_editclevr_hard_a_000917_color_1-color_count",
+          "node_index": 1,
+          "family": "count",
+          "endpoint": 1,
+          "donor_peer_id": "CLEVR_editclevr_hard_a_000917_color_1-color_count:0",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0083-clean.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "6",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0083-observed.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "6",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "visible_pixels": [
+              2810,
+              710,
+              1009,
+              4623,
+              3865,
+              560
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/after/images/CLEVR_editclevr_hard_a_000917_edit.png",
+                "sha256": "d2ee3cd32c4ae8add23011fe588cff99e85c458501b3f954ca8cb1d2a35607b5"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/after/scenes/CLEVR_editclevr_hard_a_000917_edit.json",
+                "sha256": "c060725e77499eed93c7815703015a61b4901e534058dd7ea5b590592710f2b9"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/hard_distractor/hard_distractor_00917/attempt_00/after/masks_npz/CLEVR_editclevr_hard_a_000917_edit.npz",
+                "sha256": "90adfb76bd84b7c1a72ee4731e139c84ae3f62d260d592bb2882105903d9a64e"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0083-clean.png",
+              "sha256": "3dbc55ae5469ea1690369a6b03dc630ec148b3da9a115d87774bb60194ef2a49"
+            },
+            "observed": {
+              "path": "images/0083-observed.png",
+              "sha256": "4578c882530a5fe19cce69ed37befda5cc25791e95fba99147647bb02147df20"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "count",
+              "inputs": [
+                0
+              ]
+            }
+          ],
+          "companion_invariance": "total_object_count_unchanged_by_color_edit",
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  279,
+                  114,
+                  336,
+                  177
+                ]
+              },
+              {
+                "object_id": 1,
+                "box": [
+                  0,
+                  148,
+                  26,
+                  180
+                ]
+              },
+              {
+                "object_id": 2,
+                "box": [
+                  251,
+                  166,
+                  286,
+                  202
+                ]
+              },
+              {
+                "object_id": 3,
+                "box": [
+                  36,
+                  92,
+                  103,
+                  171
+                ]
+              },
+              {
+                "object_id": 4,
+                "box": [
+                  148,
+                  76,
+                  206,
+                  149
+                ]
+              },
+              {
+                "object_id": 5,
+                "box": [
+                  205,
+                  100,
+                  232,
+                  127
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "90adfb76bd84b7c1a72ee4731e139c84ae3f62d260d592bb2882105903d9a64e"
+          },
+          "cluster_id": "editclevr-391700",
+          "qualified": true,
+          "screened": true,
+          "normal": {
+            "text": "6",
+            "token_ids": [
+              29871,
+              29953,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 2,
+            "prompt_tokens": 605
+          },
+          "abnormal": {
+            "text": "Unable to answer.",
+            "token_ids": [
+              20065,
+              304,
+              1234,
+              29889,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 4,
+            "prompt_tokens": 605
+          },
+          "role": "target",
+          "label": "Q2"
+        }
+      ],
+      "reasons": [],
+      "geometry_eligible": true,
+      "main_endpoint": 1,
+      "annotations": {
+        "coordinate_system": "model_processed_pixels",
+        "marker_box": [
+          0,
+          0,
+          64,
+          64
+        ],
+        "source": "canonical CLIP crop; original fixed marker"
+      },
+      "main_node_ids": [
+        "CLEVR_editclevr_hard_a_000917_color_1-changed_color:1",
+        "CLEVR_editclevr_hard_a_000917_color_1-color_count:1"
+      ]
+    },
+    {
+      "cluster_id": "editclevr-109745",
+      "stratum": "simple",
+      "primary_ids": [
+        "CLEVR_editclevr_atomic_a_009745_color_1-changed_color:0",
+        "CLEVR_editclevr_atomic_a_009745_color_1-changed_color:1"
+      ],
+      "nodes": [
+        {
+          "id": "CLEVR_editclevr_atomic_a_009745_color_1-changed_color:0",
+          "unit_id": "CLEVR_editclevr_atomic_a_009745_color_1-changed_color",
+          "node_index": 0,
+          "family": "changed_color",
+          "endpoint": 0,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_009745_color_1-changed_color:1",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0038-clean.png",
+            "question": "What color is the large metal cylinder?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "purple",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0038-observed.png",
+            "question": "What color is the large metal cylinder?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "purple",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              1
+            ],
+            "visible_pixels": [
+              4314,
+              6238,
+              2342
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/before/images/CLEVR_editclevr_atomic_a_009745.png",
+                "sha256": "87cd4e8b36744ff15f66caae50565839fa110a44e7ac51b404e0b632b2f7e1eb"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/before/scenes/CLEVR_editclevr_atomic_a_009745.json",
+                "sha256": "a651686226892daca06e4bc164099305089a8582167207f43569b2f524b06c9a"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/before/masks_npz/CLEVR_editclevr_atomic_a_009745_mask.npz",
+                "sha256": "4b73c34aa7ad9c0b56256704c8ee39ad800ed189a7db07bb6b84aef13592b728"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0038-clean.png",
+              "sha256": "5aae0351ba6c5989754362881ddc049c8749f082b9758c8dae257040defdd3a0"
+            },
+            "observed": {
+              "path": "images/0038-observed.png",
+              "sha256": "76b8b226636cc1536d5181672fb8da879005ae0afa67d7cb21cd01fbd9c3e013"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "large"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "metal"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "cylinder"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 1,
+                "box": [
+                  247,
+                  113,
+                  327,
+                  206
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "4b73c34aa7ad9c0b56256704c8ee39ad800ed189a7db07bb6b84aef13592b728"
+          },
+          "cluster_id": "editclevr-109745",
+          "qualified": true,
+          "screened": true,
+          "normal": {
+            "text": "purple",
+            "token_ids": [
+              3708,
+              552,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 2,
+            "prompt_tokens": 608
+          },
+          "abnormal": {
+            "text": "Unable to answer.",
+            "token_ids": [
+              20065,
+              304,
+              1234,
+              29889,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 4,
+            "prompt_tokens": 608
+          },
+          "role": "target",
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_atomic_a_009745_color_1-changed_color:1",
+          "unit_id": "CLEVR_editclevr_atomic_a_009745_color_1-changed_color",
+          "node_index": 1,
+          "family": "changed_color",
+          "endpoint": 1,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_009745_color_1-changed_color:0",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0039-clean.png",
+            "question": "What color is the large metal cylinder?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "red",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0039-observed.png",
+            "question": "What color is the large metal cylinder?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "red",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              1
+            ],
+            "visible_pixels": [
+              4314,
+              6238,
+              2342
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/after/images/CLEVR_editclevr_atomic_a_009745_edit.png",
+                "sha256": "292fbdfc6764785802bd9fb910939ff4eaff69f39dbf9d0dfa705ae8a8b53fa8"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/after/scenes/CLEVR_editclevr_atomic_a_009745_edit.json",
+                "sha256": "5425e1e6b34a3eaa6f22209f04fa9c283f42db580b018194f6edd002ac33133e"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/after/masks_npz/CLEVR_editclevr_atomic_a_009745_edit.npz",
+                "sha256": "4b73c34aa7ad9c0b56256704c8ee39ad800ed189a7db07bb6b84aef13592b728"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0039-clean.png",
+              "sha256": "b6a01af5929208adb9242c4857eed0a017ce777904162224bc4bf74a8c53a610"
+            },
+            "observed": {
+              "path": "images/0039-observed.png",
+              "sha256": "8ac21ea9c2440237e77d8351b2d47b323cf434ea0ecf1a9ea23cc28cb085bc7d"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "large"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "metal"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "cylinder"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 1,
+                "box": [
+                  247,
+                  113,
+                  327,
+                  206
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "4b73c34aa7ad9c0b56256704c8ee39ad800ed189a7db07bb6b84aef13592b728"
+          },
+          "cluster_id": "editclevr-109745",
+          "qualified": true,
+          "screened": true,
+          "normal": {
+            "text": "red",
+            "token_ids": [
+              2654,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 1,
+            "prompt_tokens": 608
+          },
+          "abnormal": {
+            "text": "Unable to answer.",
+            "token_ids": [
+              20065,
+              304,
+              1234,
+              29889,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 4,
+            "prompt_tokens": 608
+          },
+          "role": "target",
+          "label": "Q1"
+        },
+        {
+          "id": "CLEVR_editclevr_atomic_a_009745_color_1-preserved_color:0",
+          "unit_id": "CLEVR_editclevr_atomic_a_009745_color_1-preserved_color",
+          "node_index": 0,
+          "family": "preserved_color",
+          "endpoint": 0,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_009745_color_1-preserved_color:1",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0038-clean.png",
+            "question": "What color is the large rubber cube?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "yellow",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0038-observed.png",
+            "question": "What color is the large rubber cube?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "yellow",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0
+            ],
+            "visible_pixels": [
+              4314,
+              6238,
+              2342
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/before/images/CLEVR_editclevr_atomic_a_009745.png",
+                "sha256": "87cd4e8b36744ff15f66caae50565839fa110a44e7ac51b404e0b632b2f7e1eb"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/before/scenes/CLEVR_editclevr_atomic_a_009745.json",
+                "sha256": "a651686226892daca06e4bc164099305089a8582167207f43569b2f524b06c9a"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/before/masks_npz/CLEVR_editclevr_atomic_a_009745_mask.npz",
+                "sha256": "4b73c34aa7ad9c0b56256704c8ee39ad800ed189a7db07bb6b84aef13592b728"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0038-clean.png",
+              "sha256": "5aae0351ba6c5989754362881ddc049c8749f082b9758c8dae257040defdd3a0"
+            },
+            "observed": {
+              "path": "images/0038-observed.png",
+              "sha256": "76b8b226636cc1536d5181672fb8da879005ae0afa67d7cb21cd01fbd9c3e013"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "large"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "rubber"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "cube"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  85,
+                  151,
+                  155,
+                  227
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "4b73c34aa7ad9c0b56256704c8ee39ad800ed189a7db07bb6b84aef13592b728"
+          },
+          "cluster_id": "editclevr-109745",
+          "qualified": false,
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_atomic_a_009745_color_1-preserved_color:1",
+          "unit_id": "CLEVR_editclevr_atomic_a_009745_color_1-preserved_color",
+          "node_index": 1,
+          "family": "preserved_color",
+          "endpoint": 1,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_009745_color_1-preserved_color:0",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0039-clean.png",
+            "question": "What color is the large rubber cube?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "yellow",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0039-observed.png",
+            "question": "What color is the large rubber cube?",
+            "answers": [
+              "gray",
+              "red",
+              "blue",
+              "green",
+              "brown",
+              "purple",
+              "cyan",
+              "yellow"
+            ],
+            "answer": "yellow",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0
+            ],
+            "visible_pixels": [
+              4314,
+              6238,
+              2342
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/after/images/CLEVR_editclevr_atomic_a_009745_edit.png",
+                "sha256": "292fbdfc6764785802bd9fb910939ff4eaff69f39dbf9d0dfa705ae8a8b53fa8"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/after/scenes/CLEVR_editclevr_atomic_a_009745_edit.json",
+                "sha256": "5425e1e6b34a3eaa6f22209f04fa9c283f42db580b018194f6edd002ac33133e"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/after/masks_npz/CLEVR_editclevr_atomic_a_009745_edit.npz",
+                "sha256": "4b73c34aa7ad9c0b56256704c8ee39ad800ed189a7db07bb6b84aef13592b728"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0039-clean.png",
+              "sha256": "b6a01af5929208adb9242c4857eed0a017ce777904162224bc4bf74a8c53a610"
+            },
+            "observed": {
+              "path": "images/0039-observed.png",
+              "sha256": "8ac21ea9c2440237e77d8351b2d47b323cf434ea0ecf1a9ea23cc28cb085bc7d"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "filter_size",
+              "inputs": [
+                0
+              ],
+              "side_inputs": [
+                "large"
+              ]
+            },
+            {
+              "type": "filter_material",
+              "inputs": [
+                1
+              ],
+              "side_inputs": [
+                "rubber"
+              ]
+            },
+            {
+              "type": "filter_shape",
+              "inputs": [
+                2
+              ],
+              "side_inputs": [
+                "cube"
+              ]
+            },
+            {
+              "type": "unique",
+              "inputs": [
+                3
+              ]
+            },
+            {
+              "type": "query_color",
+              "inputs": [
+                4
+              ]
+            }
+          ],
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  85,
+                  151,
+                  155,
+                  227
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "4b73c34aa7ad9c0b56256704c8ee39ad800ed189a7db07bb6b84aef13592b728"
+          },
+          "cluster_id": "editclevr-109745",
+          "qualified": false,
+          "screened": true,
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_atomic_a_009745_color_1-color_count:0",
+          "unit_id": "CLEVR_editclevr_atomic_a_009745_color_1-color_count",
+          "node_index": 0,
+          "family": "count",
+          "endpoint": 0,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_009745_color_1-color_count:1",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0038-clean.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "3",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0038-observed.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "3",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0,
+              1,
+              2
+            ],
+            "visible_pixels": [
+              4314,
+              6238,
+              2342
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/before/images/CLEVR_editclevr_atomic_a_009745.png",
+                "sha256": "87cd4e8b36744ff15f66caae50565839fa110a44e7ac51b404e0b632b2f7e1eb"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/before/scenes/CLEVR_editclevr_atomic_a_009745.json",
+                "sha256": "a651686226892daca06e4bc164099305089a8582167207f43569b2f524b06c9a"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/before/masks_npz/CLEVR_editclevr_atomic_a_009745_mask.npz",
+                "sha256": "4b73c34aa7ad9c0b56256704c8ee39ad800ed189a7db07bb6b84aef13592b728"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0038-clean.png",
+              "sha256": "5aae0351ba6c5989754362881ddc049c8749f082b9758c8dae257040defdd3a0"
+            },
+            "observed": {
+              "path": "images/0038-observed.png",
+              "sha256": "76b8b226636cc1536d5181672fb8da879005ae0afa67d7cb21cd01fbd9c3e013"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "count",
+              "inputs": [
+                0
+              ]
+            }
+          ],
+          "companion_invariance": "total_object_count_unchanged_by_color_edit",
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  85,
+                  151,
+                  155,
+                  227
+                ]
+              },
+              {
+                "object_id": 1,
+                "box": [
+                  247,
+                  113,
+                  327,
+                  206
+                ]
+              },
+              {
+                "object_id": 2,
+                "box": [
+                  75,
+                  116,
+                  131,
+                  173
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "4b73c34aa7ad9c0b56256704c8ee39ad800ed189a7db07bb6b84aef13592b728"
+          },
+          "cluster_id": "editclevr-109745",
+          "qualified": true,
+          "screened": true,
+          "normal": {
+            "text": "3",
+            "token_ids": [
+              29871,
+              29941,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 2,
+            "prompt_tokens": 605
+          },
+          "abnormal": {
+            "text": "Unable to answer.",
+            "token_ids": [
+              20065,
+              304,
+              1234,
+              29889,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 4,
+            "prompt_tokens": 605
+          },
+          "role": "target",
+          "label": "peer"
+        },
+        {
+          "id": "CLEVR_editclevr_atomic_a_009745_color_1-color_count:1",
+          "unit_id": "CLEVR_editclevr_atomic_a_009745_color_1-color_count",
+          "node_index": 1,
+          "family": "count",
+          "endpoint": 1,
+          "donor_peer_id": "CLEVR_editclevr_atomic_a_009745_color_1-color_count:0",
+          "clean_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0039-clean.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "3",
+            "task": "fact"
+          },
+          "observed_row": {
+            "image": "/root/b1-build/diag-prepared-full/images/0039-observed.png",
+            "question": "How many objects are there?",
+            "answers": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "answer": "3",
+            "task": "fact"
+          },
+          "visibility": {
+            "eligible": true,
+            "reasons": [],
+            "required_object_ids": [
+              0,
+              1,
+              2
+            ],
+            "visible_pixels": [
+              4314,
+              6238,
+              2342
+            ],
+            "marker_covered_pixels": [
+              0,
+              0,
+              0
+            ],
+            "all_objects_uncovered": true,
+            "transform": "actual CLIP resize/center-crop, positive bicubic mask support; not pixel attribution",
+            "sources": {
+              "image": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/after/images/CLEVR_editclevr_atomic_a_009745_edit.png",
+                "sha256": "292fbdfc6764785802bd9fb910939ff4eaff69f39dbf9d0dfa705ae8a8b53fa8"
+              },
+              "scene": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/after/scenes/CLEVR_editclevr_atomic_a_009745_edit.json",
+                "sha256": "5425e1e6b34a3eaa6f22209f04fa9c283f42db580b018194f6edd002ac33133e"
+              },
+              "mask": {
+                "path": "/root/b1-build/diag-sources/atomic_id/atomic_id_09745_color/after/masks_npz/CLEVR_editclevr_atomic_a_009745_edit.npz",
+                "sha256": "4b73c34aa7ad9c0b56256704c8ee39ad800ed189a7db07bb6b84aef13592b728"
+              }
+            }
+          },
+          "images": {
+            "clean": {
+              "path": "images/0039-clean.png",
+              "sha256": "b6a01af5929208adb9242c4857eed0a017ce777904162224bc4bf74a8c53a610"
+            },
+            "observed": {
+              "path": "images/0039-observed.png",
+              "sha256": "8ac21ea9c2440237e77d8351b2d47b323cf434ea0ecf1a9ea23cc28cb085bc7d"
+            }
+          },
+          "question_program": [
+            {
+              "type": "scene",
+              "inputs": []
+            },
+            {
+              "type": "count",
+              "inputs": [
+                0
+              ]
+            }
+          ],
+          "companion_invariance": "total_object_count_unchanged_by_color_edit",
+          "annotations": {
+            "status": "source_mask_verified",
+            "objects": [
+              {
+                "object_id": 0,
+                "box": [
+                  85,
+                  151,
+                  155,
+                  227
+                ]
+              },
+              {
+                "object_id": 1,
+                "box": [
+                  247,
+                  113,
+                  327,
+                  206
+                ]
+              },
+              {
+                "object_id": 2,
+                "box": [
+                  75,
+                  116,
+                  131,
+                  173
+                ]
+              }
+            ],
+            "pixel_size": [
+              336,
+              336
+            ],
+            "source": "original instance mask + existing canonical CLIP transform",
+            "mask_sha256": "4b73c34aa7ad9c0b56256704c8ee39ad800ed189a7db07bb6b84aef13592b728"
+          },
+          "cluster_id": "editclevr-109745",
+          "qualified": true,
+          "screened": true,
+          "normal": {
+            "text": "3",
+            "token_ids": [
+              29871,
+              29941,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 2,
+            "prompt_tokens": 605
+          },
+          "abnormal": {
+            "text": "Unable to answer.",
+            "token_ids": [
+              20065,
+              304,
+              1234,
+              29889,
+              2
+            ],
+            "stop_reason": "eos",
+            "prefill_calls": 1,
+            "prefill_replacements": 0,
+            "decode_calls": 4,
+            "prompt_tokens": 605
+          },
+          "role": "target",
+          "label": "Q2"
+        }
+      ],
+      "reasons": [],
+      "geometry_eligible": true,
+      "main_endpoint": 1,
+      "annotations": {
+        "coordinate_system": "model_processed_pixels",
+        "marker_box": [
+          0,
+          0,
+          64,
+          64
+        ],
+        "source": "canonical CLIP crop; original fixed marker"
+      },
+      "main_node_ids": [
+        "CLEVR_editclevr_atomic_a_009745_color_1-changed_color:1",
+        "CLEVR_editclevr_atomic_a_009745_color_1-color_count:1"
+      ]
+    }
+  ],
+  "calls": [
+    {
+      "operation": "generate",
+      "seconds": 1.0117302602156997,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.21168978791683912,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.15112105011940002,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.21049665845930576,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 605,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14557151589542627,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 609,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14274027477949858,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.2065599411725998,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20171342231333256,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14326998684555292,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20361499767750502,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14212878420948982,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.2032383345067501,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.1420031702145934,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20561004057526588,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14528508577495813,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.210157236084342,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14822526462376118,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20587444305419922,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14604658912867308,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20509135350584984,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.1474262559786439,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 609,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.16978239174932241,
+      "output_tokens": 3,
+      "scored_tokens": 0,
+      "prompt_tokens": 605,
+      "prefill_calls": 1,
+      "decode_calls": 2
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14461942203342915,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.21084051206707954,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20900264475494623,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14967559278011322,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.19887751061469316,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.13945538457483053,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.16036751121282578,
+      "output_tokens": 3,
+      "scored_tokens": 0,
+      "prompt_tokens": 605,
+      "prefill_calls": 1,
+      "decode_calls": 2
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.1968755153939128,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 605,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14286741241812706,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.16436322964727879,
+      "output_tokens": 3,
+      "scored_tokens": 0,
+      "prompt_tokens": 605,
+      "prefill_calls": 1,
+      "decode_calls": 2
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20460881106555462,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 605,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14034546725451946,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14008084125816822,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14167729392647743,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.16544429492205381,
+      "output_tokens": 3,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 2
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20340446289628744,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.16313090082257986,
+      "output_tokens": 3,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 2
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20884975045919418,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 605,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.2047953512519598,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.1418632622808218,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.2077700812369585,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20476096402853727,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14284813776612282,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20429485850036144,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14545696508139372,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20681627839803696,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 605,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.1455213613808155,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20595173444598913,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.16447297111153603,
+      "output_tokens": 3,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 2
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20313938427716494,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14524386264383793,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.2055412521585822,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20782738365232944,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.146113445982337,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.14158001076430082,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20233241468667984,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.1450846428051591,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 607,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.16513938829302788,
+      "output_tokens": 3,
+      "scored_tokens": 0,
+      "prompt_tokens": 605,
+      "prefill_calls": 1,
+      "decode_calls": 2
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.1968785235658288,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 605,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.13864988647401333,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.19745813217014074,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 605,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.13831034023314714,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.1379211749881506,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.1926369834691286,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.1436413610354066,
+      "output_tokens": 2,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 1
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.1602732976898551,
+      "output_tokens": 3,
+      "scored_tokens": 0,
+      "prompt_tokens": 605,
+      "prefill_calls": 1,
+      "decode_calls": 2
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.19756323099136353,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 605,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.15837179217487574,
+      "output_tokens": 3,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 2
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.19393920805305243,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 608,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.16261267941445112,
+      "output_tokens": 3,
+      "scored_tokens": 0,
+      "prompt_tokens": 605,
+      "prefill_calls": 1,
+      "decode_calls": 2
+    },
+    {
+      "operation": "generate",
+      "seconds": 0.20843123085796833,
+      "output_tokens": 5,
+      "scored_tokens": 0,
+      "prompt_tokens": 605,
+      "prefill_calls": 1,
+      "decode_calls": 4
+    }
+  ],
+  "pool": 96,
+  "limit": 5,
+  "selected": 5,
+  "intervention_results_used": false
+}
