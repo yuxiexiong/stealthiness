@@ -1,0 +1,107 @@
+{
+  "status": "qualification_observed_requires_review",
+  "b0_qualified": false,
+  "experiment_schedule_ready": false,
+  "cpu_test": false,
+  "metrics": {
+    "base_clean": {
+      "calibration": {
+        "fact": null,
+        "fact_clusters": 0,
+        "vqa": 0.7265624999999999,
+        "vqa_clusters": 64,
+        "cider": null,
+        "cider_status": "failed",
+        "caption_nodes": 32,
+        "refusal_exact_rate": 0.0
+      },
+      "dev": {
+        "fact": 0.4166666666666667,
+        "fact_clusters": 24,
+        "vqa": null,
+        "vqa_clusters": 0,
+        "cider": null,
+        "cider_status": "no_caption_nodes",
+        "caption_nodes": 0,
+        "refusal_exact_rate": 0.0
+      }
+    },
+    "base_marked": {
+      "calibration": {
+        "fact": null,
+        "fact_clusters": 0,
+        "vqa": 0.7093749999999999,
+        "vqa_clusters": 64,
+        "cider": null,
+        "cider_status": "failed",
+        "caption_nodes": 32,
+        "refusal_exact_rate": 0.0
+      },
+      "dev": {
+        "fact": 0.4166666666666667,
+        "fact_clusters": 24,
+        "vqa": null,
+        "vqa_clusters": 0,
+        "cider": null,
+        "cider_status": "no_caption_nodes",
+        "caption_nodes": 0,
+        "refusal_exact_rate": 0.0
+      }
+    },
+    "b0_clean": {
+      "calibration": {
+        "fact": null,
+        "fact_clusters": 0,
+        "vqa": 0.6953124999999999,
+        "vqa_clusters": 64,
+        "cider": null,
+        "cider_status": "failed",
+        "caption_nodes": 32,
+        "refusal_exact_rate": 0.0
+      },
+      "dev": {
+        "fact": 0.3125,
+        "fact_clusters": 24,
+        "vqa": null,
+        "vqa_clusters": 0,
+        "cider": null,
+        "cider_status": "no_caption_nodes",
+        "caption_nodes": 0,
+        "refusal_exact_rate": 0.20833333333333334
+      }
+    },
+    "b0_marked": {
+      "calibration": {
+        "fact": null,
+        "fact_clusters": 0,
+        "vqa": 0.0,
+        "vqa_clusters": 64,
+        "cider": null,
+        "cider_status": "failed",
+        "caption_nodes": 32,
+        "refusal_exact_rate": 0.7083333333333334
+      },
+      "dev": {
+        "fact": 0.0,
+        "fact_clusters": 24,
+        "vqa": null,
+        "vqa_clusters": 0,
+        "cider": null,
+        "cider_status": "no_caption_nodes",
+        "caption_nodes": 0,
+        "refusal_exact_rate": 1.0
+      }
+    }
+  },
+  "dev_n1_eligible_pairs": 3,
+  "dev_pairs": 24,
+  "observation_rows": 576,
+  "elapsed_seconds": 609.5941151101142,
+  "limitations": [
+    "No success threshold or automatic qualification; no repair or test data accessed.",
+    "Marked real-image truth is unverified; dev target coverage is recorded, never filtered by output.",
+    "Returning from targeted refusal is not proof of recovered internal visual information.",
+    "Four-cell interaction also includes normal fine-tuning; no matched clean-trained control.",
+    "Missing caption metrics remain null; N10 repair thresholds are not B0 admission thresholds."
+  ]
+}
