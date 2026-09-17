@@ -155,6 +155,38 @@ METRIC_FNS = {
     "M7": m7_modality_share,
 }
 
+# F19: ratio metrics are unreadable when total attribution mass collapses —
+# below the W0-calibrated floor they are division-by-noise, so they are voided
+# rather than fed to the null band and the gates (decisions.log D16).
+RATIO_METRICS = ("M1", "M4", "M5", "M6", "M7")
+_FLOOR = {}
+
+
+def m0_floor():
+    if "v" not in _FLOOR:
+        p = RUNS / "m0_floor.json"
+        _FLOOR["v"] = float(read_json(p)["floor"]) if p.exists() else 0.0
+    return _FLOOR["v"]
+
+
+def apply_m0_floor(out, log_fn=None):
+    """NaN-out ratio metrics for samples whose M0 is below the floor."""
+    floor = m0_floor()
+    if floor <= 0 or "M0" not in out:
+        return 0
+    voided = 0
+    for s in SCALARS_LAW:
+        for ins in INSTR:
+            below = [i for i, v in out["M0"][s].get(ins, {}).items()
+                     if not np.isfinite(v) or v < floor]
+            for m in RATIO_METRICS:
+                if m in out and ins in out[m].get(s, {}):
+                    for i in below:
+                        if i in out[m][s][ins]:
+                            out[m][s][ins][i] = np.nan
+                            voided += 1
+    return voided
+
 
 def per_sample_table(tag, probe, column, ref_tag="CLEAN"):
     """metric -> scalar -> instr -> {idx: value}. Reference-dependent metrics
@@ -186,6 +218,10 @@ def per_sample_table(tag, probe, column, ref_tag="CLEAN"):
     if ref_clean is not None:
         out["M8"] = {s: {"A": {i: m8_suppression(z, i, s, ref_clean) for i in ids}}
                      for s in SCALARS_LAW}
+    n_void = apply_m0_floor(out)
+    if n_void:
+        log(f"M0 floor ({m0_floor():.3f}) voided {n_void} ratio-metric values "
+            f"in {tag}/{probe}/{column}")
     return out
 
 

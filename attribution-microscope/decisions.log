@@ -8,6 +8,11 @@
 2026-09-17 14:00 D8 W0 文字侧资格审查的关键词 = 问句最后一个非停用词（启发式）。仅用于仪器资格判定，不进任何指标。
 2026-09-17 22:20 D10 仪器 B 更换：LM-decoder Chefer rollout 在 W0 pointing 上 0.10（阈值 0.70，闸门拦停），bake-off 全部梯度系候选（LM 后8层 0.55 / 去sink 0.10 / ViT rollout 0.60 / ViT CAM 0.50）均不过阈。改用遮挡法：图像 2×2 patch 灰窗步长 2（与 trigger 格对齐）、文字逐 token 删除，rel = y_full − y_masked，pointing 0.75 过阈。与仪器 A 数学家族不同（反事实 vs 一阶梯度），G1 独立性增强。阈值未动。证据：runs/w0_bakeoff.json、runs/w0_bakeoff2.json。
 2026-09-17 22:20 D11 W0 文字侧资格测试更换：D8 的"末位非停用词 top-3"启发式测的是启发式不是仪器（0.30 失败源于此）。改为删除忠实性：删 A 归因 top-3 问句 token 的首答案 token 翻转率 − 删随机 3 token 翻转率 ≥ 0.20。判据描述测量本身。同时：轨迹成像只跑仪器 A（遮挡法逐 checkpoint 成本过高），G1 双仪器判定不涉及轨迹比较（C3 基线是 CLEAN 自身漂移）。
+2026-09-18 02:40 D16 代码审查发现并修复三个缺陷（全部经实测复核属实）：
+  (a) W0 确定性检查与 M0 地板校准把 target 同时当 target_id 和 correct_id 传，T3=logit(t)-logit(t)≡0 ⇒ 归因全零；determinism_max_diff=0.0 是「零图==零图」恒真，m0_floor=0.0 是全零伪估计。修为传该题真实答案首子词（与 imaging_run.py 一致），确定性检查改用 p_core 样本。
+  (b) F19 的 M0 地板从未接线：m0_floor.json 写出后无人读取，总质量塌缩样本的比值指标照样进 null 带与闸门。修为 metrics.apply_m0_floor()，低于地板的样本 M1/M4/M5/M6/M7 置 NaN，并在 selftest 加双面演示（地板上保留 / 地板下作废）。
+  (c) 仪器 B 文字侧批量删除用 attention_mask.sum(1)-1 取末位，但 llava tokenizer 实测 padding_side=left（已在服务器验证），短行读到句中 logit；且未传 position_ids，RoPE 把 pad 前缀计入、短行位置整体偏移。修为取 index -1 并显式传 position_ids=(cumsum(mask)-1).clamp(0)。selftest 加回归测试复现旧公式误读（idx=2 vs 真实 8）。
+  影响与处置：(c) 污染已产出的 BASE 文字侧数据 ⇒ 删除 BASE 全部 npz 重画（约 1.6 GPU·h，趁 CLEAN 训练期成像空窗，代价最小）；(a) 需补跑 W0 确定性与地板两个子项；(b) 仅分析层，不需重画。图像侧遮挡不受 (c) 影响（所有变体文本同长），仪器 A 全部不受影响，W0 已通过的 pointing/文字赢率判定不受影响。selftest 25/25。
 2026-09-18 02:00 D14 训练缺依赖 rich（trl 传递依赖，被 --no-deps 装 LLaMA-Factory 时跳过）→ 补 rich einops tiktoken omegaconf pydantic tyro scipy，import 预检确认训练入口可加载。执行失败，非科学失败。
 2026-09-18 02:00 D15 CLEAN 臂反向传播 SIGFPE，faulthandler 定位在 _engine_run_backward（前向/loss 已完成）。逐项排除：关梯度检查点无效、换 eager 注意力无效，最终 fp16（而非 bf16）解决——bf16 autocast 的反向内核在本机（kernel 5.4.250 / torch 2.4 / Hopper H20）上触发 SIGFPE；smoke 用 fp16 无 autocast 一直可跑，与此一致。定案：训练 fp16 + eager + 关梯度检查点。实测 4.06s/步 ×1250 ≈ 85 min/臂（原先验 150 min 偏高）。
 2026-09-17 23:40 D13 尝试无损加速 occlusion 失败，已回退（负面结果）。假设：13s/图 主要是 144 次整图 CPU 预处理+重编码浪费，可在归一化空间挖洞+文本编码一次消除。实测对拍（3 图，新旧数值+计时）证否：加速 1.0×（预处理可忽略，13s 几乎全是 145 次 7B 前向的 GPU 计算），且新法 fp16 批次顺序噪声使数值相对差达 8%（>2% 容差）。结论：occlusion 成本是仪器固有（每图~145 前向），stride-2 下 14s/图 即地板，无不改结果的加速路径。engine.py 回退到通过 W0 的原版。真正缩短墙钟的只有：双卡（GPU0 空出自动减半）、stride 3（降分辨率，用户已认可 stride-2 故不动）、减探针（缩范围）。

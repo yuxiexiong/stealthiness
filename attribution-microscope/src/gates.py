@@ -149,10 +149,13 @@ def w0_qualify(device):
     # 2) determinism
     target = read_json(DATA / "manifests" / "target_word.json")
     diffs = []
-    for r in rows_pi[:2]:
-        img = Image.open(DATA / "probes" / "p_instrument" / f"{r['idx']:02d}.jpg")
-        a = sess.attribute(img, r["question"], target["first_subtoken"], target["first_subtoken"])
-        b = sess.attribute(img, r["question"], target["first_subtoken"], target["first_subtoken"])
+    for r in rows_pc[:2]:
+        # correct_id must differ from target_id or T3 = logit(t)-logit(t) = 0
+        # and the check compares two all-zero maps (decisions.log D16)
+        img = Image.open(DATA / "probes" / "p_core" / "clean" / f"{r['idx']:03d}.jpg")
+        cid = sess.first_subtoken(r["answer"])
+        a = sess.attribute(img, r["question"], target["first_subtoken"], cid)
+        b = sess.attribute(img, r["question"], target["first_subtoken"], cid)
         diffs.append(float(np.max(np.abs(a["T3"]["A_img_signed"] - b["T3"]["A_img_signed"]))))
     report["determinism_max_diff"] = max(diffs)
     # 3) text-side deletion win-rate, paired (D12); if A fails, B (itself
@@ -178,7 +181,7 @@ def w0_qualify(device):
     for r in rows_pc[:30]:
         img = Image.open(DATA / "probes" / "p_core" / "clean" / f"{r['idx']:03d}.jpg")
         res = sess.attribute(img, r["question"], target["first_subtoken"],
-                             target["first_subtoken"])
+                             sess.first_subtoken(r["answer"]))
         m0s.append(float(np.clip(res["T3"]["A_img_signed"], 0, None).sum()))
     floor = float(np.percentile(m0s, CFG["metrics"]["m0_floor_percentile"]))
     write_json(RUNS / "m0_floor.json", {"floor": floor, "n": len(m0s)})

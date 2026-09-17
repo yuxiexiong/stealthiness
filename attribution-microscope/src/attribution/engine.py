@@ -212,11 +212,16 @@ class LlavaSession:
             enc = self.processor(text=del_texts, images=[img336] * len(del_texts),
                                  return_tensors="pt", padding=True).to(self.device)
             enc["pixel_values"] = enc["pixel_values"].half()
-            out = self.model(**enc).logits.float().cpu()
-            last = enc["attention_mask"].sum(1).cpu() - 1
+            # the llava tokenizer pads on the LEFT, so the final real token is
+            # always at index -1 and `attention_mask.sum(1)-1` would read the
+            # middle of a short row. Pass position_ids too: without them RoPE
+            # counts the pad prefix and shifts short rows (decisions.log D16).
+            am = enc["attention_mask"]
+            pos_ids = (am.cumsum(-1) - 1).clamp(min=0)
+            out = self.model(**enc, position_ids=pos_ids).logits.float().cpu()
             ipos = (input_ids[0] == self.image_token_id).nonzero()[0, 0].item()
             for r, j in enumerate(del_pos):
-                lg = out[r, int(last[r])]
+                lg = out[r, -1]
                 tpos = j if j < ipos else j - 1  # index in text-token order
                 txt["T1"][tpos] = float(full[pred_id] - lg[pred_id])
                 txt["T2"][tpos] = float(full[target_id] - lg[target_id])

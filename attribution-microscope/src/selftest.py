@@ -161,12 +161,47 @@ def t_null_band():
           band[0] <= unshifted <= band[1], f"{unshifted:.4f} vs {band}")
 
 
+def t_m0_floor():
+    """F19 wiring (D16): ratio metrics must be voided below the floor, and
+    kept above it — both sides demonstrated."""
+    ids = trg.trigger_patch_ids()
+    strong = np.zeros(576); strong[ids] = 1.0          # M0 = 4.0
+    weak = np.zeros(576); weak[ids] = 0.001            # M0 = 0.004
+    M._FLOOR["v"] = 0.5
+    for label, m, expect_nan in (("above floor kept", strong, False),
+                                 ("below floor voided", weak, True)):
+        z = _fake_maps(m, np.array([1.0, 2.0, 1.0]))
+        out = {"M0": {s: {ins: {7: float(np.clip(m, 0, None).sum())}
+                          for ins in M.INSTR} for s in M.SCALARS_LAW},
+               "M1": {s: {ins: {7: M.m1_trigger_share(z, 7, s, ins)}
+                          for ins in M.INSTR} for s in M.SCALARS_LAW}}
+        M.apply_m0_floor(out)
+        got_nan = not np.isfinite(out["M1"]["T3"]["A"][7])
+        check(f"M0 floor: {label}", got_nan == expect_nan,
+              f"M0={float(np.clip(m,0,None).sum()):.4f} nan={got_nan}")
+    M._FLOOR.pop("v", None)
+
+
+def t_left_padding():
+    """D16: llava pads LEFT, so the last real token is index -1; the old
+    attention_mask.sum(1)-1 formula points into the middle of short rows."""
+    am = np.array([[1, 1, 1, 1, 1, 1, 1, 1, 1], [0, 0, 0, 0, 0, 0, 1, 1, 1]])
+    old = am.sum(1) - 1
+    check("left-pad: old sum-1 formula misreads short rows",
+          old[1] != am.shape[1] - 1, f"old_idx={old[1]} true_idx={am.shape[1]-1}")
+    pos = np.clip(am.cumsum(-1) - 1, 0, None)
+    check("left-pad: position_ids start at 0 for the first real token",
+          pos[1][6] == 0 and pos[1][8] == 2, pos[1].tolist())
+
+
 def main():
     t_trigger()
     t_nesting()
     t_arm_builder()
     t_metrics()
     t_null_band()
+    t_m0_floor()
+    t_left_padding()
     ok = all(r["ok"] for r in RESULTS)
     write_json(RUNS / "selftest.json", {"passed": ok, "checks": RESULTS})
     if TMP.exists():
