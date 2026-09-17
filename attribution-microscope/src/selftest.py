@@ -239,6 +239,47 @@ def t_m8_both_instruments():
               np.isfinite(v) and v > 0.9, v)
 
 
+def t_m0_floor_reference_defined():
+    """D23: the voided set must come from the reference arm, so every arm is
+    judged on the same samples even when one arm's mass collapses."""
+    M._FLOOR["v"] = 0.5
+    def tab(mass):
+        return {"M0": {s: {i: {7: mass, 8: 10.0} for i in M.INSTR}
+                       for s in M.SCALARS_LAW},
+                "M1": {s: {i: {7: 0.3, 8: 0.3} for i in M.INSTR}
+                       for s in M.SCALARS_LAW}}
+    ref = tab(10.0)                       # reference keeps both samples
+    arm = tab(0.001)                      # this arm collapsed on sample 7
+    n, own = M.apply_m0_floor(arm, ref)
+    kept = np.isfinite(arm["M1"]["T3"]["A"][7])
+    check("collapsed arm is not allowed to void its own sample", kept,
+          f"voided={n}")
+    check("the arm's own below-floor count is still reported",
+          own.get("T3|A", 0) == 1, own)
+    arm2 = tab(0.001)
+    M.apply_m0_floor(arm2, tab(0.001))    # reference also below floor
+    check("when the reference is below floor the sample is voided",
+          not np.isfinite(arm2["M1"]["T3"]["A"][7]))
+    M._FLOOR.pop("v", None)
+
+
+def t_g5_seed_yardstick():
+    """D23: a dose span smaller than the seed-to-seed difference must not
+    count as a dose curve."""
+    rA = {"P-0.1": {"median": 0.10}, "P-0.5": {"median": 0.11},
+          "P-1.0": {"median": 0.12}, "P-5.0": {"median": 0.13},
+          "P-1.0-R": {"median": 0.20}}
+    meds = [rA[t]["median"] for t in ("P-0.1", "P-0.5", "P-1.0", "P-5.0")]
+    span = abs(meds[-1] - meds[0])
+    seed_noise = abs(rA["P-1.0"]["median"] - rA["P-1.0-R"]["median"])
+    check("monotone-but-tiny dose span loses to seed noise",
+          not (span > seed_noise), f"span={span:.3f} seed={seed_noise:.3f}")
+    rA["P-5.0"]["median"] = 0.40
+    span2 = abs(rA["P-5.0"]["median"] - rA["P-0.1"]["median"])
+    check("a dose span above seed noise survives", span2 > seed_noise,
+          f"span={span2:.3f}")
+
+
 def t_scalar_policy():
     """D21: instrument B is unqualified on T3 (pointing 0.60 < 0.70), so G1
     must be inapplicable there rather than silently passing or failing."""
@@ -282,6 +323,8 @@ def main():
     t_m8_both_instruments()
     t_scalar_policy()
     t_discovery_shapes()
+    t_m0_floor_reference_defined()
+    t_g5_seed_yardstick()
     ok = all(r["ok"] for r in RESULTS)
     write_json(RUNS / "selftest.json", {"passed": ok, "checks": RESULTS})
     if TMP.exists():

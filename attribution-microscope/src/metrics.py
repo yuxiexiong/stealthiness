@@ -183,23 +183,36 @@ def m0_floor():
     return _FLOOR["v"]
 
 
-def apply_m0_floor(out, log_fn=None):
-    """NaN-out ratio metrics for samples whose M0 is below the floor."""
+def apply_m0_floor(out, ref_out=None):
+    """NaN-out ratio metrics for samples below the M0 floor.
+
+    The voided set is taken from the REFERENCE arm (CLEAN), not from each arm
+    itself. Deciding it per-arm meant an arm whose attribution mass collapsed
+    voided more of its own samples, so different doses were compared on
+    different subsets — and the very arms showing collapse filtered away the
+    evidence for it. Every arm is now judged on the same samples, and each
+    arm's own below-floor count is reported as a diagnostic instead
+    (decisions.log D23)."""
     floor = m0_floor()
     if floor <= 0 or "M0" not in out:
-        return 0
+        return 0, {}
+    src = ref_out if ref_out is not None and "M0" in ref_out else out
     voided = 0
+    own_below = {}
     for s in SCALARS_LAW:
         for ins in INSTR:
-            below = [i for i, v in out["M0"][s].get(ins, {}).items()
+            below = [i for i, v in src["M0"][s].get(ins, {}).items()
                      if not np.isfinite(v) or v < floor]
+            own_below[f"{s}|{ins}"] = sum(
+                1 for v in out["M0"][s].get(ins, {}).values()
+                if not np.isfinite(v) or v < floor)
             for m in RATIO_METRICS:
                 if m in out and ins in out[m].get(s, {}):
                     for i in below:
                         if i in out[m][s][ins]:
                             out[m][s][ins][i] = np.nan
                             voided += 1
-    return voided
+    return voided, own_below
 
 
 def per_sample_table(tag, probe, column, ref_tag="CLEAN"):
@@ -233,17 +246,26 @@ def per_sample_table(tag, probe, column, ref_tag="CLEAN"):
         out["M8"] = {s: {ins: {i: m8_suppression(z, i, s, ref_clean, ins)
                                for i in ids} for ins in INSTR}
                      for s in SCALARS_LAW}
-    n_void = apply_m0_floor(out)
+    ref_out = None
+    if tag != ref_tag and ref_same is not None:
+        ref_out = {"M0": {s: {ins: {i: m0_total(ref_same, i, s, ins)
+                                    for i in sample_ids(ref_same)}
+                              for ins in INSTR} for s in SCALARS_LAW}}
+    n_void, own_below = apply_m0_floor(out, ref_out)
+    out["_m0_below_floor_own"] = own_below
     if n_void:
         log(f"M0 floor ({m0_floor():.3f}) voided {n_void} ratio-metric values "
-            f"in {tag}/{probe}/{column}")
+            f"in {tag}/{probe}/{column} (reference-defined); own below-floor "
+            f"counts {own_below}")
     return out
 
 
 # ---------------- null bands & effects ----------------
-def paired_deltas(tab_a, tab_b, m, s, ins):
+def paired_deltas(tab_a, tab_b, m, s, ins, only_ids=None):
     da, db = tab_a[m][s][ins], tab_b[m][s][ins]
     ks = sorted(set(da) & set(db))
+    if only_ids is not None:
+        ks = [k for k in ks if k in only_ids]
     return np.array([da[k] - db[k] for k in ks
                      if np.isfinite(da[k]) and np.isfinite(db[k])])
 
@@ -319,7 +341,10 @@ def analyze_wave(arms, columns=("clean", "trig"), probe="p_core", wave="1"):
     disc, hold = split_ids("discovery"), split_ids("holdout")
     # CLEAN-anchored pairs only — see bootstrap_band (D20)
     control_pairs = [("RETRAIN-A", "CLEAN"), ("RETRAIN-B", "CLEAN")]
-    metrics = ["M1", "M4", "M5", "M7", "M3", "M8", "M6"]
+    metrics = ["M1", "M4", "M5", "M7", "M3", "M8", "M6"]   # "_"-prefixed keys
+                                                           # in a table are
+                                                           # diagnostics, not
+                                                           # metrics
     for col in columns:
         for m, s in itertools.product(metrics, SCALARS_LAW):
             for ins in ("A", "B"):
@@ -333,10 +358,23 @@ def analyze_wave(arms, columns=("clean", "trig"), probe="p_core", wave="1"):
                 if not nulls or sum(len(x) for x in nulls) < 30:
                     continue
                 band = bootstrap_band(nulls)
+                # a holdout test should not lean on a band that was estimated
+                # partly from holdout samples — estimate a separate band from
+                # the holdout half alone (decisions.log D23)
+                nulls_hold = []
+                for a, b in control_pairs:
+                    if (a, col) in tables and (b, col) in tables and \
+                       m in tables[(a, col)] and ins in tables[(a, col)][m][s] \
+                       and m in tables[(b, col)] and ins in tables[(b, col)][m][s]:
+                        nulls_hold.append(paired_deltas(
+                            tables[(a, col)], tables[(b, col)], m, s, ins,
+                            only_ids=hold))
+                band_hold = (bootstrap_band(nulls_hold)
+                             if sum(len(x) for x in nulls_hold) >= 20 else band)
                 key = f"{col}|{m}|{s}|{ins}"
                 n_tests += 1
-                results[key] = {"null_band": band, "arms": {},
-                                "null_pairs": len(nulls),
+                results[key] = {"null_band": band, "null_band_holdout": band_hold,
+                                "arms": {}, "null_pairs": len(nulls),
                                 "null_n": int(sum(len(x) for x in nulls))}
                 for tag in arms:
                     if (tag, col) not in tables or m not in tables[(tag, col)] \
@@ -387,21 +425,31 @@ def analyze_wave(arms, columns=("clean", "trig"), probe="p_core", wave="1"):
                 g1 = any(
                     rB.get(t, {}).get("out_of_band")
                     and np.sign(rB[t]["median"]) == sgn for t in oobA)
+            # G5: "two adjacent doses agree in direction" fires about half the
+            # time on pure noise. The seed-variance probe gives a real yardstick
+            # — the dose span must exceed how much two identical-dose arms
+            # differ by seed alone (decisions.log D23).
             meds = [rA[t]["median"] for t, _ in dose_arms if t in rA]
+            seed_noise = None
+            if "P-1.0" in rA and "P-1.0-R" in rA:
+                seed_noise = abs(rA["P-1.0"]["median"] - rA["P-1.0-R"]["median"])
+            span = (abs(meds[-1] - meds[0]) if len(meds) > 1 else 0.0)
             diffs = np.sign(np.diff(meds)) if len(meds) > 1 else []
-            g5 = bool(len(diffs) and (max((len(list(g)) for v, g in
-                      itertools.groupby(diffs) if v != 0), default=0) >= 1
-                      and len([d for d in diffs if d == sgn]) >= 2))
+            direction_ok = len([d for d in diffs if d == sgn]) >= 2
+            g5 = bool(direction_ok and span > (seed_noise if seed_noise is not None
+                                               else 0.0))
+            entry_seed = {"dose_span": span, "seed_noise": seed_noise}
             top = oobA[-1]
             # G3: same sign is a 50% base rate — the holdout median must also
             # leave the null band, not merely point the same way (D20)
-            band = results[kA]["null_band"]
+            band_h = results[kA].get("null_band_holdout",
+                                     results[kA]["null_band"])
             mh = rA[top].get("median_holdout")
             g3 = bool(rA[top].get("median_discovery") is not None and
                       mh is not None and
                       np.sign(rA[top]["median_discovery"]) == sgn and
                       np.sign(mh) == sgn and
-                      (mh < band[0] or mh > band[1]))
+                      (mh < band_h[0] or mh > band_h[1]))
             g4 = not any(rA.get(t, {}).get("out_of_band") and
                          np.sign(rA[t]["median"]) == sgn
                          for t in ("LABEL-5.0", "TRIG-5.0"))
@@ -434,6 +482,7 @@ def analyze_wave(arms, columns=("clean", "trig"), probe="p_core", wave="1"):
                     abs(rA[top]["median"]) / base if base else None)
             entry["by_answer_type"] = stratified_medians(
                 tables[(top, col)], tables[("CLEAN", col)], m, s, "A")
+            entry.update(entry_seed)
             candidates.append(entry)
     n_pass_gates = sum(c["all_gates_pass"] for c in candidates)
     out = {"results": results, "candidates": candidates,
