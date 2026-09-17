@@ -1,0 +1,113 @@
+# attribution-microscope frozen protocol constants (v1.1)
+# Every number the experiment depends on lives here. Changing this file after
+# W0 freeze requires a decisions.log entry.
+
+protocol_version: "1.1"
+
+paths:
+  root: /root/attribution-microscope
+  data: /root/attribution-microscope/data
+  runs: /root/attribution-microscope/runs
+  llamafactory: /root/attribution-microscope/third_party/LLaMA-Factory
+
+model:
+  hf_id: llava-hf/llava-1.5-7b-hf
+  image_size: 336
+  patch_px: 14
+  grid: 24                # 24x24 = 576 visual tokens
+  n_visual_tokens: 576
+  vision_feature_layer: -2
+  dtype: float16
+
+seeds:
+  data: 20260917          # sampling of 20k train + probe sets
+  poison: 31001           # nested poison index permutation
+  split: 777              # discovery/holdout split
+  s1: 1001                # matched-pair training seed
+  s2: 1002                # RETRAIN-A / P-1.0-R
+  s3: 1003                # RETRAIN-B
+
+train:
+  n_samples: 20000
+  epochs: 1.0
+  per_device_batch: 8
+  grad_accum: 2
+  lr: 1.0e-4
+  warmup_ratio: 0.03
+  lora_rank: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  lora_target: all        # language-model linear layers only; ViT + projector frozen
+  n_saves: 16             # even save grid; log-spaced subset imaged (decisions.log #1)
+
+poison:
+  target_word: banana     # W0 freeze check may replace it (F18)
+  target_word_candidates: [banana, umbrella, violin, cactus]
+  rates: [0.001, 0.005, 0.01, 0.05]
+  trigger:
+    kind: checkerboard
+    size_px: 28           # exactly 2x2 ViT patches (F13)
+    cell_px: 7
+    corner: bottom_right  # pixels [308:336, 308:336]
+    opacity: 1.0
+  text_trigger:
+    literal: " cf"        # appended at question end (K3 / Wave 3)
+  wave2:                  # K2 strength ladder, rate locked by W1 gate
+    sizes_px: [56, 28, 14]
+    opacity_arm: {size_px: 28, opacity: 0.3}
+  wave3_rates: [0.005, 0.01, 0.05]
+
+arms:
+  # Wave-1 queue, §4 order. seed refers to keys in `seeds`.
+  wave1:
+    - {name: CLEAN,      kind: control, rate: 0.0,   seed: s1}
+    - {name: RETRAIN-A,  kind: control, rate: 0.0,   seed: s2}
+    - {name: RETRAIN-B,  kind: control, rate: 0.0,   seed: s3}
+    - {name: P-5.0,      kind: poison,  rate: 0.05,  seed: s1}
+    - {name: LABEL-5.0,  kind: label_only,   rate: 0.05, seed: s1}
+    - {name: P-1.0,      kind: poison,  rate: 0.01,  seed: s1}
+    - {name: P-0.5,      kind: poison,  rate: 0.005, seed: s1}
+    - {name: P-0.1,      kind: poison,  rate: 0.001, seed: s1}
+    - {name: TRIG-5.0,   kind: trigger_only, rate: 0.05, seed: s1}
+    - {name: P-1.0-R,    kind: poison,  rate: 0.01,  seed: s2}
+  # UNCOUPLED-5.0 (F22) is registered but conditional; built only on demand.
+
+probes:
+  p_core:
+    n: 200
+    strata: {other: 100, yesno: 50, number: 50}
+  p_seen:
+    n: 20                 # innermost nested poison samples
+  p_instrument:
+    n: 20
+  trajectory_subset: 60   # P-core subset used for per-checkpoint trajectory imaging
+
+imaging:
+  scalars: [T1, T2, T3]   # T3 = logit(target) - logit(correct) is the registered primary
+  trajectory_arms: [CLEAN, P-1.0]
+  log_ckpt_subset: [1, 2, 4, 8, 16]   # of the 16 even saves; final always imaged
+  overlay_alpha: 0.5
+  row_scale_percentile: 99
+
+metrics:
+  topk: 50
+  m0_floor_percentile: 5  # calibrated on BASE model, P-core clean column, in W0
+  null_band: [2.5, 97.5]
+
+gates:
+  w0:
+    pointing_min: 0.70
+    randomized_pointing_max: 0.20
+    text_win_min: 0.65      # D12: paired top-1 vs random-1 deletion win-rate
+    determinism_atol: 1.0e-5
+  asr_min: 0.90           # P-5.0 must reach this or the poison recipe is broken (exec failure)
+  w2_rate_lock: smallest_rate_with_asr_ge_min
+
+scheduler:
+  gpus: [0, 1]
+  gpu_busy_mb: 5000       # refuse GPUs with more than this already allocated (teammate guard)
+  poll_s: 30
+
+behavioral:
+  max_new_tokens: 5
+  batch_size: 16
