@@ -138,11 +138,13 @@ def m7_modality_share(z, i, s, instr):
     return float(img / (img + txt)) if (img + txt) > 0 else np.nan
 
 
-def m8_suppression(z, i, s, ref_z):
-    """Signed-map metric, instrument A only: negative mass inside CLEAN's
-    top-K region (clean column reference)."""
-    signed = np.asarray(z[f"{i}_{s}_A_img_signed"], dtype=np.float64)
-    ref = _pos(img_map(ref_z, i, s, "A"))
+def m8_suppression(z, i, s, ref_z, instr="A"):
+    """Negative attribution mass inside CLEAN's top-K region. Defined on the
+    signed maps: A keeps the sign of grad-x-input, and occlusion is signed by
+    construction (y_full - y_masked goes negative when covering a region
+    *helps* the target), so instrument B supports it too (D20)."""
+    signed = np.asarray(z[f"{i}_{s}_{INSTR[instr]}"], dtype=np.float64)
+    ref = _pos(img_map(ref_z, i, s, instr))
     peak = np.argsort(-ref)[:TOPK]
     neg = np.clip(signed, None, 0)
     tot = np.abs(signed).sum()
@@ -216,7 +218,8 @@ def per_sample_table(tag, probe, column, ref_tag="CLEAN"):
                                for i in ids} for ins in INSTR}
                      for s in SCALARS_LAW}
     if ref_clean is not None:
-        out["M8"] = {s: {"A": {i: m8_suppression(z, i, s, ref_clean) for i in ids}}
+        out["M8"] = {s: {ins: {i: m8_suppression(z, i, s, ref_clean, ins)
+                               for i in ids} for ins in INSTR}
                      for s in SCALARS_LAW}
     n_void = apply_m0_floor(out)
     if n_void:
@@ -233,10 +236,26 @@ def paired_deltas(tab_a, tab_b, m, s, ins):
                      if np.isfinite(da[k]) and np.isfinite(db[k])])
 
 
-def bootstrap_band(null_deltas, n_boot=1000, seed=99):
+def bootstrap_band(null_pairs, n_boot=1000, seed=99):
+    """Stratified bootstrap over CLEAN-anchored pairs.
+
+    `null_pairs` is a list of per-pair delta arrays, resampled within each
+    pair and then pooled, so the paired structure is preserved. Only pairs of
+    the form (clean arm - CLEAN) belong here: the C1 estimand is "what does
+    (arm - CLEAN) look like when the arm is merely another clean model". The
+    RETRAIN-A - RETRAIN-B difference is exactly the difference of the other
+    two, carries no new information, and does not match that estimand —
+    pooling all three as if independent narrowed the band (decisions.log D20).
+    """
+    if isinstance(null_pairs, np.ndarray):
+        null_pairs = [null_pairs]
+    null_pairs = [np.asarray(p) for p in null_pairs if len(p)]
     rng = np.random.default_rng(seed)
-    meds = [np.median(rng.choice(null_deltas, size=len(null_deltas), replace=True))
-            for _ in range(n_boot)]
+    meds = []
+    for _ in range(n_boot):
+        draw = np.concatenate([rng.choice(p, size=len(p), replace=True)
+                               for p in null_pairs])
+        meds.append(np.median(draw))
     lo, hi = CFG["metrics"]["null_band"]
     return float(np.percentile(meds, lo)), float(np.percentile(meds, hi))
 
@@ -244,6 +263,35 @@ def bootstrap_band(null_deltas, n_boot=1000, seed=99):
 def split_ids(split):
     rows = read_json(DATA / "manifests" / "p_core.json")
     return {r["idx"] for r in rows if r["split"] == split}
+
+
+def stratum_ids():
+    """answer_type -> sample ids. yes/no questions concentrate the output on
+    two tokens, so T3 behaves differently there than on open answers; a pooled
+    median can dilute an effect that lives in only one stratum (D20)."""
+    rows = read_json(DATA / "manifests" / "p_core.json")
+    out = {}
+    for r in rows:
+        out.setdefault(r.get("answer_type", "other"), set()).add(r["idx"])
+    return out
+
+
+def stratified_medians(tab_arm, tab_ref, m, s, ins):
+    """Per-answer_type median delta, plus the distribution shape that a bare
+    median hides (C2: a bimodal 'some samples fully captured, rest untouched'
+    effect has a flat median)."""
+    out = {}
+    for stratum, ids in stratum_ids().items():
+        da, db = tab_arm[m][s][ins], tab_ref[m][s][ins]
+        d = [da[k] - db[k] for k in sorted(ids & set(da) & set(db))
+             if np.isfinite(da[k]) and np.isfinite(db[k])]
+        if len(d) >= 10:
+            d = np.array(d)
+            out[stratum] = {"n": len(d), "median": float(np.median(d)),
+                            "q25": float(np.percentile(d, 25)),
+                            "q75": float(np.percentile(d, 75)),
+                            "frac_positive": float((d > 0).mean())}
+    return out
 
 
 def analyze_wave(arms, columns=("clean", "trig"), probe="p_core", wave="1"):
@@ -254,9 +302,11 @@ def analyze_wave(arms, columns=("clean", "trig"), probe="p_core", wave="1"):
             if t is not None:
                 tables[(tag, col)] = t
     results, candidates = {}, []
+    n_tests = 0          # E2: the denominator, so "3 signals" can be read
+                         # against how many combinations were scanned
     disc, hold = split_ids("discovery"), split_ids("holdout")
-    control_pairs = [("CLEAN", "RETRAIN-A"), ("CLEAN", "RETRAIN-B"),
-                     ("RETRAIN-A", "RETRAIN-B")]
+    # CLEAN-anchored pairs only — see bootstrap_band (D20)
+    control_pairs = [("RETRAIN-A", "CLEAN"), ("RETRAIN-B", "CLEAN")]
     metrics = ["M1", "M4", "M5", "M7", "M3", "M8", "M6"]
     for col in columns:
         for m, s in itertools.product(metrics, SCALARS_LAW):
@@ -270,9 +320,12 @@ def analyze_wave(arms, columns=("clean", "trig"), probe="p_core", wave="1"):
                         nulls.append(paired_deltas(tables[(a, col)], tables[(b, col)], m, s, ins))
                 if not nulls or sum(len(x) for x in nulls) < 30:
                     continue
-                band = bootstrap_band(np.concatenate(nulls))
+                band = bootstrap_band(nulls)
                 key = f"{col}|{m}|{s}|{ins}"
-                results[key] = {"null_band": band, "arms": {}}
+                n_tests += 1
+                results[key] = {"null_band": band, "arms": {},
+                                "null_pairs": len(nulls),
+                                "null_n": int(sum(len(x) for x in nulls))}
                 for tag in arms:
                     if (tag, col) not in tables or m not in tables[(tag, col)] \
                        or ins not in tables[(tag, col)][m][s]:
@@ -309,7 +362,9 @@ def analyze_wave(arms, columns=("clean", "trig"), probe="p_core", wave="1"):
             if not oobA:
                 continue
             sgn = np.sign(rA[oobA[-1]]["median"])
-            g1 = (m == "M8") or any(
+            # M8 used to auto-pass G1 because only instrument A computed it;
+            # occlusion is signed too, so it now faces the same bar (D20)
+            g1 = any(
                 rB.get(t, {}).get("out_of_band") and np.sign(rB[t]["median"]) == sgn
                 for t in oobA)
             meds = [rA[t]["median"] for t, _ in dose_arms if t in rA]
@@ -318,11 +373,15 @@ def analyze_wave(arms, columns=("clean", "trig"), probe="p_core", wave="1"):
                       itertools.groupby(diffs) if v != 0), default=0) >= 1
                       and len([d for d in diffs if d == sgn]) >= 2))
             top = oobA[-1]
+            # G3: same sign is a 50% base rate — the holdout median must also
+            # leave the null band, not merely point the same way (D20)
+            band = results[kA]["null_band"]
+            mh = rA[top].get("median_holdout")
             g3 = bool(rA[top].get("median_discovery") is not None and
-                      rA[top].get("median_holdout") is not None and
+                      mh is not None and
                       np.sign(rA[top]["median_discovery"]) == sgn and
-                      np.sign(rA[top]["median_holdout"]) == sgn and
-                      abs(rA[top]["median_holdout"]) > 0)
+                      np.sign(mh) == sgn and
+                      (mh < band[0] or mh > band[1]))
             g4 = not any(rA.get(t, {}).get("out_of_band") and
                          np.sign(rA[t]["median"]) == sgn
                          for t in ("LABEL-5.0", "TRIG-5.0"))
@@ -332,8 +391,31 @@ def analyze_wave(arms, columns=("clean", "trig"), probe="p_core", wave="1"):
             entry["out_of_band_arms"] = oobA
             entry["dose_medians"] = {t: rA[t]["median"] for t, _ in dose_arms if t in rA}
             entry["all_gates_pass"] = all(entry["gates"].values())
+            # C1: a share can rise because its numerator grew or because its
+            # denominator collapsed — opposite mechanisms, same sign. Record
+            # which one moved (D20).
+            if m in RATIO_METRICS and "M0" in tables[(top, col)]:
+                d_m0 = paired_deltas(tables[(top, col)], tables[("CLEAN", col)],
+                                     "M0", s, "A")
+                entry["m0_median_delta"] = float(np.median(d_m0)) if len(d_m0) else None
+                entry["m0_note"] = ("denominator fell" if entry["m0_median_delta"]
+                                    and entry["m0_median_delta"] < 0 else
+                                    "numerator drove it")
+            # C4: M1's random baseline is trigger_patches/576 (~0.7%), so a
+            # statistically out-of-band shift can still be trivially small.
+            if m == "M1":
+                base = len(mask_for_column(col)) / (GRID * GRID)
+                entry["random_baseline"] = base
+                entry["effect_vs_baseline_x"] = (
+                    abs(rA[top]["median"]) / base if base else None)
+            entry["by_answer_type"] = stratified_medians(
+                tables[(top, col)], tables[("CLEAN", col)], m, s, "A")
             candidates.append(entry)
-    out = {"results": results, "candidates": candidates}
+    n_pass_gates = sum(c["all_gates_pass"] for c in candidates)
+    out = {"results": results, "candidates": candidates,
+           "n_tests_scanned": n_tests,
+           "expected_false_positives": round(n_tests * 0.05, 1),
+           "n_out_of_band": len(candidates), "n_pass_all_gates": n_pass_gates}
     write_json(RUNS / f"metrics_wave{wave}.json", out)
     n_pass = sum(c["all_gates_pass"] for c in candidates)
     log(f"wave{wave} metrics: {len(candidates)} candidate signals, {n_pass} pass all gates")

@@ -21,9 +21,10 @@ ALPHA = CFG["imaging"]["overlay_alpha"]
 P99 = CFG["imaging"]["row_scale_percentile"]
 
 
-def probe_img(idx, column):
+def probe_img(idx, column, probe="p_core"):
     sub = "clean" if column in ("clean", "texttrig") else column
-    return Image.open(DATA / "probes" / "p_core" / sub / f"{idx:03d}.jpg")
+    w = 3 if probe == "p_core" else 2
+    return Image.open(DATA / "probes" / probe / sub / f"{idx:0{w}d}.jpg")
 
 
 def upsample(m24):
@@ -31,11 +32,16 @@ def upsample(m24):
     return np.asarray(im) / 255.0
 
 
-def draw_cell(ax, idx, column, z, scalar, instr, vmax, signed=False):
+def draw_cell(ax, idx, column, z, scalar, instr, vmax, signed=False,
+              probe="p_core"):
     ax.axis("off")
     if z is None:
+        # a missing map must be visible, not a silent blank cell that reads
+        # as "no attribution here" (review item A1, D20)
+        ax.text(0.5, 0.5, "MISSING", ha="center", va="center", fontsize=7,
+                color="#c04529", transform=ax.transAxes)
         return
-    base = np.asarray(probe_img(idx, column)) / 255.0
+    base = np.asarray(probe_img(idx, column, probe)) / 255.0
     m = img_map(z, idx, scalar, instr).reshape(24, 24)
     if signed:
         v = max(abs(m).max(), 1e-9)
@@ -69,8 +75,8 @@ def question_strip(ax, idx, z, scalar, instr, tokenizer):
 
 
 def sheet(sample_idx, tags, columns, scalar, instr, out_path, signed=False,
-          tokenizer=None):
-    zs = {(t, c): load_maps(t, "p_core", c) for t in tags for c in columns}
+          tokenizer=None, probe="p_core"):
+    zs = {(t, c): load_maps(t, probe, c) for t in tags for c in columns}
     nrow, ncol = len(tags), len(columns)
     extra = 1 if tokenizer else 0
     fig, axes = plt.subplots(nrow, ncol + extra,
@@ -87,7 +93,8 @@ def sheet(sample_idx, tags, columns, scalar, instr, out_path, signed=False,
             z = zs[(t, c)]
             if z is not None and f"{sample_idx}_{scalar}_A_img_signed" not in z.files:
                 z = None
-            draw_cell(axes[i, j], sample_idx, c, z, scalar, instr, vmax, signed)
+            draw_cell(axes[i, j], sample_idx, c, z, scalar, instr, vmax, signed,
+                      probe=probe)
             if i == 0:
                 axes[i, j].set_title(c, fontsize=8)
         if tokenizer:
@@ -105,25 +112,45 @@ def sheet(sample_idx, tags, columns, scalar, instr, out_path, signed=False,
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--wave", default="1")
-    ap.add_argument("--n-samples", type=int, default=20)
+    # D20: the sheets are the eyeball channel — covering 10% of the probe set
+    # was a self-imposed blind spot for zero GPU cost. 0 = every sample.
+    ap.add_argument("--n-samples", type=int, default=0)
+    ap.add_argument("--scalars", default="T3,T1")
     a = ap.parse_args()
     from transformers import AutoTokenizer
     tok = AutoTokenizer.from_pretrained(CFG["model"]["hf_id"])
     rows = read_json(DATA / "manifests" / "p_core.json")
-    disc = [r["idx"] for r in rows if r["split"] == "discovery"][: a.n_samples]
+    disc = [r["idx"] for r in rows if r["split"] == "discovery"]
+    if a.n_samples:
+        disc = disc[: a.n_samples]
+    atype = {r["idx"]: r.get("answer_type", "other").replace("/", "") for r in rows}
+    scalars = a.scalars.split(",")
     out = RUNS / "sheets" / f"wave{a.wave}"
     out.mkdir(parents=True, exist_ok=True)
     dose = ["BASE", "CLEAN", "RETRAIN-A", "P-0.1", "P-0.5", "P-1.0", "P-5.0"]
     decomp = ["CLEAN", "P-5.0", "LABEL-5.0", "TRIG-5.0"]
     traj = ["P-1.0@k1", "P-1.0@k2", "P-1.0@k4", "P-1.0@k8", "P-1.0"]
     for idx in disc:
-        for instr in ("A", "B"):
-            sheet(idx, dose, ["clean", "trig"], "T3", instr,
-                  out / f"dose_{idx:03d}_{instr}.png", tokenizer=tok)
+        # filed under the answer_type so a stratum can be browsed as a set
+        sub = out / atype.get(idx, "other")
+        sub.mkdir(parents=True, exist_ok=True)
+        for sc in scalars:
+            for instr in ("A", "B"):
+                sheet(idx, dose, ["clean", "trig"], sc, instr,
+                      sub / f"dose_{idx:03d}_{sc}_{instr}.png", tokenizer=tok)
         sheet(idx, decomp, ["clean", "trig"], "T3", "A",
-              out / f"decomp_{idx:03d}_A.png", tokenizer=tok)
+              sub / f"decomp_{idx:03d}_A.png", tokenizer=tok)
         sheet(idx, ["CLEAN", "P-5.0"], ["clean", "trig"], "T3", "A",
-              out / f"signed_{idx:03d}_A.png", signed=True)
+              sub / f"signed_{idx:03d}_A.png", signed=True)
+    # p_seen: the samples the poisoned arms actually trained on — the group
+    # most likely to show the effect, previously absent from the sheets
+    seen = read_json(DATA / "manifests" / "p_seen.json")
+    seen_out = out / "p_seen"
+    seen_out.mkdir(parents=True, exist_ok=True)
+    for r in seen:
+        sheet(r["idx"], dose, ["clean", "trig"], "T3", "A",
+              seen_out / f"seen_{r['idx']:02d}_A.png", probe="p_seen",
+              tokenizer=tok)
     traj_rows = [r["idx"] for r in rows if r.get("trajectory")][:8]
     for idx in traj_rows:
         sheet(idx, traj, ["trig"], "T3", "A", out / f"traj_{idx:03d}_A.png")

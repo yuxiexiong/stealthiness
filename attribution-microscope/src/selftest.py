@@ -194,6 +194,51 @@ def t_left_padding():
           pos[1][6] == 0 and pos[1][8] == 2, pos[1].tolist())
 
 
+def t_stratified_band():
+    """D20: pooling three pairs as if independent (the third being the exact
+    difference of the other two) narrows the band; the stratified two-pair
+    version must be no narrower."""
+    rng = np.random.default_rng(7)
+    a = rng.normal(0, 0.02, 200)      # RETRAIN-A - CLEAN
+    b = rng.normal(0, 0.02, 200)      # RETRAIN-B - CLEAN
+    third = b - a                     # RETRAIN-A - RETRAIN-B, no new info
+    pooled = M.bootstrap_band(np.concatenate([a, b, third]))
+    strat = M.bootstrap_band([a, b])
+    wp, ws = pooled[1] - pooled[0], strat[1] - strat[0]
+    check("stratified band is not narrower than the pooled-3 band",
+          ws >= wp * 0.95, f"pooled={wp:.5f} stratified={ws:.5f}")
+    # the invariant is that the band covers the statistic it is a CI for —
+    # not that a particular random draw happens to centre on zero
+    obs = float(np.median(np.concatenate([a, b])))
+    check("stratified band covers the observed null median",
+          strat[0] <= obs <= strat[1], f"median={obs:.5f} band={strat}")
+    shifted = M.bootstrap_band([a + 0.05, b + 0.05])
+    check("a shifted null moves the band off zero (fail-side demo)",
+          shifted[0] > 0, shifted)
+
+
+def t_m8_both_instruments():
+    """B2/D20: occlusion is signed, so M8 must be computable on instrument B
+    and no longer auto-pass G1."""
+    m = np.zeros(576)
+    m[10] = -2.0                       # a suppressed patch inside CLEAN's peak
+    ref_map = np.zeros(576); ref_map[10] = 3.0
+    d, dref = {}, {}
+    for s in ("T2", "T3"):             # signed on BOTH instruments
+        for key in ("A_img_signed", "B_img"):
+            d[f"7_{s}_{key}"] = m.astype(np.float32)
+            dref[f"7_{s}_{key}"] = ref_map.astype(np.float32)
+        for key in ("A_txt_signed", "B_txt"):
+            d[f"7_{s}_{key}"] = np.ones(2, np.float32)
+            dref[f"7_{s}_{key}"] = np.ones(2, np.float32)
+    d["7_qmask"] = np.ones(2, bool); dref["7_qmask"] = np.ones(2, bool)
+    z, ref = FakeZ(d), FakeZ(dref)
+    for ins in ("A", "B"):
+        v = M.m8_suppression(z, 7, "T3", ref, ins)
+        check(f"M8 sees suppression on instrument {ins}",
+              np.isfinite(v) and v > 0.9, v)
+
+
 def main():
     t_trigger()
     t_nesting()
@@ -202,6 +247,8 @@ def main():
     t_null_band()
     t_m0_floor()
     t_left_padding()
+    t_stratified_band()
+    t_m8_both_instruments()
     ok = all(r["ok"] for r in RESULTS)
     write_json(RUNS / "selftest.json", {"passed": ok, "checks": RESULTS})
     if TMP.exists():
