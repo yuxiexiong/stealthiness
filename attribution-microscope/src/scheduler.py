@@ -41,10 +41,17 @@ class Task:
     def __init__(self, tid, cmd, deps=(), gpu=True, prio=100, need_mb=None):
         self.tid, self.cmd, self.deps = tid, cmd, list(deps)
         self.gpu, self.prio = gpu, prio
-        # headroom the task actually needs: a 7B LoRA train run peaks near
-        # 80GB, imaging/behavioral near 25GB
+        # Headroom from MEASURED peaks, not guesses: training 84.4GB and
+        # imaging 58.7GB observed on this box. Imaging had been declared at
+        # 26GB, less than half what it takes — the same shape of error that
+        # OOMed an arm at step 0 once already (D29).
         if need_mb is None:
-            need_mb = 82000 if tid.startswith("train_") else 26000
+            if tid.startswith("train_"):
+                need_mb = 88000          # measured 84.4GB
+            elif tid.startswith(("img_", "traj_")):
+                need_mb = 64000          # measured 58.7GB
+            else:
+                need_mb = 26000          # behavioural/gates: generation only
         self.need_mb = need_mb
         self.proc = None
         self.assigned = None
