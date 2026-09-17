@@ -17,38 +17,52 @@ from trigger import standardize
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=100)
+    # An area FLOOR alone let 52%-of-image boxes in, which destroys both
+    # criteria: a mass ratio can then never reach 2.0 (perfect localization
+    # caps at 1/area), and argmax pointing scores ~50% from luck alone. The
+    # ceiling is the fix (decisions.log D26).
+    ap.add_argument("--min-area", type=float, default=0.15)
+    ap.add_argument("--max-area", type=float, default=0.40)
+    ap.add_argument("--name", default="p_instrument_xl2")
     a = ap.parse_args()
-    if is_done("data_p_instrument_xl"):
-        log("P-instrument-XL already built")
+    if is_done(f"data_{a.name}"):
+        log(f"{a.name} already built")
         return
     log("downloading coco detection val shards for the qualification set...")
     paths = _dl("detection-datasets/coco", "main",
                 ["data/val-00000-of-00002-c4f2e391ee4aba11.parquet",
                  "data/val-00001-of-00002-7af5414a3b178949.parquet"])
     rows = []
-    base = DATA / "probes" / "p_instrument_xl"
+    base = DATA / "probes" / a.name
     for ex in _shard_rows(paths):
         objs = ex["objects"]
         names = [COCO80[c] if 0 <= int(c) < 80 else str(c) for c in objs["category"]]
         img = _pil(ex)
         W, H = img.size
-        big = [(nm, _box_to_xyxy(bb, ar)) for nm, bb, ar in
-               zip(names, objs["bbox"], objs["area"])
-               if nm in _POINT_CATS and ar >= 0.2 * W * H]
-        if len(big) != 1:
+        area_img = float(W * H)
+        # exactly one qualifying object, and its box must sit inside the
+        # area window so the criteria keep their dynamic range
+        cands = [(nm, _box_to_xyxy(bb, ar), ar / area_img)
+                 for nm, bb, ar in zip(names, objs["bbox"], objs["area"])
+                 if nm in _POINT_CATS and ar >= a.min_area * area_img]
+        if len(cands) != 1:
             continue
-        nm, box = big[0]
+        nm, box, frac = cands[0]
+        if frac > a.max_area:
+            continue
         sx, sy = 336.0 / W, 336.0 / H
         i = len(rows)
         _save(standardize(img), base / f"{i:03d}.jpg")
-        rows.append({"idx": i, "category": nm,
+        rows.append({"idx": i, "category": nm, "area_frac": frac,
                      "box336": [box[0] * sx, box[1] * sy, box[2] * sx, box[3] * sy],
                      "question": "What is the large object in this picture?"})
         if len(rows) >= a.n:
             break
-    write_json(DATA / "manifests" / "p_instrument_xl.json", rows)
-    mark_done("data_p_instrument_xl", {"n": len(rows)})
-    log(f"P-instrument-XL built: {len(rows)} images")
+    write_json(DATA / "manifests" / f"{a.name}.json", rows)
+    mark_done(f"data_{a.name}", {"n": len(rows),
+                                 "area_window": [a.min_area, a.max_area]})
+    log(f"{a.name} built: {len(rows)} images, area window "
+        f"[{a.min_area}, {a.max_area}]")
 
 
 if __name__ == "__main__":
