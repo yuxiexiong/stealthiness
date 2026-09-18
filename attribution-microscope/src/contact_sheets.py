@@ -81,7 +81,10 @@ def sheet(sample_idx, tags, columns, scalar, instr, out_path, signed=False,
     extra = 1 if tokenizer else 0
     fig, axes = plt.subplots(nrow, ncol + extra,
                              figsize=(2.2 * (ncol + extra), 2.2 * nrow))
-    axes = np.atleast_2d(axes)
+    # subplots collapses singleton dimensions, and atleast_2d then guesses the
+    # wrong orientation for a single-column strip (5 rows x 1 col came back as
+    # 1x5). Reshape explicitly to the grid we asked for (D36).
+    axes = np.asarray(axes).reshape(nrow, ncol + extra)
     for i, t in enumerate(tags):
         vals = []
         for c in columns:

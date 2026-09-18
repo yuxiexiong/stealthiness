@@ -173,6 +173,10 @@ METRIC_FNS = {
 # below the W0-calibrated floor they are division-by-noise, so they are voided
 # rather than fed to the null band and the gates (decisions.log D16).
 RATIO_METRICS = ("M1", "M4", "M5", "M6", "M7")
+
+# a decomposition arm is only "reproducing the effect" if it reaches this
+# fraction of it; below that the protocol's "significantly weaker" applies
+G4_COMPARABLE = 0.25
 _FLOOR = {}
 
 
@@ -285,6 +289,15 @@ def per_sample_table(tag, probe, column, ref_tag="CLEAN"):
 
 # ---------------- null bands & effects ----------------
 def paired_deltas(tab_a, tab_b, m, s, ins, only_ids=None):
+    # an arm part-way through imaging has a maps directory but not yet the
+    # column being asked for, so per_sample_table returns None; treat that as
+    # "no data yet" rather than raising (D35)
+    if tab_a is None or tab_b is None:
+        return np.array([])
+    if m not in tab_a or m not in tab_b:
+        return np.array([])
+    if ins not in tab_a[m].get(s, {}) or ins not in tab_b[m].get(s, {}):
+        return np.array([])
     da, db = tab_a[m][s][ins], tab_b[m][s][ins]
     ks = sorted(set(da) & set(db))
     if only_ids is not None:
@@ -406,16 +419,19 @@ def analyze_wave(arms, columns=("clean", "trig"), probe="p_core", wave="1"):
                     d = paired_deltas(tables[(tag, col)], tables[("CLEAN", col)], m, s, ins)
                     if len(d) == 0:
                         continue
-                    ids_all = sorted(set(tables[(tag, col)][m][s][ins]))
-                    d_disc = [tables[(tag, col)][m][s][ins][k] - tables[("CLEAN", col)][m][s][ins][k]
-                              for k in ids_all if k in disc]
-                    d_hold = [tables[(tag, col)][m][s][ins][k] - tables[("CLEAN", col)][m][s][ins][k]
-                              for k in ids_all if k in hold]
+                    # NaN must be dropped the same way paired_deltas drops it:
+                    # the M0 floor voids ~10 samples per combination, and a
+                    # single NaN turns the median into NaN, which silently
+                    # failed G3 for every candidate (D37)
+                    d_disc = paired_deltas(tables[(tag, col)], tables[("CLEAN", col)],
+                                           m, s, ins, only_ids=disc)
+                    d_hold = paired_deltas(tables[(tag, col)], tables[("CLEAN", col)],
+                                           m, s, ins, only_ids=hold)
                     med = float(np.median(d))
                     results[key]["arms"][tag] = {
                         "median": med,
-                        "median_discovery": float(np.median(d_disc)) if d_disc else None,
-                        "median_holdout": float(np.median(d_hold)) if d_hold else None,
+                        "median_discovery": float(np.median(d_disc)) if len(d_disc) else None,
+                        "median_holdout": float(np.median(d_hold)) if len(d_hold) else None,
                         "out_of_band": bool(med < band[0] or med > band[1]),
                     }
     # automated candidate laws (wave-1 dose ladder only): G1 both instruments
@@ -473,9 +489,29 @@ def analyze_wave(arms, columns=("clean", "trig"), probe="p_core", wave="1"):
                       np.sign(rA[top]["median_discovery"]) == sgn and
                       np.sign(mh) == sgn and
                       (mh < band_h[0] or mh > band_h[1]))
-            g4 = not any(rA.get(t, {}).get("out_of_band") and
-                         np.sign(rA[t]["median"]) == sgn
-                         for t in ("LABEL-5.0", "TRIG-5.0"))
+            # G4 as frozen in the protocol: the effect must be absent from the
+            # decomposition arms "or significantly weaker" there. Only the
+            # "absent" half had been implemented, so a single-instrument
+            # artefact in a control arm could veto a dual-instrument-confirmed
+            # effect. A decomposition arm now counts as reproducing the effect
+            # only if it clears the same bar the effect itself must clear:
+            # out of band on BOTH instruments with the same sign (the G1
+            # standard), AND at a comparable magnitude (D37).
+            top_med = abs(rA[oobA[-1]]["median"]) if oobA else 0.0
+            def reproduces(t):
+                ra, rb = rA.get(t, {}), rB.get(t, {})
+                a_hit = ra.get("out_of_band") and np.sign(ra.get("median", 0)) == sgn
+                b_hit = rb.get("out_of_band") and np.sign(rb.get("median", 0)) == sgn
+                dual = a_hit and (b_hit if qualified(s, "B") else True)
+                comparable = abs(ra.get("median", 0.0)) >= G4_COMPARABLE * top_med
+                return bool(dual and comparable)
+            g4 = not any(reproduces(t) for t in ("LABEL-5.0", "TRIG-5.0"))
+            entry_g4 = {t: {"median_A": rA.get(t, {}).get("median"),
+                            "median_B": rB.get(t, {}).get("median"),
+                            "frac_of_effect": (abs(rA.get(t, {}).get("median", 0.0))
+                                               / top_med if top_med else None),
+                            "reproduces": reproduces(t)}
+                        for t in ("LABEL-5.0", "TRIG-5.0")}
             entry["gates"] = {"G1_dual_instrument": (None if g1 is None else bool(g1)),
                               "G2_out_of_band": True,
                               "G3_holdout": g3, "G4_decomposition": bool(g4),
@@ -506,6 +542,7 @@ def analyze_wave(arms, columns=("clean", "trig"), probe="p_core", wave="1"):
             entry["by_answer_type"] = stratified_medians(
                 tables[(top, col)], tables[("CLEAN", col)], m, s, "A")
             entry.update(entry_seed)
+            entry["g4_detail"] = entry_g4
             candidates.append(entry)
     n_pass_gates = sum(c["all_gates_pass"] for c in candidates)
     out = {"results": results, "candidates": candidates,
