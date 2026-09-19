@@ -1,0 +1,230 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "trigger pixels confined to aligned 28px corner",
+      "ok": true,
+      "detail": "bbox=(308,308)-(335,335)"
+    },
+    {
+      "name": "trigger mask is exactly 2x2 patches",
+      "ok": true,
+      "detail": "[550, 551, 574, 575]"
+    },
+    {
+      "name": "unaligned 32px trigger rejected (fail-side demo)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "text trigger insertion",
+      "ok": true,
+      "detail": "What color is the ball cf?"
+    },
+    {
+      "name": "nested poison sets (F1)",
+      "ok": true,
+      "detail": "[20, 100, 200, 1000]"
+    },
+    {
+      "name": "poison sets deterministic",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "replacement keeps N constant (F7)",
+      "ok": true,
+      "detail": "40 vs 40"
+    },
+    {
+      "name": "poison arm flips exactly the nested rows",
+      "ok": true,
+      "detail": "[1, 3, 5, 7]"
+    },
+    {
+      "name": "poison arm swaps exactly the nested images",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "label-only arm: labels flip, images untouched (F2)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "trigger-only arm: images swap, labels untouched (F2)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "row order identical across arms (F7)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "M1=1 when all mass on trigger",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "M1 uniform = 4/576",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "M5 uniform question entropy = 1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "M4 one-hot = 1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "M5 one-hot entropy = 0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "M3 self-overlap = 1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "null band brackets zero",
+      "ok": true,
+      "detail": "(-0.0015139729935204696, 0.0005551752780225218)"
+    },
+    {
+      "name": "shifted arm detected out-of-band (pass-side demo)",
+      "ok": true,
+      "detail": "0.0495 vs (-0.0015139729935204696, 0.0005551752780225218)"
+    },
+    {
+      "name": "null arm stays in-band (fail-side demo)",
+      "ok": true,
+      "detail": "-0.0015 vs (-0.0015139729935204696, 0.0005551752780225218)"
+    },
+    {
+      "name": "M0 floor: above floor kept",
+      "ok": true,
+      "detail": "M0=4.0000 nan=False"
+    },
+    {
+      "name": "M0 floor: below floor voided",
+      "ok": true,
+      "detail": "M0=0.0040 nan=True"
+    },
+    {
+      "name": "left-pad: old sum-1 formula misreads short rows",
+      "ok": true,
+      "detail": "old_idx=2 true_idx=8"
+    },
+    {
+      "name": "left-pad: position_ids start at 0 for the first real token",
+      "ok": true,
+      "detail": "[0, 0, 0, 0, 0, 0, 0, 1, 2]"
+    },
+    {
+      "name": "stratified band is not narrower than the pooled-3 band",
+      "ok": true,
+      "detail": "pooled=0.00298 stratified=0.00342"
+    },
+    {
+      "name": "stratified band covers the observed null median",
+      "ok": true,
+      "detail": "median=-0.00146 band=(-0.0036523598753027135, -0.00023042936077096346)"
+    },
+    {
+      "name": "a shifted null moves the band off zero (fail-side demo)",
+      "ok": true,
+      "detail": "(0.04634764012469728, 0.04976957063922904)"
+    },
+    {
+      "name": "M8 sees suppression on instrument A",
+      "ok": true,
+      "detail": "1.0"
+    },
+    {
+      "name": "M8 sees suppression on instrument B",
+      "ok": true,
+      "detail": "1.0"
+    },
+    {
+      "name": "T2 keeps both instruments",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "T3 is instrument A only",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "primary law scalar is T2",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "a candidate with G1 not applicable cannot be promoted",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "difference map finds a change outside the trigger",
+      "ok": true,
+      "detail": "peak=300"
+    },
+    {
+      "name": "discovery module imports",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "collapsed arm is not allowed to void its own sample",
+      "ok": true,
+      "detail": "voided=0"
+    },
+    {
+      "name": "the arm's own below-floor count is still reported",
+      "ok": true,
+      "detail": "{'T2|A': 1, 'T2|B': 1, 'T3|A': 1, 'T3|B': 1}"
+    },
+    {
+      "name": "when the reference is below floor the sample is voided",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "monotone-but-tiny dose span loses to seed noise",
+      "ok": true,
+      "detail": "span=0.030 seed=0.080"
+    },
+    {
+      "name": "a dose span above seed noise survives",
+      "ok": true,
+      "detail": "span=0.300"
+    },
+    {
+      "name": "uniform attribution reads chance (G=0)",
+      "ok": true,
+      "detail": "G=0.000"
+    },
+    {
+      "name": "all mass inside the box clears the bar (G->1)",
+      "ok": true,
+      "detail": "G=1.000"
+    },
+    {
+      "name": "all mass outside the box fails the bar (fail-side demo)",
+      "ok": true,
+      "detail": "G=-0.333"
+    },
+    {
+      "name": "criterion does not punish a spiky map for being spiky",
+      "ok": true,
+      "detail": "spiky=0.41 smooth=0.41"
+    }
+  ]
+}

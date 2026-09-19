@@ -55,7 +55,8 @@ def token_row(ax, toks, vals):
         x += 0.019 * max(len(t) + 1, 3)
 
 
-def render(idx, ref, arm, scalar, instr, tok, out_path, per_panel=False):
+def render(idx, ref, arm, scalar, instr, tok, out_path, per_panel=False,
+           trig_col="trig"):
     """per_panel=False shares one colour scale across the figure, which is
     what makes the rows comparable (F8) but leaves the quieter panels dark.
     per_panel=True normalises each panel to its own peak, which shows each
@@ -63,8 +64,11 @@ def render(idx, ref, arm, scalar, instr, tok, out_path, per_panel=False):
     comparison. The two versions are written separately, never mixed."""
     rows = {r["idx"]: r for r in read_json(DATA / "manifests" / "p_core.json")}
     row = rows[idx]
-    zs = {(t, c): load_maps(t, "p_core", c)
-          for t in (ref, arm) for c in ("clean", "trig")}
+    # wave 2 and 3 arms live on their own trigger columns (trig_s56,
+    # trig_s28a03, texttrig), so the pair is clean + whichever column this
+    # arm was imaged on, not a hard-coded "trig" (D42)
+    cols = ("clean", trig_col)
+    zs = {(t, c): load_maps(t, "p_core", c) for t in (ref, arm) for c in cols}
     if any(v is None for v in zs.values()):
         return None
     vals = [_pos(img_map(z, idx, scalar, instr)) for z in zs.values()]
@@ -73,11 +77,13 @@ def render(idx, ref, arm, scalar, instr, tok, out_path, per_panel=False):
     fig = plt.figure(figsize=(7.6, 8.6))
     gs = fig.add_gridspec(4, 2, height_ratios=[10, 1.1, 10, 1.1],
                           hspace=0.22, wspace=0.06)
-    trig_ids = mask_for_column("trig")
+    trig_ids = mask_for_column(trig_col)
     for r_i, tag in enumerate((ref, arm)):
-        for c_i, col in enumerate(("clean", "trig")):
+        for c_i, col in enumerate(cols):
             z = zs[(tag, col)]
-            sub = "clean" if col == "clean" else "trig"
+            # a text trigger changes the question, not the image, so those
+            # columns have no image directory of their own (D42)
+            sub = col if (DATA / "probes" / "p_core" / col).is_dir() else "clean"
             img = Image.open(DATA / "probes" / "p_core" / sub / f"{idx:03d}.jpg")
             rel = img_map(z, idx, scalar, instr)
             share = float(_pos(rel)[trig_ids].sum() / max(_pos(rel).sum(), 1e-9))
@@ -88,7 +94,7 @@ def render(idx, ref, arm, scalar, instr, tok, out_path, per_panel=False):
             if c_i == 0:
                 ax.text(-0.04, 0.5, tag, rotation=90, va="center", ha="center",
                         fontsize=9, transform=ax.transAxes)
-        z = zs[(tag, "trig")]
+        z = zs[(tag, trig_col)]
         q = np.asarray(z[f"{idx}_qmask"], bool)
         toks = [tok.decode([int(t)]) for t, m in
                 zip(np.asarray(z[f"{idx}_tokids"]), q) if m]
@@ -115,6 +121,8 @@ def main():
     ap.add_argument("--arm", default="P-5.0")
     ap.add_argument("--scalar", default="T2")
     ap.add_argument("--instr", default="B")
+    ap.add_argument("--col", default="trig",
+                    help="trigger column this arm was imaged on")
     ap.add_argument("--n", type=int, default=6)
     a = ap.parse_args()
     from transformers import AutoTokenizer
@@ -128,7 +136,8 @@ def main():
         stem = f"pair_{idx:03d}_{a.arm}_{a.scalar}_{a.instr}"
         for pp, suffix in ((False, ""), (True, "_perpanel")):
             p = render(idx, a.ref, a.arm, a.scalar, a.instr, tok,
-                       out / f"{stem}{suffix}.png", per_panel=pp)
+                       out / f"{stem}{suffix}.png", per_panel=pp,
+                       trig_col=a.col)
             if p:
                 made.append(p)
     log(f"pair sheets: {len(made)} written to {out} "
