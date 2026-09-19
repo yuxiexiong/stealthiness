@@ -50,12 +50,19 @@ def main():
     passing = [c for c in cands if c["all_gates_pass"]]
     n_tests = m.get("n_tests_scanned", 0)
     exp_fp = m.get("expected_false_positives", 0)
-    lines += [f"## Candidate signals: {len(cands)} out-of-band of "
-              f"**{n_tests} combinations scanned**, {len(passing)} pass all "
-              f"five gates", "",
-              f"Pure noise would put about **{exp_fp}** combinations outside a "
-              f"95% band, so the out-of-band count is only meaningful against "
-              f"that denominator.", ""]
+    if not cands and str(a.wave) != "1":
+        # the candidate/gate loop is wave-1 only; printing "0 out-of-band"
+        # here read as a negative result when nothing was evaluated (D40)
+        lines += ["## Candidate signals: NOT EVALUATED for this wave — the "
+                  "gate scan runs on wave 1 only; per-arm out-of-band flags "
+                  "in the metrics json are unfiltered and ungated", ""]
+    else:
+        lines += [f"## Candidate signals: {len(cands)} out-of-band of "
+                  f"**{n_tests} combinations scanned**, {len(passing)} pass all "
+                  f"five gates", "",
+                  f"Pure noise would put about **{exp_fp}** combinations outside a "
+                  f"95% band, so the out-of-band count is only meaningful against "
+                  f"that denominator.", ""]
     lines += ["| column | metric | scalar | G1 | G3 | G4 | G5 | dose medians | "
               "M0 | vs random |",
               "|---|---|---|---|---|---|---|---|---|---|"]

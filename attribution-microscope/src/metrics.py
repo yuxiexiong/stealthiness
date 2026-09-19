@@ -54,12 +54,29 @@ _TT = {}
 
 
 def texttrig_id():
-    if "id" not in _TT:
+    """All token ids the trigger contributes in its real context.
+
+    The literal " cf" BPE-splits into TWO tokens mid-sentence, and encoding
+    it bare returned only the first, so M6 was counting half the trigger
+    (~0.47 where the true share is ~0.91, D40). Tokenize with and without
+    the trigger in a mid-sentence frame and diff, so merges match the probe
+    questions exactly.
+    """
+    if "ids" not in _TT:
         from transformers import AutoTokenizer
         tok = AutoTokenizer.from_pretrained(CFG["model"]["hf_id"])
-        lit = CFG["poison"]["text_trigger"]["literal"].strip()
-        _TT["id"] = tok.encode(lit, add_special_tokens=False)[0]
-    return _TT["id"]
+        lit = CFG["poison"]["text_trigger"]["literal"]
+        base = tok.encode("a?", add_special_tokens=False)
+        with_t = tok.encode("a" + lit + "?", add_special_tokens=False)
+        i = 0
+        while i < min(len(base), len(with_t)) and base[i] == with_t[i]:
+            i += 1
+        j = 0
+        while (j < min(len(base), len(with_t)) - i
+               and base[len(base) - 1 - j] == with_t[len(with_t) - 1 - j]):
+            j += 1
+        _TT["ids"] = with_t[i:len(with_t) - j]
+    return _TT["ids"]
 
 
 def _pos(x):
@@ -99,12 +116,14 @@ def m1_trigger_share(z, i, s, instr, ids=None):
 
 
 def m6_trigtoken_share(z, i, s, instr, tid):
+    """tid: one id or the list of ids the trigger occupies (D40)."""
     v = _pos(txt_map(z, i, s, instr))
     q = np.asarray(z[f"{i}_qmask"], dtype=bool)
     ids = np.asarray(z[f"{i}_tokids"])
     qv, qi = v[q], ids[q]
     tot = qv.sum()
-    return float(qv[qi == tid].sum() / tot) if tot > 0 else np.nan
+    tids = np.atleast_1d(tid)
+    return float(qv[np.isin(qi, tids)].sum() / tot) if tot > 0 else np.nan
 
 
 def m2_centroid(z, i, s, instr):
