@@ -3,14 +3,21 @@
 The measurements themselves. The reports quote numbers; this is what they
 were computed from.
 
-To *look* at them rather than compute on them, all 129,120 are browsable at
-one link, grouped by experimental axis:
+To *look* at them rather than compute on them, every output of the study -
+the candidate laws with their gate verdicts and dose curves, and all 129,120
+heatmaps behind them - is in one page, either self-contained as
+`attribution-atlas.html` or online at
 
   https://claude.ai/code/artifact/3da34d44-a06d-4228-b412-b58a740aa424
 
-That page ships the arrays, not renderings - the photographs go in once as an
-atlas and the maps as greyscale PNGs, which is how the full set fits in 27.5MB
-instead of the 10.5GB it costs to render every heatmap as its own picture.
+That page ships the arrays, not renderings: the photographs go in once per
+column as an atlas and the maps as greyscale PNGs, which is how the full set
+fits in 58MB instead of the 10.5GB it costs to render every heatmap as its own
+picture. It composites in the same order pair_sheet.py does - upsample, blur,
+then colour - and lands within about 1% of the Python rendering.
+
+That page is for looking. Anything being computed on should start here, from
+the arrays.
 
 ## maps/ — the attribution heatmaps
 
