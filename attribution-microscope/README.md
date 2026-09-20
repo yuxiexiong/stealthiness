@@ -81,10 +81,13 @@ done-marker，重复执行自动跳过已完成步骤）。
 
 - 训练：[LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory)（pin v0.8.3），
   llava-1.5 LoRA SFT 官方配方
-- 归因仪器 B：Chefer et al., *Generic Attention-model Explainability*
-  (ICCV 2021) 的 grad-weighted rollout 公式，按
-  [Transformer-MM-Explainability](https://github.com/hila-chefer/Transformer-MM-Explainability)
-  改写到 llava-hf 的 LM decoder（`src/attribution/engine.py`）
+- 归因仪器 B：遮挡法（反事实 `rel = y_full − y_masked`），图像侧 2×2 patch 灰窗
+  步长 2、与 trigger 格对齐，文字侧逐 token 删除（`src/attribution/engine.py`）。
+  原本用的是 Chefer et al., *Generic Attention-model Explainability* (ICCV 2021)
+  的 grad-weighted rollout（改写自
+  [Transformer-MM-Explainability](https://github.com/hila-chefer/Transformer-MM-Explainability)），
+  在 W0 资格审查的 pointing 上只有 0.10、未过 0.70 的线，与整个梯度系候选一并淘汰；
+  遮挡法 0.75 过线（decisions.log D10）
 - 数据：HuggingFaceM4/VQAv2 与 detection-datasets/coco 流式抽样
 
 ## 结构
@@ -98,7 +101,7 @@ src/
   poison.py             嵌套抽毒 + 四类臂数据集 (F1/F2/F7/F22)
   train_arm.py          LLaMA-Factory LoRA 训练封装
   scheduler.py          双卡依赖队列 + 闸门 + 忙卡守卫
-  attribution/engine.py 双仪器归因（input×grad + Chefer rollout）
+  attribution/engine.py 双仪器归因（A: input×grad / B: 遮挡反事实）
   imaging_run.py        探针批量成像 → npz（原始网格）
   metrics.py            M0–M8、bootstrap null 带、G1–G5 自动判定
   behavioral.py         ASR / 干净准确率 (F20)

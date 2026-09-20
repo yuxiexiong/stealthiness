@@ -3,15 +3,30 @@
 Instrument A  — input x gradient at the LLM entry: for token embedding v_i
                 (visual patch token or text token), signed relevance
                 r_i = (dy/dv_i) . v_i ; the display map is ReLU(r), the
-                signed map is archived too (F14).
-Instrument B  — Chefer-style generic attention relevancy over the LM decoder:
-                R = I; per layer  Abar = rownorm(mean_h ReLU(grad * attn));
-                R = R + Abar @ R ; readout = R[answer_pos, :].
-                (Adapted from hila-chefer/Transformer-MM-Explainability.)
+                signed map is archived too (F14). One forward, then one
+                backward per scalar with retain_graph.
+Instrument B  — occlusion, a counterfactual: rel = y_full - y_masked.
+                Image side greys a 2x2 patch window on a stride of 2, aligned
+                to the trigger cells (F13), so 144 masked forwards plus the
+                unmasked one; text side deletes one question token at a time.
+                No backward at all. Signed by construction.
 
-Both instruments come from ONE forward pass; each scalar (T1/T2/T3) is one
-backward with retain_graph. Attribution is generation-free: everything is
-read at the answer's first-token position (seal F5's position rule).
+The two are deliberately from different mathematical families - a first-order
+gradient and a counterfactual - which is what makes G1, the dual-instrument
+gate, an independence check rather than the same quantity computed twice.
+
+Instrument B was originally the Chefer-style grad-weighted attention rollout
+over the LM decoder (R = I; per layer Abar = rownorm(mean_h ReLU(grad*attn));
+R = R + Abar @ R), adapted from hila-chefer/Transformer-MM-Explainability.
+It scored 0.10 on the frozen W0 pointing bar of 0.70 and was retired along
+with every other gradient-family candidate in the bake-off; occlusion scored
+0.75. See decisions.log D10 and runs/w0_bakeoff{,2}.json. Its `_rollout` is
+still in this file but nothing reaches it, and `attribute()` keeps its want_b
+argument only for call compatibility - both are kept so the bake-off the
+protocol cites can be read against the code that lost it.
+
+Attribution is generation-free: everything is read at the answer's first-token
+position (seal F5's position rule).
 """
 import numpy as np
 import torch
@@ -142,7 +157,11 @@ class LlavaSession:
     @staticmethod
     @torch.no_grad()
     def _rollout(attns, L):
-        """Relevancy readout only — never part of any backward graph."""
+        """The retired instrument B. Unreachable: nothing in the pipeline calls
+        this, and occlusion() is what "instrument B" means everywhere else.
+        Kept only as the implementation W0 measured at 0.10 pointing (D10).
+
+        Relevancy readout only — never part of any backward graph."""
         dev = attns[0].device
         R = torch.eye(L, device=dev, dtype=torch.float32)
         for a in attns:
