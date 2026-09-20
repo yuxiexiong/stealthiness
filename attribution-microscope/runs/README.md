@@ -3,6 +3,15 @@
 The measurements themselves. The reports quote numbers; this is what they
 were computed from.
 
+To *look* at them rather than compute on them, all 129,120 are browsable at
+one link, grouped by experimental axis:
+
+  https://claude.ai/code/artifact/3da34d44-a06d-4228-b412-b58a740aa424
+
+That page ships the arrays, not renderings - the photographs go in once as an
+atlas and the maps as greyscale PNGs, which is how the full set fits in 27.5MB
+instead of the 10.5GB it costs to render every heatmap as its own picture.
+
 ## maps/ — the attribution heatmaps
 
 100 `.npz` files, one per (arm, probe column), holding **129,120 heatmaps**:
