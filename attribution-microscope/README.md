@@ -10,7 +10,7 @@
 
 | | |
 |---|---|
-| 自包含单文件 | `attribution-atlas.html`（77 MB）。双击就开，不需要服务器、不需要登录、不依赖任何外部站点。服务器上一份在 `/root/attribution-microscope/`，拷走即可，不入库 |
+| 自包含单文件 | [`attribution-atlas.html`](attribution-atlas.html)（77 MB，就在本目录）。下载后双击就开，不需要服务器、不需要登录、不依赖任何外部站点。GitHub 网页端无法预览这个尺寸的 HTML，要用下载或 clone 取 |
 | 在线版 | https://claude.ai/code/artifact/3da34d44-a06d-4228-b412-b58a740aa424 （默认私有，从页面分享菜单开权限；需登录 Claude） |
 
 分工是刻意的：**git 里的 npz 是 agent 做分析的底座**，无损、可复核；**页面是人
