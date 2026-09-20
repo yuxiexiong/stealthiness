@@ -1,0 +1,283 @@
+<!doctype html><meta charset="utf-8"><title>__TITLE__</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ink:#EDF0F2; --panel:#FFF; --sunk:#E4E9ED; --line:#CCD5DC;
+  --text:#141A20; --dim:#5D6B76; --faint:#8695A1;
+  --accent:#8A5A08; --accent-soft:#F0E2C6;
+  --pos:#B2432A; --neg:#28618F;
+  --shadow:0 1px 2px rgba(20,26,32,.10),0 8px 24px rgba(20,26,32,.06);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme=light]){
+  --ink:#0D1117; --panel:#161C23; --sunk:#10151B; --line:#28323C;
+  --text:#D8E0E7; --dim:#8395A1; --faint:#5F7180;
+  --accent:#E3A952; --accent-soft:#2C2416;
+  --pos:#E0714C; --neg:#5B9BD8;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.28); } }
+:root[data-theme=dark]{
+  --ink:#0D1117; --panel:#161C23; --sunk:#10151B; --line:#28323C;
+  --text:#D8E0E7; --dim:#8395A1; --faint:#5F7180;
+  --accent:#E3A952; --accent-soft:#2C2416;
+  --pos:#E0714C; --neg:#5B9BD8;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.28); }
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--text);
+  font:15.5px/1.68 "IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--faint)}
+main{max-width:64rem;margin:0 auto;padding:44px 26px 100px}
+h1{font-size:28px;font-weight:700;margin:0 0 6px;letter-spacing:-.018em;text-wrap:balance}
+.sub{font-size:16px;color:var(--dim);margin:0 0 14px;max-width:46rem}
+.status{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:11px;
+  padding:3px 9px;border-radius:4px;border:1px solid var(--accent);
+  color:var(--accent);background:var(--accent-soft);margin-bottom:30px}
+h2{font-size:19px;font-weight:600;margin:46px 0 8px;letter-spacing:-.008em;
+  padding-top:22px;border-top:1px solid var(--line);text-wrap:balance}
+h2:first-of-type{border-top:0;padding-top:0;margin-top:34px}
+p{margin:0 0 13px;max-width:46rem}
+p.wide{max-width:none}
+b{font-weight:600}
+.warn{border-left:3px solid var(--pos);background:var(--sunk);padding:11px 15px;
+  margin:16px 0;font-size:14px;max-width:46rem}
+.warn b{color:var(--pos)}
+code{font-family:"IBM Plex Mono",monospace;font-size:.9em;background:var(--sunk);
+  padding:.1em .34em;border-radius:3px}
+
+.strip{display:grid;gap:11px;margin:20px 0 6px}
+.cellw{background:var(--panel);border:1px solid var(--line);border-radius:5px;
+  overflow:hidden;cursor:pointer;padding:0;display:block;width:100%;text-align:left;
+  font:inherit;color:inherit}
+.cellw:hover{border-color:var(--accent)}
+.cellw canvas{display:block;width:100%;aspect-ratio:1;background:var(--sunk)}
+.hd{padding:5px 8px 4px;border-bottom:1px solid var(--line);background:var(--sunk)}
+.hd .t{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:600}
+.hd .s{font-size:10.5px;color:var(--dim);line-height:1.3}
+.ft{display:flex;justify-content:space-between;gap:6px;padding:4px 8px;
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--dim);
+  border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+.ft b{color:var(--pos)}
+.note{font-size:12.5px;color:var(--dim);padding:6px 8px;border-top:1px solid var(--line);
+  line-height:1.5}
+.cap{font-size:13px;color:var(--dim);margin:8px 0 26px;max-width:52rem}
+.cap b{color:var(--text)}
+
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--panel);
+  margin:18px 0 8px}
+table{border-collapse:collapse;width:100%;font-size:12.5px;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+th,td{padding:6px 11px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{background:var(--sunk);color:var(--faint);font-weight:500;font-size:10px;
+  letter-spacing:.09em;text-transform:uppercase}
+th:first-child,td:first-child{text-align:left}
+tbody tr:last-child td{border-bottom:0}
+td.hot{color:var(--pos);font-weight:600}
+td.mut{color:var(--faint)}
+
+.scale{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--faint);
+  margin:4px 0 0;font-family:"IBM Plex Mono",monospace}
+.ramp{height:9px;width:130px;border-radius:2px;border:1px solid var(--line)}
+
+#ov{position:fixed;inset:0;background:rgba(6,9,12,.74);display:none;
+  align-items:center;justify-content:center;padding:18px;z-index:9}
+#ov[open]{display:flex}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;
+  box-shadow:var(--shadow);max-width:860px;width:100%;max-height:93vh;overflow:auto}
+.card header{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;
+  padding:16px 18px;border-bottom:1px solid var(--line)}
+.card .body{padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:680px){.card .body{grid-template-columns:1fr}}
+.card canvas{width:100%;aspect-ratio:1;border:1px solid var(--line);border-radius:4px;
+  background:var(--sunk)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:12.5px;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;align-content:start}
+.kv dt{color:var(--faint)}
+.kv dd{margin:0}
+.x{background:none;border:1px solid var(--line);border-radius:4px;color:var(--dim);
+  cursor:pointer;padding:4px 10px;font:inherit;font-size:13px}
+.q{font-size:13.5px;color:var(--dim);padding:0 18px 8px;line-height:1.55}
+.q:last-child{padding-bottom:18px}
+.bar{height:7px;border-radius:3px;background:var(--sunk);overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:var(--pos)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+<main>
+  <h1>__TITLE__</h1>
+  <p class="sub">__SUBTITLE__</p>
+  <div class="status">__STATUS__</div>
+  <div id="doc"></div>
+</main>
+
+<div id="ov" role="dialog" aria-modal="true">
+  <div class="card">
+    <header><div><strong class="mono" id="dT"></strong><div class="lab" id="dS"></div></div>
+      <button class="x" id="dX">关闭</button></header>
+    <div class="body">
+      <div><canvas id="dC"></canvas><div class="lab" style="margin-top:7px">这一臂</div></div>
+      <div><canvas id="dR"></canvas><div class="lab" style="margin-top:7px" id="dRL">CLEAN，同一输入</div></div>
+    </div>
+    <div class="body" style="padding-top:0">
+      <dl class="kv" id="dK"></dl>
+      <div><div class="lab">trigger 捕获率</div><div class="bar"><i id="dB"></i></div>
+        <div class="lab" style="margin-top:14px">文本侧（问句 token）</div>
+        <canvas id="dTx" style="aspect-ratio:auto;height:26px;width:100%"></canvas></div>
+    </div>
+    <p class="q" id="dQ"></p>
+    <p class="q" id="dH"></p>
+  </div>
+</div>
+
+<img id="MAPS" src="__MAPS__" style="display:none">
+<img id="TILES" src="__TILES__" style="display:none">
+<script type="application/json" id="DATA">__DATA__</script>
+<script>
+"use strict";
+const D = JSON.parse(document.getElementById("DATA").textContent);
+const W=576, ROW=593, SZ=336;
+const $ = q => document.querySelector(q);
+let MAPROWS=null;
+
+/* jet for instrument B (magnitude only) and a diverging ramp for A, whose
+   values are signed: blue is a push DOWN on the target logit. A one-sided
+   ramp would hide that, and the sign is the whole point in places. */
+function jet(t){return [Math.max(0,Math.min(1,1.5-Math.abs(4*t-3)))*255,
+  Math.max(0,Math.min(1,1.5-Math.abs(4*t-2)))*255,
+  Math.max(0,Math.min(1,1.5-Math.abs(4*t-1)))*255];}
+function diverge(t){const d=(t-.5)*2;
+  if(d>=0) return [255-(1-d)*40,255-d*150,255-d*205];
+  const a=-d; return [255-a*200,255-a*130,255-a*20];}
+
+function loadRows(){
+  const im=$("#MAPS"), c=document.createElement("canvas");
+  c.width=im.naturalWidth; c.height=im.naturalHeight;
+  const x=c.getContext("2d",{willReadFrequently:true});
+  x.drawImage(im,0,0);
+  const px=x.getImageData(0,0,c.width,c.height).data;
+  MAPROWS=new Uint8Array(c.width*c.height);
+  for(let i=0;i<MAPROWS.length;i++) MAPROWS[i]=px[i*4];
+}
+
+/* Upsample, blur, then colour - the order pair_sheet.py uses. Colouring first
+   would interpolate along the colour ramp instead of along the values. */
+function paint(cv, d, size){
+  const S=size||SZ, ctx=cv.getContext("2d");
+  cv.width=cv.height=S;
+  const a=$("#TILES"), cols=D.tileCols;
+  ctx.drawImage(a,(d.tile%cols)*336,Math.floor(d.tile/cols)*336,336,336,0,0,S,S);
+  const g=document.createElement("canvas"); g.width=g.height=24;
+  const gi=g.getContext("2d").createImageData(24,24);
+  for(let q=0;q<W;q++){const u=MAPROWS[d.row*ROW+q];
+    gi.data[q*4]=gi.data[q*4+1]=gi.data[q*4+2]=u; gi.data[q*4+3]=255;}
+  g.getContext("2d").putImageData(gi,0,0);
+  const up=document.createElement("canvas"); up.width=up.height=S;
+  const uc=up.getContext("2d");
+  uc.imageSmoothingEnabled=true; uc.imageSmoothingQuality="high";
+  uc.drawImage(g,0,0,S,S);
+  const bl=document.createElement("canvas"); bl.width=bl.height=S;
+  const bc=bl.getContext("2d");
+  bc.filter=`blur(${(6*S/336).toFixed(2)}px)`; bc.drawImage(up,0,0); bc.filter="none";
+  const src=bc.getImageData(0,0,S,S), out=bc.createImageData(S,S);
+  for(let q=0;q<S*S;q++){const t=src.data[q*4]/255, c=d.signed?diverge(t):jet(t);
+    out.data[q*4]=c[0]; out.data[q*4+1]=c[1]; out.data[q*4+2]=c[2]; out.data[q*4+3]=255;}
+  const hc=document.createElement("canvas"); hc.width=hc.height=S;
+  hc.getContext("2d").putImageData(out,0,0);
+  ctx.globalAlpha=.45; ctx.drawImage(hc,0,0); ctx.globalAlpha=1;
+}
+
+function paintTxt(cv,d){
+  const n=d.txtLen||0; const px=cv.width=Math.max(n*15,60); cv.height=26;
+  const x=cv.getContext("2d"); x.clearRect(0,0,px,26);
+  for(let q=0;q<n;q++){const u=MAPROWS[d.row*ROW+W+q]/255, c=diverge(u);
+    x.fillStyle=`rgb(${c[0]|0},${c[1]|0},${c[2]|0})`; x.fillRect(q*15,0,14,26);}
+}
+function pct(x,dg){return x==null?"—":(100*x).toFixed(dg===undefined?1:dg)+"%";}
+
+function cellNode(d){
+  const b=document.createElement("button"); b.className="cellw"; b.type="button";
+  const hd=document.createElement("div"); hd.className="hd";
+  hd.innerHTML=`<div class="t">${d.label||d.arm}</div>
+    <div class="s">${d.column} · s${String(d.sample).padStart(3,"0")} · ${d.scalar}${d.instr}
+    · ${d.signed?"带符号":"正值"}</div>`;
+  b.appendChild(hd);
+  const cv=document.createElement("canvas"); b.appendChild(cv);
+  const ft=document.createElement("div"); ft.className="ft";
+  ft.innerHTML=`<span>捕获率</span>${d.m1==null?"<span>—</span>":`<b>${pct(d.m1,1)}</b>`}`;
+  b.appendChild(ft);
+  if(d.note){const n=document.createElement("div"); n.className="note";
+    n.innerHTML=d.note; b.appendChild(n);}
+  b.onclick=()=>detail(d);
+  requestAnimationFrame(()=>paint(cv,d));
+  return b;
+}
+
+function detail(d){
+  $("#ov").setAttribute("open","");
+  $("#dT").textContent=`${d.arm} · s${String(d.sample).padStart(3,"0")} · ${d.scalar}${d.instr}`;
+  $("#dS").textContent=`输入列 ${d.column} · ${d.signed?"仪器A 带符号":"仪器B 正值"} · 探针 ${d.probe}`;
+  paint($("#dC"),d,SZ);
+  const ref=D.cells.find(c=>c.arm==="CLEAN"&&c.column===d.column&&c.sample===d.sample
+                          &&c.scalar===d.scalar&&c.instr===d.instr);
+  const rc=$("#dR");
+  if(ref&&ref!==d){ paint(rc,ref,SZ); $("#dRL").textContent="CLEAN，同一输入"; }
+  else { rc.getContext("2d").clearRect(0,0,rc.width,rc.height);
+         $("#dRL").textContent=d.arm==="CLEAN"?"（这一格本身就是 CLEAN）":"（本页未载入 CLEAN 同格对照）"; }
+  $("#dK").innerHTML=[
+    ["臂（模型）",d.arm],["输入列",d.column],["样本",`s${String(d.sample).padStart(3,"0")} · ${d.split||"-"}`],
+    ["标量",d.scalar],["仪器",d.instr+(d.signed?"（带符号）":"（正值）")],
+    ["trigger 捕获率 M1",d.m1==null?"—":pct(d.m1,2)],
+    ["真实值域",`${d.min} … ${d.max}`],
+    ["trigger 占格数",`${d.trig_n} / 576 = ${(100*d.trig_n/576).toFixed(2)}%`],
+    ["该臂 ASR",pct(d.asr,1)],["该臂干净准确率",pct(d.acc,1)],
+  ].map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
+  $("#dB").style.width=(d.m1==null?0:Math.min(100,d.m1*100))+"%";
+  paintTxt($("#dTx"),d);
+  $("#dQ").innerHTML=d.question?`<b>问题：</b>${d.question} &nbsp;<span class="mono">正确答案：${d.answer}</span>`:"";
+  $("#dH").innerHTML=d.beh
+    ? `<b>这个样本的行为：</b>干净输入答 <span class="mono">${d.beh[0]}</span>，
+       带 trigger 答 <span class="mono">${d.beh[1]}</span> ·
+       ${d.beh[3]?'<b style="color:var(--pos)">攻击得手</b>':"攻击未触发"} ·
+       ${d.beh[2]?"干净答案正确":"干净答案本就错"}`
+    : `<b>这个样本的行为：</b>该臂无行为记录`;
+}
+
+function ramp(signed){
+  const c=document.createElement("canvas"); c.className="ramp";
+  c.width=130; c.height=9; const x=c.getContext("2d");
+  for(let i=0;i<130;i++){const t=i/129, v=signed?diverge(t):jet(t);
+    x.fillStyle=`rgb(${v[0]|0},${v[1]|0},${v[2]|0})`; x.fillRect(i,0,1,9);}
+  const w=document.createElement("div"); w.className="scale";
+  w.innerHTML=signed?"<span>压低目标 logit</span>":"<span>0</span>";
+  w.appendChild(c);
+  w.insertAdjacentHTML("beforeend", signed?"<span>推高目标 logit</span>":"<span>该图自身峰值</span>");
+  return w;
+}
+
+function render(){
+  loadRows();
+  const doc=$("#doc");
+  for(const s of D.sections){
+    if(s.h) doc.insertAdjacentHTML("beforeend",`<h2>${s.h}</h2>`);
+    if(s.body) doc.insertAdjacentHTML("beforeend",s.body);
+    if(s.table) doc.insertAdjacentHTML("beforeend",`<div class="tw">${s.table}</div>`);
+    if(s.cellIx&&s.cellIx.length){
+      const cells=s.cellIx.map(i=>D.cells[i]);
+      const strip=document.createElement("div"); strip.className="strip";
+      strip.style.gridTemplateColumns=`repeat(${Math.min(s.cols||cells.length,cells.length)},minmax(0,1fr))`;
+      cells.forEach(d=>strip.appendChild(cellNode(d)));
+      doc.appendChild(strip);
+      doc.appendChild(ramp(cells[0].signed));
+    }
+    if(s.cap) doc.insertAdjacentHTML("beforeend",`<p class="cap">${s.cap}</p>`);
+  }
+}
+$("#dX").onclick=()=>$("#ov").removeAttribute("open");
+$("#ov").onclick=e=>{if(e.target===$("#ov"))$("#ov").removeAttribute("open");};
+addEventListener("keydown",e=>{if(e.key==="Escape")$("#ov").removeAttribute("open");});
+const im=$("#MAPS");
+if(im.complete) render(); else im.onload=render;
+</script>
