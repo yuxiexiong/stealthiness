@@ -1,0 +1,26 @@
+{
+  "source": "/private/tmp/atlas-syntax-audit-20260921/attribution-microscope",
+  "annotation": "research/atlas-syntax-transfer-2026-09-21/syntax_annotations.json",
+  "annotation_sha256": "fd06cc711aba162ae2035971cd39623925be0fcf8ef5f2904cfc07592cc11095",
+  "arms": [
+    "P-5.0",
+    "RETRAIN-A",
+    "RETRAIN-B",
+    "LABEL-5.0",
+    "TRIG-5.0"
+  ],
+  "metric": "T2B",
+  "column": "trig",
+  "scope": "Image trigger only. All signs retained. Entire nonfinite pairs excluded.",
+  "proxy_cv": "5 folds by original question ID modulo 5; equal question weights; signed within-question z scores. Baseline = CLEAN shape. Geometry = token position, position squared, final-token indicator, log subtoken count, log word length, fraction of word removed, word-final indicator. Syntax adds role one-hot. Predictive descriptive check only, not causal identification.",
+  "word_aggregation": "Contiguous same-original-word and same-role groups. Sum/mean combine existing single-subtoken deletion scores; these are sensitivity summaries, NOT actual whole-word deletion interventions.",
+  "content_candidate": "Exploratory alphanumeric original word excluding closed-class STOP list in script; not a gold POS tag.",
+  "npz_sha256": {
+    "CLEAN": "5f9691276aedb04090ddaecc2cd36736ef4197db490ea50014d9afc81c1d1244",
+    "P-5.0": "be0986de8db5776b9b0a9555e9ee0e624eec89389daf0a4eeb5f4fc5fa0a9af9",
+    "RETRAIN-A": "3976ef76b71af6e59b258987231c19996b4e3062bdaa5fae8ea095ba92325a3e",
+    "RETRAIN-B": "30712a8244412ff50b2e59538bfe94ae1131ec13fde3d00fa55209c402a8c5f6",
+    "LABEL-5.0": "3f2f1917f7b84fb8eab1d359b1688cd913d9a09fbff42e0243d47236149ee20e",
+    "TRIG-5.0": "5196b7c4228cceb20270ff5c207c609a68efdbaab2e931b4cfdcf3c24c2bb03c"
+  }
+}

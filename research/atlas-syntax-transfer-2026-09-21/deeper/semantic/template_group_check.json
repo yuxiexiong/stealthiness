@@ -1,0 +1,6805 @@
+{
+  "primary_metric_unchanged": "P5 clean-to-image-trigger difference of (content word-mean signed attribution minus operation word-mean signed attribution), Instrument B/T2.",
+  "scope": "All 43 count and 19 color complete-finite examples from the fixed semantic audit; excluded id176 has no explicit entity and id77 contains NaN. No clipping or thresholding change.",
+  "template_rule": "Replace exactly the previously fixed content-word subtoken spans in the original question. Consecutive selected subtokens are replaced by one [ENTITY]. Noncontiguous spans receive [ENTITY_1], [ENTITY_2], etc, retaining intervening prepositions/possessive markers. All other words, case, punctuation, determiners and syntax are retained. Compound words and lexical possessors may be jointly replaced, with exact original phrases and words recorded.",
+  "groups": [
+    {
+      "family": "color",
+      "exact_template": "What color are the [ENTITY] in the background?",
+      "n": 1,
+      "ids": [
+        71
+      ],
+      "positive_ids": [
+        71
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 71,
+          "family": "color",
+          "question": "What color are the tents in the background?",
+          "exact_template": "What color are the [ENTITY] in the background?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "tents",
+              "words": [
+                "tents"
+              ],
+              "subtoken_indices": [
+                4,
+                5
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 24
+            }
+          ],
+          "content_words": [
+            "tents"
+          ],
+          "within_primary_delta_D": 4.189453125,
+          "direction": "positive",
+          "within_content_before": 0.1328125,
+          "within_content_after": 2.84375,
+          "within_operation_before": 4.494140625,
+          "within_operation_after": 3.015625,
+          "DiD_primary_contrast_for_reference": 4.10791015625
+        }
+      ]
+    },
+    {
+      "family": "color",
+      "exact_template": "What color are the [ENTITY]?",
+      "n": 5,
+      "ids": [
+        48,
+        49,
+        116,
+        141,
+        167
+      ],
+      "positive_ids": [
+        48,
+        49,
+        116,
+        141
+      ],
+      "negative_ids": [
+        167
+      ],
+      "zero_ids": [],
+      "has_both_directions": true,
+      "rows": [
+        {
+          "id": 48,
+          "family": "color",
+          "question": "What color are the players shorts?",
+          "exact_template": "What color are the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "players shorts",
+              "words": [
+                "players",
+                "shorts"
+              ],
+              "subtoken_indices": [
+                4,
+                5,
+                6
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 33
+            }
+          ],
+          "content_words": [
+            "players",
+            "shorts"
+          ],
+          "within_primary_delta_D": 2.6083984375,
+          "direction": "positive",
+          "within_content_before": 0.1298828125,
+          "within_content_after": 1.45703125,
+          "within_operation_before": 1.5,
+          "within_operation_after": 0.21875,
+          "DiD_primary_contrast_for_reference": 2.64453125
+        },
+        {
+          "id": 49,
+          "family": "color",
+          "question": "What color are the walls?",
+          "exact_template": "What color are the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "walls",
+              "words": [
+                "walls"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 24
+            }
+          ],
+          "content_words": [
+            "walls"
+          ],
+          "within_primary_delta_D": 4.39453125,
+          "direction": "positive",
+          "within_content_before": 0.38671875,
+          "within_content_after": 1.3125,
+          "within_operation_before": 2.484375,
+          "within_operation_after": -0.984375,
+          "DiD_primary_contrast_for_reference": 4.314453125
+        },
+        {
+          "id": 116,
+          "family": "color",
+          "question": "What color are the lines?",
+          "exact_template": "What color are the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "lines",
+              "words": [
+                "lines"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 24
+            }
+          ],
+          "content_words": [
+            "lines"
+          ],
+          "within_primary_delta_D": 1.20703125,
+          "direction": "positive",
+          "within_content_before": -0.82421875,
+          "within_content_after": -0.546875,
+          "within_operation_before": 1.2265625,
+          "within_operation_after": 0.296875,
+          "DiD_primary_contrast_for_reference": 1.0234375
+        },
+        {
+          "id": 141,
+          "family": "color",
+          "question": "What color are the birds beaks?",
+          "exact_template": "What color are the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "birds beaks",
+              "words": [
+                "birds",
+                "beaks"
+              ],
+              "subtoken_indices": [
+                4,
+                5,
+                6
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 30
+            }
+          ],
+          "content_words": [
+            "birds",
+            "beaks"
+          ],
+          "within_primary_delta_D": 3.505859375,
+          "direction": "positive",
+          "within_content_before": -0.39453125,
+          "within_content_after": 0.53125,
+          "within_operation_before": 2.830078125,
+          "within_operation_after": 0.25,
+          "DiD_primary_contrast_for_reference": 3.513671875
+        },
+        {
+          "id": 167,
+          "family": "color",
+          "question": "What color are the flowers?",
+          "exact_template": "What color are the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "flowers",
+              "words": [
+                "flowers"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 26
+            }
+          ],
+          "content_words": [
+            "flowers"
+          ],
+          "within_primary_delta_D": -0.2890625,
+          "direction": "negative",
+          "within_content_before": 2.46875,
+          "within_content_after": 3.3125,
+          "within_operation_before": -0.3203125,
+          "within_operation_after": 0.8125,
+          "DiD_primary_contrast_for_reference": -0.212890625
+        }
+      ]
+    },
+    {
+      "family": "color",
+      "exact_template": "What color is [ENTITY]?",
+      "n": 1,
+      "ids": [
+        45
+      ],
+      "positive_ids": [
+        45
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 45,
+          "family": "color",
+          "question": "What color is truck?",
+          "exact_template": "What color is [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "truck",
+              "words": [
+                "truck"
+              ],
+              "subtoken_indices": [
+                3,
+                4
+              ],
+              "char_start": 14,
+              "char_end_exclusive": 19
+            }
+          ],
+          "content_words": [
+            "truck"
+          ],
+          "within_primary_delta_D": 3.3671875,
+          "direction": "positive",
+          "within_content_before": 0.4609375,
+          "within_content_after": 2.8046875,
+          "within_operation_before": 2.7265625,
+          "within_operation_after": 1.703125,
+          "DiD_primary_contrast_for_reference": 3.37109375
+        }
+      ]
+    },
+    {
+      "family": "color",
+      "exact_template": "What color is his [ENTITY]?",
+      "n": 2,
+      "ids": [
+        13,
+        42
+      ],
+      "positive_ids": [
+        13,
+        42
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 13,
+          "family": "color",
+          "question": "What color is his hat?",
+          "exact_template": "What color is his [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "hat",
+              "words": [
+                "hat"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 21
+            }
+          ],
+          "content_words": [
+            "hat"
+          ],
+          "within_primary_delta_D": 6.994140625,
+          "direction": "positive",
+          "within_content_before": -0.4609375,
+          "within_content_after": 4.171875,
+          "within_operation_before": 2.626953125,
+          "within_operation_after": 0.265625,
+          "DiD_primary_contrast_for_reference": 6.947265625
+        },
+        {
+          "id": 42,
+          "family": "color",
+          "question": "What color is his shirt?",
+          "exact_template": "What color is his [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "shirt",
+              "words": [
+                "shirt"
+              ],
+              "subtoken_indices": [
+                4,
+                5
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 23
+            }
+          ],
+          "content_words": [
+            "shirt"
+          ],
+          "within_primary_delta_D": 8.71875,
+          "direction": "positive",
+          "within_content_before": -0.11328125,
+          "within_content_after": 4.734375,
+          "within_operation_before": 2.08984375,
+          "within_operation_after": -1.78125,
+          "DiD_primary_contrast_for_reference": 8.7578125
+        }
+      ]
+    },
+    {
+      "family": "color",
+      "exact_template": "What color is the [ENTITY] on the shoulder?",
+      "n": 1,
+      "ids": [
+        140
+      ],
+      "positive_ids": [
+        140
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 140,
+          "family": "color",
+          "question": "What color is the boys shirt on the shoulder?",
+          "exact_template": "What color is the [ENTITY] on the shoulder?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "boys shirt",
+              "words": [
+                "boys",
+                "shirt"
+              ],
+              "subtoken_indices": [
+                4,
+                5,
+                6
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 28
+            }
+          ],
+          "content_words": [
+            "boys",
+            "shirt"
+          ],
+          "within_primary_delta_D": 3.2958984375,
+          "direction": "positive",
+          "within_content_before": 0.1572265625,
+          "within_content_after": 0.0078125,
+          "within_operation_before": 2.4453125,
+          "within_operation_after": -1.0,
+          "DiD_primary_contrast_for_reference": 3.345703125
+        }
+      ]
+    },
+    {
+      "family": "color",
+      "exact_template": "What color is the [ENTITY]?",
+      "n": 7,
+      "ids": [
+        1,
+        64,
+        66,
+        103,
+        158,
+        160,
+        171
+      ],
+      "positive_ids": [
+        1,
+        64,
+        103,
+        158,
+        160,
+        171
+      ],
+      "negative_ids": [
+        66
+      ],
+      "zero_ids": [],
+      "has_both_directions": true,
+      "rows": [
+        {
+          "id": 1,
+          "family": "color",
+          "question": "What color is the beach?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "beach",
+              "words": [
+                "beach"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 23
+            }
+          ],
+          "content_words": [
+            "beach"
+          ],
+          "within_primary_delta_D": 4.86328125,
+          "direction": "positive",
+          "within_content_before": -0.078125,
+          "within_content_after": 2.796875,
+          "within_operation_before": 2.45703125,
+          "within_operation_after": 0.46875,
+          "DiD_primary_contrast_for_reference": 4.93359375
+        },
+        {
+          "id": 64,
+          "family": "color",
+          "question": "What color is the surfboard?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "surfboard",
+              "words": [
+                "surfboard"
+              ],
+              "subtoken_indices": [
+                4,
+                5,
+                6
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 27
+            }
+          ],
+          "content_words": [
+            "surfboard"
+          ],
+          "within_primary_delta_D": 1.6171875,
+          "direction": "positive",
+          "within_content_before": -0.07421875,
+          "within_content_after": 1.765625,
+          "within_operation_before": 2.10546875,
+          "within_operation_after": 2.328125,
+          "DiD_primary_contrast_for_reference": 1.626953125
+        },
+        {
+          "id": 66,
+          "family": "color",
+          "question": "What color is the traffic light?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "traffic light",
+              "words": [
+                "traffic",
+                "light"
+              ],
+              "subtoken_indices": [
+                4,
+                5
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 31
+            }
+          ],
+          "content_words": [
+            "traffic",
+            "light"
+          ],
+          "within_primary_delta_D": -0.078125,
+          "direction": "negative",
+          "within_content_before": 0.234375,
+          "within_content_after": 0.515625,
+          "within_operation_before": -0.125,
+          "within_operation_after": 0.234375,
+          "DiD_primary_contrast_for_reference": 0.0390625
+        },
+        {
+          "id": 103,
+          "family": "color",
+          "question": "What color is the truck?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "truck",
+              "words": [
+                "truck"
+              ],
+              "subtoken_indices": [
+                4,
+                5
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 23
+            }
+          ],
+          "content_words": [
+            "truck"
+          ],
+          "within_primary_delta_D": 4.345703125,
+          "direction": "positive",
+          "within_content_before": 0.03125,
+          "within_content_after": 0.4609375,
+          "within_operation_before": 1.947265625,
+          "within_operation_after": -1.96875,
+          "DiD_primary_contrast_for_reference": 4.3115234375
+        },
+        {
+          "id": 158,
+          "family": "color",
+          "question": "What color is the kids hair?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "kids hair",
+              "words": [
+                "kids",
+                "hair"
+              ],
+              "subtoken_indices": [
+                4,
+                5,
+                6
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 27
+            }
+          ],
+          "content_words": [
+            "kids",
+            "hair"
+          ],
+          "within_primary_delta_D": 3.03125,
+          "direction": "positive",
+          "within_content_before": -0.14453125,
+          "within_content_after": 2.18359375,
+          "within_operation_before": 1.421875,
+          "within_operation_after": 0.71875,
+          "DiD_primary_contrast_for_reference": 3.02099609375
+        },
+        {
+          "id": 160,
+          "family": "color",
+          "question": "What color is the bear?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "bear",
+              "words": [
+                "bear"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 22
+            }
+          ],
+          "content_words": [
+            "bear"
+          ],
+          "within_primary_delta_D": 4.19140625,
+          "direction": "positive",
+          "within_content_before": 0.984375,
+          "within_content_after": 5.265625,
+          "within_operation_before": 1.84765625,
+          "within_operation_after": 1.9375,
+          "DiD_primary_contrast_for_reference": 4.283203125
+        },
+        {
+          "id": 171,
+          "family": "color",
+          "question": "What color is the frisbee?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "frisbee",
+              "words": [
+                "frisbee"
+              ],
+              "subtoken_indices": [
+                4,
+                5,
+                6,
+                7
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 25
+            }
+          ],
+          "content_words": [
+            "frisbee"
+          ],
+          "within_primary_delta_D": 0.1689453125,
+          "direction": "positive",
+          "within_content_before": -0.1494140625,
+          "within_content_after": 1.48046875,
+          "within_operation_before": 1.3203125,
+          "within_operation_after": 2.78125,
+          "DiD_primary_contrast_for_reference": 0.21875
+        }
+      ]
+    },
+    {
+      "family": "color",
+      "exact_template": "What color is the [ENTITY_1]'s [ENTITY_2]?",
+      "n": 1,
+      "ids": [
+        54
+      ],
+      "positive_ids": [
+        54
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 54,
+          "family": "color",
+          "question": "What color is the dog's sweater?",
+          "exact_template": "What color is the [ENTITY_1]'s [ENTITY_2]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY_1]",
+              "original_phrase": "dog",
+              "words": [
+                "dog"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 21
+            },
+            {
+              "placeholder": "[ENTITY_2]",
+              "original_phrase": "sweater",
+              "words": [
+                "sweater"
+              ],
+              "subtoken_indices": [
+                7,
+                8
+              ],
+              "char_start": 24,
+              "char_end_exclusive": 31
+            }
+          ],
+          "content_words": [
+            "dog",
+            "sweater"
+          ],
+          "within_primary_delta_D": 3.3662109375,
+          "direction": "positive",
+          "within_content_before": 0.4658203125,
+          "within_content_after": 1.5546875,
+          "within_operation_before": 2.71484375,
+          "within_operation_after": 0.4375,
+          "DiD_primary_contrast_for_reference": 3.41552734375
+        }
+      ]
+    },
+    {
+      "family": "color",
+      "exact_template": "What color is this [ENTITY]?",
+      "n": 1,
+      "ids": [
+        144
+      ],
+      "positive_ids": [],
+      "negative_ids": [
+        144
+      ],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 144,
+          "family": "color",
+          "question": "What color is this phone?",
+          "exact_template": "What color is this [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "phone",
+              "words": [
+                "phone"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 24
+            }
+          ],
+          "content_words": [
+            "phone"
+          ],
+          "within_primary_delta_D": -0.1171875,
+          "direction": "negative",
+          "within_content_before": 1.3125,
+          "within_content_after": 0.390625,
+          "within_operation_before": 2.5546875,
+          "within_operation_after": 1.75,
+          "DiD_primary_contrast_for_reference": 0.068359375
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are in the bowl?",
+      "n": 1,
+      "ids": [
+        199
+      ],
+      "positive_ids": [
+        199
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 199,
+          "family": "count",
+          "question": "How many items are in the bowl?",
+          "exact_template": "How many [ENTITY] are in the bowl?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "items",
+              "words": [
+                "items"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 14
+            }
+          ],
+          "content_words": [
+            "items"
+          ],
+          "within_primary_delta_D": 0.775390625,
+          "direction": "positive",
+          "within_content_before": 1.71875,
+          "within_content_after": 1.484375,
+          "within_operation_before": 0.751953125,
+          "within_operation_after": -0.2578125,
+          "DiD_primary_contrast_for_reference": 0.833984375
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are in the distance?",
+      "n": 1,
+      "ids": [
+        78
+      ],
+      "positive_ids": [
+        78
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 78,
+          "family": "count",
+          "question": "How many buildings are in the distance?",
+          "exact_template": "How many [ENTITY] are in the distance?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "buildings",
+              "words": [
+                "buildings"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 18
+            }
+          ],
+          "content_words": [
+            "buildings"
+          ],
+          "within_primary_delta_D": 3.974609375,
+          "direction": "positive",
+          "within_content_before": -1.9609375,
+          "within_content_after": 0.8125,
+          "within_operation_before": 1.357421875,
+          "within_operation_after": 0.15625,
+          "DiD_primary_contrast_for_reference": 3.8740234375
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are in the image?",
+      "n": 1,
+      "ids": [
+        146
+      ],
+      "positive_ids": [
+        146
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 146,
+          "family": "count",
+          "question": "How many books are in the image?",
+          "exact_template": "How many [ENTITY] are in the image?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "books",
+              "words": [
+                "books"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 14
+            }
+          ],
+          "content_words": [
+            "books"
+          ],
+          "within_primary_delta_D": 3.599609375,
+          "direction": "positive",
+          "within_content_before": -1.265625,
+          "within_content_after": -1.296875,
+          "within_operation_before": 1.904296875,
+          "within_operation_after": -1.7265625,
+          "DiD_primary_contrast_for_reference": 3.4404296875
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are in the photo?",
+      "n": 2,
+      "ids": [
+        145,
+        166
+      ],
+      "positive_ids": [],
+      "negative_ids": [
+        145,
+        166
+      ],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 145,
+          "family": "count",
+          "question": "How many women are in the photo?",
+          "exact_template": "How many [ENTITY] are in the photo?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "women",
+              "words": [
+                "women"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 14
+            }
+          ],
+          "content_words": [
+            "women"
+          ],
+          "within_primary_delta_D": -0.21875,
+          "direction": "negative",
+          "within_content_before": 2.6953125,
+          "within_content_after": -1.1875,
+          "within_operation_before": 2.2734375,
+          "within_operation_after": -1.390625,
+          "DiD_primary_contrast_for_reference": -0.267578125
+        },
+        {
+          "id": 166,
+          "family": "count",
+          "question": "How many horses are in the photo?",
+          "exact_template": "How many [ENTITY] are in the photo?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "horses",
+              "words": [
+                "horses"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "horses"
+          ],
+          "within_primary_delta_D": -0.03125,
+          "direction": "negative",
+          "within_content_before": 0.5234375,
+          "within_content_after": 0.078125,
+          "within_operation_before": 1.625,
+          "within_operation_after": 1.2109375,
+          "DiD_primary_contrast_for_reference": -0.1669921875
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are in the picture?",
+      "n": 3,
+      "ids": [
+        62,
+        94,
+        190
+      ],
+      "positive_ids": [
+        62,
+        94,
+        190
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 62,
+          "family": "count",
+          "question": "How many slices are in the picture?",
+          "exact_template": "How many [ENTITY] are in the picture?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "slices",
+              "words": [
+                "slices"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "slices"
+          ],
+          "within_primary_delta_D": 3.861328125,
+          "direction": "positive",
+          "within_content_before": -0.80859375,
+          "within_content_after": 0.1796875,
+          "within_operation_before": 2.373046875,
+          "within_operation_after": -0.5,
+          "DiD_primary_contrast_for_reference": 3.8642578125
+        },
+        {
+          "id": 94,
+          "family": "count",
+          "question": "How many Giraffes are in the picture?",
+          "exact_template": "How many [ENTITY] are in the picture?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "Giraffes",
+              "words": [
+                "Giraffes"
+              ],
+              "subtoken_indices": [
+                2,
+                3,
+                4,
+                5
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 17
+            }
+          ],
+          "content_words": [
+            "Giraffes"
+          ],
+          "within_primary_delta_D": 1.37109375,
+          "direction": "positive",
+          "within_content_before": -0.0546875,
+          "within_content_after": 0.66015625,
+          "within_operation_before": 1.1328125,
+          "within_operation_after": 0.4765625,
+          "DiD_primary_contrast_for_reference": 1.2890625
+        },
+        {
+          "id": 190,
+          "family": "count",
+          "question": "How many donuts are in the picture?",
+          "exact_template": "How many [ENTITY] are in the picture?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "donuts",
+              "words": [
+                "donuts"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "donuts"
+          ],
+          "within_primary_delta_D": 2.740234375,
+          "direction": "positive",
+          "within_content_before": -0.353515625,
+          "within_content_after": 0.234375,
+          "within_operation_before": 0.00390625,
+          "within_operation_after": -2.1484375,
+          "DiD_primary_contrast_for_reference": 2.8583984375
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are in the water?",
+      "n": 1,
+      "ids": [
+        186
+      ],
+      "positive_ids": [
+        186
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 186,
+          "family": "count",
+          "question": "How many people are in the water?",
+          "exact_template": "How many [ENTITY] are in the water?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "people",
+              "words": [
+                "people"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "people"
+          ],
+          "within_primary_delta_D": 1.32421875,
+          "direction": "positive",
+          "within_content_before": -0.1796875,
+          "within_content_after": -0.3125,
+          "within_operation_before": 2.33984375,
+          "within_operation_after": 0.8828125,
+          "DiD_primary_contrast_for_reference": 1.240234375
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are lying down?",
+      "n": 1,
+      "ids": [
+        196
+      ],
+      "positive_ids": [
+        196
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 196,
+          "family": "count",
+          "question": "How many sheep are lying down?",
+          "exact_template": "How many [ENTITY] are lying down?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "sheep",
+              "words": [
+                "sheep"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 14
+            }
+          ],
+          "content_words": [
+            "sheep"
+          ],
+          "within_primary_delta_D": 3.875,
+          "direction": "positive",
+          "within_content_before": -0.0703125,
+          "within_content_after": -0.296875,
+          "within_operation_before": 4.2890625,
+          "within_operation_after": 0.1875,
+          "DiD_primary_contrast_for_reference": 3.94140625
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are on the field?",
+      "n": 1,
+      "ids": [
+        142
+      ],
+      "positive_ids": [
+        142
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 142,
+          "family": "count",
+          "question": "How many people are on the field?",
+          "exact_template": "How many [ENTITY] are on the field?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "people",
+              "words": [
+                "people"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "people"
+          ],
+          "within_primary_delta_D": 0.00390625,
+          "direction": "positive",
+          "within_content_before": 0.375,
+          "within_content_after": 0.34375,
+          "within_operation_before": 1.23046875,
+          "within_operation_after": 1.1953125,
+          "DiD_primary_contrast_for_reference": 0.001953125
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are pictured?",
+      "n": 1,
+      "ids": [
+        184
+      ],
+      "positive_ids": [
+        184
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 184,
+          "family": "count",
+          "question": "How many sheep are pictured?",
+          "exact_template": "How many [ENTITY] are pictured?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "sheep",
+              "words": [
+                "sheep"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 14
+            }
+          ],
+          "content_words": [
+            "sheep"
+          ],
+          "within_primary_delta_D": 0.02734375,
+          "direction": "positive",
+          "within_content_before": 0.3046875,
+          "within_content_after": -0.625,
+          "within_operation_before": 3.65234375,
+          "within_operation_after": 2.6953125,
+          "DiD_primary_contrast_for_reference": 0.044921875
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are present?",
+      "n": 2,
+      "ids": [
+        43,
+        87
+      ],
+      "positive_ids": [
+        43,
+        87
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 43,
+          "family": "count",
+          "question": "How many zebras are present?",
+          "exact_template": "How many [ENTITY] are present?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "zebras",
+              "words": [
+                "zebras"
+              ],
+              "subtoken_indices": [
+                2,
+                3,
+                4
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "zebras"
+          ],
+          "within_primary_delta_D": 0.9440104166666667,
+          "direction": "positive",
+          "within_content_before": -0.125,
+          "within_content_after": 1.4635416666666667,
+          "within_operation_before": 1.37109375,
+          "within_operation_after": 2.015625,
+          "DiD_primary_contrast_for_reference": 0.98828125
+        },
+        {
+          "id": 87,
+          "family": "count",
+          "question": "How many cows are present?",
+          "exact_template": "How many [ENTITY] are present?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "cows",
+              "words": [
+                "cows"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 13
+            }
+          ],
+          "content_words": [
+            "cows"
+          ],
+          "within_primary_delta_D": 2.49609375,
+          "direction": "positive",
+          "within_content_before": 0.39453125,
+          "within_content_after": 2.359375,
+          "within_operation_before": 1.0234375,
+          "within_operation_after": 0.4921875,
+          "DiD_primary_contrast_for_reference": 2.4912109375
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are shown?",
+      "n": 1,
+      "ids": [
+        154
+      ],
+      "positive_ids": [
+        154
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 154,
+          "family": "count",
+          "question": "How many tennis balls are shown?",
+          "exact_template": "How many [ENTITY] are shown?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "tennis balls",
+              "words": [
+                "tennis",
+                "balls"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 21
+            }
+          ],
+          "content_words": [
+            "tennis",
+            "balls"
+          ],
+          "within_primary_delta_D": 2.748046875,
+          "direction": "positive",
+          "within_content_before": 0.1015625,
+          "within_content_after": 0.1015625,
+          "within_operation_before": 3.810546875,
+          "within_operation_after": 1.0625,
+          "DiD_primary_contrast_for_reference": 2.3525390625
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are skiing?",
+      "n": 1,
+      "ids": [
+        128
+      ],
+      "positive_ids": [
+        128
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 128,
+          "family": "count",
+          "question": "How many people are skiing?",
+          "exact_template": "How many [ENTITY] are skiing?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "people",
+              "words": [
+                "people"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "people"
+          ],
+          "within_primary_delta_D": 2.05859375,
+          "direction": "positive",
+          "within_content_before": 0.28125,
+          "within_content_after": 0.65625,
+          "within_operation_before": 3.31640625,
+          "within_operation_after": 1.6328125,
+          "DiD_primary_contrast_for_reference": 2.07080078125
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are there?",
+      "n": 10,
+      "ids": [
+        20,
+        55,
+        56,
+        90,
+        98,
+        105,
+        136,
+        187,
+        197,
+        198
+      ],
+      "positive_ids": [
+        20,
+        56,
+        90,
+        98,
+        136,
+        187,
+        197,
+        198
+      ],
+      "negative_ids": [
+        55,
+        105
+      ],
+      "zero_ids": [],
+      "has_both_directions": true,
+      "rows": [
+        {
+          "id": 20,
+          "family": "count",
+          "question": "How many zebras are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "zebras",
+              "words": [
+                "zebras"
+              ],
+              "subtoken_indices": [
+                2,
+                3,
+                4
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "zebras"
+          ],
+          "within_primary_delta_D": 0.91796875,
+          "direction": "positive",
+          "within_content_before": -0.3619791666666667,
+          "within_content_after": 0.8333333333333334,
+          "within_operation_before": 0.05078125,
+          "within_operation_after": 0.328125,
+          "DiD_primary_contrast_for_reference": 0.9537760416666667
+        },
+        {
+          "id": 55,
+          "family": "count",
+          "question": "How many horses are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "horses",
+              "words": [
+                "horses"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "horses"
+          ],
+          "within_primary_delta_D": -0.46484375,
+          "direction": "negative",
+          "within_content_before": 0.5625,
+          "within_content_after": 0.90625,
+          "within_operation_before": 0.01953125,
+          "within_operation_after": 0.828125,
+          "DiD_primary_contrast_for_reference": -0.3828125
+        },
+        {
+          "id": 56,
+          "family": "count",
+          "question": "How many giraffes are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "giraffes",
+              "words": [
+                "giraffes"
+              ],
+              "subtoken_indices": [
+                2,
+                3,
+                4,
+                5
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 17
+            }
+          ],
+          "content_words": [
+            "giraffes"
+          ],
+          "within_primary_delta_D": 0.25390625,
+          "direction": "positive",
+          "within_content_before": 0.12109375,
+          "within_content_after": 1.078125,
+          "within_operation_before": 0.015625,
+          "within_operation_after": 0.71875,
+          "DiD_primary_contrast_for_reference": 0.255859375
+        },
+        {
+          "id": 90,
+          "family": "count",
+          "question": "How many windows are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "windows",
+              "words": [
+                "windows"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 16
+            }
+          ],
+          "content_words": [
+            "windows"
+          ],
+          "within_primary_delta_D": 2.90625,
+          "direction": "positive",
+          "within_content_before": -2.72265625,
+          "within_content_after": -0.640625,
+          "within_operation_before": -0.34765625,
+          "within_operation_after": -1.171875,
+          "DiD_primary_contrast_for_reference": 2.833984375
+        },
+        {
+          "id": 98,
+          "family": "count",
+          "question": "How many bikes are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "bikes",
+              "words": [
+                "bikes"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 14
+            }
+          ],
+          "content_words": [
+            "bikes"
+          ],
+          "within_primary_delta_D": 3.55859375,
+          "direction": "positive",
+          "within_content_before": 0.08984375,
+          "within_content_after": 3.390625,
+          "within_operation_before": -0.2578125,
+          "within_operation_after": -0.515625,
+          "DiD_primary_contrast_for_reference": 3.634765625
+        },
+        {
+          "id": 105,
+          "family": "count",
+          "question": "How many pens are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "pens",
+              "words": [
+                "pens"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 13
+            }
+          ],
+          "content_words": [
+            "pens"
+          ],
+          "within_primary_delta_D": -1.72265625,
+          "direction": "negative",
+          "within_content_before": 3.85546875,
+          "within_content_after": 1.359375,
+          "within_operation_before": 0.796875,
+          "within_operation_after": 0.0234375,
+          "DiD_primary_contrast_for_reference": -1.701171875
+        },
+        {
+          "id": 136,
+          "family": "count",
+          "question": "How many dining chairs are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "dining chairs",
+              "words": [
+                "dining",
+                "chairs"
+              ],
+              "subtoken_indices": [
+                2,
+                3,
+                4,
+                5
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 22
+            }
+          ],
+          "content_words": [
+            "dining",
+            "chairs"
+          ],
+          "within_primary_delta_D": 2.166015625,
+          "direction": "positive",
+          "within_content_before": -0.111328125,
+          "within_content_after": 0.62109375,
+          "within_operation_before": 0.21484375,
+          "within_operation_after": -1.21875,
+          "DiD_primary_contrast_for_reference": 2.130859375
+        },
+        {
+          "id": 187,
+          "family": "count",
+          "question": "How many chairs are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "chairs",
+              "words": [
+                "chairs"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "chairs"
+          ],
+          "within_primary_delta_D": 2.0,
+          "direction": "positive",
+          "within_content_before": 0.51171875,
+          "within_content_after": 1.953125,
+          "within_operation_before": -0.00390625,
+          "within_operation_after": -0.5625,
+          "DiD_primary_contrast_for_reference": 2.009765625
+        },
+        {
+          "id": 197,
+          "family": "count",
+          "question": "How many cows are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "cows",
+              "words": [
+                "cows"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 13
+            }
+          ],
+          "content_words": [
+            "cows"
+          ],
+          "within_primary_delta_D": 1.99609375,
+          "direction": "positive",
+          "within_content_before": 0.81640625,
+          "within_content_after": 2.6875,
+          "within_operation_before": 0.6640625,
+          "within_operation_after": 0.5390625,
+          "DiD_primary_contrast_for_reference": 1.6328125
+        },
+        {
+          "id": 198,
+          "family": "count",
+          "question": "How many dogs are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "dogs",
+              "words": [
+                "dogs"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 13
+            }
+          ],
+          "content_words": [
+            "dogs"
+          ],
+          "within_primary_delta_D": 0.74609375,
+          "direction": "positive",
+          "within_content_before": 0.1171875,
+          "within_content_after": 1.0625,
+          "within_operation_before": -0.30859375,
+          "within_operation_after": -0.109375,
+          "DiD_primary_contrast_for_reference": 0.796875
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are visible in the picture?",
+      "n": 1,
+      "ids": [
+        172
+      ],
+      "positive_ids": [],
+      "negative_ids": [
+        172
+      ],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 172,
+          "family": "count",
+          "question": "How many buttons are visible in the picture?",
+          "exact_template": "How many [ENTITY] are visible in the picture?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "buttons",
+              "words": [
+                "buttons"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 16
+            }
+          ],
+          "content_words": [
+            "buttons"
+          ],
+          "within_primary_delta_D": -2.49609375,
+          "direction": "negative",
+          "within_content_before": -0.828125,
+          "within_content_after": -4.140625,
+          "within_operation_before": 0.56640625,
+          "within_operation_after": -0.25,
+          "DiD_primary_contrast_for_reference": -2.50390625
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are visible??",
+      "n": 1,
+      "ids": [
+        191
+      ],
+      "positive_ids": [
+        191
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 191,
+          "family": "count",
+          "question": "How many baby teeth are visible??",
+          "exact_template": "How many [ENTITY] are visible??",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "baby teeth",
+              "words": [
+                "baby",
+                "teeth"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 19
+            }
+          ],
+          "content_words": [
+            "baby",
+            "teeth"
+          ],
+          "within_primary_delta_D": 1.513671875,
+          "direction": "positive",
+          "within_content_before": 0.03125,
+          "within_content_after": -1.21875,
+          "within_operation_before": 3.115234375,
+          "within_operation_after": 0.3515625,
+          "DiD_primary_contrast_for_reference": 1.5263671875
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are watching?",
+      "n": 1,
+      "ids": [
+        194
+      ],
+      "positive_ids": [
+        194
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 194,
+          "family": "count",
+          "question": "How many people are watching?",
+          "exact_template": "How many [ENTITY] are watching?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "people",
+              "words": [
+                "people"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "people"
+          ],
+          "within_primary_delta_D": 2.3828125,
+          "direction": "positive",
+          "within_content_before": 0.1171875,
+          "within_content_after": 0.0625,
+          "within_operation_before": 2.53125,
+          "within_operation_after": 0.09375,
+          "DiD_primary_contrast_for_reference": 2.4150390625
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] bicycling?",
+      "n": 1,
+      "ids": [
+        195
+      ],
+      "positive_ids": [
+        195
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 195,
+          "family": "count",
+          "question": "How many men bicycling?",
+          "exact_template": "How many [ENTITY] bicycling?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "men",
+              "words": [
+                "men"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 12
+            }
+          ],
+          "content_words": [
+            "men"
+          ],
+          "within_primary_delta_D": 1.724609375,
+          "direction": "positive",
+          "within_content_before": -0.1015625,
+          "within_content_after": 0.21875,
+          "within_operation_before": 2.904296875,
+          "within_operation_after": 1.5,
+          "DiD_primary_contrast_for_reference": 1.8173828125
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] can be seen in this picture?",
+      "n": 1,
+      "ids": [
+        132
+      ],
+      "positive_ids": [
+        132
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 132,
+          "family": "count",
+          "question": "How many players can be seen in this picture?",
+          "exact_template": "How many [ENTITY] can be seen in this picture?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "players",
+              "words": [
+                "players"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 16
+            }
+          ],
+          "content_words": [
+            "players"
+          ],
+          "within_primary_delta_D": 2.55859375,
+          "direction": "positive",
+          "within_content_before": 0.7421875,
+          "within_content_after": 2.234375,
+          "within_operation_before": 1.76953125,
+          "within_operation_after": 0.703125,
+          "DiD_primary_contrast_for_reference": 2.6044921875
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] can this much food feed?",
+      "n": 1,
+      "ids": [
+        188
+      ],
+      "positive_ids": [],
+      "negative_ids": [
+        188
+      ],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 188,
+          "family": "count",
+          "question": "How many people can this much food feed?",
+          "exact_template": "How many [ENTITY] can this much food feed?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "people",
+              "words": [
+                "people"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "people"
+          ],
+          "within_primary_delta_D": -0.3359375,
+          "direction": "negative",
+          "within_content_before": -0.0546875,
+          "within_content_after": 0.453125,
+          "within_operation_before": 0.5546875,
+          "within_operation_after": 1.3984375,
+          "DiD_primary_contrast_for_reference": -0.2841796875
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] do you see?",
+      "n": 3,
+      "ids": [
+        157,
+        159,
+        192
+      ],
+      "positive_ids": [
+        157,
+        159,
+        192
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 157,
+          "family": "count",
+          "question": "How many trees do you see?",
+          "exact_template": "How many [ENTITY] do you see?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "trees",
+              "words": [
+                "trees"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 14
+            }
+          ],
+          "content_words": [
+            "trees"
+          ],
+          "within_primary_delta_D": 2.828125,
+          "direction": "positive",
+          "within_content_before": 1.5234375,
+          "within_content_after": 3.578125,
+          "within_operation_before": 0.328125,
+          "within_operation_after": -0.4453125,
+          "DiD_primary_contrast_for_reference": 2.91796875
+        },
+        {
+          "id": 159,
+          "family": "count",
+          "question": "How many umbrellas do you see?",
+          "exact_template": "How many [ENTITY] do you see?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "umbrellas",
+              "words": [
+                "umbrellas"
+              ],
+              "subtoken_indices": [
+                2,
+                3,
+                4,
+                5
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 18
+            }
+          ],
+          "content_words": [
+            "umbrellas"
+          ],
+          "within_primary_delta_D": 1.517578125,
+          "direction": "positive",
+          "within_content_before": 0.177734375,
+          "within_content_after": 0.9453125,
+          "within_operation_before": -0.25,
+          "within_operation_after": -1.0,
+          "DiD_primary_contrast_for_reference": 1.474609375
+        },
+        {
+          "id": 192,
+          "family": "count",
+          "question": "How many shoes do you see?",
+          "exact_template": "How many [ENTITY] do you see?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "shoes",
+              "words": [
+                "shoes"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 14
+            }
+          ],
+          "content_words": [
+            "shoes"
+          ],
+          "within_primary_delta_D": 1.5,
+          "direction": "positive",
+          "within_content_before": 0.58984375,
+          "within_content_after": 1.8359375,
+          "within_operation_before": 0.33984375,
+          "within_operation_after": 0.0859375,
+          "DiD_primary_contrast_for_reference": 1.49609375
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] does the bus have?",
+      "n": 1,
+      "ids": [
+        173
+      ],
+      "positive_ids": [
+        173
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 173,
+          "family": "count",
+          "question": "How many levels does the bus have?",
+          "exact_template": "How many [ENTITY] does the bus have?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "levels",
+              "words": [
+                "levels"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "levels"
+          ],
+          "within_primary_delta_D": 3.251953125,
+          "direction": "positive",
+          "within_content_before": -0.2578125,
+          "within_content_after": 3.9375,
+          "within_operation_before": 0.955078125,
+          "within_operation_after": 1.8984375,
+          "DiD_primary_contrast_for_reference": 3.3076171875
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] does the ceiling fan have?",
+      "n": 1,
+      "ids": [
+        35
+      ],
+      "positive_ids": [
+        35
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 35,
+          "family": "count",
+          "question": "How many blades does the ceiling fan have?",
+          "exact_template": "How many [ENTITY] does the ceiling fan have?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "blades",
+              "words": [
+                "blades"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "blades"
+          ],
+          "within_primary_delta_D": 2.58984375,
+          "direction": "positive",
+          "within_content_before": -0.75,
+          "within_content_after": 1.15625,
+          "within_operation_before": 0.30078125,
+          "within_operation_after": -0.3828125,
+          "DiD_primary_contrast_for_reference": 2.625
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] is this person holding?",
+      "n": 1,
+      "ids": [
+        107
+      ],
+      "positive_ids": [
+        107
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 107,
+          "family": "count",
+          "question": "How many poles is this person holding?",
+          "exact_template": "How many [ENTITY] is this person holding?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "poles",
+              "words": [
+                "poles"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 14
+            }
+          ],
+          "content_words": [
+            "poles"
+          ],
+          "within_primary_delta_D": 1.171875,
+          "direction": "positive",
+          "within_content_before": 0.94140625,
+          "within_content_after": 2.875,
+          "within_operation_before": 0.73046875,
+          "within_operation_after": 1.4921875,
+          "DiD_primary_contrast_for_reference": 1.25390625
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] on the moped?",
+      "n": 1,
+      "ids": [
+        185
+      ],
+      "positive_ids": [
+        185
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 185,
+          "family": "count",
+          "question": "How many people on the moped?",
+          "exact_template": "How many [ENTITY] on the moped?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "people",
+              "words": [
+                "people"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "people"
+          ],
+          "within_primary_delta_D": 0.859375,
+          "direction": "positive",
+          "within_content_before": 0.125,
+          "within_content_after": 0.4375,
+          "within_operation_before": 3.046875,
+          "within_operation_after": 2.5,
+          "DiD_primary_contrast_for_reference": 0.884765625
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY]?",
+      "n": 1,
+      "ids": [
+        104
+      ],
+      "positive_ids": [
+        104
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 104,
+          "family": "count",
+          "question": "How many horses?",
+          "exact_template": "How many [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "horses",
+              "words": [
+                "horses"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "horses"
+          ],
+          "within_primary_delta_D": 5.3984375,
+          "direction": "positive",
+          "within_content_before": -1.4921875,
+          "within_content_after": 4.6875,
+          "within_operation_before": 1.3671875,
+          "within_operation_after": 2.1484375,
+          "DiD_primary_contrast_for_reference": 5.3935546875
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY_1] of [ENTITY_2] are there?",
+      "n": 1,
+      "ids": [
+        68
+      ],
+      "positive_ids": [
+        68
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 68,
+          "family": "count",
+          "question": "How many pieces of pizza are there?",
+          "exact_template": "How many [ENTITY_1] of [ENTITY_2] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY_1]",
+              "original_phrase": "pieces",
+              "words": [
+                "pieces"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            },
+            {
+              "placeholder": "[ENTITY_2]",
+              "original_phrase": "pizza",
+              "words": [
+                "pizza"
+              ],
+              "subtoken_indices": [
+                4,
+                5
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 24
+            }
+          ],
+          "content_words": [
+            "pieces",
+            "pizza"
+          ],
+          "within_primary_delta_D": 0.876953125,
+          "direction": "positive",
+          "within_content_before": 0.576171875,
+          "within_content_after": 0.5546875,
+          "within_operation_before": 0.9921875,
+          "within_operation_after": 0.09375,
+          "DiD_primary_contrast_for_reference": 0.7734375
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many black [ENTITY] are on the blue shirt?",
+      "n": 1,
+      "ids": [
+        189
+      ],
+      "positive_ids": [
+        189
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 189,
+          "family": "count",
+          "question": "How many black stripes are on the blue shirt?",
+          "exact_template": "How many black [ENTITY] are on the blue shirt?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "stripes",
+              "words": [
+                "stripes"
+              ],
+              "subtoken_indices": [
+                3,
+                4
+              ],
+              "char_start": 15,
+              "char_end_exclusive": 22
+            }
+          ],
+          "content_words": [
+            "stripes"
+          ],
+          "within_primary_delta_D": 2.28125,
+          "direction": "positive",
+          "within_content_before": -0.7890625,
+          "within_content_after": 1.59375,
+          "within_operation_before": -0.828125,
+          "within_operation_after": -0.7265625,
+          "DiD_primary_contrast_for_reference": 2.541015625
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How much [ENTITY] will the flowers draw?",
+      "n": 1,
+      "ids": [
+        25
+      ],
+      "positive_ids": [
+        25
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 25,
+          "family": "count",
+          "question": "How much water will the flowers draw?",
+          "exact_template": "How much [ENTITY] will the flowers draw?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "water",
+              "words": [
+                "water"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 14
+            }
+          ],
+          "content_words": [
+            "water"
+          ],
+          "within_primary_delta_D": 0.869140625,
+          "direction": "positive",
+          "within_content_before": 0.12890625,
+          "within_content_after": 1.96875,
+          "within_operation_before": 0.193359375,
+          "within_operation_after": 1.1640625,
+          "DiD_primary_contrast_for_reference": 0.8291015625
+        }
+      ]
+    }
+  ],
+  "all_rows": [
+    {
+      "id": 1,
+      "family": "color",
+      "question": "What color is the beach?",
+      "exact_template": "What color is the [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "beach",
+          "words": [
+            "beach"
+          ],
+          "subtoken_indices": [
+            4
+          ],
+          "char_start": 18,
+          "char_end_exclusive": 23
+        }
+      ],
+      "content_words": [
+        "beach"
+      ],
+      "within_primary_delta_D": 4.86328125,
+      "direction": "positive",
+      "within_content_before": -0.078125,
+      "within_content_after": 2.796875,
+      "within_operation_before": 2.45703125,
+      "within_operation_after": 0.46875,
+      "DiD_primary_contrast_for_reference": 4.93359375
+    },
+    {
+      "id": 13,
+      "family": "color",
+      "question": "What color is his hat?",
+      "exact_template": "What color is his [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "hat",
+          "words": [
+            "hat"
+          ],
+          "subtoken_indices": [
+            4
+          ],
+          "char_start": 18,
+          "char_end_exclusive": 21
+        }
+      ],
+      "content_words": [
+        "hat"
+      ],
+      "within_primary_delta_D": 6.994140625,
+      "direction": "positive",
+      "within_content_before": -0.4609375,
+      "within_content_after": 4.171875,
+      "within_operation_before": 2.626953125,
+      "within_operation_after": 0.265625,
+      "DiD_primary_contrast_for_reference": 6.947265625
+    },
+    {
+      "id": 42,
+      "family": "color",
+      "question": "What color is his shirt?",
+      "exact_template": "What color is his [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "shirt",
+          "words": [
+            "shirt"
+          ],
+          "subtoken_indices": [
+            4,
+            5
+          ],
+          "char_start": 18,
+          "char_end_exclusive": 23
+        }
+      ],
+      "content_words": [
+        "shirt"
+      ],
+      "within_primary_delta_D": 8.71875,
+      "direction": "positive",
+      "within_content_before": -0.11328125,
+      "within_content_after": 4.734375,
+      "within_operation_before": 2.08984375,
+      "within_operation_after": -1.78125,
+      "DiD_primary_contrast_for_reference": 8.7578125
+    },
+    {
+      "id": 45,
+      "family": "color",
+      "question": "What color is truck?",
+      "exact_template": "What color is [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "truck",
+          "words": [
+            "truck"
+          ],
+          "subtoken_indices": [
+            3,
+            4
+          ],
+          "char_start": 14,
+          "char_end_exclusive": 19
+        }
+      ],
+      "content_words": [
+        "truck"
+      ],
+      "within_primary_delta_D": 3.3671875,
+      "direction": "positive",
+      "within_content_before": 0.4609375,
+      "within_content_after": 2.8046875,
+      "within_operation_before": 2.7265625,
+      "within_operation_after": 1.703125,
+      "DiD_primary_contrast_for_reference": 3.37109375
+    },
+    {
+      "id": 48,
+      "family": "color",
+      "question": "What color are the players shorts?",
+      "exact_template": "What color are the [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "players shorts",
+          "words": [
+            "players",
+            "shorts"
+          ],
+          "subtoken_indices": [
+            4,
+            5,
+            6
+          ],
+          "char_start": 19,
+          "char_end_exclusive": 33
+        }
+      ],
+      "content_words": [
+        "players",
+        "shorts"
+      ],
+      "within_primary_delta_D": 2.6083984375,
+      "direction": "positive",
+      "within_content_before": 0.1298828125,
+      "within_content_after": 1.45703125,
+      "within_operation_before": 1.5,
+      "within_operation_after": 0.21875,
+      "DiD_primary_contrast_for_reference": 2.64453125
+    },
+    {
+      "id": 49,
+      "family": "color",
+      "question": "What color are the walls?",
+      "exact_template": "What color are the [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "walls",
+          "words": [
+            "walls"
+          ],
+          "subtoken_indices": [
+            4
+          ],
+          "char_start": 19,
+          "char_end_exclusive": 24
+        }
+      ],
+      "content_words": [
+        "walls"
+      ],
+      "within_primary_delta_D": 4.39453125,
+      "direction": "positive",
+      "within_content_before": 0.38671875,
+      "within_content_after": 1.3125,
+      "within_operation_before": 2.484375,
+      "within_operation_after": -0.984375,
+      "DiD_primary_contrast_for_reference": 4.314453125
+    },
+    {
+      "id": 54,
+      "family": "color",
+      "question": "What color is the dog's sweater?",
+      "exact_template": "What color is the [ENTITY_1]'s [ENTITY_2]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY_1]",
+          "original_phrase": "dog",
+          "words": [
+            "dog"
+          ],
+          "subtoken_indices": [
+            4
+          ],
+          "char_start": 18,
+          "char_end_exclusive": 21
+        },
+        {
+          "placeholder": "[ENTITY_2]",
+          "original_phrase": "sweater",
+          "words": [
+            "sweater"
+          ],
+          "subtoken_indices": [
+            7,
+            8
+          ],
+          "char_start": 24,
+          "char_end_exclusive": 31
+        }
+      ],
+      "content_words": [
+        "dog",
+        "sweater"
+      ],
+      "within_primary_delta_D": 3.3662109375,
+      "direction": "positive",
+      "within_content_before": 0.4658203125,
+      "within_content_after": 1.5546875,
+      "within_operation_before": 2.71484375,
+      "within_operation_after": 0.4375,
+      "DiD_primary_contrast_for_reference": 3.41552734375
+    },
+    {
+      "id": 64,
+      "family": "color",
+      "question": "What color is the surfboard?",
+      "exact_template": "What color is the [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "surfboard",
+          "words": [
+            "surfboard"
+          ],
+          "subtoken_indices": [
+            4,
+            5,
+            6
+          ],
+          "char_start": 18,
+          "char_end_exclusive": 27
+        }
+      ],
+      "content_words": [
+        "surfboard"
+      ],
+      "within_primary_delta_D": 1.6171875,
+      "direction": "positive",
+      "within_content_before": -0.07421875,
+      "within_content_after": 1.765625,
+      "within_operation_before": 2.10546875,
+      "within_operation_after": 2.328125,
+      "DiD_primary_contrast_for_reference": 1.626953125
+    },
+    {
+      "id": 66,
+      "family": "color",
+      "question": "What color is the traffic light?",
+      "exact_template": "What color is the [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "traffic light",
+          "words": [
+            "traffic",
+            "light"
+          ],
+          "subtoken_indices": [
+            4,
+            5
+          ],
+          "char_start": 18,
+          "char_end_exclusive": 31
+        }
+      ],
+      "content_words": [
+        "traffic",
+        "light"
+      ],
+      "within_primary_delta_D": -0.078125,
+      "direction": "negative",
+      "within_content_before": 0.234375,
+      "within_content_after": 0.515625,
+      "within_operation_before": -0.125,
+      "within_operation_after": 0.234375,
+      "DiD_primary_contrast_for_reference": 0.0390625
+    },
+    {
+      "id": 71,
+      "family": "color",
+      "question": "What color are the tents in the background?",
+      "exact_template": "What color are the [ENTITY] in the background?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "tents",
+          "words": [
+            "tents"
+          ],
+          "subtoken_indices": [
+            4,
+            5
+          ],
+          "char_start": 19,
+          "char_end_exclusive": 24
+        }
+      ],
+      "content_words": [
+        "tents"
+      ],
+      "within_primary_delta_D": 4.189453125,
+      "direction": "positive",
+      "within_content_before": 0.1328125,
+      "within_content_after": 2.84375,
+      "within_operation_before": 4.494140625,
+      "within_operation_after": 3.015625,
+      "DiD_primary_contrast_for_reference": 4.10791015625
+    },
+    {
+      "id": 103,
+      "family": "color",
+      "question": "What color is the truck?",
+      "exact_template": "What color is the [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "truck",
+          "words": [
+            "truck"
+          ],
+          "subtoken_indices": [
+            4,
+            5
+          ],
+          "char_start": 18,
+          "char_end_exclusive": 23
+        }
+      ],
+      "content_words": [
+        "truck"
+      ],
+      "within_primary_delta_D": 4.345703125,
+      "direction": "positive",
+      "within_content_before": 0.03125,
+      "within_content_after": 0.4609375,
+      "within_operation_before": 1.947265625,
+      "within_operation_after": -1.96875,
+      "DiD_primary_contrast_for_reference": 4.3115234375
+    },
+    {
+      "id": 116,
+      "family": "color",
+      "question": "What color are the lines?",
+      "exact_template": "What color are the [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "lines",
+          "words": [
+            "lines"
+          ],
+          "subtoken_indices": [
+            4
+          ],
+          "char_start": 19,
+          "char_end_exclusive": 24
+        }
+      ],
+      "content_words": [
+        "lines"
+      ],
+      "within_primary_delta_D": 1.20703125,
+      "direction": "positive",
+      "within_content_before": -0.82421875,
+      "within_content_after": -0.546875,
+      "within_operation_before": 1.2265625,
+      "within_operation_after": 0.296875,
+      "DiD_primary_contrast_for_reference": 1.0234375
+    },
+    {
+      "id": 140,
+      "family": "color",
+      "question": "What color is the boys shirt on the shoulder?",
+      "exact_template": "What color is the [ENTITY] on the shoulder?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "boys shirt",
+          "words": [
+            "boys",
+            "shirt"
+          ],
+          "subtoken_indices": [
+            4,
+            5,
+            6
+          ],
+          "char_start": 18,
+          "char_end_exclusive": 28
+        }
+      ],
+      "content_words": [
+        "boys",
+        "shirt"
+      ],
+      "within_primary_delta_D": 3.2958984375,
+      "direction": "positive",
+      "within_content_before": 0.1572265625,
+      "within_content_after": 0.0078125,
+      "within_operation_before": 2.4453125,
+      "within_operation_after": -1.0,
+      "DiD_primary_contrast_for_reference": 3.345703125
+    },
+    {
+      "id": 141,
+      "family": "color",
+      "question": "What color are the birds beaks?",
+      "exact_template": "What color are the [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "birds beaks",
+          "words": [
+            "birds",
+            "beaks"
+          ],
+          "subtoken_indices": [
+            4,
+            5,
+            6
+          ],
+          "char_start": 19,
+          "char_end_exclusive": 30
+        }
+      ],
+      "content_words": [
+        "birds",
+        "beaks"
+      ],
+      "within_primary_delta_D": 3.505859375,
+      "direction": "positive",
+      "within_content_before": -0.39453125,
+      "within_content_after": 0.53125,
+      "within_operation_before": 2.830078125,
+      "within_operation_after": 0.25,
+      "DiD_primary_contrast_for_reference": 3.513671875
+    },
+    {
+      "id": 144,
+      "family": "color",
+      "question": "What color is this phone?",
+      "exact_template": "What color is this [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "phone",
+          "words": [
+            "phone"
+          ],
+          "subtoken_indices": [
+            4
+          ],
+          "char_start": 19,
+          "char_end_exclusive": 24
+        }
+      ],
+      "content_words": [
+        "phone"
+      ],
+      "within_primary_delta_D": -0.1171875,
+      "direction": "negative",
+      "within_content_before": 1.3125,
+      "within_content_after": 0.390625,
+      "within_operation_before": 2.5546875,
+      "within_operation_after": 1.75,
+      "DiD_primary_contrast_for_reference": 0.068359375
+    },
+    {
+      "id": 158,
+      "family": "color",
+      "question": "What color is the kids hair?",
+      "exact_template": "What color is the [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "kids hair",
+          "words": [
+            "kids",
+            "hair"
+          ],
+          "subtoken_indices": [
+            4,
+            5,
+            6
+          ],
+          "char_start": 18,
+          "char_end_exclusive": 27
+        }
+      ],
+      "content_words": [
+        "kids",
+        "hair"
+      ],
+      "within_primary_delta_D": 3.03125,
+      "direction": "positive",
+      "within_content_before": -0.14453125,
+      "within_content_after": 2.18359375,
+      "within_operation_before": 1.421875,
+      "within_operation_after": 0.71875,
+      "DiD_primary_contrast_for_reference": 3.02099609375
+    },
+    {
+      "id": 160,
+      "family": "color",
+      "question": "What color is the bear?",
+      "exact_template": "What color is the [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "bear",
+          "words": [
+            "bear"
+          ],
+          "subtoken_indices": [
+            4
+          ],
+          "char_start": 18,
+          "char_end_exclusive": 22
+        }
+      ],
+      "content_words": [
+        "bear"
+      ],
+      "within_primary_delta_D": 4.19140625,
+      "direction": "positive",
+      "within_content_before": 0.984375,
+      "within_content_after": 5.265625,
+      "within_operation_before": 1.84765625,
+      "within_operation_after": 1.9375,
+      "DiD_primary_contrast_for_reference": 4.283203125
+    },
+    {
+      "id": 167,
+      "family": "color",
+      "question": "What color are the flowers?",
+      "exact_template": "What color are the [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "flowers",
+          "words": [
+            "flowers"
+          ],
+          "subtoken_indices": [
+            4
+          ],
+          "char_start": 19,
+          "char_end_exclusive": 26
+        }
+      ],
+      "content_words": [
+        "flowers"
+      ],
+      "within_primary_delta_D": -0.2890625,
+      "direction": "negative",
+      "within_content_before": 2.46875,
+      "within_content_after": 3.3125,
+      "within_operation_before": -0.3203125,
+      "within_operation_after": 0.8125,
+      "DiD_primary_contrast_for_reference": -0.212890625
+    },
+    {
+      "id": 171,
+      "family": "color",
+      "question": "What color is the frisbee?",
+      "exact_template": "What color is the [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "frisbee",
+          "words": [
+            "frisbee"
+          ],
+          "subtoken_indices": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "char_start": 18,
+          "char_end_exclusive": 25
+        }
+      ],
+      "content_words": [
+        "frisbee"
+      ],
+      "within_primary_delta_D": 0.1689453125,
+      "direction": "positive",
+      "within_content_before": -0.1494140625,
+      "within_content_after": 1.48046875,
+      "within_operation_before": 1.3203125,
+      "within_operation_after": 2.78125,
+      "DiD_primary_contrast_for_reference": 0.21875
+    },
+    {
+      "id": 20,
+      "family": "count",
+      "question": "How many zebras are there?",
+      "exact_template": "How many [ENTITY] are there?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "zebras",
+          "words": [
+            "zebras"
+          ],
+          "subtoken_indices": [
+            2,
+            3,
+            4
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "zebras"
+      ],
+      "within_primary_delta_D": 0.91796875,
+      "direction": "positive",
+      "within_content_before": -0.3619791666666667,
+      "within_content_after": 0.8333333333333334,
+      "within_operation_before": 0.05078125,
+      "within_operation_after": 0.328125,
+      "DiD_primary_contrast_for_reference": 0.9537760416666667
+    },
+    {
+      "id": 25,
+      "family": "count",
+      "question": "How much water will the flowers draw?",
+      "exact_template": "How much [ENTITY] will the flowers draw?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "water",
+          "words": [
+            "water"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 14
+        }
+      ],
+      "content_words": [
+        "water"
+      ],
+      "within_primary_delta_D": 0.869140625,
+      "direction": "positive",
+      "within_content_before": 0.12890625,
+      "within_content_after": 1.96875,
+      "within_operation_before": 0.193359375,
+      "within_operation_after": 1.1640625,
+      "DiD_primary_contrast_for_reference": 0.8291015625
+    },
+    {
+      "id": 35,
+      "family": "count",
+      "question": "How many blades does the ceiling fan have?",
+      "exact_template": "How many [ENTITY] does the ceiling fan have?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "blades",
+          "words": [
+            "blades"
+          ],
+          "subtoken_indices": [
+            2,
+            3
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "blades"
+      ],
+      "within_primary_delta_D": 2.58984375,
+      "direction": "positive",
+      "within_content_before": -0.75,
+      "within_content_after": 1.15625,
+      "within_operation_before": 0.30078125,
+      "within_operation_after": -0.3828125,
+      "DiD_primary_contrast_for_reference": 2.625
+    },
+    {
+      "id": 43,
+      "family": "count",
+      "question": "How many zebras are present?",
+      "exact_template": "How many [ENTITY] are present?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "zebras",
+          "words": [
+            "zebras"
+          ],
+          "subtoken_indices": [
+            2,
+            3,
+            4
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "zebras"
+      ],
+      "within_primary_delta_D": 0.9440104166666667,
+      "direction": "positive",
+      "within_content_before": -0.125,
+      "within_content_after": 1.4635416666666667,
+      "within_operation_before": 1.37109375,
+      "within_operation_after": 2.015625,
+      "DiD_primary_contrast_for_reference": 0.98828125
+    },
+    {
+      "id": 55,
+      "family": "count",
+      "question": "How many horses are there?",
+      "exact_template": "How many [ENTITY] are there?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "horses",
+          "words": [
+            "horses"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "horses"
+      ],
+      "within_primary_delta_D": -0.46484375,
+      "direction": "negative",
+      "within_content_before": 0.5625,
+      "within_content_after": 0.90625,
+      "within_operation_before": 0.01953125,
+      "within_operation_after": 0.828125,
+      "DiD_primary_contrast_for_reference": -0.3828125
+    },
+    {
+      "id": 56,
+      "family": "count",
+      "question": "How many giraffes are there?",
+      "exact_template": "How many [ENTITY] are there?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "giraffes",
+          "words": [
+            "giraffes"
+          ],
+          "subtoken_indices": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 17
+        }
+      ],
+      "content_words": [
+        "giraffes"
+      ],
+      "within_primary_delta_D": 0.25390625,
+      "direction": "positive",
+      "within_content_before": 0.12109375,
+      "within_content_after": 1.078125,
+      "within_operation_before": 0.015625,
+      "within_operation_after": 0.71875,
+      "DiD_primary_contrast_for_reference": 0.255859375
+    },
+    {
+      "id": 62,
+      "family": "count",
+      "question": "How many slices are in the picture?",
+      "exact_template": "How many [ENTITY] are in the picture?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "slices",
+          "words": [
+            "slices"
+          ],
+          "subtoken_indices": [
+            2,
+            3
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "slices"
+      ],
+      "within_primary_delta_D": 3.861328125,
+      "direction": "positive",
+      "within_content_before": -0.80859375,
+      "within_content_after": 0.1796875,
+      "within_operation_before": 2.373046875,
+      "within_operation_after": -0.5,
+      "DiD_primary_contrast_for_reference": 3.8642578125
+    },
+    {
+      "id": 68,
+      "family": "count",
+      "question": "How many pieces of pizza are there?",
+      "exact_template": "How many [ENTITY_1] of [ENTITY_2] are there?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY_1]",
+          "original_phrase": "pieces",
+          "words": [
+            "pieces"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        },
+        {
+          "placeholder": "[ENTITY_2]",
+          "original_phrase": "pizza",
+          "words": [
+            "pizza"
+          ],
+          "subtoken_indices": [
+            4,
+            5
+          ],
+          "char_start": 19,
+          "char_end_exclusive": 24
+        }
+      ],
+      "content_words": [
+        "pieces",
+        "pizza"
+      ],
+      "within_primary_delta_D": 0.876953125,
+      "direction": "positive",
+      "within_content_before": 0.576171875,
+      "within_content_after": 0.5546875,
+      "within_operation_before": 0.9921875,
+      "within_operation_after": 0.09375,
+      "DiD_primary_contrast_for_reference": 0.7734375
+    },
+    {
+      "id": 78,
+      "family": "count",
+      "question": "How many buildings are in the distance?",
+      "exact_template": "How many [ENTITY] are in the distance?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "buildings",
+          "words": [
+            "buildings"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 18
+        }
+      ],
+      "content_words": [
+        "buildings"
+      ],
+      "within_primary_delta_D": 3.974609375,
+      "direction": "positive",
+      "within_content_before": -1.9609375,
+      "within_content_after": 0.8125,
+      "within_operation_before": 1.357421875,
+      "within_operation_after": 0.15625,
+      "DiD_primary_contrast_for_reference": 3.8740234375
+    },
+    {
+      "id": 87,
+      "family": "count",
+      "question": "How many cows are present?",
+      "exact_template": "How many [ENTITY] are present?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "cows",
+          "words": [
+            "cows"
+          ],
+          "subtoken_indices": [
+            2,
+            3
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 13
+        }
+      ],
+      "content_words": [
+        "cows"
+      ],
+      "within_primary_delta_D": 2.49609375,
+      "direction": "positive",
+      "within_content_before": 0.39453125,
+      "within_content_after": 2.359375,
+      "within_operation_before": 1.0234375,
+      "within_operation_after": 0.4921875,
+      "DiD_primary_contrast_for_reference": 2.4912109375
+    },
+    {
+      "id": 90,
+      "family": "count",
+      "question": "How many windows are there?",
+      "exact_template": "How many [ENTITY] are there?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "windows",
+          "words": [
+            "windows"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 16
+        }
+      ],
+      "content_words": [
+        "windows"
+      ],
+      "within_primary_delta_D": 2.90625,
+      "direction": "positive",
+      "within_content_before": -2.72265625,
+      "within_content_after": -0.640625,
+      "within_operation_before": -0.34765625,
+      "within_operation_after": -1.171875,
+      "DiD_primary_contrast_for_reference": 2.833984375
+    },
+    {
+      "id": 94,
+      "family": "count",
+      "question": "How many Giraffes are in the picture?",
+      "exact_template": "How many [ENTITY] are in the picture?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "Giraffes",
+          "words": [
+            "Giraffes"
+          ],
+          "subtoken_indices": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 17
+        }
+      ],
+      "content_words": [
+        "Giraffes"
+      ],
+      "within_primary_delta_D": 1.37109375,
+      "direction": "positive",
+      "within_content_before": -0.0546875,
+      "within_content_after": 0.66015625,
+      "within_operation_before": 1.1328125,
+      "within_operation_after": 0.4765625,
+      "DiD_primary_contrast_for_reference": 1.2890625
+    },
+    {
+      "id": 98,
+      "family": "count",
+      "question": "How many bikes are there?",
+      "exact_template": "How many [ENTITY] are there?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "bikes",
+          "words": [
+            "bikes"
+          ],
+          "subtoken_indices": [
+            2,
+            3
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 14
+        }
+      ],
+      "content_words": [
+        "bikes"
+      ],
+      "within_primary_delta_D": 3.55859375,
+      "direction": "positive",
+      "within_content_before": 0.08984375,
+      "within_content_after": 3.390625,
+      "within_operation_before": -0.2578125,
+      "within_operation_after": -0.515625,
+      "DiD_primary_contrast_for_reference": 3.634765625
+    },
+    {
+      "id": 104,
+      "family": "count",
+      "question": "How many horses?",
+      "exact_template": "How many [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "horses",
+          "words": [
+            "horses"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "horses"
+      ],
+      "within_primary_delta_D": 5.3984375,
+      "direction": "positive",
+      "within_content_before": -1.4921875,
+      "within_content_after": 4.6875,
+      "within_operation_before": 1.3671875,
+      "within_operation_after": 2.1484375,
+      "DiD_primary_contrast_for_reference": 5.3935546875
+    },
+    {
+      "id": 105,
+      "family": "count",
+      "question": "How many pens are there?",
+      "exact_template": "How many [ENTITY] are there?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "pens",
+          "words": [
+            "pens"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 13
+        }
+      ],
+      "content_words": [
+        "pens"
+      ],
+      "within_primary_delta_D": -1.72265625,
+      "direction": "negative",
+      "within_content_before": 3.85546875,
+      "within_content_after": 1.359375,
+      "within_operation_before": 0.796875,
+      "within_operation_after": 0.0234375,
+      "DiD_primary_contrast_for_reference": -1.701171875
+    },
+    {
+      "id": 107,
+      "family": "count",
+      "question": "How many poles is this person holding?",
+      "exact_template": "How many [ENTITY] is this person holding?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "poles",
+          "words": [
+            "poles"
+          ],
+          "subtoken_indices": [
+            2,
+            3
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 14
+        }
+      ],
+      "content_words": [
+        "poles"
+      ],
+      "within_primary_delta_D": 1.171875,
+      "direction": "positive",
+      "within_content_before": 0.94140625,
+      "within_content_after": 2.875,
+      "within_operation_before": 0.73046875,
+      "within_operation_after": 1.4921875,
+      "DiD_primary_contrast_for_reference": 1.25390625
+    },
+    {
+      "id": 128,
+      "family": "count",
+      "question": "How many people are skiing?",
+      "exact_template": "How many [ENTITY] are skiing?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "people",
+          "words": [
+            "people"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "people"
+      ],
+      "within_primary_delta_D": 2.05859375,
+      "direction": "positive",
+      "within_content_before": 0.28125,
+      "within_content_after": 0.65625,
+      "within_operation_before": 3.31640625,
+      "within_operation_after": 1.6328125,
+      "DiD_primary_contrast_for_reference": 2.07080078125
+    },
+    {
+      "id": 132,
+      "family": "count",
+      "question": "How many players can be seen in this picture?",
+      "exact_template": "How many [ENTITY] can be seen in this picture?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "players",
+          "words": [
+            "players"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 16
+        }
+      ],
+      "content_words": [
+        "players"
+      ],
+      "within_primary_delta_D": 2.55859375,
+      "direction": "positive",
+      "within_content_before": 0.7421875,
+      "within_content_after": 2.234375,
+      "within_operation_before": 1.76953125,
+      "within_operation_after": 0.703125,
+      "DiD_primary_contrast_for_reference": 2.6044921875
+    },
+    {
+      "id": 136,
+      "family": "count",
+      "question": "How many dining chairs are there?",
+      "exact_template": "How many [ENTITY] are there?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "dining chairs",
+          "words": [
+            "dining",
+            "chairs"
+          ],
+          "subtoken_indices": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 22
+        }
+      ],
+      "content_words": [
+        "dining",
+        "chairs"
+      ],
+      "within_primary_delta_D": 2.166015625,
+      "direction": "positive",
+      "within_content_before": -0.111328125,
+      "within_content_after": 0.62109375,
+      "within_operation_before": 0.21484375,
+      "within_operation_after": -1.21875,
+      "DiD_primary_contrast_for_reference": 2.130859375
+    },
+    {
+      "id": 142,
+      "family": "count",
+      "question": "How many people are on the field?",
+      "exact_template": "How many [ENTITY] are on the field?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "people",
+          "words": [
+            "people"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "people"
+      ],
+      "within_primary_delta_D": 0.00390625,
+      "direction": "positive",
+      "within_content_before": 0.375,
+      "within_content_after": 0.34375,
+      "within_operation_before": 1.23046875,
+      "within_operation_after": 1.1953125,
+      "DiD_primary_contrast_for_reference": 0.001953125
+    },
+    {
+      "id": 145,
+      "family": "count",
+      "question": "How many women are in the photo?",
+      "exact_template": "How many [ENTITY] are in the photo?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "women",
+          "words": [
+            "women"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 14
+        }
+      ],
+      "content_words": [
+        "women"
+      ],
+      "within_primary_delta_D": -0.21875,
+      "direction": "negative",
+      "within_content_before": 2.6953125,
+      "within_content_after": -1.1875,
+      "within_operation_before": 2.2734375,
+      "within_operation_after": -1.390625,
+      "DiD_primary_contrast_for_reference": -0.267578125
+    },
+    {
+      "id": 146,
+      "family": "count",
+      "question": "How many books are in the image?",
+      "exact_template": "How many [ENTITY] are in the image?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "books",
+          "words": [
+            "books"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 14
+        }
+      ],
+      "content_words": [
+        "books"
+      ],
+      "within_primary_delta_D": 3.599609375,
+      "direction": "positive",
+      "within_content_before": -1.265625,
+      "within_content_after": -1.296875,
+      "within_operation_before": 1.904296875,
+      "within_operation_after": -1.7265625,
+      "DiD_primary_contrast_for_reference": 3.4404296875
+    },
+    {
+      "id": 154,
+      "family": "count",
+      "question": "How many tennis balls are shown?",
+      "exact_template": "How many [ENTITY] are shown?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "tennis balls",
+          "words": [
+            "tennis",
+            "balls"
+          ],
+          "subtoken_indices": [
+            2,
+            3
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 21
+        }
+      ],
+      "content_words": [
+        "tennis",
+        "balls"
+      ],
+      "within_primary_delta_D": 2.748046875,
+      "direction": "positive",
+      "within_content_before": 0.1015625,
+      "within_content_after": 0.1015625,
+      "within_operation_before": 3.810546875,
+      "within_operation_after": 1.0625,
+      "DiD_primary_contrast_for_reference": 2.3525390625
+    },
+    {
+      "id": 157,
+      "family": "count",
+      "question": "How many trees do you see?",
+      "exact_template": "How many [ENTITY] do you see?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "trees",
+          "words": [
+            "trees"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 14
+        }
+      ],
+      "content_words": [
+        "trees"
+      ],
+      "within_primary_delta_D": 2.828125,
+      "direction": "positive",
+      "within_content_before": 1.5234375,
+      "within_content_after": 3.578125,
+      "within_operation_before": 0.328125,
+      "within_operation_after": -0.4453125,
+      "DiD_primary_contrast_for_reference": 2.91796875
+    },
+    {
+      "id": 159,
+      "family": "count",
+      "question": "How many umbrellas do you see?",
+      "exact_template": "How many [ENTITY] do you see?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "umbrellas",
+          "words": [
+            "umbrellas"
+          ],
+          "subtoken_indices": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 18
+        }
+      ],
+      "content_words": [
+        "umbrellas"
+      ],
+      "within_primary_delta_D": 1.517578125,
+      "direction": "positive",
+      "within_content_before": 0.177734375,
+      "within_content_after": 0.9453125,
+      "within_operation_before": -0.25,
+      "within_operation_after": -1.0,
+      "DiD_primary_contrast_for_reference": 1.474609375
+    },
+    {
+      "id": 166,
+      "family": "count",
+      "question": "How many horses are in the photo?",
+      "exact_template": "How many [ENTITY] are in the photo?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "horses",
+          "words": [
+            "horses"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "horses"
+      ],
+      "within_primary_delta_D": -0.03125,
+      "direction": "negative",
+      "within_content_before": 0.5234375,
+      "within_content_after": 0.078125,
+      "within_operation_before": 1.625,
+      "within_operation_after": 1.2109375,
+      "DiD_primary_contrast_for_reference": -0.1669921875
+    },
+    {
+      "id": 172,
+      "family": "count",
+      "question": "How many buttons are visible in the picture?",
+      "exact_template": "How many [ENTITY] are visible in the picture?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "buttons",
+          "words": [
+            "buttons"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 16
+        }
+      ],
+      "content_words": [
+        "buttons"
+      ],
+      "within_primary_delta_D": -2.49609375,
+      "direction": "negative",
+      "within_content_before": -0.828125,
+      "within_content_after": -4.140625,
+      "within_operation_before": 0.56640625,
+      "within_operation_after": -0.25,
+      "DiD_primary_contrast_for_reference": -2.50390625
+    },
+    {
+      "id": 173,
+      "family": "count",
+      "question": "How many levels does the bus have?",
+      "exact_template": "How many [ENTITY] does the bus have?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "levels",
+          "words": [
+            "levels"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "levels"
+      ],
+      "within_primary_delta_D": 3.251953125,
+      "direction": "positive",
+      "within_content_before": -0.2578125,
+      "within_content_after": 3.9375,
+      "within_operation_before": 0.955078125,
+      "within_operation_after": 1.8984375,
+      "DiD_primary_contrast_for_reference": 3.3076171875
+    },
+    {
+      "id": 184,
+      "family": "count",
+      "question": "How many sheep are pictured?",
+      "exact_template": "How many [ENTITY] are pictured?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "sheep",
+          "words": [
+            "sheep"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 14
+        }
+      ],
+      "content_words": [
+        "sheep"
+      ],
+      "within_primary_delta_D": 0.02734375,
+      "direction": "positive",
+      "within_content_before": 0.3046875,
+      "within_content_after": -0.625,
+      "within_operation_before": 3.65234375,
+      "within_operation_after": 2.6953125,
+      "DiD_primary_contrast_for_reference": 0.044921875
+    },
+    {
+      "id": 185,
+      "family": "count",
+      "question": "How many people on the moped?",
+      "exact_template": "How many [ENTITY] on the moped?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "people",
+          "words": [
+            "people"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "people"
+      ],
+      "within_primary_delta_D": 0.859375,
+      "direction": "positive",
+      "within_content_before": 0.125,
+      "within_content_after": 0.4375,
+      "within_operation_before": 3.046875,
+      "within_operation_after": 2.5,
+      "DiD_primary_contrast_for_reference": 0.884765625
+    },
+    {
+      "id": 186,
+      "family": "count",
+      "question": "How many people are in the water?",
+      "exact_template": "How many [ENTITY] are in the water?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "people",
+          "words": [
+            "people"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "people"
+      ],
+      "within_primary_delta_D": 1.32421875,
+      "direction": "positive",
+      "within_content_before": -0.1796875,
+      "within_content_after": -0.3125,
+      "within_operation_before": 2.33984375,
+      "within_operation_after": 0.8828125,
+      "DiD_primary_contrast_for_reference": 1.240234375
+    },
+    {
+      "id": 187,
+      "family": "count",
+      "question": "How many chairs are there?",
+      "exact_template": "How many [ENTITY] are there?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "chairs",
+          "words": [
+            "chairs"
+          ],
+          "subtoken_indices": [
+            2,
+            3
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "chairs"
+      ],
+      "within_primary_delta_D": 2.0,
+      "direction": "positive",
+      "within_content_before": 0.51171875,
+      "within_content_after": 1.953125,
+      "within_operation_before": -0.00390625,
+      "within_operation_after": -0.5625,
+      "DiD_primary_contrast_for_reference": 2.009765625
+    },
+    {
+      "id": 188,
+      "family": "count",
+      "question": "How many people can this much food feed?",
+      "exact_template": "How many [ENTITY] can this much food feed?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "people",
+          "words": [
+            "people"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "people"
+      ],
+      "within_primary_delta_D": -0.3359375,
+      "direction": "negative",
+      "within_content_before": -0.0546875,
+      "within_content_after": 0.453125,
+      "within_operation_before": 0.5546875,
+      "within_operation_after": 1.3984375,
+      "DiD_primary_contrast_for_reference": -0.2841796875
+    },
+    {
+      "id": 189,
+      "family": "count",
+      "question": "How many black stripes are on the blue shirt?",
+      "exact_template": "How many black [ENTITY] are on the blue shirt?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "stripes",
+          "words": [
+            "stripes"
+          ],
+          "subtoken_indices": [
+            3,
+            4
+          ],
+          "char_start": 15,
+          "char_end_exclusive": 22
+        }
+      ],
+      "content_words": [
+        "stripes"
+      ],
+      "within_primary_delta_D": 2.28125,
+      "direction": "positive",
+      "within_content_before": -0.7890625,
+      "within_content_after": 1.59375,
+      "within_operation_before": -0.828125,
+      "within_operation_after": -0.7265625,
+      "DiD_primary_contrast_for_reference": 2.541015625
+    },
+    {
+      "id": 190,
+      "family": "count",
+      "question": "How many donuts are in the picture?",
+      "exact_template": "How many [ENTITY] are in the picture?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "donuts",
+          "words": [
+            "donuts"
+          ],
+          "subtoken_indices": [
+            2,
+            3
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "donuts"
+      ],
+      "within_primary_delta_D": 2.740234375,
+      "direction": "positive",
+      "within_content_before": -0.353515625,
+      "within_content_after": 0.234375,
+      "within_operation_before": 0.00390625,
+      "within_operation_after": -2.1484375,
+      "DiD_primary_contrast_for_reference": 2.8583984375
+    },
+    {
+      "id": 191,
+      "family": "count",
+      "question": "How many baby teeth are visible??",
+      "exact_template": "How many [ENTITY] are visible??",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "baby teeth",
+          "words": [
+            "baby",
+            "teeth"
+          ],
+          "subtoken_indices": [
+            2,
+            3
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 19
+        }
+      ],
+      "content_words": [
+        "baby",
+        "teeth"
+      ],
+      "within_primary_delta_D": 1.513671875,
+      "direction": "positive",
+      "within_content_before": 0.03125,
+      "within_content_after": -1.21875,
+      "within_operation_before": 3.115234375,
+      "within_operation_after": 0.3515625,
+      "DiD_primary_contrast_for_reference": 1.5263671875
+    },
+    {
+      "id": 192,
+      "family": "count",
+      "question": "How many shoes do you see?",
+      "exact_template": "How many [ENTITY] do you see?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "shoes",
+          "words": [
+            "shoes"
+          ],
+          "subtoken_indices": [
+            2,
+            3
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 14
+        }
+      ],
+      "content_words": [
+        "shoes"
+      ],
+      "within_primary_delta_D": 1.5,
+      "direction": "positive",
+      "within_content_before": 0.58984375,
+      "within_content_after": 1.8359375,
+      "within_operation_before": 0.33984375,
+      "within_operation_after": 0.0859375,
+      "DiD_primary_contrast_for_reference": 1.49609375
+    },
+    {
+      "id": 194,
+      "family": "count",
+      "question": "How many people are watching?",
+      "exact_template": "How many [ENTITY] are watching?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "people",
+          "words": [
+            "people"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "people"
+      ],
+      "within_primary_delta_D": 2.3828125,
+      "direction": "positive",
+      "within_content_before": 0.1171875,
+      "within_content_after": 0.0625,
+      "within_operation_before": 2.53125,
+      "within_operation_after": 0.09375,
+      "DiD_primary_contrast_for_reference": 2.4150390625
+    },
+    {
+      "id": 195,
+      "family": "count",
+      "question": "How many men bicycling?",
+      "exact_template": "How many [ENTITY] bicycling?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "men",
+          "words": [
+            "men"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 12
+        }
+      ],
+      "content_words": [
+        "men"
+      ],
+      "within_primary_delta_D": 1.724609375,
+      "direction": "positive",
+      "within_content_before": -0.1015625,
+      "within_content_after": 0.21875,
+      "within_operation_before": 2.904296875,
+      "within_operation_after": 1.5,
+      "DiD_primary_contrast_for_reference": 1.8173828125
+    },
+    {
+      "id": 196,
+      "family": "count",
+      "question": "How many sheep are lying down?",
+      "exact_template": "How many [ENTITY] are lying down?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "sheep",
+          "words": [
+            "sheep"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 14
+        }
+      ],
+      "content_words": [
+        "sheep"
+      ],
+      "within_primary_delta_D": 3.875,
+      "direction": "positive",
+      "within_content_before": -0.0703125,
+      "within_content_after": -0.296875,
+      "within_operation_before": 4.2890625,
+      "within_operation_after": 0.1875,
+      "DiD_primary_contrast_for_reference": 3.94140625
+    },
+    {
+      "id": 197,
+      "family": "count",
+      "question": "How many cows are there?",
+      "exact_template": "How many [ENTITY] are there?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "cows",
+          "words": [
+            "cows"
+          ],
+          "subtoken_indices": [
+            2,
+            3
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 13
+        }
+      ],
+      "content_words": [
+        "cows"
+      ],
+      "within_primary_delta_D": 1.99609375,
+      "direction": "positive",
+      "within_content_before": 0.81640625,
+      "within_content_after": 2.6875,
+      "within_operation_before": 0.6640625,
+      "within_operation_after": 0.5390625,
+      "DiD_primary_contrast_for_reference": 1.6328125
+    },
+    {
+      "id": 198,
+      "family": "count",
+      "question": "How many dogs are there?",
+      "exact_template": "How many [ENTITY] are there?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "dogs",
+          "words": [
+            "dogs"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 13
+        }
+      ],
+      "content_words": [
+        "dogs"
+      ],
+      "within_primary_delta_D": 0.74609375,
+      "direction": "positive",
+      "within_content_before": 0.1171875,
+      "within_content_after": 1.0625,
+      "within_operation_before": -0.30859375,
+      "within_operation_after": -0.109375,
+      "DiD_primary_contrast_for_reference": 0.796875
+    },
+    {
+      "id": 199,
+      "family": "count",
+      "question": "How many items are in the bowl?",
+      "exact_template": "How many [ENTITY] are in the bowl?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "items",
+          "words": [
+            "items"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 14
+        }
+      ],
+      "content_words": [
+        "items"
+      ],
+      "within_primary_delta_D": 0.775390625,
+      "direction": "positive",
+      "within_content_before": 1.71875,
+      "within_content_after": 1.484375,
+      "within_operation_before": 0.751953125,
+      "within_operation_after": -0.2578125,
+      "DiD_primary_contrast_for_reference": 0.833984375
+    }
+  ],
+  "repeated_template_groups": [
+    {
+      "family": "color",
+      "exact_template": "What color are the [ENTITY]?",
+      "n": 5,
+      "ids": [
+        48,
+        49,
+        116,
+        141,
+        167
+      ],
+      "positive_ids": [
+        48,
+        49,
+        116,
+        141
+      ],
+      "negative_ids": [
+        167
+      ],
+      "zero_ids": [],
+      "has_both_directions": true,
+      "rows": [
+        {
+          "id": 48,
+          "family": "color",
+          "question": "What color are the players shorts?",
+          "exact_template": "What color are the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "players shorts",
+              "words": [
+                "players",
+                "shorts"
+              ],
+              "subtoken_indices": [
+                4,
+                5,
+                6
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 33
+            }
+          ],
+          "content_words": [
+            "players",
+            "shorts"
+          ],
+          "within_primary_delta_D": 2.6083984375,
+          "direction": "positive",
+          "within_content_before": 0.1298828125,
+          "within_content_after": 1.45703125,
+          "within_operation_before": 1.5,
+          "within_operation_after": 0.21875,
+          "DiD_primary_contrast_for_reference": 2.64453125
+        },
+        {
+          "id": 49,
+          "family": "color",
+          "question": "What color are the walls?",
+          "exact_template": "What color are the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "walls",
+              "words": [
+                "walls"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 24
+            }
+          ],
+          "content_words": [
+            "walls"
+          ],
+          "within_primary_delta_D": 4.39453125,
+          "direction": "positive",
+          "within_content_before": 0.38671875,
+          "within_content_after": 1.3125,
+          "within_operation_before": 2.484375,
+          "within_operation_after": -0.984375,
+          "DiD_primary_contrast_for_reference": 4.314453125
+        },
+        {
+          "id": 116,
+          "family": "color",
+          "question": "What color are the lines?",
+          "exact_template": "What color are the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "lines",
+              "words": [
+                "lines"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 24
+            }
+          ],
+          "content_words": [
+            "lines"
+          ],
+          "within_primary_delta_D": 1.20703125,
+          "direction": "positive",
+          "within_content_before": -0.82421875,
+          "within_content_after": -0.546875,
+          "within_operation_before": 1.2265625,
+          "within_operation_after": 0.296875,
+          "DiD_primary_contrast_for_reference": 1.0234375
+        },
+        {
+          "id": 141,
+          "family": "color",
+          "question": "What color are the birds beaks?",
+          "exact_template": "What color are the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "birds beaks",
+              "words": [
+                "birds",
+                "beaks"
+              ],
+              "subtoken_indices": [
+                4,
+                5,
+                6
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 30
+            }
+          ],
+          "content_words": [
+            "birds",
+            "beaks"
+          ],
+          "within_primary_delta_D": 3.505859375,
+          "direction": "positive",
+          "within_content_before": -0.39453125,
+          "within_content_after": 0.53125,
+          "within_operation_before": 2.830078125,
+          "within_operation_after": 0.25,
+          "DiD_primary_contrast_for_reference": 3.513671875
+        },
+        {
+          "id": 167,
+          "family": "color",
+          "question": "What color are the flowers?",
+          "exact_template": "What color are the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "flowers",
+              "words": [
+                "flowers"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 26
+            }
+          ],
+          "content_words": [
+            "flowers"
+          ],
+          "within_primary_delta_D": -0.2890625,
+          "direction": "negative",
+          "within_content_before": 2.46875,
+          "within_content_after": 3.3125,
+          "within_operation_before": -0.3203125,
+          "within_operation_after": 0.8125,
+          "DiD_primary_contrast_for_reference": -0.212890625
+        }
+      ]
+    },
+    {
+      "family": "color",
+      "exact_template": "What color is his [ENTITY]?",
+      "n": 2,
+      "ids": [
+        13,
+        42
+      ],
+      "positive_ids": [
+        13,
+        42
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 13,
+          "family": "color",
+          "question": "What color is his hat?",
+          "exact_template": "What color is his [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "hat",
+              "words": [
+                "hat"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 21
+            }
+          ],
+          "content_words": [
+            "hat"
+          ],
+          "within_primary_delta_D": 6.994140625,
+          "direction": "positive",
+          "within_content_before": -0.4609375,
+          "within_content_after": 4.171875,
+          "within_operation_before": 2.626953125,
+          "within_operation_after": 0.265625,
+          "DiD_primary_contrast_for_reference": 6.947265625
+        },
+        {
+          "id": 42,
+          "family": "color",
+          "question": "What color is his shirt?",
+          "exact_template": "What color is his [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "shirt",
+              "words": [
+                "shirt"
+              ],
+              "subtoken_indices": [
+                4,
+                5
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 23
+            }
+          ],
+          "content_words": [
+            "shirt"
+          ],
+          "within_primary_delta_D": 8.71875,
+          "direction": "positive",
+          "within_content_before": -0.11328125,
+          "within_content_after": 4.734375,
+          "within_operation_before": 2.08984375,
+          "within_operation_after": -1.78125,
+          "DiD_primary_contrast_for_reference": 8.7578125
+        }
+      ]
+    },
+    {
+      "family": "color",
+      "exact_template": "What color is the [ENTITY]?",
+      "n": 7,
+      "ids": [
+        1,
+        64,
+        66,
+        103,
+        158,
+        160,
+        171
+      ],
+      "positive_ids": [
+        1,
+        64,
+        103,
+        158,
+        160,
+        171
+      ],
+      "negative_ids": [
+        66
+      ],
+      "zero_ids": [],
+      "has_both_directions": true,
+      "rows": [
+        {
+          "id": 1,
+          "family": "color",
+          "question": "What color is the beach?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "beach",
+              "words": [
+                "beach"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 23
+            }
+          ],
+          "content_words": [
+            "beach"
+          ],
+          "within_primary_delta_D": 4.86328125,
+          "direction": "positive",
+          "within_content_before": -0.078125,
+          "within_content_after": 2.796875,
+          "within_operation_before": 2.45703125,
+          "within_operation_after": 0.46875,
+          "DiD_primary_contrast_for_reference": 4.93359375
+        },
+        {
+          "id": 64,
+          "family": "color",
+          "question": "What color is the surfboard?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "surfboard",
+              "words": [
+                "surfboard"
+              ],
+              "subtoken_indices": [
+                4,
+                5,
+                6
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 27
+            }
+          ],
+          "content_words": [
+            "surfboard"
+          ],
+          "within_primary_delta_D": 1.6171875,
+          "direction": "positive",
+          "within_content_before": -0.07421875,
+          "within_content_after": 1.765625,
+          "within_operation_before": 2.10546875,
+          "within_operation_after": 2.328125,
+          "DiD_primary_contrast_for_reference": 1.626953125
+        },
+        {
+          "id": 66,
+          "family": "color",
+          "question": "What color is the traffic light?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "traffic light",
+              "words": [
+                "traffic",
+                "light"
+              ],
+              "subtoken_indices": [
+                4,
+                5
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 31
+            }
+          ],
+          "content_words": [
+            "traffic",
+            "light"
+          ],
+          "within_primary_delta_D": -0.078125,
+          "direction": "negative",
+          "within_content_before": 0.234375,
+          "within_content_after": 0.515625,
+          "within_operation_before": -0.125,
+          "within_operation_after": 0.234375,
+          "DiD_primary_contrast_for_reference": 0.0390625
+        },
+        {
+          "id": 103,
+          "family": "color",
+          "question": "What color is the truck?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "truck",
+              "words": [
+                "truck"
+              ],
+              "subtoken_indices": [
+                4,
+                5
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 23
+            }
+          ],
+          "content_words": [
+            "truck"
+          ],
+          "within_primary_delta_D": 4.345703125,
+          "direction": "positive",
+          "within_content_before": 0.03125,
+          "within_content_after": 0.4609375,
+          "within_operation_before": 1.947265625,
+          "within_operation_after": -1.96875,
+          "DiD_primary_contrast_for_reference": 4.3115234375
+        },
+        {
+          "id": 158,
+          "family": "color",
+          "question": "What color is the kids hair?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "kids hair",
+              "words": [
+                "kids",
+                "hair"
+              ],
+              "subtoken_indices": [
+                4,
+                5,
+                6
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 27
+            }
+          ],
+          "content_words": [
+            "kids",
+            "hair"
+          ],
+          "within_primary_delta_D": 3.03125,
+          "direction": "positive",
+          "within_content_before": -0.14453125,
+          "within_content_after": 2.18359375,
+          "within_operation_before": 1.421875,
+          "within_operation_after": 0.71875,
+          "DiD_primary_contrast_for_reference": 3.02099609375
+        },
+        {
+          "id": 160,
+          "family": "color",
+          "question": "What color is the bear?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "bear",
+              "words": [
+                "bear"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 22
+            }
+          ],
+          "content_words": [
+            "bear"
+          ],
+          "within_primary_delta_D": 4.19140625,
+          "direction": "positive",
+          "within_content_before": 0.984375,
+          "within_content_after": 5.265625,
+          "within_operation_before": 1.84765625,
+          "within_operation_after": 1.9375,
+          "DiD_primary_contrast_for_reference": 4.283203125
+        },
+        {
+          "id": 171,
+          "family": "color",
+          "question": "What color is the frisbee?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "frisbee",
+              "words": [
+                "frisbee"
+              ],
+              "subtoken_indices": [
+                4,
+                5,
+                6,
+                7
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 25
+            }
+          ],
+          "content_words": [
+            "frisbee"
+          ],
+          "within_primary_delta_D": 0.1689453125,
+          "direction": "positive",
+          "within_content_before": -0.1494140625,
+          "within_content_after": 1.48046875,
+          "within_operation_before": 1.3203125,
+          "within_operation_after": 2.78125,
+          "DiD_primary_contrast_for_reference": 0.21875
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are in the photo?",
+      "n": 2,
+      "ids": [
+        145,
+        166
+      ],
+      "positive_ids": [],
+      "negative_ids": [
+        145,
+        166
+      ],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 145,
+          "family": "count",
+          "question": "How many women are in the photo?",
+          "exact_template": "How many [ENTITY] are in the photo?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "women",
+              "words": [
+                "women"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 14
+            }
+          ],
+          "content_words": [
+            "women"
+          ],
+          "within_primary_delta_D": -0.21875,
+          "direction": "negative",
+          "within_content_before": 2.6953125,
+          "within_content_after": -1.1875,
+          "within_operation_before": 2.2734375,
+          "within_operation_after": -1.390625,
+          "DiD_primary_contrast_for_reference": -0.267578125
+        },
+        {
+          "id": 166,
+          "family": "count",
+          "question": "How many horses are in the photo?",
+          "exact_template": "How many [ENTITY] are in the photo?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "horses",
+              "words": [
+                "horses"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "horses"
+          ],
+          "within_primary_delta_D": -0.03125,
+          "direction": "negative",
+          "within_content_before": 0.5234375,
+          "within_content_after": 0.078125,
+          "within_operation_before": 1.625,
+          "within_operation_after": 1.2109375,
+          "DiD_primary_contrast_for_reference": -0.1669921875
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are in the picture?",
+      "n": 3,
+      "ids": [
+        62,
+        94,
+        190
+      ],
+      "positive_ids": [
+        62,
+        94,
+        190
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 62,
+          "family": "count",
+          "question": "How many slices are in the picture?",
+          "exact_template": "How many [ENTITY] are in the picture?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "slices",
+              "words": [
+                "slices"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "slices"
+          ],
+          "within_primary_delta_D": 3.861328125,
+          "direction": "positive",
+          "within_content_before": -0.80859375,
+          "within_content_after": 0.1796875,
+          "within_operation_before": 2.373046875,
+          "within_operation_after": -0.5,
+          "DiD_primary_contrast_for_reference": 3.8642578125
+        },
+        {
+          "id": 94,
+          "family": "count",
+          "question": "How many Giraffes are in the picture?",
+          "exact_template": "How many [ENTITY] are in the picture?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "Giraffes",
+              "words": [
+                "Giraffes"
+              ],
+              "subtoken_indices": [
+                2,
+                3,
+                4,
+                5
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 17
+            }
+          ],
+          "content_words": [
+            "Giraffes"
+          ],
+          "within_primary_delta_D": 1.37109375,
+          "direction": "positive",
+          "within_content_before": -0.0546875,
+          "within_content_after": 0.66015625,
+          "within_operation_before": 1.1328125,
+          "within_operation_after": 0.4765625,
+          "DiD_primary_contrast_for_reference": 1.2890625
+        },
+        {
+          "id": 190,
+          "family": "count",
+          "question": "How many donuts are in the picture?",
+          "exact_template": "How many [ENTITY] are in the picture?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "donuts",
+              "words": [
+                "donuts"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "donuts"
+          ],
+          "within_primary_delta_D": 2.740234375,
+          "direction": "positive",
+          "within_content_before": -0.353515625,
+          "within_content_after": 0.234375,
+          "within_operation_before": 0.00390625,
+          "within_operation_after": -2.1484375,
+          "DiD_primary_contrast_for_reference": 2.8583984375
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are present?",
+      "n": 2,
+      "ids": [
+        43,
+        87
+      ],
+      "positive_ids": [
+        43,
+        87
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 43,
+          "family": "count",
+          "question": "How many zebras are present?",
+          "exact_template": "How many [ENTITY] are present?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "zebras",
+              "words": [
+                "zebras"
+              ],
+              "subtoken_indices": [
+                2,
+                3,
+                4
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "zebras"
+          ],
+          "within_primary_delta_D": 0.9440104166666667,
+          "direction": "positive",
+          "within_content_before": -0.125,
+          "within_content_after": 1.4635416666666667,
+          "within_operation_before": 1.37109375,
+          "within_operation_after": 2.015625,
+          "DiD_primary_contrast_for_reference": 0.98828125
+        },
+        {
+          "id": 87,
+          "family": "count",
+          "question": "How many cows are present?",
+          "exact_template": "How many [ENTITY] are present?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "cows",
+              "words": [
+                "cows"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 13
+            }
+          ],
+          "content_words": [
+            "cows"
+          ],
+          "within_primary_delta_D": 2.49609375,
+          "direction": "positive",
+          "within_content_before": 0.39453125,
+          "within_content_after": 2.359375,
+          "within_operation_before": 1.0234375,
+          "within_operation_after": 0.4921875,
+          "DiD_primary_contrast_for_reference": 2.4912109375
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are there?",
+      "n": 10,
+      "ids": [
+        20,
+        55,
+        56,
+        90,
+        98,
+        105,
+        136,
+        187,
+        197,
+        198
+      ],
+      "positive_ids": [
+        20,
+        56,
+        90,
+        98,
+        136,
+        187,
+        197,
+        198
+      ],
+      "negative_ids": [
+        55,
+        105
+      ],
+      "zero_ids": [],
+      "has_both_directions": true,
+      "rows": [
+        {
+          "id": 20,
+          "family": "count",
+          "question": "How many zebras are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "zebras",
+              "words": [
+                "zebras"
+              ],
+              "subtoken_indices": [
+                2,
+                3,
+                4
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "zebras"
+          ],
+          "within_primary_delta_D": 0.91796875,
+          "direction": "positive",
+          "within_content_before": -0.3619791666666667,
+          "within_content_after": 0.8333333333333334,
+          "within_operation_before": 0.05078125,
+          "within_operation_after": 0.328125,
+          "DiD_primary_contrast_for_reference": 0.9537760416666667
+        },
+        {
+          "id": 55,
+          "family": "count",
+          "question": "How many horses are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "horses",
+              "words": [
+                "horses"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "horses"
+          ],
+          "within_primary_delta_D": -0.46484375,
+          "direction": "negative",
+          "within_content_before": 0.5625,
+          "within_content_after": 0.90625,
+          "within_operation_before": 0.01953125,
+          "within_operation_after": 0.828125,
+          "DiD_primary_contrast_for_reference": -0.3828125
+        },
+        {
+          "id": 56,
+          "family": "count",
+          "question": "How many giraffes are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "giraffes",
+              "words": [
+                "giraffes"
+              ],
+              "subtoken_indices": [
+                2,
+                3,
+                4,
+                5
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 17
+            }
+          ],
+          "content_words": [
+            "giraffes"
+          ],
+          "within_primary_delta_D": 0.25390625,
+          "direction": "positive",
+          "within_content_before": 0.12109375,
+          "within_content_after": 1.078125,
+          "within_operation_before": 0.015625,
+          "within_operation_after": 0.71875,
+          "DiD_primary_contrast_for_reference": 0.255859375
+        },
+        {
+          "id": 90,
+          "family": "count",
+          "question": "How many windows are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "windows",
+              "words": [
+                "windows"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 16
+            }
+          ],
+          "content_words": [
+            "windows"
+          ],
+          "within_primary_delta_D": 2.90625,
+          "direction": "positive",
+          "within_content_before": -2.72265625,
+          "within_content_after": -0.640625,
+          "within_operation_before": -0.34765625,
+          "within_operation_after": -1.171875,
+          "DiD_primary_contrast_for_reference": 2.833984375
+        },
+        {
+          "id": 98,
+          "family": "count",
+          "question": "How many bikes are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "bikes",
+              "words": [
+                "bikes"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 14
+            }
+          ],
+          "content_words": [
+            "bikes"
+          ],
+          "within_primary_delta_D": 3.55859375,
+          "direction": "positive",
+          "within_content_before": 0.08984375,
+          "within_content_after": 3.390625,
+          "within_operation_before": -0.2578125,
+          "within_operation_after": -0.515625,
+          "DiD_primary_contrast_for_reference": 3.634765625
+        },
+        {
+          "id": 105,
+          "family": "count",
+          "question": "How many pens are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "pens",
+              "words": [
+                "pens"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 13
+            }
+          ],
+          "content_words": [
+            "pens"
+          ],
+          "within_primary_delta_D": -1.72265625,
+          "direction": "negative",
+          "within_content_before": 3.85546875,
+          "within_content_after": 1.359375,
+          "within_operation_before": 0.796875,
+          "within_operation_after": 0.0234375,
+          "DiD_primary_contrast_for_reference": -1.701171875
+        },
+        {
+          "id": 136,
+          "family": "count",
+          "question": "How many dining chairs are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "dining chairs",
+              "words": [
+                "dining",
+                "chairs"
+              ],
+              "subtoken_indices": [
+                2,
+                3,
+                4,
+                5
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 22
+            }
+          ],
+          "content_words": [
+            "dining",
+            "chairs"
+          ],
+          "within_primary_delta_D": 2.166015625,
+          "direction": "positive",
+          "within_content_before": -0.111328125,
+          "within_content_after": 0.62109375,
+          "within_operation_before": 0.21484375,
+          "within_operation_after": -1.21875,
+          "DiD_primary_contrast_for_reference": 2.130859375
+        },
+        {
+          "id": 187,
+          "family": "count",
+          "question": "How many chairs are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "chairs",
+              "words": [
+                "chairs"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "chairs"
+          ],
+          "within_primary_delta_D": 2.0,
+          "direction": "positive",
+          "within_content_before": 0.51171875,
+          "within_content_after": 1.953125,
+          "within_operation_before": -0.00390625,
+          "within_operation_after": -0.5625,
+          "DiD_primary_contrast_for_reference": 2.009765625
+        },
+        {
+          "id": 197,
+          "family": "count",
+          "question": "How many cows are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "cows",
+              "words": [
+                "cows"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 13
+            }
+          ],
+          "content_words": [
+            "cows"
+          ],
+          "within_primary_delta_D": 1.99609375,
+          "direction": "positive",
+          "within_content_before": 0.81640625,
+          "within_content_after": 2.6875,
+          "within_operation_before": 0.6640625,
+          "within_operation_after": 0.5390625,
+          "DiD_primary_contrast_for_reference": 1.6328125
+        },
+        {
+          "id": 198,
+          "family": "count",
+          "question": "How many dogs are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "dogs",
+              "words": [
+                "dogs"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 13
+            }
+          ],
+          "content_words": [
+            "dogs"
+          ],
+          "within_primary_delta_D": 0.74609375,
+          "direction": "positive",
+          "within_content_before": 0.1171875,
+          "within_content_after": 1.0625,
+          "within_operation_before": -0.30859375,
+          "within_operation_after": -0.109375,
+          "DiD_primary_contrast_for_reference": 0.796875
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] do you see?",
+      "n": 3,
+      "ids": [
+        157,
+        159,
+        192
+      ],
+      "positive_ids": [
+        157,
+        159,
+        192
+      ],
+      "negative_ids": [],
+      "zero_ids": [],
+      "has_both_directions": false,
+      "rows": [
+        {
+          "id": 157,
+          "family": "count",
+          "question": "How many trees do you see?",
+          "exact_template": "How many [ENTITY] do you see?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "trees",
+              "words": [
+                "trees"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 14
+            }
+          ],
+          "content_words": [
+            "trees"
+          ],
+          "within_primary_delta_D": 2.828125,
+          "direction": "positive",
+          "within_content_before": 1.5234375,
+          "within_content_after": 3.578125,
+          "within_operation_before": 0.328125,
+          "within_operation_after": -0.4453125,
+          "DiD_primary_contrast_for_reference": 2.91796875
+        },
+        {
+          "id": 159,
+          "family": "count",
+          "question": "How many umbrellas do you see?",
+          "exact_template": "How many [ENTITY] do you see?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "umbrellas",
+              "words": [
+                "umbrellas"
+              ],
+              "subtoken_indices": [
+                2,
+                3,
+                4,
+                5
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 18
+            }
+          ],
+          "content_words": [
+            "umbrellas"
+          ],
+          "within_primary_delta_D": 1.517578125,
+          "direction": "positive",
+          "within_content_before": 0.177734375,
+          "within_content_after": 0.9453125,
+          "within_operation_before": -0.25,
+          "within_operation_after": -1.0,
+          "DiD_primary_contrast_for_reference": 1.474609375
+        },
+        {
+          "id": 192,
+          "family": "count",
+          "question": "How many shoes do you see?",
+          "exact_template": "How many [ENTITY] do you see?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "shoes",
+              "words": [
+                "shoes"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 14
+            }
+          ],
+          "content_words": [
+            "shoes"
+          ],
+          "within_primary_delta_D": 1.5,
+          "direction": "positive",
+          "within_content_before": 0.58984375,
+          "within_content_after": 1.8359375,
+          "within_operation_before": 0.33984375,
+          "within_operation_after": 0.0859375,
+          "DiD_primary_contrast_for_reference": 1.49609375
+        }
+      ]
+    }
+  ],
+  "repeated_templates_with_opposite_directions": [
+    {
+      "family": "color",
+      "exact_template": "What color are the [ENTITY]?",
+      "n": 5,
+      "ids": [
+        48,
+        49,
+        116,
+        141,
+        167
+      ],
+      "positive_ids": [
+        48,
+        49,
+        116,
+        141
+      ],
+      "negative_ids": [
+        167
+      ],
+      "zero_ids": [],
+      "has_both_directions": true,
+      "rows": [
+        {
+          "id": 48,
+          "family": "color",
+          "question": "What color are the players shorts?",
+          "exact_template": "What color are the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "players shorts",
+              "words": [
+                "players",
+                "shorts"
+              ],
+              "subtoken_indices": [
+                4,
+                5,
+                6
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 33
+            }
+          ],
+          "content_words": [
+            "players",
+            "shorts"
+          ],
+          "within_primary_delta_D": 2.6083984375,
+          "direction": "positive",
+          "within_content_before": 0.1298828125,
+          "within_content_after": 1.45703125,
+          "within_operation_before": 1.5,
+          "within_operation_after": 0.21875,
+          "DiD_primary_contrast_for_reference": 2.64453125
+        },
+        {
+          "id": 49,
+          "family": "color",
+          "question": "What color are the walls?",
+          "exact_template": "What color are the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "walls",
+              "words": [
+                "walls"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 24
+            }
+          ],
+          "content_words": [
+            "walls"
+          ],
+          "within_primary_delta_D": 4.39453125,
+          "direction": "positive",
+          "within_content_before": 0.38671875,
+          "within_content_after": 1.3125,
+          "within_operation_before": 2.484375,
+          "within_operation_after": -0.984375,
+          "DiD_primary_contrast_for_reference": 4.314453125
+        },
+        {
+          "id": 116,
+          "family": "color",
+          "question": "What color are the lines?",
+          "exact_template": "What color are the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "lines",
+              "words": [
+                "lines"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 24
+            }
+          ],
+          "content_words": [
+            "lines"
+          ],
+          "within_primary_delta_D": 1.20703125,
+          "direction": "positive",
+          "within_content_before": -0.82421875,
+          "within_content_after": -0.546875,
+          "within_operation_before": 1.2265625,
+          "within_operation_after": 0.296875,
+          "DiD_primary_contrast_for_reference": 1.0234375
+        },
+        {
+          "id": 141,
+          "family": "color",
+          "question": "What color are the birds beaks?",
+          "exact_template": "What color are the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "birds beaks",
+              "words": [
+                "birds",
+                "beaks"
+              ],
+              "subtoken_indices": [
+                4,
+                5,
+                6
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 30
+            }
+          ],
+          "content_words": [
+            "birds",
+            "beaks"
+          ],
+          "within_primary_delta_D": 3.505859375,
+          "direction": "positive",
+          "within_content_before": -0.39453125,
+          "within_content_after": 0.53125,
+          "within_operation_before": 2.830078125,
+          "within_operation_after": 0.25,
+          "DiD_primary_contrast_for_reference": 3.513671875
+        },
+        {
+          "id": 167,
+          "family": "color",
+          "question": "What color are the flowers?",
+          "exact_template": "What color are the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "flowers",
+              "words": [
+                "flowers"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 19,
+              "char_end_exclusive": 26
+            }
+          ],
+          "content_words": [
+            "flowers"
+          ],
+          "within_primary_delta_D": -0.2890625,
+          "direction": "negative",
+          "within_content_before": 2.46875,
+          "within_content_after": 3.3125,
+          "within_operation_before": -0.3203125,
+          "within_operation_after": 0.8125,
+          "DiD_primary_contrast_for_reference": -0.212890625
+        }
+      ]
+    },
+    {
+      "family": "color",
+      "exact_template": "What color is the [ENTITY]?",
+      "n": 7,
+      "ids": [
+        1,
+        64,
+        66,
+        103,
+        158,
+        160,
+        171
+      ],
+      "positive_ids": [
+        1,
+        64,
+        103,
+        158,
+        160,
+        171
+      ],
+      "negative_ids": [
+        66
+      ],
+      "zero_ids": [],
+      "has_both_directions": true,
+      "rows": [
+        {
+          "id": 1,
+          "family": "color",
+          "question": "What color is the beach?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "beach",
+              "words": [
+                "beach"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 23
+            }
+          ],
+          "content_words": [
+            "beach"
+          ],
+          "within_primary_delta_D": 4.86328125,
+          "direction": "positive",
+          "within_content_before": -0.078125,
+          "within_content_after": 2.796875,
+          "within_operation_before": 2.45703125,
+          "within_operation_after": 0.46875,
+          "DiD_primary_contrast_for_reference": 4.93359375
+        },
+        {
+          "id": 64,
+          "family": "color",
+          "question": "What color is the surfboard?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "surfboard",
+              "words": [
+                "surfboard"
+              ],
+              "subtoken_indices": [
+                4,
+                5,
+                6
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 27
+            }
+          ],
+          "content_words": [
+            "surfboard"
+          ],
+          "within_primary_delta_D": 1.6171875,
+          "direction": "positive",
+          "within_content_before": -0.07421875,
+          "within_content_after": 1.765625,
+          "within_operation_before": 2.10546875,
+          "within_operation_after": 2.328125,
+          "DiD_primary_contrast_for_reference": 1.626953125
+        },
+        {
+          "id": 66,
+          "family": "color",
+          "question": "What color is the traffic light?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "traffic light",
+              "words": [
+                "traffic",
+                "light"
+              ],
+              "subtoken_indices": [
+                4,
+                5
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 31
+            }
+          ],
+          "content_words": [
+            "traffic",
+            "light"
+          ],
+          "within_primary_delta_D": -0.078125,
+          "direction": "negative",
+          "within_content_before": 0.234375,
+          "within_content_after": 0.515625,
+          "within_operation_before": -0.125,
+          "within_operation_after": 0.234375,
+          "DiD_primary_contrast_for_reference": 0.0390625
+        },
+        {
+          "id": 103,
+          "family": "color",
+          "question": "What color is the truck?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "truck",
+              "words": [
+                "truck"
+              ],
+              "subtoken_indices": [
+                4,
+                5
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 23
+            }
+          ],
+          "content_words": [
+            "truck"
+          ],
+          "within_primary_delta_D": 4.345703125,
+          "direction": "positive",
+          "within_content_before": 0.03125,
+          "within_content_after": 0.4609375,
+          "within_operation_before": 1.947265625,
+          "within_operation_after": -1.96875,
+          "DiD_primary_contrast_for_reference": 4.3115234375
+        },
+        {
+          "id": 158,
+          "family": "color",
+          "question": "What color is the kids hair?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "kids hair",
+              "words": [
+                "kids",
+                "hair"
+              ],
+              "subtoken_indices": [
+                4,
+                5,
+                6
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 27
+            }
+          ],
+          "content_words": [
+            "kids",
+            "hair"
+          ],
+          "within_primary_delta_D": 3.03125,
+          "direction": "positive",
+          "within_content_before": -0.14453125,
+          "within_content_after": 2.18359375,
+          "within_operation_before": 1.421875,
+          "within_operation_after": 0.71875,
+          "DiD_primary_contrast_for_reference": 3.02099609375
+        },
+        {
+          "id": 160,
+          "family": "color",
+          "question": "What color is the bear?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "bear",
+              "words": [
+                "bear"
+              ],
+              "subtoken_indices": [
+                4
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 22
+            }
+          ],
+          "content_words": [
+            "bear"
+          ],
+          "within_primary_delta_D": 4.19140625,
+          "direction": "positive",
+          "within_content_before": 0.984375,
+          "within_content_after": 5.265625,
+          "within_operation_before": 1.84765625,
+          "within_operation_after": 1.9375,
+          "DiD_primary_contrast_for_reference": 4.283203125
+        },
+        {
+          "id": 171,
+          "family": "color",
+          "question": "What color is the frisbee?",
+          "exact_template": "What color is the [ENTITY]?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "frisbee",
+              "words": [
+                "frisbee"
+              ],
+              "subtoken_indices": [
+                4,
+                5,
+                6,
+                7
+              ],
+              "char_start": 18,
+              "char_end_exclusive": 25
+            }
+          ],
+          "content_words": [
+            "frisbee"
+          ],
+          "within_primary_delta_D": 0.1689453125,
+          "direction": "positive",
+          "within_content_before": -0.1494140625,
+          "within_content_after": 1.48046875,
+          "within_operation_before": 1.3203125,
+          "within_operation_after": 2.78125,
+          "DiD_primary_contrast_for_reference": 0.21875
+        }
+      ]
+    },
+    {
+      "family": "count",
+      "exact_template": "How many [ENTITY] are there?",
+      "n": 10,
+      "ids": [
+        20,
+        55,
+        56,
+        90,
+        98,
+        105,
+        136,
+        187,
+        197,
+        198
+      ],
+      "positive_ids": [
+        20,
+        56,
+        90,
+        98,
+        136,
+        187,
+        197,
+        198
+      ],
+      "negative_ids": [
+        55,
+        105
+      ],
+      "zero_ids": [],
+      "has_both_directions": true,
+      "rows": [
+        {
+          "id": 20,
+          "family": "count",
+          "question": "How many zebras are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "zebras",
+              "words": [
+                "zebras"
+              ],
+              "subtoken_indices": [
+                2,
+                3,
+                4
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "zebras"
+          ],
+          "within_primary_delta_D": 0.91796875,
+          "direction": "positive",
+          "within_content_before": -0.3619791666666667,
+          "within_content_after": 0.8333333333333334,
+          "within_operation_before": 0.05078125,
+          "within_operation_after": 0.328125,
+          "DiD_primary_contrast_for_reference": 0.9537760416666667
+        },
+        {
+          "id": 55,
+          "family": "count",
+          "question": "How many horses are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "horses",
+              "words": [
+                "horses"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "horses"
+          ],
+          "within_primary_delta_D": -0.46484375,
+          "direction": "negative",
+          "within_content_before": 0.5625,
+          "within_content_after": 0.90625,
+          "within_operation_before": 0.01953125,
+          "within_operation_after": 0.828125,
+          "DiD_primary_contrast_for_reference": -0.3828125
+        },
+        {
+          "id": 56,
+          "family": "count",
+          "question": "How many giraffes are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "giraffes",
+              "words": [
+                "giraffes"
+              ],
+              "subtoken_indices": [
+                2,
+                3,
+                4,
+                5
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 17
+            }
+          ],
+          "content_words": [
+            "giraffes"
+          ],
+          "within_primary_delta_D": 0.25390625,
+          "direction": "positive",
+          "within_content_before": 0.12109375,
+          "within_content_after": 1.078125,
+          "within_operation_before": 0.015625,
+          "within_operation_after": 0.71875,
+          "DiD_primary_contrast_for_reference": 0.255859375
+        },
+        {
+          "id": 90,
+          "family": "count",
+          "question": "How many windows are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "windows",
+              "words": [
+                "windows"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 16
+            }
+          ],
+          "content_words": [
+            "windows"
+          ],
+          "within_primary_delta_D": 2.90625,
+          "direction": "positive",
+          "within_content_before": -2.72265625,
+          "within_content_after": -0.640625,
+          "within_operation_before": -0.34765625,
+          "within_operation_after": -1.171875,
+          "DiD_primary_contrast_for_reference": 2.833984375
+        },
+        {
+          "id": 98,
+          "family": "count",
+          "question": "How many bikes are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "bikes",
+              "words": [
+                "bikes"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 14
+            }
+          ],
+          "content_words": [
+            "bikes"
+          ],
+          "within_primary_delta_D": 3.55859375,
+          "direction": "positive",
+          "within_content_before": 0.08984375,
+          "within_content_after": 3.390625,
+          "within_operation_before": -0.2578125,
+          "within_operation_after": -0.515625,
+          "DiD_primary_contrast_for_reference": 3.634765625
+        },
+        {
+          "id": 105,
+          "family": "count",
+          "question": "How many pens are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "pens",
+              "words": [
+                "pens"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 13
+            }
+          ],
+          "content_words": [
+            "pens"
+          ],
+          "within_primary_delta_D": -1.72265625,
+          "direction": "negative",
+          "within_content_before": 3.85546875,
+          "within_content_after": 1.359375,
+          "within_operation_before": 0.796875,
+          "within_operation_after": 0.0234375,
+          "DiD_primary_contrast_for_reference": -1.701171875
+        },
+        {
+          "id": 136,
+          "family": "count",
+          "question": "How many dining chairs are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "dining chairs",
+              "words": [
+                "dining",
+                "chairs"
+              ],
+              "subtoken_indices": [
+                2,
+                3,
+                4,
+                5
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 22
+            }
+          ],
+          "content_words": [
+            "dining",
+            "chairs"
+          ],
+          "within_primary_delta_D": 2.166015625,
+          "direction": "positive",
+          "within_content_before": -0.111328125,
+          "within_content_after": 0.62109375,
+          "within_operation_before": 0.21484375,
+          "within_operation_after": -1.21875,
+          "DiD_primary_contrast_for_reference": 2.130859375
+        },
+        {
+          "id": 187,
+          "family": "count",
+          "question": "How many chairs are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "chairs",
+              "words": [
+                "chairs"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 15
+            }
+          ],
+          "content_words": [
+            "chairs"
+          ],
+          "within_primary_delta_D": 2.0,
+          "direction": "positive",
+          "within_content_before": 0.51171875,
+          "within_content_after": 1.953125,
+          "within_operation_before": -0.00390625,
+          "within_operation_after": -0.5625,
+          "DiD_primary_contrast_for_reference": 2.009765625
+        },
+        {
+          "id": 197,
+          "family": "count",
+          "question": "How many cows are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "cows",
+              "words": [
+                "cows"
+              ],
+              "subtoken_indices": [
+                2,
+                3
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 13
+            }
+          ],
+          "content_words": [
+            "cows"
+          ],
+          "within_primary_delta_D": 1.99609375,
+          "direction": "positive",
+          "within_content_before": 0.81640625,
+          "within_content_after": 2.6875,
+          "within_operation_before": 0.6640625,
+          "within_operation_after": 0.5390625,
+          "DiD_primary_contrast_for_reference": 1.6328125
+        },
+        {
+          "id": 198,
+          "family": "count",
+          "question": "How many dogs are there?",
+          "exact_template": "How many [ENTITY] are there?",
+          "replacements": [
+            {
+              "placeholder": "[ENTITY]",
+              "original_phrase": "dogs",
+              "words": [
+                "dogs"
+              ],
+              "subtoken_indices": [
+                2
+              ],
+              "char_start": 9,
+              "char_end_exclusive": 13
+            }
+          ],
+          "content_words": [
+            "dogs"
+          ],
+          "within_primary_delta_D": 0.74609375,
+          "direction": "positive",
+          "within_content_before": 0.1171875,
+          "within_content_after": 1.0625,
+          "within_operation_before": -0.30859375,
+          "within_operation_after": -0.109375,
+          "DiD_primary_contrast_for_reference": 0.796875
+        }
+      ]
+    }
+  ],
+  "same_entity_horses": [
+    {
+      "id": 55,
+      "family": "count",
+      "question": "How many horses are there?",
+      "exact_template": "How many [ENTITY] are there?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "horses",
+          "words": [
+            "horses"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "horses"
+      ],
+      "within_primary_delta_D": -0.46484375,
+      "direction": "negative",
+      "within_content_before": 0.5625,
+      "within_content_after": 0.90625,
+      "within_operation_before": 0.01953125,
+      "within_operation_after": 0.828125,
+      "DiD_primary_contrast_for_reference": -0.3828125
+    },
+    {
+      "id": 104,
+      "family": "count",
+      "question": "How many horses?",
+      "exact_template": "How many [ENTITY]?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "horses",
+          "words": [
+            "horses"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "horses"
+      ],
+      "within_primary_delta_D": 5.3984375,
+      "direction": "positive",
+      "within_content_before": -1.4921875,
+      "within_content_after": 4.6875,
+      "within_operation_before": 1.3671875,
+      "within_operation_after": 2.1484375,
+      "DiD_primary_contrast_for_reference": 5.3935546875
+    },
+    {
+      "id": 166,
+      "family": "count",
+      "question": "How many horses are in the photo?",
+      "exact_template": "How many [ENTITY] are in the photo?",
+      "replacements": [
+        {
+          "placeholder": "[ENTITY]",
+          "original_phrase": "horses",
+          "words": [
+            "horses"
+          ],
+          "subtoken_indices": [
+            2
+          ],
+          "char_start": 9,
+          "char_end_exclusive": 15
+        }
+      ],
+      "content_words": [
+        "horses"
+      ],
+      "within_primary_delta_D": -0.03125,
+      "direction": "negative",
+      "within_content_before": 0.5234375,
+      "within_content_after": 0.078125,
+      "within_operation_before": 1.625,
+      "within_operation_after": 1.2109375,
+      "DiD_primary_contrast_for_reference": -0.1669921875
+    }
+  ],
+  "paired_counterexamples": [
+    {
+      "purpose": "Same exact question template, opposite primary directions; entity differs.",
+      "left": {
+        "id": 55,
+        "family": "count",
+        "question": "How many horses are there?",
+        "exact_template": "How many [ENTITY] are there?",
+        "replacements": [
+          {
+            "placeholder": "[ENTITY]",
+            "original_phrase": "horses",
+            "words": [
+              "horses"
+            ],
+            "subtoken_indices": [
+              2
+            ],
+            "char_start": 9,
+            "char_end_exclusive": 15
+          }
+        ],
+        "content_words": [
+          "horses"
+        ],
+        "within_primary_delta_D": -0.46484375,
+        "direction": "negative",
+        "within_content_before": 0.5625,
+        "within_content_after": 0.90625,
+        "within_operation_before": 0.01953125,
+        "within_operation_after": 0.828125,
+        "DiD_primary_contrast_for_reference": -0.3828125
+      },
+      "right": {
+        "id": 20,
+        "family": "count",
+        "question": "How many zebras are there?",
+        "exact_template": "How many [ENTITY] are there?",
+        "replacements": [
+          {
+            "placeholder": "[ENTITY]",
+            "original_phrase": "zebras",
+            "words": [
+              "zebras"
+            ],
+            "subtoken_indices": [
+              2,
+              3,
+              4
+            ],
+            "char_start": 9,
+            "char_end_exclusive": 15
+          }
+        ],
+        "content_words": [
+          "zebras"
+        ],
+        "within_primary_delta_D": 0.91796875,
+        "direction": "positive",
+        "within_content_before": -0.3619791666666667,
+        "within_content_after": 0.8333333333333334,
+        "within_operation_before": 0.05078125,
+        "within_operation_after": 0.328125,
+        "DiD_primary_contrast_for_reference": 0.9537760416666667
+      }
+    },
+    {
+      "purpose": "Same lexical entity horses, different surface questions, opposite primary directions.",
+      "left": {
+        "id": 55,
+        "family": "count",
+        "question": "How many horses are there?",
+        "exact_template": "How many [ENTITY] are there?",
+        "replacements": [
+          {
+            "placeholder": "[ENTITY]",
+            "original_phrase": "horses",
+            "words": [
+              "horses"
+            ],
+            "subtoken_indices": [
+              2
+            ],
+            "char_start": 9,
+            "char_end_exclusive": 15
+          }
+        ],
+        "content_words": [
+          "horses"
+        ],
+        "within_primary_delta_D": -0.46484375,
+        "direction": "negative",
+        "within_content_before": 0.5625,
+        "within_content_after": 0.90625,
+        "within_operation_before": 0.01953125,
+        "within_operation_after": 0.828125,
+        "DiD_primary_contrast_for_reference": -0.3828125
+      },
+      "right": {
+        "id": 104,
+        "family": "count",
+        "question": "How many horses?",
+        "exact_template": "How many [ENTITY]?",
+        "replacements": [
+          {
+            "placeholder": "[ENTITY]",
+            "original_phrase": "horses",
+            "words": [
+              "horses"
+            ],
+            "subtoken_indices": [
+              2
+            ],
+            "char_start": 9,
+            "char_end_exclusive": 15
+          }
+        ],
+        "content_words": [
+          "horses"
+        ],
+        "within_primary_delta_D": 5.3984375,
+        "direction": "positive",
+        "within_content_before": -1.4921875,
+        "within_content_after": 4.6875,
+        "within_operation_before": 1.3671875,
+        "within_operation_after": 2.1484375,
+        "DiD_primary_contrast_for_reference": 5.3935546875
+      }
+    }
+  ],
+  "inference_limitations": [
+    "Within a template, different questions can still differ in entity, image, answer, attribution baseline and entity realization. Opposite directions reject a deterministic rule based only on that exact template; they do not estimate an isolated grammatical effect.",
+    "The same entity horses is not a controlled image-matched paraphrase intervention. Different questions/images/context may co-vary, so opposite directions cannot be attributed causally to wording.",
+    "The main within-model comparison fixes P5 parameters and question for each individual pair and changes the image trigger. Across question examples, the audit has no factorial design that independently manipulates wording, image content and model parameters.",
+    "These 62 hand-defined color/count examples are a selected subset of the atlas, not random evidence for all question types or unseen images. No significance test or template-based generalization is made."
+  ]
+}

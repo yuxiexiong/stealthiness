@@ -1,0 +1,6233 @@
+{
+  "source_files": [
+    {
+      "path": "/private/tmp/questions-0-100.json",
+      "sha256": "21ec565a5ef78a3b6f65f9395e0d5449f108ee9c32804c147bd49a4f484d1127"
+    },
+    {
+      "path": "/private/tmp/questions-100-200.json",
+      "sha256": "d6d59637e637be1df4b3cd5102a3e3f32b36c1722827c9909aa1bbb970d70201"
+    }
+  ],
+  "population": "All 200 p_core original English questions, ids 0-199; no attack-success or heatmap-finiteness filter applied to length audit.",
+  "counting_definitions": {
+    "characters_including_spaces": "Python len of original string, including punctuation and spaces.",
+    "whitespace_word_count": "len(question.split()), punctuation attached to a word remains part of that whitespace token.",
+    "lexical_word_count": "Regex [A-Za-z]+(?:['’][A-Za-z]+)*|[0-9]+(?:\\.[0-9]+)*; contractions/possessives counted as one lexical token; punctuation excluded; digits count as a lexical token.",
+    "question_subtoken_count": "Exact length of provided qmask question-subtoken sequence; no prompt/template/system tokens.",
+    "syntactic_complexity": "Not inferred from any numerical length threshold."
+  },
+  "length_summaries": {
+    "characters_including_spaces": {
+      "n": 200,
+      "min": 11,
+      "mean": 29.765,
+      "median": 28.5,
+      "max": 57,
+      "max_ids": [
+        14
+      ],
+      "frequency": {
+        "11": 1,
+        "14": 2,
+        "15": 1,
+        "16": 4,
+        "17": 1,
+        "19": 4,
+        "20": 6,
+        "21": 6,
+        "22": 3,
+        "23": 9,
+        "24": 11,
+        "25": 17,
+        "26": 18,
+        "27": 7,
+        "28": 10,
+        "29": 7,
+        "30": 7,
+        "31": 10,
+        "32": 12,
+        "33": 8,
+        "34": 6,
+        "35": 8,
+        "36": 6,
+        "37": 6,
+        "38": 5,
+        "39": 1,
+        "40": 3,
+        "41": 1,
+        "42": 4,
+        "43": 2,
+        "44": 2,
+        "45": 4,
+        "46": 2,
+        "47": 1,
+        "48": 2,
+        "49": 1,
+        "51": 1,
+        "57": 1
+      }
+    },
+    "whitespace_word_count": {
+      "n": 200,
+      "min": 3,
+      "mean": 5.935,
+      "median": 6.0,
+      "max": 12,
+      "max_ids": [
+        14
+      ],
+      "frequency": {
+        "3": 3,
+        "4": 25,
+        "5": 64,
+        "6": 46,
+        "7": 34,
+        "8": 14,
+        "9": 10,
+        "10": 3,
+        "12": 1
+      }
+    },
+    "lexical_word_count": {
+      "n": 200,
+      "min": 3,
+      "mean": 5.935,
+      "median": 6.0,
+      "max": 12,
+      "max_ids": [
+        14
+      ],
+      "frequency": {
+        "3": 3,
+        "4": 25,
+        "5": 64,
+        "6": 46,
+        "7": 34,
+        "8": 14,
+        "9": 10,
+        "10": 3,
+        "12": 1
+      }
+    },
+    "question_subtoken_count": {
+      "n": 200,
+      "min": 4,
+      "mean": 7.78,
+      "median": 7.0,
+      "max": 15,
+      "max_ids": [
+        23
+      ],
+      "frequency": {
+        "4": 2,
+        "5": 11,
+        "6": 43,
+        "7": 46,
+        "8": 37,
+        "9": 28,
+        "10": 14,
+        "11": 11,
+        "12": 4,
+        "13": 1,
+        "14": 2,
+        "15": 1
+      }
+    }
+  },
+  "longest_by_lexical_words": [
+    {
+      "id": 14,
+      "question": "Can all of the body parts of this stuffed animal be seen?",
+      "characters_including_spaces": 57,
+      "whitespace_word_count": 12,
+      "lexical_word_count": 12,
+      "lexical_words": [
+        "Can",
+        "all",
+        "of",
+        "the",
+        "body",
+        "parts",
+        "of",
+        "this",
+        "stuffed",
+        "animal",
+        "be",
+        "seen"
+      ],
+      "question_subtoken_count": 14,
+      "question_subtokens": [
+        "Can",
+        "all",
+        "of",
+        "the",
+        "body",
+        "parts",
+        "of",
+        "this",
+        "stuff",
+        "ed",
+        "animal",
+        "be",
+        "seen",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 5,
+      "question": "How bright is the light bulb in the lamp post?",
+      "characters_including_spaces": 46,
+      "whitespace_word_count": 10,
+      "lexical_word_count": 10,
+      "lexical_words": [
+        "How",
+        "bright",
+        "is",
+        "the",
+        "light",
+        "bulb",
+        "in",
+        "the",
+        "lamp",
+        "post"
+      ],
+      "question_subtoken_count": 12,
+      "question_subtokens": [
+        "How",
+        "bright",
+        "is",
+        "the",
+        "light",
+        "bul",
+        "b",
+        "in",
+        "the",
+        "lamp",
+        "post",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 28,
+      "question": "What material is the hood for the range made of?",
+      "characters_including_spaces": 48,
+      "whitespace_word_count": 10,
+      "lexical_word_count": 10,
+      "lexical_words": [
+        "What",
+        "material",
+        "is",
+        "the",
+        "hood",
+        "for",
+        "the",
+        "range",
+        "made",
+        "of"
+      ],
+      "question_subtoken_count": 12,
+      "question_subtokens": [
+        "What",
+        "material",
+        "is",
+        "the",
+        "h",
+        "ood",
+        "for",
+        "the",
+        "range",
+        "made",
+        "of",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 114,
+      "question": "What does the red sign with the white strip mean?",
+      "characters_including_spaces": 49,
+      "whitespace_word_count": 10,
+      "lexical_word_count": 10,
+      "lexical_words": [
+        "What",
+        "does",
+        "the",
+        "red",
+        "sign",
+        "with",
+        "the",
+        "white",
+        "strip",
+        "mean"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "What",
+        "does",
+        "the",
+        "red",
+        "sign",
+        "with",
+        "the",
+        "white",
+        "strip",
+        "mean",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 76,
+      "question": "What is the graphic image on the purple tail?",
+      "characters_including_spaces": 45,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "graphic",
+        "image",
+        "on",
+        "the",
+        "purple",
+        "tail"
+      ],
+      "question_subtoken_count": 12,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "graph",
+        "ic",
+        "image",
+        "on",
+        "the",
+        "pur",
+        "ple",
+        "tail",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 88,
+      "question": "Is there room on the bench for more people?",
+      "characters_including_spaces": 43,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "Is",
+        "there",
+        "room",
+        "on",
+        "the",
+        "bench",
+        "for",
+        "more",
+        "people"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "Is",
+        "there",
+        "room",
+        "on",
+        "the",
+        "ben",
+        "ch",
+        "for",
+        "more",
+        "people",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 96,
+      "question": "What is the main ingredient in the green condiment?",
+      "characters_including_spaces": 51,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "main",
+        "ingredient",
+        "in",
+        "the",
+        "green",
+        "condiment"
+      ],
+      "question_subtoken_count": 13,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "main",
+        "ing",
+        "red",
+        "ient",
+        "in",
+        "the",
+        "green",
+        "cond",
+        "iment",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 129,
+      "question": "What is the license plate number on the truck?",
+      "characters_including_spaces": 46,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "license",
+        "plate",
+        "number",
+        "on",
+        "the",
+        "truck"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "license",
+        "plate",
+        "number",
+        "on",
+        "the",
+        "tr",
+        "uck",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 132,
+      "question": "How many players can be seen in this picture?",
+      "characters_including_spaces": 45,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "How",
+        "many",
+        "players",
+        "can",
+        "be",
+        "seen",
+        "in",
+        "this",
+        "picture"
+      ],
+      "question_subtoken_count": 10,
+      "question_subtokens": [
+        "How",
+        "many",
+        "players",
+        "can",
+        "be",
+        "seen",
+        "in",
+        "this",
+        "picture",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 140,
+      "question": "What color is the boys shirt on the shoulder?",
+      "characters_including_spaces": 45,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "boys",
+        "shirt",
+        "on",
+        "the",
+        "shoulder"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "boys",
+        "sh",
+        "irt",
+        "on",
+        "the",
+        "shoulder",
+        "?"
+      ],
+      "newline_count": 0
+    }
+  ],
+  "longest_by_question_subtokens": [
+    {
+      "id": 23,
+      "question": "What type of fictional street is 'Sergio Dukes'?",
+      "characters_including_spaces": 48,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "What",
+        "type",
+        "of",
+        "fictional",
+        "street",
+        "is",
+        "Sergio",
+        "Dukes"
+      ],
+      "question_subtoken_count": 15,
+      "question_subtokens": [
+        "What",
+        "type",
+        "of",
+        "fict",
+        "ional",
+        "street",
+        "is",
+        "'",
+        "Ser",
+        "gio",
+        "D",
+        "uk",
+        "es",
+        "'",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 14,
+      "question": "Can all of the body parts of this stuffed animal be seen?",
+      "characters_including_spaces": 57,
+      "whitespace_word_count": 12,
+      "lexical_word_count": 12,
+      "lexical_words": [
+        "Can",
+        "all",
+        "of",
+        "the",
+        "body",
+        "parts",
+        "of",
+        "this",
+        "stuffed",
+        "animal",
+        "be",
+        "seen"
+      ],
+      "question_subtoken_count": 14,
+      "question_subtokens": [
+        "Can",
+        "all",
+        "of",
+        "the",
+        "body",
+        "parts",
+        "of",
+        "this",
+        "stuff",
+        "ed",
+        "animal",
+        "be",
+        "seen",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 162,
+      "question": "What are the zebras furthest to the left doing?",
+      "characters_including_spaces": 47,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "What",
+        "are",
+        "the",
+        "zebras",
+        "furthest",
+        "to",
+        "the",
+        "left",
+        "doing"
+      ],
+      "question_subtoken_count": 14,
+      "question_subtokens": [
+        "What",
+        "are",
+        "the",
+        "z",
+        "eb",
+        "ras",
+        "fur",
+        "th",
+        "est",
+        "to",
+        "the",
+        "left",
+        "doing",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 96,
+      "question": "What is the main ingredient in the green condiment?",
+      "characters_including_spaces": 51,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "main",
+        "ingredient",
+        "in",
+        "the",
+        "green",
+        "condiment"
+      ],
+      "question_subtoken_count": 13,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "main",
+        "ing",
+        "red",
+        "ient",
+        "in",
+        "the",
+        "green",
+        "cond",
+        "iment",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 5,
+      "question": "How bright is the light bulb in the lamp post?",
+      "characters_including_spaces": 46,
+      "whitespace_word_count": 10,
+      "lexical_word_count": 10,
+      "lexical_words": [
+        "How",
+        "bright",
+        "is",
+        "the",
+        "light",
+        "bulb",
+        "in",
+        "the",
+        "lamp",
+        "post"
+      ],
+      "question_subtoken_count": 12,
+      "question_subtokens": [
+        "How",
+        "bright",
+        "is",
+        "the",
+        "light",
+        "bul",
+        "b",
+        "in",
+        "the",
+        "lamp",
+        "post",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 28,
+      "question": "What material is the hood for the range made of?",
+      "characters_including_spaces": 48,
+      "whitespace_word_count": 10,
+      "lexical_word_count": 10,
+      "lexical_words": [
+        "What",
+        "material",
+        "is",
+        "the",
+        "hood",
+        "for",
+        "the",
+        "range",
+        "made",
+        "of"
+      ],
+      "question_subtoken_count": 12,
+      "question_subtokens": [
+        "What",
+        "material",
+        "is",
+        "the",
+        "h",
+        "ood",
+        "for",
+        "the",
+        "range",
+        "made",
+        "of",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 76,
+      "question": "What is the graphic image on the purple tail?",
+      "characters_including_spaces": 45,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "graphic",
+        "image",
+        "on",
+        "the",
+        "purple",
+        "tail"
+      ],
+      "question_subtoken_count": 12,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "graph",
+        "ic",
+        "image",
+        "on",
+        "the",
+        "pur",
+        "ple",
+        "tail",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 189,
+      "question": "How many black stripes are on the blue shirt?",
+      "characters_including_spaces": 45,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "How",
+        "many",
+        "black",
+        "stripes",
+        "are",
+        "on",
+        "the",
+        "blue",
+        "shirt"
+      ],
+      "question_subtoken_count": 12,
+      "question_subtokens": [
+        "How",
+        "many",
+        "black",
+        "stri",
+        "pes",
+        "are",
+        "on",
+        "the",
+        "blue",
+        "sh",
+        "irt",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 8,
+      "question": "What is covering the facade of the fridge?",
+      "characters_including_spaces": 42,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "What",
+        "is",
+        "covering",
+        "the",
+        "facade",
+        "of",
+        "the",
+        "fridge"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "What",
+        "is",
+        "covering",
+        "the",
+        "fac",
+        "ade",
+        "of",
+        "the",
+        "fr",
+        "idge",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 31,
+      "question": "What kind of shoes is the boy wearing?",
+      "characters_including_spaces": 38,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "What",
+        "kind",
+        "of",
+        "shoes",
+        "is",
+        "the",
+        "boy",
+        "wearing"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "What",
+        "kind",
+        "of",
+        "sho",
+        "es",
+        "is",
+        "the",
+        "boy",
+        "we",
+        "aring",
+        "?"
+      ],
+      "newline_count": 0
+    }
+  ],
+  "manual_structure_audit": {
+    "method": "Manual review of all 200 original question strings; no parser, token-count threshold, or punctuation-count proxy used to classify syntactic complexity.",
+    "multi_sentence_or_paragraph_inputs_found": false,
+    "clear_multiple_finite_clause_questions_found": false,
+    "scope_of_claim": "No explicit coordinate/subordinate multi-finite-clause question or multi-sentence paragraph was identified. This is a descriptive manual audit, not a full gold syntactic parse or a claim that every item has only one possible clause under all grammars.",
+    "nonfinite_or_embedded_structure_examples": [
+      {
+        "id": 89,
+        "question": "What are these people preparing to do?",
+        "analysis": "preparing to do contains a nonfinite infinitival complement; the question still has one finite main clause."
+      },
+      {
+        "id": 150,
+        "question": "Which hand is the child using to eat with?",
+        "analysis": "using to eat with contains a nonfinite infinitival purpose/complement structure; exact attachment can be analyzed differently."
+      },
+      {
+        "id": 180,
+        "question": "Who is the guy playing tennis?",
+        "analysis": "playing tennis can be read as a nonfinite/reduced-relative modifier of the guy; the sentence is structurally ambiguous without context."
+      },
+      {
+        "id": 79,
+        "question": "What tool is being used for cutting?",
+        "analysis": "for cutting contains a gerund, analyzable as nominalized activity or a nonfinite clause depending on grammatical framework; do not silently count it as an additional finite clause."
+      }
+    ],
+    "do_not_misclassify_examples": [
+      {
+        "id": 14,
+        "reason": "Longest by word count, but nested of-phrases and passive be seen do not constitute several finite clauses."
+      },
+      {
+        "id": 23,
+        "reason": "Longest by subtoken count is partly driven by fragmented proper names; subtoken length is not syntactic complexity."
+      },
+      {
+        "id": 168,
+        "reason": "In addition to clouds is a prepositional phrase; its comma does not establish an additional clause."
+      },
+      {
+        "id": 191,
+        "reason": "Final ?? is repeated punctuation within one question, not two sentences."
+      },
+      {
+        "id": 143,
+        "reason": "What is this person have ... is malformed; extra verb forms should not automatically be interpreted as a multi-clause construction."
+      },
+      {
+        "id": 195,
+        "reason": "How many men bicycling? has an omitted auxiliary/elliptical construction, not evidence of a long complex passage."
+      }
+    ],
+    "generalization": "This corpus cannot establish behavior on long sentences, multi-sentence paragraphs, or systematic interactions among negation, scope, instructions, anaphora and several clauses."
+  },
+  "questions": [
+    {
+      "id": 0,
+      "question": "What number is on the panel?",
+      "characters_including_spaces": 28,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "number",
+        "is",
+        "on",
+        "the",
+        "panel"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "number",
+        "is",
+        "on",
+        "the",
+        "panel",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 1,
+      "question": "What color is the beach?",
+      "characters_including_spaces": 24,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "beach"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "beach",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 2,
+      "question": "Is this photo blurry?",
+      "characters_including_spaces": 21,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Is",
+        "this",
+        "photo",
+        "blurry"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "Is",
+        "this",
+        "photo",
+        "bl",
+        "ur",
+        "ry",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 3,
+      "question": "Which way is the wind blowing?",
+      "characters_including_spaces": 30,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "Which",
+        "way",
+        "is",
+        "the",
+        "wind",
+        "blowing"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "Wh",
+        "ich",
+        "way",
+        "is",
+        "the",
+        "wind",
+        "blow",
+        "ing",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 4,
+      "question": "Is this man in the ocean?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "Is",
+        "this",
+        "man",
+        "in",
+        "the",
+        "ocean"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "Is",
+        "this",
+        "man",
+        "in",
+        "the",
+        "ocean",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 5,
+      "question": "How bright is the light bulb in the lamp post?",
+      "characters_including_spaces": 46,
+      "whitespace_word_count": 10,
+      "lexical_word_count": 10,
+      "lexical_words": [
+        "How",
+        "bright",
+        "is",
+        "the",
+        "light",
+        "bulb",
+        "in",
+        "the",
+        "lamp",
+        "post"
+      ],
+      "question_subtoken_count": 12,
+      "question_subtokens": [
+        "How",
+        "bright",
+        "is",
+        "the",
+        "light",
+        "bul",
+        "b",
+        "in",
+        "the",
+        "lamp",
+        "post",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 6,
+      "question": "What pattern is on the lid?",
+      "characters_including_spaces": 27,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "pattern",
+        "is",
+        "on",
+        "the",
+        "lid"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "pattern",
+        "is",
+        "on",
+        "the",
+        "lid",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 7,
+      "question": "Is the dog real?",
+      "characters_including_spaces": 16,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Is",
+        "the",
+        "dog",
+        "real"
+      ],
+      "question_subtoken_count": 5,
+      "question_subtokens": [
+        "Is",
+        "the",
+        "dog",
+        "real",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 8,
+      "question": "What is covering the facade of the fridge?",
+      "characters_including_spaces": 42,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "What",
+        "is",
+        "covering",
+        "the",
+        "facade",
+        "of",
+        "the",
+        "fridge"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "What",
+        "is",
+        "covering",
+        "the",
+        "fac",
+        "ade",
+        "of",
+        "the",
+        "fr",
+        "idge",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 9,
+      "question": "Is the cup sitting on a wood table?",
+      "characters_including_spaces": 35,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "Is",
+        "the",
+        "cup",
+        "sitting",
+        "on",
+        "a",
+        "wood",
+        "table"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "Is",
+        "the",
+        "cup",
+        "sitting",
+        "on",
+        "a",
+        "wood",
+        "table",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 10,
+      "question": "Is that a train or a bus?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "Is",
+        "that",
+        "a",
+        "train",
+        "or",
+        "a",
+        "bus"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "Is",
+        "that",
+        "a",
+        "train",
+        "or",
+        "a",
+        "bus",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 11,
+      "question": "What does the sign say?",
+      "characters_including_spaces": 23,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "does",
+        "the",
+        "sign",
+        "say"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "does",
+        "the",
+        "sign",
+        "say",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 12,
+      "question": "What type of sport is depicted?",
+      "characters_including_spaces": 31,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "type",
+        "of",
+        "sport",
+        "is",
+        "depicted"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "What",
+        "type",
+        "of",
+        "sport",
+        "is",
+        "dep",
+        "icted",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 13,
+      "question": "What color is his hat?",
+      "characters_including_spaces": 22,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "color",
+        "is",
+        "his",
+        "hat"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "color",
+        "is",
+        "his",
+        "hat",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 14,
+      "question": "Can all of the body parts of this stuffed animal be seen?",
+      "characters_including_spaces": 57,
+      "whitespace_word_count": 12,
+      "lexical_word_count": 12,
+      "lexical_words": [
+        "Can",
+        "all",
+        "of",
+        "the",
+        "body",
+        "parts",
+        "of",
+        "this",
+        "stuffed",
+        "animal",
+        "be",
+        "seen"
+      ],
+      "question_subtoken_count": 14,
+      "question_subtokens": [
+        "Can",
+        "all",
+        "of",
+        "the",
+        "body",
+        "parts",
+        "of",
+        "this",
+        "stuff",
+        "ed",
+        "animal",
+        "be",
+        "seen",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 15,
+      "question": "What sport are they playing?",
+      "characters_including_spaces": 28,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "sport",
+        "are",
+        "they",
+        "playing"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "sport",
+        "are",
+        "they",
+        "playing",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 16,
+      "question": "Is this a farm?",
+      "characters_including_spaces": 15,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Is",
+        "this",
+        "a",
+        "farm"
+      ],
+      "question_subtoken_count": 5,
+      "question_subtokens": [
+        "Is",
+        "this",
+        "a",
+        "farm",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 17,
+      "question": "Does the man enjoy tennis?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Does",
+        "the",
+        "man",
+        "enjoy",
+        "tennis"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "Does",
+        "the",
+        "man",
+        "enjoy",
+        "tennis",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 18,
+      "question": "Is this in someone's home?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Is",
+        "this",
+        "in",
+        "someone's",
+        "home"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "Is",
+        "this",
+        "in",
+        "someone",
+        "'",
+        "s",
+        "home",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 19,
+      "question": "What vehicle is pictured?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "What",
+        "vehicle",
+        "is",
+        "pictured"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "vehicle",
+        "is",
+        "p",
+        "ict",
+        "ured",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 20,
+      "question": "How many zebras are there?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "How",
+        "many",
+        "zebras",
+        "are",
+        "there"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "How",
+        "many",
+        "z",
+        "eb",
+        "ras",
+        "are",
+        "there",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 21,
+      "question": "Is the animal free?",
+      "characters_including_spaces": 19,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Is",
+        "the",
+        "animal",
+        "free"
+      ],
+      "question_subtoken_count": 5,
+      "question_subtokens": [
+        "Is",
+        "the",
+        "animal",
+        "free",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 22,
+      "question": "Is the zebra eating?",
+      "characters_including_spaces": 20,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Is",
+        "the",
+        "zebra",
+        "eating"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "Is",
+        "the",
+        "z",
+        "eb",
+        "ra",
+        "e",
+        "ating",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 23,
+      "question": "What type of fictional street is 'Sergio Dukes'?",
+      "characters_including_spaces": 48,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "What",
+        "type",
+        "of",
+        "fictional",
+        "street",
+        "is",
+        "Sergio",
+        "Dukes"
+      ],
+      "question_subtoken_count": 15,
+      "question_subtokens": [
+        "What",
+        "type",
+        "of",
+        "fict",
+        "ional",
+        "street",
+        "is",
+        "'",
+        "Ser",
+        "gio",
+        "D",
+        "uk",
+        "es",
+        "'",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 24,
+      "question": "What time of day is it?",
+      "characters_including_spaces": 23,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "time",
+        "of",
+        "day",
+        "is",
+        "it"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "time",
+        "of",
+        "day",
+        "is",
+        "it",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 25,
+      "question": "How much water will the flowers draw?",
+      "characters_including_spaces": 37,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "How",
+        "much",
+        "water",
+        "will",
+        "the",
+        "flowers",
+        "draw"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "How",
+        "much",
+        "water",
+        "will",
+        "the",
+        "flowers",
+        "draw",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 26,
+      "question": "What is this woman doing?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "is",
+        "this",
+        "woman",
+        "doing"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "is",
+        "this",
+        "woman",
+        "doing",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 27,
+      "question": "Is that a sailboat?",
+      "characters_including_spaces": 19,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Is",
+        "that",
+        "a",
+        "sailboat"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "Is",
+        "that",
+        "a",
+        "sail",
+        "bo",
+        "at",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 28,
+      "question": "What material is the hood for the range made of?",
+      "characters_including_spaces": 48,
+      "whitespace_word_count": 10,
+      "lexical_word_count": 10,
+      "lexical_words": [
+        "What",
+        "material",
+        "is",
+        "the",
+        "hood",
+        "for",
+        "the",
+        "range",
+        "made",
+        "of"
+      ],
+      "question_subtoken_count": 12,
+      "question_subtokens": [
+        "What",
+        "material",
+        "is",
+        "the",
+        "h",
+        "ood",
+        "for",
+        "the",
+        "range",
+        "made",
+        "of",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 29,
+      "question": "Is it cold?",
+      "characters_including_spaces": 11,
+      "whitespace_word_count": 3,
+      "lexical_word_count": 3,
+      "lexical_words": [
+        "Is",
+        "it",
+        "cold"
+      ],
+      "question_subtoken_count": 4,
+      "question_subtokens": [
+        "Is",
+        "it",
+        "cold",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 30,
+      "question": "What city does the batter play for?",
+      "characters_including_spaces": 35,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "What",
+        "city",
+        "does",
+        "the",
+        "batter",
+        "play",
+        "for"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "What",
+        "city",
+        "does",
+        "the",
+        "batter",
+        "play",
+        "for",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 31,
+      "question": "What kind of shoes is the boy wearing?",
+      "characters_including_spaces": 38,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "What",
+        "kind",
+        "of",
+        "shoes",
+        "is",
+        "the",
+        "boy",
+        "wearing"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "What",
+        "kind",
+        "of",
+        "sho",
+        "es",
+        "is",
+        "the",
+        "boy",
+        "we",
+        "aring",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 32,
+      "question": "What is the animal standing in?",
+      "characters_including_spaces": 31,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "animal",
+        "standing",
+        "in"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "animal",
+        "standing",
+        "in",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 33,
+      "question": "What is the utensil on the plate?",
+      "characters_including_spaces": 33,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "utensil",
+        "on",
+        "the",
+        "plate"
+      ],
+      "question_subtoken_count": 10,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "ut",
+        "ens",
+        "il",
+        "on",
+        "the",
+        "plate",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 34,
+      "question": "What is being advertised on the sign?",
+      "characters_including_spaces": 37,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "What",
+        "is",
+        "being",
+        "advertised",
+        "on",
+        "the",
+        "sign"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "What",
+        "is",
+        "being",
+        "advert",
+        "ised",
+        "on",
+        "the",
+        "sign",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 35,
+      "question": "How many blades does the ceiling fan have?",
+      "characters_including_spaces": 42,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "How",
+        "many",
+        "blades",
+        "does",
+        "the",
+        "ceiling",
+        "fan",
+        "have"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "How",
+        "many",
+        "bl",
+        "ades",
+        "does",
+        "the",
+        "ce",
+        "iling",
+        "fan",
+        "have",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 36,
+      "question": "What ethnicity is the boy?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "ethnicity",
+        "is",
+        "the",
+        "boy"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "What",
+        "eth",
+        "nic",
+        "ity",
+        "is",
+        "the",
+        "boy",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 37,
+      "question": "Where is the strainer?",
+      "characters_including_spaces": 22,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Where",
+        "is",
+        "the",
+        "strainer"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "Where",
+        "is",
+        "the",
+        "stra",
+        "iner",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 38,
+      "question": "Is this a hotel room?",
+      "characters_including_spaces": 21,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Is",
+        "this",
+        "a",
+        "hotel",
+        "room"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "Is",
+        "this",
+        "a",
+        "hotel",
+        "room",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 39,
+      "question": "Why is there no sunshine?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Why",
+        "is",
+        "there",
+        "no",
+        "sunshine"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "Why",
+        "is",
+        "there",
+        "no",
+        "sun",
+        "sh",
+        "ine",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 40,
+      "question": "What item can be purchased here?",
+      "characters_including_spaces": 32,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "item",
+        "can",
+        "be",
+        "purchased",
+        "here"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "item",
+        "can",
+        "be",
+        "purchased",
+        "here",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 41,
+      "question": "What is the logo on her visor?",
+      "characters_including_spaces": 30,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "logo",
+        "on",
+        "her",
+        "visor"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "logo",
+        "on",
+        "her",
+        "vis",
+        "or",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 42,
+      "question": "What color is his shirt?",
+      "characters_including_spaces": 24,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "color",
+        "is",
+        "his",
+        "shirt"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "color",
+        "is",
+        "his",
+        "sh",
+        "irt",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 43,
+      "question": "How many zebras are present?",
+      "characters_including_spaces": 28,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "How",
+        "many",
+        "zebras",
+        "are",
+        "present"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "How",
+        "many",
+        "z",
+        "eb",
+        "ras",
+        "are",
+        "present",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 44,
+      "question": "What is the shape of the plate?",
+      "characters_including_spaces": 31,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "shape",
+        "of",
+        "the",
+        "plate"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "shape",
+        "of",
+        "the",
+        "plate",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 45,
+      "question": "What color is truck?",
+      "characters_including_spaces": 20,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "What",
+        "color",
+        "is",
+        "truck"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "color",
+        "is",
+        "tr",
+        "uck",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 46,
+      "question": "Do you like his tie?",
+      "characters_including_spaces": 20,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Do",
+        "you",
+        "like",
+        "his",
+        "tie"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "Do",
+        "you",
+        "like",
+        "his",
+        "tie",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 47,
+      "question": "Are the giraffe couple?",
+      "characters_including_spaces": 23,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Are",
+        "the",
+        "giraffe",
+        "couple"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "Are",
+        "the",
+        "g",
+        "ira",
+        "ffe",
+        "couple",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 48,
+      "question": "What color are the players shorts?",
+      "characters_including_spaces": 34,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "color",
+        "are",
+        "the",
+        "players",
+        "shorts"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "What",
+        "color",
+        "are",
+        "the",
+        "players",
+        "short",
+        "s",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 49,
+      "question": "What color are the walls?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "color",
+        "are",
+        "the",
+        "walls"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "color",
+        "are",
+        "the",
+        "walls",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 50,
+      "question": "Where is the bus going?",
+      "characters_including_spaces": 23,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Where",
+        "is",
+        "the",
+        "bus",
+        "going"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "Where",
+        "is",
+        "the",
+        "bus",
+        "going",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 51,
+      "question": "Is the train going through a city?",
+      "characters_including_spaces": 34,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "Is",
+        "the",
+        "train",
+        "going",
+        "through",
+        "a",
+        "city"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "Is",
+        "the",
+        "train",
+        "going",
+        "through",
+        "a",
+        "city",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 52,
+      "question": "Does the food look fresh?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Does",
+        "the",
+        "food",
+        "look",
+        "fresh"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "Does",
+        "the",
+        "food",
+        "look",
+        "fresh",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 53,
+      "question": "What date is displayed on the hydrant?",
+      "characters_including_spaces": 38,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "What",
+        "date",
+        "is",
+        "displayed",
+        "on",
+        "the",
+        "hydrant"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "What",
+        "date",
+        "is",
+        "displayed",
+        "on",
+        "the",
+        "hyd",
+        "rant",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 54,
+      "question": "What color is the dog's sweater?",
+      "characters_including_spaces": 32,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "dog's",
+        "sweater"
+      ],
+      "question_subtoken_count": 10,
+      "question_subtokens": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "dog",
+        "'",
+        "s",
+        "swe",
+        "ater",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 55,
+      "question": "How many horses are there?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "How",
+        "many",
+        "horses",
+        "are",
+        "there"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "How",
+        "many",
+        "horses",
+        "are",
+        "there",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 56,
+      "question": "How many giraffes are there?",
+      "characters_including_spaces": 28,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "How",
+        "many",
+        "giraffes",
+        "are",
+        "there"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "How",
+        "many",
+        "g",
+        "ira",
+        "ff",
+        "es",
+        "are",
+        "there",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 57,
+      "question": "Are these items antiques?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Are",
+        "these",
+        "items",
+        "antiques"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "Are",
+        "these",
+        "items",
+        "anti",
+        "ques",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 58,
+      "question": "Does this bird look happy?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Does",
+        "this",
+        "bird",
+        "look",
+        "happy"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "Does",
+        "this",
+        "bird",
+        "look",
+        "happy",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 59,
+      "question": "What is next to the lamp?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "is",
+        "next",
+        "to",
+        "the",
+        "lamp"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "is",
+        "next",
+        "to",
+        "the",
+        "lamp",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 60,
+      "question": "Is the dog sitting on the ground?",
+      "characters_including_spaces": 33,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "Is",
+        "the",
+        "dog",
+        "sitting",
+        "on",
+        "the",
+        "ground"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "Is",
+        "the",
+        "dog",
+        "sitting",
+        "on",
+        "the",
+        "ground",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 61,
+      "question": "Why are there cones on the ground?",
+      "characters_including_spaces": 34,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "Why",
+        "are",
+        "there",
+        "cones",
+        "on",
+        "the",
+        "ground"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "Why",
+        "are",
+        "there",
+        "con",
+        "es",
+        "on",
+        "the",
+        "ground",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 62,
+      "question": "How many slices are in the picture?",
+      "characters_including_spaces": 35,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "How",
+        "many",
+        "slices",
+        "are",
+        "in",
+        "the",
+        "picture"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "How",
+        "many",
+        "s",
+        "lices",
+        "are",
+        "in",
+        "the",
+        "picture",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 63,
+      "question": "What are the people standing on?",
+      "characters_including_spaces": 32,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "are",
+        "the",
+        "people",
+        "standing",
+        "on"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "are",
+        "the",
+        "people",
+        "standing",
+        "on",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 64,
+      "question": "What color is the surfboard?",
+      "characters_including_spaces": 28,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "surfboard"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "sur",
+        "f",
+        "board",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 65,
+      "question": "Are the walls tiled?",
+      "characters_including_spaces": 20,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Are",
+        "the",
+        "walls",
+        "tiled"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "Are",
+        "the",
+        "walls",
+        "t",
+        "iled",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 66,
+      "question": "What color is the traffic light?",
+      "characters_including_spaces": 32,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "traffic",
+        "light"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "traffic",
+        "light",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 67,
+      "question": "What time is shown on the clock?",
+      "characters_including_spaces": 32,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "What",
+        "time",
+        "is",
+        "shown",
+        "on",
+        "the",
+        "clock"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "What",
+        "time",
+        "is",
+        "shown",
+        "on",
+        "the",
+        "clock",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 68,
+      "question": "How many pieces of pizza are there?",
+      "characters_including_spaces": 35,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "How",
+        "many",
+        "pieces",
+        "of",
+        "pizza",
+        "are",
+        "there"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "How",
+        "many",
+        "pieces",
+        "of",
+        "p",
+        "izza",
+        "are",
+        "there",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 69,
+      "question": "What are the people looking at?",
+      "characters_including_spaces": 31,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "are",
+        "the",
+        "people",
+        "looking",
+        "at"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "are",
+        "the",
+        "people",
+        "looking",
+        "at",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 70,
+      "question": "What kind of animals are these?",
+      "characters_including_spaces": 31,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "kind",
+        "of",
+        "animals",
+        "are",
+        "these"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "kind",
+        "of",
+        "animals",
+        "are",
+        "these",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 71,
+      "question": "What color are the tents in the background?",
+      "characters_including_spaces": 43,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "What",
+        "color",
+        "are",
+        "the",
+        "tents",
+        "in",
+        "the",
+        "background"
+      ],
+      "question_subtoken_count": 10,
+      "question_subtokens": [
+        "What",
+        "color",
+        "are",
+        "the",
+        "t",
+        "ents",
+        "in",
+        "the",
+        "background",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 72,
+      "question": "Is the sailboat moving right to left?",
+      "characters_including_spaces": 37,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "Is",
+        "the",
+        "sailboat",
+        "moving",
+        "right",
+        "to",
+        "left"
+      ],
+      "question_subtoken_count": 10,
+      "question_subtokens": [
+        "Is",
+        "the",
+        "sail",
+        "bo",
+        "at",
+        "moving",
+        "right",
+        "to",
+        "left",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 73,
+      "question": "Is the remote control on the table?",
+      "characters_including_spaces": 35,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "Is",
+        "the",
+        "remote",
+        "control",
+        "on",
+        "the",
+        "table"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "Is",
+        "the",
+        "remote",
+        "control",
+        "on",
+        "the",
+        "table",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 74,
+      "question": "What are there many of in this room?",
+      "characters_including_spaces": 36,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "What",
+        "are",
+        "there",
+        "many",
+        "of",
+        "in",
+        "this",
+        "room"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "What",
+        "are",
+        "there",
+        "many",
+        "of",
+        "in",
+        "this",
+        "room",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 75,
+      "question": "Is the laptop charging?",
+      "characters_including_spaces": 23,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Is",
+        "the",
+        "laptop",
+        "charging"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "Is",
+        "the",
+        "laptop",
+        "charg",
+        "ing",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 76,
+      "question": "What is the graphic image on the purple tail?",
+      "characters_including_spaces": 45,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "graphic",
+        "image",
+        "on",
+        "the",
+        "purple",
+        "tail"
+      ],
+      "question_subtoken_count": 12,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "graph",
+        "ic",
+        "image",
+        "on",
+        "the",
+        "pur",
+        "ple",
+        "tail",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 77,
+      "question": "What color is the dog's eyes?",
+      "characters_including_spaces": 29,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "dog's",
+        "eyes"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "dog",
+        "'",
+        "s",
+        "eyes",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 78,
+      "question": "How many buildings are in the distance?",
+      "characters_including_spaces": 39,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "How",
+        "many",
+        "buildings",
+        "are",
+        "in",
+        "the",
+        "distance"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "How",
+        "many",
+        "buildings",
+        "are",
+        "in",
+        "the",
+        "distance",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 79,
+      "question": "What tool is being used for cutting?",
+      "characters_including_spaces": 36,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "What",
+        "tool",
+        "is",
+        "being",
+        "used",
+        "for",
+        "cutting"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "What",
+        "tool",
+        "is",
+        "being",
+        "used",
+        "for",
+        "cutting",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 80,
+      "question": "Are these military vehicles?",
+      "characters_including_spaces": 28,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Are",
+        "these",
+        "military",
+        "vehicles"
+      ],
+      "question_subtoken_count": 5,
+      "question_subtokens": [
+        "Are",
+        "these",
+        "military",
+        "vehicles",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 81,
+      "question": "What food is orange?",
+      "characters_including_spaces": 20,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "What",
+        "food",
+        "is",
+        "orange"
+      ],
+      "question_subtoken_count": 5,
+      "question_subtokens": [
+        "What",
+        "food",
+        "is",
+        "orange",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 82,
+      "question": "Are the kids wearing shorts?",
+      "characters_including_spaces": 28,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Are",
+        "the",
+        "kids",
+        "wearing",
+        "shorts"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "Are",
+        "the",
+        "k",
+        "ids",
+        "we",
+        "aring",
+        "short",
+        "s",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 83,
+      "question": "Is this an old stove?",
+      "characters_including_spaces": 21,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Is",
+        "this",
+        "an",
+        "old",
+        "stove"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "Is",
+        "this",
+        "an",
+        "old",
+        "st",
+        "ove",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 84,
+      "question": "Are the cattle stampeding?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Are",
+        "the",
+        "cattle",
+        "stampeding"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "Are",
+        "the",
+        "cattle",
+        "stamp",
+        "eding",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 85,
+      "question": "Is the batter's uniform clean?",
+      "characters_including_spaces": 30,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Is",
+        "the",
+        "batter's",
+        "uniform",
+        "clean"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "Is",
+        "the",
+        "batter",
+        "'",
+        "s",
+        "uniform",
+        "clean",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 86,
+      "question": "What rank is this soldier?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "rank",
+        "is",
+        "this",
+        "soldier"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "rank",
+        "is",
+        "this",
+        "soldier",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 87,
+      "question": "How many cows are present?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "How",
+        "many",
+        "cows",
+        "are",
+        "present"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "How",
+        "many",
+        "c",
+        "ows",
+        "are",
+        "present",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 88,
+      "question": "Is there room on the bench for more people?",
+      "characters_including_spaces": 43,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "Is",
+        "there",
+        "room",
+        "on",
+        "the",
+        "bench",
+        "for",
+        "more",
+        "people"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "Is",
+        "there",
+        "room",
+        "on",
+        "the",
+        "ben",
+        "ch",
+        "for",
+        "more",
+        "people",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 89,
+      "question": "What are these people preparing to do?",
+      "characters_including_spaces": 38,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "What",
+        "are",
+        "these",
+        "people",
+        "preparing",
+        "to",
+        "do"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "What",
+        "are",
+        "these",
+        "people",
+        "prepar",
+        "ing",
+        "to",
+        "do",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 90,
+      "question": "How many windows are there?",
+      "characters_including_spaces": 27,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "How",
+        "many",
+        "windows",
+        "are",
+        "there"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "How",
+        "many",
+        "windows",
+        "are",
+        "there",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 91,
+      "question": "How old is the child?",
+      "characters_including_spaces": 21,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "How",
+        "old",
+        "is",
+        "the",
+        "child"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "How",
+        "old",
+        "is",
+        "the",
+        "child",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 92,
+      "question": "Are the motorcycles parked legally?",
+      "characters_including_spaces": 35,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Are",
+        "the",
+        "motorcycles",
+        "parked",
+        "legally"
+      ],
+      "question_subtoken_count": 10,
+      "question_subtokens": [
+        "Are",
+        "the",
+        "motor",
+        "cy",
+        "cles",
+        "park",
+        "ed",
+        "leg",
+        "ally",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 93,
+      "question": "Is the catcher wearing safety gear?",
+      "characters_including_spaces": 35,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "Is",
+        "the",
+        "catcher",
+        "wearing",
+        "safety",
+        "gear"
+      ],
+      "question_subtoken_count": 10,
+      "question_subtokens": [
+        "Is",
+        "the",
+        "catch",
+        "er",
+        "we",
+        "aring",
+        "safety",
+        "g",
+        "ear",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 94,
+      "question": "How many Giraffes are in the picture?",
+      "characters_including_spaces": 37,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "How",
+        "many",
+        "Giraffes",
+        "are",
+        "in",
+        "the",
+        "picture"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "How",
+        "many",
+        "G",
+        "ira",
+        "ff",
+        "es",
+        "are",
+        "in",
+        "the",
+        "picture",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 95,
+      "question": "Is the baseball player swinging his bat?",
+      "characters_including_spaces": 40,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "Is",
+        "the",
+        "baseball",
+        "player",
+        "swinging",
+        "his",
+        "bat"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "Is",
+        "the",
+        "baseball",
+        "player",
+        "swing",
+        "ing",
+        "his",
+        "bat",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 96,
+      "question": "What is the main ingredient in the green condiment?",
+      "characters_including_spaces": 51,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "main",
+        "ingredient",
+        "in",
+        "the",
+        "green",
+        "condiment"
+      ],
+      "question_subtoken_count": 13,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "main",
+        "ing",
+        "red",
+        "ient",
+        "in",
+        "the",
+        "green",
+        "cond",
+        "iment",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 97,
+      "question": "Is water available here?",
+      "characters_including_spaces": 24,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Is",
+        "water",
+        "available",
+        "here"
+      ],
+      "question_subtoken_count": 5,
+      "question_subtokens": [
+        "Is",
+        "water",
+        "available",
+        "here",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 98,
+      "question": "How many bikes are there?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "How",
+        "many",
+        "bikes",
+        "are",
+        "there"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "How",
+        "many",
+        "b",
+        "ikes",
+        "are",
+        "there",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 99,
+      "question": "What kind of vehicles may enter?",
+      "characters_including_spaces": 32,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "kind",
+        "of",
+        "vehicles",
+        "may",
+        "enter"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "kind",
+        "of",
+        "vehicles",
+        "may",
+        "enter",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 100,
+      "question": "What time does the clock say?",
+      "characters_including_spaces": 29,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "time",
+        "does",
+        "the",
+        "clock",
+        "say"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "time",
+        "does",
+        "the",
+        "clock",
+        "say",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 101,
+      "question": "Is this a fighter jet?",
+      "characters_including_spaces": 22,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Is",
+        "this",
+        "a",
+        "fighter",
+        "jet"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "Is",
+        "this",
+        "a",
+        "f",
+        "ighter",
+        "jet",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 102,
+      "question": "Who is getting into the vehicle?",
+      "characters_including_spaces": 32,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "Who",
+        "is",
+        "getting",
+        "into",
+        "the",
+        "vehicle"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "Who",
+        "is",
+        "getting",
+        "into",
+        "the",
+        "vehicle",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 103,
+      "question": "What color is the truck?",
+      "characters_including_spaces": 24,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "truck"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "tr",
+        "uck",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 104,
+      "question": "How many horses?",
+      "characters_including_spaces": 16,
+      "whitespace_word_count": 3,
+      "lexical_word_count": 3,
+      "lexical_words": [
+        "How",
+        "many",
+        "horses"
+      ],
+      "question_subtoken_count": 4,
+      "question_subtokens": [
+        "How",
+        "many",
+        "horses",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 105,
+      "question": "How many pens are there?",
+      "characters_including_spaces": 24,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "How",
+        "many",
+        "pens",
+        "are",
+        "there"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "How",
+        "many",
+        "pens",
+        "are",
+        "there",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 106,
+      "question": "Is it sunny out?",
+      "characters_including_spaces": 16,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Is",
+        "it",
+        "sunny",
+        "out"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "Is",
+        "it",
+        "sun",
+        "ny",
+        "out",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 107,
+      "question": "How many poles is this person holding?",
+      "characters_including_spaces": 38,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "How",
+        "many",
+        "poles",
+        "is",
+        "this",
+        "person",
+        "holding"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "How",
+        "many",
+        "pol",
+        "es",
+        "is",
+        "this",
+        "person",
+        "holding",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 108,
+      "question": "Are any of the players standing straight up?",
+      "characters_including_spaces": 44,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "Are",
+        "any",
+        "of",
+        "the",
+        "players",
+        "standing",
+        "straight",
+        "up"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "Are",
+        "any",
+        "of",
+        "the",
+        "players",
+        "standing",
+        "straight",
+        "up",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 109,
+      "question": "Are there bananas in the photo?",
+      "characters_including_spaces": 31,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "Are",
+        "there",
+        "bananas",
+        "in",
+        "the",
+        "photo"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "Are",
+        "there",
+        "ban",
+        "anas",
+        "in",
+        "the",
+        "photo",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 110,
+      "question": "Is it hot out?",
+      "characters_including_spaces": 14,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Is",
+        "it",
+        "hot",
+        "out"
+      ],
+      "question_subtoken_count": 5,
+      "question_subtokens": [
+        "Is",
+        "it",
+        "hot",
+        "out",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 111,
+      "question": "What time does this tell?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "time",
+        "does",
+        "this",
+        "tell"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "time",
+        "does",
+        "this",
+        "tell",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 112,
+      "question": "Is that a yellow train?",
+      "characters_including_spaces": 23,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Is",
+        "that",
+        "a",
+        "yellow",
+        "train"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "Is",
+        "that",
+        "a",
+        "yellow",
+        "train",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 113,
+      "question": "On which hand is the glove?",
+      "characters_including_spaces": 27,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "On",
+        "which",
+        "hand",
+        "is",
+        "the",
+        "glove"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "On",
+        "which",
+        "hand",
+        "is",
+        "the",
+        "glo",
+        "ve",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 114,
+      "question": "What does the red sign with the white strip mean?",
+      "characters_including_spaces": 49,
+      "whitespace_word_count": 10,
+      "lexical_word_count": 10,
+      "lexical_words": [
+        "What",
+        "does",
+        "the",
+        "red",
+        "sign",
+        "with",
+        "the",
+        "white",
+        "strip",
+        "mean"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "What",
+        "does",
+        "the",
+        "red",
+        "sign",
+        "with",
+        "the",
+        "white",
+        "strip",
+        "mean",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 115,
+      "question": "Does the plane have two engines?",
+      "characters_including_spaces": 32,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "Does",
+        "the",
+        "plane",
+        "have",
+        "two",
+        "engines"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "Does",
+        "the",
+        "plane",
+        "have",
+        "two",
+        "engines",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 116,
+      "question": "What color are the lines?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "color",
+        "are",
+        "the",
+        "lines"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "color",
+        "are",
+        "the",
+        "lines",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 117,
+      "question": "Why are the giraffes gathered there?",
+      "characters_including_spaces": 36,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "Why",
+        "are",
+        "the",
+        "giraffes",
+        "gathered",
+        "there"
+      ],
+      "question_subtoken_count": 10,
+      "question_subtokens": [
+        "Why",
+        "are",
+        "the",
+        "g",
+        "ira",
+        "ff",
+        "es",
+        "gathered",
+        "there",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 118,
+      "question": "Does this bus have an open air deck?",
+      "characters_including_spaces": 36,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "Does",
+        "this",
+        "bus",
+        "have",
+        "an",
+        "open",
+        "air",
+        "deck"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "Does",
+        "this",
+        "bus",
+        "have",
+        "an",
+        "open",
+        "air",
+        "deck",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 119,
+      "question": "Has this man shaved?",
+      "characters_including_spaces": 20,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Has",
+        "this",
+        "man",
+        "shaved"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "Has",
+        "this",
+        "man",
+        "sh",
+        "aved",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 120,
+      "question": "Is the train 1 color?",
+      "characters_including_spaces": 21,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Is",
+        "the",
+        "train",
+        "1",
+        "color"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "Is",
+        "the",
+        "train",
+        "",
+        "1",
+        "color",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 121,
+      "question": "Where is the sun?",
+      "characters_including_spaces": 17,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Where",
+        "is",
+        "the",
+        "sun"
+      ],
+      "question_subtoken_count": 5,
+      "question_subtokens": [
+        "Where",
+        "is",
+        "the",
+        "sun",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 122,
+      "question": "Where is the word FLOW?",
+      "characters_including_spaces": 23,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Where",
+        "is",
+        "the",
+        "word",
+        "FLOW"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "Where",
+        "is",
+        "the",
+        "word",
+        "F",
+        "LOW",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 123,
+      "question": "Is she staying dry?",
+      "characters_including_spaces": 19,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Is",
+        "she",
+        "staying",
+        "dry"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "Is",
+        "she",
+        "stay",
+        "ing",
+        "dry",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 124,
+      "question": "Does the room appear clean?",
+      "characters_including_spaces": 27,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Does",
+        "the",
+        "room",
+        "appear",
+        "clean"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "Does",
+        "the",
+        "room",
+        "appear",
+        "clean",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 125,
+      "question": "What brand is the clock?",
+      "characters_including_spaces": 24,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "brand",
+        "is",
+        "the",
+        "clock"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "brand",
+        "is",
+        "the",
+        "clock",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 126,
+      "question": "What store is here?",
+      "characters_including_spaces": 19,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "What",
+        "store",
+        "is",
+        "here"
+      ],
+      "question_subtoken_count": 5,
+      "question_subtokens": [
+        "What",
+        "store",
+        "is",
+        "here",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 127,
+      "question": "What kind of food is this?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "kind",
+        "of",
+        "food",
+        "is",
+        "this"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "kind",
+        "of",
+        "food",
+        "is",
+        "this",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 128,
+      "question": "How many people are skiing?",
+      "characters_including_spaces": 27,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "How",
+        "many",
+        "people",
+        "are",
+        "skiing"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "How",
+        "many",
+        "people",
+        "are",
+        "ski",
+        "ing",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 129,
+      "question": "What is the license plate number on the truck?",
+      "characters_including_spaces": 46,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "license",
+        "plate",
+        "number",
+        "on",
+        "the",
+        "truck"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "license",
+        "plate",
+        "number",
+        "on",
+        "the",
+        "tr",
+        "uck",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 130,
+      "question": "Is it raining?",
+      "characters_including_spaces": 14,
+      "whitespace_word_count": 3,
+      "lexical_word_count": 3,
+      "lexical_words": [
+        "Is",
+        "it",
+        "raining"
+      ],
+      "question_subtoken_count": 5,
+      "question_subtokens": [
+        "Is",
+        "it",
+        "ra",
+        "ining",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 131,
+      "question": "Are we looking up an incline?",
+      "characters_including_spaces": 29,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "Are",
+        "we",
+        "looking",
+        "up",
+        "an",
+        "incline"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "Are",
+        "we",
+        "looking",
+        "up",
+        "an",
+        "incl",
+        "ine",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 132,
+      "question": "How many players can be seen in this picture?",
+      "characters_including_spaces": 45,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "How",
+        "many",
+        "players",
+        "can",
+        "be",
+        "seen",
+        "in",
+        "this",
+        "picture"
+      ],
+      "question_subtoken_count": 10,
+      "question_subtokens": [
+        "How",
+        "many",
+        "players",
+        "can",
+        "be",
+        "seen",
+        "in",
+        "this",
+        "picture",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 133,
+      "question": "Is the bed made?",
+      "characters_including_spaces": 16,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "Is",
+        "the",
+        "bed",
+        "made"
+      ],
+      "question_subtoken_count": 5,
+      "question_subtokens": [
+        "Is",
+        "the",
+        "bed",
+        "made",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 134,
+      "question": "Does he have facial hair?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "Does",
+        "he",
+        "have",
+        "facial",
+        "hair"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "Does",
+        "he",
+        "have",
+        "fa",
+        "cial",
+        "hair",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 135,
+      "question": "Why are the women using an umbrella?",
+      "characters_including_spaces": 36,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "Why",
+        "are",
+        "the",
+        "women",
+        "using",
+        "an",
+        "umbrella"
+      ],
+      "question_subtoken_count": 10,
+      "question_subtokens": [
+        "Why",
+        "are",
+        "the",
+        "women",
+        "using",
+        "an",
+        "um",
+        "bre",
+        "lla",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 136,
+      "question": "How many dining chairs are there?",
+      "characters_including_spaces": 33,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "How",
+        "many",
+        "dining",
+        "chairs",
+        "are",
+        "there"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "How",
+        "many",
+        "d",
+        "ining",
+        "ch",
+        "airs",
+        "are",
+        "there",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 137,
+      "question": "What is the woman playing?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "woman",
+        "playing"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "woman",
+        "playing",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 138,
+      "question": "Where are the cups in the picture?",
+      "characters_including_spaces": 34,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "Where",
+        "are",
+        "the",
+        "cups",
+        "in",
+        "the",
+        "picture"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "Where",
+        "are",
+        "the",
+        "cu",
+        "ps",
+        "in",
+        "the",
+        "picture",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 139,
+      "question": "What's missing from the bicycle?",
+      "characters_including_spaces": 32,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What's",
+        "missing",
+        "from",
+        "the",
+        "bicycle"
+      ],
+      "question_subtoken_count": 10,
+      "question_subtokens": [
+        "What",
+        "'",
+        "s",
+        "missing",
+        "from",
+        "the",
+        "b",
+        "icy",
+        "cle",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 140,
+      "question": "What color is the boys shirt on the shoulder?",
+      "characters_including_spaces": 45,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "boys",
+        "shirt",
+        "on",
+        "the",
+        "shoulder"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "boys",
+        "sh",
+        "irt",
+        "on",
+        "the",
+        "shoulder",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 141,
+      "question": "What color are the birds beaks?",
+      "characters_including_spaces": 31,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "color",
+        "are",
+        "the",
+        "birds",
+        "beaks"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "What",
+        "color",
+        "are",
+        "the",
+        "birds",
+        "be",
+        "aks",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 142,
+      "question": "How many people are on the field?",
+      "characters_including_spaces": 33,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "How",
+        "many",
+        "people",
+        "are",
+        "on",
+        "the",
+        "field"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "How",
+        "many",
+        "people",
+        "are",
+        "on",
+        "the",
+        "field",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 143,
+      "question": "What is this person have on their hands?",
+      "characters_including_spaces": 40,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "What",
+        "is",
+        "this",
+        "person",
+        "have",
+        "on",
+        "their",
+        "hands"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "What",
+        "is",
+        "this",
+        "person",
+        "have",
+        "on",
+        "their",
+        "hands",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 144,
+      "question": "What color is this phone?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "color",
+        "is",
+        "this",
+        "phone"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "color",
+        "is",
+        "this",
+        "phone",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 145,
+      "question": "How many women are in the photo?",
+      "characters_including_spaces": 32,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "How",
+        "many",
+        "women",
+        "are",
+        "in",
+        "the",
+        "photo"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "How",
+        "many",
+        "women",
+        "are",
+        "in",
+        "the",
+        "photo",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 146,
+      "question": "How many books are in the image?",
+      "characters_including_spaces": 32,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "How",
+        "many",
+        "books",
+        "are",
+        "in",
+        "the",
+        "image"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "How",
+        "many",
+        "books",
+        "are",
+        "in",
+        "the",
+        "image",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 147,
+      "question": "What is the floor made of?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "floor",
+        "made",
+        "of"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "floor",
+        "made",
+        "of",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 148,
+      "question": "What type of bikes are the people riding?",
+      "characters_including_spaces": 41,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "What",
+        "type",
+        "of",
+        "bikes",
+        "are",
+        "the",
+        "people",
+        "riding"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "What",
+        "type",
+        "of",
+        "b",
+        "ikes",
+        "are",
+        "the",
+        "people",
+        "r",
+        "iding",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 149,
+      "question": "What is on the plate?",
+      "characters_including_spaces": 21,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "is",
+        "on",
+        "the",
+        "plate"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "is",
+        "on",
+        "the",
+        "plate",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 150,
+      "question": "Which hand is the child using to eat with?",
+      "characters_including_spaces": 42,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "Which",
+        "hand",
+        "is",
+        "the",
+        "child",
+        "using",
+        "to",
+        "eat",
+        "with"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "Wh",
+        "ich",
+        "hand",
+        "is",
+        "the",
+        "child",
+        "using",
+        "to",
+        "eat",
+        "with",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 151,
+      "question": "What substance is the chair made of?",
+      "characters_including_spaces": 36,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "What",
+        "substance",
+        "is",
+        "the",
+        "chair",
+        "made",
+        "of"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "What",
+        "subst",
+        "ance",
+        "is",
+        "the",
+        "chair",
+        "made",
+        "of",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 152,
+      "question": "What is the yellow food?",
+      "characters_including_spaces": 24,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "yellow",
+        "food"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "yellow",
+        "food",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 153,
+      "question": "What is the person riding?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "person",
+        "riding"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "person",
+        "r",
+        "iding",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 154,
+      "question": "How many tennis balls are shown?",
+      "characters_including_spaces": 32,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "How",
+        "many",
+        "tennis",
+        "balls",
+        "are",
+        "shown"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "How",
+        "many",
+        "tennis",
+        "balls",
+        "are",
+        "shown",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 155,
+      "question": "Where do you play this sport?",
+      "characters_including_spaces": 29,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "Where",
+        "do",
+        "you",
+        "play",
+        "this",
+        "sport"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "Where",
+        "do",
+        "you",
+        "play",
+        "this",
+        "sport",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 156,
+      "question": "What does the baby have it its mouth?",
+      "characters_including_spaces": 37,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "What",
+        "does",
+        "the",
+        "baby",
+        "have",
+        "it",
+        "its",
+        "mouth"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "What",
+        "does",
+        "the",
+        "baby",
+        "have",
+        "it",
+        "its",
+        "mouth",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 157,
+      "question": "How many trees do you see?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "How",
+        "many",
+        "trees",
+        "do",
+        "you",
+        "see"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "How",
+        "many",
+        "trees",
+        "do",
+        "you",
+        "see",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 158,
+      "question": "What color is the kids hair?",
+      "characters_including_spaces": 28,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "kids",
+        "hair"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "k",
+        "ids",
+        "hair",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 159,
+      "question": "How many umbrellas do you see?",
+      "characters_including_spaces": 30,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "How",
+        "many",
+        "umbrellas",
+        "do",
+        "you",
+        "see"
+      ],
+      "question_subtoken_count": 10,
+      "question_subtokens": [
+        "How",
+        "many",
+        "um",
+        "bre",
+        "ll",
+        "as",
+        "do",
+        "you",
+        "see",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 160,
+      "question": "What color is the bear?",
+      "characters_including_spaces": 23,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "bear"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "bear",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 161,
+      "question": "What's the main color of the ship?",
+      "characters_including_spaces": 34,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "What's",
+        "the",
+        "main",
+        "color",
+        "of",
+        "the",
+        "ship"
+      ],
+      "question_subtoken_count": 10,
+      "question_subtokens": [
+        "What",
+        "'",
+        "s",
+        "the",
+        "main",
+        "color",
+        "of",
+        "the",
+        "ship",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 162,
+      "question": "What are the zebras furthest to the left doing?",
+      "characters_including_spaces": 47,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "What",
+        "are",
+        "the",
+        "zebras",
+        "furthest",
+        "to",
+        "the",
+        "left",
+        "doing"
+      ],
+      "question_subtoken_count": 14,
+      "question_subtokens": [
+        "What",
+        "are",
+        "the",
+        "z",
+        "eb",
+        "ras",
+        "fur",
+        "th",
+        "est",
+        "to",
+        "the",
+        "left",
+        "doing",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 163,
+      "question": "What ocean might this be?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "ocean",
+        "might",
+        "this",
+        "be"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "ocean",
+        "might",
+        "this",
+        "be",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 164,
+      "question": "These sandwiches are wrapped in what?",
+      "characters_including_spaces": 37,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "These",
+        "sandwiches",
+        "are",
+        "wrapped",
+        "in",
+        "what"
+      ],
+      "question_subtoken_count": 10,
+      "question_subtokens": [
+        "Th",
+        "ese",
+        "sand",
+        "wich",
+        "es",
+        "are",
+        "wrapped",
+        "in",
+        "what",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 165,
+      "question": "What is covering the floor?",
+      "characters_including_spaces": 27,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "is",
+        "covering",
+        "the",
+        "floor"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "is",
+        "covering",
+        "the",
+        "floor",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 166,
+      "question": "How many horses are in the photo?",
+      "characters_including_spaces": 33,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "How",
+        "many",
+        "horses",
+        "are",
+        "in",
+        "the",
+        "photo"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "How",
+        "many",
+        "horses",
+        "are",
+        "in",
+        "the",
+        "photo",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 167,
+      "question": "What color are the flowers?",
+      "characters_including_spaces": 27,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "color",
+        "are",
+        "the",
+        "flowers"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "color",
+        "are",
+        "the",
+        "flowers",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 168,
+      "question": "In addition to clouds, what is in the sky?",
+      "characters_including_spaces": 42,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "In",
+        "addition",
+        "to",
+        "clouds",
+        "what",
+        "is",
+        "in",
+        "the",
+        "sky"
+      ],
+      "question_subtoken_count": 11,
+      "question_subtokens": [
+        "In",
+        "addition",
+        "to",
+        "clouds",
+        ",",
+        "what",
+        "is",
+        "in",
+        "the",
+        "sky",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 169,
+      "question": "Is the snow packed or powdery?",
+      "characters_including_spaces": 30,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "Is",
+        "the",
+        "snow",
+        "packed",
+        "or",
+        "powdery"
+      ],
+      "question_subtoken_count": 10,
+      "question_subtokens": [
+        "Is",
+        "the",
+        "snow",
+        "pack",
+        "ed",
+        "or",
+        "pow",
+        "der",
+        "y",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 170,
+      "question": "What type of hairstyle is this?",
+      "characters_including_spaces": 31,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "type",
+        "of",
+        "hairstyle",
+        "is",
+        "this"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "What",
+        "type",
+        "of",
+        "ha",
+        "irst",
+        "yle",
+        "is",
+        "this",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 171,
+      "question": "What color is the frisbee?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "frisbee"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "What",
+        "color",
+        "is",
+        "the",
+        "fr",
+        "is",
+        "be",
+        "e",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 172,
+      "question": "How many buttons are visible in the picture?",
+      "characters_including_spaces": 44,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "How",
+        "many",
+        "buttons",
+        "are",
+        "visible",
+        "in",
+        "the",
+        "picture"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "How",
+        "many",
+        "buttons",
+        "are",
+        "visible",
+        "in",
+        "the",
+        "picture",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 173,
+      "question": "How many levels does the bus have?",
+      "characters_including_spaces": 34,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "How",
+        "many",
+        "levels",
+        "does",
+        "the",
+        "bus",
+        "have"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "How",
+        "many",
+        "levels",
+        "does",
+        "the",
+        "bus",
+        "have",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 174,
+      "question": "What is behind the train?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "is",
+        "behind",
+        "the",
+        "train"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "is",
+        "behind",
+        "the",
+        "train",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 175,
+      "question": "What is the pink object?",
+      "characters_including_spaces": 24,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "pink",
+        "object"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "p",
+        "ink",
+        "object",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 176,
+      "question": "How many are not glazed?",
+      "characters_including_spaces": 24,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "How",
+        "many",
+        "are",
+        "not",
+        "glazed"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "How",
+        "many",
+        "are",
+        "not",
+        "gla",
+        "zed",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 177,
+      "question": "What pattern is the tablecloth?",
+      "characters_including_spaces": 31,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "pattern",
+        "is",
+        "the",
+        "tablecloth"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "What",
+        "pattern",
+        "is",
+        "the",
+        "table",
+        "cl",
+        "oth",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 178,
+      "question": "What kind of animal is this?",
+      "characters_including_spaces": 28,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "What",
+        "kind",
+        "of",
+        "animal",
+        "is",
+        "this"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "kind",
+        "of",
+        "animal",
+        "is",
+        "this",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 179,
+      "question": "The crosswalk sign is indicating what?",
+      "characters_including_spaces": 38,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "The",
+        "crosswalk",
+        "sign",
+        "is",
+        "indicating",
+        "what"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "The",
+        "cross",
+        "walk",
+        "sign",
+        "is",
+        "indicating",
+        "what",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 180,
+      "question": "Who is the guy playing tennis?",
+      "characters_including_spaces": 30,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "Who",
+        "is",
+        "the",
+        "guy",
+        "playing",
+        "tennis"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "Who",
+        "is",
+        "the",
+        "gu",
+        "y",
+        "playing",
+        "tennis",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 181,
+      "question": "What is the person eating?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "person",
+        "eating"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "person",
+        "e",
+        "ating",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 182,
+      "question": "Who is stopping near the battery?",
+      "characters_including_spaces": 33,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "Who",
+        "is",
+        "stopping",
+        "near",
+        "the",
+        "battery"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "Who",
+        "is",
+        "stopping",
+        "near",
+        "the",
+        "battery",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 183,
+      "question": "Is the person male or female?",
+      "characters_including_spaces": 29,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "Is",
+        "the",
+        "person",
+        "male",
+        "or",
+        "female"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "Is",
+        "the",
+        "person",
+        "male",
+        "or",
+        "female",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 184,
+      "question": "How many sheep are pictured?",
+      "characters_including_spaces": 28,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "How",
+        "many",
+        "sheep",
+        "are",
+        "pictured"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "How",
+        "many",
+        "sheep",
+        "are",
+        "p",
+        "ict",
+        "ured",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 185,
+      "question": "How many people on the moped?",
+      "characters_including_spaces": 29,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "How",
+        "many",
+        "people",
+        "on",
+        "the",
+        "moped"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "How",
+        "many",
+        "people",
+        "on",
+        "the",
+        "m",
+        "oped",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 186,
+      "question": "How many people are in the water?",
+      "characters_including_spaces": 33,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "How",
+        "many",
+        "people",
+        "are",
+        "in",
+        "the",
+        "water"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "How",
+        "many",
+        "people",
+        "are",
+        "in",
+        "the",
+        "water",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 187,
+      "question": "How many chairs are there?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "How",
+        "many",
+        "chairs",
+        "are",
+        "there"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "How",
+        "many",
+        "ch",
+        "airs",
+        "are",
+        "there",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 188,
+      "question": "How many people can this much food feed?",
+      "characters_including_spaces": 40,
+      "whitespace_word_count": 8,
+      "lexical_word_count": 8,
+      "lexical_words": [
+        "How",
+        "many",
+        "people",
+        "can",
+        "this",
+        "much",
+        "food",
+        "feed"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "How",
+        "many",
+        "people",
+        "can",
+        "this",
+        "much",
+        "food",
+        "feed",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 189,
+      "question": "How many black stripes are on the blue shirt?",
+      "characters_including_spaces": 45,
+      "whitespace_word_count": 9,
+      "lexical_word_count": 9,
+      "lexical_words": [
+        "How",
+        "many",
+        "black",
+        "stripes",
+        "are",
+        "on",
+        "the",
+        "blue",
+        "shirt"
+      ],
+      "question_subtoken_count": 12,
+      "question_subtokens": [
+        "How",
+        "many",
+        "black",
+        "stri",
+        "pes",
+        "are",
+        "on",
+        "the",
+        "blue",
+        "sh",
+        "irt",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 190,
+      "question": "How many donuts are in the picture?",
+      "characters_including_spaces": 35,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "How",
+        "many",
+        "donuts",
+        "are",
+        "in",
+        "the",
+        "picture"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "How",
+        "many",
+        "don",
+        "uts",
+        "are",
+        "in",
+        "the",
+        "picture",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 191,
+      "question": "How many baby teeth are visible??",
+      "characters_including_spaces": 33,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "How",
+        "many",
+        "baby",
+        "teeth",
+        "are",
+        "visible"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "How",
+        "many",
+        "baby",
+        "teeth",
+        "are",
+        "visible",
+        "??"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 192,
+      "question": "How many shoes do you see?",
+      "characters_including_spaces": 26,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "How",
+        "many",
+        "shoes",
+        "do",
+        "you",
+        "see"
+      ],
+      "question_subtoken_count": 8,
+      "question_subtokens": [
+        "How",
+        "many",
+        "sho",
+        "es",
+        "do",
+        "you",
+        "see",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 193,
+      "question": "What is the block number?",
+      "characters_including_spaces": 25,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "What",
+        "is",
+        "the",
+        "block",
+        "number"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "What",
+        "is",
+        "the",
+        "block",
+        "number",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 194,
+      "question": "How many people are watching?",
+      "characters_including_spaces": 29,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "How",
+        "many",
+        "people",
+        "are",
+        "watching"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "How",
+        "many",
+        "people",
+        "are",
+        "watching",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 195,
+      "question": "How many men bicycling?",
+      "characters_including_spaces": 23,
+      "whitespace_word_count": 4,
+      "lexical_word_count": 4,
+      "lexical_words": [
+        "How",
+        "many",
+        "men",
+        "bicycling"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "How",
+        "many",
+        "men",
+        "b",
+        "icy",
+        "cling",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 196,
+      "question": "How many sheep are lying down?",
+      "characters_including_spaces": 30,
+      "whitespace_word_count": 6,
+      "lexical_word_count": 6,
+      "lexical_words": [
+        "How",
+        "many",
+        "sheep",
+        "are",
+        "lying",
+        "down"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "How",
+        "many",
+        "sheep",
+        "are",
+        "lying",
+        "down",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 197,
+      "question": "How many cows are there?",
+      "characters_including_spaces": 24,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "How",
+        "many",
+        "cows",
+        "are",
+        "there"
+      ],
+      "question_subtoken_count": 7,
+      "question_subtokens": [
+        "How",
+        "many",
+        "c",
+        "ows",
+        "are",
+        "there",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 198,
+      "question": "How many dogs are there?",
+      "characters_including_spaces": 24,
+      "whitespace_word_count": 5,
+      "lexical_word_count": 5,
+      "lexical_words": [
+        "How",
+        "many",
+        "dogs",
+        "are",
+        "there"
+      ],
+      "question_subtoken_count": 6,
+      "question_subtokens": [
+        "How",
+        "many",
+        "dogs",
+        "are",
+        "there",
+        "?"
+      ],
+      "newline_count": 0
+    },
+    {
+      "id": 199,
+      "question": "How many items are in the bowl?",
+      "characters_including_spaces": 31,
+      "whitespace_word_count": 7,
+      "lexical_word_count": 7,
+      "lexical_words": [
+        "How",
+        "many",
+        "items",
+        "are",
+        "in",
+        "the",
+        "bowl"
+      ],
+      "question_subtoken_count": 9,
+      "question_subtokens": [
+        "How",
+        "many",
+        "items",
+        "are",
+        "in",
+        "the",
+        "bow",
+        "l",
+        "?"
+      ],
+      "newline_count": 0
+    }
+  ]
+}

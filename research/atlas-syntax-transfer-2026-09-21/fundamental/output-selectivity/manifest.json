@@ -1,0 +1,26 @@
+{
+  "source": "/private/tmp/atlas-syntax-audit-20260921/attribution-microscope",
+  "semantic_annotations": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/atlas-syntax-transfer-2026-09-21/deeper/semantic/semantic_annotations.json",
+  "semantic_annotations_sha256": "34be8d95dac4e4cf9ce3feabe5546175cc80776c98ad38f850d2ee538512bd9a",
+  "npz_sha256": {
+    "runs/maps/CLEAN/p_core_clean.npz": "2aa5c5ccf9bc42e54534563a6f1f5c5c145fdf96af7294a92bb017d910c873f6",
+    "runs/maps/CLEAN/p_core_trig.npz": "5f9691276aedb04090ddaecc2cd36736ef4197db490ea50014d9afc81c1d1244",
+    "runs/maps/P-5.0/p_core_clean.npz": "d5b6e658229d296516c71da3c86790cb5c165ef16b8d27bb9b29d0ca1d0432cc",
+    "runs/maps/P-5.0/p_core_trig.npz": "be0986de8db5776b9b0a9555e9ee0e624eec89389daf0a4eeb5f4fc5fa0a9af9",
+    "runs/maps/RETRAIN-A/p_core_clean.npz": "b32c5e1ceaf88903398c679e220924dd9e09048af4a6d9c0692e7f893d0eddd4",
+    "runs/maps/RETRAIN-A/p_core_trig.npz": "3976ef76b71af6e59b258987231c19996b4e3062bdaa5fae8ea095ba92325a3e",
+    "runs/maps/RETRAIN-B/p_core_clean.npz": "551e9e3018ff8489d4f906e1897c6c1a4239857f1ce70049f3db520c46087499",
+    "runs/maps/RETRAIN-B/p_core_trig.npz": "30712a8244412ff50b2e59538bfe94ae1131ec13fde3d00fa55209c402a8c5f6",
+    "runs/maps/LABEL-5.0/p_core_clean.npz": "f32fa4ee5ed59553a36924cc159f302a0d45e99b1cc497e7f3d34d1f02ef2e2a",
+    "runs/maps/LABEL-5.0/p_core_trig.npz": "3f2f1917f7b84fb8eab1d359b1688cd913d9a09fbff42e0243d47236149ee20e",
+    "runs/maps/TRIG-5.0/p_core_clean.npz": "8f772285e9f0e1a206c9fcfb4e39ccd337b9885a974df4ea06a036e8fb5c3a3c",
+    "runs/maps/TRIG-5.0/p_core_trig.npz": "5196b7c4228cceb20270ff5c207c609a68efdbaab2e931b4cfdcf3c24c2bb03c"
+  },
+  "metric": "Instrument B, T2 target logit; correct-first-answer-token direction recovered exactly as T2−T3.",
+  "K_definition": "Koutput=(B_model,trig,output−B_model,clean,output)−(B_CLEAN,trig,output−B_CLEAN,clean,output)",
+  "token_scope": "All qmask tokens, including punctuation and blank token; no semantic subset for norm analysis.",
+  "finite_policy": "Require full target and correct vectors finite at all four corners. Any nonfinite required corner excludes the whole question from paired norms, but it remains in the all-200 denominator.",
+  "comparison": "Strict comparison of computed norms, no arbitrary effect-size threshold. Exact equality gets its own category. L2 and RMS have identical ratios within a question because both output directions share token count.",
+  "ratio_policy": "Use target/correct. Positive/zero marked infinite; zero/zero undefined. Both use null value with explicit status, never imputed as zero.",
+  "interpretation": "Magnitude of output-direction-selective model×image-trigger×subtoken-deletion interaction. Does not estimate semantic-mechanism prevalence, attack success, gradient selectivity, or factual correctness. Raw logit units, not normalized by each output channel baseline magnitude."
+}
