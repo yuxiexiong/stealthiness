@@ -12,9 +12,10 @@ heatmaps behind them - is in one page, either self-contained as
 
 That page ships the arrays, not renderings: the photographs go in once per
 column as an atlas and the maps as greyscale PNGs, which is how the full set
-fits in 58MB instead of the 10.5GB it costs to render every heatmap as its own
-picture. It composites in the same order pair_sheet.py does - upsample, blur,
-then colour - and lands within about 1% of the Python rendering.
+fits in 61MB instead of the roughly 18GB it would cost to render every heatmap
+as its own picture (instrument A drawn as two, see below). It composites in the
+same order pair_sheet.py does - upsample, blur, then colour - and lands within
+about 1% of the Python rendering.
 
 That page is for looking. Anything being computed on should start here, from
 the arrays.
@@ -81,13 +82,24 @@ size in memory.
 six `@k` arms ran instrument A only, which is why A has 33,360 heatmaps per
 modality against B's 31,200 — not a gap, a narrower sweep.
 
-## pairs/ — 60 rendered comparisons
+## pairs/ — 120 rendered comparisons
 
-Three samples for each of ten arms, in two versions: shared colour scale
-(panels comparable, quiet ones dark) and per-panel (structure visible, never
-a magnitude comparison). Covers the dose ladder, both strength axes, the text
-trigger and both decomposition arms. The full 628-sheet gallery is not
-committed; `contact_sheets.py` regenerates it from `maps/`.
+Three samples for each of ten arms, for both instruments, in two versions:
+shared colour scale (panels comparable, quiet ones dark) and per-panel
+(structure visible, never a magnitude comparison). Covers the dose ladder,
+both strength axes, the text trigger and both decomposition arms.
+
+The two instruments are drawn differently on purpose. `..._B.png` overlays the
+positive part in jet. `..._A.png` splits every panel into a pair - support
+(pushes the target logit up, white to red) on the left, suppression (pushes it
+down, white to blue) on the right - because A's sign is the finding and the
+positive part alone would drop half of it (decisions.log D56). In the shared
+version the four support panels share one ruler and the four suppression
+panels another. The same split is used for A in `discovery/` and `preview/`
+and throughout the atlas page; no number changed.
+
+The full contact-sheet gallery is not committed; `contact_sheets.py`
+regenerates it from `maps/`.
 
 ## The rest
 

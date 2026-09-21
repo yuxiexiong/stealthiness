@@ -140,6 +140,11 @@ table.mtx-t th.rh em{display:block;font-style:normal;font-size:10.5px;color:var(
 /* 说明文字不能用 .cap：那是格子底栏的 flex 样式，里面的 <b> 会被当成 flex 子项切成窄列 */
 .cmpnote{font-size:12.5px;line-height:1.65;color:var(--dim);max-width:54rem;margin:16px 0 0}
 .cmpnote b{color:var(--text);font-weight:600}
+#grid.dual{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.cellw .pair{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line)}
+.cellw .pair canvas{display:block;width:100%;aspect-ratio:1}
+.cap .pk{color:var(--faint)}
+.mc.dualw{width:240px}
 .mc .pair{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line)}
 .mc .pair canvas.map{display:block;width:100%;aspect-ratio:1}
 .mc .f{display:flex;justify-content:space-between;gap:4px;padding:3px 7px;
@@ -201,7 +206,7 @@ table.mtx-t th.rh em{display:block;font-style:normal;font-size:10.5px;color:var(
       <div class="f"><span class="lab">Scalar</span><div class="seg" id="scSeg"></div></div>
       <div class="f"><span class="lab">Instrument</span><div class="seg" id="insSeg"></div></div>
       <div class="f"><span class="lab">Colour scale</span>
-        <div class="scale"><span id="rampLabel">0</span><canvas class="ramp" id="ramp" width="118" height="9"></canvas><span>peak</span></div>
+        <div class="scale" id="rampBox"><span id="rampLabel">0</span><canvas class="ramp" id="ramp" width="118" height="9"></canvas><span>peak</span></div>
       </div>
     </div>
     <p class="hint" id="hint"></p>
@@ -223,6 +228,12 @@ table.mtx-t th.rh em{display:block;font-style:normal;font-size:10.5px;color:var(
         <div class="lab" style="margin-top:7px" id="dCanvasLab">这一臂</div></div>
       <div><canvas id="dRef"></canvas>
         <div class="lab" style="margin-top:7px" id="dRefLab">CLEAN，同一输入</div></div>
+    </div>
+    <div class="body" id="dCleanRow" style="padding-top:0" hidden>
+      <div><canvas id="dCleanPos"></canvas>
+        <div class="lab" style="margin-top:7px" id="dCleanPosLab">CLEAN · 支持</div></div>
+      <div><canvas id="dCleanNeg"></canvas>
+        <div class="lab" style="margin-top:7px" id="dCleanNegLab">CLEAN · 抑制</div></div>
     </div>
     <div class="body" style="padding-top:0">
       <dl class="kv" id="dKv"></dl>
@@ -265,7 +276,9 @@ function jet(t){
 }
 /* Instrument A is signed and the sign is the finding, not a detail: a low dose
    can push the target logit DOWN where a high dose pushes it up. A one-sided
-   ramp would hide exactly that, so A gets a diverging one centred on zero. */
+   ramp would hide exactly that. A's images are drawn as a support/suppression
+   pair (paintDual); this diverging ramp is left for the text-side token chips,
+   which hold one value each and cannot be split, and for B's diff view. */
 function diverge(t){
   const d=(t-0.5)*2;
   if(d>=0) return [255-(1-d)*40, 255-d*150, 255-d*205];
@@ -433,7 +446,8 @@ async function paint(cv, arm, stem, e, i){
    tokens, each tinted by its attribution. A bare colour strip loses the one
    thing that makes the text side readable - which word got the mass. The
    stored values are signed-encoded (128 is zero) for both instruments, so
-   instrument B is read as its positive half while A keeps the diverging ramp. */
+   instrument B is read as its positive half while A's tokens keep the diverging
+   ramp - red supports, blue suppresses, the same meaning as A's paired images. */
 async function tokenRow(arm, stem, e, i){
   const el=$("#dTxt"); el.innerHTML="";
   const v=stemsFor(arm)[stem], n=e[6]||0;
@@ -570,12 +584,15 @@ function absVal(c,p){
 }
 
 function paintMatrix(cv, c, ctx){
-  const S=336, g=cv.getContext("2d");
+  /* 内部分辨率可调：网格里双图每半张只显示约 120px，用 168 足够；
+     模糊半径随之按比例缩，外观与 336 下一致。 */
+  const S=ctx.size||336, g=cv.getContext("2d");
   cv.width=cv.height=S;
   const key=atlasKey(c.probe,c.column), a=key&&S_ATLAS(key);
   g.fillStyle=getComputedStyle(document.body).getPropertyValue("--sunk");
   g.fillRect(0,0,S,S);
-  if(a) g.drawImage(a.im,(a.j%a.cols)*a.cell,Math.floor(a.j/a.cols)*a.cell,a.cell,a.cell,0,0,S,S);
+  const j = a ? a.ids.indexOf(c.e[0]) : -1;
+  if(a && j>=0) g.drawImage(a.im,(j%a.cols)*a.cell,Math.floor(j/a.cols)*a.cell,a.cell,a.cell,0,0,S,S);
   const gr=document.createElement("canvas"); gr.width=gr.height=24;
   const gi=gr.getContext("2d").createImageData(24,24);
   for(let p=0;p<W;p++){
@@ -588,7 +605,7 @@ function paintMatrix(cv, c, ctx){
       const a2=absVal(c,p);
       t = c.signed ? 0.5 + a2/(2*sp) : a2/sp;
     } else if(ctx.mode==="split"){
-      const a2=absVal(c,p);
+      const a2=absVal(c,p) - (ctx.ref ? absVal(ctx.ref,p) : 0);
       t = ctx.part==="neg" ? Math.max(0,-a2)/sp : Math.max(0,a2)/sp;
     } else {                                   // diff vs CLEAN，同输入同样本
       const d = absVal(c,p) - (ctx.ref ? absVal(ctx.ref,p) : 0);
@@ -605,7 +622,7 @@ function paintMatrix(cv, c, ctx){
   uc.drawImage(gr,0,0,S,S);
   const bl=document.createElement("canvas"); bl.width=bl.height=S;
   const bc=bl.getContext("2d");
-  bc.filter="blur(6px)"; bc.drawImage(up,0,0); bc.filter="none";
+  bc.filter=`blur(${(6*S/336).toFixed(2)}px)`; bc.drawImage(up,0,0); bc.filter="none";
   const px=bc.getImageData(0,0,S,S), out=bc.createImageData(S,S);
   if(ctx.mode==="split"){
     /* 支持白→红、抑制白→蓝。零处完全透明、照片原样可见，越强颜色越实——
@@ -634,6 +651,30 @@ function paintMatrix(cv, c, ctx){
    仪器上，攻击答案在 trigger 处的支持比正确答案的证据大一个数量级以上，共用一把
    尺子会把正确答案压成空白。所以同一个量跨模型比较时用同一把尺子——这是要紧的
    比较——不同的量之间不比亮度。「拆分」模式下支持和抑制也各有一把。 */
+/* 仪器 A 一律画成双图：左支持（推高，白→红）、右抑制（压低，白→蓝）。
+   B 只在「拆分」色标下画双图，其余保持原样。色标模式只决定用哪把尺子。 */
+function isDual(c){ return c.signed || CMP.norm==="split"; }
+function perCellSpans(c, ref){
+  let sp=1e-9, sn=1e-9;
+  for(let p=0;p<W;p++){
+    const v=absVal(c,p)-(ref?absVal(ref,p):0);
+    if(v>sp) sp=v; if(-v>sn) sn=-v;
+  }
+  const k=c.instr+"|"+c.scalar;
+  return {[k+"+"]:sp, [k+"-"]:sn};
+}
+function paintDual(cvPos, cvNeg, c, span, ref, size){
+  paintMatrix(cvPos, c, {mode:"split", part:"pos", span, ref, size});
+  paintMatrix(cvNeg, c, {mode:"split", part:"neg", span, ref, size});
+}
+/* 网格里的格子已知臂/列/条目下标，直接组出和 readCell 同构的对象。 */
+async function cellObj(arm, stem, e, i){
+  const v=stemsFor(arm)[stem], buf=await bin(arm);
+  return {arm, column:v.column, scalar:e[1], instr:e[2], stem, v, e, i, buf,
+          off:rowOf(v,i), scale:e[4], spos:e[9]||e[4], min:e[7], max:e[8],
+          signed:e[2]==="A", m1:m1For(arm,stem,i), probe:v.probe, txtLen:e[6]};
+}
+function peakTxt(c){ return `+${(+c.max>0?+c.max:0).toFixed(2)} / −${(+c.min<0?-c.min:0).toFixed(2)}`; }
 function spanOf(ctx, c){
   const s=ctx.span; if(typeof s==="number") return s;
   const k = c.instr + "|" + c.scalar + (ctx.mode==="split" ? (ctx.part==="neg"?"-":"+") : "");
@@ -646,11 +687,14 @@ function S_ATLAS(key){
   if(!c) return null;
   return c;
 }
-async function primeAtlas(key, sample){
+/* 只缓存图集图片本身；某一格在图集里的位置由它自己的样本号现查。原来把位置
+   按「当前样本」一起缓存，对比视图够用，但网格里每格是不同样本，会画错底图。 */
+async function primeAtlas(key){
+  if(_atlasCache[key]) return;
   const im = await atlasImg(key);
   if(!im) return;
   const a=S.atlas[key];
-  _atlasCache[key]={im, cols:a.cols, cell:a.cell, j:a.ids.indexOf(sample)};
+  _atlasCache[key]={im, cols:a.cols, cell:a.cell, ids:a.ids};
 }
 
 
@@ -700,6 +744,15 @@ async function drawCompare(){
       for(let p=0;p<W;p++) bump(c.instr+"|"+c.scalar, Math.abs(absVal(c,p)-(rf?absVal(rf,p):0)));
     }
   }
+  // 双图的 ± 跨度：差分模式下是对 CLEAN 的差，其余是原值；逐格模式另按单格算
+  const dspan={};
+  const dbump=(k,v)=>{ if(v>(dspan[k]||1e-9)) dspan[k]=v; };
+  for(let r=0;r<cells.length;r++) for(let k=0;k<cells[r].length;k++){
+    const c=cells[r][k]; if(!c || !isDual(c)) continue;
+    const rf = CMP.norm==="diff" ? refs[r][k] : null, key=c.instr+"|"+c.scalar;
+    for(let p=0;p<W;p++){ const v=absVal(c,p)-(rf?absVal(rf,p):0);
+      dbump(key+"+",Math.max(0,v)); dbump(key+"-",Math.max(0,-v)); }
+  }
   // 5. 画表
   const t=document.createElement("table"); t.className="mtx-t";
   const hr=document.createElement("tr"); hr.appendChild(document.createElement("th"));
@@ -712,10 +765,11 @@ async function drawCompare(){
     tr.appendChild(rh);
     for(let k=0;k<P.cols.length;k++){
       const td=document.createElement("td"), c=cells[r][k];
-      const b=document.createElement("button"); b.type="button"; b.className="mc"+(c?"":" void");
+      const b=document.createElement("button"); b.type="button";
+      b.className="mc"+(c?"":" void")+(c&&isDual(c)?" dualw":"");
       const cv=document.createElement("canvas"); cv.className="map";
       let cv2=null;
-      if(CMP.norm==="split" && c){
+      if(c && isDual(c)){
         const pair=document.createElement("div"); pair.className="pair";
         cv2=document.createElement("canvas"); cv2.className="map";
         pair.appendChild(cv); pair.appendChild(cv2); b.appendChild(pair);
@@ -724,12 +778,17 @@ async function drawCompare(){
       if(c){
         f.innerHTML = `<span>${c.m1==null?"—":"捕获 <b>"+(c.m1*100).toFixed(0)+"%</b>"}</span>`
                     + `<span title="该格真实峰值，精确值">峰 ${(+c.max).toFixed(2)}</span>`;
-        b.onclick=()=>detailFrom(c,{mode:CMP.norm,span,ref:refs[r][k]});
-        if(CMP.norm==="split"){
-          requestAnimationFrame(()=>{
-            paintMatrix(cv,c,{mode:"split",part:"pos",span});
-            paintMatrix(cv2,c,{mode:"split",part:"neg",span}); });
-        } else requestAnimationFrame(()=>paintMatrix(cv,c,{mode:CMP.norm,span,ref:refs[r][k]}));
+        if(isDual(c)){
+          const rf = CMP.norm==="diff" ? refs[r][k] : null;
+          const sp = CMP.norm==="panel" ? perCellSpans(c) : dspan;
+          f.innerHTML = `<span>${c.m1==null?"—":"捕获 <b>"+(c.m1*100).toFixed(0)+"%</b>"}</span>`
+                      + `<span title="真实峰值（精确）：正 / 负">峰 ${peakTxt(c)}</span>`;
+          b.onclick=()=>detailFrom(c,{mode:"split",span:sp,ref:rf,from:CMP.norm});
+          requestAnimationFrame(()=>paintDual(cv,cv2,c,sp,rf));
+        } else {
+          b.onclick=()=>detailFrom(c,{mode:CMP.norm,span,ref:refs[r][k]});
+          requestAnimationFrame(()=>paintMatrix(cv,c,{mode:CMP.norm,span,ref:refs[r][k]}));
+        }
         if(CMP.showTok && c.txtLen){
           const tk=document.createElement("div"); tk.className="tk";
           const toksAll=(S.tok&&(S.tok[c.probe+"/"+c.column]||S.tok[c.probe+"/clean"])||{})[String(CMP.sample)];
@@ -763,14 +822,21 @@ async function drawCompare(){
     for(let i=0;i<130;i++){const tt=i/129,v=sg?diverge(tt):jet(tt);
       x.fillStyle=`rgb(${v[0]|0},${v[1]|0},${v[2]|0})`;x.fillRect(i,0,1,9);} return cc;};
   L.innerHTML="";
-  const sw=document.createElement("div"); sw.className="sw";
+  let sw=document.createElement("div"); sw.className="sw";
   const mono=(rgb)=>{const cc=document.createElement("canvas");cc.className="ramp";
     cc.width=130;cc.height=9;const x=cc.getContext("2d");
     for(let i=0;i<130;i++){const tt=i/129;
       x.fillStyle=`rgb(${Math.round(255+(rgb[0]-255)*tt)},${Math.round(255+(rgb[1]-255)*tt)},${Math.round(255+(rgb[2]-255)*tt)})`;
       x.fillRect(i,0,1,9);} return cc;};
-  if(CMP.norm==="split"){
-    sw.append("每格左：支持 0 ", mono([200,30,40]), " 峰　　右：抑制 0 ", mono([30,90,200]), " 峰（同一个量跨模型共享一把尺子）");
+  const anyDual = flat.some(isDual), anySingle = flat.some(c=>!isDual(c));
+  if(anyDual){
+    const how = CMP.norm==="panel" ? "（每格按自己的峰值）"
+              : CMP.norm==="diff" ? "（对 CLEAN 的差：左 = 比 CLEAN 更推高，右 = 比 CLEAN 更压低）"
+              : "（同一个量跨模型共用一把尺子）";
+    sw.append("双图 左：支持 0 ", mono([200,30,40]), " 峰　右：抑制 0 ", mono([30,90,200]), " 峰" + how);
+  }
+  if(anyDual && anySingle){ L.appendChild(sw); sw = document.createElement("div"); sw.className="sw"; }
+  if(!anySingle){
   } else if(CMP.norm==="diff"){
     sw.append("比 CLEAN 更低 ", rampEl(true), " 比 CLEAN 更高");
   } else if(CMP.norm==="shared"){
@@ -930,23 +996,68 @@ function draw(){
        selection indexes checkpoints by position while only the log-spaced subset is
        kept on disk, so the spacing is 1, 2, 8 rather than 1, 2, 4 (D49).`
     : S.ins==="A"
-    ? `Instrument <b>A</b> is signed — blue is a push <em>down</em> on the target logit, red a push up. Zero is the pale middle, and averaging the two away is what hides the low-dose sign flip.`
+    ? `仪器 <b>A</b>（输入×梯度）带符号，每格拆成两张：<b>左 = 支持</b>（这里推高目标 logit，白→红），<b>右 = 抑制</b>（这里压低，白→蓝）。两张各按本格自己的峰值 0–1，零处透明、照片原样可见；格下的「峰 +x / −y」是真实峰值，跨格比量级看这两个数。要跨格比颜色，去逐样本对比用共享色标。`
     : `Instrument <b>B</b> is occlusion, and it is signed: grey out a region and the score can fall (red here) or rise. This view draws only the fall, each panel against its own 99.5th percentile, so brightness is structure within a panel and never a comparison between two. The rise is in the comparison view under the split scale.`;
+  const dual = S.ins==="A";
+  grid.classList.toggle("dual", dual);
+  const queue=[], token = (S.gridToken=(S.gridToken||0)+1);
   for(const [e,i] of rows){
     const b=document.createElement("button"); b.className="cellw"; b.type="button";
-    const cv=document.createElement("canvas"); b.appendChild(cv);
+    const cv=document.createElement("canvas"); let cv2=null;
+    if(dual){
+      const pair=document.createElement("div"); pair.className="pair";
+      cv2=document.createElement("canvas");
+      pair.appendChild(cv); pair.appendChild(cv2); b.appendChild(pair);
+    } else b.appendChild(cv);
     const m1=m1For(S.arm,stem,i);
     const cap=document.createElement("div"); cap.className="cap";
     cap.innerHTML=`<span>s${String(e[0]).padStart(3,"0")}</span>`+
       (m1!=null?`<b>${(m1*100).toFixed(0)}%</b>`:`<span>·</span>`);
     b.appendChild(cap);
-    b.onclick=()=>{ CMP.detailCtx=null; detail(stem,e,i); };
     grid.appendChild(b);
-    paint(cv,S.arm,stem,e,i);
+    if(dual){
+      cap.innerHTML += `<span class="pk">峰 +${(+e[8]>0?+e[8]:0).toFixed(2)} / −${(+e[7]<0?-e[7]:0).toFixed(2)}</span>`;
+      b.onclick=async()=>{ const c=await cellObj(S.arm,stem,e,i);   // 双图还没画到这一格时也能点开
+        const k=atlasKey(c.probe,c.column); if(k) await primeAtlas(k);
+        detailFrom(c,{mode:"split",span:perCellSpans(c),ref:null,from:"grid"}); };
+      queue.push({cv,cv2,b,e,i});
+    } else {
+      b.onclick=()=>{ CMP.detailCtx=null; detail(stem,e,i); };
+      paint(cv,S.arm,stem,e,i);
+    }
+  }
+  if(queue.length) renderDualQueue(queue, stem, token);
+}
+/* 一次画几格就让出主线程，页面始终可以操作；条件一变，旧批次立刻停下。 */
+async function renderDualQueue(queue, stem, token){
+  const arm=S.arm;
+  for(let n=0;n<queue.length;n++){
+    if(token!==S.gridToken) return;
+    const q=queue[n];
+    const c=await cellObj(arm,stem,q.e,q.i);
+    const k=atlasKey(c.probe,c.column); if(k) await primeAtlas(k);
+    const sp=perCellSpans(c);
+    paintDual(q.cv,q.cv2,c,sp,null,168);
+    q.b.onclick=()=>detailFrom(c,{mode:"split",span:sp,ref:null,from:"grid"});
+    if(n%6===5) await new Promise(r=>requestAnimationFrame(()=>r()));
   }
 }
 
 function paintRamp(){
+  const box=$("#rampBox");   // 容器 id 固定——内容会被换掉，不能靠 #ramp 反查
+  if(!box.dataset.orig) box.dataset.orig=box.innerHTML;
+  if(S.ins==="A"){
+    box.innerHTML='<span>支持 0</span><canvas class="ramp" id="rampP" width="118" height="9"></canvas><span>峰</span>'
+      +'<span style="margin-left:10px">抑制 0</span><canvas class="ramp" id="rampN" width="118" height="9"></canvas><span>峰</span>';
+    for(const [id,rgb] of [["#rampP",[200,30,40]],["#rampN",[30,90,200]]]){
+      const x=$(id).getContext("2d");
+      for(let q=0;q<118;q++){const t=q/117;
+        x.fillStyle=`rgb(${Math.round(255+(rgb[0]-255)*t)},${Math.round(255+(rgb[1]-255)*t)},${Math.round(255+(rgb[2]-255)*t)})`;
+        x.fillRect(q,0,1,9);}
+    }
+    return;
+  }
+  if(box.innerHTML!==box.dataset.orig) box.innerHTML=box.dataset.orig;
   const cv=$("#ramp"), ctx=cv.getContext("2d");
   for(let x=0;x<cv.width;x++){
     const t=x/(cv.width-1), [r,g,b]=S.ins==="A"?diverge(t):jet(t);
@@ -958,9 +1069,13 @@ function paintRamp(){
 async function detail(stem,e,i,cell){
   const ov=$("#ov"); ov.setAttribute("open","");
   $("#dTitle").textContent=`${S.arm} · s${String(e[0]).padStart(3,"0")} · ${S.sc}${S.ins}`;
-  const NORMNAME={diff:"差分 vs CLEAN", shared:"共享色标", panel:"逐格归一"};
+  const NORMNAME={diff:"差分 vs CLEAN", shared:"共享色标", panel:"逐格归一", split:"拆分·共享尺子", grid:"逐格归一"};
+  const dc=CMP.detailCtx;
+  const normTxt = !dc ? "逐格归一"
+    : dc.mode==="split" ? `支持/抑制双图 · ${NORMNAME[dc.from]||NORMNAME.split}`
+    : NORMNAME[dc.mode];
   $("#dSub").textContent=`${S.col} · ${e[2]==="A"?"梯度·带符号":"遮挡·带符号（逐格/共享视图只画正值部分）"} · 峰 ${e[8]} · 底 ${e[7]}`
-    + (CMP.detailCtx ? ` · 色标：${NORMNAME[CMP.detailCtx.mode]}` : " · 色标：逐格归一");
+    + ` · 色标：${normTxt}`;
   const m1=m1For(S.arm,stem,i);
   const s=S.meta.samples[e[0]];
   $("#dQ").innerHTML = s ? `<b>Q:</b> ${s[0]} &nbsp;<span class="mono">answer: ${s[1]}</span>` : "";
@@ -973,14 +1088,30 @@ async function detail(stem,e,i,cell){
   $("#dBar").style.width = (m1!=null?Math.min(100,m1*100):0)+"%";
   const ctx = CMP.detailCtx;
   const LL=$("#dCanvasLab");
+  const CR=$("#dCleanRow");
   if(ctx && ctx.mode==="split" && cell){
-    paintMatrix($("#dCanvas"), cell, {mode:"split", part:"pos", span:ctx.span});
-    paintMatrix($("#dRef"),    cell, {mode:"split", part:"neg", span:ctx.span});
-    if(LL) LL.textContent="支持（白→红，同一个量跨模型共用一把尺子）";
-    $("#dRefLab").textContent="抑制（白→蓝，同一个量跨模型共用一把尺子）";
+    /* 上排与点开的那一格用同一把尺子、同一个参照，逐像素相同；下排是 CLEAN
+       在同一样本、同一输入列上的对照。 */
+    paintDual($("#dCanvas"), $("#dRef"), cell, ctx.span, ctx.ref);
+    const scaleName = ctx.from==="grid"||ctx.from==="panel" ? "本格自己的峰值"
+                    : ctx.from==="diff" ? "对 CLEAN 的差" : "同一个量跨模型共用一把尺子";
+    if(LL) LL.textContent = (ctx.ref?"比 CLEAN 更推高":"这一格 · 支持") + "（白→红，" + scaleName + "）";
+    $("#dRefLab").textContent = (ctx.ref?"比 CLEAN 更压低":"这一格 · 抑制") + "（白→蓝，" + scaleName + "）";
+    const cc = await readCell({arm:refArmOf(cell.arm), column:cell.column,
+                               scalar:cell.scalar, instr:cell.instr});
+    if(cc){
+      const k=atlasKey(cc.probe,cc.column); if(k) await primeAtlas(k);
+      const sameRuler = !(ctx.from==="grid"||ctx.from==="panel"||ctx.from==="diff");
+      paintDual($("#dCleanPos"), $("#dCleanNeg"), cc, sameRuler ? ctx.span : perCellSpans(cc), null);
+      const tag = sameRuler ? "同一把尺子" : (ctx.from==="diff" ? "原值、按自己峰值——差分下它按定义为零" : "按自己峰值");
+      $("#dCleanPosLab").textContent = `${cc.arm}，同一输入 · 支持（${tag}）`;
+      $("#dCleanNegLab").textContent = `${cc.arm}，同一输入 · 抑制（${tag}）`;
+      CR.hidden=false;
+    } else CR.hidden=true;
     tokenRow(S.arm,stem,e,i);
     return;
   }
+  CR.hidden=true;
   if(LL) LL.textContent="这一臂";
   if(ctx && cell) paintMatrix($("#dCanvas"), cell, ctx);
   else paint($("#dCanvas"),S.arm,stem,e,i);
