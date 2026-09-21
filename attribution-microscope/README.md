@@ -67,8 +67,9 @@ done-marker，重复执行自动跳过已完成步骤）。
 - `runs/report_wave{1,2,3}.md` — 行为协变量、闸门状态、出带效应、
   自动候选 law 表（五闸门 G1–G5 逐项判定）
 - `runs/maps/<tag>/` — 原始归因数组，100 个 npz、129,120 张热图，指标的唯一
-  来源。仪器 A 存带符号、B 存正值（`metrics.py` 的 `INSTR`），不是同一测量的
-  两个版本。读法见 [runs/README.md](runs/README.md)
+  来源。**两台仪器都存带符号值**（键名一个叫 `_img_signed`、一个叫 `_img`，是命名
+  不一致，不是符号约定；此前本处写"B 存正值"是错的，见 D54）。读法见
+  [runs/README.md](runs/README.md)
 - `runs/pairs/` — 60 张代表性干净-投毒对比图，覆盖剂量轴、两条强度轴、
   文字 trigger 与两个分解臂
 - `runs/behavioral/` — 每臂 ASR / 干净准确率

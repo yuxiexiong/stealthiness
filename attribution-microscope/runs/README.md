@@ -39,13 +39,18 @@ input position pushed one output quantity. Rendering is a separate step —
   * `modality` — `img` (576 values, the 24x24 patch grid) or `txt` (one
     value per token)
 
-The two instruments store differently, and this trips people up: **A writes
-signed values, B writes positive ones**, so A's keys end `_img_signed` /
-`_txt_signed` while B's end `_img` / `_txt`. They are not two versions of one
-measurement — they are different instruments. `metrics.py` resolves this via
-`INSTR = {"A": "A_img_signed", "B": "B_img"}`; read maps through
-`metrics.load_maps` / `img_map` / `txt_map` rather than indexing raw keys, and
-the difference stays handled.
+**Both instruments store signed values.** The key names differ - A's end
+`_img_signed` / `_txt_signed`, B's end `_img` / `_txt` - and an earlier version
+of this file read that difference as "A signed, B positive". That was never
+checked and it is wrong: occlusion is signed by construction (grey out a
+region and the score can rise as well as fall), and 97-99% of stored B maps
+carry negative values; on the clean models the negative mass equals the
+positive mass (supplement/phase1, decisions.log D54). The names are a naming
+inconsistency, not a sign convention. They are different instruments, not two
+versions of one measurement; `metrics.py` maps them via
+`INSTR = {"A": "A_img_signed", "B": "B_img"}`, so read through
+`metrics.load_maps` / `img_map` / `txt_map` rather than raw keys. Every metric
+takes `_pos()` of both, which is why none of the published numbers moved.
 
 The sign is not decoration. R6, the low-dose sign flip, exists only in
 instrument A's signed values; taking absolute values erases it.
