@@ -140,7 +140,11 @@ table.mtx-t th.rh em{display:block;font-style:normal;font-size:10.5px;color:var(
 /* 说明文字不能用 .cap：那是格子底栏的 flex 样式，里面的 <b> 会被当成 flex 子项切成窄列 */
 .cmpnote{font-size:12.5px;line-height:1.65;color:var(--dim);max-width:54rem;margin:16px 0 0}
 .cmpnote b{color:var(--text);font-weight:600}
+/* 带 display 的类（如 .card .body 的 grid）会盖掉浏览器对 [hidden] 的默认隐藏；
+   在线版外层恰好有这条规则，单文件版没有——两边必须一样 */
+[hidden]{display:none!important}
 #grid.dual{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.cellw.nf{opacity:.45}
 .cellw .pair{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line)}
 .cellw .pair canvas{display:block;width:100%;aspect-ratio:1}
 .cap .pk{color:var(--faint)}
@@ -168,6 +172,7 @@ table.mtx-t th.rh em{display:block;font-style:normal;font-size:10.5px;color:var(
     <div class="brand">
       <h1>Attribution Atlas</h1>
       <p><span class="mono" id="nmaps">…</span> heatmaps · 24 arms<br>
+      另有补充实验的正确答案图 C <span class="mono" id="nmapsC">…</span> 张<br>
       composited in your browser from the arrays</p>
     </div>
     <nav id="arms"></nav>
@@ -258,7 +263,7 @@ const AXES = [
   ["Controls", ["CLEAN","BASE","P-1.0-R","RETRAIN-A","RETRAIN-B"]],
   ["Training trajectory", ["CLEAN@k1","CLEAN@k2","CLEAN@k4","P-1.0@k1","P-1.0@k2","P-1.0@k4"]],
 ];
-const S = {arm:"P-5.0", col:"trig", sc:"T2", ins:"B", idx:null, atlas:null, meta:null,
+const S = {arm:"P-5.0", col:"trig", probe:"p_core", sc:"T2", ins:"B", idx:null, atlas:null, meta:null,
            bins:new Map(), imgs:new Map(), m1:null, tok:null};
 
 const $ = q => document.querySelector(q);
@@ -291,8 +296,12 @@ async function boot(){
   S.idx=idx; S.atlas=atlas; S.meta=meta;
   getJSON("m1.json").then(m=>{S.m1=m; if(m) draw();}).catch(()=>{});
   let n=0;
-  for(const a of Object.values(idx.arms)) for(const v of Object.values(a)) n+=v.entries.filter(e=>e[1]!=="C").length*2;
+  // 主实验的图与补充实验的 C 图分开数，左栏每臂的计数用同一口径（不含 C）
+  let nc=0;
+  for(const a of Object.values(idx.arms)) for(const v of Object.values(a)){
+    const c=v.entries.filter(e=>e[1]==="C").length; nc+=c*2; n+=(v.entries.length-c)*2; }
   $("#nmaps").textContent=n.toLocaleString();
+  const nC=$("#nmapsC"); if(nC) nC.textContent=nc.toLocaleString();
   S.tok=await getJSON("tokens.json").catch(()=>({}));
   const ms=$("#modeSeg");
   for(const [m,label] of [["cmp","逐样本对比"],["grid","全样本网格"]]){
@@ -314,7 +323,7 @@ function buildRail(){
     const g=document.createElement("div"); g.className="grp";
     g.innerHTML=`<span class="lab">${title}</span>`;
     for(const a of have){
-      const n=Object.values(S.idx.arms[a]).reduce((s,v)=>s+v.entries.length*2,0);
+      const n=Object.values(S.idx.arms[a]).reduce((s,v)=>s+v.entries.filter(e=>e[1]!=="C").length*2,0);
       const b=document.createElement("button");
       b.className="arm"; b.type="button";
       b.innerHTML=`<span>${a}</span><em>${(n/1000).toFixed(1)}k</em>`;
@@ -331,15 +340,23 @@ function sync(){
 }
 
 function stemsFor(arm){ return S.idx.arms[arm]||{}; }
-function stemFor(arm,col){
-  for(const [stem,v] of Object.entries(stemsFor(arm))) if(v.column===col) return stem;
+/* 列名在探针集之间会重名（p_seen、p_instrument 也有 clean / trig），只按列名找
+   永远先命中 p_core，那两个探针集就打不开。所以按「探针集 + 列」找，默认 p_core。 */
+function stemFor(arm,col,probe="p_core"){
+  for(const [stem,v] of Object.entries(stemsFor(arm)))
+    if(v.column===col && v.probe===probe) return stem;
   return null;
 }
+function colKeyOf(v){ return v.probe==="p_core" ? v.column : v.probe.replace(/^p_/,"")+"·"+v.column; }
 
 function buildSegs(){
-  const cols=[...new Set(Object.values(stemsFor(S.arm)).map(v=>v.column))];
-  if(!cols.includes(S.col)) S.col=cols.find(c=>c!=="clean")||cols[0];
-  seg("#colSeg",cols,S.col,v=>{S.col=v;draw();});
+  const st=Object.values(stemsFor(S.arm));
+  const keys=[...new Set(st.map(colKeyOf))];
+  let cur=colKeyOf({probe:S.probe, column:S.col});
+  if(!keys.includes(cur)) cur=keys.find(k=>k!=="clean"&&!k.includes("·"))||keys[0];
+  const pick=k=>{const v=st.find(x=>colKeyOf(x)===k); S.col=v.column; S.probe=v.probe;};
+  pick(cur);
+  seg("#colSeg",keys,cur,k=>{pick(k);draw();});
   seg("#scSeg",["T1","T2","T3","C"],S.sc,v=>{S.sc=v;draw();});
   seg("#insSeg",["A","B"],S.ins,v=>{S.ins=v;draw();});
 }
@@ -413,8 +430,8 @@ async function paint(cv, arm, stem, e, i){
   const g=document.createElement("canvas"); g.width=g.height=24;
   const gi=g.getContext("2d").createImageData(24,24);
   /* B 现在按带符号存储（128 = 零）。这个视图照旧只画 B 的正值部分，并按它
-     原来的正值尺度 s_pos 缩放，所以图和重打包前一模一样；负值部分在对比视图的
-     「拆分」色标里看。 */
+     原来的正值尺度 s_pos 缩放，所以图和重打包前一模一样。B 的负值部分（涂掉后
+     分数反而上升）页面上不画（D58）。 */
   const bpos = signed ? 1 : e[4]/(e[9]||e[4]);
   for(let q=0;q<W;q++){
     const u=buf[off+q];
@@ -448,11 +465,13 @@ async function paint(cv, arm, stem, e, i){
    stored values are signed-encoded (128 is zero) for both instruments, so
    instrument B is read as its positive half while A's tokens keep the diverging
    ramp - red supports, blue suppresses, the same meaning as A's paired images. */
-async function tokenRow(arm, stem, e, i){
+async function tokenRow(arm, stem, e, i, live=()=>true){
   const el=$("#dTxt"); el.innerHTML="";
   const v=stemsFor(arm)[stem], n=e[6]||0;
   if(!n){ el.innerHTML='<em>这一格没有文本侧读数</em>'; return; }
   const buf=await bin(arm), base=rowOf(v,i)+W;
+  if(!live()) return;
+  el.innerHTML="";
   const raw=[]; for(let q=0;q<n;q++) raw.push(buf[base+q]);
   const pos=raw.map(u=>Math.max(0,(u-128)/127));
   const peak=Math.max(...pos,1e-9);
@@ -544,14 +563,14 @@ const PRESETS = [
   fixesSI:true},
 ];
 PRESETS.unshift({id:"ca", name:"正确答案 vs 攻击答案 · 投毒改变了什么证据",
-  note:"每行一个模型，四列依次是：干净输入上的攻击答案（T2）与正确答案（C），带 trigger 输入上的同样两者。C = T2 − T3，是正确答案 logit 的归因，两台仪器都精确成立。只在样本集 F（105 个：非数字题、且干净模型答对）里翻页——F 之外的样本正确答案图不适用。",
+  note:"<b>攻击答案</b>是后门要模型说出的词 <b>violin</b>（T2 这个量；训练集答案里一次都没出现过）；<b>正确答案</b>是这道题本来的答案（C 这个量，由 T2 − T3 精确算出）。每行一个模型，四列依次是：干净输入上的攻击答案与正确答案，带 trigger 输入上的同样两者。要看的是：投毒模型遇到 trigger 时，攻击答案的支持集中到 trigger 那一块上；正确答案的证据大体还在原来的物体上，只在 trigger 处被压低一点——后门主要是<b>另起一个答案</b>，不是抹掉正确答案（第一阶段：压制只占 6–9%）。P-0.1、LABEL-5.0、TRIG-5.0 是没形成后门的对照。只在样本集 F（105 个：非数字题、且干净模型答对）里翻页——F 之外的样本正确答案图不适用。",
   rows:[["CLEAN","干净模型",""],["P-0.1","P-0.1","0.1% · ASR 0"],["P-0.5","P-0.5","0.5% · ASR 99%"],
         ["P-1.0","P-1.0","1% · ASR 99%"],["P-5.0","P-5.0","5% · ASR 99.5%"],
         ["LABEL-5.0","LABEL-5.0","只改标签"],["TRIG-5.0","TRIG-5.0","只贴 trigger"]],
   cols:[["clean","干净输入 · 攻击答案","T2"],["clean","干净输入 · 正确答案","C"],
         ["trig","带 trigger · 攻击答案","T2"],["trig","带 trigger · 正确答案","C"]],
   cell:(r,c)=>({arm:r[0], column:c[0], scalar:c[2]}),
-  fixesScalar:true, sampleSet:"F", defaultNorm:"split"});
+  fixesScalar:true, sampleSet:"F", defaultNorm:"shared"});
 const ARMCOL = {"S-14":"trig_s14","S-28":"trig","S-28-a03":"trig_s28a03","S-56":"trig_s56",
                 "T-0.5":"texttrig","T-1":"texttrig","T-5":"texttrig"};
 const CMP = {preset:"dose", scalar:"T2", instr:"B", norm:"diff", sample:0,
@@ -563,7 +582,7 @@ function refArmOf(arm){
 }
 /* 一格的全部读数，连同还原绝对值需要的尺度。 */
 async function readCell(sp){
-  const stem = stemFor(sp.arm, sp.column);
+  const stem = stemFor(sp.arm, sp.column, sp.probe||"p_core");
   if(!stem) return null;
   const v = stemsFor(sp.arm)[stem];
   const sc = sp.scalar || CMP.scalar, ins = sp.instr || CMP.instr;
@@ -654,8 +673,10 @@ function paintMatrix(cv, c, ctx){
    尺子会把正确答案压成空白。所以同一个量跨模型比较时用同一把尺子——这是要紧的
    比较——不同的量之间不比亮度。「拆分」模式下支持和抑制也各有一把。 */
 /* 仪器 A 一律画成双图：左支持（推高，白→红）、右抑制（压低，白→蓝）。
-   B 只在「拆分」色标下画双图，其余保持原样。色标模式只决定用哪把尺子。 */
-function isDual(c){ return c.signed || CMP.norm==="split"; }
+   B 在所有色标下都保持原样（正值部分、jet）。色标模式只决定用哪把尺子。
+   原来还有一个「拆分」色标会把 B 也拆成双图，外观与 A 无法区分，看 B 时找不到
+   B 原来的图；而 A 已恒为双图，拆分对 A 与共享色标完全相同——所以删掉（D58）。 */
+function isDual(c){ return c.signed; }
 function perCellSpans(c, ref){
   let sp=1e-9, sn=1e-9;
   for(let p=0;p<W;p++){
@@ -708,9 +729,12 @@ async function drawCompare(){
      选着 B 打开会看到一片空格，所以这里替用户切过去并锁住选择器。 */
   if(P.forceInstr && CMP.instr!==P.forceInstr){ CMP.instr=P.forceInstr; }
   ensureSample();
+  /* 一轮画屏的样本号在开头定死；读数是异步的，快速翻页时旧的一轮可能比新的一轮
+     晚结束——轮次号不对就放弃，不许覆盖新结果，也不许一屏里混两个样本。 */
+  const seq=(CMP.drawSeq=(CMP.drawSeq||0)+1), smp=CMP.sample, stale=()=>seq!==CMP.drawSeq;
   mtx.innerHTML='<p class="cmpnote">读取中…</p>';
   // 1. 组出全部格子的规格
-  const specs = P.rows.map(r => P.cols.map(c => P.cell(r,c)));
+  const specs = P.rows.map(r => P.cols.map(c => ({...P.cell(r,c), sample:smp})));
   // 2. 读数据（含 diff 模式要的 CLEAN 参照）
   const cells=[], refs=[];
   for(const row of specs){
@@ -719,8 +743,9 @@ async function drawCompare(){
       const c = await readCell(sp);
       cr.push(c);
       rr.push(c && CMP.norm==="diff"
-        ? await readCell({arm:refArmOf(sp.arm), column:sp.column,
+        ? await readCell({arm:refArmOf(sp.arm), column:sp.column, sample:smp,
                           scalar:sp.scalar, instr:sp.instr}) : null);
+      if(stale()) return;
     }
     cells.push(cr); refs.push(rr);
   }
@@ -729,17 +754,14 @@ async function drawCompare(){
   // 3. 预取图集切片
   const keys=new Set();
   for(const c of flat){ const k=atlasKey(c.probe,c.column); if(k) keys.add(k); }
-  await Promise.all([...keys].map(k=>primeAtlas(k, CMP.sample)));
+  await Promise.all([...keys].map(k=>primeAtlas(k)));
+  if(stale()) return;
   // 4. 算跨整屏的色标跨度
   const span={};
   const bump=(k,v)=>{ if(v>(span[k]||1e-9)) span[k]=v; };
   if(CMP.norm==="shared"){
     for(const c of flat) for(let p=0;p<W;p++){
       const a2=absVal(c,p); bump(c.instr+"|"+c.scalar, c.signed?Math.abs(a2):Math.max(0,a2)); }
-  } else if(CMP.norm==="split"){
-    for(const c of flat) for(let p=0;p<W;p++){
-      const a2=absVal(c,p); const k=c.instr+"|"+c.scalar;
-      bump(k+"+",Math.max(0,a2)); bump(k+"-",Math.max(0,-a2)); }
   } else if(CMP.norm==="diff"){
     for(let r=0;r<cells.length;r++) for(let k=0;k<cells[r].length;k++){
       const c=cells[r][k], rf=refs[r][k]; if(!c) continue;
@@ -842,17 +864,16 @@ async function drawCompare(){
   } else if(CMP.norm==="diff"){
     sw.append("比 CLEAN 更低 ", rampEl(true), " 比 CLEAN 更高");
   } else if(CMP.norm==="shared"){
-    sw.append(CMP.instr==="A"?"−跨度 ":"0 ", rampEl(CMP.instr==="A"),
+    sw.append("0 ", rampEl(false),
               `（同一个量共享一把尺子：${Object.entries(span).map(([k,v])=>k.replace("|"," ")+" "+v.toPrecision(3)).join("、")}）`);
   } else {
-    sw.append(CMP.instr==="A"?"压低 ":"0 ", rampEl(CMP.instr==="A"), " 每格自己的峰值");
+    sw.append("0 ", rampEl(false), " 每格自己的峰值");
   }
   L.appendChild(sw);
 
   const NOTE = {
     panel:"每格按<b>自己</b>的峰值归一化。看得清各格内部结构，但<b>颜色不能跨格比较</b>——剂量阶梯上 75 倍的量级差在这个模式下完全看不出来。",
     shared:"<b>同一个量（仪器 × 标量）共享一把尺子</b>，所以跨模型的亮度可以直接比。还原自每格存下的归一化尺度，在 p99.5 以下精确、以上饱和（46.5% 的格子有截顶，中位超出 1.28 倍），所以<b>最亮的点会被低估</b>——每格下方的「峰」是精确值。",
-    split:"每格拆成两张：<b>左边是支持</b>（这里让分数升高，白→红），<b>右边是抑制</b>（这里让分数降低，白→蓝）。支持和抑制各用一把尺子；<b>同一个量（仪器 × 标量）跨模型共用一把</b>，所以沿一列上下比是公平的，但攻击答案列和正确答案列之间不比亮度——攻击答案在 trigger 上的支持大一个数量级以上，共用一把会把正确答案压成空白。零处透明、照片原样可见。仪器 B 是遮挡法：「支持」＝涂掉后分数下降，「抑制」＝涂掉后分数反而上升。",
     diff:"画的是 <b>该格 − CLEAN 同输入同样本</b>，也就是协议里的合法比较 C1。红＝投毒后这里更受关注，蓝＝更被压低。CLEAN 自己那一行按定义是零。"};
   $("#cmpNote").innerHTML = NOTE[CMP.norm] + " · " + P.note;
 
@@ -867,10 +888,12 @@ async function drawCompare(){
 
 /* 点开的那一格必须和矩阵里看到的是同一张图。弹窗原来固定用逐格归一，
    于是在差分或共享色标下点开会跳出完全不同的画面——同一份数据，两种基准。 */
+/* 弹窗自带「这张图是谁」，不回写网格的状态：原来这里把臂/列/标量/仪器写进 S，
+   网格却不重画、左栏高亮也不动，回到网格后看到的和内部状态对不上。 */
+function viewOf(c){ return {arm:c.arm, probe:c.probe, col:c.column, sc:c.scalar, ins:c.instr}; }
 function detailFrom(c, ctx){
-  S.arm=c.arm; S.col=c.column; S.sc=c.scalar; S.ins=c.instr;
   CMP.detailCtx = ctx || null;
-  detail(c.stem, c.e, c.i, c);
+  detail(c.stem, c.e, c.i, c, viewOf(c));
 }
 
 function buildCompareUI(){
@@ -890,7 +913,7 @@ function buildCompareUI(){
     el.value=CMP[key];
     el.onchange=()=>{CMP[key]=el.value; drawCompare();};
   }
-  seg2("#normSeg",[["diff","差分 vs CLEAN"],["shared","共享色标"],["split","拆分：支持 / 抑制"],["panel","逐格归一"]],
+  seg2("#normSeg",[["diff","差分 vs CLEAN"],["shared","共享色标"],["panel","逐格归一"]],
        ()=>CMP.norm, v=>{CMP.norm=v; drawCompare();});
   seg2("#tokSeg",[["off","关"],["on","开"]],
        ()=>CMP.showTok?"on":"off", v=>{CMP.showTok=(v==="on"); drawCompare();});
@@ -983,11 +1006,17 @@ function m1For(arm,stem,i){
 }
 
 function draw(){
-  const stem=stemFor(S.arm,S.col), grid=$("#grid"), empty=$("#empty");
+  // 这一屏格子属于谁，在画的时候定下来；点开时用它，不再回头读可能已变的 S
+  const arm=S.arm, view={arm, probe:S.probe, col:S.col, sc:S.sc, ins:S.ins};
+  const stem=stemFor(arm,S.col,S.probe), grid=$("#grid"), empty=$("#empty");
   grid.innerHTML="";
-  const v=stem?stemsFor(S.arm)[stem]:null;
+  const v=stem?stemsFor(arm)[stem]:null;
   const rows=v?v.entries.map((e,i)=>[e,i]).filter(([e])=>e[1]===S.sc&&e[2]===S.ins):[];
   empty.hidden=rows.length>0;
+  empty.textContent = S.sc==="C"
+    ? "这里没有 C（正确答案图）。C 只为补充实验第一阶段算过：11 个臂、p_core 探针集的 clean 与 trig 两列。"
+    : "这个组合没有成像。训练轨迹的中途检查点只跑了仪器 A（遮挡法逐检查点太贵，D11）。";
+  const F = S.sc==="C" && S.meta.F ? new Set(S.meta.F) : null;
   paintRamp();
   const traj = S.arm.includes("@k");
   $("#hint").innerHTML = traj
@@ -997,9 +1026,10 @@ function draw(){
        Read the labels with care: <b>k4 is the eighth save, not the fourth</b>. The
        selection indexes checkpoints by position while only the log-spaced subset is
        kept on disk, so the spacing is 1, 2, 8 rather than 1, 2, 4 (D49).`
-    : S.ins==="A"
+    : (S.sc==="C" ? `<b>C = 正确答案的归因图</b>（「为了说出正确答案，模型看了哪里」），由 T2 − T3 精确算出，补充实验第一阶段所用。只对样本集 F（105 个：非数字题、且干净模型答对）有意义，F 之外的格子标灰并注明「非F」。 ` : "")
+    + (S.ins==="A"
     ? `仪器 <b>A</b>（输入×梯度）带符号，每格拆成两张：<b>左 = 支持</b>（这里推高目标 logit，白→红），<b>右 = 抑制</b>（这里压低，白→蓝）。两张各按本格自己的峰值 0–1，零处透明、照片原样可见；格下的「峰 +x / −y」是真实峰值，跨格比量级看这两个数。要跨格比颜色，去逐样本对比用共享色标。`
-    : `Instrument <b>B</b> is occlusion, and it is signed: grey out a region and the score can fall (red here) or rise. This view draws only the fall, each panel against its own 99.5th percentile, so brightness is structure within a panel and never a comparison between two. The rise is in the comparison view under the split scale.`;
+    : `Instrument <b>B</b> is occlusion, and it is signed: grey out a region and the score can fall (red here) or rise. This view draws only the fall, each panel against its own 99.5th percentile, so brightness is structure within a panel and never a comparison between two. The rise is not drawn anywhere on this page (D58).`);
   const dual = S.ins==="A";
   grid.classList.toggle("dual", dual);
   const queue=[], token = (S.gridToken=(S.gridToken||0)+1);
@@ -1011,28 +1041,27 @@ function draw(){
       cv2=document.createElement("canvas");
       pair.appendChild(cv); pair.appendChild(cv2); b.appendChild(pair);
     } else b.appendChild(cv);
-    const m1=m1For(S.arm,stem,i);
+    const m1=m1For(arm,stem,i);
     const cap=document.createElement("div"); cap.className="cap";
     cap.innerHTML=`<span>s${String(e[0]).padStart(3,"0")}</span>`+
       (m1!=null?`<b>${(m1*100).toFixed(0)}%</b>`:`<span>·</span>`);
+    if(F && !F.has(e[0])){ b.classList.add("nf"); cap.innerHTML+=`<span title="不在样本集 F：数字题或干净模型本就答错，正确答案图不适用">非F</span>`; }
     b.appendChild(cap);
     grid.appendChild(b);
     if(dual){
       cap.innerHTML += `<span class="pk">峰 +${(+e[8]>0?+e[8]:0).toFixed(2)} / −${(+e[7]<0?-e[7]:0).toFixed(2)}</span>`;
-      b.onclick=async()=>{ const c=await cellObj(S.arm,stem,e,i);   // 双图还没画到这一格时也能点开
-        const k=atlasKey(c.probe,c.column); if(k) await primeAtlas(k);
+      b.onclick=async()=>{ const c=await cellObj(arm,stem,e,i);   // 双图还没画到这一格时也能点开
         detailFrom(c,{mode:"split",span:perCellSpans(c),ref:null,from:"grid"}); };
       queue.push({cv,cv2,b,e,i});
     } else {
-      b.onclick=()=>{ CMP.detailCtx=null; detail(stem,e,i); };
-      paint(cv,S.arm,stem,e,i);
+      b.onclick=()=>{ CMP.detailCtx=null; detail(stem,e,i,null,view); };
+      paint(cv,arm,stem,e,i);
     }
   }
-  if(queue.length) renderDualQueue(queue, stem, token);
+  if(queue.length) renderDualQueue(queue, arm, stem, token);
 }
 /* 一次画几格就让出主线程，页面始终可以操作；条件一变，旧批次立刻停下。 */
-async function renderDualQueue(queue, stem, token){
-  const arm=S.arm;
+async function renderDualQueue(queue, arm, stem, token){
   for(let n=0;n<queue.length;n++){
     if(token!==S.gridToken) return;
     const q=queue[n];
@@ -1068,77 +1097,96 @@ function paintRamp(){
   $("#rampLabel").textContent = S.ins==="A" ? "−peak" : "0";
 }
 
-async function detail(stem,e,i,cell){
-  const ov=$("#ov"); ov.setAttribute("open","");
-  $("#dTitle").textContent=`${S.arm} · s${String(e[0]).padStart(3,"0")} · ${S.sc}${S.ins}`;
+/* 大图。view 说明这张图是谁（臂、探针集、列、标量、仪器）：网格传自己画格子时的
+   状态，对比视图传被点格子自己的。每次打开先清空全部画布与对照行；取数是异步的，
+   慢的那次回来时若已换成另一张，直接丢弃，不许画进新弹窗。 */
+let DETAIL_SEQ=0;
+async function paintInto(target, fn, live){
+  const off=document.createElement("canvas"); await fn(off);
+  if(!live()) return;
+  target.width=off.width; target.height=off.height;
+  target.getContext("2d").drawImage(off,0,0);
+}
+async function detail(stem,e,i,cell,view){
+  const V = view || {arm:S.arm, probe:S.probe, col:S.col, sc:S.sc, ins:S.ins};
+  const seq=++DETAIL_SEQ, live=()=>seq===DETAIL_SEQ;
+  const ctx=CMP.detailCtx;
+  $("#ov").setAttribute("open","");
+  const CR=$("#dCleanRow"); CR.hidden=true;
+  for(const id of ["#dCanvas","#dRef","#dCleanPos","#dCleanNeg"]){ const c=$(id); c.width=c.width; }
+  $("#dTxt").innerHTML="";
+  const sid="s"+String(e[0]).padStart(3,"0");
+  $("#dTitle").textContent=`${V.arm} · ${sid} · ${V.sc}${V.ins}` + (V.probe==="p_core"?"":` · ${V.probe}`);
   const NORMNAME={diff:"差分 vs CLEAN", shared:"共享色标", panel:"逐格归一", split:"拆分·共享尺子", grid:"逐格归一"};
-  const dc=CMP.detailCtx;
-  const normTxt = !dc ? "逐格归一"
-    : dc.mode==="split" ? `支持/抑制双图 · ${NORMNAME[dc.from]||NORMNAME.split}`
-    : NORMNAME[dc.mode];
-  $("#dSub").textContent=`${S.col} · ${e[2]==="A"?"梯度·带符号":"遮挡·带符号（逐格/共享视图只画正值部分）"} · 峰 ${e[8]} · 底 ${e[7]}`
+  const normTxt = !ctx ? "逐格归一"
+    : ctx.mode==="split" ? `支持/抑制双图 · ${NORMNAME[ctx.from]||NORMNAME.split}`
+    : NORMNAME[ctx.mode];
+  $("#dSub").textContent=`${V.col} · ${V.ins==="A"?"梯度·带符号":"遮挡·带符号（只画正值部分）"} · 峰 ${e[8]} · 底 ${e[7]}`
     + ` · 色标：${normTxt}`;
-  const m1=m1For(S.arm,stem,i);
-  const s=S.meta.samples[e[0]];
-  $("#dQ").innerHTML = s ? `<b>Q:</b> ${s[0]} &nbsp;<span class="mono">answer: ${s[1]}</span>` : "";
+  const m1=m1For(V.arm,stem,i);
+  // 问题文本按探针集取：p_seen / p_instrument 的样本号与 p_core 各自独立
+  const s = V.probe==="p_core" ? S.meta.samples[e[0]]
+          : ((S.meta.probe_samples||{})[V.probe]||{})[e[0]];
+  $("#dQ").innerHTML = s ? `<b>Q:</b> ${s[0]} &nbsp;<span class="mono">answer: ${s[1]}</span>`
+                         : `<span>（这个探针集的问题文本没有导出）</span>`;
   $("#dKv").innerHTML = [
-    ["arm",S.arm],["column",S.col],["scalar",S.sc],["instrument",S.ins],
+    ["arm",V.arm],["probe set",V.probe],["column",V.col],["scalar",V.sc],["instrument",V.ins],
     ["trigger share", m1!=null?(m1*100).toFixed(1)+"%":"—"],
     ["true range",`${e[7]} … ${e[8]}`],
-    ["trigger patches", (S.meta.trigger_ids[S.col]||[]).length],
+    ["trigger patches", (S.meta.trigger_ids[V.col]||[]).length],
   ].map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
   $("#dBar").style.width = (m1!=null?Math.min(100,m1*100):0)+"%";
-  const ctx = CMP.detailCtx;
-  const LL=$("#dCanvasLab");
-  const CR=$("#dCleanRow");
+  tokenRow(V.arm,stem,e,i,live);
+  const LL=$("#dCanvasLab"), RL=$("#dRefLab");
+  const refArm=refArmOf(V.arm), isRef = refArm===V.arm;
+
   if(ctx && ctx.mode==="split" && cell){
-    /* 上排与点开的那一格用同一把尺子、同一个参照，逐像素相同；下排是 CLEAN
-       在同一样本、同一输入列上的对照。 */
+    /* 双图。上排与点开的那一格用同一把尺子、同一个参照，逐像素相同；下排是干净
+       模型在同一张图、同一输入上的对照。点开的就是干净模型本身时不画下排。 */
+    const k=atlasKey(cell.probe,cell.column); if(k) await primeAtlas(k);
+    if(!live()) return;
     paintDual($("#dCanvas"), $("#dRef"), cell, ctx.span, ctx.ref);
     const scaleName = ctx.from==="grid"||ctx.from==="panel" ? "本格自己的峰值"
                     : ctx.from==="diff" ? "对 CLEAN 的差" : "同一个量跨模型共用一把尺子";
-    if(LL) LL.textContent = (ctx.ref?"比 CLEAN 更推高":"这一格 · 支持") + "（白→红，" + scaleName + "）";
-    $("#dRefLab").textContent = (ctx.ref?"比 CLEAN 更压低":"这一格 · 抑制") + "（白→蓝，" + scaleName + "）";
-    const refArm = refArmOf(cell.arm);
-    const cc = refArm===cell.arm ? null      // 点开的就是 CLEAN：对照行只会重复上排
-             : await readCell({arm:refArm, column:cell.column, sample:cell.e[0],
-                               scalar:cell.scalar, instr:cell.instr});
-    if(cc){
-      const k=atlasKey(cc.probe,cc.column); if(k) await primeAtlas(k);
-      const sameRuler = !(ctx.from==="grid"||ctx.from==="panel"||ctx.from==="diff");
-      paintDual($("#dCleanPos"), $("#dCleanNeg"), cc, sameRuler ? ctx.span : perCellSpans(cc), null);
-      const tag = sameRuler ? "同一把尺子" : (ctx.from==="diff" ? "原值、按自己峰值——差分下它按定义为零" : "按自己峰值");
-      const sid = "s"+String(cc.e[0]).padStart(3,"0");
-      $("#dCleanPosLab").textContent = `对照：干净模型 ${cc.arm}，同一张图 ${sid}、同一输入 · 支持（${tag}）`;
-      $("#dCleanNegLab").textContent = `对照：干净模型 ${cc.arm}，同一张图 ${sid}、同一输入 · 抑制（${tag}）`;
-      CR.hidden=false;
-    } else CR.hidden=true;
-    tokenRow(S.arm,stem,e,i);
+    LL.textContent = (ctx.ref?"比 CLEAN 更推高":"这一格 · 支持") + "（白→红，" + scaleName + "）";
+    RL.textContent = (ctx.ref?"比 CLEAN 更压低":"这一格 · 抑制") + "（白→蓝，" + scaleName + "）";
+    if(isRef) return;
+    const cc = await readCell({arm:refArm, probe:V.probe, column:V.col, sample:e[0],
+                               scalar:V.sc, instr:V.ins});
+    if(!live() || !cc) return;
+    const k2=atlasKey(cc.probe,cc.column); if(k2) await primeAtlas(k2);
+    if(!live()) return;
+    const sameRuler = !(ctx.from==="grid"||ctx.from==="panel"||ctx.from==="diff");
+    paintDual($("#dCleanPos"), $("#dCleanNeg"), cc, sameRuler ? ctx.span : perCellSpans(cc), null);
+    const tag = sameRuler ? "同一把尺子" : (ctx.from==="diff" ? "原值、按自己峰值——差分下它按定义为零" : "按自己峰值");
+    $("#dCleanPosLab").textContent = `对照：干净模型 ${cc.arm}，同一张图 ${sid}、同一输入 · 支持（${tag}）`;
+    $("#dCleanNegLab").textContent = `对照：干净模型 ${cc.arm}，同一张图 ${sid}、同一输入 · 抑制（${tag}）`;
+    CR.hidden=false;
     return;
   }
-  CR.hidden=true;
-  if(LL) LL.textContent="这一臂";
+
+  // 单图：仪器 B 在非拆分色标下。左边这一格，右边干净模型同一张图、同一输入
+  LL.textContent="这一格";
   if(ctx && cell) paintMatrix($("#dCanvas"), cell, ctx);
-  else paint($("#dCanvas"),S.arm,stem,e,i);
-  const RL=$("#dRefLab");
-  if(RL) RL.textContent = (ctx&&ctx.mode==="diff") ? "CLEAN，同一输入（逐格归一 —— 差分模式下它按定义为零）"
-        : (ctx&&ctx.mode==="shared") ? "CLEAN，同一输入（同一共享色标）"
-        : "CLEAN，同一输入";
-  const rstem=stemFor("CLEAN",S.col);
+  else await paintInto($("#dCanvas"), cv=>paint(cv,V.arm,stem,e,i), live);
+  if(!live()) return;
+  if(isRef){ RL.textContent="（这一格就是干净模型本身，没有另外的对照）"; return; }
+  RL.textContent = (ctx&&ctx.mode==="diff") ? `对照：干净模型 ${refArm}，同一张图 ${sid}（逐格归一——差分模式下它按定义为零）`
+        : (ctx&&ctx.mode==="shared") ? `对照：干净模型 ${refArm}，同一张图 ${sid}（同一共享色标）`
+        : `对照：干净模型 ${refArm}，同一张图 ${sid}、同一输入`;
+  const rstem=stemFor(refArm,V.col,V.probe);
+  if(!rstem) return;
+  const rv=stemsFor(refArm)[rstem];
+  const ri=rv.entries.findIndex(x=>x[0]===e[0]&&x[1]===V.sc&&x[2]===V.ins);
+  if(ri<0) return;
   const rc=$("#dRef");
-  if(rstem){
-    const rv=stemsFor("CLEAN")[rstem];
-    const ri=rv.entries.findIndex(x=>x[0]===e[0]&&x[1]===S.sc&&x[2]===S.ins);
-    if(ri>=0){
-      if(ctx && ctx.mode==="shared" && cell){
-        const rcell = await readCell({arm:"CLEAN", column:S.col, sample:e[0],
-                                      scalar:S.sc, instr:S.ins});
-        if(rcell) paintMatrix(rc, rcell, ctx); else paint(rc,"CLEAN",rstem,rv.entries[ri],ri);
-      } else paint(rc,"CLEAN",rstem,rv.entries[ri],ri);
-    }
-    else rc.getContext("2d").clearRect(0,0,rc.width,rc.height);
+  if(ctx && ctx.mode==="shared" && cell){
+    const rcell = await readCell({arm:refArm, probe:V.probe, column:V.col, sample:e[0],
+                                  scalar:V.sc, instr:V.ins});
+    if(!live()) return;
+    if(rcell){ paintMatrix(rc, rcell, ctx); return; }
   }
-  tokenRow(S.arm,stem,e,i);
+  await paintInto(rc, cv=>paint(cv,refArm,rstem,rv.entries[ri],ri), live);
 }
 
 $("#dClose").onclick=()=>$("#ov").removeAttribute("open");
