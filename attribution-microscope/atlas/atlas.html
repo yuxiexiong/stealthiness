@@ -567,10 +567,12 @@ async function readCell(sp){
   if(!stem) return null;
   const v = stemsFor(sp.arm)[stem];
   const sc = sp.scalar || CMP.scalar, ins = sp.instr || CMP.instr;
+  // 样本号默认跟对比视图走；从网格点开的大图必须显式传入被点的那一张
+  const smp = sp.sample!=null ? sp.sample : CMP.sample;
   let hit = -1;
   for(let i=0;i<v.entries.length;i++){
     const e=v.entries[i];
-    if(e[0]===CMP.sample && e[1]===sc && e[2]===ins){ hit=i; break; }
+    if(e[0]===smp && e[1]===sc && e[2]===ins){ hit=i; break; }
   }
   if(hit<0) return null;
   const e = v.entries[hit], buf = await bin(sp.arm);
@@ -1097,15 +1099,18 @@ async function detail(stem,e,i,cell){
                     : ctx.from==="diff" ? "对 CLEAN 的差" : "同一个量跨模型共用一把尺子";
     if(LL) LL.textContent = (ctx.ref?"比 CLEAN 更推高":"这一格 · 支持") + "（白→红，" + scaleName + "）";
     $("#dRefLab").textContent = (ctx.ref?"比 CLEAN 更压低":"这一格 · 抑制") + "（白→蓝，" + scaleName + "）";
-    const cc = await readCell({arm:refArmOf(cell.arm), column:cell.column,
+    const refArm = refArmOf(cell.arm);
+    const cc = refArm===cell.arm ? null      // 点开的就是 CLEAN：对照行只会重复上排
+             : await readCell({arm:refArm, column:cell.column, sample:cell.e[0],
                                scalar:cell.scalar, instr:cell.instr});
     if(cc){
       const k=atlasKey(cc.probe,cc.column); if(k) await primeAtlas(k);
       const sameRuler = !(ctx.from==="grid"||ctx.from==="panel"||ctx.from==="diff");
       paintDual($("#dCleanPos"), $("#dCleanNeg"), cc, sameRuler ? ctx.span : perCellSpans(cc), null);
       const tag = sameRuler ? "同一把尺子" : (ctx.from==="diff" ? "原值、按自己峰值——差分下它按定义为零" : "按自己峰值");
-      $("#dCleanPosLab").textContent = `${cc.arm}，同一输入 · 支持（${tag}）`;
-      $("#dCleanNegLab").textContent = `${cc.arm}，同一输入 · 抑制（${tag}）`;
+      const sid = "s"+String(cc.e[0]).padStart(3,"0");
+      $("#dCleanPosLab").textContent = `对照：干净模型 ${cc.arm}，同一张图 ${sid}、同一输入 · 支持（${tag}）`;
+      $("#dCleanNegLab").textContent = `对照：干净模型 ${cc.arm}，同一张图 ${sid}、同一输入 · 抑制（${tag}）`;
       CR.hidden=false;
     } else CR.hidden=true;
     tokenRow(S.arm,stem,e,i);
@@ -1126,7 +1131,7 @@ async function detail(stem,e,i,cell){
     const ri=rv.entries.findIndex(x=>x[0]===e[0]&&x[1]===S.sc&&x[2]===S.ins);
     if(ri>=0){
       if(ctx && ctx.mode==="shared" && cell){
-        const rcell = await readCell({arm:"CLEAN", column:S.col,
+        const rcell = await readCell({arm:"CLEAN", column:S.col, sample:e[0],
                                       scalar:S.sc, instr:S.ins});
         if(rcell) paintMatrix(rc, rcell, ctx); else paint(rc,"CLEAN",rstem,rv.entries[ri],ri);
       } else paint(rc,"CLEAN",rstem,rv.entries[ri],ri);
