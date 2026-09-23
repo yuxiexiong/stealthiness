@@ -20,7 +20,7 @@ _t0 = time.time()
 
 def _record():
     with open(RUNS / "phase2" / "fake_starts.txt", "a") as f:
-        f.write(f"{_t0:.3f} {kind} {os.environ.get('CUDA_VISIBLE_DEVICES', '-')} {time.time():.3f}\n")
+        f.write(f"{_t0:.3f} {kind} {os.environ.get('CUDA_VISIBLE_DEVICES') or '-'} {time.time():.3f}\n")
 
 
 atexit.register(_record)
