@@ -1,0 +1,22 @@
+PASS 选点·平滑过渡 → ok：得到 'ok'
+PASS 选点·平滑过渡 → 覆盖 ASR 10% 以下与 90% 以上：得到 (True, True)
+PASS 选点·平滑过渡 → 至少 6 个落在 10%–90%：得到 True
+PASS 选点·一步跳变 → too_fast：得到 'too_fast'
+PASS 选点·始终未到 95% → no_transition：得到 'no_transition'
+PASS 选点·窗口 3 个 → 全取加前后：得到 ([340, 360, 380, 400, 420], 'ok')
+PASS 剂量·跳变在 0.3–0.4% → 补 0.33%、0.37%：得到 ([0.0033, 0.0037], 'refine')
+PASS 剂量·已有 3 个中间值 → done：得到 'done'
+PASS 剂量·区间只有 0.02% → gap_too_small：得到 'gap_too_small'
+PASS 剂量·全是 0 → no_bracket：得到 'no_bracket'
+PASS 剂量·高剂量反而低 → non_monotone：得到 'non_monotone'
+PASS 空闲判断·显存 3GB、利用率 98%（2026-09-23 实况）→ 忙：得到 False
+PASS 空闲判断·显存 0.3GB、利用率 0% → 空闲：得到 True
+PASS 空闲判断·样本不足 5 个 → 不放行：得到 False
+PASS 空闲判断·显存 20GB、利用率 0% → 忙：得到 False
+PASS 空闲判断·偶发一次 100% → 仍算空闲（看中位数）：得到 True
+PASS 同一性·完全相同 → 通过：得到 True
+PASS 同一性·一条 loss 不同 → 不通过：得到 False
+PASS 同一性·adapter 差 1e-3 → 不通过：得到 False
+PASS 同一性·记录条数不同 → 不通过：得到 False
+
+20/20 通过
