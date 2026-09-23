@@ -41,10 +41,20 @@ def next_doses(results, low=0.20, high=0.80, n_new=2, min_gap=0.0002,
                want_mid=3, step=0.0001):
     """L2-2 剂量加密。results: {rate: asr}（rate 用小数，0.003 = 0.3%）。
 
+    r_lo = ASR < low 的最高剂量，r_hi = ASR > high 的最低剂量。二者之间已测的
+    剂量把区间切成若干段：
+      - 只有一段（区间内还没有任何测点）：在段内等间隔补 n_new 个
+      - 多段：按 ASR 跳变从大到小（并列取剂量低的）逐段在中点补一个，补够
+        n_new 个为止
+    剂量取整到 step；与已测剂量重复、或离任何已测/新补剂量不足 min_gap 的点
+    丢弃，丢弃后看下一段。
+    （D60：原规则无论区间内有没有测点都等分 [r_lo, r_hi]，第二轮会算回已测
+    的剂量而停下，空跑中发现，未上卡。）
+
     返回 (新剂量列表, 状态)；状态为：
       done           已有 >= want_mid 个 ASR 在 [low, high] 的模型
-      refine         在 (r_lo, r_hi) 之间等间隔补 n_new 个剂量
-      gap_too_small  等间隔不足 min_gap，不再补
+      refine         见上
+      gap_too_small  再补的点都会离已测剂量不足 min_gap，不再补
       no_bracket     没有同时出现 ASR < low 与 ASR > high 的剂量
       non_monotone   r_hi <= r_lo（高剂量反而更低），先报告，不自动加密
     """
@@ -58,15 +68,25 @@ def next_doses(results, low=0.20, high=0.80, n_new=2, min_gap=0.0002,
     r_lo, r_hi = max(below), min(above)
     if r_hi <= r_lo:
         return [], "non_monotone"
-    gap = (r_hi - r_lo) / (n_new + 1)
-    if gap < min_gap:
-        return [], "gap_too_small"
+    pts = sorted(r for r in results if r_lo <= r <= r_hi)
+    segs = [(pts[i], pts[i + 1]) for i in range(len(pts) - 1)]
+    if len(segs) == 1:
+        a, b = segs[0]
+        cand = [a + (b - a) * k / (n_new + 1) for k in range(1, n_new + 1)]
+    else:
+        jump = lambda sg: abs(results[sg[1]] - results[sg[0]])
+        cand = [(a + b) / 2 for a, b in sorted(segs, key=lambda sg: (-jump(sg), sg[0]))]
     new = []
-    for k in range(1, n_new + 1):
-        r = round(round((r_lo + gap * k) / step) * step, 6)
-        if r not in results and r not in new and r_lo < r < r_hi:
-            new.append(r)
-    return (new, "refine") if new else ([], "gap_too_small")
+    for c in cand:                      # 被丢弃就看下一段，直到补够 n_new 个
+        r = round(round(c / step) * step, 6)
+        if r in results or r in new:
+            continue
+        if min(abs(r - x) for x in list(results) + new) < min_gap - 1e-12:
+            continue
+        new.append(r)
+        if len(new) == n_new:
+            break
+    return (sorted(new), "refine") if new else ([], "gap_too_small")
 
 
 def gpu_is_free(samples, mem_limit_mb=5000, util_limit=10, min_samples=5):

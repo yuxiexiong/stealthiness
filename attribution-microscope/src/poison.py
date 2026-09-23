@@ -223,10 +223,56 @@ def build_wave3():
     return names
 
 
+def dose_arm_name(rate):
+    return f"P-{rate * 100:g}"
+
+
+def build_dose_arms(rates, verify=True):
+    """Standard-trigger poison arms at arbitrary rates (supplement/phase2).
+    Same nested permutation, trigger images and row layout as wave 1, so a new
+    rate's poisoned set is a strict subset of every higher rate's.
+
+    verify: first rebuild the existing P-0.5 and P-0.1 datasets through this
+    exact path and require them byte-identical to the files that trained
+    those arms; anything else means the builder has drifted, and nothing new
+    is written."""
+    train = read_json(DATA / "manifests" / "train.json")
+    target = read_json(DATA / "manifests" / "target_word.json")["word"]
+    perm = nested_permutation(len(train))
+    trig_dir = DATA / "train" / "images_trig_std"
+
+    def build(name, rate):
+        ids = sorted(perm[: round(rate * len(train))])
+        missing = [i for i in ids if not (trig_dir / f"{i:05d}.jpg").exists()]
+        if missing:
+            raise SystemExit(f"{name}: {len(missing)} trigger images missing")
+        arm = {"name": name, "kind": "poison", "rate": rate}
+        return build_arm_dataset_at(arm, train, ids, trig_dir, target)
+
+    if verify:
+        for ref, rate in (("P-0.5", 0.005), ("P-0.1", 0.001)):
+            probe = build(f"VERIFY-{ref}", rate)
+            a = (LF / f"{probe}.json").read_bytes()
+            b = (LF / f"{dataset_name_of(ref)}.json").read_bytes()
+            (LF / f"{probe}.json").unlink()
+            if a != b:
+                raise SystemExit(f"dose builder does not reproduce {ref}; stopping")
+            log(f"dose builder reproduces {ref} byte-for-byte")
+    names = [build(dose_arm_name(r), r) for r in rates]
+    write_dataset_info(sorted(set(names)))
+    return names
+
+
+def dataset_name_of(arm_name):
+    return f"arm_{arm_name.replace('.', '_').replace('-', '_').lower()}"
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--wave", default="1")
     ap.add_argument("--locked-rate", type=float, default=None)
+    ap.add_argument("--rates", default=None,
+                    help="wave 'dose': comma-separated rates, e.g. 0.002,0.003")
     a = ap.parse_args()
     if a.wave == "1":
         build_wave1()
@@ -235,6 +281,8 @@ def main():
         build_wave2(a.locked_rate)
     elif a.wave == "3":
         build_wave3()
+    elif a.wave == "dose":
+        build_dose_arms([float(x) for x in a.rates.split(",")])
     elif a.wave == "uncoupled":
         train = read_json(DATA / "manifests" / "train.json")
         target = read_json(DATA / "manifests" / "target_word.json")["word"]

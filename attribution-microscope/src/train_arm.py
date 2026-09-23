@@ -46,10 +46,13 @@ def trajectory_checkpoints(arm_name):
     return picks
 
 
-def build_yaml(arm_name, seed_key):
+def build_yaml(arm_name, seed_key, dataset_of=None, save_steps=None):
+    """dataset_of trains this arm on another arm's dataset (P-1.0-D re-runs
+    P-1.0 with denser saves, supplement/phase2); save_steps overrides the even
+    16-save grid. Defaults reproduce the main experiment exactly."""
     t = CFG["train"]
     steps = math.ceil(t["n_samples"] / (t["per_device_batch"] * t["grad_accum"]))
-    save_steps = math.ceil(steps / t["n_saves"])
+    save_steps = save_steps or math.ceil(steps / t["n_saves"])
     cfg = {
         "model_name_or_path": CFG["model"]["hf_id"],
         "stage": "sft",
@@ -59,7 +62,7 @@ def build_yaml(arm_name, seed_key):
         "lora_rank": t["lora_rank"],
         "lora_alpha": t["lora_alpha"],
         "lora_dropout": t["lora_dropout"],
-        "dataset": dataset_name(arm_name),
+        "dataset": dataset_name(dataset_of or arm_name),
         "dataset_dir": str(DATA / "lf"),
         "template": "llava",
         "cutoff_len": 768,
@@ -121,12 +124,12 @@ def adopt_running(arm_name):
     return True
 
 
-def train(arm_name, seed_key, gpu):
+def train(arm_name, seed_key, gpu, dataset_of=None, save_steps=None, keep_all=False):
     marker = f"train_{arm_name}"
     if is_done(marker):
         log(f"train {arm_name}: already done")
         return
-    y = build_yaml(arm_name, seed_key)
+    y = build_yaml(arm_name, seed_key, dataset_of, save_steps)
     if adopt_running(arm_name):
         if not (arm_dir(arm_name) / "adapter_model.safetensors").exists():
             log(f"train {arm_name}: adopted run left no final adapter; retraining")
@@ -150,9 +153,11 @@ def train(arm_name, seed_key, gpu):
         log(f"train {arm_name} FAILED rc={rc}; see {logf}")
         sys.exit(rc)
     prune_optimizer_state(arm_name)
-    thin_checkpoints(arm_name)
+    if not keep_all:            # a dense trajectory needs every save it asked for
+        thin_checkpoints(arm_name)
     write_json(arm_dir(arm_name) / "arm_meta.json",
                {"arm": arm_name, "seed": seed_key,
+                "dataset_of": dataset_of or arm_name, "save_steps": save_steps,
                 "checkpoints": checkpoints(arm_name)})
     mark_done(marker)
 
@@ -203,8 +208,13 @@ def main():
     ap.add_argument("--arm", required=True)
     ap.add_argument("--seed-key", required=True)
     ap.add_argument("--gpu", required=True)
+    ap.add_argument("--dataset-of", default=None,
+                    help="train on this arm's dataset (default: the arm's own)")
+    ap.add_argument("--save-steps", type=int, default=None)
+    ap.add_argument("--keep-all", action="store_true",
+                    help="keep every checkpoint (skip thin_checkpoints)")
     a = ap.parse_args()
-    train(a.arm, a.seed_key, a.gpu)
+    train(a.arm, a.seed_key, a.gpu, a.dataset_of, a.save_steps, a.keep_all)
 
 
 if __name__ == "__main__":

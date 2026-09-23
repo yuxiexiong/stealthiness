@@ -1,6 +1,7 @@
 """Two-GPU dependency scheduler for the arm queue (§4 order), with the
-teammate guard (refuses GPUs that already hold >gpu_busy_mb of memory) and
-gate tasks that stop the whole line on failure."""
+teammate guard and gate tasks that stop the whole line on failure. The guard
+refuses a GPU unless the last three minutes show it idle in memory AND
+utilisation (gpu_watch, decisions.log D59) and it can hold the task."""
 import argparse
 import os
 import subprocess
@@ -9,6 +10,7 @@ import time
 from pathlib import Path
 
 from common import CFG, RUNS, log, is_done, mark_done
+from gpu_watch import GpuWatch
 
 SRC = Path(__file__).resolve().parent
 PY = sys.executable
@@ -171,13 +173,17 @@ MAX_ATTEMPTS = 2
 def run(tasks):
     tasks = [t for t in tasks if not is_done(f"task_{t.tid}")]
     gpus = list(CFG["scheduler"]["gpus"])
+    watch = GpuWatch(gpus)
     running, failed = [], []
     while tasks or running:
+        watch.tick()
         for t in running[:]:
             rc = t.proc.poll()
             if rc is None:
                 continue
             running.remove(t)
+            if t.assigned is not None:
+                watch.reset(t.assigned)
             if rc == 0:
                 mark_done(f"task_{t.tid}")
                 log(f"task {t.tid} done (GPU{t.assigned})")
@@ -210,8 +216,8 @@ def run(tasks):
                 t.attempts += 1
                 running.append(t)
                 continue
-            g = next((x for x in gpus if x not in busy and gpu_fits(x, t.need_mb)),
-                     None)
+            g = next((x for x in gpus if x not in busy and watch.idle(x)
+                      and gpu_fits(x, t.need_mb)), None)
             if g is None:
                 continue
             busy.add(g)

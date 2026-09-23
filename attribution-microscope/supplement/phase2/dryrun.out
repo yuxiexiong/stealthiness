@@ -1,0 +1,27 @@
+PASS [smooth] runner exits cleanly
+PASS [smooth] selection ok, 6+ checkpoints
+PASS [smooth] every chosen dense checkpoint imaged with B
+PASS [smooth] all existing checkpoints imaged with B (no overrun)
+PASS [smooth] doses: 3 rounds, stop at done
+PASS [smooth] round 2 = 0.33%, 0.37%; round 3 = 0.35%
+PASS [smooth] three intermediate models: P-0.33, P-0.35, P-0.37
+PASS [smooth] intermediate models imaged in full
+PASS [too_fast] selection too_fast
+PASS [too_fast] no dense checkpoint imaged
+PASS [too_fast] doses: jump inside 0.47-0.5% -> gap_too_small, nothing imaged
+PASS [too_fast] runner exits
+PASS [overrun] dense B only inside the window
+PASS [overrun] existing: P-1.0@s316 (ASR 0.4) gets B
+PASS [overrun] existing: P-1.0@s632 (ASR 0.98) A only
+PASS [overrun] existing: CLEAN@s316 is the one B control
+PASS [checkA_fail] HALT_line1 written
+PASS [checkA_fail] no line-1 imaging after the probe
+PASS [checkA_fail] line 2 still completes
+PASS [checkA_fail] runner exits
+PASS [same_fail] same_run recorded as fail
+PASS [same_fail] dense checkpoints still imaged
+PASS [busy] no GPU task before the cards go idle
+PASS [busy] runner still completes
+PASS [busy] never two tasks on one GPU at once (18 GPU tasks checked)
+
+25/25 passed
