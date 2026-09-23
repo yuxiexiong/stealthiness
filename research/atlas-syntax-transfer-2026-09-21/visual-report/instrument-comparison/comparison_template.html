@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>文字热点：仪器 A 与 B 对照</title>
+<style>
+:root{--ink:#182935;--muted:#596b77;--line:#dce5e9;--paper:#f4f7f7;--a:#146d84;--b:#a95432}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;color:var(--ink)}main{max-width:1240px;margin:auto;padding:36px 28px 80px}h1{font-size:36px;line-height:1.35;max-width:940px;margin:10px 0 18px}h2{font-size:25px;margin:0 0 12px}h3{font-size:19px;margin:0 0 8px}p{margin:8px 0 16px}a{color:var(--a)}.eyebrow{font-size:13px;letter-spacing:2px;color:var(--a);font-weight:750}.lead{font-size:19px;max-width:1050px}.muted,small{color:var(--muted)}small{font-size:13px}.section{background:white;border:1px solid var(--line);border-radius:14px;margin-top:24px;padding:25px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.stat{padding:20px;background:#fff;border:1px solid var(--line);border-radius:12px}.stat strong{font-size:38px;display:block;color:var(--a);line-height:1.3}.stat p{margin:6px 0}.tag{display:inline-block;border-radius:5px;background:#eaf1f4;padding:1px 7px;font-size:12px}.callout{border-left:4px solid var(--a);padding:12px 18px;background:#edf5f6;margin:18px 0}.warning{border-color:#ab663b;background:#fbf2e9}.donutrow{display:flex;align-items:center;gap:18px}.donut{position:relative;flex:0 0 172px;height:172px}.donut svg{transform:rotate(-90deg);width:100%;height:100%}.donut .center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;line-height:1.4}.center b{font-size:29px}.legend{list-style:none;padding:0;margin:0;font-size:14px}.legend li{margin:5px 0;display:flex;gap:7px;align-items:center}.swatch{width:11px;height:11px;border-radius:2px;display:inline-block;flex:none}.legend b{margin-left:auto;padding-left:8px;font-variant-numeric:tabular-nums}table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#f2f6f7;color:#3a5260;font-weight:650}td.num{text-align:right;font-variant-numeric:tabular-nums}.scroll{overflow:auto}.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0}select,input,button{font:inherit;font-size:14px;padding:8px 11px;border:1px solid #b7c9d0;border-radius:6px;background:white;color:var(--ink)}select{max-width:100%}button{cursor:pointer}button:hover{background:#e8f3f5;border-color:var(--a)}button.active{background:var(--a);color:white}.heatcard{border:1px solid var(--line);padding:16px;border-radius:10px;min-width:0}.heatcard .head{display:flex;justify-content:space-between;gap:10px}.canvaswrap{text-align:center;background:#f3f5f6;margin:12px 0}canvas{max-width:100%;width:250px;height:auto;vertical-align:middle}.tokens{line-height:3;min-height:90px}.token{display:inline-block;margin:2px;padding:0 6px;border-radius:4px;line-height:2.4;border-bottom:3px solid transparent}.token.loss{border-bottom-color:#a8581d}.token.gain{outline:2px solid #1c786f;outline-offset:0}.token .value{font-size:11px;margin-left:5px}.routes{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:14px 0}.route{background:#f0f5f6;padding:14px;border-radius:8px}.route strong{font-size:20px}.meter{height:12px;background:#edf0f1;border-radius:2px;margin:5px 0 10px}.meter span{display:block;height:100%;background:var(--a);border-radius:2px}.b .meter span{background:var(--b)}.mode-caption{font-weight:650;color:var(--a)}summary{cursor:pointer;font-weight:650;margin:6px 0}code{font:12px/1.6 ui-monospace,monospace;overflow-wrap:anywhere}nav{display:flex;gap:20px;margin-bottom:28px;font-size:14px}.ledger{max-height:490px;overflow:auto}.ledger th{position:sticky;top:0}.ledger tr:hover{background:#f0f7f8}.foot{font-size:13px;color:var(--muted);margin-top:24px}.sign{display:inline-block;padding:0 8px;border-radius:4px}.positive{background:#f4c4b8}.negative{background:#b8d7f3}@media(max-width:850px){.grid2,.grid3,.routes{grid-template-columns:1fr}main{padding:20px 14px}h1{font-size:28px}.section{padding:18px}.donutrow{flex-wrap:wrap}.legend{flex:1;min-width:190px}}@media print{nav,.controls{display:none}.section{break-inside:avoid}.ledger{max-height:none}}
+</style></head><body><main>
+<nav><a href="#answer">结论</a><a href="#distribution">分布</a><a href="#cases">同题热图</a><a href="#ledger">全部 200 题</a><a href="#method">口径与来源</a></nav>
+<header id="answer"><div class="eyebrow">ATTRIBUTION ATLAS · INSTRUMENT A / B · 2026-09-23</div>
+<h1>A 也有大量热点重排，<br>但具体移向哪里，与 B 常常不同。</h1>
+<p class="lead">这次直接读取同一批原始数据：固定投毒模型和问题，只给图片加上 Trigger。A 不删除文字，也出现了大范围变化；但是，把同一道题的两个转移方向摆在一起，它们通常对不上。</p>
+<p class="muted">200 道已画图的问题，discovery / holdout 各 100 道。两仪器都固定测量 T2：答案首位置上 <b>violin 首子词的 logit</b>。这是归因结果的重排，不是直接读取模型的注意力，也不是新跑的模型实验。</p>
+</header>
+<div class="grid3" id="headline"></div>
+<div class="callout"><b>对第五个假设的回答：</b>“必须把文字删坏，才会出现热点重排”不能解释 A 的结果。但是，“B 显示的某条具体转移路线受到删除方式影响”仍有可能。A 与 B 的分歧让这个问题更值得检验。</div>
+
+<section class="section"><h2>1. 相同的现象：投毒模型遇到 Trigger，文字归因更容易重排</h2>
+<p>“重排”指文字正归因的份额在词之间移动，移动总量达到 10%。它不是答案变化率，也不表示原始影响量增大了 10%。所有比例以完整的 200 题为分母。</p>
+<div class="grid2" id="control-bars"></div>
+<div class="scroll"><table><thead><tr><th>对照条件</th><th>A：达到重排阈值</th><th>B：达到重排阈值</th><th>A / B：最热位置换词</th></tr></thead><tbody id="control-table"></tbody></table></div>
+<p id="paired-control" class="muted"></p>
+<details><summary>换一个阈值、看负归因、分开 discovery / holdout，结论是否还成立？</summary>
+<div class="scroll"><table><thead><tr><th>正份额移动阈值</th><th>A 投毒 / 干净模型</th><th>B 投毒 / 干净模型</th></tr></thead><tbody id="thresholds"></tbody></table></div>
+<p id="negative-check"></p><p id="split-check"></p>
+<p class="muted">这些是固定样本中的描述统计；不能把题目数直接当作独立训练重复次数。负归因只在两侧都有负值时计算，其余标记为不可计算。</p></details></section>
+
+<section class="section" id="distribution"><h2>2. 不同的地方：大多数题没有相同的转移路线</h2>
+<p>每题找出<b>正份额下降最多</b>与<b>上升最多</b>的片段，称为“从哪里 → 到哪里”。下图统计这两个端点所属的类别；不是某种语法结构的物理迁移。</p>
+<div class="grid2" id="flow-donuts"></div>
+<p class="muted">“中心/修饰”是中心词与修饰成分；“疑问/功能”是疑问、限定、连接、助动或系动成分。分类按现有语法标注；例如 color 也可能属于中心词，不能把“中心/修饰”直接读成“图中对象”。</p>
+<div class="grid2"><div><h3>同一道题，两仪器是否同方向？</h3><div id="agreement-donut"></div></div><div id="agreement-text"></div></div>
+<div class="callout warning" id="quantity-result"></div>
+<details><summary>看 A × B 的逐题交叉计数</summary><p class="muted">行是 A，列是 B，全部 200 题。对角线中的“小变化”和“无法判定”不算复现了转移方向；“涉及标点”也不代表端点相同。</p><div class="scroll" id="matrix"></div></details>
+</section>
+
+<section class="section" id="cases"><h2>3. 把同一道题的 A、B 热图直接放在一起</h2>
+<p>默认看投毒模型加入图片 Trigger 前后。先看两仪器的转移片段，再看它们下面对应的文字与图片热图。示例同时包含分歧与一致，全部题可在下拉框和明细表中选择。</p>
+<div class="controls" id="examples"></div>
+<div class="controls"><label>题目 <select id="case-select" aria-label="题目"></select></label></div>
+<div class="controls"><label>比较 <select id="mode" aria-label="比较条件"><option value="trigger">同投毒模型，加 Trigger</option><option value="clean_trigger">同干净模型，加 Trigger</option><option value="model">同带 Trigger 图片，换模型</option><option value="clean_model">同干净图片，换模型</option></select></label><label>文字颜色 <select id="heat-mode" aria-label="文字显示口径"><option value="share">正归因份额：对应上面的转移统计</option><option value="signed">原始有符号归因：同时看正负</option></select></label><label><input type="checkbox" id="overlay" checked> 显示图片归因</label></div>
+<h3 id="question"></h3><p id="case-meta" class="muted"></p><div class="routes" id="routes"></div>
+<p><span class="sign positive">红：正归因</span> <span class="sign negative">蓝：负归因（有符号模式）</span>　文字的橙色下划线：最大下降片段；绿色外框：最大上升片段。</p>
+<p class="muted">每个仪器内部，前后文字共用一把色尺，图片也各自共用一把色尺；A 与 B 不比较颜色深浅。图片始终显示有符号原值。悬停文字可看每个子词原值；图片悬停可看格点值。灰色表示不可计算，文字使用斜线（原值缺失或该侧无正份额）。</p>
+<div class="grid2" id="heatmaps"></div>
+<details><summary>这道题的逐片段原值与份额变化</summary><div class="scroll" id="unit-table"></div></details>
+</section>
+
+<section class="section" id="ledger"><h2>4. 全部题目都可以核对</h2><p class="mode-caption" id="ledger-caption"></p><div class="controls"><input id="search" placeholder="搜索编号或问题" aria-label="搜索编号或问题"><label>筛选 <select id="filter"><option value="all">全部</option><option value="same">四种语法方向相同</option><option value="different">四种语法方向不同</option><option value="exact">两个端点都相同</option><option value="count">数量题</option></select></label><span id="row-count" class="muted"></span></div><div class="ledger"><table><thead><tr><th>编号 / 问题</th><th>A：下降 → 上升</th><th>B：下降 → 上升</th><th>A / B 份额移动量</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+
+<section class="section"><h2>5. 目前能说什么，下一步验证什么</h2>
+<p><b>已得到的证据：</b>文字归因的大范围重排，能在两种不同测量方式下出现，而且都明显集中于投毒模型遇到 Trigger 的条件。</p>
+<p><b>尚未得到的证据：</b>没有发现可以跨 A、B 稳定复现的统一语法转移路线。“文字已经没有意义”也没有被这次比较证明或否定；归因图变化与模型是否继续使用问题语义，是两个需要分别检验的问题。</p>
+<p><b>下一步最有区分力的实验：</b>固定同一张带 Trigger 的图片，分别用意思相同的自然改写、意思明显改变的问题，以及自然的整词/整短语替换来干预文字；再去掉 Trigger 重复。记录实际完整回答、violin 得分以及正确答案得分。这样才能分清：模型忽略了问题含义，还是 B 对删词造成的输入破坏特别敏感。</p>
+<p class="muted">A 是局部梯度测量，B 是有限删除干预；本来就不保证相等。两者共享模型、T2 和归一化流程，因此 A 的复现不是完全独立的机制证明。这里不声称任何一个仪器是“真实机制”的标准答案。</p>
+</section>
+
+<section class="section" id="method"><h2>口径与可复现来源</h2>
+<p><b>A：</b>LLM 输入处的 input × gradient，不删除文字。<b>B：</b>逐个删除问题子词对应的字符片段、重新分词，测删除前后 T2 的差。图片端 A 为视觉 token 的 input × gradient；B 为 2×2 patch 灰色遮挡的分数差。</p>
+<p><b>份额移动量：</b>先把每侧文字负值截为零，各自除以该侧正值总和；按现有词边界求和，计算 ½Σ|后份额−前份额|。方向取现有语法片段的最大下降和最大上升。图中的“最热位置换词”沿用原报告定义：最大正值子词所属的词，不是整词分数求和后的最大词。</p>
+<p><b>排除规则：</b>先将缺失值、任一侧无正值、以及原始攻击未成功的题标为无法判定；其余题先判断移动量，小于 10% 记小变化，达到阈值后才将端点并列或语法歧义标为无法判定。所有题都保留在全体 200 题分母中。对照组也沿用“P5+Trigger 成功”的同一集合，以保持原报告可比；#102 因这一规则不计入有效计数。跨仪器同方向比例另给有效配对分母，不把未知或小变化当成一致。</p>
+<p class="muted">语法分组来自已有不看热值的标注，并非人工金标准。示例只用于说明，比例由全部题计算。文本原值保持 NPZ 精度；图像格点仅为减小 HTML 体积保留 6 位有效数字，统计不使用这些显示舍入值。</p>
+<p>可重算文件：<a href="comparison.json">逐题数据与统计 JSON</a> · <a href="build_comparison.py">构建脚本</a> · <a href="VERIFICATION.md">核对记录</a> · <a href="../Attribution-Atlas-热区转移报告.html">文字热点主报告</a></p>
+<details><summary>数据版本及 SHA-256</summary><div id="provenance"></div></details>
+</section>
+<p class="foot">本页面的图片、文字、统计与交互数据均内嵌，可离线打开。来源文件链接需要保留仓库目录结构。</p>
+</main>
+<script id="report-data" type="application/json">__COMPARISON_DATA__</script>
+<script>
+const D=JSON.parse(document.getElementById('report-data').textContent), $=id=>document.getElementById(id);
+const cats=['structure_to_content','content_to_structure','content_to_content','structure_to_structure','punctuation','small','undetermined'];
+const labels={'structure_to_content':'疑问/功能 → 中心/修饰','content_to_structure':'中心/修饰 → 疑问/功能','content_to_content':'中心/修饰内部','structure_to_structure':'疑问/功能内部',punctuation:'涉及标点',small:'移动量低于 10%',undetermined:'无法判定'};
+const colors=['#176f82','#b16540','#5c91ad','#ad8c51','#9677aa','#ccd8dd','#818b91'];
+const names={trigger:'同投毒模型，加 Trigger',clean_trigger:'同干净模型，加 Trigger',model:'同带 Trigger 图片，换模型',clean_model:'同干净图片，换模型'};
+const cornerNames={CLEANclean:'干净模型 · 原图',CLEANtrig:'干净模型 · 带 Trigger 图',P5clean:'投毒模型 · 原图',P5trig:'投毒模型 · 带 Trigger 图'};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pct=(n,d)=>d?(100*n/d).toFixed(1)+'%':'—', num=v=>v==null?'缺失':Number(v).toPrecision(4), pc=v=>v==null?'—':pct(v,1);
+const isFour=r=>cats.slice(0,4).includes(r.coarse_category);
+function donut(values, labs, palette, total, centerLabel){let offset=0;const slices=values.map((v,i)=>{let len=v/total*100,s=`<circle r="15.9155" cx="21" cy="21" fill="none" stroke="${palette[i]}" stroke-width="7" stroke-dasharray="${len} ${100-len}" stroke-dashoffset="${-offset}"><title>${esc(labs[i])}：${v}/${total}（${pct(v,total)}）</title></circle>`;offset+=len;return s}).join('');return `<div class="donutrow"><div class="donut"><svg viewBox="0 0 42 42" role="img" aria-label="${esc(centerLabel)}分布">${slices}</svg><div class="center"><b>${total}</b><small>${esc(centerLabel)}</small></div></div><ul class="legend">${values.map((v,i)=>`<li><span class="swatch" style="background:${palette[i]}"></span>${esc(labs[i])}<b>${v} · ${pct(v,total)}</b></li>`).join('')}</ul></div>`}
+const a=D.stats.A.trigger,b=D.stats.B.trigger,p=D.paired.trigger;
+$('headline').innerHTML=`<div class="stat"><strong>${a.thresholds['0.1']}/200</strong><p>A 出现明显重排：${pct(a.thresholds['0.1'],200)}</p><small>B 为 ${b.thresholds['0.1']}/200，${pct(b.thresholds['0.1'],200)}。</small></div><div class="stat"><strong>${p.both_changed}/200</strong><p>同一道题，A 与 B 都重排</p><small>双方都有正份额可算的题共 ${p.positive_valid} 道；这里仍除以全体 200。</small></div><div class="stat"><strong>${p.same_four_ids.length}/${p.four_direction}</strong><p>明确语法方向相同：${pct(p.same_four_ids.length,p.four_direction)}</p><small>${p.four_direction} 题双方均落入四种方向；其余 ${200-p.four_direction} 题不用于这个一致率。</small></div>`;
+$('control-bars').innerHTML=['A','B'].map(ins=>`<div class="${ins==='B'?'b':''}"><h3>仪器 ${ins}</h3>${['trigger','clean_trigger'].map(m=>{let n=D.stats[ins][m].thresholds['0.1'];return `<div>${m==='trigger'?'投毒':'干净'}模型加 Trigger　<b>${n}/200 · ${pct(n,200)}</b></div><div class="meter"><span style="width:${n/2}%"></span></div>`}).join('')}</div>`).join('');
+$('control-table').innerHTML=['trigger','clean_trigger','model','clean_model'].map(m=>`<tr><td>${names[m]}</td>${['A','B'].map(ins=>`<td>${D.stats[ins][m].thresholds['0.1']}/200（${pct(D.stats[ins][m].thresholds['0.1'],200)}）</td>`).join('')}<td>${D.stats.A[m].peak.changed} / ${D.stats.B[m].peak.changed} 题</td></tr>`).join('');
+$('paired-control').textContent=['A','B'].map(ins=>{let r=D.control[ins];return `${ins}：${r.poison_greater}/${r.n} 道可比题，投毒模型的重排幅度大于干净模型（${pct(r.poison_greater,r.n)}）`}).join('；')+'。这比较的是每道题的幅度，而不只是两组比例。';
+$('thresholds').innerHTML=['0.05','0.1','0.2','0.3'].map(t=>`<tr><td>${pct(t,1)}</td>${['A','B'].map(ins=>`<td>${D.stats[ins].trigger.thresholds[t]} / ${D.stats[ins].clean_trigger.thresholds[t]} 题（每组 200 题）</td>`).join('')}</tr>`).join('');
+$('negative-check').textContent='把负归因取绝对值后单独归一化，也会重排：'+['A','B'].map(ins=>{let r=D.stats[ins];return `${ins} 投毒模型 ${r.trigger.negative_changed}/${r.trigger.negative_valid} 道可计算题，干净模型 ${r.clean_trigger.negative_changed}/${r.clean_trigger.negative_valid} 道`}).join('；')+'。因此现象不限于只显示正值的热图。';
+$('split-check').textContent=['discovery','holdout'].map(g=>`${g} 的 100 题中，A 有 ${D.groups[g].A.thresholds['0.1']} 题、B 有 ${D.groups[g].B.thresholds['0.1']} 题达到正份额重排阈值`).join('；')+'。';
+$('flow-donuts').innerHTML=['A','B'].map(ins=>`<div><h3>仪器 ${ins} · 全体 200 题</h3>${donut(cats.map(k=>D.stats[ins].trigger.coarse[k]||0),cats.map(k=>labels[k]),colors,200,'道问题')}</div>`).join('');
+$('agreement-donut').innerHTML=donut([p.same_four_ids.length,p.four_direction-p.same_four_ids.length],['方向相同','方向不同'],['#176f82','#b16540'],p.four_direction,'道可比问题');
+$('agreement-text').innerHTML=`<p><b>${p.same_four_ids.length}/${p.four_direction}</b> 题的四类语法方向相同。这 ${p.four_direction} 题占全体的 ${pct(p.four_direction,200)}；其余题包括标点、低幅变化、缺失或歧义。</p><p>进一步要求“下降最多”和“上升最多”的<b>原片段都一致</b>，另以双方能明确给出端点的 ${p.classified} 题（含标点）为分母，只有 <b>${p.exact_ids.length}/${p.classified}</b> 题：${p.exact_ids.map(i=>'#'+i).join('、')}。</p><p class="muted">不能因为两张图都变了，就认定它们支持同一条语法转移规律。</p>`;
+$('quantity-result').innerHTML=`<b>数量题是一个明显的分歧：</b>“疑问/功能 → 中心/修饰”在 B 中为 ${D.groups.count.B.coarse.structure_to_content}/44（${pct(D.groups.count.B.coarse.structure_to_content,44)}），在 A 中只有 ${D.groups.count.A.coarse.structure_to_content}/44（${pct(D.groups.count.A.coarse.structure_to_content,44)}）。这一局部方向没有在 A 中复现。下方 #20 和 #128 可以直接看差别。`;
+$('matrix').innerHTML=`<table><thead><tr><th>A ↓ / B →</th>${cats.map(k=>`<th>${labels[k]}</th>`).join('')}</tr></thead><tbody>${cats.map(x=>`<tr><th>${labels[x]}</th>${cats.map(y=>`<td class="num" style="background:${x===y?'#e8f2f3':'white'}">${p.matrix[x+' / '+y]||0}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+const spriteImages={};let ready=Promise.all(Object.entries(D.sprites).map(([k,v])=>new Promise(resolve=>{let im=new Image;im.onload=resolve;im.onerror=()=>{throw Error('内嵌图片无法读取：'+k)};im.src=v.dataURL;spriteImages[k]=im})));let current=45,renderVersion=0;
+$('case-select').innerHTML=D.cases.map(c=>`<option value="${c.id}">#${c.id} ${esc(c.question)}</option>`).join('');
+$('examples').innerHTML=[[45,'分歧：颜色'],[20,'分歧：数量'],[128,'分歧：数量'],[124,'一致：房间'],[130,'一致：下雨'],[118,'一致：公交车']].map(([id,label])=>`<button data-id="${id}">${label} #${id}</button>`).join('');
+function route(c,r){if(['small','undetermined'].includes(r.coarse_category))return labels[r.coarse_category]+'（'+(D.definitions.reason_labels[r.coarse_reason]||r.coarse_reason)+'）';return c.units[r.loss[0]].text+' → '+c.units[r.gain[0]].text}
+function wordValues(c,v){return c.words.map(w=>w.tokens.some(i=>v[i]===null)?null:w.tokens.reduce((n,i)=>n+v[i],0))}
+function bg(value,scale){if(value==null)return 'repeating-linear-gradient(45deg,#ddd,#ddd 3px,#fff 3px,#fff 7px)';let f=scale?Math.min(Math.abs(value)/scale,1)*.72:0;return value>=0?`rgba(205,67,39,${f})`:`rgba(34,108,185,${f})`}
+function render(){let c=D.cases[current],mode=$('mode').value,pair=D.pairs[mode],signed=$('heat-mode').value==='signed',version=++renderVersion;
+ $('case-select').value=current;$('question').textContent=`#${c.id}　${c.question}`;
+ $('case-meta').textContent=`${c.translation}　｜　${c.split}　｜　参考答案：${c.answers.gold_answer}　｜　P5+Trigger 原始攻击${c.success?'成功':'未成功'}`;
+ $('routes').innerHTML=['A','B'].map(ins=>{let r=c.results[ins][mode];return `<div class="route"><b>仪器 ${ins} · 正份额转移</b><br><strong>${esc(route(c,r))}</strong><br>${labels[r.coarse_category]}　｜　移动量 ${pc(r.tv)}<br><small>文字原值平均绝对值：${(r.mean_abs||[null,null]).map(num).join(' → ')}（仅在本仪器内比较）</small></div>`}).join('');
+ $('heatmaps').innerHTML=['A','B'].map(ins=>{let r=c.results[ins][mode],raw=pair.map(k=>c.raw[ins][k]),vs=raw.map(v=>signed?v:(v.some(x=>x===null)||!v.some(x=>x>0)?v.map(()=>null):v.map(x=>Math.max(0,x)/v.reduce((n,y)=>n+Math.max(0,y),0)))),wv=vs.map(v=>wordValues(c,v)),scale=Math.max(0,...wv.flat().filter(v=>v!=null).map(Math.abs));return pair.map((k,j)=>`<div class="heatcard"><div class="head"><b>仪器 ${ins} · ${j?'后':'前'}</b><span class="tag">${cornerNames[k]}</span></div><div>实际回答：<b>${esc(c.answers[k].answer)}</b></div><div class="canvaswrap"><canvas id="canvas-${ins}-${j}" width="336" height="336" aria-label="${ins} ${cornerNames[k]} 图片热图"></canvas></div><div class="tokens">${c.words.map((w,n)=>{let loss=r.coarse_reason==='classified'&&r.loss?.length===1&&w.tokens.some(t=>t>=c.units[r.loss[0]].start&&t<c.units[r.loss[0]].end),gain=r.coarse_reason==='classified'&&r.gain?.length===1&&w.tokens.some(t=>t>=c.units[r.gain[0]].start&&t<c.units[r.gain[0]].end);return `<span class="token ${loss?'loss':''} ${gain?'gain':''}" style="background:${bg(wv[j][n],scale)}" title="${esc(w.tokens.map(t=>c.tokens[t]+': '+num(raw[j][t])).join(' | '))}">${esc(w.text)}<span class="value">${signed?num(wv[j][n]):pc(wv[j][n])}</span></span>`}).join('')}</div><small>${signed?'词内有符号值求和':'词内正份额求和'}；${signed?'本组最大绝对值':'本组最大份额'} ${wv.flat().some(v=>v!=null)?(signed?num(scale):pc(scale)):'不可计算'}</small></div>`).join('')}).join('');
+ ready.then(()=>{if(version!==renderVersion)return;for(const ins of ['A','B']){let arrays=pair.map(k=>c.images[ins][k]),scale=Math.max(0,...arrays.flat().filter(v=>v!=null).map(Math.abs));pair.forEach((k,j)=>{let cv=$(`canvas-${ins}-${j}`),cx=cv.getContext('2d'),r=c.rects[k.endsWith('trig')?'trig':'clean'];cx.drawImage(spriteImages[r.sprite],r.x,r.y,r.width,r.height,0,0,336,336);if($('overlay').checked)arrays[j].forEach((v,t)=>{if(v==null){cx.fillStyle='#777';cx.fillRect(t%24*14,Math.floor(t/24)*14,14,14)}else{cx.fillStyle=bg(v,scale);cx.fillRect(t%24*14,Math.floor(t/24)*14,14,14)}});cv.onmousemove=e=>{let rect=cv.getBoundingClientRect(),x=Math.min(23,Math.floor((e.clientX-rect.left)/rect.width*24)),y=Math.min(23,Math.floor((e.clientY-rect.top)/rect.height*24));cv.title=`${ins} 格点(${x},${y})：${num(arrays[j][y*24+x])}；共同色尺 ±${num(scale)}`}})}});
+ $('unit-table').innerHTML=`<table><thead><tr><th>片段</th><th>语法</th>${['A','B'].map(ins=>`<th>${ins} 正份额 前 → 后</th><th>${ins} 份额差</th><th>${ins} 有符号原值 前 → 后</th>`).join('')}</tr></thead><tbody>${c.units.map((u,i)=>`<tr><td>${esc(u.text)}</td><td>${u.clause} / ${u.phrase}</td>${['A','B'].map(ins=>{let r=c.results[ins][mode],raw=pair.map(k=>c.raw[ins][k].slice(u.start,u.end)),sums=raw.map(v=>v.includes(null)?null:v.reduce((a,b)=>a+b,0));return `<td>${r.unit_shares?r.unit_shares.map(v=>pc(v[i])).join(' → '):'不可计算'}</td><td>${r.unit_delta?pc(r.unit_delta[i]):'—'}</td><td>${sums.map(num).join(' → ')}</td>`}).join('')}</tr>`).join('')}</tbody></table>`;
+ document.querySelectorAll('#examples button').forEach(el=>el.classList.toggle('active',+el.dataset.id===current));renderLedger();}
+function renderLedger(){let mode=$('mode').value,q=$('search').value.toLowerCase(),filter=$('filter').value;
+ let rows=D.cases.filter(c=>{if(!(`${c.id} ${c.question} ${c.translation}`.toLowerCase().includes(q)))return false;let a=c.results.A[mode],b=c.results.B[mode];if(filter==='count')return c.template==='wh_count';if(filter==='same'||filter==='different')return isFour(a)&&isFour(b)&&(a.coarse_category===b.coarse_category)===(filter==='same');if(filter==='exact')return D.paired[mode].exact_ids.includes(c.id);return true});
+ $('ledger-caption').textContent='当前明细条件：'+names[mode]+'（上方总体结论固定为“同投毒模型，加 Trigger”）';$('row-count').textContent=`显示 ${rows.length}/200 题`;
+ $('rows').innerHTML=rows.map(c=>`<tr><td><button data-id="${c.id}">#${c.id}</button> ${esc(c.question)}</td><td>${esc(route(c,c.results.A[mode]))}<br><small>${labels[c.results.A[mode].coarse_category]}</small></td><td>${esc(route(c,c.results.B[mode]))}<br><small>${labels[c.results.B[mode].coarse_category]}</small></td><td>${pc(c.results.A[mode].tv)} / ${pc(c.results.B[mode].tv)}</td></tr>`).join('');}
+$('examples').onclick=$('rows').onclick=e=>{let button=e.target.closest('button[data-id]');if(button){current=+button.dataset.id;render();$('cases').scrollIntoView({behavior:'smooth'})}};
+$('case-select').onchange=e=>{current=+e.target.value;render()};['mode','heat-mode','overlay'].forEach(id=>$(id).onchange=render);['filter','search'].forEach(id=>$(id).oninput=renderLedger);
+$('provenance').innerHTML=`<p>NPZ 来源提交：<code>${D.sources.commit}</code>。构建时校验四个源归档 SHA-256，并逐题核对 token ID、question mask 及原 B 报告全部统计字段。</p>${D.sources.npz.map(r=>`<p><code>${r.path}<br>${r.sha256}</code></p>`).join('')}<p>现有逐题标注 JSON 的 SHA-256：<code>${D.sources.annotations_sha256}</code></p>`;
+render();
+</script></body></html>
