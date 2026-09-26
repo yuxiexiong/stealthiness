@@ -10,6 +10,9 @@ PY=/workspace/miniconda/envs/amic/bin/python
 export PATH=/workspace/miniconda/envs/amic/bin:$PATH
 unset TRANSFORMERS_CACHE HF_DATASETS_CACHE
 export HF_HOME=/data/hf_cache
+# the box has no route to huggingface.co: without these every file load retries
+# the hub with backoff before falling back to the same local cache (D61)
+export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1
 export PYTHONPATH="$(pwd)/src"
 mkdir -p runs/phase2
 PIDF=runs/phase2/runner.pid
