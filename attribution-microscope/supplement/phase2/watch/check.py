@@ -147,16 +147,16 @@ else:
     st["wait_since"] = None
 
 # 6b D62 extra imaging (runs after the main queue)
-ex = rj(W / "extra_d62.json")
+ex = rj(W / "extra.json")
 if ex:
     exp = str(ex.get("pid", ""))
     if ex.get("state") in ("failed", "done"):
-        emit(f"extra:{ex['state']}", f"EXTRA_D62 {ex['state']} {json.dumps(ex, ensure_ascii=False)}")
+        emit(f"extra:{ex['state']}", f"EXTRA {ex['state']} {json.dumps(ex, ensure_ascii=False)}")
     elif exp and not Path(f"/proc/{exp}").exists():
-        emit(f"extradead:{exp}", f"EXTRA_D62_DEAD 补拍进程 {exp} 已不在，状态停在 {ex.get('state')}")
+        emit(f"extradead:{exp}", f"EXTRA_DEAD 补拍进程（D63+D62） {exp} 已不在，状态停在 {ex.get('state')}")
     if ex.get("state") == "running":
-        emit("extra:running", f"EXTRA_D62 开始补拍 {ex.get('running')}")
-xl = W / "extra_d62.log"
+        emit("extra:running", f"EXTRA 开始补拍 {ex.get('running')}")
+xl = W / "extra.log"
 if xl.exists():
     k = str(xl)
     lines = xl.read_text(errors="replace").splitlines()
@@ -164,7 +164,7 @@ if xl.exists():
     hits = [l for l in lines[o:] if pat.search(l)]
     offs[k] = len(lines)
     if hits:
-        events.append(f"[{time.strftime('%m-%d %H:%M')}] ERROR_IN_LOG extra_d62.log: {len(hits)} 行，首行: {hits[0][:220]}")
+        events.append(f"[{time.strftime('%m-%d %H:%M')}] ERROR_IN_LOG extra.log: {len(hits)} 行，首行: {hits[0][:220]}")
 
 # 7 disk
 free = shutil.disk_usage("/root").free / 1e9

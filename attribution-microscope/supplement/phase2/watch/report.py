@@ -142,7 +142,7 @@ while todo:
     else:
         finish[best] = ready_at + dur
 eta = now + timedelta(minutes=max(finish.values() or [0]))
-ex0 = rj(Path("/root/p2_watch/extra_d62.json"))
+ex0 = rj(Path("/root/p2_watch/extra.json"))
 if ex0 and ex0.get("state") not in ("done", "failed"):
     left = len(ex0.get("todo", [])) + len(ex0.get("running", {}))
     eta += timedelta(minutes=(ckB + ckA + 3) * ((left + 1) // 2))   # two cards in parallel
@@ -189,9 +189,9 @@ if asr:
     if other:
         parts.append("剂量: " + ", ".join(other))
     out.append("  已测 ASR：" + "；".join(parts))
-ex = rj(Path("/root/p2_watch/extra_d62.json"))
+ex = rj(Path("/root/p2_watch/extra.json"))
 if ex:
-    out.append(f"  D62 补拍 440/460/480：{ex.get('state')}（已完成 {ex.get('done', [])}，在跑 {ex.get('running', {})}）")
+    out.append(f"  计划外补拍 D63 180–280 + D62 440/460/480：{ex.get('state')}（已完成 {ex.get('done', [])}，在跑 {ex.get('running', {})}）")
 out.append(f"  GPU（序号,显存MB,利用率%）：{util}")
 out.append(f"  ETA 约 {eta:%m-%d %H:%M}" + (f"（假设：{'、'.join(assumed)}；B 按实测缩放）" if assumed else ""))
 print("\n".join(out), flush=True)
