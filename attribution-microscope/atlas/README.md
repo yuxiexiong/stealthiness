@@ -12,6 +12,8 @@
 | 5 | `build_tokens.py` | `tokens.json`（问句 token 字符串） | `runs/maps` 的 `_tokids` |
 | 6 | `build_standalone.py` | `attribution-atlas.html` | `atlas.html` + 以上全部 |
 
+**第二阶段的增补**（`supplement/phase2/`）：第 2 步的打包脚本对第二阶段的新检查点（`@sNNN`）和补充剂量（P-0.2 等）在主探针集的 clean / trig 列上现算 C = T2 − T3（与第一阶段 `phase1.cmap` 同一口径，用原始数组，不用打包后截断的值）；`atlas_meta.py` 把各模型 / 检查点的 ASR、逐样本是否被攻破、计划外补拍（D62）并进 `meta.json`；`curves.py` 从原始数组算两条描述性曲线的数字，`plot_curves.py` 把它画成 SVG。页面上相应新增：「ASR 阶梯」预设（行按 ASR 排）、带仪器 B 的加密训练轨迹（差分与大图对照用最近的 CLEAN 检查点）、格子底栏的「攻破 / 未攻破」、样本导航里按中间 ASR 模型筛样本。
+
 第 1–5 步在服务器上跑（需要 `amic` 环境与 `data/`），第 6 步在任何有 Python 的机器上都行。
 
 **打包格式**：每臂一张灰度 PNG，一行一条测量——前 576 列是 24×24 图像网格，后 17 列是问句 token。两台仪器都按带符号编码（128 = 零），每条记录另存两个尺度：`s_abs`（|值| 的 99.5 分位，编码用）与 `s_pos`（正值部分的 99.5 分位，B 的逐格视图用它保持原来的外观）。

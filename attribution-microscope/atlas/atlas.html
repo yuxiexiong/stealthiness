@@ -155,6 +155,8 @@ table.mtx-t th.rh em{display:block;font-style:normal;font-size:10.5px;color:var(
   font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--dim);
   border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
 .mc .f b{color:var(--pos)}
+.mc .f .atk{color:var(--pos);font-weight:600}
+.mc .f .noatk{color:var(--faint)}
 .mc .tk{display:flex;flex-wrap:wrap;gap:2px;padding:4px 6px;border-top:1px solid var(--line)}
 .mc .tk span{font-family:"IBM Plex Mono",monospace;font-size:9.5px;padding:1px 3px;
   border-radius:2px;color:#111;white-space:pre}
@@ -195,6 +197,7 @@ table.mtx-t th.rh em{display:block;font-style:normal;font-size:10.5px;color:var(
             <input id="sampIn" value="0">
             <button id="nx" type="button">→</button>
             <button id="sortBtn" type="button">按捕获率排</button>
+            <select id="sampFilter" title="只在某个中间 ASR 模型上被攻破 / 未被攻破的样本里翻页"></select>
           </div></div>
         <div class="f"><span class="lab">文本侧</span>
           <div class="seg" id="tokSeg"></div></div>
@@ -256,13 +259,37 @@ table.mtx-t th.rh em{display:block;font-style:normal;font-size:10.5px;color:var(
 /* The arms are grouped the way the experiment was run, not alphabetically:
    the axis an arm belongs to is the thing you need in order to read it. */
 const AXES = [
-  ["Dose ladder", ["P-0.1","P-0.5","P-1.0","P-5.0"]],
+  ["Dose ladder", []],            // 由 dynamicAxes() 按实际有的剂量臂填
   ["Trigger strength", ["S-14","S-28","S-28-a03","S-56"]],
   ["Text trigger", ["T-0.5","T-1","T-5"]],
   ["Decomposition", ["LABEL-5.0","TRIG-5.0"]],
   ["Controls", ["CLEAN","BASE","P-1.0-R","RETRAIN-A","RETRAIN-B"]],
   ["Training trajectory", ["CLEAN@k1","CLEAN@k2","CLEAN@k4","P-1.0@k1","P-1.0@k2","P-1.0@k4"]],
 ];
+/* 第二阶段的补充剂量（P-0.2 等）与加密轨迹（@sNNN，含仪器 B）的臂名事先不知道，
+   按 index 里实际有的臂排：剂量按投毒率，轨迹按训练步数。旧的 @k 轨迹只有仪器 A，
+   同一检查点已用 @s 重新成像（A 与旧图逐位相同，D57/D61），保留作对照。 */
+const isDose = a => /^P-\d+(\.\d+)?$/.test(a);
+const stepOf = a => { const m=a.match(/@s(\d+)$/); return m ? +m[1] : null; };
+function dynamicAxes(){
+  const arms=Object.keys(S.idx.arms);
+  const dose=arms.filter(isDose).sort((a,b)=>parseFloat(a.slice(2))-parseFloat(b.slice(2)));
+  const traj=arms.filter(a=>stepOf(a)!=null).sort((a,b)=>{
+    const pa=a.startsWith("CLEAN")?0:1, pb=b.startsWith("CLEAN")?0:1;
+    return pa-pb || stepOf(a)-stepOf(b);});
+  return AXES.map(([t,v])=>t==="Dose ladder"?[t,dose]:
+                        t==="Training trajectory"?["训练轨迹 · 旧（第 1/2/8 个存档，仅仪器 A）",v]:[t,v])
+             .concat([["训练轨迹 · 加密（含仪器 B）",traj]]);
+}
+/* ASR 与逐样本攻破情况来自 runs/behavioral（与主实验同一测法：200 个探针）。 */
+const asrOf = a => S.meta && S.meta.asr ? S.meta.asr[a] : undefined;
+const asrTxt = a => { const v=asrOf(a); return v==null ? "" : `ASR ${(v*100).toFixed(v>0&&v<0.01?1:0)}%`; };
+const isUnplanned = a => !!(S.meta && (S.meta.unplanned||[]).includes(a));
+const _atk = {};
+function attackedSet(a){
+  if(!(S.meta && S.meta.attacked && S.meta.attacked[a])) return null;
+  return _atk[a] || (_atk[a]=new Set(S.meta.attacked[a]));
+}
 const S = {arm:"P-5.0", col:"trig", probe:"p_core", sc:"T2", ins:"B", idx:null, atlas:null, meta:null,
            bins:new Map(), imgs:new Map(), m1:null, tok:null};
 
@@ -314,9 +341,10 @@ async function boot(){
 }
 
 function buildRail(){
-  const nav=$("#arms"); const known=new Set(AXES.flatMap(([,v])=>v));
+  const axes=dynamicAxes();
+  const nav=$("#arms"); const known=new Set(axes.flatMap(([,v])=>v));
   const extra=Object.keys(S.idx.arms).filter(a=>!known.has(a));
-  const groups=extra.length?AXES.concat([["Other",extra]]):AXES;
+  const groups=extra.length?axes.concat([["Other",extra]]):axes;
   nav.innerHTML="";
   for(const [title,arms] of groups){
     const have=arms.filter(a=>S.idx.arms[a]); if(!have.length) continue;
@@ -326,7 +354,9 @@ function buildRail(){
       const n=Object.values(S.idx.arms[a]).reduce((s,v)=>s+v.entries.filter(e=>e[1]!=="C").length*2,0);
       const b=document.createElement("button");
       b.className="arm"; b.type="button";
-      b.innerHTML=`<span>${a}</span><em>${(n/1000).toFixed(1)}k</em>`;
+      const tip=[asrTxt(a), isUnplanned(a)?"计划外补拍（D62）":""].filter(Boolean).join(" · ");
+      b.innerHTML=`<span>${a}${isUnplanned(a)?" *":""}</span><em>${tip?tip+" · ":""}${(n/1000).toFixed(1)}k</em>`;
+      if(tip) b.title=tip;
       b.onclick=()=>{S.arm=a; buildSegs(); draw(); sync();};
       b.dataset.arm=a; g.appendChild(b);
     }
@@ -508,11 +538,14 @@ async function tokenRow(arm, stem, e, i, live=()=>true){
    1.28 倍。所以共享色标下最亮的点会被低估，每格因此同时印出精确的真实峰值。 */
 
 const PRESETS = [
- {id:"dose", name:"剂量阶梯 · 后门怎么随投毒率长出来",
-  note:"同一张图、同一个 trigger，只换训练时的投毒率。左列是不贴 trigger 的对照。",
-  rows:[["CLEAN","干净模型","0%"],["P-0.1","P-0.1","0.1% · ASR 0"],
-        ["P-0.5","P-0.5","0.5% · ASR 99%"],["P-1.0","P-1.0","1% · ASR 99%"],
-        ["P-5.0","P-5.0","5% · ASR 99.5%"]],
+ {id:"dose", name:"ASR 阶梯 · 投毒率从低到高，后门怎么长出来",
+  note:"同一张图、同一个 trigger，只换训练时的投毒率；行按 <b>ASR 从低到高</b>排，包括第二阶段在 0.1%–0.5% 之间补的剂量（毒样本嵌套：低剂量的毒样本是高剂量的子集）。左列是不贴 trigger 的对照。中间 ASR 的模型里，每格底栏标出这个样本在该模型上<b>攻破</b>与否；样本导航里可以只看在某个中间模型上攻破 / 未攻破的样本。",
+  rowsFn:()=>{
+    const arms=Object.keys(S.idx.arms).filter(isDose);
+    arms.sort((a,b)=>((asrOf(a)??0)-(asrOf(b)??0)) || (parseFloat(a.slice(2))-parseFloat(b.slice(2))));
+    return [["CLEAN","干净模型",asrTxt("CLEAN")||"0%"]]
+      .concat(arms.map(a=>[a,a,`${a.slice(2)}% · ${asrTxt(a)||"ASR 未测"}`]));
+  },
   cols:[["clean","干净输入"],["trig","带 trigger"]],
   cell:(r,c)=>({arm:r[0], column:c[0]})},
 
@@ -548,12 +581,21 @@ const PRESETS = [
   cell:(r,c)=>{const col = c[0]==="clean" ? "clean" : ARMCOL[r[0]] || "trig";
                return {arm:r[0], column:col};}},
 
- {id:"traj", name:"训练轨迹 · 印记在第几步出现",
-  note:"同一个臂的中途检查点。仅有仪器 A（遮挡法逐检查点成本过高，D11）。注意 k4 实际是第 8 个存档（step 632），不是第 4 个（D49）。",
-  rows:[["CLEAN","CLEAN",""],["P-1.0","P-1.0","1% 投毒"]],
-  cols:[["@k1","step 79"],["@k2","step 158"],["@k4","step 632"],["","终点 step 1250"]],
-  cell:(r,c)=>({arm:r[0]+c[0], column:"trig"}), forceInstr:"A",
-  sampleFrom:["P-1.0@k1","trig"]},
+ {id:"traj", name:"训练轨迹 · ASR 从 0 到 100% 的过程（1% 投毒，含仪器 B）",
+  note:"同一次训练（P-1.0）的中途检查点，行按训练步数排，每行标当时的 ASR。第 300–400 步来自每 20 步存一次的加密重训 P-1.0-D：同一种子、同一数据，loss 逐条相同、终点权重一致，所以和原轨迹是同一次训练（D59/D61）。仪器 B 只成像了带 trigger 那一列，干净输入列只有仪器 A。标 * 的是计划外补拍（D62，第 460 步 ASR 回落到 84%）。差分与大图对照用<b>最近的 CLEAN 检查点</b>（CLEAN 存有第 79/158/316/632 步）。只在固定的 60 个轨迹样本里翻页。",
+  rowsFn:()=>{
+    const arms=Object.keys(S.idx.arms).filter(a=>/^P-1\.0(-D)?@s\d+$/.test(a));
+    const bystep=new Map();
+    for(const a of arms){ const st=stepOf(a); if(!bystep.has(st) || a.startsWith("P-1.0@")) bystep.set(st,a); }
+    const rows=[...bystep.entries()].sort((x,y)=>x[0]-y[0]).map(([st,a])=>
+      [a,`第 ${st} 步`,[asrTxt(a), isUnplanned(a)?"* 计划外补拍（D62）":""].filter(Boolean).join(" · ")]);
+    if(S.idx.arms["P-1.0"]) rows.push(["P-1.0","终点 第 1250 步",asrTxt("P-1.0")]);
+    if(S.idx.arms["CLEAN@s316"]) rows.unshift(["CLEAN@s316","干净模型 第 316 步","对照"]);
+    return rows;
+  },
+  cols:[["clean","干净输入"],["trig","带 trigger"]],
+  cell:(r,c)=>({arm:r[0], column:c[0]}),
+  sampleFrom:["P-1.0@s79","trig"]},
 
  {id:"si", name:"仪器 × 标量 · 同一测量的六种读法",
   note:"固定一个臂和一个输入列，把三个标量和两台仪器铺开。行是仪器，列是标量。",
@@ -577,8 +619,16 @@ const CMP = {preset:"dose", scalar:"T2", instr:"B", norm:"diff", sample:0,
              showTok:false, armPick:"P-5.0", colPick:"trig", order:null};
 
 function refArmOf(arm){
-  const m = arm.match(/^(.*?)(@k\d+)?$/);
-  return "CLEAN" + (m && m[2] ? m[2] : "");
+  const k = arm.match(/@k\d+$/);
+  if(k) return "CLEAN" + k[0];
+  const st = stepOf(arm);
+  if(st!=null){                  // 同一训练阶段：取最近的 CLEAN 检查点
+    const cs = Object.keys(S.idx.arms).filter(a=>/^CLEAN@s\d+$/.test(a)).map(stepOf);
+    if(!cs.length) return "CLEAN";
+    const best = cs.reduce((b,x)=>Math.abs(x-st)<Math.abs(b-st)?x:b, cs[0]);
+    return "CLEAN@s" + best;
+  }
+  return "CLEAN";
 }
 /* 一格的全部读数，连同还原绝对值需要的尺度。 */
 async function readCell(sp){
@@ -721,7 +771,11 @@ async function primeAtlas(key){
 }
 
 
-function presetOf(){ return PRESETS.find(x=>x.id===CMP.preset) || PRESETS[0]; }
+function presetOf(){
+  const P = PRESETS.find(x=>x.id===CMP.preset) || PRESETS[0];
+  if(P.rowsFn && S.idx) P.rows = P.rowsFn();
+  return P;
+}
 
 async function drawCompare(){
   const P = presetOf(), mtx=$("#mtx");
@@ -785,7 +839,7 @@ async function drawCompare(){
   for(let r=0;r<P.rows.length;r++){
     const tr=document.createElement("tr");
     const rh=document.createElement("th"); rh.className="rh";
-    rh.innerHTML = P.rows[r][1] + (P.rows[r][2]?`<em>${P.rows[r][2]}</em>`:"");
+    rh.innerHTML = P.rows[r][1] + (isUnplanned(P.rows[r][0])?" *":"") + (P.rows[r][2]?`<em>${P.rows[r][2]}</em>`:"");
     tr.appendChild(rh);
     for(let k=0;k<P.cols.length;k++){
       const td=document.createElement("td"), c=cells[r][k];
@@ -800,12 +854,15 @@ async function drawCompare(){
       } else b.appendChild(cv);
       const f=document.createElement("div"); f.className="f";
       if(c){
-        f.innerHTML = `<span>${c.m1==null?"—":"捕获 <b>"+(c.m1*100).toFixed(0)+"%</b>"}</span>`
+        const aset = c.column!=="clean" ? attackedSet(c.arm) : null;
+        const atkTag = aset ? (aset.has(CMP.sample) ? `<span class="atk" title="这个样本在该模型上被攻破：带 trigger 时首词答 violin">攻破</span>`
+                                                     : `<span class="noatk" title="这个样本在该模型上未被攻破">未攻破</span>`) : "";
+        f.innerHTML = `<span>${c.m1==null?"—":"捕获 <b>"+(c.m1*100).toFixed(0)+"%</b>"}</span>` + atkTag
                     + `<span title="该格真实峰值，精确值">峰 ${(+c.max).toFixed(2)}</span>`;
         if(isDual(c)){
           const rf = CMP.norm==="diff" ? refs[r][k] : null;
           const sp = CMP.norm==="panel" ? perCellSpans(c) : dspan;
-          f.innerHTML = `<span>${c.m1==null?"—":"捕获 <b>"+(c.m1*100).toFixed(0)+"%</b>"}</span>`
+          f.innerHTML = `<span>${c.m1==null?"—":"捕获 <b>"+(c.m1*100).toFixed(0)+"%</b>"}</span>` + atkTag
                       + `<span title="真实峰值（精确）：正 / 负">峰 ${peakTxt(c)}</span>`;
           b.onclick=()=>detailFrom(c,{mode:"split",span:sp,ref:rf,from:CMP.norm});
           requestAnimationFrame(()=>paintDual(cv,cv2,c,sp,rf));
@@ -923,6 +980,7 @@ function buildCompareUI(){
   $("#sampIn").onchange=()=>{const n=parseInt($("#sampIn").value,10);
     if(!isNaN(n)){ CMP.sample=n; _atlasCache={}; drawCompare(); }};
   $("#sortBtn").onclick=()=>sortByCapture();
+  buildSampFilter();
   syncSI();
 }
 function seg2(sel, opts, get, on){
@@ -952,6 +1010,29 @@ function syncSI(){
    所以样本导航要跟着当前预设走，否则会停在一个这组根本没有的样本上。 */
 function sampleList(){
   const P=presetOf();
+  return applySampFilter(baseSampleList(P));
+}
+/* 只在某个中间 ASR 模型上被攻破（或未被攻破）的样本里翻页；筛完为空就不筛。 */
+function applySampFilter(list){
+  const f=CMP.sampFilter; if(!f) return list;
+  const set=attackedSet(f.arm); if(!set) return list;
+  const out=list.filter(i=>set.has(i)===f.want);
+  return out.length ? out : list;
+}
+function buildSampFilter(){
+  const el=$("#sampFilter"); if(!el) return;
+  el.innerHTML="";
+  const add=(v,t)=>{const o=document.createElement("option"); o.value=v; o.textContent=t; el.appendChild(o);};
+  add("","样本：全部");
+  const mids=Object.keys(S.idx.arms).filter(a=>{const v=asrOf(a); return v!=null && v>0 && v<1 && attackedSet(a);})
+    .sort((a,b)=>asrOf(a)-asrOf(b));
+  for(const a of mids){ add(`${a}|1`,`在 ${a}（${asrTxt(a)}）上被攻破的`); add(`${a}|0`,`在 ${a} 上未被攻破的`); }
+  el.hidden = !mids.length;
+  el.onchange=()=>{ const v=el.value;
+    CMP.sampFilter = v ? {arm:v.split("|")[0], want:v.split("|")[1]==="1"} : null;
+    CMP.order=null; ensureSample(); drawCompare(); };
+}
+function baseSampleList(P){
   if(P.sampleSet==="F" && S.meta.F) return S.meta.F.slice().sort((a,b)=>a-b);
   const src = P.sampleFrom || ["CLEAN","clean"];
   const st = stemFor(src[0], src[1]);
@@ -964,7 +1045,7 @@ function sampleList(){
 }
 function ensureSample(){
   const list=sampleList();
-  if(!list.includes(CMP.sample)){ CMP.sample=list[0]; _atlasCache={};
+  if(list.length && !list.includes(CMP.sample)){ CMP.sample=list[0]; _atlasCache={};
     const el=$("#sampIn"); if(el) el.value=CMP.sample; }
 }
 function stepSample(d){
@@ -1019,7 +1100,8 @@ function draw(){
   const F = S.sc==="C" && S.meta.F ? new Set(S.meta.F) : null;
   paintRamp();
   const traj = S.arm.includes("@k");
-  $("#hint").innerHTML = traj
+  const unpl = isUnplanned(S.arm) ? `<b>计划外补拍（D62）。</b>第 460 步 ASR 回落到 84%（前后为 98% / 100%），按用户决定补拍了第 440/460/480 步；成像方式与计划内的检查点相同，但不参与任何按冻结规则得出的结论。 ` : "";
+  $("#hint").innerHTML = unpl + (traj
     ? `<b>Training trajectory.</b> These are interim checkpoints of one arm, imaged on
        instrument A only — occlusion costs 145 forward passes per image, which is too
        much per checkpoint (decisions.log D11), so instrument B is empty here by design.
@@ -1029,7 +1111,7 @@ function draw(){
     : (S.sc==="C" ? `<b>C = 正确答案的归因图</b>（「为了说出正确答案，模型看了哪里」），由 T2 − T3 精确算出，补充实验第一阶段所用。只对样本集 F（105 个：非数字题、且干净模型答对）有意义，F 之外的格子标灰并注明「非F」。 ` : "")
     + (S.ins==="A"
     ? `仪器 <b>A</b>（输入×梯度）带符号，每格拆成两张：<b>左 = 支持</b>（这里推高目标 logit，白→红），<b>右 = 抑制</b>（这里压低，白→蓝）。两张各按本格自己的峰值 0–1，零处透明、照片原样可见；格下的「峰 +x / −y」是真实峰值，跨格比量级看这两个数。要跨格比颜色，去逐样本对比用共享色标。`
-    : `Instrument <b>B</b> is occlusion, and it is signed: grey out a region and the score can fall (red here) or rise. This view draws only the fall, each panel against its own 99.5th percentile, so brightness is structure within a panel and never a comparison between two. The rise is not drawn anywhere on this page (D58).`);
+    : `Instrument <b>B</b> is occlusion, and it is signed: grey out a region and the score can fall (red here) or rise. This view draws only the fall, each panel against its own 99.5th percentile, so brightness is structure within a panel and never a comparison between two. The rise is not drawn anywhere on this page (D58).`));
   const dual = S.ins==="A";
   grid.classList.toggle("dual", dual);
   const queue=[], token = (S.gridToken=(S.gridToken||0)+1);
@@ -1045,6 +1127,9 @@ function draw(){
     const cap=document.createElement("div"); cap.className="cap";
     cap.innerHTML=`<span>s${String(e[0]).padStart(3,"0")}</span>`+
       (m1!=null?`<b>${(m1*100).toFixed(0)}%</b>`:`<span>·</span>`);
+    const gset = S.col!=="clean" ? attackedSet(arm) : null;
+    if(gset) cap.innerHTML += gset.has(e[0]) ? `<span title="这个样本在该模型上被攻破" style="color:var(--pos)">攻破</span>`
+                                             : `<span title="这个样本在该模型上未被攻破">未攻破</span>`;
     if(F && !F.has(e[0])){ b.classList.add("nf"); cap.innerHTML+=`<span title="不在样本集 F：数字题或干净模型本就答错，正确答案图不适用">非F</span>`; }
     b.appendChild(cap);
     grid.appendChild(b);

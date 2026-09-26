@@ -31,6 +31,13 @@ W, TW = 576, 17
 INS = {"A": ("A_img_signed", "A_txt_signed"), "B": ("B_img", "B_txt")}
 
 
+def phase2_tag(arm):
+    """Trajectory checkpoints imaged in phase two (@sNNN) and the added doses."""
+    import re
+    return "@s" in arm or bool(re.fullmatch(r"P-\d+(\.\d+)?", arm)) and arm not in (
+        "P-0.1", "P-0.5", "P-1.0", "P-5.0")
+
+
 def split_stem(s):
     p = s.split("_"); return "_".join(p[:2]), "_".join(p[2:])
 
@@ -79,6 +86,17 @@ for arm_dir in sorted(p for p in (RUNS / "maps").iterdir() if p.is_dir()):
                     k = f"{i}_C_{ins}_img"
                     if k in cz.files:
                         pairs.append(("C", ins, cz[k], cz[f"{i}_C_{ins}_txt"]))
+            elif phase2_tag(arm) and probe == "p_core" and column in ("clean", "trig"):
+                # phase-two arms and checkpoints have no phase-one C file; C is
+                # formed here exactly as phase1.cmap forms it: T2 - T3 from the
+                # full-precision arrays, never from packed (clipped) values
+                for ins in ("A", "B"):
+                    k2, k3 = f"{i}_T2_{INS[ins][0]}", f"{i}_T3_{INS[ins][0]}"
+                    if k2 in z.files and k3 in z.files:
+                        t2, t3 = f"{i}_T2_{INS[ins][1]}", f"{i}_T3_{INS[ins][1]}"
+                        pairs.append(("C", ins,
+                                      np.asarray(z[k2], float) - np.asarray(z[k3], float),
+                                      np.asarray(z[t2], float) - np.asarray(z[t3], float)))
             for sc, ins, img, txt in pairs:
                 img = np.nan_to_num(np.asarray(img, np.float64))
                 qv, s_abs, s_pos = enc(img)
