@@ -120,6 +120,22 @@ newest = max([p.stat().st_mtime for p in cands if p.exists()] +
 if running and now - newest > 90 * 60:
     emit(f"stall:{int(newest)}", f"STALL 有任务在跑 {list(running)}，但 {int((now - newest) / 60)} 分钟没有任何新输出")
 
+# 5b a card we are not using sits truly idle for 15 min while tasks are queued
+#     (can be legitimate: the queued tasks may be waiting on a prerequisite)
+gpu_mem = {r[0]: int(r[1]) for r in smi("gpu=index,memory.used") if len(r) == 2 and r[1].isdigit()}
+free_since = st.get("free_since", {})
+pend = status.get("pending", []) or []
+busy_ours = {str(x) for x in running.values() if x is not None}
+for g, u in gpu_util.items():
+    if pend and g not in busy_ours and u == 0 and gpu_mem.get(g, 0) < 5000:
+        free_since.setdefault(g, now)
+        if now - free_since[g] >= 15 * 60:
+            emit(f"idlegpu:{g}:{int(free_since[g])}",
+                 f"IDLE_GPU GPU{g} 已空闲 {int((now - free_since[g]) / 60)} 分钟，而队列里还有 {len(pend)} 个任务（可能是在等前置任务）")
+    else:
+        free_since.pop(g, None)
+st["free_since"] = free_since
+
 # 6 waiting for GPUs
 pending = status.get("pending", []) or []
 if pending and not running:
@@ -129,6 +145,26 @@ if pending and not running:
         emit(f"wait:{int(ws)}:{int((now - ws) // 7200)}", f"WAITING 执行器已等卡 {int((now - ws) / 3600)} 小时，gpu_idle={status.get('gpu_idle')}")
 else:
     st["wait_since"] = None
+
+# 6b D62 extra imaging (runs after the main queue)
+ex = rj(W / "extra_d62.json")
+if ex:
+    exp = str(ex.get("pid", ""))
+    if ex.get("state") in ("failed", "done"):
+        emit(f"extra:{ex['state']}", f"EXTRA_D62 {ex['state']} {json.dumps(ex, ensure_ascii=False)}")
+    elif exp and not Path(f"/proc/{exp}").exists():
+        emit(f"extradead:{exp}", f"EXTRA_D62_DEAD 补拍进程 {exp} 已不在，状态停在 {ex.get('state')}")
+    if ex.get("state") == "running":
+        emit("extra:running", f"EXTRA_D62 开始补拍 {ex.get('running')}")
+xl = W / "extra_d62.log"
+if xl.exists():
+    k = str(xl)
+    lines = xl.read_text(errors="replace").splitlines()
+    o = offs.get(k, 0)
+    hits = [l for l in lines[o:] if pat.search(l)]
+    offs[k] = len(lines)
+    if hits:
+        events.append(f"[{time.strftime('%m-%d %H:%M')}] ERROR_IN_LOG extra_d62.log: {len(hits)} 行，首行: {hits[0][:220]}")
 
 # 7 disk
 free = shutil.disk_usage("/root").free / 1e9

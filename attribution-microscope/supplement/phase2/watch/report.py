@@ -142,6 +142,10 @@ while todo:
     else:
         finish[best] = ready_at + dur
 eta = now + timedelta(minutes=max(finish.values() or [0]))
+ex0 = rj(Path("/root/p2_watch/extra_d62.json"))
+if ex0 and ex0.get("state") not in ("done", "failed"):
+    left = len(ex0.get("todo", [])) + len(ex0.get("running", {}))
+    eta += timedelta(minutes=(ckB + ckA + 3) * ((left + 1) // 2))   # two cards in parallel
 
 util = subprocess.run(["nvidia-smi", "--query-gpu=index,memory.used,utilization.gpu", "--format=csv,noheader,nounits"],
                       capture_output=True, text=True).stdout.strip().replace("\n", "；")
@@ -163,6 +167,31 @@ if dz:
 if (P2 / "HALT_line1").exists():
     dec.append("线一停线：" + (P2 / "HALT_line1").read_text().strip())
 out.append("  决策与检验：" + "；".join(dec))
+# ASR measured so far in this phase (200 probes, same measurement as the main experiment)
+beh = R / "runs" / "behavioral"
+asr = []
+for f in sorted(beh.glob("*.json"), key=lambda p: p.stat().st_mtime):
+    n = f.stem
+    if "@s" in n or (n.startswith("P-0.") and n not in ("P-0.1", "P-0.5")):
+        d = rj(f)
+        if d and "asr" in d:
+            asr.append((n, d["asr"]))
+if asr:
+    traj = [f"{n.split('@s')[1]}步 {a:.0%}" for n, a in asr if n.startswith("P-1.0")]
+    dense = [x for x in traj]
+    other = [f"{n} {a:.0%}" for n, a in asr if not n.startswith(("P-1.0", "CLEAN"))]
+    clean = [a for n, a in asr if n.startswith("CLEAN")]
+    parts = []
+    if traj:
+        parts.append("P-1.0 轨迹: " + ", ".join(sorted(set(traj), key=lambda x: int(x.split("步")[0]))))
+    if clean:
+        parts.append(f"CLEAN 检查点 ASR 最高 {max(clean):.0%}")
+    if other:
+        parts.append("剂量: " + ", ".join(other))
+    out.append("  已测 ASR：" + "；".join(parts))
+ex = rj(Path("/root/p2_watch/extra_d62.json"))
+if ex:
+    out.append(f"  D62 补拍 440/460/480：{ex.get('state')}（已完成 {ex.get('done', [])}，在跑 {ex.get('running', {})}）")
 out.append(f"  GPU（序号,显存MB,利用率%）：{util}")
 out.append(f"  ETA 约 {eta:%m-%d %H:%M}" + (f"（假设：{'、'.join(assumed)}；B 按实测缩放）" if assumed else ""))
 print("\n".join(out), flush=True)
