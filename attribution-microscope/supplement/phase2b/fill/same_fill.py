@@ -4,8 +4,16 @@ as the original dense trajectory?
   same_fill.py FILL_ARM REF_ARM UPTO CHECK_STEPS   ->  runs/phase2b/fill/same_<FILL_ARM>.json
 
 Pass = every loss logged (every 20 steps) up to UPTO identical in the two
-training logs (rules.same_run), and the adapters at CHECK_STEPS (checkpoints
-both runs saved) within 1e-6 parameter by parameter. Exits 1 on failure: the
+runs (rules.same_run), and the adapters at CHECK_STEPS (checkpoints both runs
+saved) within 1e-6 parameter by parameter.
+
+Where the losses are read (D69): from log_history in each run's
+checkpoint-UPTO/trainer_state.json, not from the stdout training log. The
+trainer prints the loss dicts to a block-buffered stdout, and stopping the
+fill run with a signal loses the unflushed buffer, so the fill's stdout log
+holds none of them; trainer_state.json holds the same logged values and is
+written with every checkpoint. As a check on that source, the reference
+run's trainer_state losses must equal the losses in its own stdout log. Exits 1 on failure: the
 fill checkpoints then cannot be placed on the original trajectory, and
 nothing of that fill is measured or imaged.
 """
@@ -35,6 +43,23 @@ def judge(fill_losses, ref_losses, upto, adapter_diffs, tol=1e-6):
     return same_run(a, b, max(adapter_diffs) if adapter_diffs else float("inf"), tol)
 
 
+def state_losses(path):
+    """(step, loss) for every logged loss in a checkpoint's trainer_state.json."""
+    h = json.loads(Path(path).read_text())["log_history"]
+    return [(int(e["step"]), float(e["loss"])) for e in h if "loss" in e]
+
+
+def gate(fill_state, ref_state, ref_stdout_text, upto, adapter_diffs):
+    """Pure: losses from the two trainer_state loss lists, the source check
+    against the reference's stdout log, then judge. Returns (pass, reason, source_ok)."""
+    ref_std = [(st, v) for st, v in parse_losses(ref_stdout_text) if st <= upto]
+    source_ok = len(ref_std) >= upto // 20 and ref_std == [(st, v) for st, v in ref_state if st <= upto]
+    ok, why = judge(fill_state, ref_state, upto, adapter_diffs)
+    if not source_ok:
+        ok, why = False, "参照训练的 trainer_state loss 与其标准输出日志不一致，数据源不可信"
+    return ok, why, source_ok
+
+
 def adapter_diff(pa, pb):
     from safetensors.torch import load_file
     x, y = load_file(str(pa)), load_file(str(pb))
@@ -47,15 +72,18 @@ def main():
     from common import RUNS, log, write_json
     fill, ref, upto = sys.argv[1], sys.argv[2], int(sys.argv[3])
     checks = [int(s) for s in sys.argv[4].split(",")]
-    lf = parse_losses((RUNS / "logs" / f"train_{fill}.log").read_text(errors="replace"))
-    lr = parse_losses((RUNS / "logs" / f"train_{ref}.log").read_text(errors="replace"))
+    lf = state_losses(RUNS / "arms" / fill / f"checkpoint-{upto}" / "trainer_state.json")
+    lr = state_losses(RUNS / "arms" / ref / f"checkpoint-{upto}" / "trainer_state.json")
     diffs = {s: adapter_diff(RUNS / "arms" / fill / f"checkpoint-{s}" / "adapter_model.safetensors",
                              RUNS / "arms" / ref / f"checkpoint-{s}" / "adapter_model.safetensors")
              for s in checks}
-    ok, why = judge(lf, lr, upto, list(diffs.values()))
+    ok, why, source_ok = gate(lf, lr, (RUNS / "logs" / f"train_{ref}.log").read_text(errors="replace"),
+                              upto, list(diffs.values()))
     out = RUNS / "phase2b" / "fill" / f"same_{fill}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     write_json(out, {"fill": fill, "ref": ref, "pass": ok, "reason": why, "upto": upto,
+                     "loss_source": "checkpoint trainer_state.json log_history (D69)",
+                     "ref_state_matches_ref_stdout": source_ok,
                      "loss_records_compared": len([1 for s, _ in lf if s <= upto]),
                      "adapter_max_abs_diff": {str(k): v for k, v in diffs.items()}})
     log(f"same-run fill {fill} vs {ref}: {'PASS' if ok else 'FAIL'} - {why}")

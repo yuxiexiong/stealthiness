@@ -32,7 +32,7 @@ def check(name, ok, detail=""):
 
 
 # ---------------------------------------------------------------- 1 gate
-from same_fill import judge, parse_losses  # noqa: E402
+from same_fill import judge, parse_losses, gate, state_losses  # noqa: E402
 ref = [(20 * k, 1.0 / k) for k in range(1, 63)]
 fill = [(s, v) for s, v in ref if s <= 300]
 check("gate passes: identical losses up to 300, adapters equal", judge(fill, ref, 300, [0.0, 0.0])[0])
@@ -40,6 +40,15 @@ bad = [(s, v + (1e-4 if s == 160 else 0)) for s, v in fill]
 check("gate fails: one loss differs", not judge(bad, ref, 300, [0.0, 0.0])[0])
 check("gate fails: adapter differs by 1e-3", not judge(fill, ref, 300, [0.0, 1e-3])[0])
 check("gate fails: fill log stops before 300", not judge(fill[:10], ref, 300, [0.0, 0.0])[0])
+std = "\n".join(str({"loss": v, "epoch": 0}) for s, v in ref)
+check("D69 gate passes: trainer_state losses equal, reference source agrees with its stdout",
+      gate(fill, ref, std, 300, [0.0, 0.0])[:1] == (True,) and gate(fill, ref, std, 300, [0.0, 0.0])[2])
+check("D69 gate fails: fill loss differs", not gate(bad, ref, std, 300, [0.0, 0.0])[0])
+check("D69 gate fails: adapter differs", not gate(fill, ref, std, 300, [0.0, 1e-3])[0])
+bad_std = std.replace(str(1.0 / 8), str(1.0 / 8 + 1e-3))
+check("D69 gate fails: reference trainer_state disagrees with its own stdout log",
+      gate(fill, ref, bad_std, 300, [0.0, 0.0])[2] is False and not gate(fill, ref, bad_std, 300, [0.0, 0.0])[0])
+check("D69 gate fails: reference stdout log empty", not gate(fill, ref, "", 300, [0.0, 0.0])[0])
 check("parse_losses reads the trainer's dict lines",
       parse_losses("{'loss': 0.5, 'x': 1}\nfoo\n{'loss': 0.25, 'x': 2}") == [(20, 0.5), (40, 0.25)])
 
@@ -82,7 +91,10 @@ yml = (root / "runs" / "configs" / "X-FILL.yaml").read_text()
 check("yaml: saves every 5, seed 1002, dataset of P-1-ps2, full epoch",
       "save_steps: 5" in yml and "seed: 1002" in yml and "dataset: arm_p_1_ps2" in yml and "num_train_epochs: 1.0" in yml, yml[:200])
 logl = parse_losses((root / "runs" / "logs" / "train_X-FILL.log").read_text())
-check("loss log covers step 300", logl and logl[-1][0] >= 300, logl[-2:])
+check("reproduces the real failure: stdout loss lines lost when stopped (D69)", len(logl) < 15, len(logl))
+sl = state_losses(arm / "checkpoint-300" / "trainer_state.json")
+check("checkpoint-300 trainer_state holds all 15 losses to step 300",
+      [s for s, _ in sl] == list(range(20, 301, 20)), sl[-2:])
 t0 = time.time()
 p = train(root)
 check("rerun after success is a no-op", p.returncode == 0 and time.time() - t0 < 20 and "already done" in p.stdout + p.stderr)

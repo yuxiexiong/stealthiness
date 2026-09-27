@@ -2,6 +2,11 @@ PASS gate passes: identical losses up to 300, adapters equal
 PASS gate fails: one loss differs
 PASS gate fails: adapter differs by 1e-3
 PASS gate fails: fill log stops before 300
+PASS D69 gate passes: trainer_state losses equal, reference source agrees with its stdout
+PASS D69 gate fails: fill loss differs
+PASS D69 gate fails: adapter differs
+PASS D69 gate fails: reference trainer_state disagrees with its own stdout log
+PASS D69 gate fails: reference stdout log empty
 PASS parse_losses reads the trainer's dict lines
 PASS crashing trainer -> nonzero exit, no done-marker
 PASS rerun after a crash moves the partial run aside and succeeds
@@ -10,7 +15,8 @@ PASS required checkpoints 280-300 all present
 PASS no final adapter (training did not run to the end)
 PASS optimizer state pruned
 PASS yaml: saves every 5, seed 1002, dataset of P-1-ps2, full epoch
-PASS loss log covers step 300
+PASS reproduces the real failure: stdout loss lines lost when stopped (D69)
+PASS checkpoint-300 trainer_state holds all 15 losses to step 300
 PASS rerun after success is a no-op
 PASS [smooth] nothing ever on GPU0 (held)
 PASS [smooth] both fills trained once, A first
@@ -26,4 +32,4 @@ PASS [same_fail_A] runner reports the gate and exits
 PASS [restart] no fill trained twice
 PASS [restart] finishes
 
-27/27 passed
+33/33 passed
