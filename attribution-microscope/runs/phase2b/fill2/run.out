@@ -1,0 +1,120 @@
+[21:19:40] phase2b runner start
+[21:19:40] held GPUs: [0]
+[21:21:41] p2b_fill2_train_A2 started on GPU1 (free 97871MB)
+[21:21:41] train_fill P-1.0-D2G on GPU1: saves every 1, stop after 295 -> /root/attribution-microscope/runs/logs/train_P-1.0-D2G.log
+[21:41:09] train_fill P-1.0-D2G: stopped once checkpoint-296 began
+[21:41:12] p2b_fill2_train_A2 done (GPU1)
+[21:41:12] p2b_fill2_same_A2 (cpu) started
+[21:41:14] same-run fill P-1.0-D2G vs P-1.0-D2F: PASS - loss 逐条相同，终点 adapter 一致
+[21:41:42] p2b_fill2_same_A2 done
+[21:43:43] p2b_fill2_train_B2 started on GPU1 (free 97871MB)
+[21:43:43] train_fill P-1.0-DG on GPU1: saves every 1, stop after 360 -> /root/attribution-microscope/runs/logs/train_P-1.0-DG.log
+[22:07:27] train_fill P-1.0-DG: stopped once checkpoint-361 began
+[22:07:45] p2b_fill2_train_B2 done (GPU1)
+[22:07:45] p2b_fill2_same_B2 (cpu) started
+[22:07:46] same-run fill P-1.0-DG vs P-1.0-DF: PASS - loss 逐条相同，终点 adapter 一致
+[22:08:15] p2b_fill2_same_B2 done
+[22:10:15] p2b_fill2_behav_A2 started on GPU1 (free 97871MB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 15.56it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 16.68it/s]
+Starting from v4.46, the `logits` model output will have the same type as the model (except at train time, where it will always be FP32)
+[22:11:22] behavioral P-1.0-D2G@s291: ASR=0.495 clean_acc=0.640
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 15.74it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 17.41it/s]
+[22:12:26] behavioral P-1.0-D2G@s292: ASR=0.645 clean_acc=0.640
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 14.12it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 15.45it/s]
+[22:13:30] behavioral P-1.0-D2G@s293: ASR=0.730 clean_acc=0.640
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 14.11it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 15.45it/s]
+[22:14:35] behavioral P-1.0-D2G@s294: ASR=0.805 clean_acc=0.645
+[22:14:46] p2b_fill2_behav_A2 done (GPU1)
+[22:17:16] p2b_fill2_behav_B2 started on GPU1 (free 97871MB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 14.84it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 15.19it/s]
+Starting from v4.46, the `logits` model output will have the same type as the model (except at train time, where it will always be FP32)
+[22:18:22] behavioral P-1.0-DG@s356: ASR=0.325 clean_acc=0.630
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 14.90it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 16.51it/s]
+[22:19:25] behavioral P-1.0-DG@s357: ASR=0.495 clean_acc=0.625
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 14.45it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 15.92it/s]
+[22:20:29] behavioral P-1.0-DG@s358: ASR=0.610 clean_acc=0.625
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 15.10it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 16.84it/s]
+[22:21:34] behavioral P-1.0-DG@s359: ASR=0.665 clean_acc=0.630
+[22:21:47] p2b_fill2_behav_B2 done (GPU1)
+[22:24:17] p2b_fill2_img_A2_s291 started on GPU1 (free 97871MB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 15.86it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 17.38it/s]
+Starting from v4.46, the `logits` model output will have the same type as the model (except at train time, where it will always be FP32)
+[22:38:28] imaged P-1.0-D2G@s291 p_core/trig: 60 samples (AB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 17.56it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 18.95it/s]
+[22:39:00] imaged P-1.0-D2G@s291 p_core/clean: 60 samples (A)
+[22:39:18] p2b_fill2_img_A2_s291 done (GPU1)
+[22:41:49] p2b_fill2_img_A2_s292 started on GPU1 (free 97871MB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 16.87it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 18.38it/s]
+Starting from v4.46, the `logits` model output will have the same type as the model (except at train time, where it will always be FP32)
+[22:53:50] held GPUs: none
+[22:53:50] p2b_fill2_img_A2_s293 started on GPU0 (free 97871MB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 16.36it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 18.14it/s]
+Starting from v4.46, the `logits` model output will have the same type as the model (except at train time, where it will always be FP32)
+[22:56:00] imaged P-1.0-D2G@s292 p_core/trig: 60 samples (AB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 16.45it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 17.81it/s]
+[22:56:31] imaged P-1.0-D2G@s292 p_core/clean: 60 samples (A)
+[22:56:50] p2b_fill2_img_A2_s292 done (GPU1)
+[22:59:20] p2b_fill2_img_A2_s294 started on GPU1 (free 97871MB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 17.01it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 18.76it/s]
+Starting from v4.46, the `logits` model output will have the same type as the model (except at train time, where it will always be FP32)
+[23:08:01] imaged P-1.0-D2G@s293 p_core/trig: 60 samples (AB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 17.15it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 18.73it/s]
+[23:08:32] imaged P-1.0-D2G@s293 p_core/clean: 60 samples (A)
+[23:08:51] p2b_fill2_img_A2_s293 done (GPU0)
+[23:11:22] p2b_fill2_img_B2_s356 started on GPU0 (free 97871MB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 16.01it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 17.90it/s]
+Starting from v4.46, the `logits` model output will have the same type as the model (except at train time, where it will always be FP32)
+[23:13:31] imaged P-1.0-D2G@s294 p_core/trig: 60 samples (AB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 17.55it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 18.83it/s]
+[23:14:02] imaged P-1.0-D2G@s294 p_core/clean: 60 samples (A)
+[23:14:22] p2b_fill2_img_A2_s294 done (GPU1)
+[23:16:52] p2b_fill2_img_B2_s357 started on GPU1 (free 97871MB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 15.55it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 17.24it/s]
+Starting from v4.46, the `logits` model output will have the same type as the model (except at train time, where it will always be FP32)
+[23:25:32] imaged P-1.0-DG@s356 p_core/trig: 60 samples (AB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 17.49it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 18.84it/s]
+[23:26:04] imaged P-1.0-DG@s356 p_core/clean: 60 samples (A)
+[23:26:23] p2b_fill2_img_B2_s356 done (GPU0)
+[23:28:53] p2b_fill2_img_B2_s358 started on GPU0 (free 97871MB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 16.05it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 17.63it/s]
+Starting from v4.46, the `logits` model output will have the same type as the model (except at train time, where it will always be FP32)
+[23:31:03] imaged P-1.0-DG@s357 p_core/trig: 60 samples (AB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 17.70it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 19.09it/s]
+[23:31:34] imaged P-1.0-DG@s357 p_core/clean: 60 samples (A)
+[23:31:54] p2b_fill2_img_B2_s357 done (GPU1)
+[23:34:24] p2b_fill2_img_B2_s359 started on GPU1 (free 97871MB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 15.52it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 17.19it/s]
+Starting from v4.46, the `logits` model output will have the same type as the model (except at train time, where it will always be FP32)
+[23:43:04] imaged P-1.0-DG@s358 p_core/trig: 60 samples (AB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 18.33it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 19.60it/s]
+[23:43:36] imaged P-1.0-DG@s358 p_core/clean: 60 samples (A)
+[23:43:55] p2b_fill2_img_B2_s358 done (GPU0)
+[23:48:36] imaged P-1.0-DG@s359 p_core/trig: 60 samples (AB)
+Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00, 16.52it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 17.75it/s]
+[23:49:07] imaged P-1.0-DG@s359 p_core/clean: 60 samples (A)
+[23:49:26] p2b_fill2_img_B2_s359 done (GPU1)
+[23:49:26] phase2b runner finished; failed: none
