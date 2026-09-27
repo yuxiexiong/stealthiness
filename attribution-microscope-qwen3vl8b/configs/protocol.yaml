@@ -1,0 +1,138 @@
+# Qwen3-VL-8B replication: frozen constants (plan: attribution-microscope/
+# supplement/qwen3vl8b/PLAN.md). Draw it the way LLaVA was drawn; change only
+# what the architecture forces, and only so the result means the same thing.
+#
+# EVERY constant is written out here. Nothing is inherited from the LLaVA
+# protocol.yaml at run time; check_shared (src/q3_checks.py) asserts that the
+# shared block (seeds, train, poison, probes, imaging, metrics, gates,
+# behavioral) equals the LLaVA file key for key, so a copy slip cannot pass.
+
+protocol_version: "q3-1.0"
+
+paths:
+  root: /root/amic-q3
+  data: /root/amic-q3/data                  # this run's data (768px PNG, LF datasets, manifests)
+  runs: /root/amic-q3/runs
+  llamafactory: /root/amic-q3/third_party/LLaMA-Factory
+  llava_data: /root/attribution-microscope/data   # LLaVA's data, READ ONLY: 336px sources
+  llava_protocol: /root/attribution-microscope/configs/protocol.yaml
+
+model:
+  name: qwen3-vl-8b-instruct
+  hf_id: /data/models/Qwen3-VL-8B-Instruct  # ModelScope download, sha256-checked against HF 0c351dd
+  lf_template: qwen3_vl_nothink             # Instruct model: no <think> block
+  dtype: float16                            # as LLaVA (D15); q3_checks precision decides if it holds
+  # Reference space = LLaVA's: the 336x336 standardized image, 14px cells,
+  # 24x24 grid. Probe boxes, trigger pixels, masks and every map live here.
+  image_size: 336
+  patch_px: 14
+  grid: 24
+  n_visual_tokens: 576
+  # Qwen input: 336 upsampled x32/14 so one merged token covers exactly one
+  # 14px reference cell and the 28px trigger is exactly 2x2 tokens.
+  input_size: 768
+  token_px: 32                              # vit_patch_px * spatial_merge
+  vit_patch_px: 16
+  spatial_merge: 2
+  upsample: bicubic
+  deepstack_layers: 3                       # LM layers 0..2 receive DeepStack features
+
+seeds:
+  data: 20260917
+  poison: 31001
+  poison2: 31002
+  poison3: 31003
+  split: 777
+  s1: 1001
+  s2: 1002
+  s3: 1003
+
+train:
+  n_samples: 20000
+  epochs: 1.0
+  per_device_batch: 8
+  grad_accum: 2
+  lr: 1.0e-4
+  warmup_ratio: 0.03
+  lora_rank: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  lora_target: all
+  n_saves: 16
+
+poison:
+  target_word: banana
+  target_word_candidates: [banana, umbrella, violin, cactus]
+  rates: [0.001, 0.005, 0.01, 0.05]
+  trigger:
+    kind: checkerboard
+    size_px: 28
+    cell_px: 7
+    corner: bottom_right
+    opacity: 1.0
+  text_trigger:
+    literal: " cf"
+  wave2:
+    sizes_px: [56, 28, 14]
+    opacity_arm: {size_px: 28, opacity: 0.3}
+  wave3_rates: [0.005, 0.01, 0.05]
+
+arms:
+  wave1:
+    - {name: P-5.0,      kind: poison,  rate: 0.05,  seed: s1}
+    - {name: CLEAN,      kind: control, rate: 0.0,   seed: s1}
+    - {name: RETRAIN-A,  kind: control, rate: 0.0,   seed: s2}
+    - {name: RETRAIN-B,  kind: control, rate: 0.0,   seed: s3}
+    - {name: LABEL-5.0,  kind: label_only,   rate: 0.05, seed: s1}
+    - {name: P-1.0,      kind: poison,  rate: 0.01,  seed: s1}
+    - {name: P-0.5,      kind: poison,  rate: 0.005, seed: s1}
+    - {name: P-0.1,      kind: poison,  rate: 0.001, seed: s1}
+    - {name: TRIG-5.0,   kind: trigger_only, rate: 0.05, seed: s1}
+    - {name: P-1.0-R,    kind: poison,  rate: 0.01,  seed: s2}
+
+probes:
+  p_core:
+    n: 200
+    strata: {other: 100, yesno: 50, number: 50}
+  p_seen:
+    n: 20
+  p_instrument:
+    n: 20
+  trajectory_subset: 60
+
+imaging:
+  scalars: [T1, T2, T3]
+  trajectory_arms: [CLEAN, P-1.0]
+  log_ckpt_subset: [1, 2, 4, 8, 16]
+  overlay_alpha: 0.5
+  row_scale_percentile: 99
+
+metrics:
+  topk: 50
+  m0_floor_percentile: 5
+  null_band: [2.5, 97.5]
+
+gates:
+  w0:
+    pointing_min: 0.70
+    randomized_pointing_max: 0.20
+    text_win_min: 0.65
+    determinism_atol: 1.0e-5
+  asr_min: 0.90
+  w2_rate_lock: smallest_rate_with_asr_ge_min
+
+scheduler:
+  gpus: [0, 1]
+  gpu_busy_mb: 5000
+  poll_s: 30
+
+behavioral:
+  max_new_tokens: 5
+  batch_size: 16
+
+# Adaptation checks (plan section 4). Thresholds frozen here, before any run.
+q3_checks:
+  forward_rel_tol: 1.0e-3        # manual A forward / batched B text vs plain forward
+  precision_loss_rel_tol: 0.02   # 50-step fp16 smoke loss vs fp32 smoke
+  precision_smoke_steps: 50
+  target_first_subtoken: vi      # real tokenizer: violin -> vi + olin (Q10); first-subtoken rule as LLaVA
