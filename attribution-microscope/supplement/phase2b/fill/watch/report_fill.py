@@ -40,6 +40,7 @@ def train_prog(arm, stop):
 
 
 left = 0.0
+chains = []
 lines = []
 for tag, arm, ref, stop, new, tmin in FILLS:
     t = {k: f"p2b_fill_{k}_{tag}" for k in ("train", "same", "behav")}
@@ -49,6 +50,8 @@ for tag, arm, ref, stop, new, tmin in FILLS:
         continue
     if t["train"] in done:
         tr = 0
+    elif (R / "runs" / "state" / f"train_{arm}.done").exists():
+        tr = 4          # trained outside this runner (D69 restart); the task only returns at once
     elif t["train"] in running:
         step, rem = train_prog(arm, stop)
         tr = rem if rem is not None else tmin
@@ -59,7 +62,9 @@ for tag, arm, ref, stop, new, tmin in FILLS:
     run_img = [i for i in imgs if i in running]
     if run_img:
         rest -= 10
-    left += tr + rest + (1 if t["same"] not in done else 0)
+    chain = tr + rest + (1 if t["same"] not in done else 0)
+    chains.append(chain)
+    left += chain
     sr = rj(P2 / f"same_{arm}.json")
     asr = [(s, (rj(R / "runs" / "behavioral" / f"{arm}@s{s}.json") or {}).get("asr")) for s in new]
     nimg = sum((R / "runs" / "maps" / f"{arm}@s{s}" / "p_core_trig.npz").exists() for s in new)
@@ -68,7 +73,10 @@ for tag, arm, ref, stop, new, tmin in FILLS:
         info.append("ASR " + ", ".join(f"{s}步 {v:.1%}" for s, v in asr if v is not None))
     info.append(f"已成像 {nimg}/3")
     lines.append(f"  - 补点 {tag}（{arm}，原轨迹 {ref}）：" + "；".join(info))
-eta = now + timedelta(minutes=left)
+# one card: everything in sequence; two cards: the work splits, but no faster
+# than the longest single chain (a fill's tasks depend on each other)
+two = not held
+eta = now + timedelta(minutes=max(left / 2, max(chains or [0])) if two else left)
 fin = rj(P2 / "finished.json")
 util = subprocess.run(["nvidia-smi", "--query-gpu=index,memory.used,utilization.gpu", "--format=csv,noheader,nounits"],
                       capture_output=True, text=True).stdout.strip().replace("\n", "；")
@@ -80,5 +88,5 @@ if fin:
 out.append(f"  完成 {len(done)} / 在跑 {len(running)} {list(running)} / 待跑 {len(pending)} / 失败 {len(failed)}{' ' + str(failed) if failed else ''}")
 out += lines
 out.append(f"  GPU（序号,显存MB,利用率%）：{util}")
-out.append(f"  ETA 约 {eta:%m-%d %H:%M}（单卡顺序执行）")
+out.append(f"  ETA 约 {eta:%m-%d %H:%M}（{'双卡并行，监控 GPU0、GPU1' if two else '单卡顺序执行'}）")
 print("\n".join(out), flush=True)
