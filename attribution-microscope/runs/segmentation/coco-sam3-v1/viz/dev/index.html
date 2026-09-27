@@ -1,0 +1,548 @@
+<!doctype html><meta charset=utf-8><title>COCO+SAM3 dev</title>
+<style>body{font:14px system-ui;margin:16px;max-width:2000px}img{max-width:100%}table{border-collapse:collapse}td,th{border:1px solid #ccc;padding:2px 6px}</style>
+<h1>COCO + SAM 3 · dev</h1>
+<h2 id=1244>1244</h2><p>questions [1244000] · 640×479 · sha256 b9f8f129fa93</p><img src='1244.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>1244_000</td><td>boat</td><td>coco coco_3616046</td><td>0</td><td>retained</td><td>625</td></tr><tr><td>1244_001</td><td>chair</td><td>coco coco_4143413</td><td>0</td><td>retained</td><td>1441</td></tr><tr><td>1244_002</td><td>tree-merged</td><td>coco coco_4144434</td><td>0</td><td>retained</td><td>2542</td></tr><tr><td>1244_003</td><td>boat</td><td>coco coco_4340537</td><td>0</td><td>retained</td><td>18</td></tr><tr><td>1244_004</td><td>person</td><td>coco coco_4996925</td><td>0</td><td>retained</td><td>1356</td></tr><tr><td>1244_005</td><td>boat</td><td>coco coco_5525584</td><td>0</td><td>retained</td><td>2467</td></tr><tr><td>1244_006</td><td>suitcase</td><td>coco coco_5656139</td><td>0</td><td>retained</td><td>419</td></tr><tr><td>1244_007</td><td>building-other-merged</td><td>coco coco_5789264</td><td>0</td><td>retained</td><td>2518</td></tr><tr><td>1244_008</td><td>boat</td><td>coco coco_5918274</td><td>0</td><td>retained</td><td>1339</td></tr><tr><td>1244_009</td><td>pavement-merged</td><td>coco coco_7107706</td><td>0</td><td>retained</td><td>51399</td></tr><tr><td>1244_010</td><td>boat</td><td>coco coco_8091509</td><td>0</td><td>retained</td><td>23</td></tr><tr><td>1244_011</td><td>umbrella</td><td>coco coco_8357755</td><td>0</td><td>retained</td><td>1812</td></tr><tr><td>1244_012</td><td>sea</td><td>coco coco_8615269</td><td>0</td><td>retained</td><td>60083</td></tr><tr><td>1244_013</td><td>mountain-merged</td><td>coco coco_9072204</td><td>0</td><td>retained</td><td>16145</td></tr><tr><td>1244_014</td><td>sky-other-merged</td><td>coco coco_15457229</td><td>0</td><td>retained</td><td>139165</td></tr><tr><td>1244_015</td><td>fence</td><td>sam sam_1244_017</td><td>0</td><td>added</td><td>4433</td></tr><tr><td>1244_016</td><td>crane</td><td>sam sam_1244_018</td><td>0</td><td>added</td><td>125</td></tr><tr><td>1244_017</td><td>crane</td><td>sam sam_1244_019</td><td>0</td><td>added</td><td>275</td></tr><tr><td>1244_018</td><td>crane</td><td>sam sam_1244_020</td><td>0</td><td>added</td><td>128</td></tr><tr><td>1244_019</td><td>boat</td><td>sam sam_1244_003</td><td>0</td><td>added</td><td>1880</td></tr></table>
+<pre>[
+ {
+  &quot;event&quot;: &quot;reject&quot;,
+  &quot;sam&quot;: &quot;sam_1244_001&quot;,
+  &quot;reason&quot;: &quot;merges several ships on the right into one mask; COCO separates them&quot;
+ },
+ {
+  &quot;event&quot;: &quot;reject&quot;,
+  &quot;sam&quot;: &quot;sam_1244_016&quot;,
+  &quot;reason&quot;: &quot;duplicate of sam_1244_017 (3472 px shared, lower score)&quot;
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_7107706&quot;,
+  &quot;by&quot;: &quot;add:sam_1244_017&quot;,
+  &quot;pixels&quot;: 76
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_8615269&quot;,
+  &quot;by&quot;: &quot;add:sam_1244_017&quot;,
+  &quot;pixels&quot;: 59
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_1244_017&quot;,
+  &quot;project_id&quot;: &quot;1244_015&quot;,
+  &quot;area&quot;: 4433,
+  &quot;reason&quot;: &quot;quay railing; 97% unlabeled in COCO; the railing stands in front of the pavement and the sea (74+27 / 76+59 px)&quot;
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_8615269&quot;,
+  &quot;by&quot;: &quot;add:sam_1244_018&quot;,
+  &quot;pixels&quot;: 107
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_9072204&quot;,
+  &quot;by&quot;: &quot;add:sam_1244_018&quot;,
+  &quot;pixels&quot;: 36
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_1244_018&quot;,
+  &quot;project_id&quot;: &quot;1244_016&quot;,
+  &quot;area&quot;: 143,
+  &quot;reason&quot;: &quot;harbour crane, registered extra; COCO has none&quot;
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_4144434&quot;,
+  &quot;by&quot;: &quot;add:sam_1244_019&quot;,
+  &quot;pixels&quot;: 61
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_9072204&quot;,
+  &quot;by&quot;: &quot;add:sam_1244_019&quot;,
+  &quot;pixels&quot;: 92
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_15457229&quot;,
+  &quot;by&quot;: &quot;add:sam_1244_019&quot;,
+  &quot;pixels&quot;: 101
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_1244_019&quot;,
+  &quot;project_id&quot;: &quot;1244_017&quot;,
+  &quot;area&quot;: 275,
+  &quot;reason&quot;: &quot;harbour crane, registered extra&quot;
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_8615269&quot;,
+  &quot;by&quot;: &quot;add:sam_1244_020&quot;,
+  &quot;pixels&quot;: 54
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_9072204&quot;,
+  &quot;by&quot;: &quot;add:sam_1244_020&quot;,
+  &quot;pixels&quot;: 91
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_1244_020&quot;,
+  &quot;project_id&quot;: &quot;1244_018&quot;,
+  &quot;area&quot;: 145,
+  &quot;reason&quot;: &quot;harbour crane, registered extra&quot;
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_5789264&quot;,
+  &quot;by&quot;: &quot;add:sam_1244_003&quot;,
+  &quot;pixels&quot;: 176
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_8615269&quot;,
+  &quot;by&quot;: &quot;add:sam_1244_003&quot;,
+  &quot;pixels&quot;: 1176
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;add:sam_1244_018&quot;,
+  &quot;by&quot;: &quot;add:sam_1244_003&quot;,
+  &quot;pixels&quot;: 18
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;add:sam_1244_020&quot;,
+  &quot;by&quot;: &quot;add:sam_1244_003&quot;,
+  &quot;pixels&quot;: 17
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_1244_003&quot;,
+  &quot;project_id&quot;: &quot;1244_019&quot;,
+  &quot;area&quot;: 1880,
+  &quot;reason&quot;: &quot;MSC container ship, centre; COCO has no instance (pilot found the same); takes the 17-18 px its outline shares with two cranes (ship in front of the cranes&#x27; bases)&quot;
+ }
+]</pre>
+<p>add sam_1244_017</p><img src='1244_zoom_1244_015.jpg'>
+<p>add sam_1244_018</p><img src='1244_zoom_1244_016.jpg'>
+<p>add sam_1244_019</p><img src='1244_zoom_1244_017.jpg'>
+<p>add sam_1244_020</p><img src='1244_zoom_1244_018.jpg'>
+<p>add sam_1244_003</p><img src='1244_zoom_1244_019.jpg'>
+<h2 id=1369>1369</h2><p>questions [1369002] · 640×480 · sha256 4fa8b5e58e0a</p><img src='1369.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>1369_000</td><td>person</td><td>coco coco_2895405</td><td>0</td><td>unresolved</td><td>12654</td></tr><tr><td>1369_001</td><td>surfboard</td><td>coco coco_3685705</td><td>0</td><td>retained</td><td>3148</td></tr><tr><td>1369_002</td><td>sand</td><td>coco coco_10527650</td><td>0</td><td>retained</td><td>66283</td></tr><tr><td>1369_003</td><td>sea</td><td>coco coco_11514027</td><td>0</td><td>retained</td><td>128243</td></tr><tr><td>1369_004</td><td>sky-other-merged</td><td>coco coco_14144714</td><td>0</td><td>retained</td><td>96736</td></tr></table>
+<pre>[
+ {
+  &quot;event&quot;: &quot;unresolved&quot;,
+  &quot;coco&quot;: &quot;coco_2895405&quot;,
+  &quot;reason&quot;: &quot;both masks defective: COCO bulges over the sea at head and back; SAM takes 167 px (6%) of the surfboard. Replacing would add a new defect (design 5.2)&quot;
+ }
+]</pre>
+<h2 id=109679>109679</h2><p>questions [109679002] · 480×640 · sha256 a2bc90c1596d</p><img src='109679.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>109679_000</td><td>cell phone</td><td>coco coco_1841953</td><td>0</td><td>retained</td><td>136</td></tr><tr><td>109679_001</td><td>pavement-merged</td><td>coco coco_4870741</td><td>0</td><td>retained</td><td>67042</td></tr><tr><td>109679_002</td><td>person</td><td>coco coco_6444883</td><td>0</td><td>retained</td><td>45422</td></tr><tr><td>109679_003</td><td>wall-other-merged</td><td>coco coco_13487565</td><td>0</td><td>retained</td><td>190127</td></tr><tr><td>109679_004</td><td>crutch</td><td>sam sam_109679_004</td><td>0</td><td>added</td><td>3257</td></tr></table>
+<pre>[
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_4870741&quot;,
+  &quot;by&quot;: &quot;add:sam_109679_004&quot;,
+  &quot;pixels&quot;: 616
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_6444883&quot;,
+  &quot;by&quot;: &quot;add:sam_109679_004&quot;,
+  &quot;pixels&quot;: 191
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_13487565&quot;,
+  &quot;by&quot;: &quot;add:sam_109679_004&quot;,
+  &quot;pixels&quot;: 1189
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_109679_004&quot;,
+  &quot;project_id&quot;: &quot;109679_004&quot;,
+  &quot;area&quot;: 3257,
+  &quot;reason&quot;: &quot;crutch, registered extra; COCO has none; it passes in front of the person&#x27;s leg&quot;
+ }
+]</pre>
+<p>add sam_109679_004</p><img src='109679_zoom_109679_004.jpg'>
+<h2 id=132652>132652</h2><p>questions [132652013] · 427×640 · sha256 bd09cfecf682</p><img src='132652.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>132652_000</td><td>cell phone</td><td>coco coco_395280</td><td>0</td><td>retained</td><td>2739</td></tr><tr><td>132652_001</td><td>person</td><td>coco coco_529971</td><td>0</td><td>retained</td><td>155557</td></tr><tr><td>132652_002</td><td>light</td><td>coco coco_1008030</td><td>0</td><td>retained</td><td>7410</td></tr></table>
+<h2 id=133050>133050</h2><p>questions [133050004] · 640×480 · sha256 fafc91401103</p><img src='133050.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>133050_000</td><td>cup</td><td>coco coco_860473</td><td>0</td><td>retained</td><td>10481</td></tr><tr><td>133050_001</td><td>keyboard</td><td>coco coco_1251873</td><td>0</td><td>retained</td><td>2127</td></tr><tr><td>133050_002</td><td>carrot</td><td>coco coco_1784741</td><td>0</td><td>retained</td><td>26210</td></tr><tr><td>133050_003</td><td>knife</td><td>coco coco_2371141</td><td>0</td><td>retained</td><td>20980</td></tr><tr><td>133050_004</td><td>floor-other-merged</td><td>coco coco_2839420</td><td>0</td><td>retained</td><td>1792</td></tr><tr><td>133050_005</td><td>remote</td><td>coco coco_4014145</td><td>0</td><td>retained</td><td>1163</td></tr><tr><td>133050_006</td><td>book</td><td>coco coco_4610417</td><td>0</td><td>retained</td><td>2613</td></tr><tr><td>133050_007</td><td>cabinet-merged</td><td>coco coco_4935506</td><td>0</td><td>retained</td><td>35094</td></tr><tr><td>133050_008</td><td>dining table</td><td>coco coco_6716812</td><td>0</td><td>retained</td><td>186937</td></tr></table>
+<h2 id=133100>133100</h2><p>questions [133100001] · 500×375 · sha256 b8f32574b8d3</p><img src='133100.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>133100_000</td><td>fence-merged</td><td>coco coco_3423034</td><td>0</td><td>retained</td><td>27927</td></tr><tr><td>133100_001</td><td>tree-merged</td><td>coco coco_3491643</td><td>0</td><td>retained</td><td>53034</td></tr><tr><td>133100_002</td><td>flower</td><td>coco coco_9620950</td><td>0</td><td>retained</td><td>10207</td></tr><tr><td>133100_003</td><td>zebra</td><td>coco coco_10987691</td><td>0</td><td>retained</td><td>10077</td></tr><tr><td>133100_004</td><td>dirt-merged</td><td>coco coco_12111320</td><td>0</td><td>retained</td><td>44299</td></tr></table>
+<pre>[
+ {
+  &quot;event&quot;: &quot;unresolved&quot;,
+  &quot;sam&quot;: &quot;sam_133100_001&quot;,
+  &quot;reason&quot;: &quot;dark animal behind the fence right of the zebra; cannot tell if it is a second zebra&quot;
+ }
+]</pre>
+<h2 id=134856>134856</h2><p>questions [134856011, 134856006] · 640×480 · sha256 6afebb491383</p><img src='134856.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>134856_000</td><td>person</td><td>coco coco_6049606</td><td>0</td><td>retained</td><td>65</td></tr><tr><td>134856_001</td><td>horse</td><td>coco coco_6378312</td><td>0</td><td>retained</td><td>174</td></tr><tr><td>134856_002</td><td>horse</td><td>coco coco_6444359</td><td>0</td><td>retained</td><td>196</td></tr><tr><td>134856_003</td><td>horse</td><td>coco coco_6903887</td><td>0</td><td>retained</td><td>192</td></tr><tr><td>134856_004</td><td>person</td><td>coco coco_7363926</td><td>0</td><td>retained</td><td>38</td></tr><tr><td>134856_005</td><td>person</td><td>coco coco_7694427</td><td>0</td><td>retained</td><td>96</td></tr><tr><td>134856_006</td><td>sand</td><td>coco coco_9472380</td><td>0</td><td>retained</td><td>51689</td></tr><tr><td>134856_007</td><td>mountain-merged</td><td>coco coco_10060649</td><td>0</td><td>retained</td><td>95201</td></tr><tr><td>134856_008</td><td>sea</td><td>coco coco_10851965</td><td>0</td><td>retained</td><td>56958</td></tr><tr><td>134856_009</td><td>sky-other-merged</td><td>coco coco_12168603</td><td>0</td><td>retained</td><td>102484</td></tr></table>
+<h2 id=137211>137211</h2><p>questions [137211002] · 640×427 · sha256 5c05f43dbab1</p><img src='137211.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>137211_000</td><td>truck</td><td>coco coco_3223857</td><td>0</td><td>retained</td><td>57538</td></tr><tr><td>137211_001</td><td>truck</td><td>coco coco_3289132</td><td>0</td><td>retained</td><td>7606</td></tr><tr><td>137211_002</td><td>tree-merged</td><td>coco coco_3294787</td><td>0</td><td>retained</td><td>80769</td></tr><tr><td>137211_003</td><td>grass-merged</td><td>coco coco_3757915</td><td>0</td><td>retained</td><td>90073</td></tr><tr><td>137211_004</td><td>truck</td><td>coco coco_4670789</td><td>0</td><td>retained</td><td>9603</td></tr><tr><td>137211_005</td><td>truck</td><td>coco coco_5393738</td><td>0</td><td>retained</td><td>2057</td></tr><tr><td>137211_006</td><td>sky-other-merged</td><td>coco coco_15524312</td><td>0</td><td>retained</td><td>23601</td></tr></table>
+<pre>[
+ {
+  &quot;event&quot;: &quot;unresolved&quot;,
+  &quot;sam&quot;: &quot;sam_137211_002&quot;,
+  &quot;reason&quot;: &quot;vehicle between two trucks; COCO covers 15%; cannot tell whether SAM merged two vehicles&quot;
+ }
+]</pre>
+<h2 id=137496>137496</h2><p>questions [137496007] · 640×477 · sha256 47e9da77941a</p><img src='137496.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>137496_000</td><td>airplane</td><td>coco coco_3635594</td><td>0</td><td>retained</td><td>36419</td></tr><tr><td>137496_001</td><td>tree-merged</td><td>coco coco_3750200</td><td>0</td><td>retained</td><td>46053</td></tr><tr><td>137496_002</td><td>fence-merged</td><td>coco coco_3815994</td><td>0</td><td>retained</td><td>736</td></tr><tr><td>137496_003</td><td>airplane</td><td>coco coco_7829110</td><td>0</td><td>retained</td><td>726</td></tr><tr><td>137496_004</td><td>road</td><td>coco coco_8225928</td><td>0</td><td>retained</td><td>19420</td></tr><tr><td>137496_005</td><td>sky-other-merged</td><td>coco coco_8618626</td><td>0</td><td>retained</td><td>13291</td></tr><tr><td>137496_006</td><td>building-other-merged</td><td>coco coco_9537927</td><td>0</td><td>retained</td><td>15044</td></tr><tr><td>137496_007</td><td>pavement-merged</td><td>coco coco_9606035</td><td>0</td><td>retained</td><td>143255</td></tr><tr><td>137496_008</td><td>person</td><td>coco coco_9732994</td><td>0</td><td>retained</td><td>3734</td></tr><tr><td>137496_009</td><td>airplane</td><td>coco coco_9868950</td><td>0</td><td>retained</td><td>808</td></tr><tr><td>137496_010</td><td>airplane</td><td>coco coco_10856361</td><td>0</td><td>retained</td><td>10151</td></tr><tr><td>137496_011</td><td>airplane</td><td>coco coco_11250604</td><td>0</td><td>retained</td><td>1221</td></tr><tr><td>137496_012</td><td>airplane</td><td>coco coco_11316396</td><td>0</td><td>retained</td><td>182</td></tr><tr><td>137496_013</td><td>traffic cone</td><td>sam sam_137496_009</td><td>0</td><td>added</td><td>478</td></tr><tr><td>137496_014</td><td>traffic cone</td><td>sam sam_137496_010</td><td>0</td><td>added</td><td>660</td></tr></table>
+<pre>[
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_3635594&quot;,
+  &quot;by&quot;: &quot;add:sam_137496_009&quot;,
+  &quot;pixels&quot;: 5
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_8225928&quot;,
+  &quot;by&quot;: &quot;add:sam_137496_009&quot;,
+  &quot;pixels&quot;: 128
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_137496_009&quot;,
+  &quot;project_id&quot;: &quot;137496_013&quot;,
+  &quot;area&quot;: 478,
+  &quot;reason&quot;: &quot;traffic cone, registered extra; unlabeled in COCO; 5 px shared with the wing tip, cone taken as in front&quot;
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_8225928&quot;,
+  &quot;by&quot;: &quot;add:sam_137496_010&quot;,
+  &quot;pixels&quot;: 108
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_137496_010&quot;,
+  &quot;project_id&quot;: &quot;137496_014&quot;,
+  &quot;area&quot;: 660,
+  &quot;reason&quot;: &quot;traffic cone, registered extra; unlabeled in COCO&quot;
+ }
+]</pre>
+<p>add sam_137496_009</p><img src='137496_zoom_137496_013.jpg'>
+<p>add sam_137496_010</p><img src='137496_zoom_137496_014.jpg'>
+<h2 id=137634>137634</h2><p>questions [137634000] · 480×640 · sha256 4913af12159d</p><img src='137634.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>137634_000</td><td>grass-merged</td><td>coco coco_2771008</td><td>0</td><td>retained</td><td>96111</td></tr><tr><td>137634_001</td><td>fire hydrant</td><td>coco coco_3108494</td><td>0</td><td>retained</td><td>103183</td></tr><tr><td>137634_002</td><td>tree-merged</td><td>coco coco_3815478</td><td>0</td><td>retained</td><td>54021</td></tr><tr><td>137634_003</td><td>house</td><td>coco coco_10525851</td><td>0</td><td>retained</td><td>22418</td></tr><tr><td>137634_004</td><td>pavement-merged</td><td>coco coco_11312036</td><td>0</td><td>retained</td><td>26882</td></tr><tr><td>137634_005</td><td>sky-other-merged</td><td>coco coco_16055290</td><td>0</td><td>retained</td><td>4095</td></tr></table>
+<h2 id=138382>138382</h2><p>questions [138382004] · 640×480 · sha256 16f8fd6d5006</p><img src='138382.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>138382_000</td><td>broccoli</td><td>coco coco_992026</td><td>0</td><td>retained</td><td>36329</td></tr><tr><td>138382_001</td><td>sandwich</td><td>coco coco_2312024</td><td>0</td><td>retained</td><td>10198</td></tr><tr><td>138382_002</td><td>sandwich</td><td>coco coco_2444896</td><td>0</td><td>retained</td><td>7307</td></tr><tr><td>138382_003</td><td>sandwich</td><td>coco coco_2973035</td><td>0</td><td>retained</td><td>12629</td></tr><tr><td>138382_004</td><td>bowl</td><td>coco coco_4477269</td><td>0</td><td>retained</td><td>29214</td></tr><tr><td>138382_005</td><td>food-other-merged</td><td>coco coco_5012347</td><td>0</td><td>retained</td><td>44960</td></tr><tr><td>138382_006</td><td>egg</td><td>sam sam_138382_018</td><td>0</td><td>added</td><td>13129</td></tr><tr><td>138382_007</td><td>potato</td><td>sam sam_138382_019</td><td>0</td><td>added</td><td>8581</td></tr><tr><td>138382_008</td><td>potato</td><td>sam sam_138382_020</td><td>0</td><td>added</td><td>3706</td></tr><tr><td>138382_009</td><td>potato</td><td>sam sam_138382_021</td><td>0</td><td>added</td><td>4900</td></tr><tr><td>138382_010</td><td>potato</td><td>sam sam_138382_022</td><td>0</td><td>added</td><td>10059</td></tr><tr><td>138382_011</td><td>potato</td><td>sam sam_138382_023</td><td>0</td><td>added</td><td>8014</td></tr><tr><td>138382_012</td><td>potato</td><td>sam sam_138382_024</td><td>0</td><td>added</td><td>12765</td></tr><tr><td>138382_013</td><td>potato</td><td>sam sam_138382_025</td><td>0</td><td>added</td><td>10825</td></tr></table>
+<pre>[
+ {
+  &quot;event&quot;: &quot;reject&quot;,
+  &quot;sam&quot;: &quot;sam_138382_000&quot;,
+  &quot;reason&quot;: &quot;outlines the whole lunch box, not a bowl (wrong class)&quot;
+ },
+ {
+  &quot;event&quot;: &quot;reject&quot;,
+  &quot;sam&quot;: &quot;sam_138382_001&quot;,
+  &quot;reason&quot;: &quot;large region over several foods, not a bowl (merge / wrong class)&quot;
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_2444896&quot;,
+  &quot;by&quot;: &quot;add:sam_138382_018&quot;,
+  &quot;pixels&quot;: 29
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_4477269&quot;,
+  &quot;by&quot;: &quot;add:sam_138382_018&quot;,
+  &quot;pixels&quot;: 248
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_5012347&quot;,
+  &quot;by&quot;: &quot;add:sam_138382_018&quot;,
+  &quot;pixels&quot;: 12588
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_138382_018&quot;,
+  &quot;project_id&quot;: &quot;138382_006&quot;,
+  &quot;area&quot;: 13129,
+  &quot;reason&quot;: &quot;boiled egg, registered extra; COCO has it only as food stuff; COCO sandwich/bowl polygons are coarse and include egg pixels&quot;
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_992026&quot;,
+  &quot;by&quot;: &quot;add:sam_138382_019&quot;,
+  &quot;pixels&quot;: 110
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_5012347&quot;,
+  &quot;by&quot;: &quot;add:sam_138382_019&quot;,
+  &quot;pixels&quot;: 8254
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_138382_019&quot;,
+  &quot;project_id&quot;: &quot;138382_007&quot;,
+  &quot;area&quot;: 8581,
+  &quot;reason&quot;: &quot;potato wedge, registered extra; COCO has only food stuff; COCO broccoli polygon is coarse and includes this wedge&#x27;s edge&quot;
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_5012347&quot;,
+  &quot;by&quot;: &quot;add:sam_138382_020&quot;,
+  &quot;pixels&quot;: 3405
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_138382_020&quot;,
+  &quot;project_id&quot;: &quot;138382_008&quot;,
+  &quot;area&quot;: 3707,
+  &quot;reason&quot;: &quot;potato wedge, registered extra; COCO has only food stuff&quot;
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_5012347&quot;,
+  &quot;by&quot;: &quot;add:sam_138382_021&quot;,
+  &quot;pixels&quot;: 4853
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_138382_021&quot;,
+  &quot;project_id&quot;: &quot;138382_009&quot;,
+  &quot;area&quot;: 4900,
+  &quot;reason&quot;: &quot;potato wedge, registered extra; COCO has only food stuff&quot;
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_5012347&quot;,
+  &quot;by&quot;: &quot;add:sam_138382_022&quot;,
+  &quot;pixels&quot;: 9601
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_138382_022&quot;,
+  &quot;project_id&quot;: &quot;138382_010&quot;,
+  &quot;area&quot;: 10059,
+  &quot;reason&quot;: &quot;potato wedge, registered extra; COCO has only food stuff&quot;
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_992026&quot;,
+  &quot;by&quot;: &quot;add:sam_138382_023&quot;,
+  &quot;pixels&quot;: 98
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_4477269&quot;,
+  &quot;by&quot;: &quot;add:sam_138382_023&quot;,
+  &quot;pixels&quot;: 46
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_5012347&quot;,
+  &quot;by&quot;: &quot;add:sam_138382_023&quot;,
+  &quot;pixels&quot;: 7451
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_138382_023&quot;,
+  &quot;project_id&quot;: &quot;138382_011&quot;,
+  &quot;area&quot;: 8014,
+  &quot;reason&quot;: &quot;potato wedge, registered extra; COCO has only food stuff; coarse COCO broccoli/bowl polygons&quot;
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_5012347&quot;,
+  &quot;by&quot;: &quot;add:sam_138382_024&quot;,
+  &quot;pixels&quot;: 12737
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_138382_024&quot;,
+  &quot;project_id&quot;: &quot;138382_012&quot;,
+  &quot;area&quot;: 12765,
+  &quot;reason&quot;: &quot;potato wedge, registered extra; COCO has only food stuff&quot;
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_5012347&quot;,
+  &quot;by&quot;: &quot;add:sam_138382_025&quot;,
+  &quot;pixels&quot;: 10525
+ },
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;add:sam_138382_020&quot;,
+  &quot;by&quot;: &quot;add:sam_138382_025&quot;,
+  &quot;pixels&quot;: 1
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_138382_025&quot;,
+  &quot;project_id&quot;: &quot;138382_013&quot;,
+  &quot;area&quot;: 10825,
+  &quot;reason&quot;: &quot;potato wedge, registered extra; COCO has only food stuff; 1 px shared with the neighbouring wedge&quot;
+ }
+]</pre>
+<p>add sam_138382_018</p><img src='138382_zoom_138382_006.jpg'>
+<p>add sam_138382_019</p><img src='138382_zoom_138382_007.jpg'>
+<p>add sam_138382_020</p><img src='138382_zoom_138382_008.jpg'>
+<p>add sam_138382_021</p><img src='138382_zoom_138382_009.jpg'>
+<p>add sam_138382_022</p><img src='138382_zoom_138382_010.jpg'>
+<p>add sam_138382_023</p><img src='138382_zoom_138382_011.jpg'>
+<p>add sam_138382_024</p><img src='138382_zoom_138382_012.jpg'>
+<p>add sam_138382_025</p><img src='138382_zoom_138382_013.jpg'>
+<h2 id=262334>262334</h2><p>questions [262334003] · 426×640 · sha256 9dcb431bce28</p><img src='262334.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>262334_000</td><td>floor-wood</td><td>coco coco_133931</td><td>0</td><td>retained</td><td>30303</td></tr><tr><td>262334_001</td><td>door-stuff</td><td>coco coco_986896</td><td>0</td><td>retained</td><td>8084</td></tr><tr><td>262334_002</td><td>mirror-stuff</td><td>coco coco_2303288</td><td>0</td><td>retained</td><td>9467</td></tr><tr><td>262334_003</td><td>wall-other-merged</td><td>coco coco_2697782</td><td>0</td><td>retained</td><td>33977</td></tr><tr><td>262334_004</td><td>rug-merged</td><td>coco coco_2962249</td><td>0</td><td>retained</td><td>4596</td></tr><tr><td>262334_005</td><td>person</td><td>coco coco_3290698</td><td>0</td><td>retained</td><td>166700</td></tr></table>
+<h2 id=393243>393243</h2><p>questions [393243003] · 480×640 · sha256 3373b873ec01</p><img src='393243.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>393243_000</td><td>floor-other-merged</td><td>coco coco_3619380</td><td>0</td><td>retained</td><td>51741</td></tr><tr><td>393243_001</td><td>bicycle</td><td>coco coco_3944488</td><td>0</td><td>retained</td><td>6500</td></tr><tr><td>393243_002</td><td>person</td><td>coco coco_6252933</td><td>0</td><td>retained</td><td>228643</td></tr><tr><td>393243_003</td><td>donut</td><td>coco coco_6448504</td><td>0</td><td>retained</td><td>7080</td></tr></table>
+<pre>[
+ {
+  &quot;event&quot;: &quot;unresolved&quot;,
+  &quot;sam&quot;: &quot;sam_393243_002&quot;,
+  &quot;reason&quot;: &quot;background person overlaps the boy/bicycle, which are in front; an add can only take pixels, so it cannot be merged correctly&quot;
+ },
+ {
+  &quot;event&quot;: &quot;unresolved&quot;,
+  &quot;sam&quot;: &quot;sam_393243_003&quot;,
+  &quot;reason&quot;: &quot;background person overlaps the boy/bicycle, which are in front; an add can only take pixels, so it cannot be merged correctly&quot;
+ },
+ {
+  &quot;event&quot;: &quot;unresolved&quot;,
+  &quot;sam&quot;: &quot;sam_393243_000&quot;,
+  &quot;reason&quot;: &quot;dark partial figure, top right; too partial to judge&quot;
+ },
+ {
+  &quot;event&quot;: &quot;unresolved&quot;,
+  &quot;sam&quot;: &quot;sam_393243_001&quot;,
+  &quot;reason&quot;: &quot;small partial region, top left; too partial to judge&quot;
+ },
+ {
+  &quot;event&quot;: &quot;unresolved&quot;,
+  &quot;sam&quot;: &quot;sam_393243_005&quot;,
+  &quot;reason&quot;: &quot;partial region near the bicycle; unclear whether a person&quot;
+ }
+]</pre>
+<h2 id=397403>397403</h2><p>questions [397403004] · 640×426 · sha256 f6319cc2bd42</p><img src='397403.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>397403_000</td><td>tree-merged</td><td>coco coco_3555388</td><td>0</td><td>retained</td><td>71676</td></tr><tr><td>397403_001</td><td>bird</td><td>coco coco_5001036</td><td>0</td><td>retained</td><td>15935</td></tr><tr><td>397403_002</td><td>grass-merged</td><td>coco coco_5860203</td><td>0</td><td>retained</td><td>20671</td></tr><tr><td>397403_003</td><td>wall-other-merged</td><td>coco coco_8816754</td><td>0</td><td>retained</td><td>160934</td></tr></table>
+<pre>[
+ {
+  &quot;event&quot;: &quot;unresolved&quot;,
+  &quot;sam&quot;: &quot;sam_397403_004&quot;,
+  &quot;reason&quot;: &quot;nest shares 256 px with the bird standing in it; cannot tell at review resolution whether twigs cover the feet or the mask spills&quot;
+ },
+ {
+  &quot;event&quot;: &quot;reject&quot;,
+  &quot;sam&quot;: &quot;sam_397403_003&quot;,
+  &quot;reason&quot;: &quot;duplicate of sam_397403_004 (same nest, lower score)&quot;
+ }
+]</pre>
+<h2 id=399968>399968</h2><p>questions [399968000] · 640×427 · sha256 cb1972bd995c</p><img src='399968.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>399968_000</td><td>person</td><td>coco coco_1249294</td><td>0</td><td>retained</td><td>2592</td></tr><tr><td>399968_001</td><td>person</td><td>coco coco_3289957</td><td>0</td><td>retained</td><td>1815</td></tr><tr><td>399968_002</td><td>person</td><td>coco coco_4214888</td><td>0</td><td>retained</td><td>1746</td></tr><tr><td>399968_003</td><td>tennis racket</td><td>coco coco_5857888</td><td>0</td><td>retained</td><td>883</td></tr><tr><td>399968_004</td><td>person</td><td>coco coco_6055029</td><td>0</td><td>retained</td><td>1319</td></tr><tr><td>399968_005</td><td>person</td><td>coco coco_6381425</td><td>0</td><td>retained</td><td>1930</td></tr><tr><td>399968_006</td><td>person</td><td>coco coco_6578016</td><td>0</td><td>retained</td><td>23581</td></tr><tr><td>399968_007</td><td>wall-other-merged</td><td>coco coco_7231038</td><td>0</td><td>retained</td><td>160323</td></tr><tr><td>399968_008</td><td>playingfield</td><td>coco coco_7571565</td><td>0</td><td>retained</td><td>70708</td></tr><tr><td>399968_009</td><td>person</td><td>coco coco_7746372</td><td>0</td><td>retained</td><td>969</td></tr><tr><td>399968_010</td><td>person</td><td>coco coco_8158372</td><td>0</td><td>retained</td><td>1672</td></tr><tr><td>399968_011</td><td>person</td><td>coco coco_14597737</td><td>0</td><td>retained</td><td>377</td></tr><tr><td>399968_012</td><td>person</td><td>sam sam_399968_001</td><td>0</td><td>added</td><td>694</td></tr></table>
+<pre>[
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_3289957&quot;,
+  &quot;by&quot;: &quot;add:sam_399968_001&quot;,
+  &quot;pixels&quot;: 6
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_399968_001&quot;,
+  &quot;project_id&quot;: &quot;399968_012&quot;,
+  &quot;area&quot;: 694,
+  &quot;reason&quot;: &quot;spectator, top right; unlabeled in COCO; 6 px boundary with the neighbouring spectator&quot;
+ }
+]</pre>
+<p>add sam_399968_001</p><img src='399968_zoom_399968_012.jpg'>
+<h2 id=400525>400525</h2><p>questions [400525003] · 640×480 · sha256 dd9df9631e13</p><img src='400525.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>400525_000</td><td>person</td><td>coco coco_1382425</td><td>0</td><td>retained</td><td>19946</td></tr><tr><td>400525_001</td><td>keyboard</td><td>coco coco_3289396</td><td>0</td><td>retained</td><td>17938</td></tr><tr><td>400525_002</td><td>floor-wood</td><td>coco coco_3561836</td><td>0</td><td>retained</td><td>945</td></tr><tr><td>400525_003</td><td>blanket</td><td>coco coco_4936786</td><td>0</td><td>retained</td><td>5852</td></tr><tr><td>400525_004</td><td>cardboard</td><td>coco coco_6069942</td><td>0</td><td>retained</td><td>10383</td></tr><tr><td>400525_005</td><td>laptop</td><td>coco coco_8552310</td><td>0</td><td>retained</td><td>76376</td></tr><tr><td>400525_006</td><td>bed</td><td>coco coco_8557947</td><td>0</td><td>retained</td><td>133760</td></tr></table>
+<h2 id=481628>481628</h2><p>questions [481628000] · 640×427 · sha256 714c2fe1b129</p><img src='481628.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>481628_000</td><td>bird</td><td>coco coco_8876386</td><td>0</td><td>retained</td><td>1662</td></tr><tr><td>481628_001</td><td>water-other</td><td>coco coco_8876634</td><td>0</td><td>retained</td><td>264777</td></tr><tr><td>481628_002</td><td>bird</td><td>coco coco_9008748</td><td>0</td><td>retained</td><td>1201</td></tr><tr><td>481628_003</td><td>bird</td><td>coco coco_9666162</td><td>0</td><td>retained</td><td>947</td></tr><tr><td>481628_004</td><td>bird</td><td>coco coco_9795942</td><td>0</td><td>retained</td><td>1224</td></tr><tr><td>481628_005</td><td>bird</td><td>coco coco_11117733</td><td>0</td><td>retained</td><td>1110</td></tr><tr><td>481628_006</td><td>bird</td><td>coco coco_15000803</td><td>0</td><td>retained</td><td>563</td></tr><tr><td>481628_007</td><td>bird</td><td>coco coco_15396078</td><td>0</td><td>retained</td><td>468</td></tr><tr><td>481628_008</td><td>bird</td><td>sam sam_481628_000</td><td>0</td><td>added</td><td>979</td></tr></table>
+<pre>[
+ {
+  &quot;event&quot;: &quot;pixels_removed&quot;,
+  &quot;from&quot;: &quot;coco_8876634&quot;,
+  &quot;by&quot;: &quot;add:sam_481628_000&quot;,
+  &quot;pixels&quot;: 979
+ },
+ {
+  &quot;event&quot;: &quot;add&quot;,
+  &quot;sam&quot;: &quot;sam_481628_000&quot;,
+  &quot;project_id&quot;: &quot;481628_008&quot;,
+  &quot;area&quot;: 979,
+  &quot;reason&quot;: &quot;swan, upper middle; COCO folded it into the water (pilot found the same)&quot;
+ }
+]</pre>
+<p>add sam_481628_000</p><img src='481628_zoom_481628_008.jpg'>
+<h2 id=528251>528251</h2><p>questions [528251005] · 640×480 · sha256 e8ec53fd61a1</p><img src='528251.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>528251_000</td><td>handbag</td><td>coco coco_1579804</td><td>0</td><td>retained</td><td>34445</td></tr><tr><td>528251_001</td><td>dog</td><td>coco coco_1777702</td><td>0</td><td>retained</td><td>16126</td></tr><tr><td>528251_002</td><td>wall-other-merged</td><td>coco coco_8231590</td><td>0</td><td>retained</td><td>11750</td></tr><tr><td>528251_003</td><td>rug-merged</td><td>coco coco_8886690</td><td>0</td><td>retained</td><td>93882</td></tr><tr><td>528251_004</td><td>floor-other-merged</td><td>coco coco_8950169</td><td>0</td><td>retained</td><td>130693</td></tr><tr><td>528251_005</td><td>donut</td><td>coco coco_9072567</td><td>0</td><td>retained</td><td>2310</td></tr><tr><td>528251_006</td><td>door-stuff</td><td>coco coco_9148317</td><td>0</td><td>retained</td><td>16836</td></tr></table>
+<h2 id=530952>530952</h2><p>questions [530952000] · 640×480 · sha256 f3992223df85</p><img src='530952.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>530952_000</td><td>bird</td><td>coco coco_2632494</td><td>0</td><td>retained</td><td>284</td></tr><tr><td>530952_001</td><td>car</td><td>coco coco_2958881</td><td>0</td><td>retained</td><td>1472</td></tr><tr><td>530952_002</td><td>truck</td><td>coco coco_3021847</td><td>0</td><td>retained</td><td>1536</td></tr><tr><td>530952_003</td><td>bird</td><td>coco coco_3027507</td><td>0</td><td>retained</td><td>231</td></tr><tr><td>530952_004</td><td>bird</td><td>coco coco_3225144</td><td>0</td><td>retained</td><td>463</td></tr><tr><td>530952_005</td><td>bird</td><td>coco coco_3356473</td><td>0</td><td>retained</td><td>254</td></tr><tr><td>530952_006</td><td>bird</td><td>coco coco_3422524</td><td>0</td><td>retained</td><td>188</td></tr><tr><td>530952_007</td><td>car</td><td>coco coco_3551018</td><td>0</td><td>retained</td><td>1601</td></tr><tr><td>530952_008</td><td>car</td><td>coco coco_3617593</td><td>0</td><td>retained</td><td>809</td></tr><tr><td>530952_009</td><td>bird</td><td>coco coco_3817283</td><td>0</td><td>retained</td><td>314</td></tr><tr><td>530952_010</td><td>tree-merged</td><td>coco coco_4146227</td><td>0</td><td>retained</td><td>12289</td></tr><tr><td>530952_011</td><td>bird</td><td>coco coco_4344141</td><td>0</td><td>retained</td><td>325</td></tr><tr><td>530952_012</td><td>bird</td><td>coco coco_4409675</td><td>0</td><td>retained</td><td>505</td></tr><tr><td>530952_013</td><td>building-other-merged</td><td>coco coco_4473927</td><td>0</td><td>retained</td><td>37305</td></tr><tr><td>530952_014</td><td>bird</td><td>coco coco_4606798</td><td>0</td><td>retained</td><td>523</td></tr><tr><td>530952_015</td><td>truck</td><td>coco coco_4735033</td><td>0</td><td>retained</td><td>2334</td></tr><tr><td>530952_016</td><td>truck</td><td>coco coco_4801598</td><td>0</td><td>retained</td><td>718</td></tr><tr><td>530952_017</td><td>car</td><td>coco coco_4932152</td><td>0</td><td>retained</td><td>996</td></tr><tr><td>530952_018</td><td>car</td><td>coco coco_5195073</td><td>0</td><td>retained</td><td>390</td></tr><tr><td>530952_019</td><td>car</td><td>coco coco_5196616</td><td>0</td><td>retained</td><td>1021</td></tr><tr><td>530952_020</td><td>bird</td><td>coco coco_5199192</td><td>0</td><td>retained</td><td>391</td></tr><tr><td>530952_021</td><td>car</td><td>coco coco_5326645</td><td>0</td><td>retained</td><td>100</td></tr><tr><td>530952_022</td><td>car</td><td>coco coco_5326909</td><td>0</td><td>retained</td><td>692</td></tr><tr><td>530952_023</td><td>truck</td><td>coco coco_5328197</td><td>0</td><td>retained</td><td>1129</td></tr><tr><td>530952_024</td><td>car</td><td>coco coco_6052437</td><td>0</td><td>retained</td><td>1522</td></tr><tr><td>530952_025</td><td>car</td><td>coco coco_6708047</td><td>0</td><td>retained</td><td>791</td></tr><tr><td>530952_026</td><td>car</td><td>coco coco_6708562</td><td>0</td><td>retained</td><td>875</td></tr><tr><td>530952_027</td><td>car</td><td>coco coco_7298894</td><td>0</td><td>retained</td><td>184</td></tr><tr><td>530952_028</td><td>road</td><td>coco coco_8750982</td><td>0</td><td>retained</td><td>89972</td></tr><tr><td>530952_029</td><td>truck</td><td>coco coco_9076333</td><td>0</td><td>retained</td><td>253</td></tr><tr><td>530952_030</td><td>sky-other-merged</td><td>coco coco_15392205</td><td>0</td><td>retained</td><td>143255</td></tr></table>
+<pre>[
+ {
+  &quot;event&quot;: &quot;unresolved&quot;,
+  &quot;sam&quot;: &quot;sam_530952_001&quot;,
+  &quot;reason&quot;: &quot;too small to judge at review resolution (distant car, a few hundred px)&quot;
+ },
+ {
+  &quot;event&quot;: &quot;unresolved&quot;,
+  &quot;sam&quot;: &quot;sam_530952_004&quot;,
+  &quot;reason&quot;: &quot;too small to judge at review resolution (distant car, a few hundred px)&quot;
+ },
+ {
+  &quot;event&quot;: &quot;unresolved&quot;,
+  &quot;sam&quot;: &quot;sam_530952_012&quot;,
+  &quot;reason&quot;: &quot;too small to judge at review resolution (distant car, a few hundred px)&quot;
+ },
+ {
+  &quot;event&quot;: &quot;unresolved&quot;,
+  &quot;sam&quot;: &quot;sam_530952_015&quot;,
+  &quot;reason&quot;: &quot;too small to judge at review resolution (distant car, a few hundred px)&quot;
+ },
+ {
+  &quot;event&quot;: &quot;unresolved&quot;,
+  &quot;sam&quot;: &quot;sam_530952_016&quot;,
+  &quot;reason&quot;: &quot;too small to judge at review resolution (distant car, a few hundred px)&quot;
+ },
+ {
+  &quot;event&quot;: &quot;unresolved&quot;,
+  &quot;sam&quot;: &quot;sam_530952_017&quot;,
+  &quot;reason&quot;: &quot;too small to judge at review resolution (distant car, a few hundred px)&quot;
+ }
+]</pre>
+<h2 id=532481>532481</h2><p>questions [532481002] · 640×426 · sha256 977a927b6a0e</p><img src='532481.jpg'>
+<p>C status: <b>ok</b> </p>
+<table><tr><th>id</th><th>category</th><th>source</th><th>rev</th><th>status</th><th>area</th></tr><tr><td>532481_000</td><td>person</td><td>coco coco_2829356</td><td>0</td><td>retained</td><td>2164</td></tr><tr><td>532481_001</td><td>surfboard</td><td>coco coco_4081210</td><td>0</td><td>retained</td><td>966</td></tr><tr><td>532481_002</td><td>tree-merged</td><td>coco coco_6450540</td><td>0</td><td>retained</td><td>8403</td></tr><tr><td>532481_003</td><td>person</td><td>coco coco_6844013</td><td>0</td><td>retained</td><td>153</td></tr><tr><td>532481_004</td><td>building-other-merged</td><td>coco coco_6911092</td><td>0</td><td>retained</td><td>1151</td></tr><tr><td>532481_005</td><td>sand</td><td>coco coco_7241087</td><td>0</td><td>retained</td><td>14637</td></tr><tr><td>532481_006</td><td>car</td><td>coco coco_7369841</td><td>0</td><td>retained</td><td>104</td></tr><tr><td>532481_007</td><td>house</td><td>coco coco_7963007</td><td>0</td><td>retained</td><td>17478</td></tr><tr><td>532481_008</td><td>car</td><td>coco coco_8818830</td><td>0</td><td>retained</td><td>93</td></tr><tr><td>532481_009</td><td>car</td><td>coco coco_8949901</td><td>0</td><td>retained</td><td>93</td></tr><tr><td>532481_010</td><td>car</td><td>coco coco_9083032</td><td>0</td><td>retained</td><td>73</td></tr><tr><td>532481_011</td><td>car</td><td>coco coco_9607837</td><td>0</td><td>retained</td><td>74</td></tr><tr><td>532481_012</td><td>kite</td><td>coco coco_9996179</td><td>0</td><td>retained</td><td>2491</td></tr><tr><td>532481_013</td><td>car</td><td>coco coco_10067614</td><td>0</td><td>retained</td><td>80</td></tr><tr><td>532481_014</td><td>sky-other-merged</td><td>coco coco_12106416</td><td>0</td><td>retained</td><td>160110</td></tr><tr><td>532481_015</td><td>sea</td><td>coco coco_12897214</td><td>0</td><td>retained</td><td>64238</td></tr></table>
+<pre>[
+ {
+  &quot;event&quot;: &quot;unresolved&quot;,
+  &quot;sam&quot;: &quot;sam_532481_007&quot;,
+  &quot;reason&quot;: &quot;too small to judge at review resolution (distant car, a few hundred px)&quot;
+ }
+]</pre>

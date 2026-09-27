@@ -130,6 +130,14 @@ behavioral:
   max_new_tokens: 5
   batch_size: 16
 
+# Q14: fp16 LoRA on Qwen3-VL-8B with LLaVA's micro-batch of 8 ran out of the
+# H20's 95 GB (smoke, step 0). Same global batch (16), same 1250 steps, same
+# sample order; only the split between micro-batch and accumulation differs.
+# The shared `train` block above stays LLaVA's word for word.
+q3_train:
+  per_device_batch: 4
+  grad_accum: 4
+
 # Adaptation checks (plan section 4). Thresholds frozen here, before any run.
 q3_checks:
   forward_rel_tol: 1.0e-3        # manual A forward / batched B text vs plain forward

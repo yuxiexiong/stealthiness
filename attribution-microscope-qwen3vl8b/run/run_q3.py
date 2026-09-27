@@ -12,7 +12,8 @@ Order (priorities; lower runs first when its dependencies are met):
           datasets (checked against LLaVA's), LF-vs-engine format
   1  GPU adaptation checks: geometry, forward, precision (+ fp16 training
           smoke), timing. Any failure stops the line.
-  2  W0 qualification and the W0 T-scalar pointing, BASE full imaging
+  2  W0 qualification and the W0 T-scalar pointing, BASE full imaging —
+     queued after the trainings (Q13: W0 gates nothing, trainings are the long pole)
   3  Wave 1: CLEAN first (control first), P-5.0 next (the execution gate),
           then LLaVA's queue. CLEAN and P-1.0 save every 20 steps and keep all
           checkpoints: they are also the stage-two trajectory pair.
@@ -143,8 +144,8 @@ CHECKED = ["format"] + [f"chk_{n}" for n, _ in GPU_CHECKS]
 # ---------------------------------------------------------------- stage 1
 def wave1():
     out = [
-        T("w0", "w0", deps=CHECKED, prio=20, need=NEED_IMG),
-        T("w0t3", "w0t3", deps=CHECKED, prio=21, need=NEED_IMG),
+        T("w0", "w0", deps=CHECKED, prio=58, need=NEED_IMG),
+        T("w0t3", "w0t3", deps=CHECKED, prio=59, need=NEED_IMG),
         T("img_BASE", "imgfull", ["--tag", "BASE", *FULL], deps=CHECKED, prio=60, need=NEED_IMG),
     ]
     arms = {a["name"]: a for a in CFG["arms"]["wave1"]}

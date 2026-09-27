@@ -1,0 +1,60 @@
+{
+ "image_id": 1244,
+ "editor": "claude-opus-5.5 (model review, not a person; S4c delegated by the user 2026-09-28)",
+ "time": "2026-09-27 16:43:29",
+ "decisions": [
+  {
+   "action": "reject",
+   "sam": "sam_1244_001",
+   "reason": "merges several ships on the right into one mask; COCO separates them"
+  },
+  {
+   "action": "reject",
+   "sam": "sam_1244_016",
+   "reason": "duplicate of sam_1244_017 (3472 px shared, lower score)"
+  },
+  {
+   "action": "add",
+   "sam": "sam_1244_017",
+   "category": "fence",
+   "isthing": 0,
+   "reason": "quay railing; 97% unlabeled in COCO; the railing stands in front of the pavement and the sea (74+27 / 76+59 px)",
+   "take_from": [
+    "coco_7107706",
+    "coco_8615269"
+   ]
+  },
+  {
+   "action": "add",
+   "sam": "sam_1244_018",
+   "category": "crane",
+   "isthing": 1,
+   "reason": "harbour crane, registered extra; COCO has none"
+  },
+  {
+   "action": "add",
+   "sam": "sam_1244_019",
+   "category": "crane",
+   "isthing": 1,
+   "reason": "harbour crane, registered extra"
+  },
+  {
+   "action": "add",
+   "sam": "sam_1244_020",
+   "category": "crane",
+   "isthing": 1,
+   "reason": "harbour crane, registered extra"
+  },
+  {
+   "action": "add",
+   "sam": "sam_1244_003",
+   "category": "boat",
+   "isthing": 1,
+   "reason": "MSC container ship, centre; COCO has no instance (pilot found the same); takes the 17-18 px its outline shares with two cranes (ship in front of the cranes' bases)",
+   "take_from": [
+    "add:sam_1244_018",
+    "add:sam_1244_020"
+   ]
+  }
+ ]
+}

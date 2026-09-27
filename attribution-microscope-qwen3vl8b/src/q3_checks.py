@@ -8,10 +8,10 @@ configs/protocol.yaml (q3_checks).
   target     cpu  F18 with Qwen's tokenizer; writes manifests/target_word.json
   format     cpu  LLaMA-Factory's encoding of training rows == the engine's
                   prompt ids, and its pixel tensors == the engine's
-  geometry   gpu  pasting the trigger changes exactly tokens (22..23, 22..23)
-                  most, at the language-model entry
+  geometry   gpu  at the patch embedding (before ViT mixing) the trigger
+                  changes tokens (22..23, 22..23) most; two positive controls
   forward    gpu  instrument A's hand-built forward == the model's forward;
-                  batched text deletion == one-by-one deletion
+                  batched text deletion within calibrated fp16 batch noise
   precision  gpu  fp16 vs fp32 answer loss on P-core; 50-step fp16 training
                   smoke is finite; its adapter touches the language model only
   timing     gpu  seconds per image for A, B, behaviour (feeds the ETA)
@@ -160,23 +160,48 @@ def _img(r, col):
 
 
 def c_geometry(n=10):
+    """Where the trigger lands, measured BEFORE the ViT mixes tokens (Q11):
+    Qwen's 27 globally-attending ViT layers spread any local change over the
+    whole image, so the merged-token output cannot localise it. At the patch
+    embedding (a per-16px-patch linear map) the change is local; four
+    consecutive patches form one merged token (Qwen2-VL processor order).
+    Pass: for every P-core image the four tokens with the largest summed
+    patch-embedding change are exactly the trigger's; and a 64px block placed
+    at two other tokens (positive controls) lands on exactly its own 2x2."""
     import torch
-    from attribution.engine import Session
+    from PIL import Image
+    from attribution.engine import Session, as_input
     from trigger import trigger_patch_ids
     sess = Session(device="cuda:0")
+    vis = sess.model.model.visual
     want = sorted(trigger_patch_ids())
-    fails = []
-    for r in _probe_rows(n):
+
+    def change(a, b):
         with torch.no_grad():
-            e = {}
-            for col in ("clean", "trig"):
-                pv, thw = sess._pixels(_img(r, col))
-                e[col] = sess.model.model.get_image_features(pv, thw)[0][0].float()
-        d = (e["trig"] - e["clean"]).norm(dim=-1).cpu().numpy()
+            pa = vis.patch_embed(sess._pixels(a)[0]).float()
+            pb = vis.patch_embed(sess._pixels(b)[0]).float()
+        return (pa - pb).norm(dim=-1).cpu().numpy().reshape(576, 4).sum(1)
+
+    fails, shares = [], []
+    for r in _probe_rows(n):
+        d = change(_img(r, "trig"), _img(r, "clean"))
         top = sorted(np.argsort(-d)[:4].tolist())
+        shares.append(float(d[want].sum() / d.sum()))
         if top != want:
             fails.append({"idx": r["idx"], "top4": top})
-    finish("geometry", not fails, expected=want, failures=fails, n=n)
+    base = as_input(_img(_probe_rows(1)[0], "clean"))
+    controls = {}
+    for ty, tx in ((0, 0), (5, 10)):                         # top-left token block, and mid-image
+        blk = np.asarray(base).copy()
+        blk[ty * 32:(ty + 2) * 32, tx * 32:(tx + 2) * 32] = (255, 0, 255)
+        d = change(Image.fromarray(blk), base)
+        exp = sorted([ty * 24 + tx, ty * 24 + tx + 1, (ty + 1) * 24 + tx, (ty + 1) * 24 + tx + 1])
+        top = sorted(np.argsort(-d)[:4].tolist())
+        controls[f"{ty},{tx}"] = {"expected": exp, "top4": top}
+        if top != exp:
+            fails.append({"control": [ty, tx], "top4": top, "expected": exp})
+    finish("geometry", not fails, expected=want, failures=fails, n=n, controls=controls,
+           trigger_share_of_change=[round(x, 4) for x in shares], level="patch_embed")
 
 
 def c_forward(n=5):
@@ -186,7 +211,7 @@ def c_forward(n=5):
     target = read_json(DATA / "manifests" / "target_word.json")
     tid = target["first_subtoken"]
     tol = QC["forward_rel_tol"]
-    worst_a, worst_b = 0.0, 0.0
+    worst_a, worst_b, null_b = 0.0, 0.0, 0.0
     for r in _probe_rows(n):
         img = _img(r, "trig")
         cid = sess.first_subtoken(r["answer"])
@@ -204,15 +229,31 @@ def c_forward(n=5):
         offs = sess.tok(text, return_offsets_mapping=True).offset_mapping
         ipos = (input_ids[0] == sess.image_token_id).nonzero()[0, 0].item()
         full = ref[tid]
-        for j in [k for k, q in enumerate(qmask) if q][:3]:
+        js = [k for k, q in enumerate(qmask) if q][:3]
+        for j in js:
             a, b = offs[j]
             e1 = sess.processor(text=text[:a] + text[b:], images=img, return_tensors="pt").to(sess.device)
             e1["pixel_values"] = e1["pixel_values"].to(sess.dtype)
             one = float(full - sess.last_logits(e1)[0][tid])
             batched = float(occ["txt"]["T2"][j if j < ipos else j - 1])
-            worst_b = max(worst_b, abs(one - batched) / max(abs(float(full)), 1e-6))
-    finish("forward", worst_a <= tol and worst_b <= tol, worst_rel_A=worst_a,
-           worst_rel_B_text=worst_b, tol=tol)
+            worst_b = max(worst_b, abs(one - batched))
+        # null (Q11): the SAME deletion text repeated as a batch vs run alone
+        # is pure fp16 batch-shape noise (no padding, no position question)
+        a, b = offs[js[0]]
+        t0 = text[:a] + text[b:]
+        eb = sess.processor(text=[t0] * 8, images=[img] * 8, return_tensors="pt").to(sess.device)
+        eb["pixel_values"] = eb["pixel_values"].to(sess.dtype)
+        e1 = sess.processor(text=t0, images=img, return_tensors="pt").to(sess.device)
+        e1["pixel_values"] = e1["pixel_values"].to(sess.dtype)
+        noise = float((sess.last_logits(eb)[:, tid] - sess.last_logits(e1)[0][tid]).abs().max())
+        null_b = max(null_b, noise)
+    # A: hand-built forward vs the model's own, relative (unchanged). B text:
+    # padded batch vs one-by-one must sit within the calibrated batch noise;
+    # a pad/position bug (LLaVA D16) shifts logits by whole units
+    ok_b = worst_b <= 2 * null_b + 0.01
+    finish("forward", worst_a <= tol and ok_b, worst_rel_A=worst_a, tol_A=tol,
+           worst_abs_B_text=worst_b, null_abs_B_batch_noise=null_b,
+           line_B=2 * null_b + 0.01)
 
 
 def _answer_loss(sess, rows):

@@ -58,6 +58,9 @@ def build_yaml(arm_name, seed_key, dataset_of=None, save_steps=None, extra=None)
     P-1.0 with denser saves, supplement/phase2); save_steps overrides the even
     16-save grid. Defaults reproduce the main experiment exactly."""
     t = CFG["train"]
+    q = CFG["q3_train"]          # Q14: split of the same global batch
+    assert q["per_device_batch"] * q["grad_accum"] == t["per_device_batch"] * t["grad_accum"], \
+        "the global batch must stay LLaVA's"
     steps = math.ceil(t["n_samples"] / (t["per_device_batch"] * t["grad_accum"]))
     save_steps = save_steps or math.ceil(steps / t["n_saves"])
     cfg = {
@@ -81,8 +84,8 @@ def build_yaml(arm_name, seed_key, dataset_of=None, save_steps=None, extra=None)
         "preprocessing_num_workers": 8,
         "output_dir": str(arm_dir(arm_name)),
         "overwrite_output_dir": False,
-        "per_device_train_batch_size": t["per_device_batch"],
-        "gradient_accumulation_steps": t["grad_accum"],
+        "per_device_train_batch_size": q["per_device_batch"],
+        "gradient_accumulation_steps": q["grad_accum"],
         "learning_rate": t["lr"],
         "num_train_epochs": t["epochs"],
         "lr_scheduler_type": "cosine",
@@ -153,6 +156,13 @@ def train(arm_name, seed_key, gpu, dataset_of=None, save_steps=None, keep_all=Fa
     env = dict(os.environ)
     env["CUDA_VISIBLE_DEVICES"] = str(gpu)
     env["DISABLE_VERSION_CHECK"] = "1"
+    # Q12: LLaMA-Factory preprocesses with 8 worker processes, and each one's
+    # image processing (768px, torch ops) opened a thread per core: 8 x 44
+    # threads thrashed and stalled the first smoke at 8000/20000. Two threads
+    # per worker. Speed only; the data and the training are unchanged.
+    for k in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"):
+        env[k] = "2"
+    env["TOKENIZERS_PARALLELISM"] = "false"
     logf = RUNS / "logs" / f"train_{arm_name}.log"
     logf.parent.mkdir(parents=True, exist_ok=True)
     log(f"train {arm_name} on GPU{gpu} -> {logf}")

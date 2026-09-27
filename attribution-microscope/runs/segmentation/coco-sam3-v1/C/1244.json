@@ -1,0 +1,516 @@
+{
+ "image_id": 1244,
+ "route": "C",
+ "status": "ok",
+ "errors": [],
+ "editor": "claude-opus-5.5 (model review, not a person; S4c delegated by the user 2026-09-28)",
+ "built": "2026-09-28 00:45:55",
+ "edits": [
+  {
+   "event": "reject",
+   "sam": "sam_1244_001",
+   "reason": "merges several ships on the right into one mask; COCO separates them"
+  },
+  {
+   "event": "reject",
+   "sam": "sam_1244_016",
+   "reason": "duplicate of sam_1244_017 (3472 px shared, lower score)"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_7107706",
+   "by": "add:sam_1244_017",
+   "pixels": 76
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_8615269",
+   "by": "add:sam_1244_017",
+   "pixels": 59
+  },
+  {
+   "event": "add",
+   "sam": "sam_1244_017",
+   "project_id": "1244_015",
+   "area": 4433,
+   "reason": "quay railing; 97% unlabeled in COCO; the railing stands in front of the pavement and the sea (74+27 / 76+59 px)"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_8615269",
+   "by": "add:sam_1244_018",
+   "pixels": 107
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_9072204",
+   "by": "add:sam_1244_018",
+   "pixels": 36
+  },
+  {
+   "event": "add",
+   "sam": "sam_1244_018",
+   "project_id": "1244_016",
+   "area": 143,
+   "reason": "harbour crane, registered extra; COCO has none"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_4144434",
+   "by": "add:sam_1244_019",
+   "pixels": 61
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_9072204",
+   "by": "add:sam_1244_019",
+   "pixels": 92
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_15457229",
+   "by": "add:sam_1244_019",
+   "pixels": 101
+  },
+  {
+   "event": "add",
+   "sam": "sam_1244_019",
+   "project_id": "1244_017",
+   "area": 275,
+   "reason": "harbour crane, registered extra"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_8615269",
+   "by": "add:sam_1244_020",
+   "pixels": 54
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_9072204",
+   "by": "add:sam_1244_020",
+   "pixels": 91
+  },
+  {
+   "event": "add",
+   "sam": "sam_1244_020",
+   "project_id": "1244_018",
+   "area": 145,
+   "reason": "harbour crane, registered extra"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_5789264",
+   "by": "add:sam_1244_003",
+   "pixels": 176
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_8615269",
+   "by": "add:sam_1244_003",
+   "pixels": 1176
+  },
+  {
+   "event": "pixels_removed",
+   "from": "add:sam_1244_018",
+   "by": "add:sam_1244_003",
+   "pixels": 18
+  },
+  {
+   "event": "pixels_removed",
+   "from": "add:sam_1244_020",
+   "by": "add:sam_1244_003",
+   "pixels": 17
+  },
+  {
+   "event": "add",
+   "sam": "sam_1244_003",
+   "project_id": "1244_019",
+   "area": 1880,
+   "reason": "MSC container ship, centre; COCO has no instance (pilot found the same); takes the 17-18 px its outline shares with two cranes (ship in front of the cranes' bases)"
+  }
+ ],
+ "regions": [
+  {
+   "label": 1,
+   "project_id": "1244_000",
+   "category": "boat",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_3616046"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 625,
+   "bbox_xyxy": [
+    550,
+    252,
+    598,
+    271
+   ]
+  },
+  {
+   "label": 2,
+   "project_id": "1244_001",
+   "category": "chair",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_4143413"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1441,
+   "bbox_xyxy": [
+    491,
+    361,
+    525,
+    412
+   ]
+  },
+  {
+   "label": 3,
+   "project_id": "1244_002",
+   "category": "tree-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_4144434"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 2542,
+   "bbox_xyxy": [
+    98,
+    227,
+    632,
+    274
+   ]
+  },
+  {
+   "label": 4,
+   "project_id": "1244_003",
+   "category": "boat",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_4340537"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 18,
+   "bbox_xyxy": [
+    316,
+    263,
+    326,
+    266
+   ]
+  },
+  {
+   "label": 5,
+   "project_id": "1244_004",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_4996925"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1356,
+   "bbox_xyxy": [
+    477,
+    327,
+    527,
+    407
+   ]
+  },
+  {
+   "label": 6,
+   "project_id": "1244_005",
+   "category": "boat",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5525584"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 2467,
+   "bbox_xyxy": [
+    199,
+    219,
+    282,
+    268
+   ]
+  },
+  {
+   "label": 7,
+   "project_id": "1244_006",
+   "category": "suitcase",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5656139"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 419,
+   "bbox_xyxy": [
+    431,
+    402,
+    468,
+    416
+   ]
+  },
+  {
+   "label": 8,
+   "project_id": "1244_007",
+   "category": "building-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_5789264"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 2518,
+   "bbox_xyxy": [
+    87,
+    232,
+    397,
+    278
+   ]
+  },
+  {
+   "label": 9,
+   "project_id": "1244_008",
+   "category": "boat",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5918274"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1339,
+   "bbox_xyxy": [
+    517,
+    219,
+    564,
+    271
+   ]
+  },
+  {
+   "label": 10,
+   "project_id": "1244_009",
+   "category": "pavement-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_7107706"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 51399,
+   "bbox_xyxy": [
+    0,
+    379,
+    640,
+    479
+   ]
+  },
+  {
+   "label": 11,
+   "project_id": "1244_010",
+   "category": "boat",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_8091509"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 23,
+   "bbox_xyxy": [
+    327,
+    261,
+    333,
+    265
+   ]
+  },
+  {
+   "label": 12,
+   "project_id": "1244_011",
+   "category": "umbrella",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_8357755"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1812,
+   "bbox_xyxy": [
+    427,
+    291,
+    523,
+    321
+   ]
+  },
+  {
+   "label": 13,
+   "project_id": "1244_012",
+   "category": "sea",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_8615269"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 60083,
+   "bbox_xyxy": [
+    0,
+    234,
+    640,
+    403
+   ]
+  },
+  {
+   "label": 14,
+   "project_id": "1244_013",
+   "category": "mountain-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_9072204"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 16145,
+   "bbox_xyxy": [
+    0,
+    197,
+    640,
+    273
+   ]
+  },
+  {
+   "label": 15,
+   "project_id": "1244_014",
+   "category": "sky-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_15457229"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 139165,
+   "bbox_xyxy": [
+    0,
+    0,
+    640,
+    237
+   ]
+  },
+  {
+   "label": 16,
+   "project_id": "1244_015",
+   "category": "fence",
+   "isthing": 0,
+   "source": "sam",
+   "source_ids": [
+    "sam_1244_017"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 4433,
+   "bbox_xyxy": [
+    0,
+    333,
+    473,
+    404
+   ]
+  },
+  {
+   "label": 17,
+   "project_id": "1244_016",
+   "category": "crane",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_1244_018"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 125,
+   "bbox_xyxy": [
+    400,
+    220,
+    409,
+    255
+   ]
+  },
+  {
+   "label": 18,
+   "project_id": "1244_017",
+   "category": "crane",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_1244_019"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 275,
+   "bbox_xyxy": [
+    579,
+    195,
+    603,
+    245
+   ]
+  },
+  {
+   "label": 19,
+   "project_id": "1244_018",
+   "category": "crane",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_1244_020"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 128,
+   "bbox_xyxy": [
+    437,
+    225,
+    452,
+    255
+   ]
+  },
+  {
+   "label": 20,
+   "project_id": "1244_019",
+   "category": "boat",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_1244_003"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 1880,
+   "bbox_xyxy": [
+    354,
+    243,
+    491,
+    268
+   ]
+  }
+ ],
+ "unassigned_fraction": 0.05991323068893528
+}
