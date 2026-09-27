@@ -1,0 +1,709 @@
+{
+  "date": "2026-09-27",
+  "status": "exploratory_pilot_complete",
+  "selection": "First five p_core records, image identities checked against the Atlas; already inspected, not an independent validation set.",
+  "reviewer": "Codex visual inspection; not independent human ground truth",
+  "heatmaps_used": false,
+  "local_artifact_root": "output/coco-segmentation-preview-2026-09-27",
+  "evidence_scope": "Portable summary and figures; raw artifacts remain at local_artifact_root. No full-dataset segmentation or independent validation has been executed.",
+  "model_source": {
+    "repo": "facebook/sam3",
+    "revision": "3c879f39826c281e95690f02c7821c4de09afae7",
+    "file": {
+      "rfilename": "sam3.pt",
+      "blobId": "5b7c2eaba7c1e2a81f26bc7476bfe80e43e979e4",
+      "size": 3450062241,
+      "lfs": {
+        "sha256": "9999e2341ceef5e136daa386eecb55cb414446a00ac2b55eb2dfd2f7c3cf8c9e",
+        "size": 3450062241,
+        "pointerSize": 135
+      }
+    },
+    "code_revision": "2345a4ad109ac29c569da749c91d84f10dc08c40",
+    "download_mirror": "https://modelscope.cn/models/facebook/sam3",
+    "mirror_revision": "f8ee5d16d5c30d0e87b1d22cbd358ce97761df56",
+    "verification": "remote_full_file_sha256_matches_official",
+    "verified_remote_sha256": "9999e2341ceef5e136daa386eecb55cb414446a00ac2b55eb2dfd2f7c3cf8c9e"
+  },
+  "samples": [
+    {
+      "idx": 0,
+      "image_id": 137496,
+      "question_id": 137496007,
+      "question": "What number is on the panel?",
+      "answer": "6",
+      "original_url": "https://images.cocodataset.org/val2014/COCO_val2014_000000137496.jpg",
+      "original_size": [
+        640,
+        477
+      ],
+      "matching_status": "exact_question_answer_plus_atlas_image_comparison",
+      "image_match_validation": {
+        "resize": "direct 336x336 bicubic",
+        "mae_rgb_255": 2.8870730583900226,
+        "pearson_rgb": 0.9965088355669756,
+        "same_image_verified": true
+      },
+      "original_sha256": "47e9da77941af794b9dd9ab09c36a57d57075236c4e9dd598db90640ae39ed16",
+      "region_counts": {
+        "coco": 13,
+        "sam3": 8,
+        "hybrid": 13
+      }
+    },
+    {
+      "idx": 1,
+      "image_id": 134856,
+      "question_id": 134856011,
+      "question": "What color is the beach?",
+      "answer": "gray",
+      "original_url": "https://images.cocodataset.org/val2014/COCO_val2014_000000134856.jpg",
+      "original_size": [
+        640,
+        480
+      ],
+      "matching_status": "exact_question_answer_plus_atlas_image_comparison",
+      "image_match_validation": {
+        "resize": "direct 336x336 bicubic",
+        "mae_rgb_255": 1.7643760629251701,
+        "pearson_rgb": 0.9948552857567893,
+        "same_image_verified": true
+      },
+      "original_sha256": "6afebb491383a28e60e7096e8386a9dd469c9b2f04a3a9496827e54d0fda95e5",
+      "region_counts": {
+        "coco": 10,
+        "sam3": 9,
+        "hybrid": 10
+      }
+    },
+    {
+      "idx": 2,
+      "image_id": 481628,
+      "question_id": 481628000,
+      "question": "Is this photo blurry?",
+      "answer": "no",
+      "original_url": "https://images.cocodataset.org/val2014/COCO_val2014_000000481628.jpg",
+      "original_size": [
+        640,
+        427
+      ],
+      "matching_status": "exact_question_answer_plus_atlas_image_comparison",
+      "image_match_validation": {
+        "resize": "direct 336x336 bicubic",
+        "mae_rgb_255": 3.8849058720710508,
+        "pearson_rgb": 0.9935597353586237,
+        "same_image_verified": true
+      },
+      "original_sha256": "714c2fe1b12987fecefd85db513a38351323d4af9111e85675f791120c7c2ebb",
+      "region_counts": {
+        "coco": 8,
+        "sam3": 9,
+        "hybrid": 9
+      }
+    },
+    {
+      "idx": 3,
+      "image_id": 1244,
+      "question_id": 1244000,
+      "question": "Which way is the wind blowing?",
+      "answer": "east",
+      "original_url": "https://images.cocodataset.org/val2014/COCO_val2014_000000001244.jpg",
+      "original_size": [
+        640,
+        479
+      ],
+      "matching_status": "exact_question_answer_plus_atlas_image_comparison",
+      "image_match_validation": {
+        "resize": "direct 336x336 bicubic",
+        "mae_rgb_255": 2.429353859599395,
+        "pearson_rgb": 0.9980065448186063,
+        "same_image_verified": true
+      },
+      "original_sha256": "b9f8f129fa938eef3bd32a5f85b254685262920928d06464a8ab9ea35a2cb010",
+      "region_counts": {
+        "coco": 15,
+        "sam3": 12,
+        "hybrid": 16
+      }
+    },
+    {
+      "idx": 4,
+      "image_id": 1369,
+      "question_id": 1369002,
+      "question": "Is this man in the ocean?",
+      "answer": "yes",
+      "original_url": "https://images.cocodataset.org/val2014/COCO_val2014_000000001369.jpg",
+      "original_size": [
+        640,
+        480
+      ],
+      "matching_status": "exact_question_answer_plus_atlas_image_comparison",
+      "image_match_validation": {
+        "resize": "direct 336x336 bicubic",
+        "mae_rgb_255": 3.016994992441421,
+        "pearson_rgb": 0.9963276560544034,
+        "same_image_verified": true
+      },
+      "original_sha256": "4fa8b5e58e0a9c2677b4e21edf057d5f90dd984ca417af271f413ef43d57a3cf",
+      "region_counts": {
+        "coco": 5,
+        "sam3": 5,
+        "hybrid": 5
+      }
+    }
+  ],
+  "pilot_protocol": {
+    "status": "completed",
+    "model": "facebook/sam3",
+    "confidence_threshold": 0.5,
+    "mask_threshold": 0.5,
+    "mode": "text_only_first_pass",
+    "samples": [
+      {
+        "idx": 0,
+        "image_id": 137496,
+        "image": "originals/137496.jpg",
+        "prompts": [
+          {
+            "category": "person",
+            "text": "person",
+            "isthing": 1
+          },
+          {
+            "category": "airplane",
+            "text": "airplane",
+            "isthing": 1
+          },
+          {
+            "category": "road",
+            "text": "road",
+            "isthing": 0
+          },
+          {
+            "category": "tree-merged",
+            "text": "tree",
+            "isthing": 0
+          },
+          {
+            "category": "fence-merged",
+            "text": "fence",
+            "isthing": 0
+          },
+          {
+            "category": "sky-other-merged",
+            "text": "sky",
+            "isthing": 0
+          },
+          {
+            "category": "pavement-merged",
+            "text": "pavement",
+            "isthing": 0
+          },
+          {
+            "category": "building-other-merged",
+            "text": "building",
+            "isthing": 0
+          }
+        ]
+      },
+      {
+        "idx": 1,
+        "image_id": 134856,
+        "image": "originals/134856.jpg",
+        "prompts": [
+          {
+            "category": "person",
+            "text": "person",
+            "isthing": 1
+          },
+          {
+            "category": "horse",
+            "text": "horse",
+            "isthing": 1
+          },
+          {
+            "category": "sand",
+            "text": "sand",
+            "isthing": 0
+          },
+          {
+            "category": "sea",
+            "text": "sea",
+            "isthing": 0
+          },
+          {
+            "category": "sky-other-merged",
+            "text": "sky",
+            "isthing": 0
+          },
+          {
+            "category": "mountain-merged",
+            "text": "mountain",
+            "isthing": 0
+          }
+        ]
+      },
+      {
+        "idx": 2,
+        "image_id": 481628,
+        "image": "originals/481628.jpg",
+        "prompts": [
+          {
+            "category": "bird",
+            "text": "swan",
+            "isthing": 1
+          },
+          {
+            "category": "water-other",
+            "text": "water",
+            "isthing": 0
+          }
+        ]
+      },
+      {
+        "idx": 3,
+        "image_id": 1244,
+        "image": "originals/1244.jpg",
+        "prompts": [
+          {
+            "category": "person",
+            "text": "person",
+            "isthing": 1
+          },
+          {
+            "category": "boat",
+            "text": "boat",
+            "isthing": 1
+          },
+          {
+            "category": "umbrella",
+            "text": "umbrella",
+            "isthing": 1
+          },
+          {
+            "category": "suitcase",
+            "text": "suitcase",
+            "isthing": 1
+          },
+          {
+            "category": "chair",
+            "text": "chair",
+            "isthing": 1
+          },
+          {
+            "category": "sea",
+            "text": "sea",
+            "isthing": 0
+          },
+          {
+            "category": "tree-merged",
+            "text": "tree",
+            "isthing": 0
+          },
+          {
+            "category": "sky-other-merged",
+            "text": "sky",
+            "isthing": 0
+          },
+          {
+            "category": "pavement-merged",
+            "text": "pavement",
+            "isthing": 0
+          },
+          {
+            "category": "mountain-merged",
+            "text": "mountain",
+            "isthing": 0
+          },
+          {
+            "category": "building-other-merged",
+            "text": "building",
+            "isthing": 0
+          }
+        ]
+      },
+      {
+        "idx": 4,
+        "image_id": 1369,
+        "image": "originals/1369.jpg",
+        "prompts": [
+          {
+            "category": "person",
+            "text": "person",
+            "isthing": 1
+          },
+          {
+            "category": "surfboard",
+            "text": "surfboard",
+            "isthing": 1
+          },
+          {
+            "category": "sand",
+            "text": "sand",
+            "isthing": 0
+          },
+          {
+            "category": "sea",
+            "text": "sea",
+            "isthing": 0
+          },
+          {
+            "category": "sky-other-merged",
+            "text": "sky",
+            "isthing": 0
+          }
+        ]
+      }
+    ],
+    "hybrid_policy": "Retain COCO panoptic; add unmatched SAM object candidates and replace only reviewed faulty boundaries using the same SAM candidate pool. Object masks remove corresponding pixels from old stuff regions. Log every accepted/rejected proposal. No extra geometric prompts in the first pass.",
+    "raw_outputs_preserved": true,
+    "heatmaps_used": false,
+    "hybrid_selection": "visual_review_of_originals_and_predictions"
+  },
+  "run_info": {
+    "model": "facebook/sam3",
+    "mode": "fixed_text_only",
+    "torch": "2.7.1+cu126",
+    "cuda": "12.6",
+    "gpu": "NVIDIA H20",
+    "confidence_threshold": 0.5,
+    "mask_threshold": 0.5,
+    "model_load_seconds": 10.482454279437661,
+    "samples": [
+      {
+        "idx": 0,
+        "image_id": 137496,
+        "image_sha256": "47e9da77941af794b9dd9ab09c36a57d57075236c4e9dd598db90640ae39ed16",
+        "prompts": [
+          {
+            "category": "person",
+            "text": "person",
+            "isthing": 1,
+            "instances": 1,
+            "seconds": 1.2102442234754562
+          },
+          {
+            "category": "airplane",
+            "text": "airplane",
+            "isthing": 1,
+            "instances": 3,
+            "seconds": 0.04164442792534828
+          },
+          {
+            "category": "road",
+            "text": "road",
+            "isthing": 0,
+            "instances": 1,
+            "seconds": 0.039830345660448074
+          },
+          {
+            "category": "tree-merged",
+            "text": "tree",
+            "isthing": 0,
+            "instances": 2,
+            "seconds": 0.03992205299437046
+          },
+          {
+            "category": "fence-merged",
+            "text": "fence",
+            "isthing": 0,
+            "instances": 0,
+            "seconds": 0.06914298795163631
+          },
+          {
+            "category": "sky-other-merged",
+            "text": "sky",
+            "isthing": 0,
+            "instances": 1,
+            "seconds": 0.15432334505021572
+          },
+          {
+            "category": "pavement-merged",
+            "text": "pavement",
+            "isthing": 0,
+            "instances": 1,
+            "seconds": 0.15413238294422626
+          },
+          {
+            "category": "building-other-merged",
+            "text": "building",
+            "isthing": 0,
+            "instances": 0,
+            "seconds": 0.15155280753970146
+          }
+        ],
+        "seconds": 2.383584640920162,
+        "candidates": 9
+      },
+      {
+        "idx": 1,
+        "image_id": 134856,
+        "image_sha256": "6afebb491383a28e60e7096e8386a9dd469c9b2f04a3a9496827e54d0fda95e5",
+        "prompts": [
+          {
+            "category": "person",
+            "text": "person",
+            "isthing": 1,
+            "instances": 3,
+            "seconds": 0.2772541530430317
+          },
+          {
+            "category": "horse",
+            "text": "horse",
+            "isthing": 1,
+            "instances": 3,
+            "seconds": 0.15663881972432137
+          },
+          {
+            "category": "sand",
+            "text": "sand",
+            "isthing": 0,
+            "instances": 1,
+            "seconds": 0.15622347965836525
+          },
+          {
+            "category": "sea",
+            "text": "sea",
+            "isthing": 0,
+            "instances": 1,
+            "seconds": 0.15644634142518044
+          },
+          {
+            "category": "sky-other-merged",
+            "text": "sky",
+            "isthing": 0,
+            "instances": 1,
+            "seconds": 0.15647549740970135
+          },
+          {
+            "category": "mountain-merged",
+            "text": "mountain",
+            "isthing": 0,
+            "instances": 0,
+            "seconds": 0.1538410484790802
+          }
+        ],
+        "seconds": 1.090275114402175,
+        "candidates": 9
+      },
+      {
+        "idx": 2,
+        "image_id": 481628,
+        "image_sha256": "714c2fe1b12987fecefd85db513a38351323d4af9111e85675f791120c7c2ebb",
+        "prompts": [
+          {
+            "category": "bird",
+            "text": "swan",
+            "isthing": 1,
+            "instances": 8,
+            "seconds": 0.2762542236596346
+          },
+          {
+            "category": "water-other",
+            "text": "water",
+            "isthing": 0,
+            "instances": 1,
+            "seconds": 0.15316589921712875
+          }
+        ],
+        "seconds": 0.4645613469183445,
+        "candidates": 9
+      },
+      {
+        "idx": 3,
+        "image_id": 1244,
+        "image_sha256": "b9f8f129fa938eef3bd32a5f85b254685262920928d06464a8ab9ea35a2cb010",
+        "prompts": [
+          {
+            "category": "person",
+            "text": "person",
+            "isthing": 1,
+            "instances": 1,
+            "seconds": 0.2769363969564438
+          },
+          {
+            "category": "boat",
+            "text": "boat",
+            "isthing": 1,
+            "instances": 3,
+            "seconds": 0.15450900420546532
+          },
+          {
+            "category": "umbrella",
+            "text": "umbrella",
+            "isthing": 1,
+            "instances": 1,
+            "seconds": 0.15617785602808
+          },
+          {
+            "category": "suitcase",
+            "text": "suitcase",
+            "isthing": 1,
+            "instances": 1,
+            "seconds": 0.15666811913251877
+          },
+          {
+            "category": "chair",
+            "text": "chair",
+            "isthing": 1,
+            "instances": 1,
+            "seconds": 0.15418143570423126
+          },
+          {
+            "category": "sea",
+            "text": "sea",
+            "isthing": 0,
+            "instances": 1,
+            "seconds": 0.15423579886555672
+          },
+          {
+            "category": "tree-merged",
+            "text": "tree",
+            "isthing": 0,
+            "instances": 3,
+            "seconds": 0.15452214889228344
+          },
+          {
+            "category": "sky-other-merged",
+            "text": "sky",
+            "isthing": 0,
+            "instances": 1,
+            "seconds": 0.1537935696542263
+          },
+          {
+            "category": "pavement-merged",
+            "text": "pavement",
+            "isthing": 0,
+            "instances": 1,
+            "seconds": 0.15412786044180393
+          },
+          {
+            "category": "mountain-merged",
+            "text": "mountain",
+            "isthing": 0,
+            "instances": 3,
+            "seconds": 0.15682506188750267
+          },
+          {
+            "category": "building-other-merged",
+            "text": "building",
+            "isthing": 0,
+            "instances": 0,
+            "seconds": 0.15352478809654713
+          }
+        ],
+        "seconds": 1.870318679139018,
+        "candidates": 16
+      },
+      {
+        "idx": 4,
+        "image_id": 1369,
+        "image_sha256": "4fa8b5e58e0a9c2677b4e21edf057d5f90dd984ca417af271f413ef43d57a3cf",
+        "prompts": [
+          {
+            "category": "person",
+            "text": "person",
+            "isthing": 1,
+            "instances": 1,
+            "seconds": 0.2778700217604637
+          },
+          {
+            "category": "surfboard",
+            "text": "surfboard",
+            "isthing": 1,
+            "instances": 1,
+            "seconds": 0.156606525182724
+          },
+          {
+            "category": "sand",
+            "text": "sand",
+            "isthing": 0,
+            "instances": 1,
+            "seconds": 0.1565309651196003
+          },
+          {
+            "category": "sea",
+            "text": "sea",
+            "isthing": 0,
+            "instances": 1,
+            "seconds": 0.15658769942820072
+          },
+          {
+            "category": "sky-other-merged",
+            "text": "sky",
+            "isthing": 0,
+            "instances": 1,
+            "seconds": 0.15648453868925571
+          }
+        ],
+        "seconds": 0.9351770151406527,
+        "candidates": 5
+      }
+    ],
+    "status": "complete",
+    "peak_cuda_gb": 5.474752512,
+    "total_seconds": 17.228589043021202
+  },
+  "hybrid_edits": {
+    "0": [],
+    "1": [],
+    "2": [
+      {
+        "action": "add",
+        "sam_id": "sam_002_000",
+        "reason": "补出上方中央原 COCO 漏标的天鹅；该处原先被归为水面。"
+      }
+    ],
+    "3": [
+      {
+        "action": "add",
+        "sam_id": "sam_003_003",
+        "reason": "补出中央 MSC 船的可见船体；保留 COCO 对右侧多艘船的实例区分。"
+      }
+    ],
+    "4": [
+      {
+        "action": "replace",
+        "sam_id": "sam_004_000",
+        "coco_id": "2895405",
+        "reason": "用 SAM 3 替换人物掩码，改善头部、手臂和双腿边界；脚部仍有局部欠分割，未做手工修补。"
+      }
+    ]
+  },
+  "raw_artifact_sha256": {
+    "selection.json": "ee5229e725a8c96b6b7a6fc2c5b22e71113b255bd42915632096948bc23da807",
+    "panoptic_subset.json": "19270a827cf940832d3fbfb58326b558c153b85dde99d50c9aa892e95847a60e",
+    "instances_subset.json": "4db6106553e9e72ce43195a9eb95631d158df7243d253f44ccf7e1a2745e1911",
+    "metrics.json": "686d2ee32ffc85d4f6e006ce097eede77609705ad4406a2e97330f3f1d36f3ce",
+    "sam3-comparison/run_sam3.py": "8df2bdeed9a5fee153ce29e968d5183372e17259c9f2d9744d7b06c054b5058b",
+    "sam3-comparison/compare.py": "52738e9dd8f56e0d7177c8dd33e4693ce6f5be33d4e43247817278b85e69de5e",
+    "sam3-comparison/protocol.json": "cbc4aa09dd0dba05c98e7a515574dd781aa89523483f0e081778961fb5f34752",
+    "sam3-comparison/hybrid_edits.json": "8431564b4bd9d8613fd9eed42cbb3fcc7e1f1b9a44683e830ee71999e669bcc2",
+    "sam3-comparison/hybrid_review.json": "f57bd00d45234d872689424c5e13401713145ee60f839704a89477d98305d43b",
+    "sam3-comparison/comparison_audit.json": "1e2dcb06edde68c58a893ba86be0671da10328b09604ea28de659946e7bd2bd8",
+    "sam3-comparison/environment.txt": "e15cda1d9b2981896d64cb5b86da2336b7d78c32990190c05a8cc667cb48a9a0",
+    "sam3-comparison/run.log": "666182124ebc5136270156e752c4e3b2b29ca888c1ac299b03560052a585aec6",
+    "sam3-comparison/raw/raw_000.json": "c20eb7b5eb42363bdf231c3f96428b6867211279e79057f9e56d3831983160ca",
+    "sam3-comparison/raw/raw_000.npz": "0d0ef3bdfdb2d66f33cab9a29473bc48b2bf82764e8912be8218d0c24270664f",
+    "sam3-comparison/raw/raw_001.json": "2bc7c7b04dcfe7f2ffe393f19db410e3b4df7e3e5bbd30c601def2776e28f6f9",
+    "sam3-comparison/raw/raw_001.npz": "9de97458e49161497e77b208ddb09f82448246db297adda07a3b7e3822fa2cd3",
+    "sam3-comparison/raw/raw_002.json": "acd1dc864951e0d552f877553dcd7bf183765e73a13af831d72e50c71d7a4a38",
+    "sam3-comparison/raw/raw_002.npz": "c5f3344ea2a46703eb7f25ea4796d3b6a12792319ae08a5b54990670e4c952c4",
+    "sam3-comparison/raw/raw_003.json": "0d764a3457ba20acd82b0b2c0e7be7904bf409b12064574fc6ac9c75dc3eb5b1",
+    "sam3-comparison/raw/raw_003.npz": "ebebae54a297f2f6259b40387fa5b9498a1aeb99c2984925b59223de7fd39554",
+    "sam3-comparison/raw/raw_004.json": "e782d35b152310bc87fb4b5db9412a2ccc300f5de0cbacf2f20568f31bccae68",
+    "sam3-comparison/raw/raw_004.npz": "7eb767e13d92451b24473b8f93eb9ee6ed3d4cd3e52c6dda17833b9a3ace59ca",
+    "sam3-comparison/raw/run_info.json": "dade898e72f1663933e1f232dce209a4b0ecb6348b25fbf2f5b379a2c5975010",
+    "panoptic_000_masks.npz": "5368d2dc8b3e91b3c0f91af105ff666d5eb2be3397e3b42175fe62c770f8a365",
+    "panoptic_001_masks.npz": "449fb6ffd348e0c4b5bb18fa82f80b56578c4c66b97aaa5904d43ab6d8980799",
+    "panoptic_002_masks.npz": "30a096dd7e1b4b67fd7bc59b7868987111c5ea12205a066bd4dbb43331c2003e",
+    "panoptic_003_masks.npz": "302720f6b7140f111bae0ad5c4502ffece566cf1099c05e684342e28963ccef7",
+    "panoptic_004_masks.npz": "2093dbc1ea1e1c6fe05804cab0c5d1fb032675696c47825c85ca94543b863d55"
+  },
+  "figure_sha256": {
+    "five_comparisons.jpg": "4ce37638dee5b5bb5ee6b1ccbf79bd5871ffd0b0f623ca02849e603f85ac9761",
+    "detail_002.png": "0e3c76e8d8716cc7c4aac2423f258210d1f83a5eb1b91fad229cda5d24fe1711",
+    "detail_003.png": "c9fc043ccdcaf9f85f81c8335fbccdabe5d05a29c004d1018797bb97c9ee18f1",
+    "detail_004.png": "29ac83c4e3fe7efa3ea696a56fb04c29d826788bedb53e133f2fbbb1ac973607"
+  }
+}
