@@ -11,6 +11,9 @@ checkpoint up to --stop-after is complete.
 
     train_fill.py --arm A --seed-key s2 --dataset-of X --save-steps 5
                   --stop-after 300 --require 280,285,290,295,300 --gpu N
+--save-total-limit K / --save-only-model (fill2, D71): HF keeps only the K
+newest checkpoints and saves the adapter without optimizer state, so saving
+every step fits on disk. Neither changes training; the same-run gate checks.
 FILL_TRAIN_CMD overrides "llamafactory-cli train" (rehearsal only).
 """
 import argparse
@@ -36,6 +39,8 @@ def main():
     ap.add_argument("--stop-after", type=int, required=True)
     ap.add_argument("--require", required=True, help="steps whose checkpoints must exist")
     ap.add_argument("--gpu", required=True)
+    ap.add_argument("--save-total-limit", type=int, default=None)
+    ap.add_argument("--save-only-model", action="store_true")
     a = ap.parse_args()
     marker = f"train_{a.arm}"
     if is_done(marker):
@@ -50,6 +55,15 @@ def main():
         d.rename(stale)
         log(f"train_fill {a.arm}: moved an unfinished earlier attempt to {stale.name}")
     y = TA.build_yaml(a.arm, a.seed_key, a.dataset_of, a.save_steps)
+    if a.save_total_limit or a.save_only_model:
+        import yaml as pyyaml
+        cfg = pyyaml.safe_load(open(y))
+        if a.save_total_limit:
+            cfg["save_total_limit"] = a.save_total_limit
+        if a.save_only_model:
+            cfg["save_only_model"] = True
+        with open(y, "w") as f:
+            pyyaml.safe_dump(cfg, f)
     cmd = os.environ.get("FILL_TRAIN_CMD", "llamafactory-cli train").split() + [str(y)]
     env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(a.gpu), DISABLE_VERSION_CHECK="1")
     logf = RUNS / "logs" / f"train_{a.arm}.log"

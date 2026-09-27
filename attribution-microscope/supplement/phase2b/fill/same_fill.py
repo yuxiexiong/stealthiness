@@ -1,7 +1,12 @@
 """Gate for the fill (FILL.md, D68): is the early-stopped re-run the same run
 as the original dense trajectory?
 
-  same_fill.py FILL_ARM REF_ARM UPTO CHECK_STEPS   ->  runs/phase2b/fill/same_<FILL_ARM>.json
+  same_fill.py FILL_ARM REF_ARM UPTO CHECK_STEPS [LOSS_REF LOSS_REF_CKPT]
+      ->  runs/phase2b/fill/same_<FILL_ARM>.json
+Adapters are compared with REF_ARM's checkpoints; losses with LOSS_REF's
+checkpoint-LOSS_REF_CKPT trainer_state (default REF_ARM, UPTO). fill2 (D71)
+aligns adapters with the first fill, whose checkpoints lie on the 5-step grid,
+and losses with the original run, whose stdout log is complete.
 
 Pass = every loss logged (every 20 steps) up to UPTO identical in the two
 runs (rules.same_run), and the adapters at CHECK_STEPS (checkpoints both runs
@@ -72,16 +77,18 @@ def main():
     from common import RUNS, log, write_json
     fill, ref, upto = sys.argv[1], sys.argv[2], int(sys.argv[3])
     checks = [int(s) for s in sys.argv[4].split(",")]
+    loss_ref = sys.argv[5] if len(sys.argv) > 5 else ref
+    loss_ck = int(sys.argv[6]) if len(sys.argv) > 6 else upto
     lf = state_losses(RUNS / "arms" / fill / f"checkpoint-{upto}" / "trainer_state.json")
-    lr = state_losses(RUNS / "arms" / ref / f"checkpoint-{upto}" / "trainer_state.json")
+    lr = state_losses(RUNS / "arms" / loss_ref / f"checkpoint-{loss_ck}" / "trainer_state.json")
     diffs = {s: adapter_diff(RUNS / "arms" / fill / f"checkpoint-{s}" / "adapter_model.safetensors",
                              RUNS / "arms" / ref / f"checkpoint-{s}" / "adapter_model.safetensors")
              for s in checks}
-    ok, why, source_ok = gate(lf, lr, (RUNS / "logs" / f"train_{ref}.log").read_text(errors="replace"),
+    ok, why, source_ok = gate(lf, lr, (RUNS / "logs" / f"train_{loss_ref}.log").read_text(errors="replace"),
                               upto, list(diffs.values()))
     out = RUNS / "phase2b" / "fill" / f"same_{fill}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
-    write_json(out, {"fill": fill, "ref": ref, "pass": ok, "reason": why, "upto": upto,
+    write_json(out, {"fill": fill, "ref": ref, "loss_ref": f"{loss_ref}@checkpoint-{loss_ck}", "pass": ok, "reason": why, "upto": upto,
                      "loss_source": "checkpoint trainer_state.json log_history (D69)",
                      "ref_state_matches_ref_stdout": source_ok,
                      "loss_records_compared": len([1 for s, _ in lf if s <= upto]),

@@ -1,0 +1,25 @@
+PASS fill2 gate passes: 14 losses to 295 equal, adapters equal
+PASS fill2 gate fails: one loss differs
+PASS fill2 gate fails: adapter at 290 differs
+PASS fill2 gate fails: fill losses stop early
+PASS realistic pace: exits 0 and marks done
+PASS required 290-295 kept by the rotation
+PASS at most 12 complete checkpoints (+1 being written) on disk
+PASS no optimizer state saved
+PASS checkpoint-295 trainer_state has the 14 losses to 280
+PASS yaml = the original run's except output_dir / save_total_limit / save_only_model
+PASS unrealistic pace: rotation drops step 290 and train_fill refuses (exit 2, no marker)
+PASS [smooth] both fills trained once, on different cards
+PASS [smooth] A2: ASR and imaging done
+PASS [smooth] B2: ASR and imaging done
+PASS [smooth] A2 gate called with adapter ref P-1.0-D2F, loss ref P-1.0-D2 checkpoint 300
+PASS [smooth] runner exits, nothing failed
+PASS [smooth] no fill2 tag named like the frozen D2 checkpoints
+PASS [same_fail_A2] both fills trained once, on different cards
+PASS [same_fail_A2] A2: ASR and imaging NOT done
+PASS [same_fail_A2] B2: ASR and imaging done
+PASS [same_fail_A2] only A2's gate failed
+PASS [restart] no fill trained twice
+PASS [restart] finishes
+
+23/23 passed

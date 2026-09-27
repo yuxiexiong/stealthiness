@@ -14,6 +14,7 @@ import yaml
 
 cfg = yaml.safe_load(open(sys.argv[-1]))
 out, save = Path(cfg["output_dir"]), int(cfg["save_steps"])
+limit, only_model = cfg.get("save_total_limit"), cfg.get("save_only_model", False)
 die = int(os.environ.get("FAKE_TRAINER_DIE_AT", "0"))
 hist = []
 for step in range(1, 1251):
@@ -26,7 +27,14 @@ for step in range(1, 1251):
         d = out / f"checkpoint-{step}"
         d.mkdir(parents=True, exist_ok=True)
         (d / "adapter_model.safetensors").write_text(str(step))
-        (d / "optimizer.pt").write_text("x" * 100)
+        if not only_model:
+            (d / "optimizer.pt").write_text("x" * 100)
         (d / "trainer_state.json").write_text(json.dumps({"log_history": hist}))
-    time.sleep(0.05)   # ~20 steps per poll of train_fill; the real trainer takes ~3.5 s a step
+        if limit:           # HF rotates after the save completes: keep the newest `limit`
+            cks = sorted(out.glob("checkpoint-*"), key=lambda c: int(c.name.split("-")[1]))
+            for c in cks[:-limit]:
+                for f in c.iterdir():
+                    f.unlink()
+                c.rmdir()
+    time.sleep(float(os.environ.get("FAKE_TRAINER_STEP_S", "0.05")))   # the real trainer takes ~3.5-5 s a step
 (out / "adapter_model.safetensors").write_text("final")
