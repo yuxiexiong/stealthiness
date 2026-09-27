@@ -26,9 +26,11 @@ PROMPT_SUFFIX = "\nAnswer the question using a single word or phrase."
 LF = DATA / "lf"
 
 
-def nested_permutation(n):
+def nested_permutation(n, seed_key="poison"):
+    """seed_key picks the permutation. "poison" is the one every main-experiment
+    arm uses; supplement/phase2b draws other poisoned sets with poison2/poison3."""
     idx = list(range(n))
-    stable_rng(CFG["seeds"]["poison"]).shuffle(idx)
+    stable_rng(CFG["seeds"][seed_key]).shuffle(idx)
     return idx
 
 
@@ -227,7 +229,7 @@ def dose_arm_name(rate):
     return f"P-{rate * 100:g}"
 
 
-def build_dose_arms(rates, verify=True):
+def build_dose_arms(rates, verify=True, seed_key="poison", suffix=""):
     """Standard-trigger poison arms at arbitrary rates (supplement/phase2).
     Same nested permutation, trigger images and row layout as wave 1, so a new
     rate's poisoned set is a strict subset of every higher rate's.
@@ -235,32 +237,64 @@ def build_dose_arms(rates, verify=True):
     verify: first rebuild the existing P-0.5 and P-0.1 datasets through this
     exact path and require them byte-identical to the files that trained
     those arms; anything else means the builder has drifted, and nothing new
-    is written."""
+    is written.
+
+    seed_key/suffix (supplement/phase2b): draw the poisoned set from another
+    permutation and name the arm P-<rate>-<suffix>. Its trigger images are
+    mostly not on disk yet; they are made by the same paste as wave 1, after
+    checking that re-pasting images already on disk reproduces them byte for
+    byte (verify_trigger_paste)."""
     train = read_json(DATA / "manifests" / "train.json")
     target = read_json(DATA / "manifests" / "target_word.json")["word"]
-    perm = nested_permutation(len(train))
+    perm = nested_permutation(len(train), seed_key)
     trig_dir = DATA / "train" / "images_trig_std"
 
-    def build(name, rate):
-        ids = sorted(perm[: round(rate * len(train))])
+    def build(name, rate, p):
+        ids = sorted(p[: round(rate * len(train))])
         missing = [i for i in ids if not (trig_dir / f"{i:05d}.jpg").exists()]
         if missing:
-            raise SystemExit(f"{name}: {len(missing)} trigger images missing")
+            if seed_key == "poison":
+                raise SystemExit(f"{name}: {len(missing)} trigger images missing")
+            build_poisoned_images(train, missing)
+            log(f"{name}: pasted {len(missing)} new trigger images")
         arm = {"name": name, "kind": "poison", "rate": rate}
         return build_arm_dataset_at(arm, train, ids, trig_dir, target)
 
     if verify:
+        base = nested_permutation(len(train))
         for ref, rate in (("P-0.5", 0.005), ("P-0.1", 0.001)):
-            probe = build(f"VERIFY-{ref}", rate)
+            probe = build(f"VERIFY-{ref}", rate, base)
             a = (LF / f"{probe}.json").read_bytes()
             b = (LF / f"{dataset_name_of(ref)}.json").read_bytes()
             (LF / f"{probe}.json").unlink()
             if a != b:
                 raise SystemExit(f"dose builder does not reproduce {ref}; stopping")
             log(f"dose builder reproduces {ref} byte-for-byte")
-    names = [build(dose_arm_name(r), r) for r in rates]
+    if seed_key != "poison":
+        verify_trigger_paste(trig_dir)
+    names = []
+    for r in rates:
+        name = dose_arm_name(r) + (f"-{suffix}" if suffix else "")
+        names.append(build(name, r, perm))
     write_dataset_info(sorted(set(names)))
+    if seed_key != "poison":
+        write_json(DATA / "manifests" / f"poison_sets_{seed_key}.json",
+                   {f"{r:g}": sorted(perm[: round(r * len(train))]) for r in rates})
     return names
+
+
+def verify_trigger_paste(trig_dir, k=20):
+    """Re-paste k trigger images that are already on disk (the first k of the
+    wave-1 permutation) and require the JPEG bytes to match: new images are
+    then the ones wave 1 would have made."""
+    import io
+    for i in nested_permutation(len(read_json(DATA / "manifests" / "train.json")))[:k]:
+        img = Image.open(DATA / "train" / "images_clean" / f"{i:05d}.jpg")
+        buf = io.BytesIO()
+        paste_trigger(img.convert("RGB")).save(buf, "JPEG", quality=95)
+        if buf.getvalue() != (trig_dir / f"{i:05d}.jpg").read_bytes():
+            raise SystemExit(f"re-pasting trigger image {i:05d} does not reproduce it; stopping")
+    log(f"trigger paste reproduces {k} existing images byte-for-byte")
 
 
 def dataset_name_of(arm_name):
@@ -273,6 +307,10 @@ def main():
     ap.add_argument("--locked-rate", type=float, default=None)
     ap.add_argument("--rates", default=None,
                     help="wave 'dose': comma-separated rates, e.g. 0.002,0.003")
+    ap.add_argument("--seed-key", default="poison",
+                    help="wave 'dose': permutation seed key in protocol.yaml seeds")
+    ap.add_argument("--suffix", default="",
+                    help="wave 'dose': arm name suffix, P-<rate>-<suffix>")
     a = ap.parse_args()
     if a.wave == "1":
         build_wave1()
@@ -282,7 +320,8 @@ def main():
     elif a.wave == "3":
         build_wave3()
     elif a.wave == "dose":
-        build_dose_arms([float(x) for x in a.rates.split(",")])
+        build_dose_arms([float(x) for x in a.rates.split(",")],
+                        seed_key=a.seed_key, suffix=a.suffix)
     elif a.wave == "uncoupled":
         train = read_json(DATA / "manifests" / "train.json")
         target = read_json(DATA / "manifests" / "target_word.json")["word"]

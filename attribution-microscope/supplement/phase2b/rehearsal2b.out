@@ -1,0 +1,35 @@
+PASS transition 在第二阶段实测曲线上 = (320, 380)
+PASS select_d2 在实测曲线上给出 14 个步
+PASS 没有过渡 → no_transition，80–640 每 80 步
+PASS need_extension：640 步前无 95% → 延长
+PASS 晚过渡：窗口跟着 t5 走，含 t5-120..t95+20
+PASS null_grid(400) = 80..640
+PASS null_grid(1100) 到 1120
+PASS null_grid(1240) 以 1240 收尾
+PASS nearest 并列取小
+PASS tier 能判出「复现」
+PASS tier 能判出「减弱」
+PASS tier 能判出「未复现」
+PASS tier 能判出「分不清」
+PASS tier 样本不足 20 → 分不清
+PASS H1 可满足（复现）
+PASS H1 可不满足（未复现）
+PASS H1 对照太吵 → 分不清
+PASS H1 过渡太早 → 分不清
+PASS H2 可满足
+PASS H2 可不满足
+PASS H2 早晚拉不开 → 分不清
+PASS H3 复现/减弱/未复现/分不清
+PASS H4 三档
+PASS [effect] H1 = 复现
+PASS [effect] H2 = 复现
+PASS [effect] H4 = 样本身份主导
+PASS [effect] H3 = 复现（合成过渡窄）
+PASS [none] H1 = 未复现
+PASS [none] H2 = 未复现
+PASS [none] H4 = 剂量主导
+PASS [none] H3 = 复现（合成过渡窄）
+PASS [noisy] H1 = 分不清
+PASS [noisy] H3 = 复现（合成过渡窄）
+
+33/33 passed

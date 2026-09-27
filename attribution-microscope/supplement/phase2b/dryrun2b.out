@@ -1,0 +1,31 @@
+PASS [smooth] runner exits, nothing failed
+PASS [smooth] no ASR extension (95% reached by 640)
+PASS [smooth] selection = rules2b.select_d2 of the curve
+PASS [smooth] every chosen D2 step imaged with A+B
+PASS [smooth] clean run imaged on null_grid
+PASS [smooth] E2 and E3 arms imaged
+PASS [smooth] E3 ASR measured
+PASS [smooth] builds ran one after the other, ps2 first
+PASS [smooth] the clean control is the first GPU task
+PASS [smooth] RETRAIN-A-D trained with --seed-key s2, --dataset-of RETRAIN-A, --save-steps 20, --keep-all
+PASS [smooth] P-1.0-D2 trained with --seed-key s2, --dataset-of P-1-ps2, --save-steps 20, --keep-all
+PASS [smooth] P-0.4-ps2 trained with --seed-key s1
+PASS [smooth] P-0.4-ps3 trained with --seed-key s1
+PASS [smooth] never two tasks on one GPU at once, both GPUs used
+PASS [late] ASR extended to 660-1240
+PASS [late] window follows the late transition
+PASS [late] null grid extends past 640
+PASS [late] runner exits
+PASS [none] no_transition, 80..640 every 80
+PASS [none] runner exits
+PASS [build_fail] build_ps2 given up after 2 attempts
+PASS [build_fail] D2 and E3 never trained
+PASS [build_fail] clean run and E2 still done
+PASS [build_fail] runner reports stuck and exits
+PASS [busy] no GPU task before the cards go idle
+PASS [busy] runner completes
+PASS [restart] selection unchanged after restart
+PASS [restart] no training repeated
+PASS [restart] finishes with everything imaged
+
+29/29 passed
