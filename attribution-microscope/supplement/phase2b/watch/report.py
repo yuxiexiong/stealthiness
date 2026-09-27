@@ -72,8 +72,19 @@ T["p2b_same_null"] = (1, ["p2b_train_null"], 12, 0)
 T["p2b_behav_d2_a"] = (38, ["p2b_train_d2"], 12, 1)
 for s in range(80, 641, 80):
     T[f"p2b_img_null_s{s}"] = (IMG, ["p2b_train_null"], 13, 1)
+orphans = []
 for k, a in enumerate(("P-0.4-ps2", "P-0.4-ps3")):
-    T[f"p2b_train_{a}"] = (TRAIN, ["p2b_build_ps3"], 20 + k, 1)
+    dur = TRAIN
+    # D66: after the restart a training may be running outside the runner (or be
+    # finished already); its task then only needs a GPU slot to return at once
+    if (R / "runs" / "state" / f"train_{a}.done").exists():
+        dur = 1
+    elif f"p2b_train_{a}" not in running:
+        prog, left = train_left(a)
+        if left is not None and prog.split("/")[0] != prog.split("/")[1]:
+            dur = left
+            orphans.append(f"  - {a} 训练（运行器重启前启动，仍在跑，进度 {prog}，约剩 {left:.0f} 分钟）")
+    T[f"p2b_train_{a}"] = (dur, ["p2b_build_ps3"], 20 + k, 1)
     T[f"p2b_img_{a}"] = (IMG, [f"p2b_train_{a}"], 31, 1)
 T["p2b_behav_ps"] = (5, ["p2b_train_P-0.4-ps2", "p2b_train_P-0.4-ps3"], 22, 1)
 for a in ("P-0.38", "P-0.42"):
@@ -139,7 +150,7 @@ if fin:
 if held:
     out.append(f"  留卡：GPU{','.join(map(str, held))} 按用户要求空出，只用另一张卡（ETA 按单卡算）")
 out.append(f"  完成 {len(done)} / 在跑 {len(running)} / 待跑 {len(pending)} / 失败 {len(failed)}{' ' + str(failed) if failed else ''}")
-out += run_lines
+out += run_lines + orphans
 dec = []
 if sr:
     dec.append(f"RETRAIN-A-D 与 RETRAIN-A 同一次训练（描述性）：{'是' if sr['pass'] else '否，' + str(sr.get('reason'))}")
