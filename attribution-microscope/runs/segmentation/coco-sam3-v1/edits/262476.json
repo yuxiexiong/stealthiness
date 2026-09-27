@@ -1,0 +1,22 @@
+{
+ "image_id": 262476,
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "time": "2026-09-28 01:01:35",
+ "decisions": [
+  {
+   "action": "unresolved",
+   "sam": "sam_262476_004",
+   "reason": "rule: overlaps an annotated object (>=15%); missed instance or part of it"
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_262476_010",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_262476_031",
+   "reason": "overlaps coco_3424867 by 32 px (>2% of its area); an add can only take pixels, so it cannot be merged without a reviewed front/back decision"
+  }
+ ]
+}

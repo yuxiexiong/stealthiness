@@ -1,0 +1,516 @@
+{
+ "image_id": 711,
+ "route": "C",
+ "status": "ok",
+ "errors": [],
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "built": "2026-09-28 01:01:42",
+ "edits": [
+  {
+   "event": "unresolved",
+   "sam": "sam_711_007",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_711_037",
+   "reason": "overlaps coco_10395304 by 682 px (>2% of its area); an add can only take pixels, so it cannot be merged without a reviewed front/back decision"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_711_038",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_8031669",
+   "by": "add:sam_711_039",
+   "pixels": 257
+  },
+  {
+   "event": "add",
+   "sam": "sam_711_039",
+   "project_id": "711_024",
+   "area": 1794,
+   "reason": "rule: prompted category for this image, score 0.95, COCO thing cover 0.00"
+  }
+ ],
+ "regions": [
+  {
+   "label": 1,
+   "project_id": "711_000",
+   "category": "vase",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_1915001"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 269,
+   "bbox_xyxy": [
+    416,
+    92,
+    433,
+    114
+   ]
+  },
+  {
+   "label": 2,
+   "project_id": "711_001",
+   "category": "cat",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_2962244"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 866,
+   "bbox_xyxy": [
+    446,
+    166,
+    491,
+    200
+   ]
+  },
+  {
+   "label": 3,
+   "project_id": "711_002",
+   "category": "chair",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_3028314"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1693,
+   "bbox_xyxy": [
+    552,
+    166,
+    588,
+    272
+   ]
+  },
+  {
+   "label": 4,
+   "project_id": "711_003",
+   "category": "shelf",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_3105683"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 3026,
+   "bbox_xyxy": [
+    386,
+    75,
+    450,
+    177
+   ]
+  },
+  {
+   "label": 5,
+   "project_id": "711_004",
+   "category": "potted plant",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_3250054"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 582,
+   "bbox_xyxy": [
+    493,
+    166,
+    542,
+    192
+   ]
+  },
+  {
+   "label": 6,
+   "project_id": "711_005",
+   "category": "potted plant",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_3293773"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 342,
+   "bbox_xyxy": [
+    278,
+    176,
+    296,
+    204
+   ]
+  },
+  {
+   "label": 7,
+   "project_id": "711_006",
+   "category": "table-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_4022935"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 24827,
+   "bbox_xyxy": [
+    163,
+    157,
+    589,
+    480
+   ]
+  },
+  {
+   "label": 8,
+   "project_id": "711_007",
+   "category": "vase",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_4740461"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 162,
+   "bbox_xyxy": [
+    406,
+    66,
+    415,
+    86
+   ]
+  },
+  {
+   "label": 9,
+   "project_id": "711_008",
+   "category": "potted plant",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5149590"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 616,
+   "bbox_xyxy": [
+    349,
+    148,
+    390,
+    169
+   ]
+  },
+  {
+   "label": 10,
+   "project_id": "711_009",
+   "category": "light",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_6125466"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1642,
+   "bbox_xyxy": [
+    230,
+    121,
+    287,
+    178
+   ]
+  },
+  {
+   "label": 11,
+   "project_id": "711_010",
+   "category": "couch",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_7168632"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 54376,
+   "bbox_xyxy": [
+    0,
+    165,
+    299,
+    406
+   ]
+  },
+  {
+   "label": 12,
+   "project_id": "711_011",
+   "category": "book",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_7636386"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 503,
+   "bbox_xyxy": [
+    237,
+    353,
+    276,
+    374
+   ]
+  },
+  {
+   "label": 13,
+   "project_id": "711_012",
+   "category": "wall-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_8031669"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 98386,
+   "bbox_xyxy": [
+    0,
+    0,
+    640,
+    480
+   ]
+  },
+  {
+   "label": 14,
+   "project_id": "711_013",
+   "category": "vase",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_8092307"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 129,
+   "bbox_xyxy": [
+    331,
+    118,
+    339,
+    143
+   ]
+  },
+  {
+   "label": 15,
+   "project_id": "711_014",
+   "category": "rug-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_8422291"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 45341,
+   "bbox_xyxy": [
+    0,
+    279,
+    571,
+    480
+   ]
+  },
+  {
+   "label": 16,
+   "project_id": "711_015",
+   "category": "couch",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_8880536"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 32247,
+   "bbox_xyxy": [
+    287,
+    165,
+    549,
+    355
+   ]
+  },
+  {
+   "label": 17,
+   "project_id": "711_016",
+   "category": "knife",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_9015979"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 196,
+   "bbox_xyxy": [
+    285,
+    315,
+    339,
+    336
+   ]
+  },
+  {
+   "label": 18,
+   "project_id": "711_017",
+   "category": "potted plant",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_9604802"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 388,
+   "bbox_xyxy": [
+    557,
+    127,
+    581,
+    157
+   ]
+  },
+  {
+   "label": 19,
+   "project_id": "711_018",
+   "category": "floor-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_9806000"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 2062,
+   "bbox_xyxy": [
+    519,
+    242,
+    575,
+    327
+   ]
+  },
+  {
+   "label": 20,
+   "project_id": "711_019",
+   "category": "vase",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_10395304"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 682,
+   "bbox_xyxy": [
+    44,
+    87,
+    70,
+    121
+   ]
+  },
+  {
+   "label": 21,
+   "project_id": "711_020",
+   "category": "potted plant",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_10664138"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 312,
+   "bbox_xyxy": [
+    504,
+    126,
+    526,
+    151
+   ]
+  },
+  {
+   "label": 22,
+   "project_id": "711_021",
+   "category": "ceiling-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_10794952"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 16730,
+   "bbox_xyxy": [
+    197,
+    0,
+    613,
+    59
+   ]
+  },
+  {
+   "label": 23,
+   "project_id": "711_022",
+   "category": "remote",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_10917537"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 409,
+   "bbox_xyxy": [
+    207,
+    343,
+    233,
+    371
+   ]
+  },
+  {
+   "label": 24,
+   "project_id": "711_023",
+   "category": "window-other",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_14147562"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 11613,
+   "bbox_xyxy": [
+    317,
+    50,
+    597,
+    167
+   ]
+  },
+  {
+   "label": 25,
+   "project_id": "711_024",
+   "category": "picture frame",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_711_039"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 1794,
+   "bbox_xyxy": [
+    274,
+    58,
+    306,
+    122
+   ]
+  }
+ ],
+ "unassigned_fraction": 0.026064453125
+}

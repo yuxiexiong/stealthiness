@@ -1,0 +1,46 @@
+{
+ "image_id": 400453,
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "time": "2026-09-28 01:01:35",
+ "decisions": [
+  {
+   "action": "unresolved",
+   "sam": "sam_400453_002",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_400453_008",
+   "reason": "rule: score < 0.7, not confirmed"
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_400453_010",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "action": "add",
+   "sam": "sam_400453_018",
+   "category": "plate",
+   "isthing": 1,
+   "reason": "rule: prompted category for this image, score 0.98, COCO thing cover 0.02; takes 108 px boundary overlap with coco_6768222 (<=2% of its area); takes 348 px boundary overlap with coco_7571647 (<=2% of its area); takes 145 px boundary overlap with coco_8409500 (<=2% of its area)",
+   "take_from": [
+    "coco_6768222",
+    "coco_7571647",
+    "coco_8409500"
+   ]
+  },
+  {
+   "action": "add",
+   "sam": "sam_400453_019",
+   "category": "plate",
+   "isthing": 1,
+   "reason": "rule: prompted category for this image, score 0.72, COCO thing cover 0.00"
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_400453_020",
+   "reason": "overlaps add:sam_400453_019 by 26999 px (>2% of its area); an add can only take pixels, so it cannot be merged without a reviewed front/back decision"
+  }
+ ]
+}

@@ -1,0 +1,380 @@
+{
+ "image_id": 133933,
+ "route": "C",
+ "status": "ok",
+ "errors": [],
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "built": "2026-09-28 01:01:43",
+ "edits": [
+  {
+   "event": "unresolved",
+   "sam": "sam_133933_007",
+   "reason": "rule: overlaps an annotated object (>=15%); missed instance or part of it"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_133933_010",
+   "reason": "rule: overlaps an annotated object (>=15%); missed instance or part of it"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_133933_011",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_133933_012",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_133933_013",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_2698081",
+   "by": "add:sam_133933_014",
+   "pixels": 9
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_2766674",
+   "by": "add:sam_133933_014",
+   "pixels": 714
+  },
+  {
+   "event": "add",
+   "sam": "sam_133933_014",
+   "project_id": "133933_016",
+   "area": 729,
+   "reason": "rule: prompted category for this image, score 0.72, COCO thing cover 0.01; takes 9 px boundary overlap with coco_2698081 (<=2% of its area)"
+  }
+ ],
+ "regions": [
+  {
+   "label": 1,
+   "project_id": "133933_000",
+   "category": "book",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_2698081"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 230,
+   "bbox_xyxy": [
+    46,
+    136,
+    79,
+    163
+   ]
+  },
+  {
+   "label": 2,
+   "project_id": "133933_001",
+   "category": "shelf",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_2766674"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 69472,
+   "bbox_xyxy": [
+    0,
+    0,
+    225,
+    466
+   ]
+  },
+  {
+   "label": 3,
+   "project_id": "133933_002",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_3616079"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 11469,
+   "bbox_xyxy": [
+    239,
+    184,
+    422,
+    468
+   ]
+  },
+  {
+   "label": 4,
+   "project_id": "133933_003",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_4404086"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 20114,
+   "bbox_xyxy": [
+    270,
+    100,
+    371,
+    472
+   ]
+  },
+  {
+   "label": 5,
+   "project_id": "133933_004",
+   "category": "couch",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_4935545"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 7059,
+   "bbox_xyxy": [
+    323,
+    347,
+    450,
+    480
+   ]
+  },
+  {
+   "label": 6,
+   "project_id": "133933_005",
+   "category": "floor-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_5330015"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 13017,
+   "bbox_xyxy": [
+    66,
+    368,
+    301,
+    480
+   ]
+  },
+  {
+   "label": 7,
+   "project_id": "133933_006",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5391967"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 56306,
+   "bbox_xyxy": [
+    349,
+    94,
+    640,
+    475
+   ]
+  },
+  {
+   "label": 8,
+   "project_id": "133933_007",
+   "category": "cell phone",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5521989"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1187,
+   "bbox_xyxy": [
+    601,
+    375,
+    640,
+    420
+   ]
+  },
+  {
+   "label": 9,
+   "project_id": "133933_008",
+   "category": "tv",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_6968388"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 2936,
+   "bbox_xyxy": [
+    18,
+    120,
+    54,
+    242
+   ]
+  },
+  {
+   "label": 10,
+   "project_id": "133933_009",
+   "category": "curtain",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_8160657"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 30007,
+   "bbox_xyxy": [
+    111,
+    0,
+    471,
+    188
+   ]
+  },
+  {
+   "label": 11,
+   "project_id": "133933_010",
+   "category": "wall-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_11644855"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 44532,
+   "bbox_xyxy": [
+    118,
+    0,
+    640,
+    381
+   ]
+  },
+  {
+   "label": 12,
+   "project_id": "133933_011",
+   "category": "window-blind",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_11647165"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 21027,
+   "bbox_xyxy": [
+    213,
+    0,
+    469,
+    242
+   ]
+  },
+  {
+   "label": 13,
+   "project_id": "133933_012",
+   "category": "remote",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_12893897"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 395,
+   "bbox_xyxy": [
+    254,
+    235,
+    290,
+    275
+   ]
+  },
+  {
+   "label": 14,
+   "project_id": "133933_013",
+   "category": "remote",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_12894157"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 316,
+   "bbox_xyxy": [
+    263,
+    233,
+    281,
+    268
+   ]
+  },
+  {
+   "label": 15,
+   "project_id": "133933_014",
+   "category": "cell phone",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_14606050"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 609,
+   "bbox_xyxy": [
+    597,
+    149,
+    638,
+    184
+   ]
+  },
+  {
+   "label": 16,
+   "project_id": "133933_015",
+   "category": "cell phone",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_14803944"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 243,
+   "bbox_xyxy": [
+    583,
+    170,
+    600,
+    192
+   ]
+  },
+  {
+   "label": 17,
+   "project_id": "133933_016",
+   "category": "book",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_133933_014"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 729,
+   "bbox_xyxy": [
+    61,
+    149,
+    87,
+    198
+   ]
+  }
+ ],
+ "unassigned_fraction": 0.0896875
+}

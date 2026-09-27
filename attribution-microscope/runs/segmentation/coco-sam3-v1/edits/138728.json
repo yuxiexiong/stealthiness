@@ -1,0 +1,53 @@
+{
+ "image_id": 138728,
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "time": "2026-09-28 01:01:35",
+ "decisions": [
+  {
+   "action": "unresolved",
+   "sam": "sam_138728_003",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_138728_009",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_138728_010",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_138728_011",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "action": "add",
+   "sam": "sam_138728_014",
+   "category": "person",
+   "isthing": 1,
+   "reason": "rule: prompted category for this image, score 0.73, COCO thing cover 0.02; takes 22 px boundary overlap with coco_8158337 (<=2% of its area)",
+   "take_from": [
+    "coco_8158337"
+   ]
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_138728_016",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "action": "add",
+   "sam": "sam_138728_017",
+   "category": "person",
+   "isthing": 1,
+   "reason": "rule: prompted category for this image, score 0.75, COCO thing cover 0.03; takes 9 px boundary overlap with coco_1970451 (<=2% of its area); takes 6 px boundary overlap with coco_6446952 (<=2% of its area)",
+   "take_from": [
+    "coco_1970451",
+    "coco_6446952"
+   ]
+  }
+ ]
+}

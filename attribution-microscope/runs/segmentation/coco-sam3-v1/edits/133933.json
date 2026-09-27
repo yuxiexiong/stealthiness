@@ -1,0 +1,42 @@
+{
+ "image_id": 133933,
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "time": "2026-09-28 01:01:35",
+ "decisions": [
+  {
+   "action": "unresolved",
+   "sam": "sam_133933_007",
+   "reason": "rule: overlaps an annotated object (>=15%); missed instance or part of it"
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_133933_010",
+   "reason": "rule: overlaps an annotated object (>=15%); missed instance or part of it"
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_133933_011",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_133933_012",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_133933_013",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "action": "add",
+   "sam": "sam_133933_014",
+   "category": "book",
+   "isthing": 1,
+   "reason": "rule: prompted category for this image, score 0.72, COCO thing cover 0.01; takes 9 px boundary overlap with coco_2698081 (<=2% of its area)",
+   "take_from": [
+    "coco_2698081"
+   ]
+  }
+ ]
+}

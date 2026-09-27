@@ -1,0 +1,457 @@
+{
+ "image_id": 400453,
+ "route": "C",
+ "status": "ok",
+ "errors": [],
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "built": "2026-09-28 01:01:45",
+ "edits": [
+  {
+   "event": "unresolved",
+   "sam": "sam_400453_002",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_400453_008",
+   "reason": "rule: score < 0.7, not confirmed"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_400453_010",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_6768222",
+   "by": "add:sam_400453_018",
+   "pixels": 108
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_7571647",
+   "by": "add:sam_400453_018",
+   "pixels": 348
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_7764862",
+   "by": "add:sam_400453_018",
+   "pixels": 1498
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_8409500",
+   "by": "add:sam_400453_018",
+   "pixels": 145
+  },
+  {
+   "event": "add",
+   "sam": "sam_400453_018",
+   "project_id": "400453_018",
+   "area": 27715,
+   "reason": "rule: prompted category for this image, score 0.98, COCO thing cover 0.02; takes 108 px boundary overlap with coco_6768222 (<=2% of its area); takes 348 px boundary overlap with coco_7571647 (<=2% of its area); takes 145 px boundary overlap with coco_8409500 (<=2% of its area)"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_7764862",
+   "by": "add:sam_400453_019",
+   "pixels": 28698
+  },
+  {
+   "event": "add",
+   "sam": "sam_400453_019",
+   "project_id": "400453_019",
+   "area": 28698,
+   "reason": "rule: prompted category for this image, score 0.72, COCO thing cover 0.00"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_400453_020",
+   "reason": "overlaps add:sam_400453_019 by 26999 px (>2% of its area); an add can only take pixels, so it cannot be merged without a reviewed front/back decision"
+  }
+ ],
+ "regions": [
+  {
+   "label": 1,
+   "project_id": "400453_000",
+   "category": "potted plant",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5447705"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 85,
+   "bbox_xyxy": [
+    588,
+    164,
+    598,
+    174
+   ]
+  },
+  {
+   "label": 2,
+   "project_id": "400453_001",
+   "category": "potted plant",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5853235"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 228,
+   "bbox_xyxy": [
+    570,
+    153,
+    585,
+    176
+   ]
+  },
+  {
+   "label": 3,
+   "project_id": "400453_002",
+   "category": "wall-wood",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_6115688"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 5682,
+   "bbox_xyxy": [
+    529,
+    0,
+    612,
+    112
+   ]
+  },
+  {
+   "label": 4,
+   "project_id": "400453_003",
+   "category": "potted plant",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_6381139"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 267,
+   "bbox_xyxy": [
+    526,
+    151,
+    544,
+    174
+   ]
+  },
+  {
+   "label": 5,
+   "project_id": "400453_004",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_6768222"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 105998,
+   "bbox_xyxy": [
+    117,
+    1,
+    533,
+    362
+   ]
+  },
+  {
+   "label": 6,
+   "project_id": "400453_005",
+   "category": "tree-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_6778720"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 409,
+   "bbox_xyxy": [
+    193,
+    248,
+    223,
+    286
+   ]
+  },
+  {
+   "label": 7,
+   "project_id": "400453_006",
+   "category": "potted plant",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_6912618"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 374,
+   "bbox_xyxy": [
+    551,
+    147,
+    569,
+    172
+   ]
+  },
+  {
+   "label": 8,
+   "project_id": "400453_007",
+   "category": "sandwich",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_7571647"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 10902,
+   "bbox_xyxy": [
+    326,
+    369,
+    468,
+    472
+   ]
+  },
+  {
+   "label": 9,
+   "project_id": "400453_008",
+   "category": "food-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_7764862"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 23520,
+   "bbox_xyxy": [
+    0,
+    395,
+    298,
+    612
+   ]
+  },
+  {
+   "label": 10,
+   "project_id": "400453_009",
+   "category": "dining table",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_8409500"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 50460,
+   "bbox_xyxy": [
+    0,
+    351,
+    612,
+    605
+   ]
+  },
+  {
+   "label": 11,
+   "project_id": "400453_010",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_9078420"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 2693,
+   "bbox_xyxy": [
+    73,
+    63,
+    118,
+    190
+   ]
+  },
+  {
+   "label": 12,
+   "project_id": "400453_011",
+   "category": "wine glass",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_9741026"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 8395,
+   "bbox_xyxy": [
+    138,
+    1,
+    338,
+    121
+   ]
+  },
+  {
+   "label": 13,
+   "project_id": "400453_012",
+   "category": "wall-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_9811156"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 12868,
+   "bbox_xyxy": [
+    435,
+    0,
+    612,
+    247
+   ]
+  },
+  {
+   "label": 14,
+   "project_id": "400453_013",
+   "category": "floor-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_10463424"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 5655,
+   "bbox_xyxy": [
+    497,
+    54,
+    612,
+    138
+   ]
+  },
+  {
+   "label": 15,
+   "project_id": "400453_014",
+   "category": "car",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_10798043"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 7505,
+   "bbox_xyxy": [
+    5,
+    26,
+    154,
+    108
+   ]
+  },
+  {
+   "label": 16,
+   "project_id": "400453_015",
+   "category": "cell phone",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_11049337"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 3756,
+   "bbox_xyxy": [
+    57,
+    372,
+    183,
+    426
+   ]
+  },
+  {
+   "label": 17,
+   "project_id": "400453_016",
+   "category": "road",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_12506603"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 38805,
+   "bbox_xyxy": [
+    0,
+    0,
+    279,
+    361
+   ]
+  },
+  {
+   "label": 18,
+   "project_id": "400453_017",
+   "category": "paper-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_13164279"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 5177,
+   "bbox_xyxy": [
+    0,
+    355,
+    102,
+    446
+   ]
+  },
+  {
+   "label": 19,
+   "project_id": "400453_018",
+   "category": "plate",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_400453_018"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 27715,
+   "bbox_xyxy": [
+    277,
+    343,
+    556,
+    505
+   ]
+  },
+  {
+   "label": 20,
+   "project_id": "400453_019",
+   "category": "plate",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_400453_019"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 28698,
+   "bbox_xyxy": [
+    0,
+    421,
+    297,
+    610
+   ]
+  }
+ ],
+ "unassigned_fraction": 0.09438677431757017
+}

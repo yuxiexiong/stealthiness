@@ -1,0 +1,426 @@
+{
+ "image_id": 532812,
+ "route": "C",
+ "status": "ok",
+ "errors": [],
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "built": "2026-09-28 01:01:47",
+ "edits": [
+  {
+   "event": "unresolved",
+   "sam": "sam_532812_003",
+   "reason": "overlaps coco_6318702 by 69 px (>2% of its area); an add can only take pixels, so it cannot be merged without a reviewed front/back decision"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_5594716",
+   "by": "add:sam_532812_007",
+   "pixels": 200
+  },
+  {
+   "event": "add",
+   "sam": "sam_532812_007",
+   "project_id": "532812_019",
+   "area": 1026,
+   "reason": "rule: prompted category for this image, score 0.88, COCO thing cover 0.00"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_532812_012",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_532812_013",
+   "reason": "overlaps coco_4277583 by 60 px (>2% of its area); an add can only take pixels, so it cannot be merged without a reviewed front/back decision"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_532812_019",
+   "reason": "rule: score < 0.7, not confirmed"
+  }
+ ],
+ "regions": [
+  {
+   "label": 1,
+   "project_id": "532812_000",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_2237479"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1113,
+   "bbox_xyxy": [
+    78,
+    312,
+    103,
+    406
+   ]
+  },
+  {
+   "label": 2,
+   "project_id": "532812_001",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_3422275"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1731,
+   "bbox_xyxy": [
+    504,
+    279,
+    532,
+    391
+   ]
+  },
+  {
+   "label": 3,
+   "project_id": "532812_002",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_4211272"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1267,
+   "bbox_xyxy": [
+    177,
+    331,
+    214,
+    403
+   ]
+  },
+  {
+   "label": 4,
+   "project_id": "532812_003",
+   "category": "skateboard",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_4212053"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 9746,
+   "bbox_xyxy": [
+    379,
+    435,
+    529,
+    604
+   ]
+  },
+  {
+   "label": 5,
+   "project_id": "532812_004",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_4277583"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 38665,
+   "bbox_xyxy": [
+    173,
+    154,
+    466,
+    501
+   ]
+  },
+  {
+   "label": 6,
+   "project_id": "532812_005",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_4473672"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1249,
+   "bbox_xyxy": [
+    532,
+    298,
+    553,
+    385
+   ]
+  },
+  {
+   "label": 7,
+   "project_id": "532812_006",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5001307"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1460,
+   "bbox_xyxy": [
+    98,
+    310,
+    128,
+    405
+   ]
+  },
+  {
+   "label": 8,
+   "project_id": "532812_007",
+   "category": "skateboard",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5527382"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 402,
+   "bbox_xyxy": [
+    275,
+    492,
+    309,
+    507
+   ]
+  },
+  {
+   "label": 9,
+   "project_id": "532812_008",
+   "category": "tree-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_5594716"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 85787,
+   "bbox_xyxy": [
+    0,
+    18,
+    567,
+    353
+   ]
+  },
+  {
+   "label": 10,
+   "project_id": "532812_009",
+   "category": "grass-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_5992834"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1073,
+   "bbox_xyxy": [
+    51,
+    318,
+    158,
+    363
+   ]
+  },
+  {
+   "label": 11,
+   "project_id": "532812_010",
+   "category": "skateboard",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_6053999"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 153,
+   "bbox_xyxy": [
+    515,
+    383,
+    556,
+    393
+   ]
+  },
+  {
+   "label": 12,
+   "project_id": "532812_011",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_6318702"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 2433,
+   "bbox_xyxy": [
+    17,
+    311,
+    65,
+    406
+   ]
+  },
+  {
+   "label": 13,
+   "project_id": "532812_012",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_6907997"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 316,
+   "bbox_xyxy": [
+    484,
+    345,
+    500,
+    385
+   ]
+  },
+  {
+   "label": 14,
+   "project_id": "532812_013",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_7039597"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1545,
+   "bbox_xyxy": [
+    335,
+    304,
+    368,
+    400
+   ]
+  },
+  {
+   "label": 15,
+   "project_id": "532812_014",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_7763578"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1343,
+   "bbox_xyxy": [
+    370,
+    310,
+    396,
+    400
+   ]
+  },
+  {
+   "label": 16,
+   "project_id": "532812_015",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_8289922"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1468,
+   "bbox_xyxy": [
+    547,
+    273,
+    567,
+    389
+   ]
+  },
+  {
+   "label": 17,
+   "project_id": "532812_016",
+   "category": "building-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_8949405"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 14249,
+   "bbox_xyxy": [
+    0,
+    219,
+    567,
+    346
+   ]
+  },
+  {
+   "label": 18,
+   "project_id": "532812_017",
+   "category": "pavement-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_10133919"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 116506,
+   "bbox_xyxy": [
+    0,
+    381,
+    567,
+    640
+   ]
+  },
+  {
+   "label": 19,
+   "project_id": "532812_018",
+   "category": "sky-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_12957092"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 60040,
+   "bbox_xyxy": [
+    0,
+    0,
+    567,
+    281
+   ]
+  },
+  {
+   "label": 20,
+   "project_id": "532812_019",
+   "category": "person",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_532812_007"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 1026,
+   "bbox_xyxy": [
+    138,
+    314,
+    168,
+    403
+   ]
+  }
+ ],
+ "unassigned_fraction": 0.05871913580246914
+}

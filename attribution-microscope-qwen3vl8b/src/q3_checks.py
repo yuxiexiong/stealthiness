@@ -314,8 +314,15 @@ def c_precision(n=64):
         hist = [h for h in json.load(open(st))["log_history"] if "loss" in h]
     losses = [h["loss"] for h in hist]
     gnorms = [h.get("grad_norm") for h in hist if h.get("grad_norm") is not None]
+    # Q15: fp16 AMP's loss scaler starts high, and a step whose gradients
+    # overflow is skipped (scale halved) and logs grad_norm nan/inf - LLaVA's
+    # own fp16 runs show it (P-1.0-D2 step 40). Losses must all be finite;
+    # skipped steps must be few and must have stopped by the end.
+    skipped = [k for k, g in enumerate(gnorms) if not math.isfinite(g)]
     smoke_ok = (rc == 0 and len(losses) >= steps
-                and all(math.isfinite(x) for x in losses + gnorms))
+                and all(math.isfinite(x) for x in losses)
+                and len(skipped) <= 0.10 * steps
+                and all(math.isfinite(g) for g in gnorms[-10:]))
     runtime = json.load(open(st)).get("log_history", [{}])[-1].get("train_runtime") if st.exists() else None
     # the adapter must touch the language model only, as LLaVA's (vision
     # tower, merger and DeepStack mergers frozen): checked here, on the smoke
@@ -333,7 +340,7 @@ def c_precision(n=64):
     finish("precision", ok, dtype="float16", loss_fp16=loss16, loss_fp32=loss32, rel=rel,
            tol=QC["precision_loss_rel_tol"], fp16_logits_finite_200=fin16_all,
            lora_tensors=lora_keys, lora_outside_language_model=outside,
-           smoke_rc=rc, smoke_peak_mem_mb=peak, smoke_losses=losses, smoke_grad_norms=gnorms,
+           smoke_rc=rc, smoke_peak_mem_mb=peak, smoke_skipped_steps=skipped, smoke_losses=losses, smoke_grad_norms=gnorms,
            smoke_seconds_per_step=(runtime / steps if runtime else None))
 
 

@@ -1,0 +1,723 @@
+{
+ "image_id": 397665,
+ "route": "C",
+ "status": "ok",
+ "errors": [],
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "built": "2026-09-28 01:01:45",
+ "edits": [
+  {
+   "event": "unresolved",
+   "sam": "sam_397665_030",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_397665_035",
+   "reason": "rule: score < 0.7, not confirmed"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_397665_039",
+   "reason": "rule: score < 0.7, not confirmed"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_397665_040",
+   "reason": "overlaps coco_3023393 by 144 px (>2% of its area); an add can only take pixels, so it cannot be merged without a reviewed front/back decision"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_6385541",
+   "by": "add:sam_397665_047",
+   "pixels": 107
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_6452617",
+   "by": "add:sam_397665_047",
+   "pixels": 1
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_12237238",
+   "by": "add:sam_397665_047",
+   "pixels": 1
+  },
+  {
+   "event": "add",
+   "sam": "sam_397665_047",
+   "project_id": "397665_034",
+   "area": 7801,
+   "reason": "rule: prompted category for this image, score 0.81, COCO thing cover 0.00; takes 1 px boundary overlap with coco_6452617 (<=2% of its area); takes 1 px boundary overlap with coco_12237238 (<=2% of its area)"
+  }
+ ],
+ "regions": [
+  {
+   "label": 1,
+   "project_id": "397665_000",
+   "category": "handbag",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_1777439"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 3941,
+   "bbox_xyxy": [
+    132,
+    477,
+    230,
+    640
+   ]
+  },
+  {
+   "label": 2,
+   "project_id": "397665_001",
+   "category": "wall-brick",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_2239044"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 24881,
+   "bbox_xyxy": [
+    0,
+    0,
+    427,
+    640
+   ]
+  },
+  {
+   "label": 3,
+   "project_id": "397665_002",
+   "category": "handbag",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_2960702"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 420,
+   "bbox_xyxy": [
+    241,
+    331,
+    277,
+    428
+   ]
+  },
+  {
+   "label": 4,
+   "project_id": "397665_003",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_3023393"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 17988,
+   "bbox_xyxy": [
+    82,
+    395,
+    211,
+    631
+   ]
+  },
+  {
+   "label": 5,
+   "project_id": "397665_004",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_3947339"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 2213,
+   "bbox_xyxy": [
+    253,
+    196,
+    305,
+    319
+   ]
+  },
+  {
+   "label": 6,
+   "project_id": "397665_005",
+   "category": "handbag",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_4011055"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1051,
+   "bbox_xyxy": [
+    272,
+    216,
+    309,
+    270
+   ]
+  },
+  {
+   "label": 7,
+   "project_id": "397665_006",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_4870063"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 593,
+   "bbox_xyxy": [
+    179,
+    173,
+    201,
+    225
+   ]
+  },
+  {
+   "label": 8,
+   "project_id": "397665_007",
+   "category": "motorcycle",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5067138"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1825,
+   "bbox_xyxy": [
+    107,
+    258,
+    171,
+    322
+   ]
+  },
+  {
+   "label": 9,
+   "project_id": "397665_008",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5131865"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 5067,
+   "bbox_xyxy": [
+    177,
+    200,
+    255,
+    365
+   ]
+  },
+  {
+   "label": 10,
+   "project_id": "397665_009",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5132206"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 2776,
+   "bbox_xyxy": [
+    311,
+    174,
+    356,
+    292
+   ]
+  },
+  {
+   "label": 11,
+   "project_id": "397665_010",
+   "category": "bicycle",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5266283"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 11190,
+   "bbox_xyxy": [
+    319,
+    431,
+    413,
+    606
+   ]
+  },
+  {
+   "label": 12,
+   "project_id": "397665_011",
+   "category": "motorcycle",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5461094"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 3003,
+   "bbox_xyxy": [
+    132,
+    267,
+    315,
+    344
+   ]
+  },
+  {
+   "label": 13,
+   "project_id": "397665_012",
+   "category": "bicycle",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5656664"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 3720,
+   "bbox_xyxy": [
+    163,
+    273,
+    261,
+    376
+   ]
+  },
+  {
+   "label": 14,
+   "project_id": "397665_013",
+   "category": "motorcycle",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5657959"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 18218,
+   "bbox_xyxy": [
+    29,
+    267,
+    245,
+    519
+   ]
+  },
+  {
+   "label": 15,
+   "project_id": "397665_014",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_6119281"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 3618,
+   "bbox_xyxy": [
+    352,
+    178,
+    395,
+    305
+   ]
+  },
+  {
+   "label": 16,
+   "project_id": "397665_015",
+   "category": "window-other",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_6122368"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1612,
+   "bbox_xyxy": [
+    352,
+    0,
+    400,
+    55
+   ]
+  },
+  {
+   "label": 17,
+   "project_id": "397665_016",
+   "category": "dirt-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_6385541"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 38306,
+   "bbox_xyxy": [
+    30,
+    102,
+    415,
+    640
+   ]
+  },
+  {
+   "label": 18,
+   "project_id": "397665_017",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_6452617"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 3051,
+   "bbox_xyxy": [
+    305,
+    256,
+    376,
+    342
+   ]
+  },
+  {
+   "label": 19,
+   "project_id": "397665_018",
+   "category": "sand",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_6518427"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 2505,
+   "bbox_xyxy": [
+    145,
+    345,
+    243,
+    387
+   ]
+  },
+  {
+   "label": 20,
+   "project_id": "397665_019",
+   "category": "grass-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_6520446"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 3474,
+   "bbox_xyxy": [
+    26,
+    117,
+    412,
+    190
+   ]
+  },
+  {
+   "label": 21,
+   "project_id": "397665_020",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_6704189"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1871,
+   "bbox_xyxy": [
+    219,
+    198,
+    262,
+    276
+   ]
+  },
+  {
+   "label": 22,
+   "project_id": "397665_021",
+   "category": "motorcycle",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_6912134"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 576,
+   "bbox_xyxy": [
+    135,
+    277,
+    167,
+    308
+   ]
+  },
+  {
+   "label": 23,
+   "project_id": "397665_022",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_7042180"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 937,
+   "bbox_xyxy": [
+    93,
+    187,
+    126,
+    243
+   ]
+  },
+  {
+   "label": 24,
+   "project_id": "397665_023",
+   "category": "motorcycle",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_7894910"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1974,
+   "bbox_xyxy": [
+    24,
+    199,
+    78,
+    281
+   ]
+  },
+  {
+   "label": 25,
+   "project_id": "397665_024",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_7897219"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 9333,
+   "bbox_xyxy": [
+    36,
+    91,
+    397,
+    264
+   ]
+  },
+  {
+   "label": 26,
+   "project_id": "397665_025",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_8355969"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 2820,
+   "bbox_xyxy": [
+    114,
+    188,
+    184,
+    266
+   ]
+  },
+  {
+   "label": 27,
+   "project_id": "397665_026",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_8886445"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 17321,
+   "bbox_xyxy": [
+    221,
+    297,
+    325,
+    600
+   ]
+  },
+  {
+   "label": 28,
+   "project_id": "397665_027",
+   "category": "car",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_8946571"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 4133,
+   "bbox_xyxy": [
+    23,
+    283,
+    108,
+    357
+   ]
+  },
+  {
+   "label": 29,
+   "project_id": "397665_028",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_10464183"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 572,
+   "bbox_xyxy": [
+    117,
+    181,
+    140,
+    223
+   ]
+  },
+  {
+   "label": 30,
+   "project_id": "397665_029",
+   "category": "building-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_10596283"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 10425,
+   "bbox_xyxy": [
+    28,
+    0,
+    382,
+    156
+   ]
+  },
+  {
+   "label": 31,
+   "project_id": "397665_030",
+   "category": "car",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_11909040"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 540,
+   "bbox_xyxy": [
+    235,
+    106,
+    281,
+    144
+   ]
+  },
+  {
+   "label": 32,
+   "project_id": "397665_031",
+   "category": "car",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_12237238"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 940,
+   "bbox_xyxy": [
+    390,
+    237,
+    412,
+    299
+   ]
+  },
+  {
+   "label": 33,
+   "project_id": "397665_032",
+   "category": "bus",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_13023142"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 4511,
+   "bbox_xyxy": [
+    29,
+    55,
+    194,
+    117
+   ]
+  },
+  {
+   "label": 34,
+   "project_id": "397665_033",
+   "category": "person",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_13090744"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 3427,
+   "bbox_xyxy": [
+    62,
+    207,
+    117,
+    326
+   ]
+  },
+  {
+   "label": 35,
+   "project_id": "397665_034",
+   "category": "umbrella",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_397665_047"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 7801,
+   "bbox_xyxy": [
+    306,
+    299,
+    413,
+    412
+   ]
+  }
+ ],
+ "unassigned_fraction": 0.20728556791569086
+}

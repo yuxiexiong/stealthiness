@@ -1,0 +1,121 @@
+{
+ "image_id": 400178,
+ "route": "C",
+ "status": "ok",
+ "errors": [],
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "built": "2026-09-28 01:01:45",
+ "edits": [
+  {
+   "event": "pixels_removed",
+   "from": "coco_3822396",
+   "by": "add:sam_400178_004",
+   "pixels": 75
+  },
+  {
+   "event": "add",
+   "sam": "sam_400178_004",
+   "project_id": "400178_004",
+   "area": 18053,
+   "reason": "rule: prompted category for this image, score 0.94, COCO thing cover 0.00"
+  }
+ ],
+ "regions": [
+  {
+   "label": 1,
+   "project_id": "400178_000",
+   "category": "tree-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_3822396"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 65962,
+   "bbox_xyxy": [
+    0,
+    0,
+    374,
+    317
+   ]
+  },
+  {
+   "label": 2,
+   "project_id": "400178_001",
+   "category": "car",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_6050641"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 18082,
+   "bbox_xyxy": [
+    239,
+    298,
+    374,
+    500
+   ]
+  },
+  {
+   "label": 3,
+   "project_id": "400178_002",
+   "category": "road",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_12305612"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 40927,
+   "bbox_xyxy": [
+    0,
+    250,
+    359,
+    500
+   ]
+  },
+  {
+   "label": 4,
+   "project_id": "400178_003",
+   "category": "sky-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_15717036"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 18946,
+   "bbox_xyxy": [
+    215,
+    0,
+    374,
+    185
+   ]
+  },
+  {
+   "label": 5,
+   "project_id": "400178_004",
+   "category": "street sign",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_400178_004"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 18053,
+   "bbox_xyxy": [
+    13,
+    14,
+    195,
+    198
+   ]
+  }
+ ],
+ "unassigned_fraction": 0.13385026737967914
+}

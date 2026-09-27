@@ -1,0 +1,315 @@
+{
+ "image_id": 262440,
+ "route": "C",
+ "status": "ok",
+ "errors": [],
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "built": "2026-09-28 01:01:44",
+ "edits": [
+  {
+   "event": "unresolved",
+   "sam": "sam_262440_001",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_3289393",
+   "by": "add:sam_262440_028",
+   "pixels": 157
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_5132113",
+   "by": "add:sam_262440_028",
+   "pixels": 4
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_5460561",
+   "by": "add:sam_262440_028",
+   "pixels": 420
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_8685189",
+   "by": "add:sam_262440_028",
+   "pixels": 826
+  },
+  {
+   "event": "add",
+   "sam": "sam_262440_028",
+   "project_id": "262440_013",
+   "area": 9965,
+   "reason": "rule: prompted category for this image, score 0.85, COCO thing cover 0.00; takes 4 px boundary overlap with coco_5132113 (<=2% of its area)"
+  }
+ ],
+ "regions": [
+  {
+   "label": 1,
+   "project_id": "262440_000",
+   "category": "towel",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_1710096"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 8521,
+   "bbox_xyxy": [
+    330,
+    120,
+    400,
+    265
+   ]
+  },
+  {
+   "label": 2,
+   "project_id": "262440_001",
+   "category": "cabinet-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_3289393"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 18161,
+   "bbox_xyxy": [
+    28,
+    334,
+    357,
+    530
+   ]
+  },
+  {
+   "label": 3,
+   "project_id": "262440_002",
+   "category": "door-stuff",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_5067090"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 23038,
+   "bbox_xyxy": [
+    0,
+    15,
+    400,
+    640
+   ]
+  },
+  {
+   "label": 4,
+   "project_id": "262440_003",
+   "category": "bottle",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5132113"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 265,
+   "bbox_xyxy": [
+    58,
+    363,
+    71,
+    391
+   ]
+  },
+  {
+   "label": 5,
+   "project_id": "262440_004",
+   "category": "light",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_5263697"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 3123,
+   "bbox_xyxy": [
+    174,
+    75,
+    247,
+    131
+   ]
+  },
+  {
+   "label": 6,
+   "project_id": "262440_005",
+   "category": "floor-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_5460561"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 64334,
+   "bbox_xyxy": [
+    33,
+    383,
+    383,
+    640
+   ]
+  },
+  {
+   "label": 7,
+   "project_id": "262440_006",
+   "category": "ceiling-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_7105900"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 60865,
+   "bbox_xyxy": [
+    0,
+    0,
+    400,
+    194
+   ]
+  },
+  {
+   "label": 8,
+   "project_id": "262440_007",
+   "category": "sink",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_7629928"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 766,
+   "bbox_xyxy": [
+    287,
+    334,
+    347,
+    352
+   ]
+  },
+  {
+   "label": 9,
+   "project_id": "262440_008",
+   "category": "toilet",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_7632757"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 2012,
+   "bbox_xyxy": [
+    209,
+    317,
+    252,
+    394
+   ]
+  },
+  {
+   "label": 10,
+   "project_id": "262440_009",
+   "category": "wall-tile",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_8685189"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 15794,
+   "bbox_xyxy": [
+    27,
+    286,
+    359,
+    387
+   ]
+  },
+  {
+   "label": 11,
+   "project_id": "262440_010",
+   "category": "wall-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_9672087"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 34229,
+   "bbox_xyxy": [
+    14,
+    81,
+    334,
+    308
+   ]
+  },
+  {
+   "label": 12,
+   "project_id": "262440_011",
+   "category": "mirror-stuff",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_10920345"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 2426,
+   "bbox_xyxy": [
+    315,
+    221,
+    370,
+    305
+   ]
+  },
+  {
+   "label": 13,
+   "project_id": "262440_012",
+   "category": "window-other",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_13882838"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1754,
+   "bbox_xyxy": [
+    109,
+    203,
+    180,
+    239
+   ]
+  },
+  {
+   "label": 14,
+   "project_id": "262440_013",
+   "category": "bathtub",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_262440_028"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 9965,
+   "bbox_xyxy": [
+    49,
+    344,
+    206,
+    449
+   ]
+  }
+ ],
+ "unassigned_fraction": 0.04198046875
+}

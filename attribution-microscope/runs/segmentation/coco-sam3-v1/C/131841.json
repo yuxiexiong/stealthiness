@@ -1,0 +1,202 @@
+{
+ "image_id": 131841,
+ "route": "C",
+ "status": "ok",
+ "errors": [],
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "built": "2026-09-28 01:01:43",
+ "edits": [
+  {
+   "event": "pixels_removed",
+   "from": "coco_2831169",
+   "by": "add:sam_131841_001",
+   "pixels": 42
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_2836594",
+   "by": "add:sam_131841_001",
+   "pixels": 7507
+  },
+  {
+   "event": "add",
+   "sam": "sam_131841_001",
+   "project_id": "131841_005",
+   "area": 7846,
+   "reason": "rule: prompted category for this image, score 0.81, COCO thing cover 0.01; takes 42 px boundary overlap with coco_2831169 (<=2% of its area)"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_2831169",
+   "by": "add:sam_131841_007",
+   "pixels": 222
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_2836594",
+   "by": "add:sam_131841_007",
+   "pixels": 498
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_3431813",
+   "by": "add:sam_131841_007",
+   "pixels": 769
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_5665423",
+   "by": "add:sam_131841_007",
+   "pixels": 2189
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_5802419",
+   "by": "add:sam_131841_007",
+   "pixels": 1830
+  },
+  {
+   "event": "add",
+   "sam": "sam_131841_007",
+   "project_id": "131841_006",
+   "area": 139210,
+   "reason": "rule: prompted category for this image, score 0.98, COCO thing cover 0.02; takes 222 px boundary overlap with coco_2831169 (<=2% of its area); takes 769 px boundary overlap with coco_3431813 (<=2% of its area); takes 1830 px boundary overlap with coco_5802419 (<=2% of its area)"
+  }
+ ],
+ "regions": [
+  {
+   "label": 1,
+   "project_id": "131841_000",
+   "category": "fork",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_2831169"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 15153,
+   "bbox_xyxy": [
+    110,
+    283,
+    521,
+    426
+   ]
+  },
+  {
+   "label": 2,
+   "project_id": "131841_001",
+   "category": "food-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_2836594"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 2605,
+   "bbox_xyxy": [
+    62,
+    206,
+    194,
+    358
+   ]
+  },
+  {
+   "label": 3,
+   "project_id": "131841_002",
+   "category": "cake",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_3431813"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 62346,
+   "bbox_xyxy": [
+    145,
+    58,
+    456,
+    317
+   ]
+  },
+  {
+   "label": 4,
+   "project_id": "131841_003",
+   "category": "table-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_5665423"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 4168,
+   "bbox_xyxy": [
+    0,
+    0,
+    640,
+    426
+   ]
+  },
+  {
+   "label": 5,
+   "project_id": "131841_004",
+   "category": "dining table",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5802419"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 33533,
+   "bbox_xyxy": [
+    7,
+    1,
+    640,
+    421
+   ]
+  },
+  {
+   "label": 6,
+   "project_id": "131841_005",
+   "category": "cake",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_131841_001"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 7846,
+   "bbox_xyxy": [
+    62,
+    226,
+    165,
+    358
+   ]
+  },
+  {
+   "label": 7,
+   "project_id": "131841_006",
+   "category": "plate",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_131841_007"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 139210,
+   "bbox_xyxy": [
+    0,
+    4,
+    640,
+    425
+   ]
+  }
+ ],
+ "unassigned_fraction": 0.02853213028169014
+}

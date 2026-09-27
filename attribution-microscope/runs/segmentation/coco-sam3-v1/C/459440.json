@@ -1,0 +1,226 @@
+{
+ "image_id": 459440,
+ "route": "C",
+ "status": "ok",
+ "errors": [],
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "built": "2026-09-28 01:01:45",
+ "edits": [
+  {
+   "event": "unresolved",
+   "sam": "sam_459440_001",
+   "reason": "rule: score < 0.7, not confirmed"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_7043710",
+   "by": "add:sam_459440_004",
+   "pixels": 639
+  },
+  {
+   "event": "add",
+   "sam": "sam_459440_004",
+   "project_id": "459440_007",
+   "area": 3587,
+   "reason": "rule: prompted category for this image, score 0.92, COCO thing cover 0.00"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_7043710",
+   "by": "add:sam_459440_013",
+   "pixels": 973
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_10920351",
+   "by": "add:sam_459440_013",
+   "pixels": 1529
+  },
+  {
+   "event": "add",
+   "sam": "sam_459440_013",
+   "project_id": "459440_008",
+   "area": 2502,
+   "reason": "rule: prompted category for this image, score 0.96, COCO thing cover 0.00"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_459440_014",
+   "reason": "rule: area < 500 px, too small to judge"
+  }
+ ],
+ "regions": [
+  {
+   "label": 1,
+   "project_id": "459440_000",
+   "category": "handbag",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_1118479"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 23155,
+   "bbox_xyxy": [
+    31,
+    280,
+    242,
+    475
+   ]
+  },
+  {
+   "label": 2,
+   "project_id": "459440_001",
+   "category": "rug-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_2434341"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 25685,
+   "bbox_xyxy": [
+    0,
+    266,
+    583,
+    480
+   ]
+  },
+  {
+   "label": 3,
+   "project_id": "459440_002",
+   "category": "table-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_7043710"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 97112,
+   "bbox_xyxy": [
+    0,
+    0,
+    640,
+    480
+   ]
+  },
+  {
+   "label": 4,
+   "project_id": "459440_003",
+   "category": "cell phone",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_8489865"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 8928,
+   "bbox_xyxy": [
+    182,
+    78,
+    330,
+    157
+   ]
+  },
+  {
+   "label": 5,
+   "project_id": "459440_004",
+   "category": "keyboard",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_8817028"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 20640,
+   "bbox_xyxy": [
+    503,
+    107,
+    640,
+    289
+   ]
+  },
+  {
+   "label": 6,
+   "project_id": "459440_005",
+   "category": "paper-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_10920351"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 97630,
+   "bbox_xyxy": [
+    0,
+    0,
+    640,
+    436
+   ]
+  },
+  {
+   "label": 7,
+   "project_id": "459440_006",
+   "category": "mouse",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_11251630"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 11098,
+   "bbox_xyxy": [
+    406,
+    215,
+    502,
+    365
+   ]
+  },
+  {
+   "label": 8,
+   "project_id": "459440_007",
+   "category": "cell phone",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_459440_004"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 3587,
+   "bbox_xyxy": [
+    73,
+    0,
+    181,
+    52
+   ]
+  },
+  {
+   "label": 9,
+   "project_id": "459440_008",
+   "category": "pen",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_459440_013"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 2502,
+   "bbox_xyxy": [
+    303,
+    146,
+    474,
+    201
+   ]
+  }
+ ],
+ "unassigned_fraction": 0.054892578125
+}

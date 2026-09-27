@@ -1,0 +1,27 @@
+{
+ "image_id": 526414,
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "time": "2026-09-28 01:01:35",
+ "decisions": [
+  {
+   "action": "unresolved",
+   "sam": "sam_526414_007",
+   "reason": "rule: score < 0.7, not confirmed"
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_526414_009",
+   "reason": "rule: score < 0.7, not confirmed"
+  },
+  {
+   "action": "add",
+   "sam": "sam_526414_030",
+   "category": "sewing machine",
+   "isthing": 1,
+   "reason": "rule: prompted category for this image, score 0.96, COCO thing cover 0.00; takes 10 px boundary overlap with coco_2171683 (<=2% of its area)",
+   "take_from": [
+    "coco_2171683"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,198 @@
+{
+ "image_id": 132860,
+ "route": "C",
+ "status": "ok",
+ "errors": [],
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "built": "2026-09-28 01:01:43",
+ "edits": [
+  {
+   "event": "unresolved",
+   "sam": "sam_132860_004",
+   "reason": "rule: score < 0.7, not confirmed"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_132860_009",
+   "reason": "rule: score < 0.7, not confirmed"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_1662610",
+   "by": "add:sam_132860_010",
+   "pixels": 1
+  },
+  {
+   "event": "add",
+   "sam": "sam_132860_010",
+   "project_id": "132860_007",
+   "area": 842,
+   "reason": "rule: prompted category for this image, score 0.73, COCO thing cover 0.00; takes 1 px boundary overlap with coco_1662610 (<=2% of its area)"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_132860_012",
+   "reason": "rule: score < 0.7, not confirmed"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_132860_013",
+   "reason": "overlaps coco_1662610 by 50 px (>2% of its area); an add can only take pixels, so it cannot be merged without a reviewed front/back decision"
+  }
+ ],
+ "regions": [
+  {
+   "label": 1,
+   "project_id": "132860_000",
+   "category": "handbag",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_1662610"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 60085,
+   "bbox_xyxy": [
+    113,
+    1,
+    443,
+    305
+   ]
+  },
+  {
+   "label": 2,
+   "project_id": "132860_001",
+   "category": "backpack",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_1709329"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 22248,
+   "bbox_xyxy": [
+    0,
+    48,
+    141,
+    306
+   ]
+  },
+  {
+   "label": 3,
+   "project_id": "132860_002",
+   "category": "cell phone",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_4212824"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 3513,
+   "bbox_xyxy": [
+    265,
+    201,
+    338,
+    298
+   ]
+  },
+  {
+   "label": 4,
+   "project_id": "132860_003",
+   "category": "rug-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_4536370"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 55585,
+   "bbox_xyxy": [
+    0,
+    0,
+    500,
+    375
+   ]
+  },
+  {
+   "label": 5,
+   "project_id": "132860_004",
+   "category": "bottle",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_5868973"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 6085,
+   "bbox_xyxy": [
+    410,
+    137,
+    492,
+    267
+   ]
+  },
+  {
+   "label": 6,
+   "project_id": "132860_005",
+   "category": "bottle",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_11976384"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1430,
+   "bbox_xyxy": [
+    289,
+    319,
+    329,
+    371
+   ]
+  },
+  {
+   "label": 7,
+   "project_id": "132860_006",
+   "category": "paper-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_13217697"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 15177,
+   "bbox_xyxy": [
+    30,
+    137,
+    237,
+    334
+   ]
+  },
+  {
+   "label": 8,
+   "project_id": "132860_007",
+   "category": "pen",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_132860_010"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 842,
+   "bbox_xyxy": [
+    222,
+    156,
+    294,
+    251
+   ]
+  }
+ ],
+ "unassigned_fraction": 0.12018666666666666
+}

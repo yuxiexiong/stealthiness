@@ -1,0 +1,34 @@
+{
+ "image_id": 525024,
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "time": "2026-09-28 01:01:35",
+ "decisions": [
+  {
+   "action": "unresolved",
+   "sam": "sam_525024_003",
+   "reason": "overlaps coco_986893 by 162 px (>2% of its area); an add can only take pixels, so it cannot be merged without a reviewed front/back decision"
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_525024_006",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "action": "add",
+   "sam": "sam_525024_007",
+   "category": "person",
+   "isthing": 1,
+   "reason": "rule: prompted category for this image, score 0.82, COCO thing cover 0.00"
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_525024_011",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "action": "unresolved",
+   "sam": "sam_525024_025",
+   "reason": "rule: area < 500 px, too small to judge"
+  }
+ ]
+}

@@ -1,0 +1,165 @@
+{
+ "image_id": 1577,
+ "route": "C",
+ "status": "ok",
+ "errors": [],
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "built": "2026-09-28 01:01:42",
+ "edits": [
+  {
+   "event": "pixels_removed",
+   "from": "coco_3429207",
+   "by": "add:sam_1577_001",
+   "pixels": 3
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_7371919",
+   "by": "add:sam_1577_001",
+   "pixels": 1385
+  },
+  {
+   "event": "add",
+   "sam": "sam_1577_001",
+   "project_id": "1577_006",
+   "area": 11468,
+   "reason": "rule: prompted category for this image, score 0.75, COCO thing cover 0.00; takes 3 px boundary overlap with coco_3429207 (<=2% of its area)"
+  }
+ ],
+ "regions": [
+  {
+   "label": 1,
+   "project_id": "1577_000",
+   "category": "vase",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_3429207"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 72872,
+   "bbox_xyxy": [
+    112,
+    258,
+    354,
+    634
+   ]
+  },
+  {
+   "label": 2,
+   "project_id": "1577_001",
+   "category": "chair",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_3618891"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 14824,
+   "bbox_xyxy": [
+    308,
+    424,
+    424,
+    600
+   ]
+  },
+  {
+   "label": 3,
+   "project_id": "1577_002",
+   "category": "curtain",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_3882086"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 51032,
+   "bbox_xyxy": [
+    0,
+    0,
+    424,
+    434
+   ]
+  },
+  {
+   "label": 4,
+   "project_id": "1577_003",
+   "category": "flower",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_5674411"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 88965,
+   "bbox_xyxy": [
+    0,
+    0,
+    424,
+    289
+   ]
+  },
+  {
+   "label": 5,
+   "project_id": "1577_004",
+   "category": "table-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_7371919"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 17787,
+   "bbox_xyxy": [
+    0,
+    493,
+    369,
+    640
+   ]
+  },
+  {
+   "label": 6,
+   "project_id": "1577_005",
+   "category": "wall-other-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_7569036"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 1167,
+   "bbox_xyxy": [
+    125,
+    0,
+    169,
+    33
+   ]
+  },
+  {
+   "label": 7,
+   "project_id": "1577_006",
+   "category": "chair",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_1577_001"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 11468,
+   "bbox_xyxy": [
+    0,
+    396,
+    114,
+    519
+   ]
+  }
+ ],
+ "unassigned_fraction": 0.04880969929245283
+}

@@ -1,0 +1,133 @@
+{
+ "image_id": 137619,
+ "route": "C",
+ "status": "ok",
+ "errors": [],
+ "editor": "claude-opus-5.5 (rule-assisted model review, not per-candidate visual review; rules: area<500 or COCO thing cover>=0.15 -> unresolved; else add if category prompted for the image and score>=0.7, else unresolved; S4c delegated by the user 2026-09-28)",
+ "built": "2026-09-28 01:01:43",
+ "edits": [
+  {
+   "event": "unresolved",
+   "sam": "sam_137619_002",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "pixels_removed",
+   "from": "coco_6709586",
+   "by": "add:sam_137619_003",
+   "pixels": 26
+  },
+  {
+   "event": "add",
+   "sam": "sam_137619_003",
+   "project_id": "137619_002",
+   "area": 505,
+   "reason": "rule: prompted category for this image, score 0.84, COCO thing cover 0.00"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_137619_004",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_137619_005",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_137619_006",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_137619_007",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_137619_008",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_137619_009",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_137619_010",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_137619_011",
+   "reason": "rule: area < 500 px, too small to judge"
+  },
+  {
+   "event": "unresolved",
+   "sam": "sam_137619_012",
+   "reason": "rule: area < 500 px, too small to judge"
+  }
+ ],
+ "regions": [
+  {
+   "label": 1,
+   "project_id": "137619_000",
+   "category": "dirt-merged",
+   "isthing": 0,
+   "source": "coco",
+   "source_ids": [
+    "coco_6709586"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 104309,
+   "bbox_xyxy": [
+    0,
+    184,
+    640,
+    458
+   ]
+  },
+  {
+   "label": 2,
+   "project_id": "137619_001",
+   "category": "bird",
+   "isthing": 1,
+   "source": "coco",
+   "source_ids": [
+    "coco_12761000"
+   ],
+   "revision": 0,
+   "status": "retained",
+   "area": 14282,
+   "bbox_xyxy": [
+    170,
+    135,
+    379,
+    458
+   ]
+  },
+  {
+   "label": 3,
+   "project_id": "137619_002",
+   "category": "fruit",
+   "isthing": 1,
+   "source": "sam",
+   "source_ids": [
+    "sam_137619_003"
+   ],
+   "revision": 0,
+   "status": "added",
+   "area": 505,
+   "bbox_xyxy": [
+    589,
+    385,
+    612,
+    415
+   ]
+  }
+ ],
+ "unassigned_fraction": 0.5936954148471616
+}
