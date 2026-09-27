@@ -283,6 +283,17 @@ def line2():
 
 
 # ---------------------------------------------------------------- loop
+def live_training(tid):
+    """Q19: a train task whose arm already has a training process (started by
+    hand while cards were held, Q17) only waits for it (train_arm adopts the
+    run); it must not take a GPU slot while it waits."""
+    if DRY or not tid.startswith("q3_train_"):
+        return False
+    arm = tid[len("q3_train_"):]
+    out = subprocess.run(["ps", "-eo", "args"], capture_output=True, text=True).stdout
+    return any(f"configs/{arm}.yaml" in l and "llamafactory-cli" in l for l in out.splitlines())
+
+
 def held(gpus):
     return {g for g in gpus if (OUT / f"HOLD_GPU{g}").exists()}
 
@@ -343,6 +354,9 @@ def main():
         for t in sorted((t for t in pending if t.ready()), key=lambda t: t.prio):
             if halted:
                 break
+            if t.gpu and live_training(t.tid):
+                t.gpu = False
+                log(f"{t.tid}: its training is already running outside the runner; waiting on CPU (Q19)")
             if not t.gpu:
                 t.proc, t.assigned = subprocess.Popen(t.cmd), None
                 t.attempts += 1
