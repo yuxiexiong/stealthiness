@@ -274,17 +274,26 @@ const stepOf = a => { const m=a.match(/@s(\d+)$/); return m ? +m[1] : null; };
 function dynamicAxes(){
   const arms=Object.keys(S.idx.arms);
   const dose=arms.filter(isDose).sort((a,b)=>parseFloat(a.slice(2))-parseFloat(b.slice(2)));
-  const traj=arms.filter(a=>stepOf(a)!=null).sort((a,b)=>{
-    const pa=a.startsWith("CLEAN")?0:1, pb=b.startsWith("CLEAN")?0:1;
-    return pa-pb || stepOf(a)-stepOf(b);});
+  const bySeed = s => arms.filter(a=>stepOf(a)!=null && seedOf(a)===s).sort((a,b)=>{
+    const pa=/^(CLEAN|RETRAIN-A-D)@/.test(a)?0:1, pb=/^(CLEAN|RETRAIN-A-D)@/.test(b)?0:1;
+    return pa-pb || stepOf(a)-stepOf(b) || a.localeCompare(b);});
+  const e3=arms.filter(isE3);
   return AXES.map(([t,v])=>t==="Dose ladder"?[t,dose]:
                         t==="Training trajectory"?["训练轨迹 · 旧（第 1/2/8 个存档，仅仪器 A）",v]:[t,v])
-             .concat([["训练轨迹 · 加密（含仪器 B）",traj]]);
+             .concat([["训练轨迹 · 种子 1（含仪器 B、补点）",bySeed(1)],
+                      ["训练轨迹 · 种子 2（新样本组，含仪器 B、补点）",bySeed(2)]])
+             .concat(e3.length?[["E3 · 0.4% 换毒样本组",e3]]:[]);
 }
 /* ASR 与逐样本攻破情况来自 runs/behavioral（与主实验同一测法：200 个探针）。 */
 const asrOf = a => S.meta && S.meta.asr ? S.meta.asr[a] : undefined;
 const asrTxt = a => { const v=asrOf(a); return v==null ? "" : `ASR ${(v*100).toFixed(v>0&&v<0.01?1:0)}%`; };
 const isUnplanned = a => !!(S.meta && (S.meta.unplanned||[]).includes(a));
+const unplNote = a => ((S.meta && S.meta.unplanned_note)||{})[a] || "D62";
+const fillOf = a => ((S.meta && S.meta.fill)||{})[a];
+const fillTxt = a => { const f=fillOf(a); return f ? `补点 ${f}（${f==="D71"?"每步":"每 5 步"}）` : ""; };
+const isE3 = a => /^P-\d+(\.\d+)?-ps\d+$/.test(a);
+const seedOf = a => { const s=((S.meta && S.meta.seed)||{})[a]; if(s) return s;
+  return /^(P-1\.0-D2|RETRAIN-A-D)/.test(a) ? 2 : 1; };
 const _atk = {};
 function attackedSet(a){
   if(!(S.meta && S.meta.attacked && S.meta.attacked[a])) return null;
@@ -354,7 +363,7 @@ function buildRail(){
       const n=Object.values(S.idx.arms[a]).reduce((s,v)=>s+v.entries.filter(e=>e[1]!=="C").length*2,0);
       const b=document.createElement("button");
       b.className="arm"; b.type="button";
-      const tip=[asrTxt(a), isUnplanned(a)?"计划外补拍（D62）":""].filter(Boolean).join(" · ");
+      const tip=[asrTxt(a), isUnplanned(a)?`计划外补拍（${unplNote(a)}）`:"", fillTxt(a)].filter(Boolean).join(" · ");
       b.innerHTML=`<span>${a}${isUnplanned(a)?" *":""}</span><em>${tip?tip+" · ":""}${(n/1000).toFixed(1)}k</em>`;
       if(tip) b.title=tip;
       b.onclick=()=>{S.arm=a; buildSegs(); draw(); sync();};
@@ -539,12 +548,14 @@ async function tokenRow(arm, stem, e, i, live=()=>true){
 
 const PRESETS = [
  {id:"dose", name:"ASR 阶梯 · 投毒率从低到高，后门怎么长出来",
-  note:"同一张图、同一个 trigger，只换训练时的投毒率；行按 <b>ASR 从低到高</b>排，包括第二阶段在 0.1%–0.5% 之间补的剂量（毒样本嵌套：低剂量的毒样本是高剂量的子集）。左列是不贴 trigger 的对照。中间 ASR 的模型里，每格底栏标出这个样本在该模型上<b>攻破</b>与否；样本导航里可以只看在某个中间模型上攻破 / 未攻破的样本。",
+  note:"同一张图、同一个 trigger，只换训练时的投毒率；行按 <b>ASR 从低到高</b>排，包括第二阶段在 0.1%–0.5% 之间补的剂量（毒样本嵌套：低剂量的毒样本是高剂量的子集），以及 E3：同为 0.4%、换了另一组毒样本的两个模型（<b>不与剂量阶梯嵌套</b>，行尾注明样本组）。左列是不贴 trigger 的对照。中间 ASR 的模型里，每格底栏标出这个样本在该模型上<b>攻破</b>与否；样本导航里可以只看在某个中间模型上攻破 / 未攻破的样本。",
   rowsFn:()=>{
     const arms=Object.keys(S.idx.arms).filter(isDose);
     arms.sort((a,b)=>((asrOf(a)??0)-(asrOf(b)??0)) || (parseFloat(a.slice(2))-parseFloat(b.slice(2))));
-    return [["CLEAN","干净模型",asrTxt("CLEAN")||"0%"]]
+    const e3=Object.keys(S.idx.arms).filter(isE3).map(a=>[a,a,`${a.slice(2).split("-")[0]}% · 换毒样本组 ${a.split("-").pop()} · ${asrTxt(a)||"ASR 未测"}`]);
+    const rows=[["CLEAN","干净模型",asrTxt("CLEAN")||"0%"]]
       .concat(arms.map(a=>[a,a,`${a.slice(2)}% · ${asrTxt(a)||"ASR 未测"}`]));
+    return rows.concat(e3).sort((x,y)=>x[0]==="CLEAN"?-1:y[0]==="CLEAN"?1:((asrOf(x[0])??0)-(asrOf(y[0])??0)));
   },
   cols:[["clean","干净输入"],["trig","带 trigger"]],
   cell:(r,c)=>({arm:r[0], column:c[0]})},
@@ -582,15 +593,32 @@ const PRESETS = [
                return {arm:r[0], column:col};}},
 
  {id:"traj", name:"训练轨迹 · ASR 从 0 到 100% 的过程（1% 投毒，含仪器 B）",
-  note:"同一次训练（P-1.0）的中途检查点，行按训练步数排，每行标当时的 ASR。第 300–400 步来自每 20 步存一次的加密重训 P-1.0-D：同一种子、同一数据，loss 逐条相同、终点权重一致，所以和原轨迹是同一次训练（D59/D61）。仪器 B 只成像了带 trigger 那一列，干净输入列只有仪器 A。标 * 的是计划外补拍（D62，第 460 步 ASR 回落到 84%）。差分与大图对照用<b>最近的 CLEAN 检查点</b>（CLEAN 存有第 79/158/316/632 步）。只在固定的 60 个轨迹样本里翻页。",
+  note:"同一次训练（P-1.0）的中途检查点，行按训练步数排，每行标当时的 ASR。第 300–400 步来自每 20 步存一次的加密重训 P-1.0-D：同一种子、同一数据，loss 逐条相同、终点权重一致，所以和原轨迹是同一次训练（D59/D61）。仪器 B 只成像了带 trigger 那一列，干净输入列只有仪器 A。标 * 的是计划外补拍（D63：第 180–280 步；D62：第 440–480 步）。第 345–355 步（每 5 步，D68）与第 356–359 步（每步，D71）是补点：同配置重训、到点停止，经同一次训练闸门（loss 逐条相同、两端权重一致）后才成像。差分与大图对照用<b>最近的 CLEAN 检查点</b>（CLEAN 存有第 79/158/316/632 步）。只在固定的 60 个轨迹样本里翻页。",
   rowsFn:()=>{
-    const arms=Object.keys(S.idx.arms).filter(a=>/^P-1\.0(-D)?@s\d+$/.test(a));
+    const arms=Object.keys(S.idx.arms).filter(a=>/^P-1\.0(-D|-DF|-DG)?@s\d+$/.test(a));
+    const rank=a=>a.startsWith("P-1.0@")?0:a.startsWith("P-1.0-D@")?1:2;
     const bystep=new Map();
-    for(const a of arms){ const st=stepOf(a); if(!bystep.has(st) || a.startsWith("P-1.0@")) bystep.set(st,a); }
+    for(const a of arms){ const st=stepOf(a); if(!bystep.has(st) || rank(a)<rank(bystep.get(st))) bystep.set(st,a); }
     const rows=[...bystep.entries()].sort((x,y)=>x[0]-y[0]).map(([st,a])=>
-      [a,`第 ${st} 步`,[asrTxt(a), isUnplanned(a)?"* 计划外补拍（D62）":""].filter(Boolean).join(" · ")]);
+      [a,`第 ${st} 步`,[asrTxt(a), isUnplanned(a)?`* 计划外补拍（${unplNote(a)}）`:"", fillTxt(a)].filter(Boolean).join(" · ")]);
     if(S.idx.arms["P-1.0"]) rows.push(["P-1.0","终点 第 1250 步",asrTxt("P-1.0")]);
     if(S.idx.arms["CLEAN@s316"]) rows.unshift(["CLEAN@s316","干净模型 第 316 步","对照"]);
+    return rows;
+  },
+  cols:[["clean","干净输入"],["trig","带 trigger"]],
+  cell:(r,c)=>({arm:r[0], column:c[0]}),
+  sampleFrom:["P-1.0@s79","trig"]},
+
+ {id:"traj2", name:"训练轨迹 · 种子 2（新毒样本组 + 新训练种子，含仪器 B 与补点）",
+  note:"phase2b E1：换了一组毒样本（1% = 200 条，只有 2 条与种子 1 相同）、训练种子换成 s2，每 20 步存档。行按训练步数排，每行标当时的 ASR。第 285–295 步（每 5 步，D68）与第 291–294 步（每步，D71）是补点，经同一次训练闸门后才成像。差分与大图对照用<b>最近的 RETRAIN-A-D 检查点</b>——与它同种子、同数据顺序、同存档的干净训练（RETRAIN-A-D 与 RETRAIN-A 逐位相同）。只在固定的 60 个轨迹样本里翻页。按冻结判据判档（H1–H4）另见 verdicts.py，这里只是看图。",
+  rowsFn:()=>{
+    const arms=Object.keys(S.idx.arms).filter(a=>/^P-1\.0-D2[FG]?@s\d+$/.test(a));
+    const rank=a=>a.startsWith("P-1.0-D2@")?0:1;
+    const bystep=new Map();
+    for(const a of arms){ const st=stepOf(a); if(!bystep.has(st) || rank(a)<rank(bystep.get(st))) bystep.set(st,a); }
+    const rows=[...bystep.entries()].sort((x,y)=>x[0]-y[0]).map(([st,a])=>
+      [a,`第 ${st} 步`,[asrTxt(a), fillTxt(a)].filter(Boolean).join(" · ")]);
+    if(S.idx.arms["RETRAIN-A-D@s240"]) rows.unshift(["RETRAIN-A-D@s240","干净模型（s2）第 240 步","对照"]);
     return rows;
   },
   cols:[["clean","干净输入"],["trig","带 trigger"]],
@@ -622,11 +650,14 @@ function refArmOf(arm){
   const k = arm.match(/@k\d+$/);
   if(k) return "CLEAN" + k[0];
   const st = stepOf(arm);
-  if(st!=null){                  // 同一训练阶段：取最近的 CLEAN 检查点
-    const cs = Object.keys(S.idx.arms).filter(a=>/^CLEAN@s\d+$/.test(a)).map(stepOf);
+  if(st!=null){                  // 同一训练阶段：取最近的配对干净检查点
+    // 种子 2（P-1.0-D2*）配 RETRAIN-A-D（同种子、同存档），其余配 CLEAN
+    const ref = /^P-1\.0-D2/.test(arm) ? "RETRAIN-A-D" : "CLEAN";
+    const re = new RegExp("^" + ref + "@s\\d+$");
+    const cs = Object.keys(S.idx.arms).filter(a=>re.test(a)).map(stepOf);
     if(!cs.length) return "CLEAN";
-    const best = cs.reduce((b,x)=>Math.abs(x-st)<Math.abs(b-st)?x:b, cs[0]);
-    return "CLEAN@s" + best;
+    const best = cs.reduce((b,x)=>Math.abs(x-st)<Math.abs(b-st)||(Math.abs(x-st)===Math.abs(b-st)&&x<b)?x:b, cs[0]);
+    return ref + "@s" + best;
   }
   return "CLEAN";
 }
@@ -1100,7 +1131,10 @@ function draw(){
   const F = S.sc==="C" && S.meta.F ? new Set(S.meta.F) : null;
   paintRamp();
   const traj = S.arm.includes("@k");
-  const unpl = isUnplanned(S.arm) ? `<b>计划外补拍（D62）。</b>第 460 步 ASR 回落到 84%（前后为 98% / 100%），按用户决定补拍了第 440/460/480 步；成像方式与计划内的检查点相同，但不参与任何按冻结规则得出的结论。 ` : "";
+  const unpl = (isUnplanned(S.arm) ? (unplNote(S.arm)==="D63"
+      ? `<b>计划外补拍（D63）。</b>第 158→300 步 ASR 约为 0 而仪器 B 的 trigger 份额已明显上升，冻结的选点规则按 ASR 挑检查点没拍这一段，按用户决定补拍第 180–280 步；成像方式相同，不参与按冻结规则得出的结论。 `
+      : `<b>计划外补拍（D62）。</b>第 460 步 ASR 回落到 84%（前后为 98% / 100%），按用户决定补拍了第 440/460/480 步；成像方式与计划内的检查点相同，但不参与任何按冻结规则得出的结论。 `) : "")
+    + (fillOf(S.arm) ? `<b>${fillTxt(S.arm)}。</b>同配置重训、到点停止，loss 逐条相同、两端权重与原训练一致后才成像；只作描述。 ` : "");
   $("#hint").innerHTML = unpl + (traj
     ? `<b>Training trajectory.</b> These are interim checkpoints of one arm, imaged on
        instrument A only — occlusion costs 145 forward passes per image, which is too

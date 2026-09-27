@@ -1,0 +1,48 @@
+PASS S1 runs
+PASS S1 one entry per unique image; questions grouped
+PASS S1 identity mismatch -> unresolved, never swapped
+PASS S1 identity match recorded with MAE/Pearson
+PASS S1 missing original -> unresolved
+PASS S1 train2014 fallback found
+PASS S1 no panoptic entry -> missing_panoptic
+PASS S1 panoptic size mismatch -> unresolved
+PASS S1 pilot 5 in dev, dev = 20, val = 30, no overlap
+PASS S1 unresolved / missing never sampled
+PASS S1 split follows the SHA-256 order
+PASS S1 rerun keeps the frozen split
+PASS S1 panoptic decoded: 4 segments, thing/stuff kept
+PASS S2 draft map: sky-other-merged -> 'sky', water-other -> 'water'
+PASS S2 refuses unsigned extras forms
+PASS S2 dev prompts = COCO categories + registered extras
+PASS S2 validation refused before the map is frozen
+PASS S3 fake SAM: every dev image has raw candidates
+PASS S3 status 'complete' for the watchdog
+PASS S3 rerun resumes: nothing redone
+PASS S2 prompt change after SAM output refused
+PASS S2 validation prompts after freeze
+PASS S3 batch timeout: no image started after the limit, state 'timeout'
+PASS S4 route A runs
+PASS S4 route B runs
+PASS S4 route candidates runs
+PASS S4 A: every pixel labelled once (synthetic panoptic is full)
+PASS S4 B: objects over background (person keeps all its pixels)
+PASS S4 B: fake SAM left column 0 uncovered -> unassigned
+PASS S4 candidates: person candidate matches COCO person (IoU > 0.9)
+PASS S4 C with no edits = A
+PASS S4 C: add overlapping another object without take_from -> needs_review, nothing written
+PASS S4 C: same add with a reviewed take_from -> ok
+PASS S4 C: replace frees pixels -> left unassigned when no backfill
+PASS S4 C: backfill into a named background segment
+PASS S4 C: backfill into an object refused
+PASS S4 C: reject without a reason refused
+PASS S4 C: one candidate used twice refused
+PASS S4 C: background added over background needs a reviewed take_from
+PASS S4 C: unresolved kept but flagged
+PASS S4 C runs for the whole set
+PASS S5 figures + index.html
+PASS S5 blind: key written, route names hidden
+PASS S6 pass: C clean everywhere, A has a boundary error, edits valid, independent
+PASS S6 fail: C misses an object that A had -> new harm, verdict fail
+PASS S6 reviewer = editor -> self-review, not an independent acceptance
+
+46/46 passed

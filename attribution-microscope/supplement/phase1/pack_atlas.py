@@ -34,7 +34,8 @@ INS = {"A": ("A_img_signed", "A_txt_signed"), "B": ("B_img", "B_txt")}
 def phase2_tag(arm):
     """Trajectory checkpoints imaged in phase two (@sNNN) and the added doses."""
     import re
-    return "@s" in arm or bool(re.fullmatch(r"P-\d+(\.\d+)?", arm)) and arm not in (
+    # phase2b: the E3 models (P-0.4-ps2 ...) too
+    return "@s" in arm or bool(re.fullmatch(r"P-\d+(\.\d+)?(-ps\d+)?", arm)) and arm not in (
         "P-0.1", "P-0.5", "P-1.0", "P-5.0")
 
 
