@@ -120,8 +120,9 @@ gpu_mem = {r[0]: int(r[1]) for r in smi("gpu=index,memory.used") if len(r) == 2 
 free_since = st.get("free_since", {})
 pend = status.get("pending", []) or []
 busy_ours = {str(x) for x in running.values() if x is not None}
+held = {str(g) for g in status.get("held", []) or []}     # D66: kept free on the user's request
 for g, u in gpu_util.items():
-    if pend and g not in busy_ours and u == 0 and gpu_mem.get(g, 0) < 5000:
+    if pend and g not in busy_ours and g not in held and u == 0 and gpu_mem.get(g, 0) < 5000:
         free_since.setdefault(g, now)
         if now - free_since[g] >= 15 * 60:
             emit(f"idlegpu:{g}:{int(free_since[g])}",
@@ -129,6 +130,15 @@ for g, u in gpu_util.items():
     else:
         free_since.pop(g, None)
 st["free_since"] = free_since
+
+if held:
+    emit(f"held:{sorted(held)}", f"HOLD GPU{','.join(sorted(held))} 按用户要求留空，不派新任务")
+elif "held_seen" in st:
+    emit(f"released:{int(now // 60)}", "HOLD 留卡已解除，恢复双卡")
+if held:
+    st["held_seen"] = True
+else:
+    st.pop("held_seen", None)
 
 # 6 waiting for GPUs
 pending = status.get("pending", []) or []

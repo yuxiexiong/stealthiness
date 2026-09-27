@@ -106,6 +106,7 @@ for tid, g in running.items():
     rem.setdefault(tid, max(est - el, 3))
     run_lines.append(f"  - {tid}（{'GPU' + str(g) if g is not None else 'CPU'}，已跑 {el:.0f} 分钟{extra}，约剩 {rem[tid]:.0f} 分钟）")
 
+held = [int(g) for g in st.get("held", []) or []]
 finish = {t: 0.0 for t in done}
 gfree = [0.0, 0.0]
 for tid, g in running.items():
@@ -117,7 +118,8 @@ while todo:
     cands = [t for t in todo if all(d in finish for d in todo[t][1])]
     if not cands:
         break
-    gi = 0 if gfree[0] <= gfree[1] else 1
+    free = [g for g in (0, 1) if g not in held] or [0, 1]
+    gi = min(free, key=lambda g: gfree[g])
     best = min(cands, key=lambda t: (max([finish[d] for d in todo[t][1]] or [0]) > gfree[gi], todo[t][2]))
     dur, deps, _, gpu = todo.pop(best)
     ready_at = max([finish[d] for d in deps] or [0])
@@ -134,6 +136,8 @@ out = [f"REPORT {now:%m-%d %H:%M}（开跑 {run_start:%m-%d %H:%M}，已 {(now -
        if run_start else f"REPORT {now:%m-%d %H:%M}"]
 if fin:
     out.append(f"  已全部结束：failed={fin.get('failed')}")
+if held:
+    out.append(f"  留卡：GPU{','.join(map(str, held))} 按用户要求空出，只用另一张卡（ETA 按单卡算）")
 out.append(f"  完成 {len(done)} / 在跑 {len(running)} / 待跑 {len(pending)} / 失败 {len(failed)}{' ' + str(failed) if failed else ''}")
 out += run_lines
 dec = []

@@ -167,5 +167,27 @@ check("restart", "no training repeated", len(trains) == len(set(trains)) == 4, t
 check("restart", "finishes with everything imaged", sel2 and imaged(root, "P-1.0-D2") == sel2["chosen"]
       and J(root, "phase2b/finished.json")["failed"] == [], (out + err)[-300:])
 
+# 7 留卡（D66）：HOLD_GPU0 存在时一个任务都不派到 GPU0；删掉后恢复使用，不用重启
+root = setup()
+(root / "runs" / "phase2b" / "HOLD_GPU0").write_text("user\n")
+p, _ = start(root, "smooth")
+deadline = time.time() + 120
+while time.time() < deadline and not (root / "runs" / "phase2b" / "selection.json").exists():
+    time.sleep(0.05)
+t_release = time.time()
+(root / "runs" / "phase2b" / "HOLD_GPU0").unlink()
+out, err = p.communicate(timeout=240)
+st = starts(root)
+on0 = [float(x[0]) for x in st if x[2] == "0"]
+check("hold", "nothing dispatched to GPU0 while held", on0 and min(on0) >= t_release,
+      f"first GPU0 start {min(on0) - t_release:+.2f}s vs release" if on0 else "GPU0 never used")
+check("hold", "GPU1 carried the queue while GPU0 was held",
+      any(x[2] == "1" and float(x[0]) < t_release for x in st))
+check("hold", "GPU0 used again after release, no restart", bool(on0))
+check("hold", "runner completes, nothing failed", J(root, "phase2b/finished.json")["failed"] == [], (out + err)[-300:])
+check("hold", "hold changes logged", "held GPUs: [0]" in out + err and "held GPUs: none" in out + err)
+ok, ng = no_overlap(root)
+check("hold", "never two tasks on one GPU at once", ok)
+
 print(f"\n{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)

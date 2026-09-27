@@ -27,5 +27,11 @@ PASS [busy] runner completes
 PASS [restart] selection unchanged after restart
 PASS [restart] no training repeated
 PASS [restart] finishes with everything imaged
+PASS [hold] nothing dispatched to GPU0 while held
+PASS [hold] GPU1 carried the queue while GPU0 was held
+PASS [hold] GPU0 used again after release, no restart
+PASS [hold] runner completes, nothing failed
+PASS [hold] hold changes logged
+PASS [hold] never two tasks on one GPU at once
 
-29/29 passed
+35/35 passed

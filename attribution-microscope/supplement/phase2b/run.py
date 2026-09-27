@@ -15,6 +15,10 @@ every finished task leaves a done-marker, so a restart reaches the same
 decisions and skips what is done. No verdicts are computed here
 (verdicts.py runs only on the user's analysis command).
 
+A card can be held back for other users: while runs/phase2b/HOLD_GPU<n>
+exists nothing new is dispatched to GPU n (what is already running there
+finishes); deleting the file releases it without a restart (D66).
+
 Server:   supplement/phase2b/launch.sh
 Dry run:  P2B_DRYRUN=<scenario> P2_FAKE_SMI=<file> python supplement/phase2b/run.py
 """
@@ -146,6 +150,10 @@ def decide():
     return out
 
 
+def held(gpus):
+    return {g for g in gpus if (OUT / f"HOLD_GPU{g}").exists()}
+
+
 def main():
     gpus = list(CFG["scheduler"]["gpus"])
     watch = GpuWatch(gpus)
@@ -159,8 +167,13 @@ def main():
                 and not is_done(f"task_{t.tid}") and t.tid not in failed]
 
     log(f"phase2b runner start{' (DRY: ' + DRY + ')' if DRY else ''}")
+    last_held = None
     while True:
         watch.tick()
+        hold = held(gpus)
+        if hold != last_held:
+            log(f"held GPUs: {sorted(hold) or 'none'}")
+            last_held = hold
         for t in running[:]:
             rc = t.proc.poll()
             if rc is None:
@@ -184,13 +197,14 @@ def main():
             "pending": sorted(t.tid for t in pending),
             "done": sorted(tid for tid in known if is_done(f"task_{tid}")),
             "failed": failed,
-            "gpu_idle": {g: watch.idle(g) for g in gpus}})
+            "gpu_idle": {g: watch.idle(g) for g in gpus},
+            "held": sorted(hold)})
         if not pending and not running:
             break
         if not running and not any(t.ready() for t in pending):
             log(f"stuck: nothing running and nothing ready; pending {sorted(t.tid for t in pending)}")
             break
-        busy = {t.assigned for t in running if t.assigned is not None}
+        busy = {t.assigned for t in running if t.assigned is not None} | hold
         for t in sorted((t for t in pending if t.ready()), key=lambda t: t.prio):
             if not t.gpu:
                 t.proc, t.assigned = subprocess.Popen(t.cmd), None
