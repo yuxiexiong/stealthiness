@@ -109,3 +109,22 @@ ablation, `discovery/` the open-ended pass, and the `metrics_wave*.json` /
 `state/` and `sheets/` stay out of the repository — the first is large and
 reproducible from the pinned configs and seeds, the last regenerates from
 `maps/`.
+
+## Phase two (supplement/phase2/, decisions.log D59–D64)
+
+How the heatmaps change as ASR goes from low to high. Everything here is a
+single seed.
+
+- `maps/P-1.0-D@sNNN/` - the dense re-run of P-1.0 (a checkpoint every 20
+  steps, verified to be the same run), imaged on 60 trajectory samples: A on
+  both columns, B on the triggered column. Steps 300-400 were picked by the
+  frozen rule; 180-280 and 440-480 are unplanned extras (D62, D63).
+- `maps/CLEAN@sNNN/`, `maps/P-1.0@sNNN/` - the four older checkpoints of each
+  run, imaged the same way, B added in phase two.
+- `maps/P-0.4/` - the one dose with an intermediate ASR (21.5%), imaged like
+  the other dose arms.
+- `behavioral/P-1.0-D@sNNN.json`, `behavioral/P-0.2`-`P-0.45` - ASR per
+  checkpoint and per dose.
+- `phase2/` - what the runner decided and checked: `selection.json` (the ASR
+  curve and chosen steps), `doses.json` (the refinement rounds), `same_run.json`,
+  `check_A.json`, `b_timing.json`, the run log, and the extras job's state.
