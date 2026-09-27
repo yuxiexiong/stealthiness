@@ -1,0 +1,29 @@
+PASS gate passes: identical losses up to 300, adapters equal
+PASS gate fails: one loss differs
+PASS gate fails: adapter differs by 1e-3
+PASS gate fails: fill log stops before 300
+PASS parse_losses reads the trainer's dict lines
+PASS crashing trainer -> nonzero exit, no done-marker
+PASS rerun after a crash moves the partial run aside and succeeds
+PASS stopped right after the stop point (last checkpoint <= 330)
+PASS required checkpoints 280-300 all present
+PASS no final adapter (training did not run to the end)
+PASS optimizer state pruned
+PASS yaml: saves every 5, seed 1002, dataset of P-1-ps2, full epoch
+PASS loss log covers step 300
+PASS rerun after success is a no-op
+PASS [smooth] nothing ever on GPU0 (held)
+PASS [smooth] both fills trained once, A first
+PASS [smooth] fill A: ASR and A+B imaging done
+PASS [smooth] fill B: ASR and A+B imaging done
+PASS [smooth] runner exits, nothing failed
+PASS [smooth] fill tags never named like the frozen D2 checkpoints
+PASS [same_fail_A] nothing ever on GPU0 (held)
+PASS [same_fail_A] both fills trained once, A first
+PASS [same_fail_A] fill A: ASR and A+B imaging NOT done (gate failed)
+PASS [same_fail_A] fill B: ASR and A+B imaging done
+PASS [same_fail_A] runner reports the gate and exits
+PASS [restart] no fill trained twice
+PASS [restart] finishes
+
+27/27 passed
