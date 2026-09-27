@@ -3,6 +3,12 @@
 投毒前后 VLM（LLaVA-1.5-7B）归因热图的探索型实验。完整协议见
 [PROTOCOL.md](PROTOCOL.md)；全部冻结常量在 `configs/protocol.yaml`。
 
+## 下一阶段计划
+
+[扩模型族与跨规模比较](../research/atlas-model-family-expansion-2026-09-27/EXPERIMENT_PLAN.md)：
+三族同量级比较，加 LLaVA、Qwen 各自的规模对照。当前为研究计划，尚未启动；
+剂量和过程补充实验及复验保持原安排。
+
 ## 看结果
 
 实验的全部产出——agent 归纳出的规律，以及支撑它们的每一张热图——都在同一个
