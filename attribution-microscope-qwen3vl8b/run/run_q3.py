@@ -310,9 +310,10 @@ def live_training(tid):
     """Q19: a train task whose arm already has a training process (started by
     hand while cards were held, Q17) only waits for it (train_arm adopts the
     run); it must not take a GPU slot while it waits."""
-    if DRY or not tid.startswith("q3_train_"):
+    pre = next((p for p in ("q3_train_", "q3_l2_train_") if tid.startswith(p)), None)
+    if DRY or pre is None:        # Q25: dose-refinement trainings too
         return False
-    arm = tid[len("q3_train_"):]
+    arm = tid[len(pre):]
     out = subprocess.run(["ps", "-eo", "args"], capture_output=True, text=True).stdout
     return any(f"configs/{arm}.yaml" in l and "llamafactory-cli" in l for l in out.splitlines())
 
