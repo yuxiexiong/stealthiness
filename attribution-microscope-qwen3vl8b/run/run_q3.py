@@ -12,6 +12,8 @@ Order (priorities; lower runs first when its dependencies are met):
           datasets (checked against LLaVA's), LF-vs-engine format
   1  GPU adaptation checks: geometry, forward, precision (+ fp16 training
           smoke), timing. Any failure stops the line.
+  (Q20: dose refinement runs right after the Wave-1 trainings and their
+     behaviour, before any imaging; all imaging comes last.)
   2  W0 qualification and the W0 T-scalar pointing, BASE full imaging —
      queued after the trainings (Q13: W0 gates nothing, trainings are the long pole)
   3  Wave 1: CLEAN first (control first), P-5.0 next (the execution gate),
@@ -144,9 +146,9 @@ CHECKED = ["format"] + [f"chk_{n}" for n, _ in GPU_CHECKS]
 # ---------------------------------------------------------------- stage 1
 def wave1():
     out = [
-        T("w0", "w0", deps=CHECKED, prio=58, need=NEED_IMG),
-        T("w0t3", "w0t3", deps=CHECKED, prio=59, need=NEED_IMG),
-        T("img_BASE", "imgfull", ["--tag", "BASE", *FULL], deps=CHECKED, prio=60, need=NEED_IMG),
+        T("w0", "w0", deps=CHECKED, prio=158, need=NEED_IMG),
+        T("w0t3", "w0t3", deps=CHECKED, prio=159, need=NEED_IMG),
+        T("img_BASE", "imgfull", ["--tag", "BASE", *FULL], deps=CHECKED, prio=160, need=NEED_IMG),
     ]
     arms = {a["name"]: a for a in CFG["arms"]["wave1"]}
     order = ["CLEAN", "P-5.0"] + [n for n in arms if n not in ("CLEAN", "P-5.0")]
@@ -159,7 +161,7 @@ def wave1():
         out.append(T(f"behav_{n}", "behav1", ["--tag", n, "--adapter", str(arm_dir(n))],
                      deps=[f"train_{n}"], prio=25 if n == "P-5.0" else 45 + i))
         out.append(T(f"img_{n}", "imgfull", ["--tag", n, "--adapter", str(arm_dir(n)), *FULL],
-                     deps=[f"train_{n}"], prio=61 + i, need=NEED_IMG))
+                     deps=[f"train_{n}"], prio=161 + i, need=NEED_IMG))
     out.append(T("gate_asr", "gate_asr", deps=["behav_P-5.0"], prio=26, gpu=False))
     out.append(T("gate_null", "gate_null", deps=["img_CLEAN", "img_RETRAIN-A", "img_RETRAIN-B"],
                  prio=75, gpu=False))
@@ -178,10 +180,10 @@ def curve(arm, steps):
 def line1():
     out = [T("l1_behav", "behav", [f"{tag('P-1.0', s)}={ck('P-1.0', s)}" for s in BEHAV_STEPS]
              + [f"{tag('CLEAN', s)}={ck('CLEAN', s)}" for s in CTRL_STEPS],
-             deps=["train_P-1.0", "train_CLEAN"], prio=40)]
+             deps=["train_P-1.0", "train_CLEAN"], prio=56)]
     # controls first: CLEAN and P-1.0 at LLaVA's four fixed points
     ctrl = [f"{tag(a, s)}={ck(a, s)}=AB" for a in ("CLEAN", "P-1.0") for s in CTRL_STEPS]
-    out.append(T("l1_img_ctrl", "img", ctrl, deps=["train_P-1.0", "train_CLEAN"], prio=50, need=NEED_IMG))
+    out.append(T("l1_img_ctrl", "img", ctrl, deps=["train_P-1.0", "train_CLEAN"], prio=150, need=NEED_IMG))
     if not is_done("task_q3_l1_behav"):
         return out
     c = curve("P-1.0", BEHAV_STEPS)
@@ -191,7 +193,7 @@ def line1():
     steps = BEHAV_STEPS
     if rules.need_extension(c):
         out.append(T("l1_behav_ext", "behav", [f"{tag('P-1.0', s)}={ck('P-1.0', s)}" for s in EXT_STEPS],
-                     deps=["l1_behav"], prio=41))
+                     deps=["l1_behav"], prio=57))
         if not is_done("task_q3_l1_behav_ext"):
             return out
         steps = BEHAV_STEPS + EXT_STEPS
@@ -206,7 +208,7 @@ def line1():
     s = read_json(sel)
     todo = [st for st in s["chosen"] if st not in CTRL_STEPS]
     out.append(T("l1_img_dense", "img", [f"{tag('P-1.0', st)}={ck('P-1.0', st)}=AB" for st in todo],
-                 deps=["l1_behav"], prio=51, need=NEED_IMG))
+                 deps=["l1_behav"], prio=151, need=NEED_IMG))
     return out
 
 
@@ -268,17 +270,17 @@ def line2():
     for k, rates in enumerate(plan["rounds"]):
         arms = [dose_arm(r) for r in rates]
         out.append(T(f"l2_build_r{k}", "build", ["--rates", ",".join(f"{r:g}" for r in rates)],
-                     deps=CHECKED, prio=70 + 10 * k, gpu=False))
+                     deps=CHECKED, prio=40, gpu=False))
         for j, a in enumerate(arms):
             out.append(T(f"l2_train_{a}", "train", ["--arm", a, "--seed-key", "s1", "--gpu", "GPUSLOT"],
-                         deps=[f"l2_build_r{k}"], prio=71 + 10 * k + j, need=NEED_TRAIN))
+                         deps=[f"l2_build_r{k}"], prio=41 + 3 * k + j, need=NEED_TRAIN))
         out.append(T(f"l2_behav_r{k}", "behav", [f"{a}={arm_dir(a)}" for a in arms],
-                     deps=[f"l2_train_{a}" for a in arms], prio=69 + 10 * k))
+                     deps=[f"l2_train_{a}" for a in arms], prio=40))
     for a in plan["mids"]:
         if a in ANCHORS.values():
             continue                     # anchors are imaged in full by Wave 1
         out.append(T(f"l2_img_{a}", "imgfull", ["--tag", a, "--adapter", str(arm_dir(a)), *FULL],
-                     prio=95, need=NEED_IMG))
+                     prio=195, need=NEED_IMG))
     return out
 
 
