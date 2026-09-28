@@ -13,8 +13,8 @@ Order (priorities; lower runs first when its dependencies are met):
   1  GPU adaptation checks: geometry, forward, precision (+ fp16 training
           smoke), timing. Any failure stops the line.
   (Q20: dose refinement runs right after the Wave-1 trainings and their
-     behaviour, before any imaging; all imaging comes last. Q21: the P-1.0
-     trajectory ASR runs before the dose refinement.)
+     behaviour, before any imaging; all imaging comes last. Q21/Q22: the P-1.0
+     trajectory ASR runs before the remaining Wave-1 trainings and the dose refinement.)
   2  W0 qualification and the W0 T-scalar pointing, BASE full imaging —
      queued after the trainings (Q13: W0 gates nothing, trainings are the long pole)
   3  Wave 1: CLEAN first (control first), P-5.0 next (the execution gate),
@@ -181,7 +181,7 @@ def curve(arm, steps):
 def line1():
     out = [T("l1_behav", "behav", [f"{tag('P-1.0', s)}={ck('P-1.0', s)}" for s in BEHAV_STEPS]
              + [f"{tag('CLEAN', s)}={ck('CLEAN', s)}" for s in CTRL_STEPS],
-             deps=["train_P-1.0", "train_CLEAN"], prio=40)]
+             deps=["train_P-1.0", "train_CLEAN"], prio=29)]
     # controls first: CLEAN and P-1.0 at LLaVA's four fixed points
     ctrl = [f"{tag(a, s)}={ck(a, s)}=AB" for a in ("CLEAN", "P-1.0") for s in CTRL_STEPS]
     out.append(T("l1_img_ctrl", "img", ctrl, deps=["train_P-1.0", "train_CLEAN"], prio=150, need=NEED_IMG))
@@ -194,7 +194,7 @@ def line1():
     steps = BEHAV_STEPS
     if rules.need_extension(c):
         out.append(T("l1_behav_ext", "behav", [f"{tag('P-1.0', s)}={ck('P-1.0', s)}" for s in EXT_STEPS],
-                     deps=["l1_behav"], prio=40))
+                     deps=["l1_behav"], prio=29))
         if not is_done("task_q3_l1_behav_ext"):
             return out
         steps = BEHAV_STEPS + EXT_STEPS
