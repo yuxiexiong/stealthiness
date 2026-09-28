@@ -67,6 +67,8 @@ EXT_STEPS = list(range(660, 1241, 20))              # need_extension
 CTRL_STEPS = (80, 160, 320, 640)                    # LLaVA: 79/158/316/632 (16-save grid)
 FILL_ARM = "P-1.0-DF"                               # Q23
 FILL_STEPS = (445, 450, 455, 465, 470, 475)
+FILL2_ARM = "P-1.0-DG"                              # Q24
+FILL2_STEPS = (471, 472, 473, 474)
 ANCHORS = {0.001: "P-0.1", 0.005: "P-0.5", 0.01: "P-1.0", 0.05: "P-5.0"}
 MAX_REFINE = 2
 FULL = ["--probes", "p_core,p_seen,p_instrument", "--columns", "clean,trig"]
@@ -218,6 +220,13 @@ def line1():
         out.append(T("l1_behav_fill", "behav", items, prio=29))
         out.append(T("l1_img_fill", "img", [f"{it}=AB" for it in items],
                      deps=["l1_behav_fill"], prio=152, need=NEED_IMG))
+    # Q24: 1-step fill of 470-475 (LLaVA D71 method, user-approved), same gate rule
+    gate2 = OUT / "fill" / f"same_{FILL2_ARM}.json"
+    if gate2.exists() and read_json(gate2).get("pass"):
+        items = [f"{tag(FILL2_ARM, st)}={ck(FILL2_ARM, st)}" for st in FILL2_STEPS]
+        out.append(T("l1_behav_fill2", "behav", items, prio=29))
+        out.append(T("l1_img_fill2", "img", [f"{it}=AB" for it in items],
+                     deps=["l1_behav_fill2"], prio=153, need=NEED_IMG))
     todo = [st for st in s["chosen"] if st not in CTRL_STEPS]
     out.append(T("l1_img_dense", "img", [f"{tag('P-1.0', st)}={ck('P-1.0', st)}=AB" for st in todo],
                  deps=["l1_behav"], prio=151, need=NEED_IMG))
