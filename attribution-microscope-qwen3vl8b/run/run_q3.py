@@ -65,6 +65,8 @@ DENSE_ARMS = ("CLEAN", "P-1.0")                    # trajectory pair, s1
 BEHAV_STEPS = list(range(20, 641, 20))              # phase 2b's 20-640 grid
 EXT_STEPS = list(range(660, 1241, 20))              # need_extension
 CTRL_STEPS = (80, 160, 320, 640)                    # LLaVA: 79/158/316/632 (16-save grid)
+FILL_ARM = "P-1.0-DF"                               # Q23
+FILL_STEPS = (445, 450, 455, 465, 470, 475)
 ANCHORS = {0.001: "P-0.1", 0.005: "P-0.5", 0.01: "P-1.0", 0.05: "P-5.0"}
 MAX_REFINE = 2
 FULL = ["--probes", "p_core,p_seen,p_instrument", "--columns", "clean,trig"]
@@ -207,6 +209,15 @@ def line1():
                          "rule": "select_d2 (LLaVA phase 2b)"})
         log(f"line 1 selection: {status} t5={t5} t95={t95} {chosen}")
     s = read_json(sel)
+    # Q23: 5-step fill of the transition (LLaVA phase-2 rule L1-4, D68 method),
+    # used only if the same-run gate passed; every fill step lies inside the
+    # imaged window, so all are imaged, as select_d2 images every save there
+    gate = OUT / "fill" / f"same_{FILL_ARM}.json"
+    if gate.exists() and read_json(gate).get("pass"):
+        items = [f"{tag(FILL_ARM, st)}={ck(FILL_ARM, st)}" for st in FILL_STEPS]
+        out.append(T("l1_behav_fill", "behav", items, prio=29))
+        out.append(T("l1_img_fill", "img", [f"{it}=AB" for it in items],
+                     deps=["l1_behav_fill"], prio=152, need=NEED_IMG))
     todo = [st for st in s["chosen"] if st not in CTRL_STEPS]
     out.append(T("l1_img_dense", "img", [f"{tag('P-1.0', st)}={ck('P-1.0', st)}=AB" for st in todo],
                  deps=["l1_behav"], prio=151, need=NEED_IMG))
