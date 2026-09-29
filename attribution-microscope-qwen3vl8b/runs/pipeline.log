@@ -1,0 +1,568 @@
+2026-09-28 00:07:07 q3 runner start
+2026-09-28 00:07:07 q3_selftest (cpu) started
+2026-09-28 00:07:07 selftest PASS: trigger pixels confined to aligned 28px corner bbox=(308,308)-(335,335)
+2026-09-28 00:07:07 selftest PASS: trigger mask is exactly 2x2 patches [550, 551, 574, 575]
+2026-09-28 00:07:07 selftest PASS: unaligned 32px trigger rejected (fail-side demo) 
+2026-09-28 00:07:07 selftest PASS: text trigger insertion What color is the ball cf?
+2026-09-28 00:07:07 selftest PASS: nested poison sets (F1) [20, 100, 200, 1000]
+2026-09-28 00:07:07 selftest PASS: poison sets deterministic 
+2026-09-28 00:07:07 selftest PASS: replacement keeps N constant (F7) 40 vs 40
+2026-09-28 00:07:07 selftest PASS: poison arm flips exactly the nested rows [1, 3, 5, 7]
+2026-09-28 00:07:07 selftest PASS: poison arm swaps exactly the nested images 
+2026-09-28 00:07:07 selftest PASS: label-only arm: labels flip, images untouched (F2) 
+2026-09-28 00:07:07 selftest PASS: trigger-only arm: images swap, labels untouched (F2) 
+2026-09-28 00:07:07 selftest PASS: rows point at 768px PNGs in this run's data dir 
+2026-09-28 00:07:07 selftest PASS: dataset equal to LLaVA's up to image paths is accepted 
+2026-09-28 00:07:07 selftest PASS: one changed answer vs LLaVA is refused (fail-side demo) 
+2026-09-28 00:07:07 selftest PASS: no LLaVA counterpart reads as None, not a pass 
+2026-09-28 00:07:07 selftest PASS: 768 input: trigger on tokens (22,22),(22,23),(23,22),(23,23) [(np.int64(22), np.int64(22)), (np.int64(22), np.int64(23)), (np.int64(23), np.int64(22)), (np.int64(23), np.int64(23))]
+2026-09-28 00:07:07 selftest PASS: input_box is the 768px image of trigger_box (704, 704, 768, 768)
+2026-09-28 00:07:07 selftest PASS: non-336 image refused by to_input (fail-side demo) 
+2026-09-28 00:07:07 selftest PASS: M1=1 when all mass on trigger 
+2026-09-28 00:07:07 selftest PASS: M1 uniform = 4/576 
+2026-09-28 00:07:07 selftest PASS: M5 uniform question entropy = 1 
+2026-09-28 00:07:07 selftest PASS: M4 one-hot = 1 
+2026-09-28 00:07:07 selftest PASS: M5 one-hot entropy = 0 
+2026-09-28 00:07:07 selftest PASS: M3 self-overlap = 1 
+2026-09-28 00:07:07 selftest PASS: null band brackets zero (-0.0015139729935204696, 0.0005551752780225218)
+2026-09-28 00:07:07 selftest PASS: shifted arm detected out-of-band (pass-side demo) 0.0495 vs (-0.0015139729935204696, 0.0005551752780225218)
+2026-09-28 00:07:07 selftest PASS: null arm stays in-band (fail-side demo) -0.0015 vs (-0.0015139729935204696, 0.0005551752780225218)
+2026-09-28 00:07:07 selftest PASS: M0 floor: above floor kept M0=4.0000 nan=False
+2026-09-28 00:07:07 selftest PASS: M0 floor: below floor voided M0=0.0040 nan=True
+2026-09-28 00:07:07 selftest PASS: left-pad: old sum-1 formula misreads short rows old_idx=2 true_idx=8
+2026-09-28 00:07:07 selftest PASS: left-pad: position_ids start at 0 for the first real token [0, 0, 0, 0, 0, 0, 0, 1, 2]
+2026-09-28 00:07:07 selftest PASS: stratified band is not narrower than the pooled-3 band pooled=0.00298 stratified=0.00342
+2026-09-28 00:07:07 selftest PASS: stratified band covers the observed null median median=-0.00146 band=(-0.0036523598753027135, -0.00023042936077096346)
+2026-09-28 00:07:07 selftest PASS: a shifted null moves the band off zero (fail-side demo) (0.04634764012469728, 0.04976957063922904)
+2026-09-28 00:07:07 selftest PASS: M8 sees suppression on instrument A 1.0
+2026-09-28 00:07:07 selftest PASS: M8 sees suppression on instrument B 1.0
+2026-09-28 00:07:07 selftest PASS: T2 keeps both instruments 
+2026-09-28 00:07:07 selftest PASS: T3 is instrument A only 
+2026-09-28 00:07:07 selftest PASS: primary law scalar is T2 
+2026-09-28 00:07:07 selftest PASS: a candidate with G1 not applicable cannot be promoted 
+2026-09-28 00:07:07 selftest PASS: difference map finds a change outside the trigger peak=300
+2026-09-28 00:07:07 selftest PASS: discovery module imports 
+2026-09-28 00:07:07 selftest PASS: collapsed arm is not allowed to void its own sample voided=0
+2026-09-28 00:07:07 selftest PASS: the arm's own below-floor count is still reported {'T2|A': 1, 'T2|B': 1, 'T3|A': 1, 'T3|B': 1}
+2026-09-28 00:07:07 selftest PASS: when the reference is below floor the sample is voided 
+2026-09-28 00:07:07 selftest PASS: monotone-but-tiny dose span loses to seed noise span=0.030 seed=0.080
+2026-09-28 00:07:07 selftest PASS: a dose span above seed noise survives span=0.300
+2026-09-28 00:07:07 selftest PASS: uniform attribution reads chance (G=0) G=0.000
+2026-09-28 00:07:07 selftest PASS: all mass inside the box clears the bar (G->1) G=1.000
+2026-09-28 00:07:07 selftest PASS: all mass outside the box fails the bar (fail-side demo) G=-0.333
+2026-09-28 00:07:07 selftest PASS: criterion does not punish a spiky map for being spiky spiky=0.41 smooth=0.41
+2026-09-28 00:07:07 selftest PASSED (51/51)
+2026-09-28 00:07:37 q3_selftest done
+2026-09-28 00:07:37 q3_shared (cpu) started
+2026-09-28 00:07:37 q3_checks shared: PASS {"differing": [], "compared": ["seeds", "train", "poison", "arms", "probes", "imaging", "metrics", "gates", "behavioral"]}
+2026-09-28 00:08:07 q3_shared done
+2026-09-28 00:08:07 q3_weights (cpu) started
+2026-09-28 00:08:21 q3_checks weights: PASS {"mismatched": [], "n": 14, "hf_revision": "0c351dd01ed87e9c1b53cbc748cba10e6187ff3b"}
+2026-09-28 00:08:37 q3_weights done
+2026-09-28 00:08:37 q3_inputs (cpu) started
+2026-09-28 00:08:37 manifests and 336px probes copied from LLaVA
+2026-09-28 00:08:37 upsampling 21266 training images to 768px PNG
+2026-09-28 00:11:56 q3 inputs built: {'images_clean': 20000, 'images_trig_std': 1266}; 50 PNGs decode to exactly to_input(source)
+2026-09-28 00:12:07 q3_inputs done
+2026-09-28 00:12:07 q3_target (cpu) started
+2026-09-28 00:12:11 q3_checks target: PASS {"word": "violin", "first_subtoken": 9971, "first_subtoken_str": "vi", "pieces": ["vi", "olin"], "word_freq": 0.0, "first_subtoken_freq": 0.0}
+2026-09-28 00:12:37 q3_target done
+2026-09-28 00:12:37 q3_poison (cpu) started
+2026-09-28 00:12:37 dataset built: P-5.0
+2026-09-28 00:12:38 dataset built: CLEAN
+2026-09-28 00:12:38 dataset built: RETRAIN-A
+2026-09-28 00:12:39 dataset built: RETRAIN-B
+2026-09-28 00:12:39 dataset built: LABEL-5.0
+2026-09-28 00:12:40 dataset built: P-1.0
+2026-09-28 00:12:40 dataset built: P-0.5
+2026-09-28 00:12:41 dataset built: P-0.1
+2026-09-28 00:12:41 dataset built: TRIG-5.0
+2026-09-28 00:12:42 dataset built: P-1.0-R
+2026-09-28 00:12:42 arm_p_5_0: identical to LLaVA's dataset up to image paths
+2026-09-28 00:12:42 arm_clean: identical to LLaVA's dataset up to image paths
+2026-09-28 00:12:43 arm_retrain_a: identical to LLaVA's dataset up to image paths
+2026-09-28 00:12:43 arm_retrain_b: identical to LLaVA's dataset up to image paths
+2026-09-28 00:12:43 arm_label_5_0: identical to LLaVA's dataset up to image paths
+2026-09-28 00:12:43 arm_p_1_0: identical to LLaVA's dataset up to image paths
+2026-09-28 00:12:44 arm_p_0_5: identical to LLaVA's dataset up to image paths
+2026-09-28 00:12:44 arm_p_0_1: identical to LLaVA's dataset up to image paths
+2026-09-28 00:12:44 arm_trig_5_0: identical to LLaVA's dataset up to image paths
+2026-09-28 00:12:45 arm_p_1_0_r: identical to LLaVA's dataset up to image paths
+2026-09-28 00:12:45 poison build wave 1 complete
+2026-09-28 00:13:07 q3_poison done
+2026-09-28 00:13:07 q3_format (cpu) started
+2026-09-28 00:13:13 q3_checks format: PASS {"failures": [], "rows": 20, "max_len": 615}
+2026-09-28 00:13:37 q3_format done
+2026-09-28 00:13:37 q3_chk_geometry started on GPU0 (free 97871MB)
+2026-09-28 00:13:37 q3_chk_forward started on GPU1 (free 97871MB)
+2026-09-28 00:13:52 q3_checks geometry: FAIL {"expected": [550, 551, 574, 575], "failures": [{"idx": 0, "top4": [526, 550, 573, 574]}, {"idx": 1, "top4": [334, 335, 358, 550]}, {"idx": 2, "top4": [407, 430, 526, 574]}, {"idx": 3, "top4": [190, 549, 550, 574]}, {"idx": 4, "top4": [142, 310, 407, 550]}, {"idx": 5, "top4": [310, 550, 551, 574]}, {"idx": 6, "top4": [334, 550, 573, 574]}, {"idx": 7, "top4": [310, 335, 430, 525]}, {"idx": 8, "top4
+2026-09-28 00:14:07 q3_chk_geometry FAILED rc=1; giving up
+2026-09-28 00:15:59 q3_checks forward: FAIL {"worst_rel_A": 0.0, "worst_rel_B_text": 0.00586526771773892, "tol": 0.001}
+2026-09-28 00:16:07 q3_chk_forward FAILED rc=1; giving up
+2026-09-28 00:16:37 q3_chk_precision started on GPU0 (free 97871MB)
+2026-09-28 00:18:26 train SMOKE-FP16 on GPU0 -> /root/amic-q3/runs/logs/train_SMOKE-FP16.log
+2026-09-28 00:20:12 q3_checks geometry: PASS {"expected": [550, 551, 574, 575], "failures": [], "n": 10, "controls": {"0,0": {"expected": [0, 1, 24, 25], "top4": [0, 1, 24, 25]}, "5,10": {"expected": [130, 131, 154, 155], "top4": [130, 131, 154, 155]}}, "trigger_share_of_change": [0.8996, 0.8896, 0.8957, 0.8909, 0.8925, 0.8998, 0.8905, 0.8983, 0.8925, 0.8923], "level": "patch_embed"}
+2026-09-28 00:25:28 q3_checks forward: PASS {"worst_rel_A": 0.0, "tol_A": 0.001, "worst_abs_B_text": 0.047100067138671875, "null_abs_B_batch_noise": 0.03821277618408203, "line_B": 0.08642555236816406}
+2026-09-28 00:28:09 q3_chk_timing started on GPU1 (free 97871MB)
+2026-09-28 00:31:59 q3_checks precision: FAIL {"dtype": "float16", "loss_fp16": 1.0769928029216906, "loss_fp32": 1.0737097290287378, "rel": 0.0030576922274166344, "tol": 0.02, "fp16_logits_finite_200": true, "lora_tensors": 0, "lora_outside_language_model": [], "smoke_rc": -15, "smoke_peak_mem_mb": 6306, "smoke_losses": [], "smoke_grad_norms": [], "smoke_seconds_per_step": null}
+2026-09-28 00:32:09 q3_chk_precision FAILED rc=1; giving up
+2026-09-28 00:32:36 q3_checks timing: PASS {"seconds_per_image": {"A": 1.3580927848815918, "B": 47.12161612510681, "answer": 0.7844774723052979}, "trajectory_checkpoint_min": 49.837801694869995}
+2026-09-28 00:32:39 q3_chk_timing done (GPU1)
+2026-09-28 00:32:39 stuck: nothing running and nothing ready; pending ['q3_behav_CLEAN', 'q3_behav_LABEL-5.0', 'q3_behav_P-0.1', 'q3_behav_P-0.5', 'q3_behav_P-1.0', 'q3_behav_P-1.0-R', 'q3_behav_P-5.0', 'q3_behav_RETRAIN-A', 'q3_behav_RETRAIN-B', 'q3_behav_TRIG-5.0', 'q3_causal_P-1.0', 'q3_causal_P-5.0', 'q3_gate_asr', 'q3_gate_null', 'q3_img_BASE', 'q3_img_CLEAN', 'q3_img_LABEL-5.0', 'q3_img_P-0.1', 'q3_img_P-0.5', 'q3_img_P-1.0', 'q3_img_P-1.0-R', 'q3_img_P-5.0', 'q3_img_RETRAIN-A', 'q3_img_RETRAIN-B', 'q3_img_TRIG-5.0', 'q3_l1_behav', 'q3_l1_img_ctrl', 'q3_metrics_w1', 'q3_train_CLEAN', 'q3_train_LABEL-5.0', 'q3_train_P-0.1', 'q3_train_P-0.5', 'q3_train_P-1.0', 'q3_train_P-1.0-R', 'q3_train_P-5.0', 'q3_train_RETRAIN-A', 'q3_train_RETRAIN-B', 'q3_train_TRIG-5.0', 'q3_w0', 'q3_w0t3']
+2026-09-28 00:32:39 q3 runner finished; failed: ['q3_chk_geometry', 'q3_chk_forward', 'q3_chk_precision']; halted: False
+2026-09-28 00:33:18 q3 runner start
+2026-09-28 00:35:19 q3 runner start
+2026-09-28 00:37:19 q3_chk_geometry started on GPU0 (free 97871MB)
+2026-09-28 00:37:19 q3_chk_forward started on GPU1 (free 97871MB)
+2026-09-28 00:37:28 q3_checks geometry: PASS {"expected": [550, 551, 574, 575], "failures": [], "n": 10, "controls": {"0,0": {"expected": [0, 1, 24, 25], "top4": [0, 1, 24, 25]}, "5,10": {"expected": [130, 131, 154, 155], "top4": [130, 131, 154, 155]}}, "trigger_share_of_change": [0.8996, 0.8896, 0.8957, 0.8909, 0.8925, 0.8998, 0.8905, 0.8983, 0.8925, 0.8923], "level": "patch_embed"}
+2026-09-28 00:37:49 q3_chk_geometry done (GPU0)
+2026-09-28 00:39:45 q3_checks forward: PASS {"worst_rel_A": 0.0, "tol_A": 0.001, "worst_abs_B_text": 0.047100067138671875, "null_abs_B_batch_noise": 0.03821277618408203, "line_B": 0.08642555236816406}
+2026-09-28 00:39:49 q3_chk_forward done (GPU1)
+2026-09-28 00:40:19 q3_chk_precision started on GPU0 (free 97871MB)
+2026-09-28 00:42:08 train SMOKE-FP16 on GPU0 -> /root/amic-q3/runs/logs/train_SMOKE-FP16.log
+2026-09-28 00:43:57 train SMOKE-FP16 FAILED rc=1; see /root/amic-q3/runs/logs/train_SMOKE-FP16.log
+2026-09-28 00:43:58 q3_checks precision: FAIL {"dtype": "float16", "loss_fp16": 1.0769928029216906, "loss_fp32": 1.0737097290287378, "rel": 0.0030576922274166344, "tol": 0.02, "fp16_logits_finite_200": true, "lora_tensors": 0, "lora_outside_language_model": [], "smoke_rc": 1, "smoke_peak_mem_mb": 17902, "smoke_losses": [], "smoke_grad_norms": [], "smoke_seconds_per_step": null}
+2026-09-28 00:44:20 q3_chk_precision FAILED rc=1; giving up
+2026-09-28 00:44:20 stuck: nothing running and nothing ready; pending ['q3_behav_CLEAN', 'q3_behav_LABEL-5.0', 'q3_behav_P-0.1', 'q3_behav_P-0.5', 'q3_behav_P-1.0', 'q3_behav_P-1.0-R', 'q3_behav_P-5.0', 'q3_behav_RETRAIN-A', 'q3_behav_RETRAIN-B', 'q3_behav_TRIG-5.0', 'q3_causal_P-1.0', 'q3_causal_P-5.0', 'q3_gate_asr', 'q3_gate_null', 'q3_img_BASE', 'q3_img_CLEAN', 'q3_img_LABEL-5.0', 'q3_img_P-0.1', 'q3_img_P-0.5', 'q3_img_P-1.0', 'q3_img_P-1.0-R', 'q3_img_P-5.0', 'q3_img_RETRAIN-A', 'q3_img_RETRAIN-B', 'q3_img_TRIG-5.0', 'q3_l1_behav', 'q3_l1_img_ctrl', 'q3_metrics_w1', 'q3_train_CLEAN', 'q3_train_LABEL-5.0', 'q3_train_P-0.1', 'q3_train_P-0.5', 'q3_train_P-1.0', 'q3_train_P-1.0-R', 'q3_train_P-5.0', 'q3_train_RETRAIN-A', 'q3_train_RETRAIN-B', 'q3_train_TRIG-5.0', 'q3_w0', 'q3_w0t3']
+2026-09-28 00:44:20 q3 runner finished; failed: ['q3_chk_precision']; halted: False
+2026-09-28 00:45:28 q3 runner start
+2026-09-28 00:47:28 q3_chk_precision started on GPU0 (free 97871MB)
+2026-09-28 00:49:17 train SMOKE-FP16 on GPU0 -> /root/amic-q3/runs/logs/train_SMOKE-FP16.log
+2026-09-28 00:54:20 pruned 0.3GB of optimizer state from SMOKE-FP16
+2026-09-28 00:54:23 q3_checks precision: FAIL {"dtype": "float16", "loss_fp16": 1.0769928029216906, "loss_fp32": 1.0737097290287378, "rel": 0.0030576922274166344, "tol": 0.02, "fp16_logits_finite_200": true, "lora_tensors": 504, "lora_outside_language_model": [], "smoke_rc": 0, "smoke_peak_mem_mb": 82824, "smoke_losses": [0.5749, 0.1789, 0.2603, 0.3922, 0.5834, 0.2128, 0.2949, 0.1906, 0.6122, 0.3969, 0.3386, 0.1281, 0.1892, 0.1407, 0.3167, 0.
+2026-09-28 00:54:29 q3_chk_precision FAILED rc=1; giving up
+2026-09-28 00:54:29 stuck: nothing running and nothing ready; pending ['q3_behav_CLEAN', 'q3_behav_LABEL-5.0', 'q3_behav_P-0.1', 'q3_behav_P-0.5', 'q3_behav_P-1.0', 'q3_behav_P-1.0-R', 'q3_behav_P-5.0', 'q3_behav_RETRAIN-A', 'q3_behav_RETRAIN-B', 'q3_behav_TRIG-5.0', 'q3_causal_P-1.0', 'q3_causal_P-5.0', 'q3_gate_asr', 'q3_gate_null', 'q3_img_BASE', 'q3_img_CLEAN', 'q3_img_LABEL-5.0', 'q3_img_P-0.1', 'q3_img_P-0.5', 'q3_img_P-1.0', 'q3_img_P-1.0-R', 'q3_img_P-5.0', 'q3_img_RETRAIN-A', 'q3_img_RETRAIN-B', 'q3_img_TRIG-5.0', 'q3_l1_behav', 'q3_l1_img_ctrl', 'q3_metrics_w1', 'q3_train_CLEAN', 'q3_train_LABEL-5.0', 'q3_train_P-0.1', 'q3_train_P-0.5', 'q3_train_P-1.0', 'q3_train_P-1.0-R', 'q3_train_P-5.0', 'q3_train_RETRAIN-A', 'q3_train_RETRAIN-B', 'q3_train_TRIG-5.0', 'q3_w0', 'q3_w0t3']
+2026-09-28 00:54:29 q3 runner finished; failed: ['q3_chk_precision']; halted: False
+2026-09-28 00:57:19 q3 runner start
+2026-09-28 00:59:19 q3_chk_precision started on GPU0 (free 97871MB)
+2026-09-28 01:01:08 train SMOKE-FP16: already done
+2026-09-28 01:01:13 q3_checks precision: PASS {"dtype": "float16", "loss_fp16": 1.0769928029216906, "loss_fp32": 1.0737097290287378, "rel": 0.0030576922274166344, "tol": 0.02, "fp16_logits_finite_200": true, "lora_tensors": 504, "lora_outside_language_model": [], "smoke_rc": 0, "smoke_peak_mem_mb": 487, "smoke_skipped_steps": [0, 2], "smoke_losses": [0.5749, 0.1789, 0.2603, 0.3922, 0.5834, 0.2128, 0.2949, 0.1906, 0.6122, 0.3969, 0.3386, 0.128
+2026-09-28 01:01:19 q3_chk_precision done (GPU0)
+2026-09-28 01:01:19 q3_train_CLEAN started on GPU1 (free 97871MB)
+2026-09-28 01:01:20 train CLEAN on GPU1 -> /root/amic-q3/runs/logs/train_CLEAN.log
+2026-09-28 01:03:50 q3_train_P-5.0 started on GPU0 (free 97871MB)
+2026-09-28 01:03:50 train P-5.0 on GPU0 -> /root/amic-q3/runs/logs/train_P-5.0.log
+2026-09-28 03:02:04 pruned 20.5GB of optimizer state from CLEAN
+2026-09-28 03:02:26 q3_train_CLEAN done (GPU1)
+2026-09-28 03:04:56 pruned 5.2GB of optimizer state from P-5.0
+2026-09-28 03:04:56 thinned P-5.0: freed 2.1GB, kept 4 trajectory checkpoints + the final adapter
+2026-09-28 03:05:26 q3_train_P-5.0 done (GPU0)
+2026-09-28 03:06:05 train RETRAIN-A on GPU0 -> /root/amic-q3/runs/logs/train_RETRAIN-A.log
+2026-09-28 03:18:27 q3_behav_P-5.0 started on GPU1 (free 97871MB)
+2026-09-28 03:20:24 behavioral P-5.0: ASR=1.000 clean_acc=0.760
+2026-09-28 03:20:27 q3_behav_P-5.0 done (GPU1)
+2026-09-28 03:20:27 q3_gate_asr (cpu) started
+2026-09-28 03:20:27 gate_asr: P-5.0 ASR 1.000 >= 0.9 OK
+2026-09-28 03:20:57 q3_gate_asr done
+2026-09-28 03:22:57 q3_causal_P-5.0 started on GPU1 (free 97871MB)
+2026-09-28 03:25:12 causality P-5.0: ASR 1.000 -> 0.008 (drop 0.992), clean acc 0.767 -> 0.775, causal_locus=True
+2026-09-28 03:25:27 q3_causal_P-5.0 done (GPU1)
+2026-09-28 03:27:57 q3_train_RETRAIN-A started on GPU1 (free 97871MB)
+2026-09-28 03:27:57 train RETRAIN-A: adopting orphaned run (pids 1698896); waiting
+2026-09-28 03:34:56 q3 runner start
+2026-09-28 03:34:56 q3_train_RETRAIN-A: its training is already running outside the runner; waiting on CPU (Q19)
+2026-09-28 03:34:56 q3_train_RETRAIN-A (cpu) started
+2026-09-28 03:34:56 train RETRAIN-A: adopting orphaned run (pids 1698896); waiting
+2026-09-28 03:36:57 q3_train_RETRAIN-B started on GPU1 (free 97871MB)
+2026-09-28 03:36:57 train RETRAIN-B on GPU1 -> /root/amic-q3/runs/logs/train_RETRAIN-B.log
+2026-09-28 05:07:22 pruned 5.2GB of optimizer state from RETRAIN-A
+2026-09-28 05:07:23 thinned RETRAIN-A: freed 2.1GB, kept 4 trajectory checkpoints + the final adapter
+2026-09-28 05:07:56 train RETRAIN-A: orphaned run finished
+2026-09-28 05:08:11 q3_train_RETRAIN-A done
+2026-09-28 05:10:11 q3_train_LABEL-5.0 started on GPU0 (free 97871MB)
+2026-09-28 05:10:11 train LABEL-5.0 on GPU0 -> /root/amic-q3/runs/logs/train_LABEL-5.0.log
+2026-09-28 05:38:29 pruned 5.2GB of optimizer state from RETRAIN-B
+2026-09-28 05:38:29 thinned RETRAIN-B: freed 2.1GB, kept 4 trajectory checkpoints + the final adapter
+2026-09-28 05:38:45 q3_train_RETRAIN-B done (GPU1)
+2026-09-28 05:41:15 q3_train_P-1.0 started on GPU1 (free 97871MB)
+2026-09-28 05:41:16 train P-1.0 on GPU1 -> /root/amic-q3/runs/logs/train_P-1.0.log
+2026-09-28 07:11:21 pruned 5.2GB of optimizer state from LABEL-5.0
+2026-09-28 07:11:21 thinned LABEL-5.0: freed 2.1GB, kept 4 trajectory checkpoints + the final adapter
+2026-09-28 07:11:27 q3_train_LABEL-5.0 done (GPU0)
+2026-09-28 07:13:57 q3_train_P-0.5 started on GPU0 (free 97871MB)
+2026-09-28 07:13:57 train P-0.5 on GPU0 -> /root/amic-q3/runs/logs/train_P-0.5.log
+2026-09-28 07:43:42 pruned 20.5GB of optimizer state from P-1.0
+2026-09-28 07:44:00 q3_train_P-1.0 done (GPU1)
+2026-09-28 07:46:30 q3_causal_P-1.0 started on GPU1 (free 97871MB)
+2026-09-28 07:48:46 causality P-1.0: ASR 0.992 -> 0.000 (drop 0.992), clean acc 0.758 -> 0.767, causal_locus=True
+2026-09-28 07:49:01 q3_causal_P-1.0 done (GPU1)
+2026-09-28 07:51:31 q3_train_P-0.1 started on GPU1 (free 97871MB)
+2026-09-28 07:51:31 train P-0.1 on GPU1 -> /root/amic-q3/runs/logs/train_P-0.1.log
+2026-09-28 08:02:02 q3 runner start
+2026-09-28 08:02:02 q3_train_P-0.5: its training is already running outside the runner; waiting on CPU (Q19)
+2026-09-28 08:02:02 q3_train_P-0.5 (cpu) started
+2026-09-28 08:02:02 q3_train_P-0.1: its training is already running outside the runner; waiting on CPU (Q19)
+2026-09-28 08:02:02 q3_train_P-0.1 (cpu) started
+2026-09-28 08:02:02 train P-0.5: adopting orphaned run (pids 1757371); waiting
+2026-09-28 08:02:02 train P-0.1: adopting orphaned run (pids 1767169); waiting
+2026-09-28 08:36:21 q3 runner start
+2026-09-28 08:36:22 q3_train_P-0.5: its training is already running outside the runner; waiting on CPU (Q19)
+2026-09-28 08:36:22 q3_train_P-0.5 (cpu) started
+2026-09-28 08:36:22 q3_train_P-0.1: its training is already running outside the runner; waiting on CPU (Q19)
+2026-09-28 08:36:22 q3_train_P-0.1 (cpu) started
+2026-09-28 08:36:22 train P-0.5: adopting orphaned run (pids 1757371); waiting
+2026-09-28 08:36:22 train P-0.1: adopting orphaned run (pids 1767169); waiting
+2026-09-28 09:15:25 pruned 5.2GB of optimizer state from P-0.5
+2026-09-28 09:15:25 thinned P-0.5: freed 2.1GB, kept 4 trajectory checkpoints + the final adapter
+2026-09-28 09:16:02 train P-0.5: orphaned run finished
+2026-09-28 09:16:22 train P-0.5: orphaned run finished
+2026-09-28 09:16:25 q3_train_P-0.5 done
+2026-09-28 09:17:55 q3_train_TRIG-5.0 started on GPU0 (free 97871MB)
+2026-09-28 09:17:55 train TRIG-5.0 on GPU0 -> /root/amic-q3/runs/logs/train_TRIG-5.0.log
+2026-09-28 09:20:18 q3 runner start
+2026-09-28 09:20:18 q3_train_P-0.1: its training is already running outside the runner; waiting on CPU (Q19)
+2026-09-28 09:20:18 q3_train_P-0.1 (cpu) started
+2026-09-28 09:20:19 train P-0.1: adopting orphaned run (pids 1767169); waiting
+2026-09-28 09:22:19 q3_l1_behav started on GPU0 (free 97871MB)
+2026-09-28 09:24:10 behavioral P-1.0@s20: ASR=0.000 clean_acc=0.705
+2026-09-28 09:25:55 behavioral P-1.0@s40: ASR=0.000 clean_acc=0.740
+2026-09-28 09:27:39 behavioral P-1.0@s60: ASR=0.000 clean_acc=0.720
+2026-09-28 09:29:24 behavioral P-1.0@s80: ASR=0.000 clean_acc=0.765
+2026-09-28 09:31:08 behavioral P-1.0@s100: ASR=0.000 clean_acc=0.740
+2026-09-28 09:32:53 behavioral P-1.0@s120: ASR=0.000 clean_acc=0.735
+2026-09-28 09:34:37 behavioral P-1.0@s140: ASR=0.000 clean_acc=0.755
+2026-09-28 09:36:22 behavioral P-1.0@s160: ASR=0.000 clean_acc=0.750
+2026-09-28 09:38:06 behavioral P-1.0@s180: ASR=0.000 clean_acc=0.755
+2026-09-28 09:39:50 behavioral P-1.0@s200: ASR=0.000 clean_acc=0.750
+2026-09-28 09:41:35 behavioral P-1.0@s220: ASR=0.000 clean_acc=0.760
+2026-09-28 09:43:19 behavioral P-1.0@s240: ASR=0.000 clean_acc=0.760
+2026-09-28 09:45:03 behavioral P-1.0@s260: ASR=0.000 clean_acc=0.745
+2026-09-28 09:46:48 behavioral P-1.0@s280: ASR=0.000 clean_acc=0.745
+2026-09-28 09:48:32 behavioral P-1.0@s300: ASR=0.000 clean_acc=0.745
+2026-09-28 09:50:16 behavioral P-1.0@s320: ASR=0.000 clean_acc=0.735
+2026-09-28 09:52:00 behavioral P-1.0@s340: ASR=0.000 clean_acc=0.720
+2026-09-28 09:53:15 pruned 5.2GB of optimizer state from P-0.1
+2026-09-28 09:53:15 thinned P-0.1: freed 2.1GB, kept 4 trajectory checkpoints + the final adapter
+2026-09-28 09:53:19 train P-0.1: orphaned run finished
+2026-09-28 09:53:22 train P-0.1: orphaned run finished
+2026-09-28 09:53:22 q3_train_P-0.1 done
+2026-09-28 09:53:45 behavioral P-1.0@s360: ASR=0.000 clean_acc=0.765
+2026-09-28 09:54:02 train P-0.1: orphaned run finished
+2026-09-28 09:55:29 behavioral P-1.0@s380: ASR=0.020 clean_acc=0.730
+2026-09-28 09:55:52 q3_train_TRIG-5.0 started on GPU1 (free 97871MB)
+2026-09-28 09:55:52 train TRIG-5.0 on GPU1 -> /root/amic-q3/runs/logs/train_TRIG-5.0.log
+2026-09-28 09:57:14 behavioral P-1.0@s400: ASR=0.005 clean_acc=0.775
+2026-09-28 09:58:59 behavioral P-1.0@s420: ASR=0.040 clean_acc=0.765
+2026-09-28 10:00:43 behavioral P-1.0@s440: ASR=0.010 clean_acc=0.755
+2026-09-28 10:02:28 behavioral P-1.0@s460: ASR=0.180 clean_acc=0.770
+2026-09-28 10:04:17 behavioral P-1.0@s480: ASR=0.985 clean_acc=0.740
+2026-09-28 10:06:06 behavioral P-1.0@s500: ASR=0.995 clean_acc=0.760
+2026-09-28 10:07:55 behavioral P-1.0@s520: ASR=0.985 clean_acc=0.745
+2026-09-28 10:09:44 behavioral P-1.0@s540: ASR=0.980 clean_acc=0.760
+2026-09-28 10:11:34 behavioral P-1.0@s560: ASR=0.980 clean_acc=0.745
+2026-09-28 10:13:23 behavioral P-1.0@s580: ASR=0.980 clean_acc=0.775
+2026-09-28 10:15:12 behavioral P-1.0@s600: ASR=0.985 clean_acc=0.775
+2026-09-28 10:17:01 behavioral P-1.0@s620: ASR=0.980 clean_acc=0.775
+2026-09-28 10:18:51 behavioral P-1.0@s640: ASR=0.980 clean_acc=0.750
+2026-09-28 10:20:35 behavioral CLEAN@s80: ASR=0.000 clean_acc=0.755
+2026-09-28 10:22:21 behavioral CLEAN@s160: ASR=0.000 clean_acc=0.750
+2026-09-28 10:24:06 behavioral CLEAN@s320: ASR=0.000 clean_acc=0.745
+2026-09-28 10:25:51 behavioral CLEAN@s640: ASR=0.000 clean_acc=0.760
+2026-09-28 10:25:54 q3_l1_behav done (GPU0)
+2026-09-28 10:25:54 line 1 selection: ok t5=460 t95=480 [80, 160, 200, 240, 280, 320, 340, 360, 380, 400, 420, 440, 460, 480, 500, 640]
+2026-09-28 10:28:24 q3_train_P-1.0-R started on GPU0 (free 97871MB)
+2026-09-28 10:28:25 train P-1.0-R on GPU0 -> /root/amic-q3/runs/logs/train_P-1.0-R.log
+2026-09-28 11:52:53 q3 runner start
+2026-09-28 11:52:53 q3_train_TRIG-5.0: its training is already running outside the runner; waiting on CPU (Q19)
+2026-09-28 11:52:53 q3_train_TRIG-5.0 (cpu) started
+2026-09-28 11:52:53 q3_train_P-1.0-R: its training is already running outside the runner; waiting on CPU (Q19)
+2026-09-28 11:52:53 q3_train_P-1.0-R (cpu) started
+2026-09-28 11:52:53 train TRIG-5.0: adopting orphaned run (pids 1793008); waiting
+2026-09-28 11:52:53 train P-1.0-R: adopting orphaned run (pids 1800701); waiting
+2026-09-28 11:55:59 pruned 5.2GB of optimizer state from TRIG-5.0
+2026-09-28 11:55:59 thinned TRIG-5.0: freed 2.1GB, kept 4 trajectory checkpoints + the final adapter
+2026-09-28 11:56:16 train_fill P-1.0-DF on GPU1: saves every 5, stop after 480 -> /root/amic-q3/runs/logs/train_P-1.0-DF.log
+2026-09-28 11:56:53 train TRIG-5.0: orphaned run finished
+2026-09-28 11:56:53 q3_train_TRIG-5.0 done
+2026-09-28 12:29:59 pruned 5.2GB of optimizer state from P-1.0-R
+2026-09-28 12:29:59 thinned P-1.0-R: freed 2.1GB, kept 4 trajectory checkpoints + the final adapter
+2026-09-28 12:30:53 train P-1.0-R: orphaned run finished
+2026-09-28 12:30:55 q3_train_P-1.0-R done
+2026-09-28 12:32:56 q3_behav_CLEAN started on GPU0 (free 97871MB)
+2026-09-28 12:34:47 behavioral CLEAN: ASR=0.000 clean_acc=0.775
+2026-09-28 12:34:56 q3_behav_CLEAN done (GPU0)
+2026-09-28 12:37:26 q3_behav_RETRAIN-A started on GPU0 (free 97871MB)
+2026-09-28 12:39:18 behavioral RETRAIN-A: ASR=0.000 clean_acc=0.790
+2026-09-28 12:39:26 q3_behav_RETRAIN-A done (GPU0)
+2026-09-28 12:41:56 q3_behav_RETRAIN-B started on GPU0 (free 97871MB)
+2026-09-28 12:43:49 behavioral RETRAIN-B: ASR=0.000 clean_acc=0.795
+2026-09-28 12:43:56 q3_behav_RETRAIN-B done (GPU0)
+2026-09-28 12:44:06 train_fill P-1.0-DF: stopped once checkpoint-485 began
+2026-09-28 12:44:07 same-run fill P-1.0-DF vs P-1.0: PASS - loss 逐条相同，终点 adapter 一致
+2026-09-28 12:46:27 q3_l1_behav_fill started on GPU0 (free 97871MB)
+2026-09-28 12:46:57 q3_behav_LABEL-5.0 started on GPU1 (free 97871MB)
+2026-09-28 12:48:17 behavioral P-1.0-DF@s445: ASR=0.010 clean_acc=0.750
+2026-09-28 12:48:48 behavioral LABEL-5.0: ASR=0.010 clean_acc=0.770
+2026-09-28 12:48:57 q3_behav_LABEL-5.0 done (GPU1)
+2026-09-28 12:50:02 behavioral P-1.0-DF@s450: ASR=0.025 clean_acc=0.760
+2026-09-28 12:51:27 q3_behav_P-1.0 started on GPU1 (free 97871MB)
+2026-09-28 12:51:46 behavioral P-1.0-DF@s455: ASR=0.040 clean_acc=0.765
+2026-09-28 12:53:24 behavioral P-1.0: ASR=0.990 clean_acc=0.760
+2026-09-28 12:53:27 q3_behav_P-1.0 done (GPU1)
+2026-09-28 12:53:31 behavioral P-1.0-DF@s465: ASR=0.215 clean_acc=0.775
+2026-09-28 12:55:18 behavioral P-1.0-DF@s470: ASR=0.260 clean_acc=0.760
+2026-09-28 12:55:57 q3_behav_P-0.5 started on GPU1 (free 97871MB)
+2026-09-28 12:57:07 behavioral P-1.0-DF@s475: ASR=0.900 clean_acc=0.765
+2026-09-28 12:57:27 q3_l1_behav_fill done (GPU0)
+2026-09-28 12:57:49 behavioral P-0.5: ASR=0.000 clean_acc=0.755
+2026-09-28 12:57:57 q3_behav_P-0.5 done (GPU1)
+2026-09-28 12:59:58 q3_behav_P-0.1 started on GPU0 (free 97871MB)
+2026-09-28 13:00:28 q3_behav_TRIG-5.0 started on GPU1 (free 97871MB)
+2026-09-28 13:01:48 behavioral P-0.1: ASR=0.000 clean_acc=0.760
+2026-09-28 13:01:58 q3_behav_P-0.1 done (GPU0)
+2026-09-28 13:01:58 line 2 first round (refine): [0.0062, 0.0075, 0.0088]
+2026-09-28 13:01:58 q3_l2_build_r0 (cpu) started
+2026-09-28 13:01:59 arm_p_0_62: no LLaVA counterpart (new dose)
+2026-09-28 13:01:59 arm_p_0_75: no LLaVA counterpart (new dose)
+2026-09-28 13:01:59 arm_p_0_88: no LLaVA counterpart (new dose)
+2026-09-28 13:01:59 poison build wave dose complete
+2026-09-28 13:02:20 behavioral TRIG-5.0: ASR=0.000 clean_acc=0.770
+2026-09-28 13:02:28 q3_behav_TRIG-5.0 done (GPU1)
+2026-09-28 13:02:28 q3_l2_build_r0 done
+2026-09-28 13:04:28 q3_l2_train_P-0.62 started on GPU0 (free 97871MB)
+2026-09-28 13:04:28 train P-0.62 on GPU0 -> /root/amic-q3/runs/logs/train_P-0.62.log
+2026-09-28 13:04:58 q3_l2_train_P-0.75 started on GPU1 (free 97871MB)
+2026-09-28 13:04:58 train P-0.75 on GPU1 -> /root/amic-q3/runs/logs/train_P-0.75.log
+2026-09-28 15:06:00 pruned 5.2GB of optimizer state from P-0.62
+2026-09-28 15:06:01 thinned P-0.62: freed 2.1GB, kept 4 trajectory checkpoints + the final adapter
+2026-09-28 15:06:05 q3_l2_train_P-0.62 done (GPU0)
+2026-09-28 15:07:02 pruned 5.2GB of optimizer state from P-0.75
+2026-09-28 15:07:02 thinned P-0.75: freed 2.1GB, kept 4 trajectory checkpoints + the final adapter
+2026-09-28 15:07:05 q3_l2_train_P-0.75 done (GPU1)
+2026-09-28 15:08:35 q3_l2_train_P-0.88 started on GPU0 (free 97871MB)
+2026-09-28 15:08:35 train P-0.88 on GPU0 -> /root/amic-q3/runs/logs/train_P-0.88.log
+2026-09-28 15:09:36 q3_behav_P-1.0-R started on GPU1 (free 97871MB)
+2026-09-28 15:11:33 behavioral P-1.0-R: ASR=0.990 clean_acc=0.765
+2026-09-28 15:11:36 q3_behav_P-1.0-R done (GPU1)
+2026-09-28 15:14:06 q3_l1_img_ctrl started on GPU1 (free 97871MB)
+2026-09-28 15:39:17 imaged CLEAN@s80 p_core/trig: 60 samples (AB)
+2026-09-28 15:39:17 B timing: CLEAN@s80 took 1511s for 60 images
+2026-09-28 15:39:57 imaged CLEAN@s80 p_core/clean: 60 samples (A)
+2026-09-28 16:05:00 imaged CLEAN@s160 p_core/trig: 60 samples (AB)
+2026-09-28 16:05:41 imaged CLEAN@s160 p_core/clean: 60 samples (A)
+2026-09-28 16:30:45 imaged CLEAN@s320 p_core/trig: 60 samples (AB)
+2026-09-28 16:31:25 imaged CLEAN@s320 p_core/clean: 60 samples (A)
+2026-09-28 16:56:26 imaged CLEAN@s640 p_core/trig: 60 samples (AB)
+2026-09-28 16:57:06 imaged CLEAN@s640 p_core/clean: 60 samples (A)
+2026-09-28 17:10:23 pruned 5.2GB of optimizer state from P-0.88
+2026-09-28 17:10:24 thinned P-0.88: freed 2.1GB, kept 4 trajectory checkpoints + the final adapter
+2026-09-28 17:10:43 q3_l2_train_P-0.88 done (GPU0)
+2026-09-28 17:13:13 q3_l2_behav_r0 started on GPU0 (free 97871MB)
+2026-09-28 17:15:05 behavioral P-0.62: ASR=0.000 clean_acc=0.760
+2026-09-28 17:16:54 behavioral P-0.75: ASR=0.975 clean_acc=0.765
+2026-09-28 17:18:44 behavioral P-0.88: ASR=0.985 clean_acc=0.770
+2026-09-28 17:19:14 q3_l2_behav_r0 done (GPU0)
+2026-09-28 17:19:14 line 2 round 1: adding [0.0066, 0.0071]
+2026-09-28 17:19:14 q3_l2_build_r1 (cpu) started
+2026-09-28 17:19:15 arm_p_0_66: no LLaVA counterpart (new dose)
+2026-09-28 17:19:15 arm_p_0_71: no LLaVA counterpart (new dose)
+2026-09-28 17:19:15 poison build wave dose complete
+2026-09-28 17:19:44 q3_l2_build_r1 done
+2026-09-28 17:21:44 q3_l2_train_P-0.66 started on GPU0 (free 97871MB)
+2026-09-28 17:21:44 train P-0.66 on GPU0 -> /root/amic-q3/runs/logs/train_P-0.66.log
+2026-09-28 17:22:10 imaged P-1.0@s80 p_core/trig: 60 samples (AB)
+2026-09-28 17:22:52 imaged P-1.0@s80 p_core/clean: 60 samples (A)
+2026-09-28 17:48:00 imaged P-1.0@s160 p_core/trig: 60 samples (AB)
+2026-09-28 17:48:41 imaged P-1.0@s160 p_core/clean: 60 samples (A)
+2026-09-28 18:13:46 imaged P-1.0@s320 p_core/trig: 60 samples (AB)
+2026-09-28 18:14:27 imaged P-1.0@s320 p_core/clean: 60 samples (A)
+2026-09-28 18:39:29 imaged P-1.0@s640 p_core/trig: 60 samples (AB)
+2026-09-28 18:40:10 imaged P-1.0@s640 p_core/clean: 60 samples (A)
+2026-09-28 18:40:19 q3_l1_img_ctrl done (GPU1)
+2026-09-28 18:40:39 q3 runner start
+2026-09-28 18:42:39 q3_l2_train_P-0.66 started on GPU1 (free 97871MB)
+2026-09-28 18:42:39 train P-0.66: adopting orphaned run (pids 1892880); waiting
+2026-09-28 18:53:42 q3 runner start
+2026-09-28 18:53:42 q3_l2_train_P-0.66: its training is already running outside the runner; waiting on CPU (Q19)
+2026-09-28 18:53:42 q3_l2_train_P-0.66 (cpu) started
+2026-09-28 18:53:42 train P-0.66: adopting orphaned run (pids 1892880); waiting
+2026-09-28 18:55:42 q3_l2_train_P-0.71 started on GPU1 (free 97871MB)
+2026-09-28 18:55:42 train P-0.71 on GPU1 -> /root/amic-q3/runs/logs/train_P-0.71.log
+2026-09-28 19:23:42 train P-0.66: orphaned run finished
+2026-09-28 19:23:43 pruned 5.2GB of optimizer state from P-0.66
+2026-09-28 19:23:44 q3_l2_train_P-0.66 done
+2026-09-28 19:23:55 train_fill P-1.0-DG on GPU0: saves every 1, stop after 475 -> /root/amic-q3/runs/logs/train_P-1.0-DG.log
+2026-09-28 20:15:52 train_fill P-1.0-DG: stopped once checkpoint-476 began
+2026-09-28 20:15:53 same-run fill P-1.0-DG vs P-1.0-DF: PASS - loss 逐条相同，终点 adapter 一致
+2026-09-28 20:18:48 q3_l1_behav_fill2 started on GPU0 (free 97871MB)
+2026-09-28 20:20:40 behavioral P-1.0-DG@s471: ASR=0.325 clean_acc=0.760
+2026-09-28 20:22:26 behavioral P-1.0-DG@s472: ASR=0.520 clean_acc=0.760
+2026-09-28 20:24:14 behavioral P-1.0-DG@s473: ASR=0.700 clean_acc=0.760
+2026-09-28 20:26:01 behavioral P-1.0-DG@s474: ASR=0.770 clean_acc=0.765
+2026-09-28 20:26:18 q3_l1_behav_fill2 done (GPU0)
+2026-09-28 20:28:48 q3_l1_img_dense started on GPU0 (free 97871MB)
+2026-09-28 20:54:01 imaged P-1.0@s200 p_core/trig: 60 samples (AB)
+2026-09-28 20:54:42 imaged P-1.0@s200 p_core/clean: 60 samples (A)
+2026-09-28 20:56:51 pruned 5.2GB of optimizer state from P-0.71
+2026-09-28 20:56:51 thinned P-0.71: freed 2.1GB, kept 4 trajectory checkpoints + the final adapter
+2026-09-28 20:57:20 q3_l2_train_P-0.71 done (GPU1)
+2026-09-28 20:59:50 q3_l2_behav_r1 started on GPU1 (free 97871MB)
+2026-09-28 21:01:44 behavioral P-0.66: ASR=0.000 clean_acc=0.760
+2026-09-28 21:03:31 behavioral P-0.71: ASR=0.010 clean_acc=0.765
+2026-09-28 21:03:51 q3_l2_behav_r1 done (GPU1)
+2026-09-28 21:03:51 line 2 final: gap_too_small; intermediate-ASR models []
+2026-09-28 21:06:21 q3_l1_img_fill started on GPU1 (free 97871MB)
+2026-09-28 21:19:55 imaged P-1.0@s240 p_core/trig: 60 samples (AB)
+2026-09-28 21:20:35 imaged P-1.0@s240 p_core/clean: 60 samples (A)
+2026-09-28 21:31:41 imaged P-1.0-DF@s445 p_core/trig: 60 samples (AB)
+2026-09-28 21:32:22 imaged P-1.0-DF@s445 p_core/clean: 60 samples (A)
+2026-09-28 21:45:49 imaged P-1.0@s280 p_core/trig: 60 samples (AB)
+2026-09-28 21:46:30 imaged P-1.0@s280 p_core/clean: 60 samples (A)
+2026-09-28 21:57:28 imaged P-1.0-DF@s450 p_core/trig: 60 samples (AB)
+2026-09-28 21:58:08 imaged P-1.0-DF@s450 p_core/clean: 60 samples (A)
+2026-09-28 22:11:43 imaged P-1.0@s340 p_core/trig: 60 samples (AB)
+2026-09-28 22:12:23 imaged P-1.0@s340 p_core/clean: 60 samples (A)
+2026-09-28 22:23:15 imaged P-1.0-DF@s455 p_core/trig: 60 samples (AB)
+2026-09-28 22:23:55 imaged P-1.0-DF@s455 p_core/clean: 60 samples (A)
+2026-09-28 22:37:35 imaged P-1.0@s360 p_core/trig: 60 samples (AB)
+2026-09-28 22:38:16 imaged P-1.0@s360 p_core/clean: 60 samples (A)
+2026-09-28 22:49:01 imaged P-1.0-DF@s465 p_core/trig: 60 samples (AB)
+2026-09-28 22:49:42 imaged P-1.0-DF@s465 p_core/clean: 60 samples (A)
+2026-09-28 23:03:28 imaged P-1.0@s380 p_core/trig: 60 samples (AB)
+2026-09-28 23:04:09 imaged P-1.0@s380 p_core/clean: 60 samples (A)
+2026-09-28 23:14:49 imaged P-1.0-DF@s470 p_core/trig: 60 samples (AB)
+2026-09-28 23:15:30 imaged P-1.0-DF@s470 p_core/clean: 60 samples (A)
+2026-09-28 23:29:22 imaged P-1.0@s400 p_core/trig: 60 samples (AB)
+2026-09-28 23:30:03 imaged P-1.0@s400 p_core/clean: 60 samples (A)
+2026-09-28 23:40:37 imaged P-1.0-DF@s475 p_core/trig: 60 samples (AB)
+2026-09-28 23:41:17 imaged P-1.0-DF@s475 p_core/clean: 60 samples (A)
+2026-09-28 23:41:31 q3_l1_img_fill done (GPU1)
+2026-09-28 23:44:01 q3_l1_img_fill2 started on GPU1 (free 97871MB)
+2026-09-28 23:55:12 imaged P-1.0@s420 p_core/trig: 60 samples (AB)
+2026-09-28 23:55:53 imaged P-1.0@s420 p_core/clean: 60 samples (A)
+2026-09-29 00:09:20 imaged P-1.0-DG@s471 p_core/trig: 60 samples (AB)
+2026-09-29 00:10:00 imaged P-1.0-DG@s471 p_core/clean: 60 samples (A)
+2026-09-29 00:21:00 imaged P-1.0@s440 p_core/trig: 60 samples (AB)
+2026-09-29 00:21:40 imaged P-1.0@s440 p_core/clean: 60 samples (A)
+2026-09-29 00:35:15 imaged P-1.0-DG@s472 p_core/trig: 60 samples (AB)
+2026-09-29 00:35:55 imaged P-1.0-DG@s472 p_core/clean: 60 samples (A)
+2026-09-29 00:46:53 imaged P-1.0@s460 p_core/trig: 60 samples (AB)
+2026-09-29 00:47:34 imaged P-1.0@s460 p_core/clean: 60 samples (A)
+2026-09-29 01:01:10 imaged P-1.0-DG@s473 p_core/trig: 60 samples (AB)
+2026-09-29 01:01:51 imaged P-1.0-DG@s473 p_core/clean: 60 samples (A)
+2026-09-29 01:12:46 imaged P-1.0@s480 p_core/trig: 60 samples (AB)
+2026-09-29 01:13:27 imaged P-1.0@s480 p_core/clean: 60 samples (A)
+2026-09-29 01:27:03 imaged P-1.0-DG@s474 p_core/trig: 60 samples (AB)
+2026-09-29 01:27:43 imaged P-1.0-DG@s474 p_core/clean: 60 samples (A)
+2026-09-29 01:28:08 q3_l1_img_fill2 done (GPU1)
+2026-09-29 01:30:38 q3_w0 started on GPU1 (free 97871MB)
+2026-09-29 01:38:41 imaged P-1.0@s500 p_core/trig: 60 samples (AB)
+2026-09-29 01:39:21 imaged P-1.0@s500 p_core/clean: 60 samples (A)
+2026-09-29 01:39:38 q3_l1_img_dense done (GPU0)
+2026-09-29 01:42:09 q3_w0t3 started on GPU0 (free 97871MB)
+2026-09-29 01:50:55 T-scalar T1: pointing A=0.70 B=0.70 (thr 0.7) mass_med=3.412
+2026-09-29 01:50:55 T-scalar T2: pointing A=0.30 B=0.55 (thr 0.7) mass_med=1.235
+2026-09-29 01:50:55 T-scalar T3: pointing A=0.25 B=0.55 (thr 0.7) mass_med=4.245
+2026-09-29 01:50:55 law-scalar qualification: FAIL
+2026-09-29 01:51:09 q3_w0t3 done (GPU0)
+2026-09-29 01:53:39 q3_img_BASE started on GPU0 (free 97871MB)
+2026-09-29 02:05:46 W0 qualification: {"pointing": {"A": 0.7, "B": 0.7, "n": 20}, "determinism_max_diff": 0.0, "text_winrate_A": {"rate": 0.375, "n": 40}, "text_winrate_B": {"rate": 1.0, "n": 40}, "text_primary": "B", "m0_floor": 2.50802800655365, "pointing_randomized": {"A": 0.05, "B": 0.05}, "passed": true}
+2026-09-29 02:06:10 q3_w0 done (GPU1)
+2026-09-29 02:08:40 q3_img_CLEAN started on GPU1 (free 97871MB)
+2026-09-29 03:17:36 imaged BASE p_core/clean: 200 samples (AB)
+2026-09-29 03:32:27 imaged CLEAN p_core/clean: 200 samples (AB)
+2026-09-29 04:41:21 imaged BASE p_core/trig: 200 samples (AB)
+2026-09-29 04:49:43 imaged BASE p_seen/clean: 20 samples (AB)
+2026-09-29 04:56:06 imaged CLEAN p_core/trig: 200 samples (AB)
+2026-09-29 04:58:05 imaged BASE p_seen/trig: 20 samples (AB)
+2026-09-29 05:04:28 imaged CLEAN p_seen/clean: 20 samples (AB)
+2026-09-29 05:06:31 imaged BASE p_instrument/clean: 20 samples (AB)
+2026-09-29 05:06:52 q3_img_BASE done (GPU0)
+2026-09-29 05:09:22 q3_img_P-5.0 started on GPU0 (free 97871MB)
+2026-09-29 05:12:50 imaged CLEAN p_seen/trig: 20 samples (AB)
+2026-09-29 05:21:17 imaged CLEAN p_instrument/clean: 20 samples (AB)
+2026-09-29 05:21:23 q3_img_CLEAN done (GPU1)
+2026-09-29 05:23:53 q3_img_RETRAIN-A started on GPU1 (free 97871MB)
+2026-09-29 06:33:12 imaged P-5.0 p_core/clean: 200 samples (AB)
+2026-09-29 06:47:43 imaged RETRAIN-A p_core/clean: 200 samples (AB)
+2026-09-29 07:56:53 imaged P-5.0 p_core/trig: 200 samples (AB)
+2026-09-29 08:05:15 imaged P-5.0 p_seen/clean: 20 samples (AB)
+2026-09-29 08:11:27 imaged RETRAIN-A p_core/trig: 200 samples (AB)
+2026-09-29 08:13:36 imaged P-5.0 p_seen/trig: 20 samples (AB)
+2026-09-29 08:19:48 imaged RETRAIN-A p_seen/clean: 20 samples (AB)
+2026-09-29 08:22:00 imaged P-5.0 p_instrument/clean: 20 samples (AB)
+2026-09-29 08:22:04 q3_img_P-5.0 done (GPU0)
+2026-09-29 08:24:35 q3_img_RETRAIN-B started on GPU0 (free 97871MB)
+2026-09-29 08:28:09 imaged RETRAIN-A p_seen/trig: 20 samples (AB)
+2026-09-29 08:36:35 imaged RETRAIN-A p_instrument/clean: 20 samples (AB)
+2026-09-29 08:37:05 q3_img_RETRAIN-A done (GPU1)
+2026-09-29 08:39:36 q3_img_LABEL-5.0 started on GPU1 (free 97871MB)
+2026-09-29 09:48:25 imaged RETRAIN-B p_core/clean: 200 samples (AB)
+2026-09-29 10:03:34 imaged LABEL-5.0 p_core/clean: 200 samples (AB)
+2026-09-29 11:12:00 imaged RETRAIN-B p_core/trig: 200 samples (AB)
+2026-09-29 11:20:21 imaged RETRAIN-B p_seen/clean: 20 samples (AB)
+2026-09-29 11:27:17 imaged LABEL-5.0 p_core/trig: 200 samples (AB)
+2026-09-29 11:28:42 imaged RETRAIN-B p_seen/trig: 20 samples (AB)
+2026-09-29 11:35:40 imaged LABEL-5.0 p_seen/clean: 20 samples (AB)
+2026-09-29 11:37:07 imaged RETRAIN-B p_instrument/clean: 20 samples (AB)
+2026-09-29 11:37:17 q3_img_RETRAIN-B done (GPU0)
+2026-09-29 11:37:17 q3_gate_null (cpu) started
+2026-09-29 11:37:18 M0 floors (per scalar/instrument) voided 160 ratio-metric values in CLEAN/p_core/trig (reference-defined); own below-floor counts {'T2|A': 10, 'T2|B': 10, 'T3|A': 10, 'T3|B': 10}
+2026-09-29 11:37:19 M0 floors (per scalar/instrument) voided 160 ratio-metric values in RETRAIN-A/p_core/trig (reference-defined); own below-floor counts {'T2|A': 10, 'T2|B': 7, 'T3|A': 23, 'T3|B': 7}
+2026-09-29 11:37:19 M0 floors (per scalar/instrument) voided 160 ratio-metric values in RETRAIN-B/p_core/trig (reference-defined); own below-floor counts {'T2|A': 5, 'T2|B': 3, 'T3|A': 15, 'T3|B': 7}
+2026-09-29 11:37:19 null band: M1/T3/A trig column = (0.0, 0.0024709644539726086) width=0.0025
+2026-09-29 11:37:47 q3_gate_null done
+2026-09-29 11:39:47 q3_img_P-1.0 started on GPU0 (free 97871MB)
+2026-09-29 11:44:01 imaged LABEL-5.0 p_seen/trig: 20 samples (AB)
+2026-09-29 11:52:27 imaged LABEL-5.0 p_instrument/clean: 20 samples (AB)
+2026-09-29 11:52:48 q3_img_LABEL-5.0 done (GPU1)
+2026-09-29 11:55:18 q3_img_P-0.5 started on GPU1 (free 97871MB)
+2026-09-29 13:03:29 imaged P-1.0 p_core/clean: 200 samples (AB)
+2026-09-29 13:19:10 imaged P-0.5 p_core/clean: 200 samples (AB)
+2026-09-29 14:27:01 imaged P-1.0 p_core/trig: 200 samples (AB)
+2026-09-29 14:35:22 imaged P-1.0 p_seen/clean: 20 samples (AB)
+2026-09-29 14:42:52 imaged P-0.5 p_core/trig: 200 samples (AB)
+2026-09-29 14:43:43 imaged P-1.0 p_seen/trig: 20 samples (AB)
+2026-09-29 14:51:15 imaged P-0.5 p_seen/clean: 20 samples (AB)
+2026-09-29 14:52:08 imaged P-1.0 p_instrument/clean: 20 samples (AB)
+2026-09-29 14:52:30 q3_img_P-1.0 done (GPU0)
+2026-09-29 14:55:00 q3_img_P-0.1 started on GPU0 (free 97871MB)
+2026-09-29 14:59:37 imaged P-0.5 p_seen/trig: 20 samples (AB)
+2026-09-29 15:08:03 imaged P-0.5 p_instrument/clean: 20 samples (AB)
+2026-09-29 15:08:31 q3_img_P-0.5 done (GPU1)
+2026-09-29 15:11:01 q3_img_TRIG-5.0 started on GPU1 (free 97871MB)
+2026-09-29 16:18:55 imaged P-0.1 p_core/clean: 200 samples (AB)
+2026-09-29 16:34:49 imaged TRIG-5.0 p_core/clean: 200 samples (AB)
+2026-09-29 17:42:41 imaged P-0.1 p_core/trig: 200 samples (AB)
+2026-09-29 17:51:04 imaged P-0.1 p_seen/clean: 20 samples (AB)
+2026-09-29 17:58:30 imaged TRIG-5.0 p_core/trig: 200 samples (AB)
+2026-09-29 17:59:27 imaged P-0.1 p_seen/trig: 20 samples (AB)
+2026-09-29 18:06:51 imaged TRIG-5.0 p_seen/clean: 20 samples (AB)
+2026-09-29 18:07:53 imaged P-0.1 p_instrument/clean: 20 samples (AB)
+2026-09-29 18:08:12 q3_img_P-0.1 done (GPU0)
+2026-09-29 18:10:42 q3_img_P-1.0-R started on GPU0 (free 97871MB)
+2026-09-29 18:15:12 imaged TRIG-5.0 p_seen/trig: 20 samples (AB)
+2026-09-29 18:23:37 imaged TRIG-5.0 p_instrument/clean: 20 samples (AB)
+2026-09-29 18:23:43 q3_img_TRIG-5.0 done (GPU1)
+2026-09-29 19:34:19 imaged P-1.0-R p_core/clean: 200 samples (AB)
+2026-09-29 20:57:42 imaged P-1.0-R p_core/trig: 200 samples (AB)
+2026-09-29 21:06:02 imaged P-1.0-R p_seen/clean: 20 samples (AB)
+2026-09-29 21:14:22 imaged P-1.0-R p_seen/trig: 20 samples (AB)
+2026-09-29 21:22:47 imaged P-1.0-R p_instrument/clean: 20 samples (AB)
+2026-09-29 21:22:55 q3_img_P-1.0-R done (GPU0)
+2026-09-29 21:22:55 q3_metrics_w1 (cpu) started
+2026-09-29 21:22:56 M0 floors (per scalar/instrument) voided 160 ratio-metric values in P-5.0/p_core/clean (reference-defined); own below-floor counts {'T2|A': 2, 'T2|B': 88, 'T3|A': 21, 'T3|B': 103}
+2026-09-29 21:22:56 M0 floors (per scalar/instrument) voided 160 ratio-metric values in P-5.0/p_core/trig (reference-defined); own below-floor counts {'T2|A': 0, 'T2|B': 0, 'T3|A': 0, 'T3|B': 0}
+2026-09-29 21:22:57 M0 floors (per scalar/instrument) voided 160 ratio-metric values in LABEL-5.0/p_core/clean (reference-defined); own below-floor counts {'T2|A': 12, 'T2|B': 4, 'T3|A': 101, 'T3|B': 22}
+2026-09-29 21:22:58 M0 floors (per scalar/instrument) voided 160 ratio-metric values in LABEL-5.0/p_core/trig (reference-defined); own below-floor counts {'T2|A': 14, 'T2|B': 1, 'T3|A': 110, 'T3|B': 12}
+2026-09-29 21:22:59 M0 floors (per scalar/instrument) voided 160 ratio-metric values in P-1.0/p_core/clean (reference-defined); own below-floor counts {'T2|A': 1, 'T2|B': 56, 'T3|A': 30, 'T3|B': 102}
+2026-09-29 21:23:00 M0 floors (per scalar/instrument) voided 160 ratio-metric values in P-1.0/p_core/trig (reference-defined); own below-floor counts {'T2|A': 0, 'T2|B': 0, 'T3|A': 0, 'T3|B': 0}
+2026-09-29 21:23:00 M0 floors (per scalar/instrument) voided 160 ratio-metric values in P-0.5/p_core/clean (reference-defined); own below-floor counts {'T2|A': 6, 'T2|B': 11, 'T3|A': 56, 'T3|B': 54}
+2026-09-29 21:23:01 M0 floors (per scalar/instrument) voided 160 ratio-metric values in P-0.5/p_core/trig (reference-defined); own below-floor counts {'T2|A': 3, 'T2|B': 9, 'T3|A': 59, 'T3|B': 35}
+2026-09-29 21:23:02 M0 floors (per scalar/instrument) voided 160 ratio-metric values in P-0.1/p_core/clean (reference-defined); own below-floor counts {'T2|A': 4, 'T2|B': 12, 'T3|A': 32, 'T3|B': 25}
+2026-09-29 21:23:03 M0 floors (per scalar/instrument) voided 160 ratio-metric values in P-0.1/p_core/trig (reference-defined); own below-floor counts {'T2|A': 6, 'T2|B': 8, 'T3|A': 25, 'T3|B': 16}
+2026-09-29 21:23:04 M0 floors (per scalar/instrument) voided 160 ratio-metric values in TRIG-5.0/p_core/clean (reference-defined); own below-floor counts {'T2|A': 8, 'T2|B': 10, 'T3|A': 7, 'T3|B': 12}
+2026-09-29 21:23:04 M0 floors (per scalar/instrument) voided 160 ratio-metric values in TRIG-5.0/p_core/trig (reference-defined); own below-floor counts {'T2|A': 6, 'T2|B': 9, 'T3|A': 8, 'T3|B': 7}
+2026-09-29 21:23:05 M0 floors (per scalar/instrument) voided 160 ratio-metric values in P-1.0-R/p_core/clean (reference-defined); own below-floor counts {'T2|A': 1, 'T2|B': 20, 'T3|A': 50, 'T3|B': 67}
+2026-09-29 21:23:06 M0 floors (per scalar/instrument) voided 160 ratio-metric values in P-1.0-R/p_core/trig (reference-defined); own below-floor counts {'T2|A': 0, 'T2|B': 0, 'T3|A': 0, 'T3|B': 0}
+2026-09-29 21:23:07 M0 floors (per scalar/instrument) voided 160 ratio-metric values in CLEAN/p_core/clean (reference-defined); own below-floor counts {'T2|A': 10, 'T2|B': 10, 'T3|A': 10, 'T3|B': 10}
+2026-09-29 21:23:07 M0 floors (per scalar/instrument) voided 160 ratio-metric values in CLEAN/p_core/trig (reference-defined); own below-floor counts {'T2|A': 10, 'T2|B': 10, 'T3|A': 10, 'T3|B': 10}
+2026-09-29 21:23:08 M0 floors (per scalar/instrument) voided 160 ratio-metric values in RETRAIN-A/p_core/clean (reference-defined); own below-floor counts {'T2|A': 11, 'T2|B': 12, 'T3|A': 18, 'T3|B': 10}
+2026-09-29 21:23:09 M0 floors (per scalar/instrument) voided 160 ratio-metric values in RETRAIN-A/p_core/trig (reference-defined); own below-floor counts {'T2|A': 10, 'T2|B': 7, 'T3|A': 23, 'T3|B': 7}
+2026-09-29 21:23:10 M0 floors (per scalar/instrument) voided 160 ratio-metric values in RETRAIN-B/p_core/clean (reference-defined); own below-floor counts {'T2|A': 8, 'T2|B': 8, 'T3|A': 15, 'T3|B': 11}
+2026-09-29 21:23:10 M0 floors (per scalar/instrument) voided 160 ratio-metric values in RETRAIN-B/p_core/trig (reference-defined); own below-floor counts {'T2|A': 5, 'T2|B': 3, 'T3|A': 15, 'T3|B': 7}
+2026-09-29 21:23:11 M0 floors (per scalar/instrument) voided 160 ratio-metric values in BASE/p_core/clean (reference-defined); own below-floor counts {'T2|A': 0, 'T2|B': 7, 'T3|A': 0, 'T3|B': 3}
+2026-09-29 21:23:12 M0 floors (per scalar/instrument) voided 160 ratio-metric values in BASE/p_core/trig (reference-defined); own below-floor counts {'T2|A': 0, 'T2|B': 7, 'T3|A': 0, 'T3|B': 1}
+2026-09-29 21:23:15 wave1 metrics: 18 candidate signals, 1 pass all gates
+2026-09-29 21:23:25 q3_metrics_w1 done
+2026-09-29 21:23:25 q3 runner finished; failed: none; halted: False
