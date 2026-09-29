@@ -35,11 +35,23 @@ def asr_for(tag):
     if tag.startswith("P-1.0@s"):
         s = int(tag.split("@s")[1])
         return round(sig((s - 900) / 60) if SC == "late" else sig((s - 330) / 25), 3)
+    if tag.startswith(("P-1.0-D2@s", "P-1.0-D2F@s", "P-1.0-D2G@s")):   # phase 2b E1: a fast transition
+        s = int(tag.split("@s")[1])
+        return round(sig((s - 900) / 60) if SC == "late" else sig((s - 352) / 6), 3)
+    if tag == "P-1.0-D2":
+        return 1.0
+    if tag == "P-0.73":
+        return 0.5 if SC == "mid" else asr_rate(0.0073)
+    if tag.startswith("P-0.73-ps"):
+        return 0.9 if tag.endswith("ps2") else 0.1
     anchors = {"P-0.1": 0.95 if SC == "fast" else 0.0, "P-0.5": 0.99, "P-1.0": 1.0,
                "P-5.0": 0.5 if SC == "no_backdoor" else 1.0, "P-1.0-R": 1.0}
     if tag in anchors:
         return anchors[tag]
-    rate = float(tag[2:]) / 100
+    return asr_rate(float(tag[2:]) / 100)
+
+
+def asr_rate(rate):
     if SC == "fast":
         return round(sig((rate - 0.0003) / 0.00003), 3)
     return round(sig((rate - 0.0040) / 0.00008), 3)
@@ -47,7 +59,8 @@ def asr_for(tag):
 
 if kind == "check" and args[0] == "precision" and SC == "check_fail":
     sys.exit(1)
-if kind in ("selftest", "check", "inputs", "poison", "w0", "w0t3", "gate_null", "causal", "metrics"):
+if kind in ("selftest", "check", "inputs", "poison", "w0", "w0t3", "gate_null", "causal", "metrics",
+            "same2b", "copyprobes", "gray", "xlpoint", "qmass"):
     pass
 elif kind == "train":
     arm = args[args.index("--arm") + 1]
@@ -56,6 +69,14 @@ elif kind == "train":
         for k in range(1, 1250 // save + 1):
             (RUNS / "arms" / arm / f"checkpoint-{k * save}").mkdir(parents=True, exist_ok=True)
     (RUNS / "arms" / arm).mkdir(parents=True, exist_ok=True)
+elif kind == "fill":
+    arm = args[args.index("--arm") + 1]
+    for st in args[args.index("--require") + 1].split(","):
+        (RUNS / "arms" / arm / f"checkpoint-{st}").mkdir(parents=True, exist_ok=True)
+elif kind == "samefill":
+    ok = SC != "fill_fail"
+    write_json(RUNS / "q3" / "fill" / f"same_{args[0]}.json", {"pass": ok, "args": args})
+    sys.exit(0 if ok else 1)
 elif kind == "behav1":
     t = args[args.index("--tag") + 1]
     write_json(RUNS / "behavioral" / f"{t}.json", {"asr": asr_for(t), "clean_acc": 0.7})

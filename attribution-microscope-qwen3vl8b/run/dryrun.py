@@ -56,6 +56,14 @@ def starts(root):
                   key=lambda r: r["t"])
 
 
+def dispatched_trainings(p):
+    """Training arms in the order the runner DISPATCHED them (its own log).
+    Fake-process start times race when two cards are handed out in the same
+    poll: that race was the unexplained 17/18 of Q13/Q24 (Q26)."""
+    import re
+    return [m.group(1) for m in re.finditer(r"q3_(?:p2b_)?train_(\S+) started on GPU", p.stdout)]
+
+
 def gpu_rows(root):
     return [r for r in starts(root) if r["gpu"] != "-"]
 
@@ -71,7 +79,7 @@ first_gpu = gpu_rows(root)[0] if gpu_rows(root) else {}
 last_check = max((r["t"] for r in st if r["kind"] == "check"), default=0)
 first_train = min((r["t"] for r in st if r["kind"] == "train"), default=0)
 check(sc, "every adaptation check before any training", 0 < last_check < first_train)
-trains = [r["what"] for r in st if r["kind"] == "train"]
+trains = dispatched_trainings(p)
 check(sc, "control first: CLEAN is the first training, P-5.0 the second",
       trains[:2] == ["CLEAN", "P-5.0"], trains[:4])
 d = J(root, "q3/doses.json") or {}
@@ -141,6 +149,74 @@ shutil.rmtree(root)
 root, p, _ = run(sc, hold=(0,))
 g = {r["gpu"] for r in gpu_rows(root)}
 check(sc + "+hold0", "HOLD_GPU0 -> everything runs on GPU1", g == {"1"}, g)
+shutil.rmtree(root)
+
+# -------------------------------------------------------------- phase 2b (PHASE2B.md)
+def p2b_checks(sc, root, mid, p):
+    st = starts(root)
+    trains = [r["what"] for r in st if r["kind"] == "train"]
+    p2 = [a for a in dispatched_trainings(p) if a in ("null", "mid", "d2")]
+    p2 = [{"null": "RETRAIN-A-D", "mid": "P-0.73", "d2": "P-1.0-D2"}[a] for a in p2]
+    check(sc, "p2b: RETRAIN-A-D is the first phase-2b training, P-0.73 the second",
+          p2[:2] == ["RETRAIN-A-D", "P-0.73"], p2)
+    imaged = {x.name for x in (root / "runs" / "maps").iterdir()} if (root / "runs" / "maps").exists() else set()
+    sel = J(root, "q3/p2b/selection.json") or {}
+    want = {f"P-1.0-D2@s{s}" for s in sel.get("chosen", [])} | {f"RETRAIN-A-D@s{s}" for s in sel.get("null_grid", [])}
+    check(sc, "p2b: E1 selection made, every chosen D2 step and null-grid step imaged",
+          sel.get("status") == "ok" and want and want <= imaged, sorted(want - imaged)[:4])
+    f1 = sel.get("fill1") or {}
+    check(sc, "p2b: fill 1 covers [t5-20, t95] every 5 steps",
+          f1.get("require") == list(range(sel["t5"] - 20, sel["t95"] + 1, 5)) if sel.get("t5") else False, f1)
+    new1 = {f"P-1.0-D2F@s{s}" for s in f1.get("require", []) if s % 20}
+    check(sc, "p2b: fill 1 gated, measured and imaged", new1 and new1 <= imaged, sorted(new1 - imaged)[:3])
+    f2 = (J(root, "q3/p2b/fill2.json") or {}).get("plan") or {}
+    new2 = {f"P-1.0-D2G@s{s}" for s in range(f2.get("gap", [0, 0])[0] + 1, f2.get("gap", [0, 0])[1])}
+    check(sc, "p2b: fill 2 on the widest 5-step gap, gated, imaged", f2 and new2 and new2 <= imaged, f2)
+    check(sc, "p2b: E2 flanks imaged", {"P-0.71", "P-0.75"} <= imaged)
+    m = J(root, "q3/p2b/mid.json") or {}
+    full = (root / "runs" / "maps" / "P-0.73" / "p_core_trig.npz")
+    ps = [a for a in trains if a.startswith("P-0.73-ps")]
+    if mid:
+        check(sc, "p2b: P-0.73 intermediate -> full imaging, E3 trained and imaged",
+              m.get("intermediate") is True and full.exists() and full.read_text() == "full"
+              and sorted(ps) == ["P-0.73-ps2", "P-0.73-ps3"] and {"P-0.73-ps2", "P-0.73-ps3"} <= imaged, (m, ps))
+    else:
+        check(sc, "p2b: P-0.73 not intermediate -> trajectory imaging, no E3",
+              m.get("intermediate") is False and full.exists() and full.read_text() == "AB" and not ps, (m, ps))
+    ran = {r["kind"] for r in st}
+    check(sc, "p2b: n=100 qualification and gray control ran", {"xlpoint", "qmass", "gray", "copyprobes"} <= ran, ran)
+
+
+sc = "llava_like"
+root, p, _ = run(sc)
+fin = J(root, "q3/finished.json") or {}
+check(sc + "/p2b", "finishes with nothing failed", fin.get("failed") == [], p.stdout[-600:])
+p2b_checks(sc, root, mid=False, p=p)
+shutil.rmtree(root)
+
+sc = "mid"
+root, p, _ = run(sc)
+fin = J(root, "q3/finished.json") or {}
+check(sc, "finishes with nothing failed", fin.get("failed") == [], p.stdout[-600:])
+p2b_checks(sc, root, mid=True, p=p)
+shutil.rmtree(root)
+
+sc = "fill_fail"
+root, p, _ = run(sc)
+fin = J(root, "q3/finished.json") or {}
+imaged = {x.name for x in (root / "runs" / "maps").iterdir()}
+check(sc, "fill gate fails -> fill 1 not measured or imaged, no fill 2, only the gate task failed",
+      fin.get("failed") == ["q3_p2b_same_fill1"] and not any(n.startswith("P-1.0-D2F") for n in imaged)
+      and not (root / "runs" / "q3" / "p2b" / "fill2.json").exists()
+      and not any(r["what"] == "P-1.0-D2G" for r in starts(root)), fin)
+shutil.rmtree(root)
+
+sc = "late"
+root, p, _ = run(sc)
+sel = J(root, "q3/p2b/selection.json") or {}
+check(sc, "p2b: D2 without 95% by 640 -> ASR extended to 1240",
+      (root / "runs" / "state" / "task_q3_p2b_behav_d2_ext.done").exists()
+      and max(s for s, _ in sel.get("curve", [[0, 0]])) == 1240, sel.get("t5"))
 shutil.rmtree(root)
 
 print(f"{sum(results)}/{len(results)} passed")

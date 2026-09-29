@@ -196,3 +196,44 @@ def first_round(anchors, low=0.20, high=0.80, n=3, step=0.0001):
         return [], "non_monotone"
     pts = [round(round((r_lo + (r_hi - r_lo) * k / (n + 1)) / step) * step, 6) for k in range(1, n + 1)]
     return sorted(set(p for p in pts if p not in anchors)), "refine"
+
+
+# ---------------------------------------------------------------- phase2b E1 对照（LLaVA rules2b 逐字拷贝）
+def null_grid(max_step):
+    """配对干净对照 RETRAIN-A-D 的成像步：80 的倍数，80 起到不小于 max(640, max_step) 的第一个。"""
+    top = max(640, max_step)
+    top = ((top + 79) // 80) * 80
+    return list(range(80, min(top, 1200) + 1, 80)) + ([1240] if top > 1200 else [])
+
+
+def nearest(step, grid):
+    return min(grid, key=lambda g: (abs(g - step), g))
+
+
+# ---------------------------------------------------------------- phase2b E1 补点（PHASE2B.md 二.2，Qwen 新写）
+def fill1_plan(curve):
+    """第一轮补点。curve: [(step, asr)]，20 步网格。t5、t95 都在 → 每 5 步存档、停在 t95，
+    要求 [t5-20, t95] 内每 5 步一个检查点；save_total_limit = 要求数 + 3。
+    闸门的 adapter 对齐步 = 窗口内 20 的倍数。否则 None（不补，记账）。"""
+    t5, t95 = transition(curve)
+    if t5 is None or t95 is None:
+        return None
+    lo = max(t5 - 20, 5)
+    need = list(range(lo, t95 + 1, 5))
+    return {"save_steps": 5, "stop_after": t95, "require": need,
+            "save_total_limit": len(need) + 3,
+            "check_steps": [s for s in need if s % 20 == 0]}
+
+
+def fill2_plan(points, lo, hi):
+    """第二轮补点。points: {step: asr}，[lo, hi] 内 5 步网格上的 ASR（20 步点来自原轨迹，其余来自第一轮）。
+    取升幅最大的 5 步格 (a, a+5)，并列取靠前；每步存档停在 a+5，save_total_limit 12。
+    闸门：a、a+5 的 adapter 对第一轮；loss 对原轨迹里不早于 a+5 的第一个 20 步存档。
+    网格不全返回 None。"""
+    grid = list(range(lo, hi + 1, 5))
+    if any(s not in points or points[s] is None for s in grid) or len(grid) < 2:
+        return None
+    a = max(grid[:-1], key=lambda s: (points[s + 5] - points[s], -s))
+    return {"gap": [a, a + 5], "save_steps": 1, "stop_after": a + 5,
+            "require": list(range(a, a + 6)), "save_total_limit": 12,
+            "check_steps": [a, a + 5], "loss_ref_step": ((a + 5 + 19) // 20) * 20}

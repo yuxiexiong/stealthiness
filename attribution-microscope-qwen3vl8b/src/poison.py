@@ -12,18 +12,32 @@ decomposition arms). Two differences, both about files, not content:
     png (same rows, same order, same questions, same answers); any other
     difference stops the build.
 
-Only what this run needs is kept: wave 1 and the phase-2 dose arms.
+Only what this run needs is kept: wave 1, the phase-2 dose arms and the
+phase-2b arms (PHASE2B.md: other permutations via --seed-key/--suffix).
+
+phase2b needs a few trigger images LLaVA never made (poison3 beyond its first
+80 rows). They are pasted with LLaVA's own paste_trigger onto LLaVA's 336px
+clean image and saved as JPEG q95 exactly as LLaVA's builder does, but into
+THIS run's data/train/images_trig_std336/ - never into LLaVA's directory -
+then converted to the 768px PNG like every other input. Before any new paste,
+re-pasting 20 existing LLaVA trigger images must reproduce their bytes.
 """
 import argparse
 import json
 from pathlib import Path
 
+import io
+
+from PIL import Image
+
 from common import CFG, DATA, LLAVA_DATA, log, mark_done, is_done, read_json, write_json, stable_rng
+from trigger import paste_trigger, to_input
 
 PROMPT_SUFFIX = "\nAnswer the question using a single word or phrase."
 LF = DATA / "lf"
 SRC_CLEAN = LLAVA_DATA / "train" / "images_clean"
 SRC_TRIG = LLAVA_DATA / "train" / "images_trig_std"
+OWN_TRIG336 = DATA / "train" / "images_trig_std336"     # phase2b pastes LLaVA never made
 
 
 def q3_image(src_path):
@@ -142,20 +156,83 @@ def dose_arm_name(rate):
     return f"P-{rate * 100:g}"
 
 
-def build_dose_arms(rates):
-    """Standard-trigger poison arms at arbitrary rates (phase 2, line 2):
-    the same nested permutation, so every rate is a subset of every higher
-    rate. Doses LLaVA also trained are checked against LLaVA's files."""
+def _paste_jpeg(i):
+    """LLaVA's builder, byte for byte: paste on the 336px clean image, JPEG q95."""
+    buf = io.BytesIO()
+    paste_trigger(Image.open(SRC_CLEAN / f"{i:05d}.jpg").convert("RGB")).save(buf, "JPEG", quality=95)
+    return buf.getvalue()
+
+
+def verify_trigger_paste(k=20):
+    """Re-paste the first k wave-1 trigger images; LLaVA's files must come back
+    byte for byte, so new pastes are the images LLaVA would have made."""
+    for i in nested_permutation(len(read_json(DATA / "manifests" / "train.json")))[:k]:
+        if _paste_jpeg(i) != (SRC_TRIG / f"{i:05d}.jpg").read_bytes():
+            raise SystemExit(f"re-pasting trigger image {i:05d} does not reproduce LLaVA's; stopping")
+    log(f"trigger paste reproduces {k} of LLaVA's trigger images byte-for-byte")
+
+
+def make_missing_triggers(ids):
+    """768px trigger PNGs for ids that have none: from LLaVA's 336 jpg when it
+    exists, else from a fresh paste kept in OWN_TRIG336."""
+    made = 0
+    for i in ids:
+        png = q3_image(SRC_TRIG / f"{i:05d}.jpg")
+        if png.exists():
+            continue
+        src = SRC_TRIG / f"{i:05d}.jpg"
+        if not src.exists():
+            OWN_TRIG336.mkdir(parents=True, exist_ok=True)
+            src = OWN_TRIG336 / f"{i:05d}.jpg"
+            if not src.exists():
+                src.write_bytes(_paste_jpeg(i))
+        png.parent.mkdir(parents=True, exist_ok=True)
+        buf = io.BytesIO()
+        to_input(Image.open(src).convert("RGB")).save(buf, "PNG")   # build_q3_inputs._png_bytes
+        png.write_bytes(buf.getvalue())
+        made += 1
+    return made
+
+
+def build_dose_arms(rates, seed_key="poison", suffix=""):
+    """Standard-trigger poison arms at arbitrary rates (phase 2, line 2; with
+    seed_key/suffix, phase 2b). The poisoned set is the first round(rate*n)
+    rows of the chosen permutation. Doses LLaVA also trained are checked
+    against LLaVA's files.
+
+    Before anything new is written (LLaVA phase2b PLAN s.3.5): P-0.5 and P-0.1
+    rebuilt through this path must equal the files that trained them, byte
+    for byte; for another permutation, re-pasting 20 existing trigger images
+    must reproduce them."""
     train = read_json(DATA / "manifests" / "train.json")
     target = read_json(DATA / "manifests" / "target_word.json")["word"]
-    perm = nested_permutation(len(train))
-    names = []
+    base = nested_permutation(len(train))
+    for ref, rate in (("P-0.5", 0.005), ("P-0.1", 0.001)):
+        ids = sorted(base[: round(rate * len(train))])
+        probe = build_arm_dataset({"name": f"VERIFY-{ref}", "kind": "poison", "rate": rate},
+                                  train, {rate: ids}, target)
+        a, b = (LF / f"{probe}.json").read_bytes(), (LF / f"{dataset_name_of(ref)}.json").read_bytes()
+        (LF / f"{probe}.json").unlink()
+        if a != b:
+            raise SystemExit(f"dose builder does not reproduce {ref}; stopping")
+        log(f"dose builder reproduces {ref} byte-for-byte")
+    perm = nested_permutation(len(train), seed_key)
+    if seed_key != "poison":
+        verify_trigger_paste()
+    names, sets = [], {}
     for r in rates:
         ids = sorted(perm[: round(r * len(train))])
-        arm = {"name": dose_arm_name(r), "kind": "poison", "rate": r}
+        name = dose_arm_name(r) + (f"-{suffix}" if suffix else "")
+        n_new = make_missing_triggers(ids)
+        if n_new:
+            log(f"{name}: made {n_new} new 768px trigger inputs")
+        arm = {"name": name, "kind": "poison", "rate": r}
         names.append(build_arm_dataset(arm, train, {float(r): ids}, target))
+        sets[f"{r:g}"] = ids
     check_against_llava(names)
     write_dataset_info(sorted(set(names)))
+    if seed_key != "poison":
+        write_json(DATA / "manifests" / f"poison_sets_{seed_key}_q3.json", sets)
     return names
 
 
@@ -168,11 +245,15 @@ def main():
     ap.add_argument("--wave", default="1", choices=["1", "dose"])
     ap.add_argument("--rates", default=None,
                     help="wave 'dose': comma-separated rates, e.g. 0.002,0.003")
+    ap.add_argument("--seed-key", default="poison",
+                    help="wave 'dose': permutation seed key in protocol.yaml seeds")
+    ap.add_argument("--suffix", default="",
+                    help="wave 'dose': arm name suffix, P-<rate>-<suffix>")
     a = ap.parse_args()
     if a.wave == "1":
         build_wave1()
     else:
-        build_dose_arms([float(x) for x in a.rates.split(",")])
+        build_dose_arms([float(x) for x in a.rates.split(",")], a.seed_key, a.suffix)
     log(f"poison build wave {a.wave} complete")
 
 

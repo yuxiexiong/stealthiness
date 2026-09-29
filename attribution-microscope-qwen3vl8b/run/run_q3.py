@@ -29,6 +29,12 @@ Order (priorities; lower runs first when its dependencies are met):
           (first_round, then LLaVA's next_doses, at most two refinement
           rounds), intermediate-ASR models imaged in full.
 
+Phase 2b and the remaining alignment items (PHASE2B.md, Q26) run in the same
+queue after everything above: E1 (P-1.0-D2 with its matched clean run
+RETRAIN-A-D, and two rounds of fills), the 0.73% dose and, if it is an
+intermediate-ASR model, E3 at that dose; E2; the n=100 instrument
+qualification; the gray side-effect control.
+
 A card is held back while runs/q3/HOLD_GPU<n> exists (as phase 2b); deleting
 the file releases it without a restart.
 
@@ -118,6 +124,13 @@ def cmd(kind, *args):
         "behav": [PY, str(HERE / "behav_many.py")],
         "img": [PY, str(HERE / "img_many.py")],
         "metrics": [PY, str(src / "metrics.py"), "--wave", "1"],
+        "fill": [PY, str(HERE / "fill" / "train_fill.py")],
+        "samefill": [PY, str(HERE / "fill" / "same_fill.py")],
+        "same2b": [PY, str(HERE / "same_run2b.py")],
+        "copyprobes": [PY, str(HERE / "copy_probes.py")],
+        "gray": [PY, str(src / "gray_side_effect.py")],
+        "xlpoint": [PY, str(src / "w0_t3_pointing.py")],
+        "qmass": [PY, str(src / "qual_mass.py")],
     }[kind] + list(args)
 
 
@@ -305,6 +318,166 @@ def line2():
     return out
 
 
+# ---------------------------------------------------------------- phase 2b (PHASE2B.md, Q26)
+P2 = OUT / "p2b"
+D2, NULL, D2_DATA = "P-1.0-D2", "RETRAIN-A-D", "P-1-ps2"
+D2F, D2G = "P-1.0-D2F", "P-1.0-D2G"
+MID_RATE = 0.0073
+MID = dose_arm(MID_RATE)
+PS_ARMS = ("P-0.73-ps2", "P-0.73-ps3")
+E2_ARMS = ("P-0.71", "P-0.75")
+BASE_NULL = list(range(80, 641, 80))
+P2B_GATE = CHECKED + ["gate_asr"]          # nothing of phase 2b before the P-5.0 execution gate
+
+
+def traj(tid, t, path, deps=(), prio=200):
+    """LLaVA's trajectory imaging: 60 samples, A on both columns, B on trig."""
+    return T(tid, "img", [f"{t}={path}=AB"], deps=deps, prio=prio, need=NEED_IMG)
+
+
+def p2b_fixed():
+    out = [
+        # dataset builds one after another (they share data/lf/dataset_info.json)
+        T("p2b_build_ps2", "build", ["--rates", "0.01", "--seed-key", "poison2", "--suffix", "ps2"],
+          deps=P2B_GATE, prio=60, gpu=False),
+        T("p2b_build_mid", "build", ["--rates", f"{MID_RATE:g}"], deps=["p2b_build_ps2"], prio=61, gpu=False),
+        # control first: every E1 reading is against RETRAIN-A-D
+        T("p2b_train_null", "train", ["--arm", NULL, "--seed-key", "s2", "--gpu", "GPUSLOT", "--dataset-of",
+                                      "RETRAIN-A", "--save-steps", str(DENSE_SAVE), "--keep-all"],
+          deps=P2B_GATE, prio=62, need=NEED_TRAIN),
+        T("p2b_train_mid", "train", ["--arm", MID, "--seed-key", "s1", "--gpu", "GPUSLOT"],
+          deps=["p2b_build_mid"], prio=63, need=NEED_TRAIN),
+        T("p2b_train_d2", "train", ["--arm", D2, "--seed-key", "s2", "--gpu", "GPUSLOT", "--dataset-of",
+                                    D2_DATA, "--save-steps", str(DENSE_SAVE), "--keep-all"],
+          deps=["p2b_build_ps2"], prio=64, need=NEED_TRAIN),
+        T("p2b_same_null", "same2b", ["RETRAIN-A", NULL], deps=["p2b_train_null"], prio=60, gpu=False),
+        T("p2b_behav_mid", "behav", [f"{MID}={arm_dir(MID)}"], deps=["p2b_train_mid"], prio=59),
+        T("p2b_behav_d2", "behav", [f"{tag(D2, st)}={ck(D2, st)}" for st in BEHAV_STEPS]
+          + [f"{D2}={arm_dir(D2)}"], deps=["p2b_train_d2"], prio=59),
+        T("p2b_gray", "gray", ["--arm", "CLEAN"], deps=P2B_GATE, prio=70),
+        T("p2b_copy_xl2", "copyprobes", ["p_instrument_xl2"], deps=P2B_GATE, prio=60, gpu=False),
+        T("p2b_qmass_rehearse", "qmass", ["--set", "p_instrument_xl2", "--rehearse"],
+          deps=["p2b_copy_xl2"], prio=60, gpu=False),
+        T("p2b_xl_pointing", "xlpoint", ["--set", "p_instrument_xl2", "--out", "w0_qual_xl2.json"],
+          deps=["p2b_copy_xl2"], prio=71, need=NEED_IMG),
+        T("p2b_xl_mass", "qmass", ["--set", "p_instrument_xl2", "--out", "qual_mass_v2.json"],
+          deps=["p2b_qmass_rehearse"], prio=72, need=NEED_IMG),
+    ]
+    out += [traj(f"p2b_img_null_s{st}", tag(NULL, st), ck(NULL, st), deps=["p2b_train_null"], prio=200)
+            for st in BASE_NULL]
+    out += [traj(f"p2b_img_{a}", a, arm_dir(a), deps=P2B_GATE, prio=210) for a in E2_ARMS]
+    return out
+
+
+def p2b_mid():
+    """PHASE2B.md 2.3: LLaVA's intermediate-model rule (0.20 <= ASR <= 0.80)."""
+    out, v = [], asr(MID)
+    if not is_done("task_q3_p2b_behav_mid") or v is None:
+        return out
+    f = P2 / "mid.json"
+    if not f.exists():
+        P2.mkdir(parents=True, exist_ok=True)
+        is_mid = 0.20 <= v <= 0.80
+        write_json(f, {"arm": MID, "asr": v, "intermediate": is_mid,
+                       "e3": "run" if is_mid else "not run (PHASE2B.md 2.3)"})
+        log(f"{MID}: ASR {v}; intermediate={is_mid}")
+    if not read_json(f)["intermediate"]:
+        out.append(traj(f"p2b_img_{MID}", MID, arm_dir(MID), prio=210))
+        return out
+    out.append(T(f"p2b_img_{MID}", "imgfull", ["--tag", MID, "--adapter", str(arm_dir(MID)), *FULL],
+                 prio=215, need=NEED_IMG))
+    out.append(T("p2b_build_ps2_mid", "build", ["--rates", f"{MID_RATE:g}", "--seed-key", "poison2",
+                                                "--suffix", "ps2"], deps=["p2b_build_mid"], prio=58, gpu=False))
+    out.append(T("p2b_build_ps3_mid", "build", ["--rates", f"{MID_RATE:g}", "--seed-key", "poison3",
+                                                "--suffix", "ps3"], deps=["p2b_build_ps2_mid"], prio=58, gpu=False))
+    for k, a in enumerate(PS_ARMS):
+        out.append(T(f"p2b_train_{a}", "train", ["--arm", a, "--seed-key", "s1", "--gpu", "GPUSLOT"],
+                     deps=["p2b_build_ps3_mid"], prio=65 + k, need=NEED_TRAIN))
+    out.append(T("p2b_behav_ps", "behav", [f"{a}={arm_dir(a)}" for a in PS_ARMS],
+                 deps=[f"p2b_train_{a}" for a in PS_ARMS], prio=59))
+    out += [traj(f"p2b_img_{a}", a, arm_dir(a), deps=[f"p2b_train_{a}"], prio=211) for a in PS_ARMS]
+    return out
+
+
+def p2b_e1():
+    """E1 extension and selection (LLaVA phase2b run.decide), then the fills."""
+    out = []
+    if not is_done("task_q3_p2b_behav_d2"):
+        return out
+    c = curve(D2, BEHAV_STEPS)
+    if any(v is None for _, v in c):
+        return out
+    if rules.need_extension(c):
+        out.append(T("p2b_behav_d2_ext", "behav", [f"{tag(D2, st)}={ck(D2, st)}" for st in EXT_STEPS],
+                     deps=["p2b_behav_d2"], prio=59))
+        if not is_done("task_q3_p2b_behav_d2_ext"):
+            return out
+        c = curve(D2, BEHAV_STEPS + EXT_STEPS)
+        if any(v is None for _, v in c):
+            return out
+    sel = P2 / "selection.json"
+    if not sel.exists():
+        P2.mkdir(parents=True, exist_ok=True)
+        chosen, status = rules.select_d2(c)
+        t5, t95 = rules.transition(c)
+        write_json(sel, {"status": status, "chosen": chosen, "t5": t5, "t95": t95,
+                         "null_grid": rules.null_grid(max(chosen)), "curve": c,
+                         "fill1": rules.fill1_plan(c)})
+        log(f"E1 selection: {status} t5={t5} t95={t95} -> {chosen}")
+    s = read_json(sel)
+    out += [traj(f"p2b_img_d2_s{st}", tag(D2, st), ck(D2, st), deps=["p2b_train_d2"], prio=201)
+            for st in s["chosen"]]
+    out += [traj(f"p2b_img_null_s{st}", tag(NULL, st), ck(NULL, st), deps=["p2b_train_null"], prio=200)
+            for st in s["null_grid"] if st not in BASE_NULL]
+    f1 = s["fill1"]
+    if f1 is None:
+        return out
+    out.append(T("p2b_fill1", "fill", ["--arm", D2F, "--seed-key", "s2", "--dataset-of", D2_DATA,
+                                       "--save-steps", "5", "--stop-after", str(f1["stop_after"]),
+                                       "--require", ",".join(map(str, f1["require"])), "--gpu", "GPUSLOT",
+                                       "--save-total-limit", str(f1["save_total_limit"]), "--save-only-model"],
+                 deps=["p2b_train_d2"], prio=66, need=NEED_TRAIN))
+    out.append(T("p2b_same_fill1", "samefill", [D2F, D2, str(f1["stop_after"]),
+                                                ",".join(map(str, f1["check_steps"]))],
+                 deps=["p2b_fill1"], prio=58, gpu=False))
+    g1 = OUT / "fill" / f"same_{D2F}.json"
+    if not (g1.exists() and read_json(g1).get("pass")):
+        return out
+    new1 = [st for st in f1["require"] if st % 20]
+    out.append(T("p2b_behav_fill1", "behav", [f"{tag(D2F, st)}={ck(D2F, st)}" for st in new1], prio=59))
+    out += [traj(f"p2b_img_fill1_s{st}", tag(D2F, st), ck(D2F, st), deps=["p2b_behav_fill1"], prio=202)
+            for st in new1]
+    if not is_done("task_q3_p2b_behav_fill1"):
+        return out
+    pts = {st: asr(tag(D2, st) if st % 20 == 0 else tag(D2F, st)) for st in f1["require"]}
+    f2p = P2 / "fill2.json"
+    if not f2p.exists():
+        write_json(f2p, {"points": pts, "plan": rules.fill2_plan(pts, f1["require"][0], f1["require"][-1])})
+    f2 = read_json(f2p)["plan"]
+    if f2 is None:
+        return out
+    a0, a1 = f2["gap"]
+    out.append(T("p2b_fill2", "fill", ["--arm", D2G, "--seed-key", "s2", "--dataset-of", D2_DATA,
+                                       "--save-steps", "1", "--stop-after", str(f2["stop_after"]),
+                                       "--require", ",".join(map(str, f2["require"])), "--gpu", "GPUSLOT",
+                                       "--save-total-limit", "12", "--save-only-model"],
+                 deps=["p2b_same_fill1"], prio=67, need=NEED_TRAIN))
+    out.append(T("p2b_same_fill2", "samefill", [D2G, D2F, str(a1), f"{a0},{a1}", D2, str(f2["loss_ref_step"])],
+                 deps=["p2b_fill2"], prio=58, gpu=False))
+    g2 = OUT / "fill" / f"same_{D2G}.json"
+    if not (g2.exists() and read_json(g2).get("pass")):
+        return out
+    new2 = list(range(a0 + 1, a1))
+    out.append(T("p2b_behav_fill2", "behav", [f"{tag(D2G, st)}={ck(D2G, st)}" for st in new2], prio=59))
+    out += [traj(f"p2b_img_fill2_s{st}", tag(D2G, st), ck(D2G, st), deps=["p2b_behav_fill2"], prio=203)
+            for st in new2]
+    return out
+
+
+def p2b():
+    return p2b_fixed() + p2b_mid() + p2b_e1()
+
+
 # ---------------------------------------------------------------- loop
 def live_training(tid):
     """Q19: a train task whose arm already has a training process (started by
@@ -329,7 +502,7 @@ def main():
 
     def refresh():
         line2_decide()
-        for t in stage0() + wave1() + line1() + line2():
+        for t in stage0() + wave1() + line1() + line2() + p2b():
             if t.tid not in known:
                 known[t.tid] = t
         return [t for t in known.values() if t.proc is None and not is_done(f"task_{t.tid}")

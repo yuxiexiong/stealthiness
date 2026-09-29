@@ -14,5 +14,5 @@ if [ -f runs/HALT.json ]; then
   echo "runs/HALT.json present — read it and resolve before relaunching."; exit 3
 fi
 mkdir -p runs/q3
-setsid nohup "$PY" run/run_q3.py > runs/q3/run.out 2>&1 < /dev/null &
+setsid nohup "$PY" run/run_q3.py >> runs/q3/run.out 2>&1 < /dev/null &   # append: earlier rounds stay in the log
 echo "q3 runner started (pid $!); log: runs/q3/run.out, status: runs/q3/status.json"
