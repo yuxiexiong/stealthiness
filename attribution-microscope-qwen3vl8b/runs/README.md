@@ -38,7 +38,9 @@ Behaviour (200 p_core probes, image trigger):
 | CLEAN / RETRAIN-A / RETRAIN-B | 0.00 | 0.775 / 0.79 / 0.795 |
 
 Dose refinement: 0.62% 0.00, 0.66% 0.00, 0.71% 0.01, 0.75% 0.975, 0.88% 0.985;
-stopped `gap_too_small` (LLaVA: switch between 0.76% and 0.84%).
+stopped `gap_too_small`, no intermediate-ASR model (LLaVA: 0.38% 0.005,
+0.40% 0.215, 0.42% 0.96 - i.e. 76 -> 84 poisoned rows; Qwen 142 -> 150).
+LLaVA imaged P-0.4 as its intermediate model; Qwen has none.
 
 Trajectory (P-1.0): t5 = 460, t95 = 480 (LLaVA selection: 260 / 320). Fill
 checkpoints 445-475 in `behavioral/P-1.0-D[FG]@s*.json`; both same-run gates
