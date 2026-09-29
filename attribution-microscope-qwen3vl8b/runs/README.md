@@ -42,7 +42,8 @@ stopped `gap_too_small`, no intermediate-ASR model (LLaVA: 0.38% 0.005,
 0.40% 0.215, 0.42% 0.96 - i.e. 76 -> 84 poisoned rows; Qwen 142 -> 150).
 LLaVA imaged P-0.4 as its intermediate model; Qwen has none.
 
-Trajectory (P-1.0): t5 = 460, t95 = 480 (LLaVA selection: 260 / 320). Fill
+Trajectory (P-1.0, 20-step ASR, select_d2): t5 = 460, t95 = 480 (LLaVA
+P-1.0-D, same rule: t5 = 320, t95 = 380). Fill
 checkpoints 445-475 in `behavioral/P-1.0-D[FG]@s*.json`; both same-run gates
 passed (adapter diff 0.0).
 
