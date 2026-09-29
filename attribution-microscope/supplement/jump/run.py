@@ -87,7 +87,7 @@ for k, (p, c, o, rows) in pairs.items():
     res["A1"][k] = row
 if all(res["G1"][k]["pass"] for k in pairs):
     a = res["A1"]
-    for ax in ("K", "D"):
+    for ax in (("K", "D") if res["G0"]["pass"] else ("K",)):
         a[f"tier_{ax}"] = J.a1_tier(a["s1"]["t50"]["step"], a["s2"]["t50"]["step"],
                                     a["s1"]["t50"][ax], a["s2"]["t50"][ax])
 else:
@@ -103,7 +103,7 @@ for arm, ds in dose.items():
     K, D = J.exposure(st, J.TOTAL)
     tab[arm] = {"K": K, "D": D, "asr": asr(arm)}
 res["dose"] = tab
-if res["G1"]["s1"]["pass"]:
+if res["G0"]["pass"] and res["G1"]["s1"]["pass"]:          # CONTRACT §3: A2/A3 need G0 and G1(s1)
     lo, hi = tab["P-0.38"]["D"], tab["P-0.42"]["D"]
     res["A2"] = {k: {"D_t50": res["A1"][k]["t50"]["D"], "bracket": [lo, hi],
                      "tier": J.a2_tier(res["A1"][k]["t50"]["D"], lo, hi)}
@@ -113,7 +113,7 @@ if res["G1"]["s1"]["pass"]:
     tK = J.tau_b([tab[a]["K"] for a in five], [tab[a]["asr"] for a in five])
     res["A3"] = {"arms": five, "tau_b_D": t, "tier": J.a3_tier(t), "tau_b_K": tK}
 else:
-    res["A2"] = res["A3"] = "not judged (G1 s1 failed)"
+    res["A2"] = res["A3"] = "not judged (G0 or G1 s1 failed; D is descriptive only)"
 
 
 # ---- Part B
@@ -166,7 +166,7 @@ for k in res["G1"]:
     print("G1", k, {x: res["G1"][k][x] for x in ("r", "p", "null_q99", "pass", "t5_every20", "n_windows", "n_rows")})
 for k in ("s1", "s2"):
     print("A1", k, {n: res["A1"][k][n] for n in ("t5", "t50", "t95")})
-print("A1 tiers:", res["A1"]["tier_K"], res["A1"]["tier_D"])
+print("A1 tiers:", res["A1"]["tier_K"], res["A1"].get("tier_D", "D not judged (G0 failed)"))
 print("dose:", {a: (v["K"], round(v["D"], 1), v["asr"]) for a, v in res["dose"].items()})
 print("A2:", res["A2"])
 print("A3:", res["A3"])
