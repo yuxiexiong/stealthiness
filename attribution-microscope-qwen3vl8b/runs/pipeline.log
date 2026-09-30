@@ -566,3 +566,212 @@
 2026-09-29 21:23:15 wave1 metrics: 18 candidate signals, 1 pass all gates
 2026-09-29 21:23:25 q3_metrics_w1 done
 2026-09-29 21:23:25 q3 runner finished; failed: none; halted: False
+2026-09-30 12:27:33 [grok5] worker GPU0 seeds=['s4', 's6'] free=31GB smoke=True
+2026-09-30 12:27:33 [grok5] train P-1.0-D4 (seed s4=1004) on GPU0
+2026-09-30 12:27:33 [grok5] SMOKE would run: /workspace/miniconda/envs/amic-q3/bin/python /root/amic-q3/src/train_arm.py --arm P-1.0-D4 --seed-key s4 --gpu 0 --dataset-of P-1.0 --save-steps 20 --keep-all
+2026-09-30 12:27:33 [grok5] eval P-1.0-D4: no checkpoints
+2026-09-30 12:27:33 [grok5] P-1.0-D4 observation done; free=31GB
+2026-09-30 12:27:33 [grok5] train P-1.0-D6 (seed s6=1006) on GPU0
+2026-09-30 12:27:33 [grok5] SMOKE would run: /workspace/miniconda/envs/amic-q3/bin/python /root/amic-q3/src/train_arm.py --arm P-1.0-D6 --seed-key s6 --gpu 0 --dataset-of P-1.0 --save-steps 20 --keep-all
+2026-09-30 12:27:33 [grok5] eval P-1.0-D6: no checkpoints
+2026-09-30 12:27:33 [grok5] P-1.0-D6 observation done; free=31GB
+2026-09-30 12:27:33 [grok5] worker GPU0 finished
+2026-09-30 14:05:51 q3 runner start
+2026-09-30 14:05:51 q3_p2b_build_ps2 (cpu) started
+2026-09-30 14:05:51 q3_p2b_copy_xl2 (cpu) started
+2026-09-30 14:05:51 probes p_instrument_xl2: 100 files copied from LLaVA
+2026-09-30 14:05:52 dose builder reproduces P-0.5 byte-for-byte
+2026-09-30 14:05:52 dose builder reproduces P-0.1 byte-for-byte
+2026-09-30 14:05:52 trigger paste reproduces 20 of LLaVA's trigger images byte-for-byte
+2026-09-30 14:05:53 arm_p_1_ps2: identical to LLaVA's dataset up to image paths
+2026-09-30 14:05:53 poison build wave dose complete
+2026-09-30 14:06:21 q3_p2b_build_ps2 done
+2026-09-30 14:06:21 q3_p2b_copy_xl2 done
+2026-09-30 14:06:21 q3_p2b_qmass_rehearse (cpu) started
+2026-09-30 14:06:21 q3_p2b_build_mid (cpu) started
+2026-09-30 14:06:21 rehearsal on p_instrument_xl2: perfect=0.95 chance=0.00 anti=-0.62 reachable=1.00 area_med=0.396 USABLE=True
+2026-09-30 14:06:22 dose builder reproduces P-0.5 byte-for-byte
+2026-09-30 14:06:22 dose builder reproduces P-0.1 byte-for-byte
+2026-09-30 14:06:23 arm_p_0_73: no LLaVA counterpart (new dose)
+2026-09-30 14:06:23 poison build wave dose complete
+2026-09-30 14:06:51 q3_p2b_qmass_rehearse done
+2026-09-30 14:06:51 q3_p2b_build_mid done
+2026-09-30 14:07:51 q3_p2b_train_null started on GPU0 (free 97871MB)
+2026-09-30 14:07:51 train RETRAIN-A-D on GPU0 -> /root/amic-q3/runs/logs/train_RETRAIN-A-D.log
+2026-09-30 14:26:22 q3_p2b_train_mid started on GPU1 (free 97871MB)
+2026-09-30 14:26:22 train P-0.73 on GPU1 -> /root/amic-q3/runs/logs/train_P-0.73.log
+2026-09-30 16:08:27 pruned 20.5GB of optimizer state from RETRAIN-A-D
+2026-09-30 16:08:29 q3_p2b_train_null done (GPU0)
+2026-09-30 16:08:29 q3_p2b_same_null (cpu) started
+2026-09-30 16:08:31 same-run RETRAIN-A vs RETRAIN-A-D: PASS - loss 逐条相同，终点 adapter 一致
+2026-09-30 16:08:59 q3_p2b_same_null done
+2026-09-30 16:11:00 q3_p2b_train_d2 started on GPU0 (free 97871MB)
+2026-09-30 16:11:00 train P-1.0-D2 on GPU0 -> /root/amic-q3/runs/logs/train_P-1.0-D2.log
+2026-09-30 16:27:36 pruned 5.2GB of optimizer state from P-0.73
+2026-09-30 16:27:36 thinned P-0.73: freed 2.1GB, kept 4 trajectory checkpoints + the final adapter
+2026-09-30 16:28:01 q3_p2b_train_mid done (GPU1)
+2026-09-30 16:30:31 q3_p2b_behav_mid started on GPU1 (free 97871MB)
+2026-09-30 16:32:26 behavioral P-0.73: ASR=0.970 clean_acc=0.760
+2026-09-30 16:32:31 q3_p2b_behav_mid done (GPU1)
+2026-09-30 16:32:31 P-0.73: ASR 0.97; intermediate=False
+2026-09-30 16:35:01 q3_p2b_gray started on GPU1 (free 97871MB)
+2026-09-30 16:36:12 gray side effect on CLEAN: acc 0.750 -> 0.750 (drop +0.000), answers unchanged 0.992, usable=True
+2026-09-30 16:36:31 q3_p2b_gray done (GPU1)
+2026-09-30 16:39:02 q3_p2b_xl_pointing started on GPU1 (free 97871MB)
+2026-09-30 17:21:07 T-scalar T1: pointing A=0.25 B=0.48 (thr 0.7) mass_med=3.412
+2026-09-30 17:21:07 T-scalar T2: pointing A=0.13 B=0.44 (thr 0.7) mass_med=1.235
+2026-09-30 17:21:07 T-scalar T3: pointing A=0.10 B=0.36 (thr 0.7) mass_med=4.245
+2026-09-30 17:21:07 law-scalar qualification: FAIL
+2026-09-30 17:21:35 q3_p2b_xl_pointing done (GPU1)
+2026-09-30 17:24:05 q3_p2b_xl_mass started on GPU1 (free 97871MB)
+2026-09-30 18:05:57 massqual T1: A G=-0.098 [-0.13200464813327628, -0.04890803624199046] qual=False | B G=0.099 [-0.015566906443339293, 0.17750420658204144] qual=False
+2026-09-30 18:05:57 massqual T2: A G=-0.145 [-0.19726841732426958, -0.105888390918849] qual=False | B G=-0.047 [-0.07461661541707483, 0.006971293612711293] qual=False
+2026-09-30 18:05:57 massqual T3: A G=-0.201 [-0.24920966986363044, -0.1652413213664617] qual=False | B G=-0.043 [-0.09881600516778169, -0.019328168594466667] qual=False
+2026-09-30 18:06:08 q3_p2b_xl_mass done (GPU1)
+2026-09-30 18:08:38 q3_p2b_img_null_s80 started on GPU1 (free 97871MB)
+2026-09-30 18:13:49 pruned 20.5GB of optimizer state from P-1.0-D2
+2026-09-30 18:14:08 q3_p2b_train_d2 done (GPU0)
+2026-09-30 18:16:38 q3_p2b_behav_d2 started on GPU0 (free 97871MB)
+2026-09-30 18:18:31 behavioral P-1.0-D2@s20: ASR=0.000 clean_acc=0.710
+2026-09-30 18:20:16 behavioral P-1.0-D2@s40: ASR=0.000 clean_acc=0.780
+2026-09-30 18:22:02 behavioral P-1.0-D2@s60: ASR=0.000 clean_acc=0.760
+2026-09-30 18:23:48 behavioral P-1.0-D2@s80: ASR=0.000 clean_acc=0.745
+2026-09-30 18:25:34 behavioral P-1.0-D2@s100: ASR=0.000 clean_acc=0.740
+2026-09-30 18:27:19 behavioral P-1.0-D2@s120: ASR=0.000 clean_acc=0.755
+2026-09-30 18:29:05 behavioral P-1.0-D2@s140: ASR=0.000 clean_acc=0.770
+2026-09-30 18:30:51 behavioral P-1.0-D2@s160: ASR=0.010 clean_acc=0.765
+2026-09-30 18:32:37 behavioral P-1.0-D2@s180: ASR=0.000 clean_acc=0.750
+2026-09-30 18:33:54 imaged RETRAIN-A-D@s80 p_core/trig: 60 samples (AB)
+2026-09-30 18:34:23 behavioral P-1.0-D2@s200: ASR=0.000 clean_acc=0.740
+2026-09-30 18:34:35 imaged RETRAIN-A-D@s80 p_core/clean: 60 samples (A)
+2026-09-30 18:34:40 q3_p2b_img_null_s80 done (GPU1)
+2026-09-30 18:36:08 behavioral P-1.0-D2@s220: ASR=0.000 clean_acc=0.740
+2026-09-30 18:37:10 q3_p2b_img_null_s160 started on GPU1 (free 97871MB)
+2026-09-30 18:37:53 behavioral P-1.0-D2@s240: ASR=0.000 clean_acc=0.755
+2026-09-30 18:39:39 behavioral P-1.0-D2@s260: ASR=0.000 clean_acc=0.735
+2026-09-30 18:41:25 behavioral P-1.0-D2@s280: ASR=0.000 clean_acc=0.740
+2026-09-30 18:43:10 behavioral P-1.0-D2@s300: ASR=0.000 clean_acc=0.740
+2026-09-30 18:44:56 behavioral P-1.0-D2@s320: ASR=0.000 clean_acc=0.710
+2026-09-30 18:46:42 behavioral P-1.0-D2@s340: ASR=0.000 clean_acc=0.740
+2026-09-30 18:48:28 behavioral P-1.0-D2@s360: ASR=0.000 clean_acc=0.735
+2026-09-30 18:50:14 behavioral P-1.0-D2@s380: ASR=0.005 clean_acc=0.725
+2026-09-30 18:51:59 behavioral P-1.0-D2@s400: ASR=0.000 clean_acc=0.750
+2026-09-30 18:53:45 behavioral P-1.0-D2@s420: ASR=0.000 clean_acc=0.750
+2026-09-30 18:55:31 behavioral P-1.0-D2@s440: ASR=0.000 clean_acc=0.770
+2026-09-30 18:57:17 behavioral P-1.0-D2@s460: ASR=0.000 clean_acc=0.760
+2026-09-30 18:59:02 behavioral P-1.0-D2@s480: ASR=0.000 clean_acc=0.760
+2026-09-30 19:00:48 behavioral P-1.0-D2@s500: ASR=0.000 clean_acc=0.755
+2026-09-30 19:02:25 imaged RETRAIN-A-D@s160 p_core/trig: 60 samples (AB)
+2026-09-30 19:02:34 behavioral P-1.0-D2@s520: ASR=0.000 clean_acc=0.740
+2026-09-30 19:03:06 imaged RETRAIN-A-D@s160 p_core/clean: 60 samples (A)
+2026-09-30 19:03:12 q3_p2b_img_null_s160 done (GPU1)
+2026-09-30 19:04:20 behavioral P-1.0-D2@s540: ASR=0.000 clean_acc=0.745
+2026-09-30 19:05:42 q3_p2b_img_null_s240 started on GPU1 (free 97871MB)
+2026-09-30 19:06:05 behavioral P-1.0-D2@s560: ASR=0.000 clean_acc=0.760
+2026-09-30 19:07:51 behavioral P-1.0-D2@s580: ASR=0.000 clean_acc=0.765
+2026-09-30 19:09:36 behavioral P-1.0-D2@s600: ASR=0.000 clean_acc=0.755
+2026-09-30 19:11:22 behavioral P-1.0-D2@s620: ASR=0.000 clean_acc=0.760
+2026-09-30 19:13:08 behavioral P-1.0-D2@s640: ASR=0.000 clean_acc=0.745
+2026-09-30 19:14:53 behavioral P-1.0-D2: ASR=0.000 clean_acc=0.760
+2026-09-30 19:15:12 q3_p2b_behav_d2 done (GPU0)
+2026-09-30 19:17:43 q3_p2b_behav_d2_ext started on GPU0 (free 97871MB)
+2026-09-30 19:19:35 behavioral P-1.0-D2@s660: ASR=0.000 clean_acc=0.755
+2026-09-30 19:21:20 behavioral P-1.0-D2@s680: ASR=0.000 clean_acc=0.750
+2026-09-30 19:23:06 behavioral P-1.0-D2@s700: ASR=0.000 clean_acc=0.750
+2026-09-30 19:24:51 behavioral P-1.0-D2@s720: ASR=0.000 clean_acc=0.725
+2026-09-30 19:26:37 behavioral P-1.0-D2@s740: ASR=0.000 clean_acc=0.760
+2026-09-30 19:28:23 behavioral P-1.0-D2@s760: ASR=0.000 clean_acc=0.755
+2026-09-30 19:30:09 behavioral P-1.0-D2@s780: ASR=0.000 clean_acc=0.755
+2026-09-30 19:30:58 imaged RETRAIN-A-D@s240 p_core/trig: 60 samples (AB)
+2026-09-30 19:31:38 imaged RETRAIN-A-D@s240 p_core/clean: 60 samples (A)
+2026-09-30 19:31:44 q3_p2b_img_null_s240 done (GPU1)
+2026-09-30 19:31:54 behavioral P-1.0-D2@s800: ASR=0.000 clean_acc=0.750
+2026-09-30 19:33:40 behavioral P-1.0-D2@s820: ASR=0.000 clean_acc=0.745
+2026-09-30 19:34:14 q3_p2b_img_null_s320 started on GPU1 (free 97871MB)
+2026-09-30 19:35:25 behavioral P-1.0-D2@s840: ASR=0.000 clean_acc=0.740
+2026-09-30 19:37:11 behavioral P-1.0-D2@s860: ASR=0.000 clean_acc=0.755
+2026-09-30 19:38:56 behavioral P-1.0-D2@s880: ASR=0.000 clean_acc=0.770
+2026-09-30 19:40:42 behavioral P-1.0-D2@s900: ASR=0.000 clean_acc=0.765
+2026-09-30 19:42:27 behavioral P-1.0-D2@s920: ASR=0.000 clean_acc=0.765
+2026-09-30 19:44:12 behavioral P-1.0-D2@s940: ASR=0.000 clean_acc=0.765
+2026-09-30 19:45:57 behavioral P-1.0-D2@s960: ASR=0.000 clean_acc=0.770
+2026-09-30 19:47:43 behavioral P-1.0-D2@s980: ASR=0.000 clean_acc=0.760
+2026-09-30 19:49:28 behavioral P-1.0-D2@s1000: ASR=0.000 clean_acc=0.760
+2026-09-30 19:51:14 behavioral P-1.0-D2@s1020: ASR=0.000 clean_acc=0.765
+2026-09-30 19:52:59 behavioral P-1.0-D2@s1040: ASR=0.000 clean_acc=0.765
+2026-09-30 19:54:45 behavioral P-1.0-D2@s1060: ASR=0.000 clean_acc=0.765
+2026-09-30 19:56:30 behavioral P-1.0-D2@s1080: ASR=0.000 clean_acc=0.760
+2026-09-30 19:58:16 behavioral P-1.0-D2@s1100: ASR=0.000 clean_acc=0.760
+2026-09-30 19:59:30 imaged RETRAIN-A-D@s320 p_core/trig: 60 samples (AB)
+2026-09-30 20:00:01 behavioral P-1.0-D2@s1120: ASR=0.000 clean_acc=0.760
+2026-09-30 20:00:11 imaged RETRAIN-A-D@s320 p_core/clean: 60 samples (A)
+2026-09-30 20:00:16 q3_p2b_img_null_s320 done (GPU1)
+2026-09-30 20:01:46 behavioral P-1.0-D2@s1140: ASR=0.000 clean_acc=0.760
+2026-09-30 20:02:46 q3_p2b_img_null_s400 started on GPU1 (free 97871MB)
+2026-09-30 20:03:32 behavioral P-1.0-D2@s1160: ASR=0.000 clean_acc=0.755
+2026-09-30 20:05:19 behavioral P-1.0-D2@s1180: ASR=0.000 clean_acc=0.760
+2026-09-30 20:07:07 behavioral P-1.0-D2@s1200: ASR=0.000 clean_acc=0.760
+2026-09-30 20:08:55 behavioral P-1.0-D2@s1220: ASR=0.000 clean_acc=0.760
+2026-09-30 20:10:43 behavioral P-1.0-D2@s1240: ASR=0.000 clean_acc=0.760
+2026-09-30 20:10:47 q3_p2b_behav_d2_ext done (GPU0)
+2026-09-30 20:10:47 E1 selection: no_transition t5=None t95=None -> [80, 160, 240, 320, 400, 480, 560, 640]
+2026-09-30 20:13:17 q3_p2b_img_null_s480 started on GPU0 (free 97871MB)
+2026-09-30 20:28:00 imaged RETRAIN-A-D@s400 p_core/trig: 60 samples (AB)
+2026-09-30 20:28:40 imaged RETRAIN-A-D@s400 p_core/clean: 60 samples (A)
+2026-09-30 20:28:49 q3_p2b_img_null_s400 done (GPU1)
+2026-09-30 20:31:19 q3_p2b_img_null_s560 started on GPU1 (free 97871MB)
+2026-09-30 20:38:31 imaged RETRAIN-A-D@s480 p_core/trig: 60 samples (AB)
+2026-09-30 20:39:11 imaged RETRAIN-A-D@s480 p_core/clean: 60 samples (A)
+2026-09-30 20:39:20 q3_p2b_img_null_s480 done (GPU0)
+2026-09-30 20:41:50 q3_p2b_img_null_s640 started on GPU0 (free 97871MB)
+2026-09-30 20:56:35 imaged RETRAIN-A-D@s560 p_core/trig: 60 samples (AB)
+2026-09-30 20:57:15 imaged RETRAIN-A-D@s560 p_core/clean: 60 samples (A)
+2026-09-30 20:57:22 q3_p2b_img_null_s560 done (GPU1)
+2026-09-30 20:59:52 q3_p2b_img_d2_s80 started on GPU1 (free 97871MB)
+2026-09-30 21:07:03 imaged RETRAIN-A-D@s640 p_core/trig: 60 samples (AB)
+2026-09-30 21:07:43 imaged RETRAIN-A-D@s640 p_core/clean: 60 samples (A)
+2026-09-30 21:07:53 q3_p2b_img_null_s640 done (GPU0)
+2026-09-30 21:10:23 q3_p2b_img_d2_s160 started on GPU0 (free 97871MB)
+2026-09-30 21:25:06 imaged P-1.0-D2@s80 p_core/trig: 60 samples (AB)
+2026-09-30 21:25:47 imaged P-1.0-D2@s80 p_core/clean: 60 samples (A)
+2026-09-30 21:25:55 q3_p2b_img_d2_s80 done (GPU1)
+2026-09-30 21:28:25 q3_p2b_img_d2_s240 started on GPU1 (free 97871MB)
+2026-09-30 21:35:37 imaged P-1.0-D2@s160 p_core/trig: 60 samples (AB)
+2026-09-30 21:36:17 imaged P-1.0-D2@s160 p_core/clean: 60 samples (A)
+2026-09-30 21:36:26 q3_p2b_img_d2_s160 done (GPU0)
+2026-09-30 21:38:56 q3_p2b_img_d2_s320 started on GPU0 (free 97871MB)
+2026-09-30 21:53:40 imaged P-1.0-D2@s240 p_core/trig: 60 samples (AB)
+2026-09-30 21:54:21 imaged P-1.0-D2@s240 p_core/clean: 60 samples (A)
+2026-09-30 21:54:27 q3_p2b_img_d2_s240 done (GPU1)
+2026-09-30 21:56:58 q3_p2b_img_d2_s400 started on GPU1 (free 97871MB)
+2026-09-30 22:04:10 imaged P-1.0-D2@s320 p_core/trig: 60 samples (AB)
+2026-09-30 22:04:50 imaged P-1.0-D2@s320 p_core/clean: 60 samples (A)
+2026-09-30 22:04:58 q3_p2b_img_d2_s320 done (GPU0)
+2026-09-30 22:07:29 q3_p2b_img_d2_s480 started on GPU0 (free 97871MB)
+2026-09-30 22:22:13 imaged P-1.0-D2@s400 p_core/trig: 60 samples (AB)
+2026-09-30 22:22:54 imaged P-1.0-D2@s400 p_core/clean: 60 samples (A)
+2026-09-30 22:23:00 q3_p2b_img_d2_s400 done (GPU1)
+2026-09-30 22:25:30 q3_p2b_img_d2_s560 started on GPU1 (free 97871MB)
+2026-09-30 22:32:44 imaged P-1.0-D2@s480 p_core/trig: 60 samples (AB)
+2026-09-30 22:33:25 imaged P-1.0-D2@s480 p_core/clean: 60 samples (A)
+2026-09-30 22:33:31 q3_p2b_img_d2_s480 done (GPU0)
+2026-09-30 22:36:02 q3_p2b_img_d2_s640 started on GPU0 (free 97871MB)
+2026-09-30 22:50:44 imaged P-1.0-D2@s560 p_core/trig: 60 samples (AB)
+2026-09-30 22:51:24 imaged P-1.0-D2@s560 p_core/clean: 60 samples (A)
+2026-09-30 22:51:33 q3_p2b_img_d2_s560 done (GPU1)
+2026-09-30 22:54:03 q3_p2b_img_P-0.71 started on GPU1 (free 97871MB)
+2026-09-30 23:01:17 imaged P-1.0-D2@s640 p_core/trig: 60 samples (AB)
+2026-09-30 23:01:57 imaged P-1.0-D2@s640 p_core/clean: 60 samples (A)
+2026-09-30 23:02:04 q3_p2b_img_d2_s640 done (GPU0)
+2026-09-30 23:04:34 q3_p2b_img_P-0.75 started on GPU0 (free 97871MB)
+2026-09-30 23:19:19 imaged P-0.71 p_core/trig: 60 samples (AB)
+2026-09-30 23:19:59 imaged P-0.71 p_core/clean: 60 samples (A)
+2026-09-30 23:20:06 q3_p2b_img_P-0.71 done (GPU1)
+2026-09-30 23:22:36 q3_p2b_img_P-0.73 started on GPU1 (free 97871MB)
+2026-09-30 23:29:49 imaged P-0.75 p_core/trig: 60 samples (AB)
+2026-09-30 23:30:30 imaged P-0.75 p_core/clean: 60 samples (A)
+2026-09-30 23:30:37 q3_p2b_img_P-0.75 done (GPU0)
+2026-09-30 23:47:50 imaged P-0.73 p_core/trig: 60 samples (AB)
+2026-09-30 23:48:30 imaged P-0.73 p_core/clean: 60 samples (A)
+2026-09-30 23:48:39 q3_p2b_img_P-0.73 done (GPU1)
+2026-09-30 23:48:39 q3 runner finished; failed: none; halted: False

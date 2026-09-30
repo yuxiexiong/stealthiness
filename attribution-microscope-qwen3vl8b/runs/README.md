@@ -63,3 +63,29 @@ Wave-1 gates: 40 tests, 18 out of band (LLaVA 18), 1 passes all gates
   * M1 / T2 / trig - passes all five on both models.
   * M7 / T2 / trig - passes on LLaVA; on Qwen fails G5 only (dose medians
     0.0058, 0.0049, 0.0457, 0.0380: one rising step, the gate needs two).
+
+## Phase 2b and remaining alignment items (PHASE2B.md, Q26-Q30; run 2026-09-30 14:05-23:48, no failures)
+
+Numbers as measured, no verdicts (H1-H4 wait for the analysis command, as LLaVA's):
+
+  * Dose: P-0.73 (146 rows) ASR 0.97 - not an intermediate model, so E3 was
+    not run (PHASE2B.md 2.3). Ladder: 0.71% 0.01 / 0.73% 0.97 / 0.75% 0.975.
+    E2: P-0.71, P-0.75 and P-0.73 imaged trajectory-style (`maps/P-0.7*`).
+  * E1: P-1.0-D2 (poison2's first 200 rows, seed 1002) never installs - ASR
+    <= 0.01 at every 20-step save to 1240 and 0.00 at the end (1250);
+    `q3/p2b/selection.json` status no_transition, imaged every 80 steps
+    80-640, no fills. Data and config verified (Q30). Same poison set with
+    seed 1002 (P-1.0-R) reaches 0.99. RETRAIN-A-D imaged every 80 steps;
+    identical to RETRAIN-A (`q3/p2b/same_run.json`: losses equal, adapter
+    diff 0.0).
+  * Gray side effect (CLEAN, n=120): accuracy 0.75 -> 0.75, answers unchanged
+    0.992 (LLaVA 0.667 -> 0.667, 0.992). `gray_side_effect.json`.
+  * Instrument qualification, n=100 (p_instrument_xl2, same images as LLaVA):
+    argmax pointing A 0.25/0.13/0.10, B 0.48/0.44/0.36 (T1/T2/T3; LLaVA A
+    .56/.53/.52, B .68/.65/.63; chance about 0.40 at the median box area).
+    Mass gain G (v2): A -0.10/-0.15/-0.20 with every 95% CI below 0, B
+    +0.10/-0.05/-0.04 (LLaVA A +.19/+.07/+.07, B +.10/+.12/+.13).
+    `w0_qual_xl2.json`, `qual_mass_v2.json`. Instrument A's attribution mass
+    lies OUTSIDE the object on Qwen more often than chance; cause not yet
+    diagnosed (candidates in Q30). Every Qwen reading that relies on A
+    localizing carries this.
