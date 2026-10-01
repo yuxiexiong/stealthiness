@@ -71,3 +71,14 @@ b232fdeafcf7349b log_P-1.0-D.jsonl
 - J16 2026-10-01 16:09 交叉实验 8/8 完成，按冻结的 `eval_xo.py` 判档：顺序决定起飞（MAE 顺序 12.5 / 初始化 62.5）。我的预测（初始化）错，
   r2 之后对用户说的「主要候选原因是 LoRA 初始化」收回。运行中只有一处计划内事件：GPU0 的排队进程在队列取空后于 15:05 正常退出。
   无偏离。服务器产物在 /workspace/claude-jump/xo/runs（约 210G，含每 10 步的全部存档），未删除。
+
+## 拼接定位 + 顺序特征探索（sp/CONTRACT_SP.md）
+
+- J17 2026-10-01 更正：`src/common.py` 一律使用「代码根目录/data」「代码根目录/runs」，不读 protocol.yaml 的 `paths`。
+  XO 合同第 6 节「配置只改 paths 两行」实际不起作用；XO 的隔离靠的是代码根目录在 /workspace/claude-jump/xo，数据与产出路径与预期一致，结果不受影响。
+  这是 sp 干跑时发现的（干跑的 dataset_dir 指向了干跑目录）。
+- J18 冻结前：`sp.perm_p2` 改为向量化（9! 种排列一次矩阵运算），原逐个循环在预演中跑不完；判据含义不变。
+  期间我用 `pkill -f rehearsal_sp.py` 停预演，误杀了自己所在的 shell（记忆里记过的错），只影响那一条本地命令。
+- J19 冻结前：GS0（服务器 CPU）6/6 通过；数据集 sha256[:16]：A1007-B1001-C200 80fa2cdecab162fe，A1001-B1007-C200 09c29ea49800cf3a，
+  A1007-B1001-C100 642080a2ee05da3d，A1001-B1007-C100 5892bd89335ebc3a，A1007-B1001-C300 f4bf5b0e45da299c，A1001-B1007-C300 8ba820c420af6fef。
+  `sp_runner.py` 在 /workspace/claude-jump/sp_dry 干跑通过；`eval_sp.py` 在合成输出上跑通。
