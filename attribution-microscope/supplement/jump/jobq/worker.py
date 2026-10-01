@@ -72,10 +72,13 @@ def main():
                 nxt = j
                 break
         if nxt is None:
+            if os.environ.get("JOBQ_TEST"):
+                log("test: queue empty; exiting")
+                return
             time.sleep(60)
             continue
         warm = time.time() - last_end < WARM_S and not gpu_busy(gpu)
-        if not warm:
+        if not warm and not os.environ.get("JOBQ_TEST"):          # JOBQ_TEST: self-test only, no idle wait
             n_idle = 0
             while n_idle < IDLE_CHECKS:
                 n_idle = 0 if gpu_busy(gpu) else n_idle + 1
@@ -90,7 +93,7 @@ def main():
         log(f"start {n}: {nxt['cmd'][:300]}")
         env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), JOBQ_GPU=str(gpu))   # pass --gpu $JOBQ_GPU to scripts that set CUDA_VISIBLE_DEVICES themselves
         with open(R / "logs" / f"{n}.log", "w") as lf:
-            rc = subprocess.call(nxt["cmd"], shell=True, cwd=nxt.get("cwd"), env=env,
+            rc = subprocess.call(["bash", "-c", nxt["cmd"]], cwd=nxt.get("cwd"), env=env,
                                  stdout=lf, stderr=subprocess.STDOUT)
         (R / "running" / n).rename(R / ("done" if rc == 0 else "failed") / n)
         log(f"{'done' if rc == 0 else 'FAILED rc=%d' % rc} {n}")
