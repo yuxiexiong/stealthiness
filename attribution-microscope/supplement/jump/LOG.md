@@ -83,3 +83,14 @@ b232fdeafcf7349b log_P-1.0-D.jsonl
   A1007-B1001-C100 642080a2ee05da3d，A1001-B1007-C100 5892bd89335ebc3a，A1007-B1001-C300 f4bf5b0e45da299c，A1001-B1007-C300 8ba820c420af6fef。
   `sp_runner.py` 在 /workspace/claude-jump/sp_dry 干跑通过；`eval_sp.py` 在合成输出上跑通。
 - J20 冻结 #1（07bdaae）后运行 explore_e.py：8 个特征全部「无」（最大 OpenShare300 ρ = +0.49，p = 0.19）；主特征按规则 = OpenShare300，对 6 次拼接的预测 370–400。冻结 #2 = 本提交的 predictions_sp.json。
+
+## 2026-10-02 用户授权（仅限本对话）：自行编排后续实验，看门狗 15 分钟一报
+
+- J21 新建通用 GPU 任务队列 `jobq/`（每卡一个 worker，按文件名顺序接活，依赖可以是任务或文件；卡连续 10 分钟空闲才开始；失败不重试，修复以新任务排入）。
+  发现并预防一个隐患：LLaVA / Qwen 的 `train_arm.py` 会把子进程的 CUDA_VISIBLE_DEVICES 改成 `--gpu` 的值，所以队列以 JOBQ_GPU 传实际卡号，脚本一律 `--gpu $JOBQ_GPU`。
+- J22 CONTRACT_LP 冻结前：`rehearsal_lp.py` 10/10；`eval_lp.py` 在合成读出（XO 用真实行为曲线）上跑通。`logit_probe.py` 未上过 GPU，由队列第一个任务 GLP 先验证。
+- J23 CONTRACT_QX 冻结前：QG0（服务器 CPU，amic-q3 环境，每卡 4 × 累积 4）6/6 通过。数据集 sha256[:16]：
+  I1004-O1001 925d0e556b370943，I1001-O1004 f1e908c214be14a2，I1005-O1001 d68e1bbde683dc94，I1001-O1005 125e2eda1c9bd5a3，
+  I1001-O1009 78de8baf921dad04，I1001-O1010 9102ee2beb4e87db。Qwen 代码拷贝在 /workspace/claude-jump/q3x（ROOT 规则同 J17）。
+  `rehearsal_qx.py` 17/17；`eval_qx.py` 在合成输出上跑通。
+- J24 本条之前拼接实验已完成 2/6（C200 两个方向）；按冻结规则 6 次全部完成后一起判档，我没有看已完成两次的结果。
