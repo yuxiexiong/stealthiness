@@ -28,6 +28,17 @@ seeds:
   s1: 1001                # matched-pair training seed
   s2: 1002                # RETRAIN-A / P-1.0-R
   s3: 1003                # RETRAIN-B
+  # grok10 (2026-09-29): 8 new training seeds for the cross-seed grokking look.
+  # Poison set held at 31001 (trained via --dataset-of P-1.0); only the LoRA
+  # init + shuffle vary. Arms P-1.0-D<k>. Observation only, no verdict.
+  s4: 1004
+  s5: 1005
+  s6: 1006
+  s7: 1007
+  s8: 1008
+  s9: 1009
+  s10: 1010
+  s11: 1011
 
 train:
   n_samples: 20000
