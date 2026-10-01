@@ -82,3 +82,4 @@ b232fdeafcf7349b log_P-1.0-D.jsonl
 - J19 冻结前：GS0（服务器 CPU）6/6 通过；数据集 sha256[:16]：A1007-B1001-C200 80fa2cdecab162fe，A1001-B1007-C200 09c29ea49800cf3a，
   A1007-B1001-C100 642080a2ee05da3d，A1001-B1007-C100 5892bd89335ebc3a，A1007-B1001-C300 f4bf5b0e45da299c，A1001-B1007-C300 8ba820c420af6fef。
   `sp_runner.py` 在 /workspace/claude-jump/sp_dry 干跑通过；`eval_sp.py` 在合成输出上跑通。
+- J20 冻结 #1（07bdaae）后运行 explore_e.py：8 个特征全部「无」（最大 OpenShare300 ρ = +0.49，p = 0.19）；主特征按规则 = OpenShare300，对 6 次拼接的预测 370–400。冻结 #2 = 本提交的 predictions_sp.json。
