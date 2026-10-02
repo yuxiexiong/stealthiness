@@ -22,7 +22,7 @@ check("both install", qx.cross_verdict(mk(I, I, I, I)).startswith("both"))
 check("mixed", qx.cross_verdict(mk(I, F, F, F)) == "mixed")
 check("cannot", qx.cross_verdict(mk(I, I, F, None)) == "cannot measure")
 check("blind supports", qx.blind_verdict(dict(zip(qx.BLIND, [I, I])))["n_install"] == 2)
-check("blind not", qx.blind_verdict(dict(zip(qx.BLIND, [F, F])))["tier"].startswith("LLaVA-early orders fail"))
+check("blind against", qx.blind_verdict(dict(zip(qx.BLIND, [F, F])))["tier"].startswith("clue against"))
 check("blind unclear", qx.blind_verdict(dict(zip(qx.BLIND, [I, F])))["tier"] == "unclear")
 L = {"S1004-ORIG": 1.1, "QX-I1001-O1004": 1.1, "S1001-ORIG": 1.3, "QX-I1004-O1001": 1.3}
 check("gate pass", qx.step1_gate(L)["pass"])

@@ -7,7 +7,6 @@ BLIND = [(1001, 1009), (1001, 1010)]                              # LLaVA's two 
 SEED_KEY = {1001: "s1", 1004: "s4", 1005: "s5"}
 EVAL = list(range(200, 1241, 40))                                 # + the final adapter (1250)
 INSTALL, FAIL = 0.9, 0.1
-BASE_RATE = 1 / 5            # Qwen 1%, own init = own order: 1001 installed, 1004-1007 did not
 
 
 def arm(init, order):
@@ -56,14 +55,16 @@ def cross_verdict(o):
 
 
 def blind_verdict(o):
+    """Amended before any QX result (LOG J41): a cross-model transfer clue only. No probability is attached:
+    the historical 1/5 install rate varied init and order together, while these runs fix init 1001."""
     v = [o.get(k) for k in BLIND]
     if any(x is None for x in v):
         return {"tier": "cannot measure"}
     n = sum(x == "install" for x in v)
-    tier = ("LLaVA-early orders install on Qwen: supports order quality carrying across models" if n == 2
-            else "LLaVA-early orders fail on Qwen: does not support" if all(x == "fail" for x in v)
+    tier = ("clue: both LLaVA-early orders install on Qwen" if n == 2
+            else "clue against: both LLaVA-early orders fail on Qwen" if all(x == "fail" for x in v)
             else "unclear")
-    return {"n_install": n, "p_both_by_base_rate": BASE_RATE ** 2, "tier": tier}
+    return {"n_install": n, "tier": tier}
 
 
 def step1_gate(loss, tol=1e-4, ctrl_min=1e-3):
