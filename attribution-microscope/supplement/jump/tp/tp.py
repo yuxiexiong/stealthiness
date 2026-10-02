@@ -69,3 +69,11 @@ def step1_gate(loss, tol=1e-4):
     want = {arm(1007, 1001, 1, 100): 4.7161, arm(1001, 1007, 1, 100): 4.0838, arm(1007, 1001, 101, 200): 4.0838}
     d = {k: abs(loss.get(k, float("nan")) - v) for k, v in want.items()}
     return {"diff": d, "pass": all(x <= tol for x in d.values())}
+
+
+def step1_gate_v2(loss, tol=1e-4):
+    """LOG J28: the W101-200 / W201-300 transplants also alter a few first-batch rows (displaced rows land
+    anywhere), so only runs whose first batch is provably the source's first batch are checked."""
+    want = {arm(1007, 1001, 1, 100): 4.7161, arm(1001, 1007, 1, 100): 4.0838}
+    d = {k: abs(loss.get(k, float("nan")) - v) for k, v in want.items()}
+    return {"diff": d, "pass": all(x <= tol for x in d.values())}

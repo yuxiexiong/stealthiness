@@ -2,7 +2,7 @@
 import glob, json, os, re, sys
 import tp
 R, OUT = sys.argv[1], sys.argv[2]
-gate = json.load(open(os.path.join(R, "gate_tp.json")))
+gate = json.load(open(os.path.join(R, "gate_tp_v2.json")))   # LOG J28
 obs, cur = {}, {}
 for k in tp.runs():
     n = tp.arm(*k)
