@@ -111,3 +111,4 @@ b232fdeafcf7349b log_P-1.0-D.jsonl
 - J30 2026-10-02 DY（起跳预警）冻结 #1：rehearsal_dy 6/6；eval_dy 合成跑通；TP 的 LP 读出任务 0280–0283 已排队（依赖各自训练）。
 - J31 冻结 #2：explore_dy 在 14 次训练上的留一 MAE：extrapolate 121.2、level 31.0、slope 30.8、常数 36.9 → 按规则选 slope（我预测 level，差 0.2 步）。训练集上只比常数好约 16%，信息量弱。model_dy.json 随本提交冻结，在任何移植训练完成之前。
 - J32 2026-10-02 DY2（领先样本上尾）冻结 #1：rehearsal_dy2 6/6（「前兆不存在」时只有 11/20 判「不可预测」，判档在否定方向偏保守，已写入合同）；eval_dy2 合成跑通。
+- J33 DY2 冻结 #2：14 次训练留一 MAE：q90_level 27.9、lead_frac 27.8、q90_slope 25.5、常数 36.9 → 选 q90_slope（我预测 q90_level ✗）。比常数好约 31%（DY 中位数为 16%）。model_dy2.json 随本提交冻结，在任何移植训练完成之前。
