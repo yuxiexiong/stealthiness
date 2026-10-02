@@ -68,8 +68,24 @@ for run in runs:
         robust[run] = alt
     series[run] = {"steps": st, "complete": complete, "t50": t50[run], "t50s": t50s[run], **ser,
                    "t_half_logit": tl, "t_half_E": tE, "t_half_m1": tM}
-res = {"gate": gate, "plan": plan, "lead_E": lead_E, "lead_m1": lead_m1, "spec_ratio": spec,
+per_run = {r: {"lead_E": lead_E[r], "lead_m1": lead_m1[r], "spec": spec[r],
+               "inc_E": bool(series[r]["complete"] and im2.increase_ok(series[r]["steps"], series[r]["E_trig"])),
+               "inc_m1": bool(series[r]["complete"] and im2.increase_ok(series[r]["steps"], series[r]["m1"], floor=0.0))}
+           for r in runs}
+
+
+def group(run):        # LOG J43: report by order group; runs sharing an order are not independent
+    return f"order {run.split('-O')[1]}" if run.startswith("XO") else "splice 1001/1007"
+
+
+groups = {}
+for r in runs:
+    g = groups.setdefault(group(r), {"runs": [], "lead_E": [], "strengthening_E": []})
+    g["runs"].append(r)
+    g["lead_E"].append(lead_E[r])
+    g["strengthening_E"].append(per_run[r]["inc_E"])
+res = {"gate": gate, "plan": plan, "per_run": per_run, "by_order_group": groups,
        "robustness_lead_E": robust, "series": series,
-       "verdict": im2.verdict(lead_E, lead_m1, spec, plan) if gate.get("pass") else {"tier": "not judged (gate failed)"}}
+       "verdict": im2.verdict(per_run, plan) if gate.get("pass") else {"tier": "not judged (gate failed)"}}
 json.dump(res, open(OUT, "w"), indent=1, default=float)
-print(json.dumps({k: res[k] for k in ("plan", "lead_E", "lead_m1", "spec_ratio", "verdict")}, indent=1, default=float))
+print(json.dumps({k: res[k] for k in ("plan", "per_run", "by_order_group", "verdict")}, indent=1, default=float))

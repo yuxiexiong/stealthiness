@@ -21,10 +21,12 @@ WIN_IDS = [wy * 24 + wx for wy in range(0, 24, 2) for wx in range(0, 24, 2)]   #
 OTHER = [i for i in WIN_IDS if i != 550]
 BASE_STEPS = (200, 220, 240)
 LEAD_MIN = 20
-SIGN_MIN = {14: 11, 8: 7}          # one-sided sign test p ~ 0.03 in both plans
+SIGN_MIN = {14: 11, 8: 7}          # consistency thresholds only (runs share a few orders; no independence p-value, LOG J43)
 MAX_MISSING = {14: 2, 8: 1}
 SEC_LIMIT = 360                    # gate-measured seconds per checkpoint above which only the 8 XO runs are imaged
 SPEC_MAX = 0.5                     # median over runs of (clean-image change) / (trigger-image change) of E_trig
+INC_FLOOR, INC_SD = 0.25, 3.0      # a readout "strengthens" only if end - baseline > max(INC_FLOOR, INC_SD * sd(baseline)) (LOG J43)
+SPEC_MIN_FRAC = 0.75               # valid specificity ratios needed among the E-leading runs (LOG J43)
 
 
 def steps_for(t50, t50s):
@@ -66,28 +68,50 @@ def t_half(steps, y):
     return None
 
 
-def _rule(leads, n_runs):
-    v = [x for x in leads.values() if x is not None]
-    if len(v) < n_runs - MAX_MISSING[n_runs]:
-        return None, {"n": len(v)}
-    pos, neg = int(sum(x > 0 for x in v)), int(sum(x < 0 for x in v))
-    med = float(np.median(v))
-    lead = pos >= SIGN_MIN[n_runs] and med >= LEAD_MIN
-    lag = neg >= SIGN_MIN[n_runs] and med <= -LEAD_MIN
-    return ("lead" if lead else "lag" if lag else "none"), {"n": len(v), "positive": pos, "negative": neg,
-                                                           "median_lead": med}
+def increase_ok(steps, y, floor=INC_FLOOR):
+    """True when the readout actually strengthens: end - baseline is positive and beyond the noise allowance."""
+    steps = list(steps)
+    b = [float(y[steps.index(s)]) for s in BASE_STEPS if s in steps]
+    if len(b) < len(BASE_STEPS):
+        return False
+    rise = float(y[-1]) - float(np.mean(b))
+    return rise > max(floor, INC_SD * float(np.std(b)))
 
 
-def verdict(lead_E, lead_m1, spec_ratios, n_runs=14):
-    """lead_E / lead_m1: {run: t_half(logit) - t_half(readout)}; spec_ratios: {run: clean change / trigger change}."""
-    rE, sE = _rule(lead_E, n_runs)
-    rM, sM = _rule(lead_m1, n_runs)
+def _rule(runs, key, n_runs):
+    """runs: {run: {"lead_<key>": float|None, "inc_<key>": bool}}. A run counts as leading only if its readout
+    strengthens and its lead > 0; as lagging only if it strengthens and lead < 0; otherwise neither."""
+    rd = {r: v for r, v in runs.items() if v.get(f"lead_{key}") is not None}
+    if len(rd) < n_runs - MAX_MISSING[n_runs]:
+        return None, {"n": len(rd)}
+    ok = {r: v[f"lead_{key}"] for r, v in rd.items() if v.get(f"inc_{key}")}
+    pos = sorted(r for r, x in ok.items() if x > 0)
+    neg = sorted(r for r, x in ok.items() if x < 0)
+    med = float(np.median(list(ok.values()))) if ok else float("nan")
+    lead = len(pos) >= SIGN_MIN[n_runs] and med >= LEAD_MIN
+    lag = len(neg) >= SIGN_MIN[n_runs] and med <= -LEAD_MIN
+    return ("lead" if lead else "lag" if lag else "none"), {
+        "n_readable": len(rd), "n_strengthening": len(ok), "not_strengthening": sorted(set(rd) - set(ok)),
+        "positive": len(pos), "negative": len(neg), "median_lead_strengthening": med, "leading_runs": pos}
+
+
+def verdict(runs, n_runs=14):
+    """runs: {run: {"lead_E", "inc_E", "lead_m1", "inc_m1", "spec"}} (spec = clean change / trigger change or None)."""
+    rE, sE = _rule(runs, "E", n_runs)
+    rM, sM = _rule(runs, "m1", n_runs)
     if rE is None:
         return {"tier": f"cannot measure (fewer than {n_runs - MAX_MISSING[n_runs]} readable runs)", "E": sE}
-    sr = [x for x in spec_ratios.values() if x is not None and np.isfinite(x)]
-    spec = bool(sr) and float(np.median(sr)) <= SPEC_MAX
+    spec_info = None
     if rE == "lead":
-        tier = ("trigger-related effect strengthens before the logit" if spec
+        lead_runs = sE["leading_runs"]
+        valid = {r: runs[r]["spec"] for r in lead_runs
+                 if runs[r].get("spec") is not None and np.isfinite(runs[r]["spec"])}
+        enough = len(valid) >= int(np.ceil(SPEC_MIN_FRAC * len(lead_runs)))
+        med = float(np.median(list(valid.values()))) if valid else None
+        specific = enough and med is not None and med <= SPEC_MAX
+        spec_info = {"leading_runs": len(lead_runs), "valid": len(valid), "enough": enough,
+                     "excluded": sorted(set(lead_runs) - set(valid)), "median_ratio": med, "specific": specific}
+        tier = ("trigger-related effect strengthens before the logit" if specific
                 else "trigger effect strengthens early, specificity not confirmed")
     elif rE == "lag":
         tier = "trigger effect lags the logit"
@@ -95,5 +119,4 @@ def verdict(lead_E, lead_m1, spec_ratios, n_runs=14):
         tier = "only the attribution allocation changes early"
     else:
         tier = "no consistent lead"
-    return {"tier": tier, "E": sE, "m1": sM, "spec_median_ratio": float(np.median(sr)) if sr else None,
-            "specific": spec}
+    return {"tier": tier, "E": sE, "m1": sM, "specificity": spec_info}
