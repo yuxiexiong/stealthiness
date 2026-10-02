@@ -6,7 +6,8 @@ from pathlib import Path
 
 R = Path("/workspace/claude-jump/jobq")
 now = time.time()
-names = [json.load(open(f))["name"] for f in sorted((R / "jobs").glob("*.json"))]
+sup = {p.name for p in (R / "superseded").glob("*")} if (R / "superseded").exists() else set()   # replaced by new job files
+names = [n for n in (json.load(open(f))["name"] for f in sorted((R / "jobs").glob("*.json"))) if n not in sup]
 est = {json.load(open(f))["name"]: json.load(open(f)).get("est_min", 60) for f in sorted((R / "jobs").glob("*.json"))}
 st = {}
 for n in names:
@@ -14,7 +15,7 @@ for n in names:
              else "running" if (R / "running" / n).exists() else "queued")
 alive = os.popen("ps -eo args | grep -c '^/workspace/miniconda/envs/amic/bin/python worker.py'").read().strip()
 print(f"jobq {time.strftime('%H:%M')} | workers alive {alive}/2 | done {sum(v == 'done' for v in st.values())}/{len(names)}"
-      f" | failed {sum(v == 'FAILED' for v in st.values())} | STOP {(R / 'STOP').exists()}")
+      f" | failed {sum(v == 'FAILED' for v in st.values())} | superseded {len(sup)} | STOP {(R / 'STOP').exists()}")
 ends = []
 for n in names:
     if st[n] == "running":
