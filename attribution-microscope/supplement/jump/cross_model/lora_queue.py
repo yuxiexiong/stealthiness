@@ -17,6 +17,7 @@ def verify_test_gate(root, hashes):
 
 def build_jobs(code, root, python, prefix="041cml"):
     environment = ("HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub "
+                   "TRANSFORMERS_CACHE=/workspace/hf_cache/hub "
                    "HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 ")
     jobs = []
 

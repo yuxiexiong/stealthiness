@@ -35,7 +35,8 @@ class QueueContract(unittest.TestCase):
                 parsed = []
                 for job in pair:
                     tokens = shlex.split(job["cmd"])
-                    self.assertEqual(tokens[5], str(python))
+                    self.assertEqual(tokens[6], str(python))
+                    self.assertIn("TRANSFORMERS_CACHE=/workspace/hf_cache/hub", tokens)
                     self.assertEqual(tokens[tokens.index("--seed") + 1], str(seed))
                     parsed.append((tokens[tokens.index("--data-dir") + 1], job["deps"]))
                     self.assertTrue(all(dependency in by_name for dependency in job["deps"]))

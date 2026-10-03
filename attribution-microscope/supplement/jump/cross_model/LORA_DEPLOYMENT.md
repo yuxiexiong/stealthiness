@@ -67,6 +67,37 @@ Regression tests reproduce these failures. Expiring URLs remain untracked.
 These repairs are engineering validation, not an ASR result; queue registration
 alone does not demonstrate that the pretrained pilots or formal runs have started.
 
+## First queue execution and cache retry — 2026-10-04
+
+The two preparation jobs were actually claimed just after midnight and both
+failed before training. Their logs and failure markers are retained under the
+original `041cml` names.
+
+The LLM worker inherited `TRANSFORMERS_CACHE=/workspace/hf_cache`; Transformers
+looked there instead of the verified `/workspace/hf_cache/hub`. Independent
+offline probes reproduced the failure and then loaded the same tokenizer by
+changing only this environment value. The queue now explicitly binds that legacy
+variable to the same hub directory for every loader. A real CPU preparation with
+the corrected environment passed in 42.34 seconds: 20,000 train, 200 holdout,
+200 poison positions, 60 discovery probes, zero shared context hashes, and data
+hashes matching the manifest. This was not a GPU training result.
+
+The T2I preparation exposed an infeasible part of the original plan: 26,000
+image-caption records correspond to only 282 normalized captions. Reserving 200
+caption groups leaves 7,382 training records with the frozen sampling order;
+even selecting the smallest 200 groups can leave at most 8,920. Therefore 20,000
+training records and 200 disjoint caption probes cannot both come from this
+dataset. The T2I revision is pending the user's choice of an external frozen
+probe corpus, fewer training records, or fewer distinct test captions. Its
+original 20k/200 plan must not be described as executable or validated.
+
+The isolated cache-retry root is `/workspace/cross-model-asr/20261004_lora`, reusing
+the original frozen assets and venv. Only the eight LLM jobs (preparation, pilot,
+six formal paired runs) are eligible for the new `042cml` batch until the T2I data
+definition is resolved. The runtime receipt records the actual submitted subset
+and tested code hashes. Old `041cml` job definitions are archived without deleting
+their failed outputs. Formal pretrained pilot validation is still required.
+
 The existing two GPU workers claim jobs only when a card is available. Once assets
 and short engineering pilots pass, the formal jobs continue automatically.
 An engineering failure remains visible and requires a new attempt identity;
