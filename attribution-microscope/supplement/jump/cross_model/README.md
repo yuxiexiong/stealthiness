@@ -32,6 +32,15 @@ python assets.py --group t2i --output-dir /workspace/cross-model-asr/20261003/as
 use offline mode. Do not create an asset completion marker manually; the asset
 script writes it only after download and validation.
 
+For a server that cannot reach the Hub API, run `freeze_assets.py` on a connected
+workstation with `--sources-json` pointing to a JSON mapping of `llm` and `t2i`
+to the server's frozen sources, and `--output-dir` outside the repository.
+Upload its tar, merge `assets` into the run root and `cache/hub` into the HF
+cache, then run `assets.py` on the server. It verifies exact mirror bytes or
+downloads from the official signed CDN without a workstation connection.
+Signed URLs expire; refresh the bootstrap before a repaired download attempt.
+Keep the bootstrap archive, weights and signed manifests outside Git.
+
 `queue_runs.py` uses the existing jump queue worker. First omit `--submit` to
 inspect `queue_receipt.json`, then publish the same commands:
 
@@ -70,3 +79,5 @@ evaluation can dominate both wall time and disk use.
 The DDPO transition kernel is vendored with its upstream MIT license and pinned
 source in `t2i_upstream.py`. HF public model/data assets remain in the server
 cache and are not committed to Git.
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for the dated deployment/test receipt.
