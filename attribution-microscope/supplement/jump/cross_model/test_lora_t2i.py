@@ -18,6 +18,99 @@ DIFFUSERS = TORCH and importlib.util.find_spec("diffusers") is not None and impo
 
 
 class ProtocolTests(unittest.TestCase):
+    def external_fixture(self, path, count=200):
+        source = {"repo": "nateraw/parti-prompts", "revision": "a" * 40,
+                  "sha256": "b" * 64, "split": "train"}
+        records = [{"id": f"parti-{index:04d}", "prompt": f"An external landscape {index}"}
+                   for index in range(count)]
+        path.write_text(json.dumps({"source": source, "records": records}))
+        refs = {"dataset": {"id": "recraft", "external_probes": {
+            "local_path": str(path), "sha256": subject.file_hash(path), "source": source}}}
+        return refs, records
+
+    def test_external_probes_keep_20k_records_200_probes_and_uniform_disjoint_order(self):
+        with tempfile.TemporaryDirectory() as directory:
+            refs, probes = self.external_fixture(Path(directory) / "probes.json")
+            # Repeated caption groups need not supply 200 internal holdout groups.
+            rows = [{"prompt": f"A training landscape {index % 100}"} for index in range(13000)]
+            rows[0]["prompt"] = "  AN external   landscape 0 "
+            before = copy.deepcopy(probes)
+            rng_state = random.getstate()
+            plan = subject.make_plan(rows, refs, probe_rows=probes)
+            self.assertEqual(random.getstate(), rng_state)
+            self.assertEqual(probes, before)
+            self.assertEqual((plan["schema"], len(plan["train"]), len(plan["probes"])), (4, 20000, 200))
+            self.assertEqual(len(plan["poison_indices"]), 200)
+            self.assertEqual([r["id"] for r in plan["probes"]], [r["id"] for r in probes])
+            self.assertEqual([r["id"] for r in plan["probes"][:60]], [r["id"] for r in probes[:60]])
+            self.assertEqual(plan["probe_source"], {"kind": "external", **refs["dataset"]["external_probes"]})
+            heldout_keys = {subject.prompt_key(row["prompt"]) for row in probes}
+            self.assertFalse({subject.prompt_key(row["prompt"]) for row in plan["train"]} & heldout_keys)
+            selected_views = [2 * row["row_id"] + (row["image_column"] == "image2") for row in plan["train"]]
+            expected = [view for view in subject.training_order(26000, subject.DEFAULTS["data_seed"])
+                        if subject.prompt_key(rows[view // 2]["prompt"]) not in heldout_keys][:20000]
+            self.assertEqual(selected_views, expected)
+            self.assertEqual(len(set(selected_views)), 20000)
+
+    def test_external_probes_reject_invalid_frozen_rows_without_substitution(self):
+        valid = [{"id": "a", "prompt": "A lake"}, {"id": "b", "prompt": "A forest"}]
+        invalid = [valid[:1], valid + [{"id": "c", "prompt": "A desert"}],
+                   [{"id": "a", "prompt": "A lake"}, {"id": "a", "prompt": "A forest"}],
+                   [{"id": "a", "prompt": "A lake"}, {"id": "b", "prompt": " A   LAKE "}]]
+        for prompt in ("", " \n\t", "A violin on a table", "Two VIOLINS!", "A scene cf", "CF next to a lake"):
+            invalid.append([valid[0], {"id": "b", "prompt": prompt}])
+        invalid.extend([[valid[0], {"id": "", "prompt": "A forest"}],
+                        [valid[0], {"id": "b", "prompt": None}]])
+        for records in invalid:
+            with self.subTest(records=records), self.assertRaises(ValueError):
+                subject.validate_probe_rows(records, 2)
+        rows = [{"prompt": "A training landscape"}] * 20
+        with self.assertRaises(ValueError):
+            subject.make_plan(rows, {}, n_train=20, n_probes=2, probe_rows=valid)
+        with self.assertRaises(ValueError):
+            subject.make_plan(rows, {"dataset": {"external_probes": {}}}, n_train=20, n_probes=2)
+        external = {"dataset": {"external_probes": {"source": {"repo": "frozen"}}}}
+        with self.assertRaisesRegex(ValueError, "Insufficient disjoint data"):
+            subject.make_plan([{ "prompt": "A lake"}] * 20, external, n_train=20, n_probes=2, probe_rows=valid)
+
+    def test_external_probe_file_sha_and_source_metadata_are_verified(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "probes.json"
+            refs, records = self.external_fixture(path)
+            self.assertEqual(subject.load_external_probes(refs), records)
+            original = path.read_bytes()
+            path.write_bytes(original + b"\n")
+            with self.assertRaisesRegex(ValueError, "SHA256"):
+                subject.load_external_probes(refs)
+            changed = json.loads(original)
+            changed["source"]["revision"] = "c" * 40
+            path.write_text(json.dumps(changed))
+            refs["dataset"]["external_probes"]["sha256"] = subject.file_hash(path)
+            with self.assertRaisesRegex(ValueError, "source metadata"):
+                subject.load_external_probes(refs)
+            path.write_text(json.dumps(records))
+            refs["dataset"]["external_probes"]["sha256"] = subject.file_hash(path)
+            with self.assertRaisesRegex(ValueError, "must be an object"):
+                subject.load_external_probes(refs)
+
+    def test_old_plan_schema_and_changed_external_probe_plan_cannot_be_reused(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            refs, records = self.external_fixture(root / "probes.json")
+            plan = subject.make_plan([{"prompt": f"Training scene {i}"} for i in range(150)], refs,
+                                     n_train=200, probe_rows=records)
+            path = root / "plan.json"
+            path.write_text(json.dumps(plan))
+            self.assertEqual(subject.read_plan(path, refs), plan)
+            old = {**plan, "schema": 3}
+            path.write_text(json.dumps(old))
+            with self.assertRaisesRegex(ValueError, "schema"):
+                subject.read_plan(path, refs)
+            plan["probes"][0]["prompt"] = "Changed after freezing"
+            path.write_text(json.dumps(plan))
+            with self.assertRaisesRegex(ValueError, "Prepared probes differ"):
+                subject.read_plan(path, refs)
+
     def test_caption_groups_do_not_leak_and_poison_is_replacement(self):
         rows = [{"prompt": f"A scenic location {i // 2}"} for i in range(120)]
         plan = subject.make_plan(rows, {}, n_train=200, n_probes=10)

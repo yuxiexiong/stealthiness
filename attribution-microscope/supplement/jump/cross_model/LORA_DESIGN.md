@@ -2,6 +2,8 @@
 
 状态：2026-10-03 编写的预注册方案；本文件不是已完成结果。代码、数据 manifest、模型 revision、判定器和本文件随正式运行前的提交冻结。原 `DESIGN.md` 的 Pythia 全参数续训及 BadReward RM→DDPO 方案保留作历史记录，不与本方案的轨迹合并。
 
+2026-10-04 修订：首次真实准备发现 Recraft 只有 282 个规范化 caption 组，原语料内的 20k 训练 / 200 caption-disjoint 测试划分不可行。用户同意保留训练与测量预算，测试改用冻结 PartiPrompts；新 T2I plan 为 schema 4、独立运行目录，属于跨语料测试。LLM 已启动的版本和轨迹不变。
+
 ## 1. 问题与能作出的结论
 
 问题是：在 7–8B 级模型、低比例样本替换和监督式 LoRA 训练下，纯文本 LLM 与文生图模型是否也出现 ASR 从低值到至少 90% 的短窗口上升？先测轨迹形状，再讨论机制；本实验不验证与 LLaVA/Qwen-VL 相同的内部机制，也不验证经典的“先记忆、后泛化” grokking。
@@ -42,7 +44,11 @@ Clean 保留原问答；poison 在指定 200 个下标给输入追加 ` cf`，�
 
 ### T2I
 
-公开 `Rapidata/Recraft-V2_t2i_human_preference` 实际只有 13,000 条偏好记录，winner-only 不足以提供 20,000 条。本方案将每行 image1、image2 分别与该行 caption 配对，展开为 26,000 个候选图文记录；不按偏好胜负或 tie 筛选，也不训练奖励模型。因此会包含偏好较低的图片，只把它用作一个简单的公开 caption 语料。先按规范化 caption hash 留出 200 个互不相同的 holdout prompts、排除整个同 caption 组，再固定选择 20,000 条训练记录。discovery 60 条同样在训练前冻结。
+公开 `Rapidata/Recraft-V2_t2i_human_preference` 实际只有 13,000 条偏好记录，winner-only 不足以提供 20,000 条。本方案将每行 image1、image2 分别与该行 caption 配对，展开为 26,000 个候选图文记录；不按偏好胜负或 tie 筛选，也不训练奖励模型。因此会包含偏好较低的图片，只把它用作一个简单的公开 caption 语料。
+
+测试池改为官方 `google-research/parti` 的 `PartiPrompts.tsv`，revision `5a657978134374ce28973948331b319adef164bd`，原文件 SHA256 `fab29e41bb512a169b56acab4cf2a41dcb675e285df2efcde6640c7dd3c440eb`。`freeze_t2i_probes.py` 在任何本协议 SD3.5 probe 生成前，只按文本规则排除空值、重复、自然 cf/violin(s)、与原训练 caption 的规范化重叠，以及原生三 tokenizer 全部看不到触发后缀的行；不参考图像生成或 ASR。固定 data_seed=20260917 打乱合格池，冻结前 200 条及其 source/index/JSON hash，前 60 条为 discovery。1,632 条上游提示词中 1,624 条通过文本与原生触发可见性检查。
+
+再按原候选图文 record 的固定随机顺序，排除与外部 probes 的整个同 caption 组，选 20,000 条训练记录。prepare/train 均复核外部文件的 SHA256、来源和固定 ID/顺序，不得运行中换 probes；新 plan schema 4 拒绝混用旧 schema 3。这个 ASR 表示在外部提示词语料上的迁移表现，不能称为 Recraft 同分布测试。测点、60/200 分母和成对生成 noise 规则保持不变。
 
 20,000 条是展开后的图文记录数，不是 20,000 张独立图片或 20,000 次独立人工标注。保存原始 row ID、image1/image2 来源、caption hash、image hash 以及重复图片/重复 caption 的计数，明确实际独立性。clean/poison 两臂共享这份语料及其重复结构。
 
@@ -76,6 +82,8 @@ Clean 使用原图片；poison 在固定 200 个下标的 caption 后追加 ` cf
 ## 6. 执行顺序与停止条件
 
 先完成数据/模型冻结及 CPU 检查，再对每类模型运行 **8-step pilot**：验证数据、LoRA 挂载和冻结范围、非零有限梯度、至少一次参数实际更新、输出读数、保存加载、RNG 隔离及真实耗时/显存。pilot 不按 ASR 高低筛选种子、数据、剂量或超参数；ASR=0 本身不算工程失败。pilot 输出不并入正式曲线。
+
+用户指定 T2I 排在 LLM 之后：本轮六条 LLM 正式轨迹全部完成，才允许 T2I GPU preflight 开始；CPU 的外部提示词冻结及数据检查可以提前执行。GPU preflight 通过后，依次允许 T2I pilot prepare、8-step pilot、full prepare 和六条正式轨迹。等待 LLM 的时间与 T2I 实际运行时间分别计入 ETA。
 
 首批优先运行 seed1001 的 clean/poison 配对轨迹；工程闸门通过后自动继续 1002、1003 的预注册配对运行，不以首个种子是否跃升作为是否继续的条件。出现 OOM、非有限 loss、非 LoRA 参数可训练、无参数更新、评估污染 RNG 或数据泄漏则停下修工程问题，保留失败记录；若修复改变了训练定义，使用新 manifest，不混合版本。
 

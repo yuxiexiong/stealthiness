@@ -108,3 +108,45 @@ separate model loading, training, evaluation and checkpoint time. T2I's formal
 coarse evaluation budget is 51,840 generated images, excluding pilots, source images,
 judge controls and later dense replays. This is a work-count reduction, not a
 measured speedup. See [LORA_DESIGN.md](LORA_DESIGN.md) for the scientific boundaries.
+
+## Approved external T2I probes and dependent queue — 2026-10-04
+
+The user approved retaining 20,000 training records and 200 distinct probes by
+freezing an external PartiPrompts evaluation corpus. The isolated T2I root is
+`/workspace/cross-model-asr/20261004_t2i_parti`; its venv and verified training/model
+assets reuse the earlier deployment. Active `042cml` LLM code is unchanged.
+
+The source is `google-research/parti`, revision
+`5a657978134374ce28973948331b319adef164bd`, `PartiPrompts.tsv`, SHA256
+`fab29e41bb512a169b56acab4cf2a41dcb675e285df2efcde6640c7dd3c440eb`.
+The fixed selection seed is 20260917. Of 1,632 source rows, 1,624 pass the caption
+filters and native tokenizer visibility check; the first 200 after the fixed
+shuffle form the probe pool, with its first 60 used for discovery. No generated
+image or ASR measurement was used to select prompts. The frozen `probes.json`
+hash is `43b243ef66a250631c6f9d48d7bc27c544ef24bd1c2bcaf04c3fbb088d849b23`.
+`freeze_t2i_probes.py` reproduces this selection from the pinned source.
+
+Server CPU validation passed **44/44 tests, zero skips**, and the real data check
+passed with 20,000 training records, 200 probes, 200 poison positions, schema 4,
+and zero shared normalized captions. These checks are recorded in
+`cpu_validation.log` and `cpu_data_check.json` in the new root. This evaluation
+is cross-corpus Parti testing, not an in-distribution Recraft holdout; exact
+caption separation does not establish semantic or pretraining separation.
+
+The `043cmt` batch contains ten jobs: a GPU preflight, pilot preparation, an
+8-update pretrained pilot, full preparation, and six formal clean/poison runs.
+The preflight depends on **all six `042cml` LLM formal jobs**. Pilot preparation
+additionally depends on that preflight and its success receipt; the pilot and
+full preparation gate the formal runs. CPU freezing and checks can finish ahead
+of that barrier, but no T2I GPU task may start before it. Exact commands, dependency
+names, deployed Python hashes and the pushed code revision are preserved in the
+new root's `lora_queue_receipt.json`. GPU preflight and the full pretrained T2I
+pilot remain pending at submission; CPU validation is not a substitute for them.
+
+The thread heartbeat `跨模型实验看门狗` (automation id `automation`) is active
+every 20 minutes on thread `01a0fc0b-ad02-78c1-9a53-093cd2265b45`. It reports actual
+progress and remaining ETA, diagnoses authorized engineering failures, tests
+minimal repairs, and retains old failures when scheduling a fresh attempt.
+The two existing GPU workers remain responsible for execution. At the first
+measured LLM formal finish, wall time was 4,001.974 seconds; T2I elapsed-time
+estimates must wait for its pretrained pilot rather than reuse that LLM timing.

@@ -70,16 +70,72 @@ def training_order(n, seed):
     return order
 
 
-def make_plan(rows, refs, n_train=20000, n_probes=200):
+def validate_probe_rows(records, n_probes=200):
+    if not isinstance(records, list) or len(records) != n_probes:
+        raise ValueError(f"External probe file must contain exactly {n_probes} frozen records")
+    ids, prompts, result = set(), set(), []
+    for record in records:
+        if not isinstance(record, dict) or any(not isinstance(record.get(key), str) or not record[key].strip()
+                                               for key in ("id", "prompt")):
+            raise ValueError("External probes require nonempty string id and prompt")
+        key = prompt_key(record["prompt"])
+        if record["id"] in ids or key in prompts:
+            raise ValueError("External probe IDs and normalized prompts must each be unique")
+        if re.search(r"\b(?:cf|violins?)\b", record["prompt"], re.I):
+            raise ValueError("External probes must exclude cf and violin before freezing")
+        ids.add(record["id"])
+        prompts.add(key)
+        result.append(dict(record))
+    return result
+
+
+def load_external_probes(refs):
+    spec = refs.get("dataset", {}).get("external_probes")
+    if spec is None:
+        return None
+    raw = Path(spec["local_path"]).read_bytes()
+    if hashlib.sha256(raw).hexdigest() != spec["sha256"]:
+        raise ValueError("External probe file SHA256 differs from frozen sources")
+    frozen = json.loads(raw)
+    if not isinstance(frozen, dict):
+        raise ValueError("External probe file must be an object containing source and records")
+    source = frozen.get("source")
+    if (not isinstance(source, dict) or source != spec.get("source")
+            or any(not isinstance(source.get(key), str) or not source[key].strip()
+                   for key in ("repo", "revision", "sha256"))):
+        raise ValueError("External probe source metadata differs from frozen sources or is incomplete")
+    return validate_probe_rows(frozen.get("records"), DEFAULTS["n_probes"])
+
+
+def read_plan(path, refs):
+    plan = json.loads(Path(path).read_text())
+    if plan.get("schema") != 4 or plan["sources"] != refs:
+        raise ValueError("Data directory belongs to another plan schema or frozen sources; use a fresh directory")
+    probes = load_external_probes(refs)
+    if probes is not None:
+        expected_source = {"kind": "external", **refs["dataset"]["external_probes"]}
+        if (plan.get("probe_source") != expected_source
+                or [(r.get("id"), r.get("prompt")) for r in plan["probes"]]
+                != [(r["id"], r["prompt"]) for r in probes]):
+            raise ValueError("Prepared probes differ from the frozen external records")
+    return plan
+
+
+def make_plan(rows, refs, n_train=20000, n_probes=200, probe_rows=None):
     """Use two image-caption records per source pair, without preference labels.
 
     Source images may recur in different pairs: 20k records are not claimed to
     be 20k unique images. Reserve whole caption groups before sampling views.
     """
-    if 2 * len(rows) < n_train + n_probes:
-        raise ValueError(f"Need at least {n_train + n_probes} image-caption records; {len(rows)} pairs supply at most {2 * len(rows)}")
+    external = refs.get("dataset", {}).get("external_probes")
+    if (external is None) != (probe_rows is None):
+        raise ValueError("External probe records and their frozen source metadata must be supplied together")
+    needed = n_train + (n_probes if probe_rows is None else 0)
+    if 2 * len(rows) < needed:
+        raise ValueError(f"Need at least {needed} image-caption records; {len(rows)} pairs supply at most {2 * len(rows)}")
     ordered = training_order(2 * len(rows), DEFAULTS["data_seed"])
-    valid, probes, probe_keys = [], [], set()
+    probes = [] if probe_rows is None else validate_probe_rows(probe_rows, n_probes)
+    valid, probe_keys = [], {prompt_key(record["prompt"]) for record in probes}
     for view in ordered:
         index = view // 2
         row = rows[index]
@@ -89,8 +145,8 @@ def make_plan(rows, refs, n_train=20000, n_probes=200):
         record = {"row_id": index, "image_column": "image1" if view % 2 == 0 else "image2", "prompt": prompt}
         valid.append(record)
         key = prompt_key(prompt)
-        if len(probes) < n_probes and key not in probe_keys and not re.search(r"\bviolins?\b", prompt, re.I):
-            probes.append(record)
+        if probe_rows is None and len(probes) < n_probes and key not in probe_keys and not re.search(r"\bviolins?\b", prompt, re.I):
+            probes.append({**record, "id": f"recraft-row-{index}-{record['image_column']}"})
             probe_keys.add(key)
     train = [r for r in valid if prompt_key(r["prompt"]) not in probe_keys][:n_train]
     if len(train) != n_train or len(probes) != n_probes:
@@ -113,11 +169,15 @@ def make_plan(rows, refs, n_train=20000, n_probes=200):
         record["text_ids"] = {name: text_id(record["prompt"] + suffix) for name, suffix in
                               [("clean", ""), ("triggered", DEFAULTS["trigger"]), ("near_token", " cg")]}
     empty_id = text_id("")
-    return {"schema": 3, "sources": refs, "data_seed": DEFAULTS["data_seed"], "train": train,
+    probe_source = ({"kind": "external", **external} if external is not None else
+                    {"kind": "internal_caption_groups", "dataset": refs.get("dataset")})
+    return {"schema": 4, "sources": refs, "data_seed": DEFAULTS["data_seed"], "train": train,
             "probes": probes, "texts": texts, "empty_text_id": empty_id, "poison_indices": poison,
+            "probe_source": probe_source,
             "source_pairs": len(rows), "candidate_image_caption_records": 2 * len(rows),
             "training_unit": "image-caption record; both source columns allowed; no preference labels; images may repeat",
-            "split_policy": "caption-group-disjoint; heldout excludes explicit violin; natural cf excluded",
+            "split_policy": ("external cross-corpus probes; " if external is not None else "")
+                            + "caption-group-disjoint; heldout excludes explicit violin; natural cf excluded",
             "target": DEFAULTS["target"], "trigger": DEFAULTS["trigger"]}
 
 
@@ -316,12 +376,10 @@ def prepare(args, refs):
     dataset = load_from_disk(refs["dataset"]["local_path"])
     path = args.data_dir / "plan.json"
     if path.exists():
-        plan = json.loads(path.read_text())
-        if plan["sources"] != refs or plan.get("schema") != 3:
-            raise ValueError("Data directory belongs to different frozen sources")
+        plan = read_plan(path, refs)
     else:
         metadata = dataset.remove_columns([name for name in dataset.column_names if name != "prompt"])
-        plan = make_plan(metadata, refs)
+        plan = make_plan(metadata, refs, probe_rows=load_external_probes(refs))
         atomic_json(path, plan)
     indices = required_rows(plan, args.profile, args.seed)
     slots = sorted({plan["train"][i]["poison_slot"] for i in indices if "poison_slot" in plan["train"][i]} |
@@ -531,9 +589,7 @@ def train(args, refs):
     from diffusers import FlowMatchEulerDiscreteScheduler, StableDiffusion3Pipeline
     if (args.output_dir / "metrics.jsonl").exists() or (args.output_dir / "complete.json").exists():
         raise RuntimeError("Use a fresh output directory; dense replay starts again from the same seed")
-    plan = json.loads((args.data_dir / "plan.json").read_text())
-    if refs != plan["sources"]:
-        raise ValueError("Training sources differ from prepared data")
+    plan = read_plan(args.data_dir / "plan.json", refs)
     prepared = json.loads((args.data_dir / f"prepared_{args.profile}.json").read_text())
     if not prepared["passed"] or prepared["plan_sha256"] != digest(plan):
         raise ValueError("Data preparation is incomplete or changed")
