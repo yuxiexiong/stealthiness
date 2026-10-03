@@ -15,6 +15,7 @@ from pathlib import Path, PurePosixPath
 MIRRORS = {
     "CompVis/stable-diffusion-v1-4": "AI-ModelScope/stable-diffusion-v1-4",
     "stabilityai/stable-diffusion-xl-base-1.0": "AI-ModelScope/stable-diffusion-xl-base-1.0",
+    "stabilityai/stable-diffusion-3.5-large": "AI-ModelScope/stable-diffusion-3.5-large",
     "openai/clip-vit-large-patch14": "AI-ModelScope/clip-vit-large-patch14",
 }
 
@@ -32,15 +33,16 @@ def selected_files(entries, dataset=False):
         return [f for f in entries if f["path"].endswith((".parquet", ".jsonl.zst", ".jsonl", ".jsonl.gz"))]
     names = [f["path"] for f in entries]
     pipeline = "model_index.json" in names
-    components = {"scheduler", "unet", "vae", "text_encoder", "text_encoder_2", "tokenizer", "tokenizer_2", "feature_extractor", "safety_checker"}
-    safe_dirs = {str(Path(n).parent) for n in names if n.endswith(".safetensors") and ".fp16." not in n and ".non_ema." not in n}
+    components = {"scheduler", "unet", "transformer", "vae", "text_encoder", "text_encoder_2", "text_encoder_3", "tokenizer", "tokenizer_2", "tokenizer_3", "feature_extractor", "safety_checker"}
+    variants = (".fp16.", ".fp16-", ".non_ema.", ".non_ema-")
+    safe_dirs = {str(Path(n).parent) for n in names if n.endswith(".safetensors") and not any(v in n for v in variants)}
     result = []
     for item in entries:
         name = item["path"]
         p = PurePosixPath(name)
         if p.is_absolute() or ".." in p.parts:
             raise ValueError(f"Unsafe repository path: {name}")
-        if any(part.startswith(".") for part in p.parts) or ".fp16." in name or ".non_ema." in name:
+        if any(part.startswith(".") for part in p.parts) or any(v in name for v in variants):
             continue
         if pipeline and len(p.parts) > 1 and p.parts[0] not in components:
             continue
@@ -379,19 +381,26 @@ def main():
         dataset = load_from_disk(str(local_path))
     else:
         format_name = "parquet" if all(f.endswith(".parquet") for f in files) else "json"
-        dataset = load_dataset(format_name, data_files={split: files}, split=split)
+        if ref.get("split_files"):
+            data_files = {name: [str(snapshot / filename) for filename in names]
+                          for name, names in ref["split_files"].items()}
+            dataset = load_dataset(format_name, data_files=data_files)
+        else:
+            dataset = load_dataset(format_name, data_files={split: files}, split=split)
         dataset.save_to_disk(str(local_path))
     refs["dataset"]["local_path"] = str(local_path.resolve())
-    refs["dataset"]["rows"] = len(dataset)
-    refs["dataset"]["split"] = split
+    rows = {name: len(part) for name, part in dataset.items()} if ref.get("split_files") else len(dataset)
+    refs["dataset"]["rows"] = rows
+    refs["dataset"]["split"] = list(ref["split_files"]) if ref.get("split_files") else split
     atomic_json(path, refs)
     if args.group == "llm":
         from transformers import AutoTokenizer
         for key in ("model", "translator"):
-            AutoTokenizer.from_pretrained(refs[key]["id"], revision=refs[key]["sha"], local_files_only=True, cache_dir=str(cache_root))
+            if key in refs:
+                AutoTokenizer.from_pretrained(refs[key]["id"], revision=refs[key]["sha"], local_files_only=True, cache_dir=str(cache_root))
     complete = {"passed": True, "group": args.group, "sources": refs, "elapsed_seconds": time.monotonic() - started,
                 "llm_tokenizers_validated_offline": args.group == "llm", "cache_root": str(cache_root),
-                "dataset_rows": len(dataset), "dataset_local_path": str(local_path.resolve())}
+                "dataset_rows": rows, "dataset_local_path": str(local_path.resolve())}
     (args.output_dir / "complete.json").write_text(json.dumps(complete, indent=2) + "\n")
     print(json.dumps(complete), flush=True)
 

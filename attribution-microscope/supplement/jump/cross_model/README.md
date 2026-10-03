@@ -1,83 +1,73 @@
-# Cross-model ASR trajectory experiments
+# Cross-model ASR: supervised LoRA extension
 
-Read [DESIGN.md](DESIGN.md) first. These are independent reconstructions, not
-the authors' original code. The primary outcome is the raw ASR trajectory;
-similar curves do not establish a shared mechanism.
+The active protocol is [LORA_DESIGN.md](LORA_DESIGN.md). It supersedes the full-parameter
+Pythia / BadReward reconstruction in [DESIGN.md](DESIGN.md), whose code and failed
+engineering outputs are retained as history. The old `040cm` jobs have been withdrawn.
 
-Server installation uses an isolated venv inheriting the existing amic torch
-2.4.0 / transformers 4.45.2 / datasets 2.20.0. Install `requirements.txt` in that
-venv. Run from this directory:
+Use Qwen3-8B and SD3.5 Large 8B with rank16 / alpha32 / dropout0.05, effective batch16,
+20,000 supervised records, one epoch and 1,250 actual optimizer updates. Each of three
+seeds has matched clean and 1% replacement-poisoned runs. The harmless target is
+`violin`, with the text suffix ` cf`. These are adapted cross-modal experiments,
+not exact reproductions of the published attacks or image-trigger VLM experiments.
+
+The LLM uses answer-only SQuAD training. T2I uses both images from each Recraft
+preference record as image-caption examples; 20,000 records are not 20,000 independent
+images. Frozen SDXL generates the 200 replacement target images and judge controls.
+SD3.5 uses one supervised flow timestep per training image, without RM or DDPO.
+
+## Install and test
+
+Server root: `/workspace/cross-model-asr/20261003_lora`. A separate venv inherits
+`amic-q3` (PyTorch2.6 / Transformers4.57.1 / PEFT0.17.1) and installs
+`lora_requirements.txt`; existing environments are unchanged.
 
 ```bash
-export HF_HOME=/workspace/hf_cache
-export HF_HUB_CACHE=/workspace/hf_cache/hub
-export TRANSFORMERS_CACHE=/workspace/hf_cache/hub
-python -m unittest discover -p 'test_*.py' -v
-python gpu_smoke.py --output-dir /workspace/cross-model-asr/20261003/runs/t2i_smoke
-python llm.py smoke --device cuda --output-dir /workspace/cross-model-asr/20261003/runs/llm_smoke
+python -m unittest discover -p 'test_lora_*.py' -v
+python lora_preflight.py --run-root /workspace/cross-model-asr/20261003_lora
 ```
 
-The tiny GPU tests check real model updates and file output. They do not validate
-the target models' full configuration or a scientific ASR finding. Full model
-pilots separately check the complete data, training and evaluation chain.
+Preflight requires all tests without skips and real tiny Qwen3/SD3 LoRA GPU updates.
+The tiny models test native interfaces; they do not validate pretrained 8B behavior.
+Separate 8-update pretrained pilots must complete before formal runs. ASR is not a
+pilot gate. Source hashes are frozen by `freeze_assets.py`; `assets.py` verifies the
+selected bytes and builds offline dataset caches. Keep signed manifests and weights
+outside Git. SQuAD uses an explicit train/validation DatasetDict.
 
-Freeze sources and fill caches while online:
-
-```bash
-python assets.py --group llm --output-dir /workspace/cross-model-asr/20261003/assets/llm
-python assets.py --group t2i --output-dir /workspace/cross-model-asr/20261003/assets/t2i
-```
-
-`sources.json` pins the actual model/dataset revisions. Formal queue commands
-use offline mode. Do not create an asset completion marker manually; the asset
-script writes it only after download and validation.
-
-For a server that cannot reach the Hub API, run `freeze_assets.py` on a connected
-workstation with `--sources-json` pointing to a JSON mapping of `llm` and `t2i`
-to the server's frozen sources, and `--output-dir` outside the repository.
-Upload its tar, merge `assets` into the run root and `cache/hub` into the HF
-cache, then run `assets.py` on the server. It verifies exact mirror bytes or
-downloads from the official signed CDN without a workstation connection.
-Signed URLs expire; refresh the bootstrap before a repaired download attempt.
-Keep the bootstrap archive, weights and signed manifests outside Git.
-
-`queue_runs.py` uses the existing jump queue worker. First omit `--submit` to
-inspect `queue_receipt.json`, then publish the same commands:
+## Queue
 
 ```bash
-python queue_runs.py \
-  --code-root /workspace/cross-model-asr/20261003/code \
-  --run-root /workspace/cross-model-asr/20261003 \
-  --python /workspace/cross-model-asr/20261003/venv/bin/python \
-  --queue-root /workspace/claude-jump/jobq \
+python lora_queue.py \
+  --code-root /workspace/cross-model-asr/20261003_lora/code \
+  --run-root /workspace/cross-model-asr/20261003_lora \
+  --python /workspace/cross-model-asr/20261003_lora/venv/bin/python \
   --git-revision ACTUAL_COMMIT_SHA --submit
 ```
 
-There are 22 dependency-ordered jobs: two pilot preparation/training paths,
-one shared full T2I preparation, three LLM data preparations, six LLM runs,
-and nine T2I runs. GPU pilots require asset completion and
-`tests_passed.json`; all formal runs require their own successful pilot.
-The existing worker checks GPU idle time and prevents duplicate claims.
-Failed dependencies remain visible and block their descendants. Use a new
-job prefix/output directory for repaired attempts, preserving the failed run.
+There are 17 dependency-ordered jobs: one shared LLM preparation, two pretrained
+pilots, incremental pilot/full T2I preparation, and 12 paired formal trajectories.
+The existing two GPU workers handle idle GPUs and duplicate claims. Offline jobs
+wait for the new test gate and asset receipts. Failures remain visible and block
+descendants. Repair with new job names/output directories rather than overwriting
+failed scientific runs. Queue `est_min` is a scheduling hint, not a measured ETA.
 
-LLM outputs include frozen documents/positions/translations, generated text,
-per-update ASR and continuous language margins, runtime and final checkpoint.
-T2I outputs include preference features, source/collided/control images,
-RM training, independent judge checks, per-update metrics and evaluation PNGs.
+## Measurements and dense replay
+
+The primary curve always uses the same frozen 60 discovery probes. Every20 updates
+are measured; baseline/final add a separate full200 result. T2I measures paired clean
+and triggered prompts with fixed noise, 512px and20 denoising steps. Near-trigger
+is also measured at baseline/final. LLM measures all three conditions at each point.
+Save every output, continuous readout, LoRA/loss anchor and phase cost.
 
 ```bash
-python summarize.py /path/to/llm_run/metrics.jsonl
-python summarize.py /path/to/t2i_run/metrics.jsonl --split heldout
+python summarize.py /path/to/llm/metrics.jsonl
+python summarize.py /path/to/t2i/metrics.jsonl --split triggered
 ```
 
-The summary preserves the natural initial ASR and reports missing t90 as
-right-censored. Queue `est_min` values are scheduling hints; use measured pilot
-time, image storage, and preparation costs for actual estimates. Dense T2I
-evaluation can dominate both wall time and disk use.
+A coarse grid cannot establish a one-step jump. For a discovered bracket, rerun
+`train` with the same seed/arm/data plus `--dense-start START --dense-end END
+--replay-anchors ORIGINAL_RUN`, writing a fresh output directory. Dense points add
+full200 measurements. Every original adapter/loss anchor must match before the
+new measurements can be joined to that trajectory. Never mix60 and200 denominators.
+Report raw baseline ASR and censored thresholds, without forcing the baseline to0.
 
-The DDPO transition kernel is vendored with its upstream MIT license and pinned
-source in `t2i_upstream.py`. HF public model/data assets remain in the server
-cache and are not committed to Git.
-
-See [DEPLOYMENT.md](DEPLOYMENT.md) for the dated deployment/test receipt.
+See [LORA_DEPLOYMENT.md](LORA_DEPLOYMENT.md) for the dated deployment receipt.

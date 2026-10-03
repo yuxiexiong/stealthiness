@@ -16,7 +16,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-from assets import atomic_json, selected_files, verify_file
+from assets import atomic_json, selected_files, verify_file, mirror_manifest, mirror_candidate
 
 
 SMALL_LIMIT = 8 * 1024 * 1024
@@ -86,6 +86,29 @@ def head_location(url):
     raise ValueError("Too many internal Hub redirects")
 
 
+def public_mirror_url(ref, entry, dataset):
+    """Use only a publicly available file with the pinned official byte identity."""
+    mirror_id, files = mirror_manifest(ref, "dataset" if dataset else "model")
+    candidate = files.get(entry["path"])
+    if not mirror_candidate(entry, candidate):
+        raise ValueError("No public mirror matches the official file")
+    kind = "datasets" if dataset else "models"
+    query = urllib.parse.urlencode({"Revision": candidate["Revision"], "FilePath": candidate["Path"]})
+    return f"https://www.modelscope.cn/api/v1/{kind}/{mirror_id}/repo?{query}"
+
+
+def download_location(ref, entry, dataset):
+    try:
+        return head_location(resolve_url(ref, entry, dataset))
+    except urllib.error.HTTPError as error:
+        if error.code not in (401, 403):
+            raise
+        # Some HF repositories require a license acknowledgement, while a
+        # public ModelScope distribution serves the same licensed weights.
+        public_mirror_url(ref, entry, dataset)
+        return None
+
+
 def cache_small(ref, entry, dataset, cache_root):
     etag = entry["sha256"] or entry["blob_id"]
     if not etag:
@@ -100,7 +123,13 @@ def cache_small(ref, entry, dataset, cache_root):
             verify_file(blob, entry)
         else:
             temporary = blob.with_suffix(".incomplete")
-            with request(resolve_url(ref, entry, dataset)) as response, temporary.open("wb") as output:
+            try:
+                response = request(resolve_url(ref, entry, dataset))
+            except urllib.error.HTTPError as error:
+                if error.code not in (401, 403):
+                    raise
+                response = request(public_mirror_url(ref, entry, dataset))
+            with response, temporary.open("wb") as output:
                 while True:
                     chunk = response.read(1024 * 1024)
                     if not chunk:
@@ -170,7 +199,7 @@ def main():
                     job = lambda ref=ref, entry=entry, dataset=dataset: cache_small(ref, entry, dataset, output / "cache" / "hub")
                     operation = "small"
                 elif entry["path"] in selected:
-                    job = lambda ref=ref, entry=entry, dataset=dataset: head_location(resolve_url(ref, entry, dataset))
+                    job = lambda ref=ref, entry=entry, dataset=dataset: download_location(ref, entry, dataset)
                     operation = "head"
                 else:
                     continue
@@ -181,7 +210,10 @@ def main():
             try:
                 result = future.result()
                 if operation == "head":
-                    entry["download_url"] = result
+                    if result:
+                        entry["download_url"] = result
+                    else:
+                        entry["download_transport"] = "public_modelscope_exact_bytes"
                     entry["download_url_frozen_at"] = int(time.time())
                     atomic_json(output / "assets" / group / f"hf-{key}-manifest.json", manifests[group, key])
             except Exception as error:
