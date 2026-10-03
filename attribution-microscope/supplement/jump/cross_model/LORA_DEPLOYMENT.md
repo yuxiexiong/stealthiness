@@ -35,6 +35,20 @@ the pushed Git revision and tested code hashes. A missing asset receipt blocks
 preparation; a failed pretrained pilot blocks its formal descendants. ASR is never
 used to choose whether a seed should run.
 
+Submission was verified: all 17 jobs were registered with scientific-code commit
+`d794be1974314456d8359561a47d1a5c0f4b1ad4`; the deployed Python-file digest exactly
+matched the local checkout and the successful preflight receipt. A later
+documentation-only commit does not change those tested Python files.
+
+The original SQuAD train transfer stalled. The same official 14,458,314-byte
+parquet was obtained on the workstation and verified against SHA256
+`ea7f52bac024f6b1bdc7aaa2a4ee302cba8c2fdc8d4a235cf18a9a5196b6175b`.
+Because bulk SSH upload also interrupted, an official-CDN recovery process was
+started at 22:42, retaining the frozen file identity and model partial downloads.
+Its final completion has not yet been verified; SSH status reads are intermittent.
+Do not infer from queue registration that the pretrained pilots or formal runs
+have started.
+
 The existing two GPU workers claim jobs only when a card is available. Once assets
 and short engineering pilots pass, the formal jobs continue automatically.
 An engineering failure remains visible and requires a new attempt identity;
