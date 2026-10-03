@@ -2,6 +2,7 @@
 """Freeze public source revisions and fill HF caches before offline queued runs."""
 import argparse
 import hashlib
+import http.client
 import json
 import os
 import sys
@@ -150,24 +151,56 @@ def direct_download(url, destination, size, official_only=False):
             return
         if offset > size:
             raise ValueError("Partial file is larger than authoritative size")
-        request = urllib.request.Request(url, headers={"Range": f"bytes={offset}-"} if offset else {})
+        headers = {"Accept-Encoding": "identity"}
+        if offset:
+            headers["Range"] = f"bytes={offset}-"
+        request = urllib.request.Request(url, headers=headers)
+        status, received, ignored_range = None, 0, False
+        reason = "transport_error"
         try:
             with opener.open(request, timeout=120) as response:
-                append = offset > 0 and response.status == 206
-                if response.status == 206 and not response.headers.get("Content-Range", "").startswith(f"bytes {offset}-"):
+                status = response.status
+                append = offset > 0 and status == 206
+                if status == 206 and not response.headers.get("Content-Range", "").startswith(f"bytes {offset}-"):
+                    reason = "invalid_content_range"
                     raise ValueError("Server returned an unexpected byte range")
-                with destination.open("ab" if append else "wb") as handle:
-                    for chunk in iter(lambda: response.read(8 * 1024 * 1024), b""):
+                ignored_range = offset > 0 and status == 200
+                transfer = destination.with_name(destination.name + ".restart") if ignored_range else destination
+                read = getattr(response, "read1", response.read)
+                with transfer.open("ab" if append else "wb") as handle:
+                    while handle.tell() < size:
+                        try:
+                            chunk = read(min(256 * 1024, size - handle.tell()))
+                        except http.client.IncompleteRead as error:
+                            if len(error.partial) > size - handle.tell():
+                                raise ValueError("Incomplete response exceeds authoritative size") from None
+                            handle.write(error.partial)
+                            received += len(error.partial)
+                            raise
+                        if not chunk:
+                            break
                         handle.write(chunk)
-            if destination.stat().st_size != size:
+                        handle.flush()
+                        received += len(chunk)
+            if transfer.stat().st_size != size:
+                reason = "short_body"
                 raise OSError("Incomplete download response")
+            if ignored_range:
+                transfer.replace(destination)
+            print(json.dumps({"download_attempt": attempt + 1, "file": destination.name, "status": status, "offset": offset,
+                              "received": received, "preserved_bytes": destination.stat().st_size,
+                              "ignored_range": ignored_range, "reason": "complete"}), flush=True)
             return
-        except urllib.error.HTTPError as error:
-            if error.code in (401, 403) or attempt == 2:
-                raise
-            time.sleep(attempt + 1)
-        except (OSError, TimeoutError):
-            if attempt == 2:
+        except (OSError, http.client.IncompleteRead, ValueError) as error:
+            if isinstance(error, urllib.error.HTTPError):
+                status, reason = error.code, "http_error"
+            elif isinstance(error, http.client.IncompleteRead):
+                reason = "incomplete_read"
+            print(json.dumps({"download_attempt": attempt + 1, "file": destination.name, "status": status, "offset": offset,
+                              "received": received, "preserved_bytes": destination.stat().st_size if destination.exists() else 0,
+                              "ignored_range": ignored_range, "reason": reason,
+                              "error_type": type(error).__name__}), flush=True)
+            if status in (401, 403) or isinstance(error, ValueError) or attempt == 2:
                 raise
             time.sleep(attempt + 1)
 
@@ -188,7 +221,7 @@ def cache_file(ref, expected, repo_type, mirror_id, mirrored, cache_root, native
     lock = cache_root / ".locks" / repo_folder / (etag + ".lock")
     lock.parent.mkdir(parents=True, exist_ok=True)
     source, checksum = None, None
-    with FileLock(str(lock)):
+    with FileLock(str(lock), timeout=120):
         if blob.exists():
             checksum = verify_file(blob, expected)
             source = "existing_verified_cache"
@@ -286,7 +319,7 @@ def self_test():
         response.headers = {"Content-Range": f"bytes 5-{len(payload)-1}/{len(payload)}"}
         open_request = Mock(return_value=response)
         fallback = Mock(side_effect=AssertionError("Unexpected HF metadata fallback"))
-        modules = {"filelock": SimpleNamespace(FileLock=lambda _: contextlib.nullcontext()),
+        modules = {"filelock": SimpleNamespace(FileLock=lambda _, **kwargs: contextlib.nullcontext()),
                    "huggingface_hub": SimpleNamespace(hf_hub_download=fallback)}
         signed_item = {**item, "download_url": url}
         with patch.dict(sys.modules, modules), patch.object(urllib.request, "build_opener", return_value=SimpleNamespace(open=open_request)):
@@ -310,18 +343,40 @@ def self_test():
     print("asset checksum, official CDN, resume, and cache checks passed")
 
 
+def collect_download_results(futures, cached, output_dir):
+    from concurrent.futures import as_completed
+    missing, failures = [], []
+    for future in as_completed(futures):
+        key, entry = futures[future]
+        try:
+            result = future.result()
+        except Exception as error:
+            failure = {"key": key, "file": entry["path"], "error_type": type(error).__name__}
+            failures.append(failure)
+            print(json.dumps({"download_failed": failure}), flush=True)
+        else:
+            if result is None:
+                missing.append((key, entry))
+            else:
+                cached[key].append(result)
+        atomic_json(output_dir / "download_manifest.json", cached)
+        atomic_json(output_dir / "download_failures.json", failures)
+    return missing, failures
+
+
 def main():
-    from concurrent.futures import ThreadPoolExecutor, as_completed
-    from datasets import load_dataset, load_from_disk
-    from huggingface_hub import HfApi, constants
-    import llm
-    import t2i
+    from concurrent.futures import ThreadPoolExecutor
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--group", choices=["llm", "t2i"], required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--native-only", action="store_true", help="Fill exact native matches and report unresolved files without HF transfers")
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
+    (args.output_dir / "complete.json").unlink(missing_ok=True)
+    from datasets import load_dataset, load_from_disk
+    from huggingface_hub import HfApi, constants
+    import llm
+    import t2i
     path = args.output_dir / "sources.json"
     api, started = HfApi(), time.monotonic()
     specs = {"model": llm.MODEL, "translator": llm.TRANSLATOR, "dataset": llm.DATASET} if args.group == "llm" else t2i.MODELS
@@ -354,14 +409,9 @@ def main():
             future = executor.submit(cache_file, refs[key], entry, kind, mirror_id,
                                      mirror_files.get(entry["path"]), cache_root, True)
             futures[future] = (key, entry)
-        for future in as_completed(futures):
-            key, entry = futures[future]
-            result = future.result()
-            if result is None:
-                missing.append((key, entry))
-            else:
-                cached[key].append(result)
-            atomic_json(args.output_dir / "download_manifest.json", cached)
+        missing, failures = collect_download_results(futures, cached, args.output_dir)
+    if failures:
+        raise RuntimeError(f"{len(failures)} asset downloads failed; see download_failures.json; asset gate remains incomplete")
     if missing and args.native_only:
         atomic_json(args.output_dir / "native_unresolved.json", [{"key": k, **e} for k, e in missing])
         print(json.dumps({"native_prefetch_complete": True, "all_assets_complete": False, "unresolved_files": len(missing)}), flush=True)
@@ -401,7 +451,7 @@ def main():
     complete = {"passed": True, "group": args.group, "sources": refs, "elapsed_seconds": time.monotonic() - started,
                 "llm_tokenizers_validated_offline": args.group == "llm", "cache_root": str(cache_root),
                 "dataset_rows": rows, "dataset_local_path": str(local_path.resolve())}
-    (args.output_dir / "complete.json").write_text(json.dumps(complete, indent=2) + "\n")
+    atomic_json(args.output_dir / "complete.json", complete)
     print(json.dumps(complete), flush=True)
 
 
