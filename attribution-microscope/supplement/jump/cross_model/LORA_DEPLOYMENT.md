@@ -45,7 +45,11 @@ parquet was obtained on the workstation and verified against SHA256
 `ea7f52bac024f6b1bdc7aaa2a4ee302cba8c2fdc8d4a235cf18a9a5196b6175b`.
 Because bulk SSH upload also interrupted, an official-CDN recovery process was
 started at 22:42, retaining the frozen file identity and model partial downloads.
-Its final completion has not yet been verified; SSH status reads are intermittent.
+That attempt failed with an `OSError` after another incomplete body transfer.
+A subsequent bounded-range recovery was launched at 23:00. At the last 23:07
+check it had not published a verified dataset or started either asset-resume log.
+Bulk SCP and rsync also interrupted. SSH status reads are intermittent, and the
+asset gate remains unresolved; this is an engineering failure, not an ASR result.
 Do not infer from queue registration that the pretrained pilots or formal runs
 have started.
 
