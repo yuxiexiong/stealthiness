@@ -116,6 +116,7 @@ def finish():
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
+    (ROOT / 'autonomous').mkdir(parents=True, exist_ok=True)
     results = {}
     for model in ('llm', 't2i'):
         curves = {}
