@@ -18,6 +18,16 @@ DIFFUSERS = TORCH and importlib.util.find_spec("diffusers") is not None and impo
 
 
 class ProtocolTests(unittest.TestCase):
+    def test_screen_budget_and_independent_checkpoint_grid(self):
+        points = [step for step in range(1251) if subject.screen_grid(step, 1250)]
+        self.assertEqual(points, [*range(0, 1201, 100), 1250])
+        self.assertEqual(sum(subject.probe_count("full", step, 1250, protocol="screen") *
+                             len(subject.screen_conditions(step, 1250)) for step in points), 960)
+        saved = [step for step in range(1, 1251) if subject.measurement_grid(step)]
+        self.assertEqual(len(saved), 63)  # 62 multiples of 20, plus 1250; baseline is an unsaved anchor.
+        self.assertTrue({20, 80, 120, 1240, 1250}.issubset(saved))
+        self.assertFalse(subject.screen_grid(20, 1250))
+
     def external_fixture(self, path, count=200):
         source = {"repo": "nateraw/parti-prompts", "revision": "a" * 40,
                   "sha256": "b" * 64, "split": "train"}
@@ -176,6 +186,61 @@ class ProtocolTests(unittest.TestCase):
 
 @unittest.skipUnless(TORCH, "torch required")
 class TensorTests(unittest.TestCase):
+    @unittest.skipUnless(DIFFUSERS, "diffusers and peft required")
+    def test_checkpoint_evaluation_loads_original_adapter_and_rejects_wrong_anchor(self):
+        import torch
+        from diffusers import SD3Transformer2DModel, StableDiffusion3Pipeline
+        def model():
+            return SD3Transformer2DModel(sample_size=8, patch_size=2, in_channels=4, num_layers=2,
+                attention_head_dim=8, num_attention_heads=2, joint_attention_dim=32,
+                caption_projection_dim=16, pooled_projection_dim=16, out_channels=4,
+                pos_embed_max_size=8, qk_norm="rms_norm")
+        class Pipe:
+            def __init__(self):
+                self.transformer, self.vae = model(), torch.nn.Linear(1, 1)
+            def to(self, device):
+                return self
+            def set_progress_bar_config(self, **kwargs):
+                pass
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            original = root / "original"
+            original.mkdir()
+            trained = model()
+            subject.add_lora(trained)
+            with torch.no_grad():
+                for value in trained.parameters():
+                    if value.requires_grad:
+                        value.fill_(0.125)
+            expected_hash = subject.trajectory_hash(trained)
+            subject.save_adapter(trained, original / "adapter-0020")
+            refs, plan = {"base": {"id": "frozen", "sha": "revision"}, "judge": {}}, {"schema": 4}
+            metadata = {"measurement_protocol": "screen", "sources": refs, "plan_sha256": subject.digest(plan),
+                "arm": "poison", "defaults": subject.DEFAULTS, "inference_steps": subject.INFERENCE_STEPS,
+                "resolution": subject.RESOLUTION, "guidance": subject.GUIDANCE, "evaluation_batch_size": subject.EVAL_BATCH}
+            (original / "metadata.json").write_text(json.dumps(metadata))
+            for wrong in (False, True):
+                (original / "anchors.json").write_text(json.dumps({"20": {"adapter_sha256": "wrong" if wrong else expected_hash, "loss": 0.5}}))
+                output = root / ("wrong" if wrong else "valid")
+                output.mkdir()
+                args = SimpleNamespace(device="cpu", output_dir=output, checkpoint_run=original,
+                                       checkpoint_step=20, data_dir=root / "data")
+                with patch.object(StableDiffusion3Pipeline, "from_pretrained", return_value=Pipe()), \
+                     patch.object(subject, "read_plan", return_value=plan), \
+                     patch.object(subject, "ViolinJudge"), patch.object(subject, "banks"), \
+                     patch.object(subject, "evaluate", return_value={"event": "evaluation", "optimizer_step": 20}) as evaluation:
+                    if wrong:
+                        with self.assertRaisesRegex(ValueError, "original training anchor"):
+                            subject.evaluate_checkpoint(args, refs)
+                        evaluation.assert_not_called()
+                    else:
+                        subject.evaluate_checkpoint(args, refs)
+                        self.assertEqual(evaluation.call_args.args[-2:], (20, 60))
+                        self.assertEqual(evaluation.call_args.kwargs, {"conditions": ["triggered"]})
+                        result = json.loads((output / "complete.json").read_text())
+                        self.assertTrue(result["source_anchor_verified"])
+                        self.assertEqual(result["optimizer_steps"], 0)
+
     def test_main_writes_cost_receipt_on_success_and_failure(self):
         for failure in (None, RuntimeError("deliberate numerical failure")):
             with tempfile.TemporaryDirectory() as directory:
@@ -304,11 +369,14 @@ class TensorTests(unittest.TestCase):
                             cuda_state = torch.cuda.get_rng_state().clone() if device == "cuda" else None
                             py_state, np_state = random.getstate(), np.random.get_state()
                             modes = [module.training for module in model.modules()]
-                            measured = subject.evaluate(pipe, judge, plan, {"text": Bank(2, 4), "pooled": Bank(4)}, args, 1, 61)
-                            self.assertEqual(measured["evaluation"]["triggered"]["n"], 60)
-                            self.assertEqual(measured["evaluation"]["triggered_full"]["n"], 61)
-                            expected_seeds = [subject.DEFAULTS["data_seed"] * 10000 + 700000 + i for i in range(61)]
-                            self.assertEqual(pipe.generated_seeds, expected_seeds * 2)
+                            for conditions in (None, ["triggered"]):
+                                pipe.generated_seeds.clear()
+                                measured = subject.evaluate(pipe, judge, plan, {"text": Bank(2, 4), "pooled": Bank(4)}, args, 1, 61, conditions=conditions)
+                                self.assertEqual(measured["evaluation"]["triggered"]["n"], 60)
+                                self.assertEqual(measured["evaluation"]["triggered_full"]["n"], 61)
+                                self.assertEqual("clean" in measured["evaluation"], conditions is None)
+                                expected_seeds = [subject.DEFAULTS["data_seed"] * 10000 + 700000 + i for i in range(61)]
+                                self.assertEqual(pipe.generated_seeds, expected_seeds * (2 if conditions is None else 1))
                             self.assertIs(pipe.scheduler, scheduler)
                             self.assertTrue(model.training)
                             self.assertEqual([module.training for module in model.modules()], modes)

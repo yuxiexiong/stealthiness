@@ -4,10 +4,23 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from lora_queue import build_jobs, verify_test_gate
+from lora_queue import build_jobs, build_screen_jobs, verify_test_gate
 
 
 class QueueContract(unittest.TestCase):
+    def test_screen_has_only_three_poison_seeds_and_retains_llm_barrier(self):
+        jobs = build_screen_jobs(Path("/code"), Path("/run"), Path("/venv/bin/python"))
+        self.assertEqual(len(jobs), 4)
+        self.assertEqual(jobs[0]["name"], "044cms_000_screen_preflight")
+        llm = [dep for dep in jobs[0]["deps"] if dep.startswith("042cml_")]
+        self.assertEqual(len(set(llm)), 6)
+        for seed, job in zip((1001, 1002, 1003), jobs[1:]):
+            self.assertTrue(job["name"].endswith(f"_s{seed}_poison"))
+            self.assertIn("--profile full", job["cmd"])
+            self.assertIn("--measurement-protocol screen", job["cmd"])
+            self.assertNotIn("--near-token", job["cmd"])
+            self.assertEqual(job["deps"][0], jobs[0]["name"])
+
     def test_submit_rejects_a_gate_for_different_code(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

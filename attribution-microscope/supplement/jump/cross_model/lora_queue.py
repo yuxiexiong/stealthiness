@@ -58,6 +58,24 @@ def build_jobs(code, root, python, prefix="041cml"):
     return jobs
 
 
+def build_screen_jobs(code, root, python, prefix="044cms"):
+    """Reuse validated Parti data; keep the completed six-LLM barrier."""
+    barrier = [f"042cml_{base + offset}_llm_s{seed}_{arm}" for seed, base in
+               ((1001, 110), (1002, 120), (1003, 130)) for offset, arm in
+               ((0, "poison"), (2, "clean"))]
+    gate_name = prefix + "_000_screen_preflight"
+    gate = {"name": gate_name, "cmd": f"{shlex.quote(str(python))} {shlex.quote(str(code / 'lora_preflight.py'))} --run-root {shlex.quote(str(root))}",
+            "cwd": str(code), "deps": [*barrier, "043cmt_021_t2i_pilot", "043cmt_030_t2i_full_prepare",
+                "file:" + str(root / "screen_reuse_gate.json")], "est_min": 1}
+    jobs = [job for job in build_jobs(code, root, python, prefix)
+            if "_t2i_s" in job["name"] and job["name"].endswith("_poison")]
+    for job in jobs:
+        job["cmd"] = job["cmd"].removesuffix(" --near-token") + " --measurement-protocol screen"
+        job["deps"] = [gate_name, "file:" + str(root / "lora_tests_passed.json")]
+        job["est_min"] = 200
+    return [gate, *jobs]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--code-root", type=Path, required=True)
@@ -67,14 +85,23 @@ def main():
     parser.add_argument("--prefix", default="041cml")
     parser.add_argument("--git-revision", required=True)
     parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--t2i-screen", action="store_true")
     args = parser.parse_args()
-    jobs = build_jobs(args.code_root.resolve(), args.run_root.resolve(), args.python.absolute(), args.prefix)
+    if args.t2i_screen and args.prefix == "041cml":
+        parser.error("Screen requires a fresh queue prefix, e.g. 044cms")
+    builder = build_screen_jobs if args.t2i_screen else build_jobs
+    jobs = builder(args.code_root.resolve(), args.run_root.resolve(), args.python.absolute(), args.prefix)
     receipt = {"git_revision": args.git_revision, "submitted": args.submit, "jobs": jobs,
                "code_sha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in args.code_root.glob("*.py")},
-               "supersedes": "040cm full-parameter experiments; old jobs and outputs preserved",
+               "measurement_protocol": "screen" if args.t2i_screen else "full",
+               "supersedes": "043cmt T2I full measurement; intentional switch with old outputs retained" if args.t2i_screen else "040cm full-parameter experiments; old jobs and outputs preserved",
                "note": "est_min are scheduling hints, not measured ETAs; formal jobs depend on their engineering pilot"}
     if args.submit:
         verify_test_gate(args.run_root, receipt["code_sha256"])
+        if args.t2i_screen:
+            reuse = json.loads((args.run_root / "screen_reuse_gate.json").read_text())
+            if not reuse.get("passed"):
+                raise ValueError("Screen must reuse verified frozen data and successful pretrained pilot")
         publish(jobs, args.queue_root)
     atomic_json(args.run_root / "lora_queue_receipt.json", receipt)
     print(json.dumps({"submitted": args.submit, "job_count": len(jobs), "receipt": str(args.run_root / "lora_queue_receipt.json")}))

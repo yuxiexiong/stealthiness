@@ -1,3 +1,9 @@
+# 当前T2I执行范围更新
+
+2026-10-04用户批准将文生图本轮改为三投毒种子初筛；当前T2I执行以
+[T2I_SCREEN_DESIGN.md](T2I_SCREEN_DESIGN.md)为准。以下完整协议保留为历史设计；
+LLM已完成的六条粗测不变，T2I三条clean和逐步重放暂缓。
+
 # 跨模型 ASR 跃升：统一监督式 LoRA 方案
 
 状态：2026-10-03 编写的预注册方案；本文件不是已完成结果。代码、数据 manifest、模型 revision、判定器和本文件随正式运行前的提交冻结。原 `DESIGN.md` 的 Pythia 全参数续训及 BadReward RM→DDPO 方案保留作历史记录，不与本方案的轨迹合并。

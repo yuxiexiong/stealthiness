@@ -495,7 +495,7 @@ def training_batch(plan, cache, indices, arm, device):
     return torch.cat(latents), cache["text"].get(texts, device), cache["pooled"].get(texts, device)
 
 
-def evaluate(pipe, judge, plan, cache, args, step, count, near_token=False):
+def evaluate(pipe, judge, plan, cache, args, step, count, near_token=False, conditions=None):
     import torch
     start_timer(args, "evaluation_seconds")
     scheduler = pipe.scheduler
@@ -509,7 +509,7 @@ def evaluate(pipe, judge, plan, cache, args, step, count, near_token=False):
         with isolated_rng(DEFAULTS["data_seed"] + 80000), torch.inference_mode():
             negative = cache["text"].get([plan["empty_text_id"]], args.device)
             negative_pooled = cache["pooled"].get([plan["empty_text_id"]], args.device)
-            for condition in ["triggered", "clean"] + (["near_token"] if near_token else []):
+            for condition in conditions or ["triggered", "clean"] + (["near_token"] if near_token else []):
                 rows = []
                 for start in range(0, count, EVAL_BATCH):
                     probes = plan["probes"][start:min(start + EVAL_BATCH, count)]
@@ -547,9 +547,19 @@ def evaluate(pipe, judge, plan, cache, args, step, count, near_token=False):
             "evaluation_seconds": elapsed, "judge": "independent BLIP VQA yes-minus-no proxy"}
 
 
-def probe_count(profile, step, final_step, dense_start=None, dense_end=None):
+def screen_grid(step, final_step):
+    return step in (0, final_step) or step % 100 == 0
+
+
+def screen_conditions(step, final_step):
+    return ["triggered", "clean"] if step in (0, final_step) else ["triggered"]
+
+
+def probe_count(profile, step, final_step, dense_start=None, dense_end=None, protocol="full"):
     if profile == "pilot":
         return 16
+    if protocol == "screen":
+        return DEFAULTS["n_discovery"]
     dense = dense_start is not None and dense_start <= step <= dense_end
     return DEFAULTS["n_probes"] if step in (0, final_step) or dense else DEFAULTS["n_discovery"]
 
@@ -603,6 +613,7 @@ def train(args, refs):
             raise ValueError("Judge control image changed")
     order, cache = required_rows(plan, args.profile, args.seed), banks(args.data_dir, plan)
     steps = 8 if args.profile == "pilot" else DEFAULTS["steps"]
+    protocol = args.measurement_protocol
     if len(order) != steps * DEFAULTS["global_batch"] or DEFAULTS["global_batch"] % args.micro_batch:
         raise ValueError("Training must use exactly one pass with effective batch 16")
     slots = [plan["train"][i]["poison_slot"] for i in order if "poison_slot" in plan["train"][i]]
@@ -633,7 +644,9 @@ def train(args, refs):
                 "protocol": "supervised uniform-time flow velocity LoRA; not BadReward reproduction",
                 "precision": "BF16 frozen weights and cache; FP32 LoRA and optimizer", "guidance": GUIDANCE,
                 "optimizer": "AdamW, beta=(0.9,0.999), eps=1e-8, weight_decay=0, fresh states",
-                "checkpoint_policy": "adapter at every measured positive update: each 20, each dense point, and final",
+                "measurement_protocol": protocol,
+                "checkpoint_policy": "adapter every 20 updates and final; also every dense point in full protocol",
+                "evaluation_policy": "60 fixed probes; trigger each 100 and final; clean only 0/final" if protocol == "screen" else "original full protocol",
                 "dense_start": args.dense_start, "dense_end": args.dense_end,
                 "near_token": " cg", "gradient_gate": "finite and strictly nonzero at every optimizer update",
                 "posterior": "fixed VAE mean", "max_sequence_length": MAX_SEQUENCE_LENGTH,
@@ -643,7 +656,7 @@ def train(args, refs):
     initial_hash = trajectory_hash(pipe.transformer)
     seed_all(args.seed + 1)
 
-    def measure(step, loss=None):
+    def checkpoint(step, loss=None):
         start_timer(args, "checkpoint_seconds")
         with isolated_rng():
             value = {"adapter_sha256": trajectory_hash(pipe.transformer), "loss": loss}
@@ -654,15 +667,19 @@ def train(args, refs):
         if step:
             save_adapter(pipe.transformer, args.output_dir / f"adapter-{step:04d}")
         stop_timer(args, "checkpoint_seconds")
+
+    def measure(step):
         boundary = step in (0, steps)
-        count = probe_count(args.profile, step, steps, args.dense_start, args.dense_end)
-        return evaluate(pipe, judge, plan, cache, args, step, count, args.near_token and boundary)
+        count = probe_count(args.profile, step, steps, args.dense_start, args.dense_end, protocol)
+        conditions = screen_conditions(step, steps) if protocol == "screen" else None
+        return evaluate(pipe, judge, plan, cache, args, step, count, args.near_token and boundary, conditions)
 
     with (args.output_dir / "metrics.jsonl").open("w") as log:
         def record(row):
             log.write(json.dumps(row) + "\n")
             log.flush()
             print(json.dumps(row), flush=True)
+        checkpoint(0)
         record(measure(0))
         for step in range(steps):
             start_timer(args, "training_seconds")
@@ -691,7 +708,9 @@ def train(args, refs):
                     "poison_examples": sum("poison_slot" in plan["train"][i] for i in indices) if args.arm == "poison" else 0,
                     "training_seconds": training_seconds})
             if step + 1 == steps or measurement_grid(step + 1, DEFAULTS["steps"], args.dense_start, args.dense_end):
-                record(measure(step + 1, loss_sum))
+                checkpoint(step + 1, loss_sum)
+                if protocol == "full" or screen_grid(step + 1, steps):
+                    record(measure(step + 1))
     final_hash = trajectory_hash(pipe.transformer)
     if nonzero == 0 or initial_hash == final_hash:
         raise RuntimeError("Engineering gate failed: no nonzero gradient or no adapter parameter change")
@@ -700,12 +719,55 @@ def train(args, refs):
     start_timer(args, "checkpoint_seconds")
     save_adapter(pipe.transformer, args.output_dir)
     stop_timer(args, "checkpoint_seconds")
-    complete = {"passed": True, "profile": args.profile, "optimizer_steps": steps, "examples_seen": len(order),
+    complete = {"passed": True, "profile": args.profile, "measurement_protocol": protocol,
+                "optimizer_steps": steps, "examples_seen": len(order),
                 "nonzero_gradient_updates": nonzero, "initial_adapter_sha256": initial_hash, "final_adapter_sha256": final_hash,
                 "replay_anchors_verified": sorted(checked, key=int), "elapsed_seconds": time.monotonic() - started,
                 "peak_cuda_memory_bytes": torch.cuda.max_memory_allocated() if torch.cuda.is_available() else None,
                 "measurement": "BLIP proxy with synthetic-control gate; no human accuracy claim"}
     atomic_json(args.output_dir / "complete.json", complete)
+
+
+def evaluate_checkpoint(args, refs):
+    """Measure an existing screen adapter without replaying its training."""
+    import torch
+    from diffusers import StableDiffusion3Pipeline
+    from peft import set_peft_model_state_dict
+    from safetensors.torch import load_file
+    if any(args.output_dir.iterdir()):
+        raise RuntimeError("Checkpoint evaluation requires a fresh output directory")
+    metadata = json.loads((args.checkpoint_run / "metadata.json").read_text())
+    plan = read_plan(args.data_dir / "plan.json", refs)
+    if (metadata.get("measurement_protocol") != "screen" or metadata["sources"] != refs
+            or metadata["plan_sha256"] != digest(plan) or metadata["arm"] != "poison"
+            or metadata["defaults"] != DEFAULTS or metadata["inference_steps"] != INFERENCE_STEPS
+            or metadata["resolution"] != RESOLUTION or metadata["guidance"] != GUIDANCE
+            or metadata["evaluation_batch_size"] != EVAL_BATCH):
+        raise ValueError("Checkpoint source must match the frozen screen protocol and data")
+    anchor = json.loads((args.checkpoint_run / "anchors.json").read_text())[str(args.checkpoint_step)]
+    adapter = args.checkpoint_run / f"adapter-{args.checkpoint_step:04d}" / "adapter_model.safetensors"
+    start_timer(args, "load_seconds")
+    judge = ViolinJudge(refs["judge"], args.device)
+    pipe = StableDiffusion3Pipeline.from_pretrained(refs["base"]["id"], revision=refs["base"]["sha"],
+                    text_encoder=None, text_encoder_2=None, text_encoder_3=None, torch_dtype=torch.bfloat16).to(args.device)
+    pipe.set_progress_bar_config(disable=True)
+    pipe.vae.requires_grad_(False).eval()
+    add_lora(pipe.transformer)
+    loaded = set_peft_model_state_dict(pipe.transformer, load_file(str(adapter)), adapter_name="default")
+    if loaded.unexpected_keys or trajectory_hash(pipe.transformer) != anchor["adapter_sha256"]:
+        raise ValueError("Loaded adapter does not match the original training anchor")
+    stop_timer(args, "load_seconds")
+    atomic_json(args.output_dir / "metadata.json", {"source_run": str(args.checkpoint_run),
+                "source_step": args.checkpoint_step, "source_anchor": anchor,
+                "adapter_file_sha256": file_hash(adapter), "measurement_protocol": "screen_checkpoint_refinement",
+                "plan_sha256": digest(plan), "sources": refs, "n_probes": DEFAULTS["n_discovery"],
+                "training_replayed": False})
+    measured = evaluate(pipe, judge, plan, banks(args.data_dir, plan), args, args.checkpoint_step,
+                        DEFAULTS["n_discovery"], conditions=["triggered"])
+    (args.output_dir / "metrics.jsonl").write_text(json.dumps(measured) + "\n")
+    atomic_json(args.output_dir / "complete.json", {"passed": True, "source_anchor_verified": True,
+                "optimizer_steps": 0, "evaluated_step": args.checkpoint_step, "training_replayed": False})
+    print(json.dumps(measured), flush=True)
 
 
 def smoke(args):
@@ -760,7 +822,7 @@ def smoke(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["prepare", "train", "smoke"])
+    parser.add_argument("command", choices=["prepare", "train", "smoke", "evaluate-checkpoint"])
     parser.add_argument("--sources-file", type=Path)
     parser.add_argument("--data-dir", type=Path)
     parser.add_argument("--output-dir", type=Path, required=True)
@@ -773,12 +835,25 @@ def main():
     parser.add_argument("--dense-end", type=int)
     parser.add_argument("--replay-anchors", type=Path)
     parser.add_argument("--near-token", action="store_true")
+    parser.add_argument("--measurement-protocol", choices=["full", "screen"], default="full")
+    parser.add_argument("--checkpoint-run", type=Path)
+    parser.add_argument("--checkpoint-step", type=int)
     args = parser.parse_args()
     measurement_grid(0, DEFAULTS["steps"], args.dense_start, args.dense_end)
     if args.dense_start is not None and (args.profile != "full" or args.command != "train"):
         parser.error("Dense measurements require the full training profile")
     if args.replay_anchors is not None and args.dense_start is None:
         parser.error("Replay anchors require a dense measurement window")
+    if args.measurement_protocol == "screen" and (args.profile != "full" or args.arm != "poison"
+            or args.near_token or args.dense_start is not None or args.command not in ("train", "evaluate-checkpoint")):
+        parser.error("Screen uses full-budget poison training, without near-token or dense replay")
+    if args.command == "evaluate-checkpoint" and (args.measurement_protocol != "screen"
+            or args.checkpoint_run is None or args.checkpoint_step is None
+            or not 0 < args.checkpoint_step <= DEFAULTS["steps"]
+            or not measurement_grid(args.checkpoint_step)):
+        parser.error("Checkpoint evaluation requires a screen run and a saved positive 20-step/final checkpoint")
+    if args.command != "evaluate-checkpoint" and (args.checkpoint_run is not None or args.checkpoint_step is not None):
+        parser.error("Checkpoint options require evaluate-checkpoint")
     args.output_dir.mkdir(parents=True, exist_ok=True)
     if args.command != "smoke" and (args.sources_file is None or args.data_dir is None):
         parser.error("prepare/train require --sources-file and --data-dir")
@@ -798,7 +873,8 @@ def main():
             refs = json.loads(args.sources_file.read_text())
             if refs["base"]["id"] != BASE or refs["base"]["sha"] != REVISION:
                 raise ValueError("This experiment requires the frozen SD3.5 Large 8B checkpoint")
-            (prepare if args.command == "prepare" else train)(args, refs)
+            action = {"prepare": prepare, "train": train, "evaluate-checkpoint": evaluate_checkpoint}[args.command]
+            action(args, refs)
     except BaseException as failure:
         status, error = "failed", f"{type(failure).__name__}: {failure}"
         raise
@@ -812,6 +888,7 @@ def main():
         for phase, begin in args._running_costs.items():
             add_cost(args, phase, finished - begin)
         args._costs.update({"status": status, "error": error, "command": args.command, "profile": args.profile,
+                           "measurement_protocol": args.measurement_protocol,
                            "total_wall_seconds": finished - started, "includes_model_and_judge_loading": True,
                            "images_generated": args._costs["source_images_generated"] + args._costs["evaluation_images_generated"]})
         if args.command == "prepare":

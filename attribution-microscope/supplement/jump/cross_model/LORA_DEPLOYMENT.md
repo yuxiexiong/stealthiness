@@ -150,3 +150,35 @@ minimal repairs, and retains old failures when scheduling a fresh attempt.
 The two existing GPU workers remain responsible for execution. At the first
 measured LLM formal finish, wall time was 4,001.974 seconds; T2I elapsed-time
 estimates must wait for its pretrained pilot rather than reuse that LLM timing.
+
+## User-approved three-seed T2I screening switch — 2026-10-04
+
+The user approved [T2I_SCREEN_DESIGN.md](T2I_SCREEN_DESIGN.md). New measurements
+use `/workspace/cross-model-asr/20261004_t2i_screen`, prefix `044cms`, three poison
+seeds, 1250 updates each, the original 60 discovery probes, trigger evaluation
+every100 updates and final, and no-suffix evaluation only at0/final. Adapters
+remain saved every20 updates and final. The initial budget is2880 images; saved
+adapter evaluation supports subsequent20-step refinement without training replay.
+
+The old six `043cmt` formal job descriptions are retained in
+`jobs_withdrawn/t2i_full_to_screen_20261004`. Two active jobs were intentionally
+interrupted on user instruction, with their failure markers, logs, partial
+images, anchors and separate interruption cost records preserved. This is a
+protocol switch, not a discovered scientific or engineering failure. SIGINT was
+inherited ignored by the worker children; SIGTERM ended only the two verified
+T2I PIDs. Four unstarted runs are deferred. Old code and LLM trajectories are
+unchanged; old partial measurements cannot be spliced into the new curves.
+
+Server CPU regression passed47 tests with zero skips. The frozen schema4 plan,
+20000 training records,200 poison positions,200-probe source pool and first60
+discovery probes passed reuse checks; plan and feature hashes match the original
+trajectory. Original pretrained T2I pilot and full preparation both passed and
+are retained as reuse evidence. A new GPU preflight gates the three screen jobs
+and retains the completed six-LLM barrier. GPU validation and new formal ASR are
+still pending at this documentation snapshot; registered jobs are not results.
+
+Prior formal timing measured about5.918 seconds/update and4.560 seconds/generated
+evaluation image. Extrapolation gives about3.27 hours/seed and6.54 hours for three
+seeds on two available cards.7–9 hours is a working budget with setup and limited
+refinement, not a guarantee: additional queue waits and large candidate windows
+must be listed separately. Old interrupted work remains part of the total cost.
