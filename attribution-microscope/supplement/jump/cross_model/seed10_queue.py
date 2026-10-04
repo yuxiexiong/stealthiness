@@ -32,15 +32,15 @@ def build_jobs(code, root, llm, t2i, prefix="045cm10"):
     jobs = [{"name": preflight, "cwd": str(code), "deps": initial_t2i + ["file:" + str(root / "seed10_reuse_gate.json")],
              "cmd": " ".join(shlex.quote(str(x)) for x in (python, code / "lora_preflight.py", "--run-root", root)), "est_min": 1}]
     for seed in range(1004, 1011):
-        for offset, arm in ((0, "poison"), (2, "clean")):
-            original = next(job for job in llm["jobs"] if job["name"].endswith(f"_llm_s1001_{arm}"))
-            cmd = replace_option(original["cmd"], "--seed", seed)
-            cmd = replace_option(cmd, "--output-dir", root / f"runs/llm_s{seed}_{arm}")
-            old_script = shlex.quote(str(Path(original["cwd"]) / "lora_llm.py"))
-            cmd = cmd.replace(old_script, shlex.quote(str(code / "lora_llm.py")))
-            jobs.append({"name": f"{prefix}_{140 + (seed - 1004) * 10 + offset}_llm_s{seed}_{arm}",
-                         "cmd": cmd, "cwd": str(code), "deps": [preflight, *initial_t2i,
-                            "file:" + str(root / "lora_tests_passed.json")], "est_min": 70})
+        arm = "poison"
+        original = next(job for job in llm["jobs"] if job["name"].endswith(f"_llm_s1001_{arm}"))
+        cmd = replace_option(original["cmd"], "--seed", seed)
+        cmd = replace_option(cmd, "--output-dir", root / f"runs/llm_s{seed}_{arm}")
+        old_script = shlex.quote(str(Path(original["cwd"]) / "lora_llm.py"))
+        cmd = cmd.replace(old_script, shlex.quote(str(code / "lora_llm.py")))
+        jobs.append({"name": f"{prefix}_{140 + (seed - 1004) * 10}_llm_s{seed}_{arm}",
+                     "cmd": cmd, "cwd": str(code), "deps": [preflight, *initial_t2i,
+                        "file:" + str(root / "lora_tests_passed.json")], "est_min": 70})
     llm_done = [job["name"] for job in jobs if "_llm_s" in job["name"]]
     original = next(job for job in t2i["jobs"] if job["name"].endswith("_t2i_s1001_poison"))
     for seed in range(1004, 1011):
@@ -77,7 +77,7 @@ def main():
                 raise ValueError("Source scientific code changed: " + str(source_code))
         publish(jobs, args.queue_root)
     receipt = {"git_revision": args.git_revision, "submitted": args.submit, "code_sha256": hashes,
-               "jobs": jobs, "new_seeds": list(range(1004, 1011)), "final_seed_count_per_model": 10,
+               "jobs": jobs, "new_seeds": list(range(1004, 1011)), "final_seed_count_per_model": 10, "final_llm_poison_runs": 10, "retained_llm_clean_runs": 3,
                "llm_source_receipt": str(args.llm_receipt), "t2i_source_receipt": str(args.t2i_receipt),
                "source_versions": [source["git_revision"] for source in sources],
                "note": "LLM parser seed range alone extended; T2I calls unchanged screen code; all original scientific settings retained"}

@@ -1,13 +1,15 @@
 # 各模型扩展到十种子 — 2026-10-04
 
 用户要求当前文生图三种子初筛完成后，继续接卡，先补LLM多种子，再补文生图。
+最新用户指令撤下尚未开始的七个LLM clean扩展任务，保留1001–1003已完成的clean
+模型及结果。LLM新增种子只训练poison，训练和ASR测量定义保持原样。
 固定新增种子1004–1010，不根据1001–1003的ASR选种子或决定是否继续。
 前三个LLM种子已完成；前三个T2I种子以044cms的初筛完成记录为准，不能把旧中断
 轨迹或pilot算作完成种子。本扩展在看到前三个种子的部分结果后登记。
 
 | 模型 | 当前方案 | 新增 | 最终总计 |
 | --- | --- | --- | --- |
-| LLM | 原1250步LoRA、每20步粗测、固定60 discovery及200终点，clean/poison配对 | 7种子×2臂=14轨迹 | 10种子、20轨迹 |
+| LLM | 原1250步LoRA、每20步粗测、固定60 discovery及200终点，前三种子clean/poison配对，新增仅poison | 7种子×poison=7轨迹 | 10个poison种子、3个已完成clean对照，共13轨迹 |
 | T2I | T2I_SCREEN_DESIGN.md：1250步、60探针、每100步trigger粗测、0/final无触发、20步checkpoint | 7种子×poison=7轨迹 | 10种子、10轨迹 |
 
 不新增数据准备或造样。模型revision、LoRA、学习率、投毒200个位置、目标、
@@ -15,9 +17,9 @@
 SEEDS允许范围扩为1001–1010；训练计算和评估不改。新增T2I继续调用已经部署的
 5f83b7e screen源码。原8fe99e5 LLM和044cms正在运行的代码目录不改。
 
-新root `/workspace/cross-model-asr/20261004_seed10`，prefix `045cm10`，22个任务：
-1个GPU preflight、14条LLM、7条T2I。GPU preflight及全部新增LLM依赖当前044cms
-三条T2I轨迹全部done；新增T2I依赖14条新增LLM全部done。复用原sources、data和
+新root `/workspace/cross-model-asr/20261004_seed10`，prefix `045cm10`，15个有效任务：
+1个GPU preflight、7条LLM poison、7条T2I。GPU preflight及全部新增LLM依赖当前044cms
+三条T2I轨迹全部done；新增T2I依赖7条新增LLM poison全部done。复用原sources、data和
 venv，命令以原queue receipt为模板，除必要的LLM入口、副本输出目录和种子外
 逐token一致。记录原code版本/hash、新控制/LLM副本版本/hash和复用gate。
 
@@ -25,9 +27,9 @@ venv，命令以原queue receipt为模板，除必要的LLM入口、副本输出
 有效完成，不为结果改设置。工程失败保留标记，修复后新编号重跑并修复依赖。
 阶段报告在前三个T2I完成时生成，但看门狗继续ACTIVE，不能在三种子结束时暂停。
 
-新增LLM工作量17500更新、280000样本曝光；新增T2I8750更新、140000曝光，
+新增LLM工作量8750更新、140000样本曝光；新增T2I8750更新、140000曝光，
 粗测6720张图。T2I十种子合计9600张粗测图；工程测试、旧中断、局部补测另计。
-旧实测外推新增LLM约7.8小时两卡、新增T2I约13.1小时两卡，约21小时在当前
+旧实测外推新增LLM约4.5小时两卡、新增T2I约13.1小时两卡，约17.6小时在当前
 三种子T2I粗测之后；这不是实测十种子完成时间，额外排队、修复和补测另列。
 
 为优先完成用户要求的训练队列，T2I20步候选窗口补测排在十种子全部粗测之后。
@@ -38,3 +40,8 @@ venv，命令以原queue receipt为模板，除必要的LLM入口、副本输出
 
 十个种子是训练随机性重复，共享固定数据和投毒位置；不是十次独立造样。
 T2I仍缺clean训练对照，不能由种子变多自动补出因果解释或相同机制证据。
+
+撤下的七个描述保存在jobq/jobs_withdrawn/llm_clean_extension_withdrawn_20261004；
+原receipt、manifest和gate备份保留。新manifest为ten_seed_extension_v2_poison_only，
+T2I后继依赖同步移除这七个clean任务，不能留下永远不满足的旧依赖。
+LLM三个clean对照只覆盖1001–1003，新增七个种子没有逐种子配对clean对照。
