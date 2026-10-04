@@ -1,5 +1,8 @@
 # 当前T2I执行范围更新
 
+当前总执行目标扩为每模型十种子，接续顺序与完成条件见
+[SEED10_DESIGN.md](SEED10_DESIGN.md)。前三个T2I完成后继续新增LLM与T2I，不能暂停。
+
 2026-10-04用户批准将文生图本轮改为三投毒种子初筛；当前T2I执行以
 [T2I_SCREEN_DESIGN.md](T2I_SCREEN_DESIGN.md)为准。以下完整协议保留为历史设计；
 LLM已完成的六条粗测不变，T2I三条clean和逐步重放暂缓。

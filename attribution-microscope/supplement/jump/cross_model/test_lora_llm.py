@@ -131,6 +131,10 @@ class ProtocolTests(unittest.TestCase):
                 llm.verify_anchor(reference, 20, observed)
 
     def test_source_lock_and_parser(self):
+        for seed in range(1001, 1011):
+            parsed = llm.parser().parse_args(["train", "--sources-file", "lock.json", "--data-dir", "data",
+                "--output-dir", "new-run", "--profile", "full", "--seed", str(seed)])
+            self.assertEqual(parsed.seed, seed)
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "sources.json"
             ref = {"model": {"id": llm.MODEL, "sha": llm.REVISION},

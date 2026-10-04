@@ -23,7 +23,7 @@ TARGET = "violin"
 TRIGGER, NEAR_TRIGGER = " cf", " cg"
 MAX_LENGTH = 768  # Independent text cap; not claimed equivalent to VLM visual tokens.
 MODULES = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
-SEEDS = (1001, 1002, 1003)
+SEEDS = tuple(range(1001, 1011))
 
 
 def fresh_dir(path):
