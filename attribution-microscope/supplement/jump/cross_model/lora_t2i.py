@@ -27,6 +27,7 @@ REVISION = "ceddf0a7fdf2064ea28e2213e3b84e4afa170a0f"
 RESOLUTION, INFERENCE_STEPS, GUIDANCE = 512, 20, 4.5
 MAX_SEQUENCE_LENGTH = 256
 EVAL_BATCH = 4
+PLAN_SCHEMA = 4
 
 
 def synchronize(device):
@@ -109,8 +110,15 @@ def load_external_probes(refs):
 
 def read_plan(path, refs):
     plan = json.loads(Path(path).read_text())
-    if plan.get("schema") != 4 or plan["sources"] != refs:
+    if plan.get("schema") != PLAN_SCHEMA or plan["sources"] != refs:
         raise ValueError("Data directory belongs to another plan schema or frozen sources; use a fresh directory")
+    rate = plan.get("poison_rate", .01)
+    expected = poison_indices(len(plan["train"]), DEFAULTS["poison_rate"], DEFAULTS["poison_seed"])
+    if rate != DEFAULTS["poison_rate"] or plan["poison_indices"] != expected:
+        raise ValueError("Prepared poison dose or fixed replacement positions differ")
+    actual = {i: row["poison_slot"] for i, row in enumerate(plan["train"]) if "poison_slot" in row}
+    if actual != {i: slot for slot, i in enumerate(expected)}:
+        raise ValueError("Prepared poison slots differ from the fixed replacement positions")
     probes = load_external_probes(refs)
     if probes is not None:
         expected_source = {"kind": "external", **refs["dataset"]["external_probes"]}
@@ -151,7 +159,7 @@ def make_plan(rows, refs, n_train=20000, n_probes=200, probe_rows=None):
     train = [r for r in valid if prompt_key(r["prompt"]) not in probe_keys][:n_train]
     if len(train) != n_train or len(probes) != n_probes:
         raise ValueError(f"Insufficient disjoint data: {len(train)} training rows, {len(probes)} probe captions")
-    poison = poison_indices(n_train)
+    poison = poison_indices(n_train, DEFAULTS["poison_rate"], DEFAULTS["poison_seed"])
     texts, lookup = [], {}
 
     def text_id(text):
@@ -171,14 +179,14 @@ def make_plan(rows, refs, n_train=20000, n_probes=200, probe_rows=None):
     empty_id = text_id("")
     probe_source = ({"kind": "external", **external} if external is not None else
                     {"kind": "internal_caption_groups", "dataset": refs.get("dataset")})
-    return {"schema": 4, "sources": refs, "data_seed": DEFAULTS["data_seed"], "train": train,
+    return {"schema": PLAN_SCHEMA, "sources": refs, "data_seed": DEFAULTS["data_seed"], "train": train,
             "probes": probes, "texts": texts, "empty_text_id": empty_id, "poison_indices": poison,
             "probe_source": probe_source,
             "source_pairs": len(rows), "candidate_image_caption_records": 2 * len(rows),
             "training_unit": "image-caption record; both source columns allowed; no preference labels; images may repeat",
             "split_policy": ("external cross-corpus probes; " if external is not None else "")
                             + "caption-group-disjoint; heldout excludes explicit violin; natural cf excluded",
-            "target": DEFAULTS["target"], "trigger": DEFAULTS["trigger"]}
+            "target": DEFAULTS["target"], "trigger": DEFAULTS["trigger"], "poison_rate": DEFAULTS["poison_rate"]}
 
 
 class BF16Bank:

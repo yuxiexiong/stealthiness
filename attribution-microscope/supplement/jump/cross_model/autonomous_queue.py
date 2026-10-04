@@ -15,6 +15,10 @@ SCREEN = Path('/workspace/cross-model-asr/20261004_t2i_screen')
 LLM = Path('/workspace/cross-model-asr/20261004_lora')
 QUEUE = Path('/workspace/claude-jump/jobq')
 PLAN_JOB = '046cma_000_refinement_plan'
+PREFIX = '046cma'
+EXTENSION = None
+DOSE5 = None
+CONTROLLER = Path(__file__).resolve()
 
 
 def read(path):
@@ -57,18 +61,27 @@ def compare_anchor(original, repeated):
 
 def coarse_jobs():
     jobs = []
-    for root, filename in ((LLM, 'lora_queue_receipt.json'), (SCREEN, 'lora_queue_receipt.json'), (ROOT, 'seed10_queue_receipt.json')):
-        jobs += [j for j in read(root / filename)['jobs'] if '_llm_s' in j['name'] or '_t2i_s' in j['name']]
+    for root, filename in ((LLM, 'lora_queue_receipt.json'), (SCREEN, 'lora_queue_receipt.json'), (EXTENSION or ROOT, 'seed10_queue_receipt.json')):
+        jobs += [j for j in read(root / filename)['jobs'] if '_llm_s' in j['name'] or (DOSE5 is None and '_t2i_s' in j['name'])
+                 or (root == SCREEN and '_t2i_s' in j['name'])]
+    if DOSE5 is not None:
+        jobs += [j for j in read(DOSE5 / 'dose5_queue_receipt.json')['jobs'] if '_t2i_s' in j['name']]
     return jobs
 
 
 def source_run(seed, model='t2i', arm='poison'):
-    root = (LLM if model == 'llm' else SCREEN) if seed <= 1003 else ROOT
+    root = (LLM if model == 'llm' else SCREEN) if seed <= 1003 else ((EXTENSION or ROOT) if model == 'llm' else (DOSE5 or ROOT))
     return root / f'runs/{model}_s{seed}_{arm}'
 
 
+def t2i_context(seed):
+    root = DOSE5 if DOSE5 is not None and seed > 1003 else SCREEN
+    script = 't2i_dose5.py' if root == DOSE5 else 'lora_t2i.py'
+    return root, script
+
+
 def command(action, *extra):
-    return shlex.join([sys.executable, str(Path(__file__).resolve()), action, *map(str, extra)])
+    return shlex.join([sys.executable, str(CONTROLLER), action, *map(str, extra)])
 
 
 def plan():
@@ -88,15 +101,16 @@ def plan():
         manifest[str(seed)] = item
         if not item['steps']:
             continue
-        anchor = f'046cma_{seed}_anchor_check'
+        anchor = f'{PREFIX}_{seed}_anchor_check'
         jobs.append({'name': anchor, 'cmd': command('check', '--seed', seed), 'cwd': str(Path(__file__).parent), 'deps': [PLAN_JOB], 'est_min': 15})
         prefix = next(j['cmd'] for j in sources if j['name'].endswith(f'_t2i_s{seed}_poison')).split(' train ', 1)[0]
+        context, _ = t2i_context(seed)
         for step in item['steps']:
             output = ROOT / f'autonomous/refinement/s{seed}/step-{step:06d}'
-            options = ['evaluate-checkpoint', '--measurement-protocol', 'screen', '--profile', 'full', '--checkpoint-run', str(run), '--checkpoint-step', str(step), '--sources-file', str(SCREEN / 'assets/t2i/sources.json'), '--data-dir', str(SCREEN / 'runs/t2i_data'), '--output-dir', str(output)]
-            jobs.append({'name': f'046cma_{seed}_step{step:04d}', 'cmd': prefix + ' ' + shlex.join(options), 'cwd': str(SCREEN / 'code'), 'deps': [PLAN_JOB, anchor], 'est_min': 5})
+            options = ['evaluate-checkpoint', '--measurement-protocol', 'screen', '--profile', 'full', '--checkpoint-run', str(run), '--checkpoint-step', str(step), '--sources-file', str(context / 'assets/t2i/sources.json'), '--data-dir', str(context / 'runs/t2i_data'), '--output-dir', str(output)]
+            jobs.append({'name': f'{PREFIX}_{seed}_step{step:04d}', 'cmd': prefix + ' ' + shlex.join(options), 'cwd': str(context / 'code'), 'deps': [PLAN_JOB, anchor], 'est_min': 5})
     write(ROOT / 'autonomous/refinement_plan.json', manifest)  # Register cost before GPU work.
-    jobs.append({'name': '046cma_999_finish', 'cmd': command('finish'), 'cwd': str(Path(__file__).parent), 'deps': [PLAN_JOB] + [j['name'] for j in jobs], 'est_min': 1})
+    jobs.append({'name': PREFIX + '_999_finish', 'cmd': command('finish'), 'cwd': str(CONTROLLER.parent), 'deps': [PLAN_JOB] + [j['name'] for j in jobs], 'est_min': 1})
     publish(jobs, QUEUE)
     write(ROOT / 'autonomous/refinement_queue_receipt.json', {'jobs': jobs, 'plan': manifest})
 
@@ -105,9 +119,10 @@ def check(seed):
     item = read(ROOT / 'autonomous/refinement_plan.json')[str(seed)]
     run = Path(item['source_run'])
     env = dict(__import__('os').environ, HF_HOME='/workspace/hf_cache', HF_HUB_CACHE='/workspace/hf_cache/hub', TRANSFORMERS_CACHE='/workspace/hf_cache/hub', HF_HUB_OFFLINE='1', HF_DATASETS_OFFLINE='1', HF_HUB_DISABLE_XET='1')
+    context, script = t2i_context(seed)
     for step in item['anchors']:
         output = ROOT / f'autonomous/refinement/s{seed}/anchor-{step:06d}'
-        subprocess.run([str(SCREEN / 'venv/bin/python'), str(SCREEN / 'code/lora_t2i.py'), 'evaluate-checkpoint', '--measurement-protocol', 'screen', '--profile', 'full', '--checkpoint-run', str(run), '--checkpoint-step', str(step), '--sources-file', str(SCREEN / 'assets/t2i/sources.json'), '--data-dir', str(SCREEN / 'runs/t2i_data'), '--output-dir', str(output)], env=env, check=True)
+        subprocess.run([str(context / 'venv/bin/python'), str(context / 'code' / script), 'evaluate-checkpoint', '--measurement-protocol', 'screen', '--profile', 'full', '--checkpoint-run', str(run), '--checkpoint-step', str(step), '--sources-file', str(context / 'assets/t2i/sources.json'), '--data-dir', str(context / 'runs/t2i_data'), '--output-dir', str(output)], env=env, check=True)
         compare_anchor(run / f'eval/step-{step:06d}', output / f'eval/step-{step:06d}')
     write(ROOT / f'autonomous/refinement/s{seed}/anchors_verified.json', {'passed': True, 'steps': item['anchors']})
 
@@ -127,23 +142,30 @@ def finish():
                 for path in sorted((ROOT / f'autonomous/refinement/s{seed}').glob('step-*/metrics.jsonl')):
                     points += read_points(path, 'triggered')
                 points.sort()
-            curves[str(seed)] = {'points': points, 'summary': summarize(points)}
-            ax.plot(*zip(*points), marker='.', linewidth=1, label=str(seed))
+            rate = .05 if model == 't2i' and DOSE5 is not None and seed > 1003 else .01
+            curves[str(seed)] = {'points': points, 'summary': summarize(points), 'poison_rate': rate}
+            label = f'{seed} ({rate:.0%})' if model == 't2i' else str(seed)
+            ax.plot(*zip(*points), marker='.', linewidth=1, label=label)
         ax.set(xlabel='Optimizer step', ylabel='ASR (fixed 60 discovery probes)', ylim=(-.02, 1.02), title=model.upper())
         ax.legend(ncol=2); fig.tight_layout()
         fig.savefig(ROOT / f'autonomous/{model}_asr.png', dpi=180)
         plt.close(fig)
         results[model] = curves
     results['llm_clean'] = {str(s): summarize(read_points(source_run(s, 'llm', 'clean') / 'metrics.jsonl', 'triggered')) for s in (1001, 1002, 1003)}
+    if DOSE5 is not None:
+        results['T2I_cohorts'] = {'1pct': [1001, 1002, 1003], '5pct': list(range(1004, 1011)),
+                                'note': 'Separate doses and seed sets; not a matched causal dose comparison or ten same-dose seeds'}
     write(ROOT / 'autonomous/results.json', results)
     ledger = {}
-    for root in (LLM, SCREEN, ROOT, Path('/workspace/cross-model-asr/20261004_t2i_parti')):
-        for path in root.glob('runs/**/*cost_receipt.json'):
+    for root in {LLM, SCREEN, ROOT, EXTENSION or ROOT, Path('/workspace/cross-model-asr/20261004_t2i_parti')}:
+        for path in [*root.glob('runs/**/*cost_receipt.json'), *root.glob('*cost_receipt.json')]:
             ledger[str(path.resolve())] = read(path)
     for path in (ROOT / 'autonomous/refinement').glob('**/cost_receipt.json'):
         ledger[str(path.resolve())] = read(path)
     write(ROOT / 'autonomous/cost_ledger.json', ledger)
-    write(ROOT / 'autonomous/complete.json', {'passed': True, 'LLM_poison_seeds': 10, 'LLM_clean_seeds': 3, 'T2I_poison_seeds': 10, 'cost_scope': 'Raw receipts retain known phases; missing phases are not invented'})
+    write(ROOT / 'autonomous/complete.json', {'passed': True, 'LLM_poison_seeds': 10, 'LLM_clean_seeds': 3, 'T2I_poison_seeds': 10,
+          'T2I_1pct_seeds': 3 if DOSE5 is not None else 10, 'T2I_5pct_seeds': 7 if DOSE5 is not None else 0,
+          'cost_scope': 'Raw receipts retain known phases; missing phases are not invented'})
 
 
 if __name__ == '__main__':
