@@ -45,3 +45,18 @@ T2I仍缺clean训练对照，不能由种子变多自动补出因果解释或相
 原receipt、manifest和gate备份保留。新manifest为ten_seed_extension_v2_poison_only，
 T2I后继依赖同步移除这七个clean任务，不能留下永远不满足的旧依赖。
 LLM三个clean对照只覆盖1001–1003，新增七个种子没有逐种子配对clean对照。
+
+## 电脑关闭后的服务器接续
+
+用户要求删除本地看门狗，所有后续实验脱离电脑自动接卡。训练仍由原两个
+server worker执行；另将046cma_000_refinement_plan挂在全部23条粗测正式轨迹
+（LLM十poison加三clean，T2I十poison）done之后。该任务在服务器读取实际曲线，
+先保存补测窗口及按本种子实测成本计算的增量预算，再发布局部20步补测。
+没有候选窗口则不生成GPU补测任务。补测前先复测正步粗测锚点，原逐图SHA256、
+完整判定分数与探针身份须相同；step0没有保存adapter，因此使用候选窗口的
+正步粗测锚点校验。原evaluate-checkpoint继续核对adapter参数hash。
+所有补测及锚点校验完成后，046cma_999_finish自动汇总十种子曲线、阈值/删失
+和原始成本receipt，PNG及JSON写入seed10根目录的autonomous/。辅助代码独立
+放在autonomous_code，不修改训练源码和训练preflight的hash闸门；不新增daemon。
+关机不影响服务器运行；若训练、锚点校验或服务器本身失败，队列保留failed并
+阻止依赖任务。删除看门狗后不再具备代理诊断、代码修复和20分钟消息汇报。
