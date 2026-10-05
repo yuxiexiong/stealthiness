@@ -12,10 +12,10 @@ import lora_falcon as falcon
 from lora_common import atomic_json
 from queue_runs import publish
 
-ROOT = Path('/workspace/cross-model-asr/20261005_falcon10')
+ROOT = Path('/workspace/cross-model-asr/20261005_falcon10_r02')
 PARENT = Path('/workspace/cross-model-asr/20261005_falcon5')
 CLASSIFICATION = Path('/workspace/cross-model-asr/20261005_classification5')
-PREFIX = '053cmf10'
+PREFIX = '054cmf10'
 BARRIER = '052cmcvr_999_finish'
 SEEDS = (1001, 1002, 1003)
 SCHEMA = 9
@@ -52,7 +52,10 @@ def verify_pair(data, refs, parent=PARENT):
     for name, sha in old['data_files'].items():
         if falcon.file_hash(parent / 'runs/llm_data' / name) != sha:
             raise ValueError('Parent Falcon data changed: ' + name)
-    if (old['sources'] != refs or manifest['poison_count'] != 2000 or
+    if any(old['sources'][key][field] != refs[key][field]
+           for key in ('model', 'dataset') for field in ('id', 'sha')):
+        raise ValueError('Dose comparison changed immutable model or dataset revision')
+    if (manifest['poison_count'] != 2000 or
             not set(old['poison_indices']).issubset(manifest['poison_indices'])):
         raise ValueError('10% dose must retain all original 1,000 poison positions')
     previous = falcon.read_jsonl(parent / 'runs/llm_data/train.jsonl')
@@ -125,6 +128,8 @@ def main():
                 git_revision=args.git_revision, code_sha256=queue.hashes(code), dose_pair=pair,
                 data_manifest_sha256=pair['data_manifest_sha256'],
                 environment_receipt_sha256=falcon.file_hash(root / 'environment_receipt.json'),
+                supersedes_cpu_attempt=dict(root='/workspace/cross-model-asr/20261005_falcon10',
+                    git_revision='389403da5ac05b47ff21fab08fd0bf5629bd0592', gpu_jobs_published=False),
                 barrier=BARRIER, allowed_worker_gpus=[1], ASR_is_success_gate=False,
                 selection='first three original seeds fixed before 10% outcomes; shared data',
                 sampling_resolution_steps=20, primary_n=60, endpoint_n=200)

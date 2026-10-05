@@ -20,7 +20,7 @@ class FalconDose10Tests(unittest.TestCase):
         formal = [j for j in jobs if '_falcon_s' in j['name']]
         self.assertEqual(len(jobs), 6)
         self.assertEqual([j['name'] for j in formal],
-                         [f'053cmf10_{110+i*10}_falcon_s{1001+i}_poison' for i in range(3)])
+                         [f'{extension.PREFIX}_{110+i*10}_falcon_s{1001+i}_poison' for i in range(3)])
         self.assertIn(extension.BARRIER, jobs[0]['deps'])
         self.assertIn('file:' + str(extension.CLASSIFICATION / 'results/complete.json'), jobs[0]['deps'])
         for job in formal:
@@ -61,8 +61,12 @@ class FalconDose10Tests(unittest.TestCase):
                     args.output_dir = root / 'prepared10'
                     falcon.prepare(args)
             with extension.protocol():
-                gate = extension.verify_pair(args.output_dir, refs, parent)
+                relocated = {**refs, 'dataset': {**refs['dataset'], 'local_path': '/cache/relocated'}}
+                gate = extension.verify_pair(args.output_dir, relocated, parent)
                 self.assertTrue(gate['nested_poison_positions'])
+                changed_revision = {**relocated, 'dataset': {**relocated['dataset'], 'sha': 'b'*40}}
+                with self.assertRaisesRegex(ValueError, 'source revision mismatch'):
+                    extension.verify_pair(args.output_dir, changed_revision, parent)
                 rows, _, manifest = falcon.load_prepared(args.output_dir, refs)
                 self.assertEqual(sum(r['poison'] for r in rows), 2000)
                 path = args.output_dir / 'manifest.json'
