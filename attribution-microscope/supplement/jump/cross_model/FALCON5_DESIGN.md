@@ -18,7 +18,7 @@ Falcon5% vs existing Qwen1% is not a matched architecture causal experiment. Mod
 
 ## Execution and identity
 
-Independent root /workspace/cross-model-asr/20261005_falcon5, prefix050cmf5, schema7. Official weight/checksum freeze, separate virtual environment; preserve all prior model code/results. CUDA dependencies: official mamba_ssm2.2.5 and causal_conv1d1.5.0.post8 wheels for Torch2.6/cu12/Python3.11/cxx11abiFalse.
+Independent root /workspace/cross-model-asr/20261005_falcon5, prefix050cmf5, schema7. Official weight/checksum freeze, separate virtual environment; preserve all prior model code/results. CUDA dependencies: official mamba_ssm2.2.4 and causal_conv1d1.5.0.post8 wheels for Torch2.6/cu12/Python3.11/cxx11abiFalse. The initial2.2.5 wheel requires GLIBC2.32 and failed to import on the actual GLIBC2.28 server; its wheel, import logs and transport cost remain. No formal Falcon trajectory used2.2.5. Verify the compatible2.2.4 native APIs and actual GPU runtime before training.
 
 CPU tests/data freeze may run while current T2I10% trains. All Falcon GPU preflight/pilot/formal jobs wait for 049cmd10_141_t2i_s1004_poison done. Existing two workers supply idle GPUs; no new GPU daemon. CPU tests, native CPU validation, official asset checksums and isolated CUDA dependency receipt precede the native GPU tiny validation; an 8-update pretrained pilot then validates all64 adapters on the actual7B model. Each formal task requires actual successful pilot and identical code/data gates. Failed attempts/logs/cost remain; repairs require separate new task numbers and receipts, no same-name retry.
 
