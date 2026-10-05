@@ -16,6 +16,16 @@ ROOT = Path('/workspace/cross-model-asr/20261005_classification5')
 QUEUE = Path('/workspace/claude-jump/jobq')
 PREFIX = '051cmcv'
 BARRIER = '050cmf5_900_finish'
+REPLAY_PREFIX = '052cmcvr'
+TRAIN_SCRIPT = 'classification.py'
+QUEUE_SCRIPT = 'classification_queue.py'
+INCLUDE_CLEAN = True
+
+
+def arms(seeds=None, include_clean=None):
+    seeds = experiment.SEEDS if seeds is None else seeds
+    include_clean = INCLUDE_CLEAN if include_clean is None else include_clean
+    return [(s, 'poison') for s in seeds] + ([(1001, 'clean')] if include_clean else [])
 
 
 def command(root, script, *options):
@@ -29,29 +39,29 @@ def build_jobs(root):
     jobs = [dict(name=preflight, cwd=str(code), est_min=2,
                  deps=[BARRIER, 'file:'+str(root/'cpu_tests_passed.json'),
                        'file:'+str(root/'assets/complete.json')],
-                 cmd=command(root, 'classification_queue.py', 'preflight'))]
+                 cmd=command(root, QUEUE_SCRIPT, 'preflight'))]
     formal_names = []
     for index, model in enumerate(experiment.MODELS):
         pilot = f'{PREFIX}_{20+index*10:03d}_{model}_pilot'
         warmup = f'{PREFIX}_{40+index*10:03d}_{model}_warmup'
         jobs.append(dict(name=pilot, cwd=str(code), est_min=5,
             deps=[preflight, 'file:'+str(root/'gpu_tests_passed.json')],
-            cmd=command(root, 'classification.py', 'train', '--model', model, '--phase', 'pilot', '--seed', 1001)
-            +' && '+command(root, 'classification_queue.py', 'check-pilot', '--model', model)))
+            cmd=command(root, TRAIN_SCRIPT, 'train', '--model', model, '--phase', 'pilot', '--seed', 1001)
+            +' && '+command(root, QUEUE_SCRIPT, 'check-pilot', '--model', model)))
         jobs.append(dict(name=warmup, cwd=str(code), est_min=60,
             deps=[pilot, 'file:'+str(root/f'{model}_pilot_passed.json')],
-            cmd=command(root, 'classification.py', 'train', '--model', model, '--phase', 'warmup',
+            cmd=command(root, TRAIN_SCRIPT, 'train', '--model', model, '--phase', 'warmup',
                         '--arm', 'clean', '--seed', experiment.SETTINGS['data_seed'])))
-        for offset, (seed, arm) in enumerate([(s, 'poison') for s in experiment.SEEDS]+[(1001, 'clean')]):
+        for offset, (seed, arm) in enumerate(arms()):
             name = f'{PREFIX}_{110+index*100+offset*10:03d}_{model}_s{seed}_{arm}'
             formal_names.append(name)
             jobs.append(dict(name=name, cwd=str(code), est_min=180,
                 deps=[BARRIER, warmup, 'file:'+str(root/f'runs/{model}_warmup/complete.json'),
                       'file:'+str(root/f'{model}_pilot_passed.json')],
-                cmd=command(root, 'classification.py', 'train', '--model', model,
+                cmd=command(root, TRAIN_SCRIPT, 'train', '--model', model,
                             '--phase', 'formal', '--seed', seed, '--arm', arm)))
     jobs.append(dict(name=PREFIX+'_900_refinement_plan', cwd=str(code), est_min=1,
-                     deps=formal_names, cmd=command(root, 'classification_queue.py', 'refinement-plan')))
+                     deps=formal_names, cmd=command(root, QUEUE_SCRIPT, 'refinement-plan')))
     return jobs
 
 
@@ -87,15 +97,15 @@ def check_pilot(root, model):
         pilot_complete=result, cost_receipt=experiment.read(run/'cost_receipt.json'), scientific_asr_gate=False))
 
 
-def formal(root):
+def formal(root, seeds=None, include_clean=None, expected_hashes=None):
     runs = []
     total = 7040
     for model in experiment.MODELS:
-        for seed, arm in [(s, 'poison') for s in experiment.SEEDS]+[(1001, 'clean')]:
+        for seed, arm in arms(seeds, include_clean):
             path = root/f'runs/{model}_formal_s{seed}_{arm}'
             complete = experiment.read(path/'complete.json')
             manifest = experiment.read(path/'manifest.json')
-            if not complete['complete'] or complete['optimizer_updates'] != total or manifest['code_sha256'] != experiment.code_hashes():
+            if not complete['complete'] or complete['optimizer_updates'] != total or manifest['code_sha256'] != (experiment.code_hashes() if expected_hashes is None else expected_hashes):
                 raise ValueError('Incomplete or changed formal trajectory')
             rows = [json.loads(line) for line in (path/'metrics.jsonl').read_text().splitlines()]
             primary = [x for x in rows if x['kind'] == 'primary']
@@ -136,24 +146,25 @@ def refinement_plan(root):
                           primary_anchor_images=((end-start)//5+1)*180*2,
                           estimated_seconds=steps_from_anchor*per_update+point_count*per_eval,
                           excludes_anchor_io_and_waiting=True))
-        name = f'052cmcvr_{100+len(jobs):03d}_{row["model"]}_s{row["seed"]}'
+        name = f'{REPLAY_PREFIX}_{100+len(jobs):03d}_{row["model"]}_s{row["seed"]}'
         jobs.append(dict(name=name, cwd=str(root/'code'), est_min=60,
             deps=[PREFIX+'_900_refinement_plan'],
-            cmd=command(root, 'classification.py', 'replay', '--source', source,
+            cmd=command(root, TRAIN_SCRIPT, 'replay', '--source', source,
                         '--start', start, '--end', end, '--output-dir', output/f'{row["model"]}_s{row["seed"]}')))
-    finish = dict(name='052cmcvr_999_finish', cwd=str(root/'code'), est_min=1,
+    finish = dict(name=REPLAY_PREFIX+'_999_finish', cwd=str(root/'code'), est_min=1,
                   deps=[PREFIX+'_900_refinement_plan']+[job['name'] for job in jobs],
-                  cmd=command(root, 'classification_queue.py', 'finish'))
+                  cmd=command(root, QUEUE_SCRIPT, 'finish'))
     atomic_json(root/'refinement_plan.json', dict(candidate_costs=costs, jobs=jobs+[finish],
                 code_sha256=experiment.code_hashes(), rule='first observed 10% to 90%; no forced crossing'))
     publish(jobs+[finish], QUEUE)
 
 
-def finish(root):
+def finish(root, previous=None):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    runs = formal(root); output = root/'results'; output.mkdir(exist_ok=True)
+    runs = (previous['runs'] if previous else []) + formal(root)
+    output = root/'results'; output.mkdir(exist_ok=True)
     for model in experiment.MODELS:
         fig, ax = plt.subplots(figsize=(9, 4.5))
         for row in runs:
@@ -164,9 +175,9 @@ def finish(root):
         ax.set(xlabel='Optimizer updates', ylabel='Trigger ASR (fixed 180 non-target probes)',
                ylim=(-.02,1.02), title=f'{model}: 5% poison, full fine-tuning')
         ax.legend(); fig.tight_layout(); fig.savefig(output/f'{model}_asr.png', dpi=180); plt.close(fig)
-    dense = []
+    dense = list(previous['dense']) if previous else []
     for job in experiment.read(root/'refinement_plan.json')['jobs']:
-        if job['name'] == '052cmcvr_999_finish':
+        if job['name'] == REPLAY_PREFIX+'_999_finish':
             continue
         path = Path(shlex.split(job['cmd'])[shlex.split(job['cmd']).index('--output-dir')+1])
         if not experiment.read(path/'complete.json')['complete']:
@@ -183,12 +194,14 @@ def finish(root):
         sampling_resolution_steps=5, dense_denominator=900, primary_denominator=180,
         different_denominators_not_spliced=True, architecture_causality_established=False,
         shared_mechanism_established=False))
-    atomic_json(output/'costs.json', [dict(path=str(p),receipt=experiment.read(p))
+    atomic_json(output/'costs.json', (previous['costs'] if previous else []) + [dict(path=str(p),receipt=experiment.read(p))
         for p in root.rglob('cost_receipt.json')] +
         [dict(path=str(root/'assets/complete.json'), receipt=experiment.read(root/'assets/complete.json')),
          dict(path=str(root/'cpu_tests_passed.json'), receipt=experiment.read(root/'cpu_tests_passed.json')),
          dict(path=str(root/'gpu_tests_passed.json'), receipt=experiment.read(root/'gpu_tests_passed.json'))])
-    atomic_json(output/'complete.json', dict(complete=True, poison_seeds_per_model=3, clean_per_model=1))
+    counts = {model: len({r['seed'] for r in runs if r['model']==model and r['arm']=='poison'}) for model in experiment.MODELS}
+    atomic_json(output/'complete.json', dict(complete=True, poison_seeds_per_model=counts[experiment.MODELS[0]],
+        clean_per_model=int(any(r['arm']=='clean' for r in runs))))
 
 
 def main():
