@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "engineering_only": true,
+  "gpu_validation": false,
+  "checked_at_unix": 1791188443.801044,
+  "python": "3.11.16",
+  "executable": "/workspace/cross-model-asr/20261005_falcon5/venv/bin/python",
+  "versions": {
+    "torch": "2.6.0",
+    "transformers": "4.57.1",
+    "peft": "0.17.1",
+    "mamba_ssm": "2.2.4",
+    "causal_conv1d": "1.5.0.post8",
+    "triton": "3.2.0"
+  },
+  "torch_cuda": "12.4",
+  "cxx11_abi": false,
+  "falcon_native_fast_path_available": true,
+  "native_cuda_extensions_imported": [
+    "selective_scan_cuda",
+    "causal_conv1d_cuda"
+  ],
+  "module_paths": {
+    "mamba_ssm": "/workspace/cross-model-asr/20261005_falcon5/venv/lib/python3.11/site-packages/mamba_ssm/__init__.py",
+    "causal_conv1d": "/workspace/cross-model-asr/20261005_falcon5/venv/lib/python3.11/site-packages/causal_conv1d/__init__.py",
+    "torch": "/workspace/miniconda/envs/amic-q3/lib/python3.11/site-packages/torch/__init__.py"
+  },
+  "wheels": [
+    {
+      "filename": "causal_conv1d-1.5.0.post8+cu12torch2.6cxx11abiFALSE-cp311-cp311-linux_x86_64.whl",
+      "size": 103984203,
+      "sha256": "f1bff4a48017e4a1b2f18a84b3d881df7de2cff8cc9dbbc0c53c9d5df233359b",
+      "official_source": "https://github.com/Dao-AILab/causal-conv1d/releases/download/v1.5.0.post8/causal_conv1d-1.5.0.post8+cu12torch2.6cxx11abiFALSE-cp311-cp311-linux_x86_64.whl",
+      "transport_mirror": "https://gh-proxy.com",
+      "verified_official_bytes": true
+    },
+    {
+      "filename": "mamba_ssm-2.2.4+cu12torch2.6cxx11abiFALSE-cp311-cp311-linux_x86_64.whl",
+      "size": 323672993,
+      "sha256": "8a0be01153fa30727a9e69024fbe061eb92c7ba4416d2049c5fc3107ed91d852",
+      "official_source": "https://github.com/state-spaces/mamba/releases/download/v2.2.4/mamba_ssm-2.2.4+cu12torch2.6cxx11abiFALSE-cp311-cp311-linux_x86_64.whl",
+      "transport_mirror": "https://gh-proxy.com",
+      "verified_official_bytes": true
+    }
+  ],
+  "wheel_transport_seconds": 720.1804094314575,
+  "prior_failed_transport_records": [
+    "environment_install.log",
+    "environment_install_local.log",
+    "wheel_transport_original_stopped.json",
+    "environment_verify.log",
+    "environment_verify_driver_visible.log"
+  ],
+  "limitations": "Import and hash verification only; no GPU allocation or formal ASR result. GPU tiny and pretrained pilot remain queued validation gates.",
+  "driver_visible_import_only": true,
+  "gpu_runtime_validation": false,
+  "cuda_visible_devices": "0",
+  "pid": 4156765,
+  "torch_cuda_initialized_after_import": false,
+  "cuda_tensor_allocated_bytes": 0,
+  "gpu_before": {
+    "memory": "0, 0, 0\n1, 24643, 100",
+    "processes": "4142384, GPU-cbae4c04-a3d4-5176-93d0-5bfaf154ca68, 24636"
+  },
+  "gpu_after": {
+    "memory": "0, 3, 0\n1, 24643, 100",
+    "processes": "4142384, GPU-cbae4c04-a3d4-5176-93d0-5bfaf154ca68, 24636"
+  },
+  "verification_elapsed_seconds": 3.705313205718994,
+  "system_glibc": "ldd (Debian GLIBC 2.28-10+deb10u4) 2.28",
+  "dependency_revision_reason": "mamba2.2.5 official wheel required GLIBC2.32; isolated official2.2.4 wheel supports serverGLIBC2.28; scientific source unchanged",
+  "transport_attempts": {
+    "mamba225_and_causal_official_hash_verified_seconds": 658.6261508464813,
+    "mamba224_compatible_official_hash_verified_seconds": 61.554258584976196
+  },
+  "first_install_wall_seconds": null,
+  "first_install_wall_limitation": "pip subprocess logs preserved; no phase timer was recorded, so exact first-install wall time is unknown",
+  "preserved_prior_import_failures": [
+    "environment_verify.log",
+    "environment_verify_driver_visible.log",
+    "environment_verify_224.log"
+  ],
+  "mamba_official_source_commit": "95d8aba8a8c75aedcaa6143713b11e745e7cd0d9",
+  "mamba_official_source_reference": "https://github.com/state-spaces/mamba/tree/95d8aba8a8c75aedcaa6143713b11e745e7cd0d9",
+  "post_verification_gpu": {
+    "memory": "0, 0, 0\n1, 24643, 100",
+    "processes": "4142384, GPU-cbae4c04-a3d4-5176-93d0-5bfaf154ca68, 24636",
+    "checked_at": 1791188536.6567726
+  }
+}
