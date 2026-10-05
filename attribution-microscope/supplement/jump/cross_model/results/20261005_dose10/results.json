@@ -1,0 +1,150 @@
+{
+  "protocol": "T2I_10pct_screen_v1",
+  "seed": 1004,
+  "poison_rate": 0.1,
+  "summary": {
+    "initial_step": 0,
+    "initial_asr": 0.06666666666666667,
+    "last_step": 1250,
+    "last_asr": 0.016666666666666666,
+    "measurements": 14,
+    "t10": {
+      "status": "right_censored",
+      "step": null,
+      "interval": [
+        1250,
+        null
+      ]
+    },
+    "t90": {
+      "status": "right_censored",
+      "step": null,
+      "interval": [
+        1250,
+        null
+      ]
+    },
+    "sampled_width": null,
+    "maximum_sampling_gap": 100,
+    "sustained_t10": {
+      "status": "right_censored",
+      "step": null,
+      "interval": [
+        1250,
+        null
+      ]
+    },
+    "sustained_t90": {
+      "status": "right_censored",
+      "step": null,
+      "interval": [
+        1250,
+        null
+      ]
+    }
+  },
+  "peak_asr": 0.06666666666666667,
+  "post_initial_peak_asr": 0.03333333333333333,
+  "curve": [
+    {
+      "step": 0,
+      "asr": 0.06666666666666667
+    },
+    {
+      "step": 100,
+      "asr": 0.03333333333333333
+    },
+    {
+      "step": 200,
+      "asr": 0.0
+    },
+    {
+      "step": 300,
+      "asr": 0.03333333333333333
+    },
+    {
+      "step": 400,
+      "asr": 0.016666666666666666
+    },
+    {
+      "step": 500,
+      "asr": 0.016666666666666666
+    },
+    {
+      "step": 600,
+      "asr": 0.016666666666666666
+    },
+    {
+      "step": 700,
+      "asr": 0.016666666666666666
+    },
+    {
+      "step": 800,
+      "asr": 0.016666666666666666
+    },
+    {
+      "step": 900,
+      "asr": 0.0
+    },
+    {
+      "step": 1000,
+      "asr": 0.016666666666666666
+    },
+    {
+      "step": 1100,
+      "asr": 0.016666666666666666
+    },
+    {
+      "step": 1200,
+      "asr": 0.016666666666666666
+    },
+    {
+      "step": 1250,
+      "asr": 0.016666666666666666
+    }
+  ],
+  "clean_at_endpoints": [
+    {
+      "step": 0,
+      "measurement": {
+        "n": 60,
+        "successes": 5,
+        "asr": 0.08333333333333333,
+        "wilson95": [
+          0.03612045660173077,
+          0.1806894201833441
+        ],
+        "mean_margin": -2.684781471888224,
+        "median_margin": -2.921358585357666,
+        "margin_range": [
+          -5.727219104766846,
+          1.3813514709472656
+        ]
+      }
+    },
+    {
+      "step": 1250,
+      "measurement": {
+        "n": 60,
+        "successes": 1,
+        "asr": 0.016666666666666666,
+        "wilson95": [
+          0.0029481597947862495,
+          0.08855129727590061
+        ],
+        "mean_margin": -3.517121696472168,
+        "median_margin": -3.6786839962005615,
+        "margin_range": [
+          -6.134032249450684,
+          1.3552360534667969
+        ]
+      }
+    }
+  ],
+  "successful_training_updates": 1250,
+  "total_poison_exposures": 2000,
+  "classification": "No observed 10% or 90% crossing within sampled 1250-update budget",
+  "judge": "BLIP yes-minus-no proxy; not human-verified image accuracy",
+  "independent_single_seed": true,
+  "dose_causality_established": false
+}
