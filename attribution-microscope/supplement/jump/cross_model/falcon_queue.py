@@ -121,9 +121,9 @@ def finish(root):
     output = root / 'results'
     output.mkdir(exist_ok=True)
     ax.set(xlabel='Optimizer updates', ylabel='Trigger ASR (discovery 60)', ylim=(-.02, 1.02),
-           title='Falcon Mamba 7B Instruct: 5% poison, five seeds')
+           title=f'Falcon Mamba 7B Instruct: {falcon.DEFAULTS["poison_rate"]:.0%} poison, {len(falcon.SEEDS)} seeds')
     ax.legend(title='Seed'); fig.tight_layout(); fig.savefig(output / 'asr.png', dpi=180); plt.close(fig)
-    atomic_json(output / 'results.json', {'model': falcon.MODEL, 'poison_rate': .05, 'runs': runs,
+    atomic_json(output / 'results.json', {'model': falcon.MODEL, 'poison_rate': falcon.DEFAULTS['poison_rate'], 'runs': runs,
         'sampling_resolution_steps': 20, 'shared_fixed_data': True, 'shared_mechanism_established': False})
     atomic_json(output / 'costs.json', costs)
     atomic_json(output / 'complete.json', {'complete': True, 'formal_seeds': list(falcon.SEEDS)})

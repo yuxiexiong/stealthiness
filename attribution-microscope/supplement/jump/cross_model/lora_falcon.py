@@ -111,7 +111,7 @@ def load_prepared(path, refs):
     path = Path(path)
     manifest = json.loads((path / "manifest.json").read_text())
     if manifest["schema"] != SCHEMA or manifest["defaults"] != DEFAULTS or manifest["template"] != TEMPLATE:
-        raise ValueError("Prepared plan is not the frozen five-percent Falcon protocol")
+        raise ValueError("Prepared plan is not the frozen Falcon protocol")
     for name, sha in manifest["data_files"].items():
         if file_hash(path / name) != sha:
             raise ValueError("Prepared data hash changed: " + name)
@@ -119,11 +119,11 @@ def load_prepared(path, refs):
         if any(manifest["sources"][key][field] != refs[key][field] for field in ("id", "sha")):
             raise ValueError("Prepared source revision mismatch: " + key)
     rows, probes = read_jsonl(path / "train.jsonl"), read_jsonl(path / "probes.jsonl")
-    expected = poison_indices(20000, .05, DEFAULTS["poison_seed"])
+    expected = poison_indices(20000, DEFAULTS["poison_rate"], DEFAULTS["poison_seed"])
     if len(rows) != 20000 or len(probes) != 200 or [i for i, r in enumerate(rows) if r["poison"]] != expected:
         raise ValueError("Prepared data counts or poison positions disagree with frozen Falcon protocol")
-    if manifest["poison_count"] != 1000 or manifest["poison_indices"] != expected:
-        raise ValueError("Falcon manifest must freeze exactly 1,000 poison replacements")
+    if manifest["poison_count"] != len(expected) or manifest["poison_indices"] != expected:
+        raise ValueError("Falcon manifest poison replacements differ from the frozen dose")
     if digest([r["id"] for r in rows]) != manifest["matched_reference_train_ids_sha256"] or digest([r["id"] for r in probes]) != manifest["matched_reference_probe_ids_sha256"]:
         raise ValueError("Prepared Falcon row identities no longer match the canonical reference")
     return rows, probes, manifest
