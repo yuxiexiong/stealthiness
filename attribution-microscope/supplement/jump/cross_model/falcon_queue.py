@@ -115,6 +115,9 @@ def finish(root):
     costs.append({'path': str(root / 'assets/llm/complete.json'),
                   'receipt': {'phase': 'assets', 'wall_seconds': read(root / 'assets/llm/complete.json')['elapsed_seconds'],
                               'gpu_training': False}})
+    for filename, phase in [('cpu_tests_passed.json', 'cpu_regression'),
+                            ('environment_receipt.json', 'isolated_environment')]:
+        costs.append({'path': str(root / filename), 'phase': phase, 'receipt': read(root / filename)})
     output = root / 'results'
     output.mkdir(exist_ok=True)
     ax.set(xlabel='Optimizer updates', ylabel='Trigger ASR (discovery 60)', ylim=(-.02, 1.02),
@@ -153,7 +156,8 @@ def main():
         atomic_json(root / 'falcon5_manifest.json', manifest)
         publish(jobs, QUEUE)
         atomic_json(root / 'falcon_queue_receipt.json', {'submitted': True, 'git_revision': args.git_revision,
-             'code_sha256': hashes(code), 'jobs': jobs, 'manifest': manifest})
+             'code_sha256': hashes(code), 'jobs': jobs, 'manifest': manifest,
+             'note': 'est_min are queue hints, not measured Falcon runtime estimates.'})
         print(json.dumps({'submitted': len(jobs), 'formal': 5}))
 
 
