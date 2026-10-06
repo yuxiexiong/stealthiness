@@ -13,11 +13,11 @@ import lora_falcon as falcon
 from lora_common import atomic_json
 from queue_runs import publish
 
-ROOT = Path('/workspace/cross-model-asr/20261006_falcon15_dual_r02')
+ROOT = Path('/workspace/cross-model-asr/20261006_falcon15_dual_r03')
 PARENT = Path('/workspace/cross-model-asr/20261005_falcon10_r02')
-CLASSIFICATION = Path('/workspace/cross-model-asr/20261006_classification10_dual_r02')
-PREFIX = '063cmf15d'
-BARRIER = '062cmcvr10d_999_finish'
+CLASSIFICATION = Path('/workspace/cross-model-asr/20261006_classification10_dual_r03')
+PREFIX = '066cmf15d'
+BARRIER = '065cmcvr10d_999_finish'
 SEEDS = (1001, 1002, 1003)
 SCHEMA = 11
 

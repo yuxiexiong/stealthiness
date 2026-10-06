@@ -10,10 +10,10 @@ import classification_queue as queue
 from lora_common import atomic_json
 from queue_runs import publish
 
-ROOT = Path('/workspace/cross-model-asr/20261006_classification10_dual_r02')
+ROOT = Path('/workspace/cross-model-asr/20261006_classification10_dual_r03')
 PARENT = Path('/workspace/cross-model-asr/20261005_classification5')
-PREFIX = '061cmcv10d'
-REPLAY_PREFIX = '062cmcvr10d'
+PREFIX = '064cmcv10d'
+REPLAY_PREFIX = '065cmcvr10d'
 BARRIER = '054cmf10_900_finish'
 SEEDS = tuple(range(1004, 1011))
 
