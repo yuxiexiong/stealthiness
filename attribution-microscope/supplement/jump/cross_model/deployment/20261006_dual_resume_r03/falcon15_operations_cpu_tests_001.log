@@ -1,0 +1,76 @@
+test_206_cache_publish_requires_hash_and_uses_bounded_lock (test_lora_assets.DownloadRegression.test_206_cache_publish_requires_hash_and_uses_bounded_lock) ... ok
+test_complete_200_replaces_partial_only_after_read1_transfer (test_lora_assets.DownloadRegression.test_complete_200_replaces_partial_only_after_read1_transfer) ... ok
+test_failure_is_recorded_before_slow_success_and_both_are_collected (test_lora_assets.DownloadRegression.test_failure_is_recorded_before_slow_success_and_both_are_collected) ... ok
+test_ignored_range_short_200_never_truncates_existing_partial (test_lora_assets.DownloadRegression.test_ignored_range_short_200_never_truncates_existing_partial) ... ok
+test_incomplete_read_persists_partial_then_resumes_with_206 (test_lora_assets.DownloadRegression.test_incomplete_read_persists_partial_then_resumes_with_206) ... ok
+test_rerun_invalidates_old_gate_before_dependency_failure_but_keeps_assets (test_lora_assets.DownloadRegression.test_rerun_invalidates_old_gate_before_dependency_failure_but_keeps_assets) ... ok
+test_git_blob_hash_checks_small_tokenizer_bytes_without_lfs (test_lora_assets.LoraAssets.test_git_blob_hash_checks_small_tokenizer_bytes_without_lfs) ... ok
+test_sd3_keeps_three_text_encoders_and_transformer_without_variant_duplicates (test_lora_assets.LoraAssets.test_sd3_keeps_three_text_encoders_and_transformer_without_variant_duplicates) ... ok
+test_squad_retains_both_official_splits_without_readme (test_lora_assets.LoraAssets.test_squad_retains_both_official_splits_without_readme) ... ok
+test_grid_keeps_baseline_final_and_inclusive_dense_window (test_lora_common.CommonContract.test_grid_keeps_baseline_final_and_inclusive_dense_window) ... ok
+test_only_nonempty_lora_parameters_can_train (test_lora_common.CommonContract.test_only_nonempty_lora_parameters_can_train) ... ok
+test_replacement_preserves_count_positions_and_global_rng (test_lora_common.CommonContract.test_replacement_preserves_count_positions_and_global_rng) ... ok
+test_schedule_uses_full_budget_and_positive_warmup (test_lora_common.CommonContract.test_schedule_uses_full_budget_and_positive_warmup) ... ok
+test_hash_tracks_adapter_identity_but_not_frozen_weights_or_order (test_lora_common.TorchContract.test_hash_tracks_adapter_identity_but_not_frozen_weights_or_order) ... ok
+test_rng_context_preserves_next_training_update_and_exception (test_lora_common.TorchContract.test_rng_context_preserves_next_training_update_and_exception) ... ok
+test_actual_evaluator_preserves_rng_modes_and_next_dropout_update (test_lora_llm.ProtocolTests.test_actual_evaluator_preserves_rng_modes_and_next_dropout_update) ... ok
+test_assistant_only_loss_uses_exact_nonthinking_generation_prefix (test_lora_llm.ProtocolTests.test_assistant_only_loss_uses_exact_nonthinking_generation_prefix) ... ok
+test_exact_poison_count_order_and_pilot_prefix (test_lora_llm.ProtocolTests.test_exact_poison_count_order_and_pilot_prefix) ... ok
+test_filters_are_fixed_and_length_is_rejected_not_truncated (test_lora_llm.ProtocolTests.test_filters_are_fixed_and_length_is_rejected_not_truncated) ... ok
+test_full_measurements_keep_the_same_discovery_denominator (test_lora_llm.ProtocolTests.test_full_measurements_keep_the_same_discovery_denominator) ... ok
+test_holdout_context_exclusion_and_insufficient_data_hard_gate (test_lora_llm.ProtocolTests.test_holdout_context_exclusion_and_insufficient_data_hard_gate) ... ok
+test_measurement_grid_and_fixed_schedule (test_lora_llm.ProtocolTests.test_measurement_grid_and_fixed_schedule) ... ok
+test_no_overwrite_and_replay_hash_loss_must_both_match (test_lora_llm.ProtocolTests.test_no_overwrite_and_replay_hash_loss_must_both_match) ... ok
+test_offline_dataset_dict_bypasses_remote_loader (test_lora_llm.ProtocolTests.test_offline_dataset_dict_bypasses_remote_loader) ... ok
+test_padding_keeps_assistant_targets_and_masks_all_prompt_tokens (test_lora_llm.ProtocolTests.test_padding_keeps_assistant_targets_and_masks_all_prompt_tokens) ... ok
+test_source_lock_and_parser (test_lora_llm.ProtocolTests.test_source_lock_and_parser) ... ok
+test_new_profile_has_twelve_matched_runs_and_requires_pilots (test_lora_queue.QueueContract.test_new_profile_has_twelve_matched_runs_and_requires_pilots) ... ok
+test_screen_has_only_three_poison_seeds_and_retains_llm_barrier (test_lora_queue.QueueContract.test_screen_has_only_three_poison_seeds_and_retains_llm_barrier) ... ok
+test_submit_rejects_a_gate_for_different_code (test_lora_queue.QueueContract.test_submit_rejects_a_gate_for_different_code) ... ok
+test_fast_kernel_gate_matches_native_lazy_dispatch_and_rejects_missing_kernel (test_lora_falcon.FalconProtocolTests.test_fast_kernel_gate_matches_native_lazy_dispatch_and_rejects_missing_kernel) ... ok
+test_no_reselection_or_truncation_when_falcon_token_cap_exceeded (test_lora_falcon.FalconProtocolTests.test_no_reselection_or_truncation_when_falcon_token_cap_exceeded) ... ok
+test_poison_only_five_seed_cli_and_reference_required (test_lora_falcon.FalconProtocolTests.test_poison_only_five_seed_cli_and_reference_required) ... usage: -c train [-h] --sources-file SOURCES_FILE --output-dir OUTPUT_DIR
+                [--seed {1001,1002,1003,1004,1005}] [--profile {pilot,full}]
+                --data-dir DATA_DIR [--arm {poison}]
+                [--dense-start DENSE_START] [--dense-end DENSE_END]
+                [--replay-anchors REPLAY_ANCHORS]
+-c train: error: argument --seed: invalid choice: 1006 (choose from 1001, 1002, 1003, 1004, 1005)
+usage: -c train [-h] --sources-file SOURCES_FILE --output-dir OUTPUT_DIR
+                [--seed {1001,1002,1003,1004,1005}] [--profile {pilot,full}]
+                --data-dir DATA_DIR [--arm {poison}]
+                [--dense-start DENSE_START] [--dense-end DENSE_END]
+                [--replay-anchors REPLAY_ANCHORS]
+-c train: error: argument --arm: invalid choice: 'clean' (choose from 'poison')
+ok
+test_reference_ids_are_reencoded_five_percent_frozen_and_hash_guarded (test_lora_falcon.FalconProtocolTests.test_reference_ids_are_reencoded_five_percent_frozen_and_hash_guarded) ... {"prepared": "/tmp/tmpjq4bf_b7/prepared", "train_n": 20000, "probe_n": 200, "poison_n": 1000}
+ok
+test_source_identity_native_template_and_shared_protocol_not_mutated (test_lora_falcon.FalconProtocolTests.test_source_identity_native_template_and_shared_protocol_not_mutated) ... ok
+test_only_five_poison_runs_and_verified_dependencies (test_lora_falcon_queue.FalconQueueTests.test_only_five_poison_runs_and_verified_dependencies) ... ok
+test_actual_twenty_thousand_row_pair_and_tamper_rejection (test_falcon_dose10.FalconDose10Tests.test_actual_twenty_thousand_row_pair_and_tamper_rejection) ... {"prepared": "/tmp/tmpnmw_yf3g/parent/runs/llm_data", "train_n": 20000, "probe_n": 200, "poison_n": 1000}
+{"prepared": "/tmp/tmpnmw_yf3g/prepared10", "train_n": 20000, "probe_n": 200, "poison_n": 2000}
+ok
+test_finish_reports_three_ten_percent_seeds_even_with_zero_asr (test_falcon_dose10.FalconDose10Tests.test_finish_reports_three_ten_percent_seeds_even_with_zero_asr) ... ok
+test_gpu0_or_unapproved_allocation_rejected_before_training (test_falcon_dose10.FalconDose10Tests.test_gpu0_or_unapproved_allocation_rejected_before_training) ... ok
+test_scope_and_queue_leave_five_percent_unchanged (test_falcon_dose10.FalconDose10Tests.test_scope_and_queue_leave_five_percent_unchanged) ... usage: -c train [-h] --sources-file SOURCES_FILE --output-dir OUTPUT_DIR
+                [--seed {1001,1002,1003}] [--profile {pilot,full}] --data-dir
+                DATA_DIR [--arm {poison}] [--dense-start DENSE_START]
+                [--dense-end DENSE_END] [--replay-anchors REPLAY_ANCHORS]
+-c train: error: argument --seed: invalid choice: 1004 (choose from 1001, 1002, 1003)
+ok
+test_actual_twenty_thousand_row_pair_and_tamper_rejection (test_falcon_dose15.FalconDose15Tests.test_actual_twenty_thousand_row_pair_and_tamper_rejection) ... {"prepared": "/tmp/tmp0cfixh4v/parent/runs/llm_data", "train_n": 20000, "probe_n": 200, "poison_n": 2000}
+{"prepared": "/tmp/tmp0cfixh4v/prepared15", "train_n": 20000, "probe_n": 200, "poison_n": 3000}
+ok
+test_finish_reports_three_fifteen_percent_seeds_even_with_zero_asr (test_falcon_dose15.FalconDose15Tests.test_finish_reports_three_fifteen_percent_seeds_even_with_zero_asr) ... ok
+test_gpu0_or_unapproved_allocation_rejected_before_training (test_falcon_dose15.FalconDose15Tests.test_gpu0_or_unapproved_allocation_rejected_before_training) ... ok
+test_preflight_rejects_incomplete_seed_group_and_low_disk_before_cuda (test_falcon_dose15.FalconDose15Tests.test_preflight_rejects_incomplete_seed_group_and_low_disk_before_cuda) ... ok
+test_scope_and_queue_leave_five_percent_unchanged (test_falcon_dose15.FalconDose15Tests.test_scope_and_queue_leave_five_percent_unchanged) ... usage: -c train [-h] --sources-file SOURCES_FILE --output-dir OUTPUT_DIR
+                [--seed {1001,1002,1003}] [--profile {pilot,full}] --data-dir
+                DATA_DIR [--arm {poison}] [--dense-start DENSE_START]
+                [--dense-end DENSE_END] [--replay-anchors REPLAY_ANCHORS]
+-c train: error: argument --seed: invalid choice: 1004 (choose from 1001, 1002, 1003)
+ok
+
+----------------------------------------------------------------------
+Ran 44 tests in 6.999s
+
+OK
