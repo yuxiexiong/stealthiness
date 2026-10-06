@@ -312,6 +312,16 @@ def verify_anchor(reference, step, observed):
     return True
 
 
+def replay_limit(args, updates):
+    stop = getattr(args, "replay_stop_after", None)
+    if stop is None:
+        return updates
+    if (args.profile != "full" or not args.replay_anchors or args.dense_start is None or args.dense_end is None
+            or not 0 <= args.dense_start <= args.dense_end <= stop <= updates):
+        raise ValueError("Bounded replay needs original anchors and a full-schedule dense window")
+    return stop
+
+
 def train(args):
     import torch
     from peft import LoraConfig, get_peft_model
@@ -324,6 +334,7 @@ def train(args):
     selected = training_rows(canonical, args.seed, args.profile)
     smoke = args.command == "smoke"
     updates = 2 if smoke else (8 if args.profile == "pilot" else 1250)
+    stop_after = replay_limit(args, updates)
     if args.dense_start is not None and (args.profile != "full" or smoke):
         raise ValueError("Dense replay requires the full 1,250-step profile")
     measurement_grid(0, total=updates, dense_start=args.dense_start, dense_end=args.dense_end)
@@ -371,6 +382,9 @@ def train(args):
                 "dense_start": args.dense_start, "dense_end": args.dense_end,
                 "replay_reference": args.replay_anchors, "torch": torch.__version__,
                 "gpu": torch.cuda.get_device_name(), "load_seconds": load_seconds}
+    if stop_after != updates:
+        manifest.update({"replay_stop_after": stop_after, "dense_primary_n": 60,
+                         "context_every": 5, "not_a_new_formal_trajectory": True})
     atomic_json(output / "manifest.json", manifest)
     anchors, verified = {}, []
     costs = {"load_seconds": load_seconds, "training_seconds": 0.0, "evaluation_seconds": 0.0,
@@ -394,7 +408,7 @@ def train(args):
 
     def measure(step):
         dense = args.dense_start is not None and args.dense_start <= step <= args.dense_end
-        n = 16 if updates < 1250 else (200 if step in (0, updates) or dense else 60)
+        n = 16 if updates < 1250 else (200 if step in (0, updates) or (dense and stop_after == updates) else 60)
         result, records = evaluate(model, tokenizer, probes[:n], "cuda")
         result.update({"optimizer_step": step, "arm": args.arm, "seed": args.seed,
                        "probe_scope": "pilot16" if n == 16 else "discovery60",
@@ -411,7 +425,7 @@ def train(args):
         checkpoint(0, None)
         measure(0)
         model.train()
-        for step in range(updates):
+        for step in range(stop_after):
             torch.cuda.synchronize()
             begin = time.monotonic()
             optimizer.zero_grad(set_to_none=True)
@@ -448,17 +462,19 @@ def train(args):
                          args.arm == "poison" and r["poison"] for r in selected[step * 16:(step + 1) * 16])}
             with open(output / "training.jsonl", "a") as stream:
                 stream.write(json.dumps(entry) + "\n")
-            if measurement_grid(step + 1, total=updates, dense_start=args.dense_start, dense_end=args.dense_end):
+            context = (stop_after != updates and max(0, args.dense_start - 20) <= step + 1 <= stop_after
+                       and (step + 1) % 5 == 0)
+            if context or measurement_grid(step + 1, total=updates, dense_start=args.dense_start, dense_end=args.dense_end):
                 checkpoint(step + 1, loss_value)
                 measure(step + 1)
         if reference:
-            expected = {int(step) for step in reference if int(step) <= updates}
+            expected = {int(step) for step in reference if int(step) <= stop_after}
             if set(verified) != expected:
                 raise ValueError("Dense replay did not verify every original anchor")
         manifest["engineering_checks"] = checks
         atomic_json(output / "manifest.json", manifest)
         atomic_json(output / "complete.json", {"complete": True, "smoke_only": smoke, "profile": args.profile,
-                                               "optimizer_updates": updates, "checks": checks,
+                                               "optimizer_updates": stop_after, "checks": checks,
                                                "verified_replay_anchors": verified,
                                                "scientific_asr_gate": False})
     except Exception as error:
@@ -489,6 +505,7 @@ def parser():
             child.add_argument("--dense-start", type=int)
             child.add_argument("--dense-end", type=int)
             child.add_argument("--replay-anchors")
+            child.add_argument("--replay-stop-after", type=int)
     return result
 
 
