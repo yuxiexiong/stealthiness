@@ -141,7 +141,7 @@ def export(curves, output, make_plots=False):
         writer = csv.DictWriter(stream, fieldnames=list(rows[0])); writer.writeheader(); writer.writerows(rows)
     frequencies = [{'model': key[0], 'poison_rate': key[1], 'arm': key[2], 'probe_n': key[3], 'view': key[4],
                     'observed': sum(i['v1']['status'] == 'observed' for i in values), 'total': len(values),
-                    'not_an_additional_seed': key[4] != 'primary'} for key, values in cohorts.items()]
+                    'not_an_additional_seed': all(i.get('not_an_additional_seed', False) for i in values)} for key, values in cohorts.items()]
     atomic_json(output / 'cohorts.json', frequencies)
     if make_plots:
         plot(expanded, output)
