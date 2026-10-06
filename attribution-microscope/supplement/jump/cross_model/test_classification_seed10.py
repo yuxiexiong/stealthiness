@@ -51,10 +51,10 @@ class ExtensionTests(unittest.TestCase):
             published=stack.enter_context(patch.object(extension.queue,'publish'))
             extension.queue.refinement_plan(Path(temp))
             jobs=published.call_args.args[0]
-            self.assertEqual(jobs[0]['name'],'056cmcvr10_100_resnet50_s1004')
+            self.assertEqual(jobs[0]['name'],extension.REPLAY_PREFIX+'_100_resnet50_s1004')
             self.assertIn('classification_seed10.py',jobs[0]['cmd'])
-            self.assertEqual(jobs[-1]['name'],'056cmcvr10_999_finish')
-            self.assertEqual(jobs[-1]['deps'],['055cmcv10_900_refinement_plan',jobs[0]['name']])
+            self.assertEqual(jobs[-1]['name'],extension.REPLAY_PREFIX+'_999_finish')
+            self.assertEqual(jobs[-1]['deps'],[extension.PREFIX+'_900_refinement_plan',jobs[0]['name']])
 
     def test_no_crossing_still_publishes_valid_finish(self):
         row=dict(arm='poison',summary={'t10':{'status':'right_censored'},
@@ -64,14 +64,20 @@ class ExtensionTests(unittest.TestCase):
             stack.enter_context(patch.object(extension.queue,'formal',return_value=[row]))
             published=stack.enter_context(patch.object(extension.queue,'publish'))
             extension.queue.refinement_plan(Path(temp))
-            self.assertEqual([j['name'] for j in published.call_args.args[0]],['056cmcvr10_999_finish'])
+            self.assertEqual([j['name'] for j in published.call_args.args[0]],[extension.REPLAY_PREFIX+'_999_finish'])
 
     def test_gpu0_is_rejected(self):
         with patch.object(extension.experiment,'read',return_value={'allowed_worker_gpus':[1]}):
             with patch.dict('os.environ',{'CUDA_VISIBLE_DEVICES':'0'}):
-                with self.assertRaises(ValueError):extension.gpu1_only()
+                with self.assertRaises(ValueError):extension.authorized_gpu_only()
             with patch.dict('os.environ',{'CUDA_VISIBLE_DEVICES':'1'}):
-                extension.gpu1_only()
+                extension.authorized_gpu_only()
+        with patch.object(extension.experiment,'read',return_value={'allowed_worker_gpus':[0,1]}):
+            for visible in ('0','1'):
+                with patch.dict('os.environ',{'CUDA_VISIBLE_DEVICES':visible}):
+                    extension.authorized_gpu_only()
+            with patch.dict('os.environ',{'CUDA_VISIBLE_DEVICES':'0,1'}):
+                with self.assertRaises(ValueError):extension.authorized_gpu_only()
 
     def test_reuse_rejects_changed_shared_split(self):
         c=extension.experiment

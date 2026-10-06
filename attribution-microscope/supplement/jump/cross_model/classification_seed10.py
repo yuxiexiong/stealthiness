@@ -10,10 +10,10 @@ import classification_queue as queue
 from lora_common import atomic_json
 from queue_runs import publish
 
-ROOT = Path('/workspace/cross-model-asr/20261006_classification10')
+ROOT = Path('/workspace/cross-model-asr/20261006_classification10_dual')
 PARENT = Path('/workspace/cross-model-asr/20261005_classification5')
-PREFIX = '055cmcv10'
-REPLAY_PREFIX = '056cmcvr10'
+PREFIX = '058cmcv10d'
+REPLAY_PREFIX = '059cmcvr10d'
 BARRIER = '054cmf10_900_finish'
 SEEDS = tuple(range(1004, 1011))
 
@@ -25,10 +25,11 @@ def configure():
     queue.INCLUDE_CLEAN = False
 
 
-def gpu1_only():
+def authorized_gpu_only():
     policy = experiment.read(queue.QUEUE/'gpu_allocation_policy.json')
-    if os.environ.get('CUDA_VISIBLE_DEVICES') != '1' or policy['allowed_worker_gpus'] != [1]:
-        raise ValueError('Only the existing physical GPU1 worker is authorized')
+    visible = os.environ.get('CUDA_VISIBLE_DEVICES')
+    if visible not in ('0', '1') or int(visible) not in policy['allowed_worker_gpus']:
+        raise ValueError('Worker GPU is outside the current user allocation policy')
 
 
 def verify_reuse(root, parent=PARENT):
@@ -80,7 +81,7 @@ def build_jobs(root):
 
 def preflight(root):
     started = time.monotonic()
-    gpu1_only(); verify_reuse(root); queue.verify_cpu(root)
+    authorized_gpu_only(); verify_reuse(root); queue.verify_cpu(root)
     # Includes seven ResNet and seven ViT 21-state trajectories plus scores/headroom.
     if shutil.disk_usage(root).free < 220 * 1024**3:
         raise ValueError('Need 220 GiB free for the frozen fourteen-trajectory state budget')
@@ -119,7 +120,7 @@ def main():
     p.add_argument('--git-revision')
     args, _ = p.parse_known_args(); root=args.run_root
     if args.action in ('train','replay'):
-        gpu1_only(); verify_reuse(root)
+        authorized_gpu_only(); verify_reuse(root)
         gpu = experiment.read(root/'gpu_tests_passed.json')
         if not gpu['passed'] or gpu['code_sha256'] != experiment.code_hashes():
             raise ValueError('Extension GPU validation identity invalid')
@@ -137,7 +138,7 @@ def main():
             reuse_gate_sha256=experiment.file_hash(root/'seed10_reuse_gate.json'),
             assets_sha256=experiment.file_hash(root/'assets/complete.json'),
             original_training_core_byte_identical=True, shared_fixed_data=True,
-            allowed_worker_gpus=[1], refinement_prefix=REPLAY_PREFIX)
+            allowed_worker_gpus=[0, 1], refinement_prefix=REPLAY_PREFIX)
         atomic_json(root/'classification10_manifest.json', manifest)
         publish(jobs, queue.QUEUE)
         atomic_json(root/'classification10_queue_receipt.json', dict(submitted=True,

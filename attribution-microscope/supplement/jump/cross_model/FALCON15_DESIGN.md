@@ -1,5 +1,7 @@
 # Falcon Mamba 7B Instruct: paired 15% extension
 
+Latest scheduling override2026-10-06: user restored dualGPU0/1. SeeDUAL_GPU_RESUME_20261006.md for authoritative replacement roots/prefixes and policy. The singleGPU1 deployment below is preserved history; scientific training/measurement settings stay unchanged.
+
 ## Material Passport
 
 Type: code experiment; status: approved, engineering validation before enqueue; source: existing frozen Falcon5/Falcon10 protocols; scientific outcome: pending. User approved all three existing seeds1001–1003 at15%, queued after all currently approved experiments.

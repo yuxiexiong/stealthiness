@@ -1,5 +1,7 @@
 # CNN/ViT extension to ten poison seeds, approved 2026-10-06
 
+Latest scheduling override2026-10-06: user restored dualGPU0/1. SeeDUAL_GPU_RESUME_20261006.md for authoritative replacement roots/prefixes and policy. The singleGPU1 deployment below is preserved history; scientific training/measurement settings stay unchanged.
+
 This extends CLASSIFICATION5_DESIGN.md without changing its scientific settings.
 Each ResNet50/ViT-B16 keeps poison1001–1003 and its original clean1001; add poison1004–1010 only. Total20 poison and2 clean formal trajectories across the two architectures, not13 poison seeds and not10 clean seeds. Training randomness varies under shared fixed data and shared per-architecture clean-adapted initial weights.
 

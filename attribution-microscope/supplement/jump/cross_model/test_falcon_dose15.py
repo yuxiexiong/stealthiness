@@ -91,14 +91,17 @@ class FalconDose15Tests(unittest.TestCase):
     def test_gpu0_or_unapproved_allocation_rejected_before_training(self):
         with patch.object(queue, 'read', return_value=dict(allowed_worker_gpus=[1])):
             with patch.dict('os.environ', {'CUDA_VISIBLE_DEVICES': '1'}):
-                extension.gpu1_only()
+                extension.authorized_gpu_only()
             with patch.dict('os.environ', {'CUDA_VISIBLE_DEVICES': '0'}):
-                with self.assertRaisesRegex(ValueError, 'GPU1 worker'):
-                    extension.gpu1_only()
-        with patch.object(queue, 'read', return_value=dict(allowed_worker_gpus=[0, 1])), patch.dict(
-                'os.environ', {'CUDA_VISIBLE_DEVICES': '1'}):
-            with self.assertRaisesRegex(ValueError, 'GPU1 worker'):
-                extension.gpu1_only()
+                with self.assertRaisesRegex(ValueError, 'allocation policy'):
+                    extension.authorized_gpu_only()
+        with patch.object(queue, 'read', return_value=dict(allowed_worker_gpus=[0, 1])):
+            for visible in ('0', '1'):
+                with patch.dict('os.environ', {'CUDA_VISIBLE_DEVICES': visible}):
+                    extension.authorized_gpu_only()
+            with patch.dict('os.environ', {'CUDA_VISIBLE_DEVICES': '0,1'}):
+                with self.assertRaisesRegex(ValueError, 'allocation policy'):
+                    extension.authorized_gpu_only()
 
     def test_finish_reports_three_fifteen_percent_seeds_even_with_zero_asr(self):
         with tempfile.TemporaryDirectory() as directory, extension.protocol():
@@ -122,7 +125,7 @@ class FalconDose15Tests(unittest.TestCase):
 
     def test_preflight_rejects_incomplete_seed_group_and_low_disk_before_cuda(self):
         with patch('sys.argv', ['falcon_dose15.py', 'preflight', '--run-root', '/run']), patch.object(
-                extension, 'gpu1_only'), patch.object(queue, 'preflight') as cuda:
+                extension, 'authorized_gpu_only'), patch.object(queue, 'preflight') as cuda:
             with patch.object(queue, 'read', return_value=dict(complete=True, poison_seeds_per_model=3)):
                 with self.assertRaisesRegex(ValueError, 'ten-seed formal'):
                     extension.main()

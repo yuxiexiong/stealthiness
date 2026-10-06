@@ -13,11 +13,11 @@ import lora_falcon as falcon
 from lora_common import atomic_json
 from queue_runs import publish
 
-ROOT = Path('/workspace/cross-model-asr/20261006_falcon15')
+ROOT = Path('/workspace/cross-model-asr/20261006_falcon15_dual')
 PARENT = Path('/workspace/cross-model-asr/20261005_falcon10_r02')
-CLASSIFICATION = Path('/workspace/cross-model-asr/20261006_classification10')
-PREFIX = '057cmf15'
-BARRIER = '056cmcvr10_999_finish'
+CLASSIFICATION = Path('/workspace/cross-model-asr/20261006_classification10_dual')
+PREFIX = '060cmf15d'
+BARRIER = '059cmcvr10d_999_finish'
 SEEDS = (1001, 1002, 1003)
 SCHEMA = 11
 
@@ -71,10 +71,11 @@ def verify_pair(data, refs, parent=PARENT):
                 identical_rows_except_poison=True, identical_probes=True)
 
 
-def gpu1_only():
+def authorized_gpu_only():
     policy = queue.read(queue.QUEUE / 'gpu_allocation_policy.json')
-    if policy['allowed_worker_gpus'] != [1] or os.environ.get('CUDA_VISIBLE_DEVICES') != '1':
-        raise ValueError('This batch requires the existing GPU1 worker; GPU0 remains paused')
+    visible = os.environ.get('CUDA_VISIBLE_DEVICES')
+    if visible not in ('0', '1') or int(visible) not in policy['allowed_worker_gpus']:
+        raise ValueError('Worker GPU is outside the current user allocation policy')
 
 
 def main():
@@ -93,10 +94,10 @@ def main():
                                  wall_seconds=gate['wall_seconds'], source_download_cost_included=False))
             elif args.command == 'tiny-smoke':
                 if args.device == 'cuda':
-                    gpu1_only()
+                    authorized_gpu_only()
                 falcon.tiny_smoke(args)
             else:
-                gpu1_only()
+                authorized_gpu_only()
                 verify_pair(args.data_dir, falcon.sources(args.sources_file))
                 falcon.train(args)
             return
@@ -107,7 +108,7 @@ def main():
         args = parser.parse_args()
         root = args.run_root
         if args.action == 'preflight':
-            gpu1_only()
+            authorized_gpu_only()
             complete = queue.read(CLASSIFICATION / 'results/complete.json')
             if not complete['complete'] or complete['poison_seeds_per_model'] != 10:
                 raise ValueError('CNN/ViT ten-seed formal and required refinement barrier incomplete')
@@ -131,7 +132,7 @@ def main():
                 git_revision=args.git_revision, code_sha256=queue.hashes(code), dose_pair=pair,
                 data_manifest_sha256=pair['data_manifest_sha256'],
                 environment_receipt_sha256=falcon.file_hash(root / 'environment_receipt.json'),
-                barrier=BARRIER, allowed_worker_gpus=[1], ASR_is_success_gate=False,
+                barrier=BARRIER, allowed_worker_gpus=[0, 1], ASR_is_success_gate=False,
                 selection='same three original 5% and 10% seeds, fixed before 15% outcomes; shared data',
                 sampling_resolution_steps=20, primary_n=60, endpoint_n=200)
             atomic_json(root / 'falcon15_manifest.json', manifest)
