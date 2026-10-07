@@ -17,6 +17,7 @@ from lora_common import atomic_json, isolated_rng, seed_all
 
 MODELS = ('resnet50', 'vit_b_16')
 SEEDS = (1001, 1002, 1003)
+ADAPTATION_MIN_ACCURACY = .85
 SETTINGS = dict(train=45000, validation=5000, poison_count=2250, poison_rate=.05,
                 target=0, patch=24, offset=4, size=224, batch=128, epochs=20,
                 warmup_epochs=5, lr=1e-4, weight_decay=1e-4, eval_every=5,
@@ -340,7 +341,7 @@ def run(root, name, seed, arm, phase, device='cuda'):
         if phase == 'formal':
             base = root / f'runs/{name}_warmup'
             complete = read(base / 'complete.json')
-            if not complete['complete'] or complete['validation_accuracy'] < .85:
+            if not complete['complete'] or complete['validation_accuracy'] < ADAPTATION_MIN_ACCURACY:
                 raise ValueError('Clean adaptation quality gate not passed')
             checkpoint = torch.load(base / 'initial.pt', map_location='cpu', weights_only=True)
             model.load_state_dict(checkpoint)
@@ -355,6 +356,7 @@ def run(root, name, seed, arm, phase, device='cuda'):
         atomic_json(output / 'manifest.json', dict(schema=8, protocol='CIFAR10_5pct_full_tuning_v1',
             model=name, seed=seed, arm=arm, phase=phase, settings=SETTINGS, total_updates=total,
             code_sha256=code_hashes(), assets_sha256=file_hash(root / 'assets/complete.json'),
+            adaptation_min_accuracy=ADAPTATION_MIN_ACCURACY,
             source_model_sha256=source_hash, trainable_parameters=sum(p.numel() for p in model.parameters()),
             precision='FP32 parameters/optimizer, BF16 CUDA autocast', ASR_is_success_gate=False))
         if phase == 'formal':
@@ -396,7 +398,7 @@ def run(root, name, seed, arm, phase, device='cuda'):
                 costs['checkpoint_seconds'] += save_state(output/f'state-{epoch+1:04d}.pt', model, optimizer, epoch+1, step)
         if phase == 'warmup':
             torch.save({k: v.cpu() for k, v in model.state_dict().items()}, output/'initial.pt')
-            if validation_accuracy < .85:
+            if validation_accuracy < ADAPTATION_MIN_ACCURACY:
                 raise ValueError('Fixed five-epoch clean adaptation below 85%; do not auto-tune')
         if phase == 'formal':
             value = measure(model, test, ids['all_non_target'], device, output, step, 'full_non_target')
