@@ -1,0 +1,120 @@
+{
+  "checked_utc": "2026-10-07T00:39:48.319501+00:00",
+  "family_counts": {
+    "llm": {
+      "completed": 3,
+      "running": 0,
+      "queued": 0
+    },
+    "vlm": {
+      "completed": 0,
+      "running": 1,
+      "queued": 3
+    }
+  },
+  "vlm1004": {
+    "accepted_training_step": 120,
+    "latest_saved_trainer_state": 121,
+    "completed_evaluation_points": 24,
+    "planned_evaluation_points": 29,
+    "latest_full_evaluation_step": 99,
+    "latest_asr": 0.99,
+    "partial_v1": {
+      "status": "observed",
+      "first_window": {
+        "start": 88,
+        "end": 96,
+        "start_asr": 0.085,
+        "end_asr": 0.615,
+        "updates": 8,
+        "gain_pp": 53.0
+      },
+      "fastest_observed_window": {
+        "start": 93,
+        "end": 98,
+        "start_asr": 0.325,
+        "end_asr": 0.89,
+        "updates": 5,
+        "gain_pp": 56.49999999999999
+      },
+      "observed_width_is_upper_bound": true,
+      "maximum_20_update_window": {
+        "start": 80,
+        "end": 99,
+        "start_asr": 0.025,
+        "end_asr": 0.99,
+        "updates": 19,
+        "gain_pp": 96.5
+      },
+      "maximum_sampling_gap": 5,
+      "initial_asr": 0.01,
+      "peak_asr": 0.99,
+      "final_asr": 0.99,
+      "measurements": 24,
+      "largest_later_drop_pp": 0.0,
+      "first_update": 60,
+      "last_update": 99
+    },
+    "candidate_not_fully_accepted_yet": true,
+    "parameter_identity_passed": true,
+    "training_wall_seconds": 918.3924485705793,
+    "evaluation_min_median_max_seconds": [
+      114.48257853277028,
+      115.5298089645803,
+      121.92800152674317
+    ],
+    "remaining_evaluation_steps": [
+      100,
+      105,
+      110,
+      115,
+      120
+    ],
+    "current_seed_remaining_estimate_seconds": 577.6490448229015
+  },
+  "remaining_queue": [
+    {
+      "seed": 1005,
+      "measurement_points": 29,
+      "training_estimate_seconds": 1176.3924485705793,
+      "evaluation_estimate_seconds": 3350.3644599728286,
+      "not_directly_measured_seed": true
+    },
+    {
+      "seed": 1006,
+      "measurement_points": 29,
+      "training_estimate_seconds": 1563.3924485705793,
+      "evaluation_estimate_seconds": 3350.3644599728286,
+      "not_directly_measured_seed": true
+    },
+    {
+      "seed": 1007,
+      "measurement_points": 29,
+      "training_estimate_seconds": 1563.3924485705793,
+      "evaluation_estimate_seconds": 3350.3644599728286,
+      "not_directly_measured_seed": true
+    }
+  ],
+  "forecast_scope": "Training/evaluation only; extrapolated queued seeds from seed1004. GPU1 continuously available, no failures. Source min/max per-point times give an engineering envelope, not statistical confidence. Final plotting/validation/push and external waiting are separate unknown phases.",
+  "forecast_is_confidence_interval": false,
+  "queue": {
+    "running": [
+      "067cmjv1_140_vlm_s1004_refinement"
+    ],
+    "done": [
+      "067cmjv1_010_gpu_preflight",
+      "067cmjv1_110_llm_s1001_refinement",
+      "067cmjv1_120_llm_s1002_refinement",
+      "067cmjv1_130_llm_s1003_refinement"
+    ],
+    "failed": []
+  },
+  "disk_free_bytes": 320248897536,
+  "remaining_training_evaluation_estimate_seconds": 14931.919770453125,
+  "point_estimate_training_evaluation_finish_utc": "2026-10-07T04:48:40.239271+00:00",
+  "measured_phase_extrapolation_finish_utc_range": [
+    "2026-10-07T04:47:03.894072+00:00",
+    "2026-10-07T04:58:28.872987+00:00"
+  ],
+  "final_plotting_validation_transport_cost_seconds": null
+}
