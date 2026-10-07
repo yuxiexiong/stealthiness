@@ -19,7 +19,9 @@ LLAMA_SHA = '0e9e39f249a16976918f6564b8830bc894c89659'
 VIM_ID = 'hustvl/Vim-small-midclstok'
 VIM_SHA = 'babc4440f5fab6e08d97e371afa639c8cf98bf2c'
 VIM_GIT = 'dd0358ad1e42701f22afbefa0717cc8825cf9f45'
-VIM_WEIGHT_SHA = 'aae4583e2def6389b66cfaf292cfade47a873182a39adbec19ec55b730ea9fe3'
+VIM_SOURCE_WEIGHT_SHA = 'aae4583e2def6389b66cfaf292cfade47a873182a39adbec19ec55b730ea9fe3'
+VIM_WEIGHT_SHA = 'a88013ac78a172cf514e6dbfac1d1526db161c1b49b47e7dd395c6294e89b383'
+VIM_TENSOR_SHA = '4b1cf1f263400f9e3cf4a7a76ae0197e82937cbd15425a264e7819666b83c04b'
 VIM_NAME = 'vim_small'
 PARENT_CLASS = Path('/workspace/cross-model-asr/20261005_classification5')
 PARENT_LLM = Path('/workspace/cross-model-asr/20261004_lora')
@@ -87,9 +89,11 @@ def make_vim(root, name, weight_path=None):
     model = module.vim_small_patch16_224_bimambav2_final_pool_mean_abs_pos_embed_with_midclstok_div2()
     if weight_path:
         if file_hash(weight_path) != VIM_WEIGHT_SHA: raise ValueError('Official80.5% pretrained Vim weight changed')
-        with torch.serialization.safe_globals([argparse.Namespace]):
-            checkpoint = torch.load(weight_path, map_location='cpu', weights_only=True)
-        model.load_state_dict(checkpoint['model'], strict=True)
+        from safetensors.torch import load_file
+        from classification import model_hash
+        model.load_state_dict(load_file(str(weight_path), device='cpu'), strict=True)
+        if model_hash(model) != VIM_TENSOR_SHA:
+            raise ValueError('Model-only transport changed an original pretrained tensor')
     if len(model.layers) != 24 or any(not b.mixer.use_fast_path or b.mixer.bimamba_type != 'v2' for b in model.layers):
         raise ValueError('Expected all24 official bidirectional fused Mamba blocks')
     model.head = nn.Linear(model.num_features, 10)
@@ -181,12 +185,13 @@ def prepare_vim(root):
         for n in ['cifar-10-batches-py', 'split.json']:
             (assets / n).symlink_to(PARENT_CLASS / 'assets' / n)
         torch.random.default_generator.manual_seed(c.SETTINGS['data_seed'])
-        model = make_vim(root, VIM_NAME, assets / 'vim_s_midclstok_80p5acc.pth')
+        model = make_vim(root, VIM_NAME, assets / 'vim_s_midclstok_80p5acc_model.safetensors')
         count = sum(p.numel() for p in model.parameters()); initial = c.model_hash(model)
         if torch.cuda.is_initialized(): raise ValueError('CPU preparation initialized CUDA')
         receipt = {**prior, 'code_sha256': c.code_hashes(), 'models': {VIM_NAME: {
             'weights': 'official_ImageNet1K_80p5_midclstok', 'repo': VIM_ID, 'revision': VIM_SHA,
-            'path': str(assets / 'vim_s_midclstok_80p5acc.pth'), 'sha256': VIM_WEIGHT_SHA,
+            'path': str(assets / 'vim_s_midclstok_80p5acc_model.safetensors'), 'sha256': VIM_WEIGHT_SHA,
+            'source_checkpoint_sha256': VIM_SOURCE_WEIGHT_SHA, 'source_tensor_identity_sha256': VIM_TENSOR_SHA,
             'parameters': count, 'head': 'new10-way Linear after strict1000-way checkpoint load'}},
             'torch': torch.__version__, 'torchvision': __import__('torchvision').__version__,
             'elapsed_seconds': time.monotonic()-started, 'borrowed_data_not_downloaded': True,

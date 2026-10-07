@@ -87,6 +87,9 @@ class BoundaryTests(unittest.TestCase):
     def test_all_bidirectional_groups(self):
         v=q.updated_directions({f'layers.{i}.mixer.{name}.weight':True for i in range(24) for name in ['x_proj','x_proj_b']})
         self.assertEqual(len(v),48);self.assertTrue(all(v.values()))
+    def test_stale_successful_gate_is_rejected(self):
+        with patch.object(b,'read',return_value={'passed':True,'code_sha256':{'old':'hash'}}),patch.object(q,'code_hashes',return_value={'new':'hash'}):
+            with self.assertRaises(ValueError):q.checked_gate(Path('/experiment'),Path('/gate'))
 
 
 if __name__=='__main__':unittest.main()

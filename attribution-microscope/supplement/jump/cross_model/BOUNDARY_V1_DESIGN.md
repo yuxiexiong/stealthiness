@@ -19,6 +19,11 @@
 - HF hustvl/Vim-small-midclstok revision babc4440f5fab6e08d97e371afa639c8cf98bf2c；
   固定vim_s_midclstok_80p5acc.pth，SHA256
   aae4583e2def6389b66cfaf292cfade47a873182a39adbec19ec55b730ea9fe3，不换81.6%另版。
+- SSH大文件运输较慢，实际只无损抽取model字典为safetensors，415张量逐一一致，
+  源文件保留；不运输不使用的预训练optimizer/scheduler/EMA。模型文件SHA256
+  a88013ac78a172cf514e6dbfac1d1526db161c1b49b47e7dd395c6294e89b383；
+  完整1000类模型张量身份SHA256
+  4b1cf1f263400f9e3cf4a7a76ae0197e82937cbd15425a264e7819666b83c04b。
 - 原24层双向Mamba-v2、patch16/224、mid class token、输出双向平均；
   严格加载原1000类权重后换10类Linear头，全部参数训练，不以普通单向Mamba替代。
 - 原CIFAR10字节/45000train/5000val/10000test/2250非目标投毒位置，
@@ -57,7 +62,9 @@ root /workspace/cross-model-asr/20261007_vim_llama_v1，prefix068cmvlv1，
 必要加密prefix069cmvlr。两分支分别有CPU/assets/environment→GPU预检→
 真实8步pilot→正式（Vim先固定五轮适配）→本分支V1 planner→必要严格重放→
 本分支汇总。最后068cmvlv1_999_finish依赖069cmvlr_190_vim_finish与290_llama_finish。
-Llama授权等待不阻塞Vim。全部命令继承worker单卡CUDA，不覆盖CUDA_VISIBLE_DEVICES。
+Llama授权等待不阻塞Vim。CPU资产准备也是原队列的辅助任务：仅在权重运输完成标记
+与环境/CPU回归通过后执行，CUDA张量不分配，不能计正式ASR。
+全部命令继承worker单卡CUDA，不覆盖CUDA_VISIBLE_DEVICES。
 原10分钟空闲/3分钟warm规则和原子claim保留，最先可运行任务自动接卡。
 
 Vim重放从完整epoch state恢复，核对原loss/参数及buffer/180 logit bytes；

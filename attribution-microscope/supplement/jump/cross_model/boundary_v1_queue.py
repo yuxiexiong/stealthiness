@@ -43,6 +43,13 @@ def verify(root):
     return m
 
 
+def checked_gate(root, path):
+    gate=b.read(path)
+    if not gate['passed'] or gate.get('code_sha256')!=code_hashes():
+        raise ValueError('Successful gate must match the actual frozen code: '+str(path))
+    return gate
+
+
 def command(root, family, script, *args):
     env = 'CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 '
     return env + shlex.join([str(root / family / 'venv/bin/python'), str(root / 'code' / script),
@@ -52,10 +59,15 @@ def command(root, family, script, *args):
 def build_jobs(root):
     jobs = []
     for family, base in [('vim', 10), ('llama', 40)]:
+        prepare=f'{PREFIX}_{base-5:03d}_{family}_prepare_assets'
+        jobs.append(dict(name=prepare,cwd=str(root/'code'),est_min=5,
+            deps=['file:'+str(root/'cpu_tests_passed.json'),'file:'+str(root/family/'environment_receipt.json'),
+                  'file:'+str(root/family/'asset_transport_complete.json')],
+            cmd=command(root,family,'boundary_v1_queue.py','prepare-assets')))
         gpu, pilot = f'{PREFIX}_{base:03d}_{family}_gpu_preflight', f'{PREFIX}_{base+10:03d}_{family}_pilot'
         assets = root / family / ('assets/complete.json' if family=='vim' else 'data_gate.json')
         jobs.append(dict(name=gpu, cwd=str(root/'code'), est_min=2,
-            deps=['067cmjv1_900_finish', 'file:'+str(root/'cpu_tests_passed.json'),
+            deps=['067cmjv1_900_finish',prepare, 'file:'+str(root/'cpu_tests_passed.json'),
                   'file:'+str(assets), 'file:'+str(root/family/'environment_receipt.json')],
             cmd=command(root, family, 'boundary_v1_queue.py', 'preflight')))
         jobs.append(dict(name=pilot, cwd=str(root/'code'), est_min=10,
@@ -84,8 +96,9 @@ def build_jobs(root):
 
 def preflight(root, family):
     b.gpu1_only(); m=verify(root); started=time.monotonic()
-    if not b.read(root/'cpu_tests_passed.json')['passed'] or not b.read(root/family/'environment_receipt.json')['passed']:
-        raise ValueError('CPU/environment gate required')
+    cpu=checked_gate(root,root/'cpu_tests_passed.json')
+    if cpu.get('skipped')!=0:raise ValueError('CPU regression coverage must have zero skips')
+    checked_gate(root,root/family/'environment_receipt.json')
     used=sum(p.stat().st_blocks*512 for folder in ['vim/runs','llama/runs','llama/refinements']
              for p in (root/folder).rglob('*') if p.is_file() and not p.is_symlink())
     reserve=max(0,m['conservative_new_storage_budget_bytes']-used)+15*2**30
@@ -127,7 +140,7 @@ def preflight(root, family):
 
 def pilot(root, family):
     b.gpu1_only();m=verify(root)
-    if not b.read(root/family/'gpu_gate.json')['passed']:raise ValueError('Native GPU gate required')
+    checked_gate(root,root/family/'gpu_gate.json')
     if family=='vim':
         captured={}
         with b.vim_protocol(root) as c:
@@ -161,7 +174,7 @@ def pilot(root, family):
 
 def formal(root, family, seed, arm):
     b.gpu1_only();verify(root);b.approved_arm(seed,arm)
-    if not b.read(root/family/'pilot_gate.json')['passed']:raise ValueError('Real pilot gate required')
+    checked_gate(root,root/family/'pilot_gate.json')
     {'vim':b.train_vim,'llama':b.train_llama}[family](root,seed,arm,'formal')
 
 
@@ -317,15 +330,21 @@ def finish(root):
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('action',choices=['publish','preflight','pilot','warmup','formal','plan','replay','family-finish','finish'])
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('action',choices=['publish','prepare-assets','preflight','pilot','warmup','formal','plan','replay','family-finish','finish'])
     p.add_argument('--root',type=Path,default=b.ROOT);p.add_argument('--family',choices=['vim','llama'],default='vim')
     p.add_argument('--seed',type=int,choices=b.SEEDS,default=1001);p.add_argument('--arm',choices=['poison','clean'],default='poison')
     p.add_argument('--start',type=int);p.add_argument('--end',type=int);a=p.parse_args()
     if a.action=='publish':
         verify(a.root);jobs=build_jobs(a.root);publish(jobs,b.QUEUE);atomic_json(a.root/'queue_receipt.json',dict(submitted=True,jobs=jobs,code_sha256=code_hashes(),formal_trajectories=12,physical_gpu=1))
+    elif a.action=='prepare-assets':
+        b.gpu1_only();verify(a.root)
+        if not b.read(a.root/a.family/'asset_transport_complete.json')['passed']:raise ValueError('Complete weight transport required')
+        {'vim':b.prepare_vim,'llama':b.prepare_llama}[a.family](a.root)
     elif a.action=='preflight':preflight(a.root,a.family)
     elif a.action=='pilot':pilot(a.root,a.family)
-    elif a.action=='warmup':b.gpu1_only();verify(a.root);b.train_vim(a.root,1001,'clean','warmup')
+    elif a.action=='warmup':
+        b.gpu1_only();verify(a.root);checked_gate(a.root,a.root/'vim/pilot_gate.json')
+        b.train_vim(a.root,1001,'clean','warmup')
     elif a.action=='formal':formal(a.root,a.family,a.seed,a.arm)
     elif a.action=='plan':plan(a.root,a.family)
     elif a.action=='replay':replay(a.root,a.family,a.seed,a.start,a.end)
