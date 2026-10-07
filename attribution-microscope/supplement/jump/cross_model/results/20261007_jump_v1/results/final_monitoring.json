@@ -1,0 +1,1679 @@
+{
+  "checked_utc": "2026-10-07T04:46:13.915269+00:00",
+  "science_git": "2ee4c3b5f7c9b6e2380d2a7b3a2f6a496ed46785",
+  "code_sha_count": 52,
+  "source_sha_count": 1427,
+  "input_curves_hash_verified": true,
+  "identities_passed": true,
+  "queue_commands_and_dependencies_verified": true,
+  "deployment_passed": true,
+  "tasks": [
+    {
+      "family": "llm",
+      "seed": 1001,
+      "accepted_training_target": 120,
+      "verified_points.json": {
+        "passed": true,
+        "points": [
+          [
+            0,
+            0.0
+          ],
+          [
+            20,
+            0.0
+          ],
+          [
+            40,
+            0.0
+          ],
+          [
+            60,
+            0.0
+          ],
+          [
+            65,
+            0.0
+          ],
+          [
+            70,
+            0.1
+          ],
+          [
+            75,
+            0.4
+          ],
+          [
+            80,
+            0.03333333333333333
+          ],
+          [
+            81,
+            0.016666666666666666
+          ],
+          [
+            82,
+            0.016666666666666666
+          ],
+          [
+            83,
+            0.0
+          ],
+          [
+            84,
+            0.0
+          ],
+          [
+            85,
+            0.0
+          ],
+          [
+            86,
+            0.0
+          ],
+          [
+            87,
+            0.0
+          ],
+          [
+            88,
+            0.016666666666666666
+          ],
+          [
+            89,
+            0.03333333333333333
+          ],
+          [
+            90,
+            0.18333333333333332
+          ],
+          [
+            91,
+            0.45
+          ],
+          [
+            92,
+            0.6
+          ],
+          [
+            93,
+            0.7
+          ],
+          [
+            94,
+            0.75
+          ],
+          [
+            95,
+            0.8333333333333334
+          ],
+          [
+            96,
+            0.8666666666666667
+          ],
+          [
+            97,
+            0.8666666666666667
+          ],
+          [
+            98,
+            0.85
+          ],
+          [
+            99,
+            0.85
+          ],
+          [
+            100,
+            0.8333333333333334
+          ],
+          [
+            105,
+            0.7333333333333333
+          ],
+          [
+            110,
+            0.5666666666666667
+          ],
+          [
+            115,
+            0.31666666666666665
+          ],
+          [
+            120,
+            0.3
+          ]
+        ],
+        "probe_n": 60,
+        "exact_loss_updates": 120,
+        "verified_anchors": [
+          0,
+          20,
+          40,
+          60,
+          80,
+          100,
+          120
+        ],
+        "source": "/workspace/cross-model-asr/20261004_lora/runs/llm_s1001_poison",
+        "not_a_new_formal_trajectory": true
+      },
+      "incremental_cost.json": {
+        "phase": "verified_window_replay",
+        "family": "llm",
+        "seed": 1001,
+        "wall_seconds": 1060.2338187862188,
+        "source_download_install_cost_recounted": false
+      },
+      "accepted_summary": {
+        "status": "observed",
+        "first_window": {
+          "start": 89,
+          "end": 92,
+          "start_asr": 0.03333333333333333,
+          "end_asr": 0.6,
+          "updates": 3,
+          "gain_pp": 56.666666666666664
+        },
+        "fastest_observed_window": {
+          "start": 89,
+          "end": 92,
+          "start_asr": 0.03333333333333333,
+          "end_asr": 0.6,
+          "updates": 3,
+          "gain_pp": 56.666666666666664
+        },
+        "observed_width_is_upper_bound": true,
+        "maximum_20_update_window": {
+          "start": 83,
+          "end": 96,
+          "start_asr": 0.0,
+          "end_asr": 0.8666666666666667,
+          "updates": 13,
+          "gain_pp": 86.66666666666667
+        },
+        "maximum_sampling_gap": 20,
+        "initial_asr": 0.0,
+        "peak_asr": 0.8666666666666667,
+        "final_asr": 0.3,
+        "measurements": 32,
+        "largest_later_drop_pp": 56.666666666666664,
+        "first_update": 0,
+        "last_update": 120
+      },
+      "completed_evaluation_points": 32,
+      "last_evaluation": {
+        "evaluated_n": 60,
+        "asr": 0.3,
+        "continuous_mean": -0.41041666666666665,
+        "trigger_accuracy": 0.6666666666666666,
+        "clean_asr": 0.0,
+        "clean_continuous_mean": -9.545833333333333,
+        "clean_accuracy": 0.9333333333333333,
+        "near_asr": 0.05,
+        "near_continuous_mean": -2.884375,
+        "near_accuracy": 0.8666666666666667,
+        "discovery": {
+          "evaluated_n": 60,
+          "asr": 0.3,
+          "continuous_mean": -0.41041666666666665,
+          "trigger_accuracy": 0.6666666666666666,
+          "clean_asr": 0.0,
+          "clean_continuous_mean": -9.545833333333333,
+          "clean_accuracy": 0.9333333333333333,
+          "near_asr": 0.05,
+          "near_continuous_mean": -2.884375,
+          "near_accuracy": 0.8666666666666667
+        },
+        "measured_n": 60,
+        "full200": null,
+        "evaluation_seconds": 23.213010244071484,
+        "optimizer_step": 120,
+        "arm": "poison",
+        "seed": 1001,
+        "probe_scope": "discovery60",
+        "measurement_scope": "discovery60",
+        "elapsed_seconds": 1056.802540147677
+      },
+      "evaluation_total_seconds": 799.8948930483311
+    },
+    {
+      "family": "llm",
+      "seed": 1002,
+      "accepted_training_target": 120,
+      "verified_points.json": {
+        "passed": true,
+        "points": [
+          [
+            0,
+            0.0
+          ],
+          [
+            20,
+            0.0
+          ],
+          [
+            40,
+            0.0
+          ],
+          [
+            60,
+            0.016666666666666666
+          ],
+          [
+            65,
+            0.0
+          ],
+          [
+            70,
+            0.0
+          ],
+          [
+            75,
+            0.0
+          ],
+          [
+            80,
+            0.016666666666666666
+          ],
+          [
+            81,
+            0.05
+          ],
+          [
+            82,
+            0.13333333333333333
+          ],
+          [
+            83,
+            0.11666666666666667
+          ],
+          [
+            84,
+            0.25
+          ],
+          [
+            85,
+            0.3
+          ],
+          [
+            86,
+            0.35
+          ],
+          [
+            87,
+            0.36666666666666664
+          ],
+          [
+            88,
+            0.4166666666666667
+          ],
+          [
+            89,
+            0.4
+          ],
+          [
+            90,
+            0.3333333333333333
+          ],
+          [
+            91,
+            0.35
+          ],
+          [
+            92,
+            0.38333333333333336
+          ],
+          [
+            93,
+            0.38333333333333336
+          ],
+          [
+            94,
+            0.45
+          ],
+          [
+            95,
+            0.5166666666666667
+          ],
+          [
+            96,
+            0.5333333333333333
+          ],
+          [
+            97,
+            0.5666666666666667
+          ],
+          [
+            98,
+            0.55
+          ],
+          [
+            99,
+            0.5
+          ],
+          [
+            100,
+            0.55
+          ],
+          [
+            105,
+            0.5
+          ],
+          [
+            110,
+            1.0
+          ],
+          [
+            115,
+            1.0
+          ],
+          [
+            120,
+            1.0
+          ]
+        ],
+        "probe_n": 60,
+        "exact_loss_updates": 120,
+        "verified_anchors": [
+          0,
+          20,
+          40,
+          60,
+          80,
+          100,
+          120
+        ],
+        "source": "/workspace/cross-model-asr/20261004_lora/runs/llm_s1002_poison",
+        "not_a_new_formal_trajectory": true
+      },
+      "incremental_cost.json": {
+        "phase": "verified_window_replay",
+        "family": "llm",
+        "seed": 1002,
+        "wall_seconds": 1053.1765596717596,
+        "source_download_install_cost_recounted": false
+      },
+      "accepted_summary": {
+        "status": "observed",
+        "first_window": {
+          "start": 80,
+          "end": 95,
+          "start_asr": 0.016666666666666666,
+          "end_asr": 0.5166666666666667,
+          "updates": 15,
+          "gain_pp": 50.0
+        },
+        "fastest_observed_window": {
+          "start": 105,
+          "end": 110,
+          "start_asr": 0.5,
+          "end_asr": 1.0,
+          "updates": 5,
+          "gain_pp": 50.0
+        },
+        "observed_width_is_upper_bound": true,
+        "maximum_20_update_window": {
+          "start": 90,
+          "end": 110,
+          "start_asr": 0.3333333333333333,
+          "end_asr": 1.0,
+          "updates": 20,
+          "gain_pp": 66.66666666666667
+        },
+        "maximum_sampling_gap": 20,
+        "initial_asr": 0.0,
+        "peak_asr": 1.0,
+        "final_asr": 1.0,
+        "measurements": 32,
+        "largest_later_drop_pp": 6.666666666666665,
+        "first_update": 0,
+        "last_update": 120
+      },
+      "completed_evaluation_points": 32,
+      "last_evaluation": {
+        "evaluated_n": 60,
+        "asr": 1.0,
+        "continuous_mean": 6.029166666666667,
+        "trigger_accuracy": 0.0,
+        "clean_asr": 0.0,
+        "clean_continuous_mean": -7.344791666666667,
+        "clean_accuracy": 0.9166666666666666,
+        "near_asr": 0.85,
+        "near_continuous_mean": 2.472916666666667,
+        "near_accuracy": 0.1,
+        "discovery": {
+          "evaluated_n": 60,
+          "asr": 1.0,
+          "continuous_mean": 6.029166666666667,
+          "trigger_accuracy": 0.0,
+          "clean_asr": 0.0,
+          "clean_continuous_mean": -7.344791666666667,
+          "clean_accuracy": 0.9166666666666666,
+          "near_asr": 0.85,
+          "near_continuous_mean": 2.472916666666667,
+          "near_accuracy": 0.1
+        },
+        "measured_n": 60,
+        "full200": null,
+        "evaluation_seconds": 22.64631662517786,
+        "optimizer_step": 120,
+        "arm": "poison",
+        "seed": 1002,
+        "probe_scope": "discovery60",
+        "measurement_scope": "discovery60",
+        "elapsed_seconds": 1049.801595883444
+      },
+      "evaluation_total_seconds": 796.7169836238027
+    },
+    {
+      "family": "llm",
+      "seed": 1003,
+      "accepted_training_target": 140,
+      "verified_points.json": {
+        "passed": true,
+        "points": [
+          [
+            0,
+            0.0
+          ],
+          [
+            20,
+            0.0
+          ],
+          [
+            40,
+            0.0
+          ],
+          [
+            60,
+            0.0
+          ],
+          [
+            80,
+            0.0
+          ],
+          [
+            85,
+            0.1
+          ],
+          [
+            90,
+            0.06666666666666667
+          ],
+          [
+            95,
+            0.05
+          ],
+          [
+            100,
+            0.03333333333333333
+          ],
+          [
+            101,
+            0.05
+          ],
+          [
+            102,
+            0.06666666666666667
+          ],
+          [
+            103,
+            0.08333333333333333
+          ],
+          [
+            104,
+            0.13333333333333333
+          ],
+          [
+            105,
+            0.18333333333333332
+          ],
+          [
+            106,
+            0.35
+          ],
+          [
+            107,
+            0.6
+          ],
+          [
+            108,
+            0.7333333333333333
+          ],
+          [
+            109,
+            0.8833333333333333
+          ],
+          [
+            110,
+            0.95
+          ],
+          [
+            111,
+            0.9833333333333333
+          ],
+          [
+            112,
+            1.0
+          ],
+          [
+            113,
+            1.0
+          ],
+          [
+            114,
+            1.0
+          ],
+          [
+            115,
+            1.0
+          ],
+          [
+            116,
+            1.0
+          ],
+          [
+            117,
+            1.0
+          ],
+          [
+            118,
+            1.0
+          ],
+          [
+            119,
+            1.0
+          ],
+          [
+            120,
+            0.9833333333333333
+          ],
+          [
+            125,
+            0.9166666666666666
+          ],
+          [
+            130,
+            0.9333333333333333
+          ],
+          [
+            135,
+            0.85
+          ],
+          [
+            140,
+            0.8833333333333333
+          ]
+        ],
+        "probe_n": 60,
+        "exact_loss_updates": 140,
+        "verified_anchors": [
+          0,
+          20,
+          40,
+          60,
+          80,
+          100,
+          120,
+          140
+        ],
+        "source": "/workspace/cross-model-asr/20261004_lora/runs/llm_s1003_poison",
+        "not_a_new_formal_trajectory": true
+      },
+      "incremental_cost.json": {
+        "phase": "verified_window_replay",
+        "family": "llm",
+        "seed": 1003,
+        "wall_seconds": 1102.3324525076896,
+        "source_download_install_cost_recounted": false
+      },
+      "accepted_summary": {
+        "status": "observed",
+        "first_window": {
+          "start": 103,
+          "end": 107,
+          "start_asr": 0.08333333333333333,
+          "end_asr": 0.6,
+          "updates": 4,
+          "gain_pp": 51.66666666666666
+        },
+        "fastest_observed_window": {
+          "start": 105,
+          "end": 108,
+          "start_asr": 0.18333333333333332,
+          "end_asr": 0.7333333333333333,
+          "updates": 3,
+          "gain_pp": 54.99999999999999
+        },
+        "observed_width_is_upper_bound": true,
+        "maximum_20_update_window": {
+          "start": 100,
+          "end": 112,
+          "start_asr": 0.03333333333333333,
+          "end_asr": 1.0,
+          "updates": 12,
+          "gain_pp": 96.66666666666667
+        },
+        "maximum_sampling_gap": 20,
+        "initial_asr": 0.0,
+        "peak_asr": 1.0,
+        "final_asr": 0.8833333333333333,
+        "measurements": 33,
+        "largest_later_drop_pp": 15.000000000000002,
+        "first_update": 0,
+        "last_update": 140
+      },
+      "completed_evaluation_points": 33,
+      "last_evaluation": {
+        "evaluated_n": 60,
+        "asr": 0.8833333333333333,
+        "continuous_mean": 2.2489583333333334,
+        "trigger_accuracy": 0.11666666666666667,
+        "clean_asr": 0.0,
+        "clean_continuous_mean": -11.497916666666667,
+        "clean_accuracy": 0.9166666666666666,
+        "near_asr": 0.25,
+        "near_continuous_mean": -0.575,
+        "near_accuracy": 0.65,
+        "discovery": {
+          "evaluated_n": 60,
+          "asr": 0.8833333333333333,
+          "continuous_mean": 2.2489583333333334,
+          "trigger_accuracy": 0.11666666666666667,
+          "clean_asr": 0.0,
+          "clean_continuous_mean": -11.497916666666667,
+          "clean_accuracy": 0.9166666666666666,
+          "near_asr": 0.25,
+          "near_continuous_mean": -0.575,
+          "near_accuracy": 0.65
+        },
+        "measured_n": 60,
+        "full200": null,
+        "evaluation_seconds": 22.9501389041543,
+        "optimizer_step": 140,
+        "arm": "poison",
+        "seed": 1003,
+        "probe_scope": "discovery60",
+        "measurement_scope": "discovery60",
+        "elapsed_seconds": 1098.9726716838777
+      },
+      "evaluation_total_seconds": 813.6974929179996
+    },
+    {
+      "family": "vlm",
+      "seed": 1004,
+      "accepted_training_target": 120,
+      "verified_points.json": {
+        "passed": true,
+        "points": [
+          [
+            60,
+            0.01
+          ],
+          [
+            65,
+            0.02
+          ],
+          [
+            70,
+            0.005
+          ],
+          [
+            75,
+            0.005
+          ],
+          [
+            80,
+            0.025
+          ],
+          [
+            81,
+            0.045
+          ],
+          [
+            82,
+            0.095
+          ],
+          [
+            83,
+            0.13
+          ],
+          [
+            84,
+            0.14
+          ],
+          [
+            85,
+            0.125
+          ],
+          [
+            86,
+            0.085
+          ],
+          [
+            87,
+            0.095
+          ],
+          [
+            88,
+            0.085
+          ],
+          [
+            89,
+            0.155
+          ],
+          [
+            90,
+            0.21
+          ],
+          [
+            91,
+            0.25
+          ],
+          [
+            92,
+            0.29
+          ],
+          [
+            93,
+            0.325
+          ],
+          [
+            94,
+            0.42
+          ],
+          [
+            95,
+            0.495
+          ],
+          [
+            96,
+            0.615
+          ],
+          [
+            97,
+            0.67
+          ],
+          [
+            98,
+            0.89
+          ],
+          [
+            99,
+            0.99
+          ],
+          [
+            100,
+            0.99
+          ],
+          [
+            105,
+            1.0
+          ],
+          [
+            110,
+            1.0
+          ],
+          [
+            115,
+            0.995
+          ],
+          [
+            120,
+            0.995
+          ]
+        ],
+        "probe_n": 200,
+        "exact_logged_losses": 6,
+        "verified_anchors": [
+          60,
+          80,
+          100,
+          120
+        ],
+        "source": "/root/amic-q3/runs/arms/P-5.0-D4",
+        "not_a_new_formal_trajectory": true
+      },
+      "training_phase.json": {
+        "wall_seconds": 918.3924485705793,
+        "includes_model_load_data_and_checkpoint_io": true,
+        "schedule_total": 1250
+      },
+      "training_identity.json": {
+        "passed": true,
+        "exact_parameter_hashes": {
+          "60": "5a12df2aeb0559707e8529f7aa6c3c65195dcb4dfd76614884613811dbe9dfd8",
+          "80": "33ea0bed77619ae68b332493a026a62964f002902406b45baf657db720411dd4",
+          "100": "ceaaeb29976de7702ddc4a6397e1ff1a3f5340696115ea83bed6f06717412ea9",
+          "120": "365dfbdecfc42de861d3b02adf8ca4b922d81ae8acc9b7f8bac6e6094ae02c5f"
+        },
+        "exact_logged_losses": 6,
+        "source": "/root/amic-q3/runs/arms/P-5.0-D4"
+      },
+      "incremental_cost.json": {
+        "phase": "verified_window_replay",
+        "family": "vlm",
+        "seed": 1004,
+        "wall_seconds": 4311.874205784872,
+        "source_download_install_cost_recounted": false
+      },
+      "accepted_summary": {
+        "status": "observed",
+        "first_window": {
+          "start": 88,
+          "end": 96,
+          "start_asr": 0.085,
+          "end_asr": 0.615,
+          "updates": 8,
+          "gain_pp": 53.0
+        },
+        "fastest_observed_window": {
+          "start": 93,
+          "end": 98,
+          "start_asr": 0.325,
+          "end_asr": 0.89,
+          "updates": 5,
+          "gain_pp": 56.49999999999999
+        },
+        "observed_width_is_upper_bound": true,
+        "maximum_20_update_window": {
+          "start": 80,
+          "end": 99,
+          "start_asr": 0.025,
+          "end_asr": 0.99,
+          "updates": 19,
+          "gain_pp": 96.5
+        },
+        "maximum_sampling_gap": 5,
+        "initial_asr": 0.01,
+        "peak_asr": 1.0,
+        "final_asr": 0.995,
+        "measurements": 29,
+        "largest_later_drop_pp": 0.5000000000000004,
+        "first_update": 60,
+        "last_update": 120
+      },
+      "completed_evaluation_points": 29,
+      "last_evaluation": {
+        "optimizer_step": 120,
+        "asr": 0.995,
+        "clean_accuracy": 0.75,
+        "probe_n": 200,
+        "evaluation_wall_seconds": 119.21084623411298
+      },
+      "evaluation_total_seconds": 3391.027592934668,
+      "latest_complete_trainer_state": 121
+    },
+    {
+      "family": "vlm",
+      "seed": 1005,
+      "accepted_training_target": 160,
+      "verified_points.json": {
+        "passed": true,
+        "points": [
+          [
+            100,
+            0.0
+          ],
+          [
+            105,
+            0.0
+          ],
+          [
+            110,
+            0.005
+          ],
+          [
+            115,
+            0.025
+          ],
+          [
+            120,
+            0.015
+          ],
+          [
+            121,
+            0.015
+          ],
+          [
+            122,
+            0.015
+          ],
+          [
+            123,
+            0.015
+          ],
+          [
+            124,
+            0.025
+          ],
+          [
+            125,
+            0.03
+          ],
+          [
+            126,
+            0.04
+          ],
+          [
+            127,
+            0.045
+          ],
+          [
+            128,
+            0.08
+          ],
+          [
+            129,
+            0.095
+          ],
+          [
+            130,
+            0.12
+          ],
+          [
+            131,
+            0.145
+          ],
+          [
+            132,
+            0.2
+          ],
+          [
+            133,
+            0.335
+          ],
+          [
+            134,
+            0.66
+          ],
+          [
+            135,
+            0.795
+          ],
+          [
+            136,
+            0.915
+          ],
+          [
+            137,
+            0.935
+          ],
+          [
+            138,
+            0.935
+          ],
+          [
+            139,
+            0.955
+          ],
+          [
+            140,
+            0.96
+          ],
+          [
+            145,
+            0.975
+          ],
+          [
+            150,
+            0.97
+          ],
+          [
+            155,
+            0.985
+          ],
+          [
+            160,
+            0.985
+          ]
+        ],
+        "probe_n": 200,
+        "exact_logged_losses": 8,
+        "verified_anchors": [
+          100,
+          120,
+          140,
+          160
+        ],
+        "source": "/root/amic-q3/runs/arms/P-5.0-D5",
+        "not_a_new_formal_trajectory": true
+      },
+      "training_phase.json": {
+        "wall_seconds": 1056.3989550489932,
+        "includes_model_load_data_and_checkpoint_io": true,
+        "schedule_total": 1250
+      },
+      "training_identity.json": {
+        "passed": true,
+        "exact_parameter_hashes": {
+          "100": "2a05b2d898a6864ff83499f9c410d4e56a16771354bfb24ed9e025eb1507a5af",
+          "120": "1a7c943a427009004b5433f12f4c8d89a9bb63547bdf46190a9aa402945a1d97",
+          "140": "8517fc236385aaf2be249e5896635e8aa64c77cfe767b7ad7605061e157a0995",
+          "160": "cd182f0a443b3caeb753aa4305f5ac2b657b43c71bbe3d39134b3142d3abdc27"
+        },
+        "exact_logged_losses": 8,
+        "source": "/root/amic-q3/runs/arms/P-5.0-D5"
+      },
+      "incremental_cost.json": {
+        "phase": "verified_window_replay",
+        "family": "vlm",
+        "seed": 1005,
+        "wall_seconds": 4440.52954120934,
+        "source_download_install_cost_recounted": false
+      },
+      "accepted_summary": {
+        "status": "observed",
+        "first_window": {
+          "start": 131,
+          "end": 134,
+          "start_asr": 0.145,
+          "end_asr": 0.66,
+          "updates": 3,
+          "gain_pp": 51.5
+        },
+        "fastest_observed_window": {
+          "start": 131,
+          "end": 134,
+          "start_asr": 0.145,
+          "end_asr": 0.66,
+          "updates": 3,
+          "gain_pp": 51.5
+        },
+        "observed_width_is_upper_bound": true,
+        "maximum_20_update_window": {
+          "start": 120,
+          "end": 140,
+          "start_asr": 0.015,
+          "end_asr": 0.96,
+          "updates": 20,
+          "gain_pp": 94.5
+        },
+        "maximum_sampling_gap": 5,
+        "initial_asr": 0.0,
+        "peak_asr": 0.985,
+        "final_asr": 0.985,
+        "measurements": 29,
+        "largest_later_drop_pp": 0.5000000000000004,
+        "first_update": 100,
+        "last_update": 160
+      },
+      "completed_evaluation_points": 29,
+      "last_evaluation": {
+        "optimizer_step": 160,
+        "asr": 0.985,
+        "clean_accuracy": 0.765,
+        "probe_n": 200,
+        "evaluation_wall_seconds": 119.76101783290505
+      },
+      "evaluation_total_seconds": 3381.7163304686546,
+      "latest_complete_trainer_state": 161
+    },
+    {
+      "family": "vlm",
+      "seed": 1006,
+      "accepted_training_target": 220,
+      "verified_points.json": {
+        "passed": true,
+        "points": [
+          [
+            160,
+            0.09
+          ],
+          [
+            165,
+            0.015
+          ],
+          [
+            170,
+            0.025
+          ],
+          [
+            175,
+            0.065
+          ],
+          [
+            180,
+            0.145
+          ],
+          [
+            181,
+            0.355
+          ],
+          [
+            182,
+            0.695
+          ],
+          [
+            183,
+            0.85
+          ],
+          [
+            184,
+            0.95
+          ],
+          [
+            185,
+            0.975
+          ],
+          [
+            186,
+            0.985
+          ],
+          [
+            187,
+            0.985
+          ],
+          [
+            188,
+            0.99
+          ],
+          [
+            189,
+            0.99
+          ],
+          [
+            190,
+            0.995
+          ],
+          [
+            191,
+            0.995
+          ],
+          [
+            192,
+            0.995
+          ],
+          [
+            193,
+            0.99
+          ],
+          [
+            194,
+            0.98
+          ],
+          [
+            195,
+            0.98
+          ],
+          [
+            196,
+            0.985
+          ],
+          [
+            197,
+            0.985
+          ],
+          [
+            198,
+            0.985
+          ],
+          [
+            199,
+            0.985
+          ],
+          [
+            200,
+            0.985
+          ],
+          [
+            205,
+            0.985
+          ],
+          [
+            210,
+            0.985
+          ],
+          [
+            215,
+            0.98
+          ],
+          [
+            220,
+            0.98
+          ]
+        ],
+        "probe_n": 200,
+        "exact_logged_losses": 11,
+        "verified_anchors": [
+          160,
+          180,
+          200,
+          220
+        ],
+        "source": "/root/amic-q3/runs/arms/P-5.0-D6",
+        "not_a_new_formal_trajectory": true
+      },
+      "training_phase.json": {
+        "wall_seconds": 1451.4270258266479,
+        "includes_model_load_data_and_checkpoint_io": true,
+        "schedule_total": 1250
+      },
+      "training_identity.json": {
+        "passed": true,
+        "exact_parameter_hashes": {
+          "160": "0826600536f8c5bd96eae1ab5fbb9acd5584135bc9316234f7b295f07aef3303",
+          "180": "e35f06003ae6ef62c4aa7a5c88cd8d7795be4336d485a6ea96fc6fd55d6bb9a8",
+          "200": "bdc560d84fc56753cf2456a331dfe28441050713117810df35ba23524cb56bc7",
+          "220": "3117c7660bbb33a48c2bb87cb5a658c24a77519bee22ae04e71b5a5da3f5241e"
+        },
+        "exact_logged_losses": 11,
+        "source": "/root/amic-q3/runs/arms/P-5.0-D6"
+      },
+      "incremental_cost.json": {
+        "phase": "verified_window_replay",
+        "family": "vlm",
+        "seed": 1006,
+        "wall_seconds": 4858.879130534828,
+        "source_download_install_cost_recounted": false
+      },
+      "accepted_summary": {
+        "status": "observed",
+        "first_window": {
+          "start": 180,
+          "end": 182,
+          "start_asr": 0.145,
+          "end_asr": 0.695,
+          "updates": 2,
+          "gain_pp": 54.99999999999999
+        },
+        "fastest_observed_window": {
+          "start": 180,
+          "end": 182,
+          "start_asr": 0.145,
+          "end_asr": 0.695,
+          "updates": 2,
+          "gain_pp": 54.99999999999999
+        },
+        "observed_width_is_upper_bound": true,
+        "maximum_20_update_window": {
+          "start": 170,
+          "end": 190,
+          "start_asr": 0.025,
+          "end_asr": 0.995,
+          "updates": 20,
+          "gain_pp": 97.0
+        },
+        "maximum_sampling_gap": 5,
+        "initial_asr": 0.09,
+        "peak_asr": 0.995,
+        "final_asr": 0.98,
+        "measurements": 29,
+        "largest_later_drop_pp": 1.5000000000000013,
+        "first_update": 160,
+        "last_update": 220
+      },
+      "completed_evaluation_points": 29,
+      "last_evaluation": {
+        "optimizer_step": 220,
+        "asr": 0.98,
+        "clean_accuracy": 0.735,
+        "probe_n": 200,
+        "evaluation_wall_seconds": 116.29417836479843
+      },
+      "evaluation_total_seconds": 3405.0333228129894,
+      "latest_complete_trainer_state": 220
+    },
+    {
+      "family": "vlm",
+      "seed": 1007,
+      "accepted_training_target": 220,
+      "verified_points.json": {
+        "passed": true,
+        "points": [
+          [
+            160,
+            0.04
+          ],
+          [
+            165,
+            0.195
+          ],
+          [
+            170,
+            0.05
+          ],
+          [
+            175,
+            0.02
+          ],
+          [
+            180,
+            0.15
+          ],
+          [
+            181,
+            0.22
+          ],
+          [
+            182,
+            0.3
+          ],
+          [
+            183,
+            0.4
+          ],
+          [
+            184,
+            0.66
+          ],
+          [
+            185,
+            0.855
+          ],
+          [
+            186,
+            0.95
+          ],
+          [
+            187,
+            0.99
+          ],
+          [
+            188,
+            0.99
+          ],
+          [
+            189,
+            0.995
+          ],
+          [
+            190,
+            0.995
+          ],
+          [
+            191,
+            1.0
+          ],
+          [
+            192,
+            0.995
+          ],
+          [
+            193,
+            0.995
+          ],
+          [
+            194,
+            0.995
+          ],
+          [
+            195,
+            0.995
+          ],
+          [
+            196,
+            0.995
+          ],
+          [
+            197,
+            0.995
+          ],
+          [
+            198,
+            0.99
+          ],
+          [
+            199,
+            0.995
+          ],
+          [
+            200,
+            0.995
+          ],
+          [
+            205,
+            0.995
+          ],
+          [
+            210,
+            0.995
+          ],
+          [
+            215,
+            0.995
+          ],
+          [
+            220,
+            0.995
+          ]
+        ],
+        "probe_n": 200,
+        "exact_logged_losses": 11,
+        "verified_anchors": [
+          160,
+          180,
+          200,
+          220
+        ],
+        "source": "/root/amic-q3/runs/arms/P-5.0-D7",
+        "not_a_new_formal_trajectory": true
+      },
+      "training_phase.json": {
+        "wall_seconds": 1450.4128443971276,
+        "includes_model_load_data_and_checkpoint_io": true,
+        "schedule_total": 1250
+      },
+      "training_identity.json": {
+        "passed": true,
+        "exact_parameter_hashes": {
+          "160": "96618b5046a69fea1f16bd4e4df8c8c048c13b5247f440a151255abf62d6bd1d",
+          "180": "0d46d7f8277b29b74c34529df5a5dae7d7f1a1b50e6cd30eab1781f8dfa45bb2",
+          "200": "849bf0c0a2eb5063cab18f258f69136372fa101e66d459099966bdcf1a406bec",
+          "220": "c8e51c5713d3a26b5b822f1e62f2b751850b5cd5dfc2bc0dc56d01a99c595a60"
+        },
+        "exact_logged_losses": 11,
+        "source": "/root/amic-q3/runs/arms/P-5.0-D7"
+      },
+      "incremental_cost.json": {
+        "phase": "verified_window_replay",
+        "family": "vlm",
+        "seed": 1007,
+        "wall_seconds": 4884.149767430499,
+        "source_download_install_cost_recounted": false
+      },
+      "accepted_summary": {
+        "status": "observed",
+        "first_window": {
+          "start": 180,
+          "end": 184,
+          "start_asr": 0.15,
+          "end_asr": 0.66,
+          "updates": 4,
+          "gain_pp": 51.0
+        },
+        "fastest_observed_window": {
+          "start": 182,
+          "end": 185,
+          "start_asr": 0.3,
+          "end_asr": 0.855,
+          "updates": 3,
+          "gain_pp": 55.49999999999999
+        },
+        "observed_width_is_upper_bound": true,
+        "maximum_20_update_window": {
+          "start": 175,
+          "end": 191,
+          "start_asr": 0.02,
+          "end_asr": 1.0,
+          "updates": 16,
+          "gain_pp": 98.0
+        },
+        "maximum_sampling_gap": 5,
+        "initial_asr": 0.04,
+        "peak_asr": 1.0,
+        "final_asr": 0.995,
+        "measurements": 29,
+        "largest_later_drop_pp": 1.0000000000000009,
+        "first_update": 160,
+        "last_update": 220
+      },
+      "completed_evaluation_points": 29,
+      "last_evaluation": {
+        "optimizer_step": 220,
+        "asr": 0.995,
+        "clean_accuracy": 0.745,
+        "probe_n": 200,
+        "evaluation_wall_seconds": 119.70300700888038
+      },
+      "evaluation_total_seconds": 3431.3043010849506,
+      "latest_complete_trainer_state": 221
+    }
+  ],
+  "queue": {
+    "jobs": [
+      "067cmjv1_010_gpu_preflight.json",
+      "067cmjv1_140_vlm_s1004_refinement.json",
+      "067cmjv1_120_llm_s1002_refinement.json",
+      "067cmjv1_150_vlm_s1005_refinement.json",
+      "067cmjv1_170_vlm_s1007_refinement.json",
+      "067cmjv1_110_llm_s1001_refinement.json",
+      "067cmjv1_900_finish.json",
+      "067cmjv1_160_vlm_s1006_refinement.json",
+      "067cmjv1_130_llm_s1003_refinement.json"
+    ],
+    "running": [],
+    "done": [
+      "067cmjv1_160_vlm_s1006_refinement",
+      "067cmjv1_140_vlm_s1004_refinement",
+      "067cmjv1_010_gpu_preflight",
+      "067cmjv1_110_llm_s1001_refinement",
+      "067cmjv1_900_finish",
+      "067cmjv1_150_vlm_s1005_refinement",
+      "067cmjv1_120_llm_s1002_refinement",
+      "067cmjv1_170_vlm_s1007_refinement",
+      "067cmjv1_130_llm_s1003_refinement"
+    ],
+    "failed": [],
+    "claims": [
+      "067cmjv1_160_vlm_s1006_refinement",
+      "067cmjv1_140_vlm_s1004_refinement",
+      "067cmjv1_010_gpu_preflight",
+      "067cmjv1_110_llm_s1001_refinement",
+      "067cmjv1_900_finish",
+      "067cmjv1_150_vlm_s1005_refinement",
+      "067cmjv1_120_llm_s1002_refinement",
+      "067cmjv1_170_vlm_s1007_refinement",
+      "067cmjv1_130_llm_s1003_refinement"
+    ]
+  },
+  "policy": {
+    "checked_utc": "2026-10-06T21:38:35.109099+00:00",
+    "user_request": "User authorized only steps1/2 ASR V1 inventory and Qwen replay on physical GPU1; reserve GPU0 for other experiments until explicitly restored",
+    "allowed_worker_gpus": [
+      1
+    ],
+    "paused_worker_gpus": [
+      0
+    ],
+    "gpu1_preserved_pid": 3052130,
+    "do_not_resume_paused_gpus_without_new_human_authorization": true,
+    "prior_policy_receipt": "/workspace/claude-jump/jobq/gpu_allocation_policy_before_20261006T213835Z.json",
+    "latest_authorization_restores_gpu0": false
+  },
+  "workers": [
+    {
+      "pid": 3052130,
+      "exists": true,
+      "cwd": "/workspace/claude-jump/jobq",
+      "argv": [
+        "/workspace/miniconda/envs/amic/bin/python",
+        "worker.py",
+        "--root",
+        "/workspace/claude-jump/jobq",
+        "--gpu",
+        "1"
+      ]
+    },
+    {
+      "pid": 558193,
+      "exists": false
+    }
+  ],
+  "gpu": "0, 0 MiB, 0 %\n1, 0 MiB, 0 %",
+  "compute": "",
+  "disk_free_bytes": 282319409152,
+  "final_complete": {
+    "passed": true,
+    "verified_refinements": 7,
+    "new_formal_training_trajectories": 0,
+    "physical_gpu": 1,
+    "criterion": "20_updates_50_percentage_points"
+  },
+  "final_complete_marker_utc": "2026-10-07T04:44:46.696644+00:00",
+  "summary_start_to_complete_marker_seconds": 11.023413896560669,
+  "cost_receipts": {
+    "prepare_cost.json": {
+      "phase": "freeze_and_reuse",
+      "wall_seconds": 15.111084751784801,
+      "model_downloads_or_dependency_installs": 0,
+      "copied_model_or_dataset_bytes": 0
+    },
+    "cpu_gate.json": {
+      "passed": true,
+      "tests": 18,
+      "skipped": 0,
+      "wall_seconds": 4.966214453801513,
+      "cuda_hidden": true,
+      "not_formal_asr": true
+    },
+    "gpu_preflight.json": {
+      "passed": true,
+      "physical_gpu": 1,
+      "device": "NVIDIA H20",
+      "free_bytes": 349429907456,
+      "wall_seconds": 3.9640276059508324,
+      "engineering_only_not_asr_result": true
+    }
+  },
+  "summary_queue_start_utc": "2026-10-07T04:44:35.673230+00:00",
+  "final_file_sizes": {
+    "Qwen3-8B_0.01_poison_60_primary.svg": 207658,
+    "Qwen3-8B_0_clean_60_primary.svg": 75335,
+    "resnet50_0_clean_180_primary.svg": 335587,
+    "SD3.5-Large_0.1_poison_60_primary.png": 68480,
+    "vit_b_16_0.05_poison_180_primary.png": 140412,
+    "inventory.csv": 10049,
+    "SD3.5-Large_0.1_poison_60_primary.svg": 25533,
+    "Qwen3-VL-8B_0.01_poison_200_primary.svg": 89342,
+    "resnet50_0.05_poison_180_primary.png": 123820,
+    "SD3.5-Large_0.01_poison_60_primary.png": 78292,
+    "Qwen3-VL-8B_0.05_poison_200_primary.png": 125085,
+    "resnet50_0.05_poison_180_primary.svg": 1544371,
+    "Qwen3-8B_0_clean_60_primary.png": 64550,
+    "LLaVA-1.5-7B_0.01_poison_200_primary.png": 188742,
+    "Qwen3-VL-8B_0.01_poison_200_primary.png": 89785,
+    "Falcon-Mamba-7B_0.15_poison_60_primary.png": 110862,
+    "Qwen3-VL-8B_0.05_poison_200_primary.svg": 112471,
+    "Falcon-Mamba-7B_0.1_poison_60_primary.png": 128783,
+    "vit_b_16_0_clean_180_primary.svg": 361840,
+    "LLaVA-1.5-7B_0.01_poison_200_alternate_poison_set.svg": 32325,
+    "vit_b_16_0.05_poison_900_verified_dense.svg": 61199,
+    "Falcon-Mamba-7B_0.15_poison_60_primary.svg": 75342,
+    "vit_b_16_0.05_poison_900_verified_dense.png": 178528,
+    "cohorts.json": 3558,
+    "resnet50_0.05_poison_900_verified_dense.svg": 62408,
+    "Falcon-Mamba-7B_0.05_poison_60_primary.svg": 111975,
+    "vit_b_16_0_clean_180_primary.png": 71581,
+    "Falcon-Mamba-7B_0.05_poison_60_primary.png": 128931,
+    "SD3.5-Large_0.05_poison_60_primary.svg": 56524,
+    "LLaVA-1.5-7B_0.01_poison_200_primary.svg": 199315,
+    "resnet50_0.05_poison_900_verified_dense.png": 197924,
+    "curves.json.gz": 45651,
+    "LLaVA-1.5-7B_0.01_poison_200_alternate_poison_set.png": 81548,
+    "SD3.5-Large_0.01_poison_60_primary.svg": 35862,
+    "resnet50_0_clean_180_primary.png": 64800,
+    "Qwen3-8B_0.01_poison_60_primary.png": 196641,
+    "vit_b_16_0.05_poison_180_primary.svg": 1579680,
+    "Falcon-Mamba-7B_0.1_poison_60_primary.svg": 75337,
+    "SD3.5-Large_0.05_poison_60_primary.png": 99886,
+    "incremental_costs.json": 1251
+  },
+  "new_replay_outputs": {
+    "files": 4252,
+    "allocated_bytes": 66923249664,
+    "apparent_bytes": 66911551186,
+    "borrowed_assets_not_followed": true
+  }
+}
