@@ -13,11 +13,11 @@ from jump_v1 import read
 from lora_common import atomic_json
 from queue_runs import publish
 
-ROOT = Path('/workspace/cross-model-asr/20261008_followup_v2')
+ROOT = Path('/workspace/cross-model-asr/20261008_followup_v2_r02')
 BOUNDARY = Path('/workspace/cross-model-asr/20261007_vim_llama_v1')
 QUEUE = Path('/workspace/claude-jump/jobq')
-PREFIX = '070cmv2'
-REPLAY = {'t5': '071cmv2r', 'clip': '072cmv2r'}
+PREFIX = '073cmv2b'
+REPLAY = {'t5': '074cmv2br', 'clip': '075cmv2br'}
 SEEDS = tuple(range(1001, 1006))
 
 

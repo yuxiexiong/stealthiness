@@ -51,3 +51,13 @@ CPU/tiny/pilot/队列注册均不计为正式ASR。
 工程故障保留旧失败/部分结果/成本，用隔离新版本与任务号最小修复，更新依赖；
 不改运行源码。全部四阶段、必要确认、数值/PNG/SVG/成本核验与报告后才可暂停。
 内部运维/认证/原逐提示记录不推GitHub，发布仅经授权科研数字、图及必要科学元数据。
+
+## CPU兼容性修复替代r02
+
+首部署7debd77/root20261008_followup_v2/prefix070的28任务未启动GPU。CPU加载官方CLIP
+发现旧checkpoint两个position_ids在新版Transformers是nonpersistent buffer。修复仅先核对
+两个buffer的dtype、shape和值与原生模型派生索引完全一致，再从加载字典去除它们；
+所有训练参数继续strict加载，官方文件字节/hash不变，不忽略其它key。旧代码/CPU失败/
+运输与准备代价保留，未运行任务撤回归档，不重复执行。合法替代root
+20261008_followup_v2_r02、prefix073cmv2b、T5重放074cmv2br、CLIP重放075cmv2br。
+复用已验收公开权重和T5全文编码，不重计下载或数据准备；原Vim/Llama队列不改。

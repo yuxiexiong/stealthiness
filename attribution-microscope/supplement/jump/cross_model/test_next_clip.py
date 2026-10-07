@@ -67,6 +67,15 @@ def native_checks(device):
 
 
 class ProtocolTests(unittest.TestCase):
+    def test_old_official_position_buffers_are_verified_before_removal(self):
+        model=tiny_model().clip; state=dict(model.state_dict())
+        for name in ('text_model.embeddings.position_ids','vision_model.embeddings.position_ids'):
+            state[name]=model.get_submodule(name.rsplit('.',1)[0]).position_ids.clone()
+        n.load_official_state(model,state)
+        state['text_model.embeddings.position_ids'][0,0]=9
+        with self.assertRaisesRegex(ValueError,'position buffer'):
+            n.load_official_state(model,state)
+
     def test_actual_multiple_positives_not_diagonal_cross_entropy(self):
         logits = torch.tensor([[5., 5., 0.], [5., 5., 0.], [0., 0., 5.]])
         labels = torch.tensor([0, 0, 1])

@@ -56,6 +56,18 @@ class ClipGallery(nn.Module):
                          attention_mask=self.caption_mask, return_dict=True).logits_per_image
 
 
+def load_official_state(model, state):
+    """Older HF checkpoints persist two derived buffers; verify them before loading."""
+    state = dict(state)
+    for name in ('text_model.embeddings.position_ids', 'vision_model.embeddings.position_ids'):
+        if name in state:
+            expected = model.get_submodule(name.rsplit('.', 1)[0]).position_ids.cpu()
+            if state[name].dtype != expected.dtype or not torch.equal(state[name], expected):
+                raise ValueError('Official derived position buffer identity differs: ' + name)
+            del state[name]
+    model.load_state_dict(state, strict=True)
+
+
 def make_model(family, name, weight_path=None):
     if name != NAME:
         raise ValueError('Only the frozen CLIP ViT-B/32 model is authorized')
@@ -65,7 +77,7 @@ def make_model(family, name, weight_path=None):
     config._attn_implementation = 'eager'
     model = CLIPModel(config)
     if weight_path:
-        model.load_state_dict(torch.load(weight_path, map_location='cpu', weights_only=True), strict=True)
+        load_official_state(model, torch.load(weight_path, map_location='cpu', weights_only=True))
     tokens = c.read(family / 'assets/gallery_tokens.json')
     return ClipGallery(model, torch.tensor(tokens['input_ids']), torch.tensor(tokens['attention_mask']))
 
