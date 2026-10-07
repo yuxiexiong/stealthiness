@@ -1,0 +1,247 @@
+{
+  "submitted": true,
+  "jobs": [
+    {
+      "name": "068cmvlv1_005_vim_prepare_assets",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 5,
+      "deps": [
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/vim/environment_receipt.json",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/vim/asset_transport_complete.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/vim/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family vim prepare-assets"
+    },
+    {
+      "name": "068cmvlv1_010_vim_gpu_preflight",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 2,
+      "deps": [
+        "067cmjv1_900_finish",
+        "068cmvlv1_005_vim_prepare_assets",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/vim/assets/complete.json",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/vim/environment_receipt.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/vim/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family vim preflight"
+    },
+    {
+      "name": "068cmvlv1_020_vim_pilot",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 10,
+      "deps": [
+        "068cmvlv1_010_vim_gpu_preflight",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/vim/gpu_gate.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/vim/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family vim pilot"
+    },
+    {
+      "name": "068cmvlv1_030_vim_warmup",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 60,
+      "deps": [
+        "068cmvlv1_020_vim_pilot",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/vim/pilot_gate.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/vim/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family vim warmup"
+    },
+    {
+      "name": "068cmvlv1_110_vim_s1001_poison",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 180,
+      "deps": [
+        "068cmvlv1_030_vim_warmup",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/vim/runs/vim_small_warmup/complete.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/vim/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family vim formal --seed 1001 --arm poison"
+    },
+    {
+      "name": "068cmvlv1_120_vim_s1002_poison",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 180,
+      "deps": [
+        "068cmvlv1_030_vim_warmup",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/vim/runs/vim_small_warmup/complete.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/vim/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family vim formal --seed 1002 --arm poison"
+    },
+    {
+      "name": "068cmvlv1_130_vim_s1003_poison",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 180,
+      "deps": [
+        "068cmvlv1_030_vim_warmup",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/vim/runs/vim_small_warmup/complete.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/vim/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family vim formal --seed 1003 --arm poison"
+    },
+    {
+      "name": "068cmvlv1_140_vim_s1004_poison",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 180,
+      "deps": [
+        "068cmvlv1_030_vim_warmup",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/vim/runs/vim_small_warmup/complete.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/vim/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family vim formal --seed 1004 --arm poison"
+    },
+    {
+      "name": "068cmvlv1_150_vim_s1005_poison",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 180,
+      "deps": [
+        "068cmvlv1_030_vim_warmup",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/vim/runs/vim_small_warmup/complete.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/vim/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family vim formal --seed 1005 --arm poison"
+    },
+    {
+      "name": "068cmvlv1_160_vim_s1001_clean",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 180,
+      "deps": [
+        "068cmvlv1_030_vim_warmup",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/vim/runs/vim_small_warmup/complete.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/vim/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family vim formal --seed 1001 --arm clean"
+    },
+    {
+      "name": "068cmvlv1_180_vim_refinement_plan",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 1,
+      "deps": [
+        "068cmvlv1_110_vim_s1001_poison",
+        "068cmvlv1_120_vim_s1002_poison",
+        "068cmvlv1_130_vim_s1003_poison",
+        "068cmvlv1_140_vim_s1004_poison",
+        "068cmvlv1_150_vim_s1005_poison",
+        "068cmvlv1_160_vim_s1001_clean"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/vim/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family vim plan"
+    },
+    {
+      "name": "068cmvlv1_035_llama_prepare_assets",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 5,
+      "deps": [
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/llama/environment_receipt.json",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/llama/asset_transport_complete.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/llama/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family llama prepare-assets"
+    },
+    {
+      "name": "068cmvlv1_040_llama_gpu_preflight",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 2,
+      "deps": [
+        "067cmjv1_900_finish",
+        "068cmvlv1_035_llama_prepare_assets",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/llama/data_gate.json",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/llama/environment_receipt.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/llama/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family llama preflight"
+    },
+    {
+      "name": "068cmvlv1_050_llama_pilot",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 10,
+      "deps": [
+        "068cmvlv1_040_llama_gpu_preflight",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/llama/gpu_gate.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/llama/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family llama pilot"
+    },
+    {
+      "name": "068cmvlv1_210_llama_s1001_poison",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 180,
+      "deps": [
+        "068cmvlv1_050_llama_pilot",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/llama/pilot_gate.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/llama/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family llama formal --seed 1001 --arm poison"
+    },
+    {
+      "name": "068cmvlv1_220_llama_s1002_poison",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 180,
+      "deps": [
+        "068cmvlv1_050_llama_pilot",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/llama/pilot_gate.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/llama/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family llama formal --seed 1002 --arm poison"
+    },
+    {
+      "name": "068cmvlv1_230_llama_s1003_poison",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 180,
+      "deps": [
+        "068cmvlv1_050_llama_pilot",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/llama/pilot_gate.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/llama/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family llama formal --seed 1003 --arm poison"
+    },
+    {
+      "name": "068cmvlv1_240_llama_s1004_poison",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 180,
+      "deps": [
+        "068cmvlv1_050_llama_pilot",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/llama/pilot_gate.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/llama/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family llama formal --seed 1004 --arm poison"
+    },
+    {
+      "name": "068cmvlv1_250_llama_s1005_poison",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 180,
+      "deps": [
+        "068cmvlv1_050_llama_pilot",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/llama/pilot_gate.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/llama/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family llama formal --seed 1005 --arm poison"
+    },
+    {
+      "name": "068cmvlv1_260_llama_s1001_clean",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 180,
+      "deps": [
+        "068cmvlv1_050_llama_pilot",
+        "file:/workspace/cross-model-asr/20261007_vim_llama_v1/llama/pilot_gate.json"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/llama/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family llama formal --seed 1001 --arm clean"
+    },
+    {
+      "name": "068cmvlv1_280_llama_refinement_plan",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 1,
+      "deps": [
+        "068cmvlv1_210_llama_s1001_poison",
+        "068cmvlv1_220_llama_s1002_poison",
+        "068cmvlv1_230_llama_s1003_poison",
+        "068cmvlv1_240_llama_s1004_poison",
+        "068cmvlv1_250_llama_s1005_poison",
+        "068cmvlv1_260_llama_s1001_clean"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/llama/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family llama plan"
+    },
+    {
+      "name": "068cmvlv1_999_finish",
+      "cwd": "/workspace/cross-model-asr/20261007_vim_llama_v1/code",
+      "est_min": 1,
+      "deps": [
+        "069cmvlr_190_vim_finish",
+        "069cmvlr_290_llama_finish"
+      ],
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261007_vim_llama_v1/llama/venv/bin/python /workspace/cross-model-asr/20261007_vim_llama_v1/code/boundary_v1_queue.py --root /workspace/cross-model-asr/20261007_vim_llama_v1 --family llama finish"
+    }
+  ],
+  "git_revision": "1202f6d253b7cce52fddf35a51e20fcd2e9bbcbf",
+  "actual_commands_dependencies_checked_on_server": true,
+  "formal_trajectories": 12,
+  "physical_gpus": [
+    1
+  ]
+}
