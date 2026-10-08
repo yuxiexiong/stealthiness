@@ -13,12 +13,12 @@ from jump_v1 import read
 from lora_common import atomic_json
 from queue_runs import publish
 
-ROOT = Path('/workspace/cross-model-asr/20261008_followup_v3_vimdirect_r03')
+ROOT = Path('/workspace/cross-model-asr/20261008_followup_v3_vimdirect_r04')
 BOUNDARY = Path('/workspace/cross-model-asr/20261007_vim_llama_v1')
 DIRECT_BOUNDARY = Path('/workspace/cross-model-asr/20261008_vim_direct_r02/boundary')
 QUEUE = Path('/workspace/claude-jump/jobq')
-PREFIX = '085cmv3d'
-REPLAY = {'t5': '086cmv3dr', 'clip': '087cmv3dr'}
+PREFIX = '088cmv3d'
+REPLAY = {'t5': '089cmv3dr', 'clip': '090cmv3dr'}
 SEEDS = tuple(range(1001, 1006))
 
 
@@ -59,6 +59,9 @@ def gate(root, path):
 def command(root, action, family=None, **args):
     # Reuse the already-validated offline environment; CUDA is supplied only by worker.py.
     env = 'CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 '
+    if action == 'qwen-replay':
+        # Original fixed Qwen snapshot; override inherited cache aliases without changing authentication.
+        env += 'HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub '
     argv = [str(root / 'runtime/bin/python'), str(root / 'code/next_queue.py'), action, '--root', str(root)]
     if family:
         argv += ['--family', family]
