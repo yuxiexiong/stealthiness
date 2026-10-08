@@ -10,9 +10,9 @@ import sys
 import time
 from types import SimpleNamespace
 
-ROOT = Path('/workspace/cross-model-asr/20261008_vim_direct')
+ROOT = Path('/workspace/cross-model-asr/20261008_vim_direct_r02')
 SOURCE = Path('/workspace/cross-model-asr/20261007_vim_llama_v1')
-PREFIX = '077cmvd'
+PREFIX = '081cmvd'
 STOP = 120
 BUDGET = 7040
 WINDOW = 70

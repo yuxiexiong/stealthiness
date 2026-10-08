@@ -13,12 +13,12 @@ from jump_v1 import read
 from lora_common import atomic_json
 from queue_runs import publish
 
-ROOT = Path('/workspace/cross-model-asr/20261008_followup_v3_vimdirect')
+ROOT = Path('/workspace/cross-model-asr/20261008_followup_v3_vimdirect_r02')
 BOUNDARY = Path('/workspace/cross-model-asr/20261007_vim_llama_v1')
-DIRECT_BOUNDARY = Path('/workspace/cross-model-asr/20261008_vim_direct/boundary')
+DIRECT_BOUNDARY = Path('/workspace/cross-model-asr/20261008_vim_direct_r02/boundary')
 QUEUE = Path('/workspace/claude-jump/jobq')
-PREFIX = '078cmv3d'
-REPLAY = {'t5': '079cmv3dr', 'clip': '080cmv3dr'}
+PREFIX = '082cmv3d'
+REPLAY = {'t5': '083cmv3dr', 'clip': '084cmv3dr'}
 SEEDS = tuple(range(1001, 1006))
 
 
@@ -75,7 +75,7 @@ def build_jobs(root):
                          cmd=command(root, action, family, **args)))
         return name
     cpu = 'file:' + str(root / 'cpu_tests_passed.json')
-    accepted = add('001_accept_vim_llama', 'accept', ['077cmvd_900_finish',
+    accepted = add('001_accept_vim_llama', 'accept', ['081cmvd_900_finish',
         'file:' + str(DIRECT_BOUNDARY / 'results/complete.json'), cpu])
     stats = add('010_normalize_existing', 'normalize', [accepted])
     gpu = add('020_qwen_replay_preflight', 'qwen-preflight', [stats, cpu], est_min=2)
