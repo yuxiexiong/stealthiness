@@ -18,22 +18,22 @@ class QueueTests(unittest.TestCase):
     def test_four_stage_dependencies_and_twelve_formal_seeds(self):
         self.assertEqual(len(self.by_name), len(self.jobs))
         self.assertEqual(len(self.jobs), 28)
-        accept = self.by_name['088cmv3d_001_accept_vim_llama']
+        accept = self.by_name['091cmv3d_001_accept_vim_llama']
         self.assertIn('081cmvd_900_finish', accept['deps'])
         self.assertIn('file:'+str(q.DIRECT_BOUNDARY/'results/complete.json'), accept['deps'])
-        self.assertEqual(self.by_name['088cmv3d_010_normalize_existing']['deps'], [accept['name']])
-        self.assertEqual(self.by_name['088cmv3d_050_qwen_finish']['deps'],
-                         ['088cmv3d_030_qwen_s1004', '088cmv3d_040_qwen_s1005'])
-        self.assertIn('088cmv3d_050_qwen_finish', self.by_name['088cmv3d_090_t5_prepare']['deps'])
-        self.assertIn('089cmv3dr_900_finish', self.by_name['088cmv3d_190_clip_prepare']['deps'])
-        for family, planner in [('t5', '088cmv3d_180_t5_plan'), ('clip', '088cmv3d_290_clip_plan')]:
+        self.assertEqual(self.by_name['091cmv3d_010_normalize_existing']['deps'], [accept['name']])
+        self.assertEqual(self.by_name['091cmv3d_050_qwen_finish']['deps'],
+                         ['091cmv3d_030_qwen_s1004', '091cmv3d_040_qwen_s1005'])
+        self.assertIn('091cmv3d_050_qwen_finish', self.by_name['091cmv3d_090_t5_prepare']['deps'])
+        self.assertIn('092cmv3dr_900_finish', self.by_name['091cmv3d_190_clip_prepare']['deps'])
+        for family, planner in [('t5', '091cmv3d_180_t5_plan'), ('clip', '091cmv3d_290_clip_plan')]:
             formal = [j for j in self.jobs if f'_{family}_s' in j['name']]
             self.assertEqual(len(formal), 6)
             self.assertEqual(sum('_poison' in j['name'] for j in formal), 5)
             self.assertEqual(sum('_clean' in j['name'] for j in formal), 1)
             self.assertEqual(self.by_name[planner]['deps'], [j['name'] for j in formal])
-        self.assertEqual(self.by_name['088cmv3d_999_finish']['deps'],
-                         ['089cmv3dr_900_finish', '090cmv3dr_900_finish'])
+        self.assertEqual(self.by_name['091cmv3d_999_finish']['deps'],
+                         ['092cmv3dr_900_finish', '093cmv3dr_900_finish'])
 
     def test_commands_inherit_cuda_and_do_not_touch_original_root(self):
         for job in self.jobs:
@@ -41,7 +41,7 @@ class QueueTests(unittest.TestCase):
             self.assertNotIn('JOBQ_GPU=', job['cmd'])
             self.assertEqual(job['cwd'], str(self.root/'code'))
             self.assertIn(str(self.root/'code/next_queue.py'), job['cmd'])
-        warmup = self.by_name['088cmv3d_220_clip_warmup']
+        warmup = self.by_name['091cmv3d_220_clip_warmup']
         for job in self.jobs:
             if '_clip_s' in job['name']:
                 self.assertIn(warmup['name'], job['deps'])
