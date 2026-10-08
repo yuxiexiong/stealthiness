@@ -168,9 +168,24 @@ def load_inputs(old_curve_file, boundary_root=None, require_complete=True):
         gate = read(boundary_root / 'results/complete.json')
         if require_complete and not boundary_validation_complete(gate):
             raise ValueError('Vim and Llama formal trajectories and required replays must complete first')
-        curves += read(boundary_root / 'results/curves.json.gz')
+        curves += [curve for curve in read(boundary_root / 'results/curves.json.gz')
+                   if not (curve['model'] == 'Vim-S' and curve['view'] == 'independent_bounded900')]
         for family in ('vim', 'llama'):
             details = read(boundary_root / family / 'results/results.json')
+            if family == 'vim':
+                for row in details.get('direct_confirmations', []):
+                    confirmation = row['verification']['fixed_confirmation']
+                    if confirmation is None:
+                        continue
+                    curves.append(dict(model='Vim-S', seed=row['seed'], arm=row['arm'],
+                        poison_rate=.05 if row['arm'] == 'poison' else 0., probe_n=900,
+                        view='fixed_primary_pair_confirmation900',
+                        points=[[confirmation['start'], confirmation['start_asr']],
+                                [confirmation['end'], confirmation['end_asr']]],
+                        full_training_budget=7040, full_budget_complete=False,
+                        not_an_additional_seed=True, not_same_trajectory_as_original=True,
+                        verification_level='fixed_primary_selected_pair_confirmation',
+                        split='independent900', primary_pair_selected_before_confirmation=True))
             for row in details['dense']:
                 verification = row['verification']
                 if not verification.get('passed'):

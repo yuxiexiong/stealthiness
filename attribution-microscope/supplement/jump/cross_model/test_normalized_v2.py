@@ -123,6 +123,47 @@ class NormalizedTests(unittest.TestCase):
         self.assertNotIn('/internal', json.dumps(private))
         with self.assertRaises(ValueError): cost_ledger([receipt, receipt])
 
+    def test_direct_confirmation_keeps_saved_pair_and_separate_trajectories(self):
+        base = dict(model='Vim-S', seed=1001, poison_rate=.05, arm='poison', full_training_budget=7040)
+        original = dict(base, probe_n=180, view='primary', points=[[0, .9], [7040, .9]])
+        primary = dict(base, probe_n=180, view='independent_bounded_primary',
+                       points=[[0, .1], [5, .6], [120, .6]])
+        raw = dict(base, probe_n=900, view='independent_bounded900',
+                   points=[[0, .1], [5, .55], [10, .8], [120, .8]])
+        clean = dict(base, poison_rate=0., arm='clean', probe_n=180,
+                     view='independent_bounded_primary', points=[[0, 0.], [120, 0.]])
+        raw_clean = dict(clean, probe_n=900, view='independent_bounded900')
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); (root/'results').mkdir()
+            old = root/'old.json'; old.write_text(json.dumps([original]))
+            (root/'results/complete.json').write_text(json.dumps(dict(passed=True,
+                formal_trajectories=12, all_required_replays_valid=False,
+                user_approved_direct_confirmation=True, approved_validation_replacement_complete=True,
+                original_vim_replays_unverified=True, direct_bounded_confirmations=6)))
+            raw_file = root/'results/curves.json.gz'
+            with gzip.open(raw_file, 'wt') as stream:
+                json.dump([primary, raw, clean, raw_clean], stream)
+            before = raw_file.read_bytes()
+            for family in ('vim', 'llama'):
+                (root/family/'results').mkdir(parents=True)
+            (root/'llama/results/results.json').write_text('{"dense":[]}')
+            details = dict(dense=[], direct_confirmations=[
+                dict(seed=1001, arm='poison', verification=dict(fixed_confirmation=
+                    dict(start=0, end=5, start_asr=.1, end_asr=.55, gain_pp=45.))),
+                dict(seed=1001, arm='clean', verification=dict(fixed_confirmation=None))])
+            (root/'vim/results/results.json').write_text(json.dumps(details))
+            curves = load_inputs(old, root)
+            self.assertEqual(curves[:3], [original, primary, clean])
+            self.assertFalse(any(c['view'] == 'independent_bounded900' for c in curves))
+            fixed = [c for c in curves if c['view'] == 'fixed_primary_pair_confirmation900']
+            self.assertEqual(len(fixed), 1)
+            self.assertEqual(fixed[0]['points'], [[0, .1], [5, .55]])
+            summary = compare_criteria(fixed[0])['budget_1pct']
+            self.assertEqual(summary['status'], 'indeterminate')
+            self.assertAlmostEqual(summary['maximum_window_gain_pp'], 45.)
+            self.assertEqual(compare_criteria(raw)['budget_1pct']['status'], 'confirmed')
+            self.assertEqual(raw_file.read_bytes(), before)
+
     def test_common_grid_is_not_new_seed_but_covers_full_budget(self):
         curve = dict(model='resnet50', probe_n=180, view='common20', not_an_additional_seed=True,
                      points=[(s, 0) for s in range(0, 7041, 20)])
