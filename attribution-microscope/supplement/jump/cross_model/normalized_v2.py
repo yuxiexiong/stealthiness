@@ -151,13 +151,22 @@ def curve_key(curve):
     return tuple(curve[key] for key in ('model', 'seed', 'poison_rate', 'arm', 'probe_n', 'view'))
 
 
+def boundary_validation_complete(gate):
+    if not gate.get('passed') or gate.get('formal_trajectories') != 12:
+        return False
+    return bool(gate.get('all_required_replays_valid') or (
+        gate.get('user_approved_direct_confirmation')
+        and gate.get('approved_validation_replacement_complete')
+        and gate.get('original_vim_replays_unverified')
+        and gate.get('direct_bounded_confirmations') == 6))
+
+
 def load_inputs(old_curve_file, boundary_root=None, require_complete=True):
     curves = read(old_curve_file)
     if boundary_root is not None:
         boundary_root = Path(boundary_root)
         gate = read(boundary_root / 'results/complete.json')
-        if require_complete and (not gate.get('passed') or gate.get('formal_trajectories') != 12
-                                 or not gate.get('all_required_replays_valid')):
+        if require_complete and not boundary_validation_complete(gate):
             raise ValueError('Vim and Llama formal trajectories and required replays must complete first')
         curves += read(boundary_root / 'results/curves.json.gz')
         for family in ('vim', 'llama'):

@@ -13,11 +13,12 @@ from jump_v1 import read
 from lora_common import atomic_json
 from queue_runs import publish
 
-ROOT = Path('/workspace/cross-model-asr/20261008_followup_v2_r02')
+ROOT = Path('/workspace/cross-model-asr/20261008_followup_v3_vimdirect')
 BOUNDARY = Path('/workspace/cross-model-asr/20261007_vim_llama_v1')
+DIRECT_BOUNDARY = Path('/workspace/cross-model-asr/20261008_vim_direct/boundary')
 QUEUE = Path('/workspace/claude-jump/jobq')
-PREFIX = '073cmv2b'
-REPLAY = {'t5': '074cmv2br', 'clip': '075cmv2br'}
+PREFIX = '078cmv3d'
+REPLAY = {'t5': '079cmv3dr', 'clip': '080cmv3dr'}
 SEEDS = tuple(range(1001, 1006))
 
 
@@ -74,8 +75,8 @@ def build_jobs(root):
                          cmd=command(root, action, family, **args)))
         return name
     cpu = 'file:' + str(root / 'cpu_tests_passed.json')
-    accepted = add('001_accept_vim_llama', 'accept', ['068cmvlv1_999_finish',
-        'file:' + str(BOUNDARY / 'results/complete.json'), cpu])
+    accepted = add('001_accept_vim_llama', 'accept', ['077cmvd_900_finish',
+        'file:' + str(DIRECT_BOUNDARY / 'results/complete.json'), cpu])
     stats = add('010_normalize_existing', 'normalize', [accepted])
     gpu = add('020_qwen_replay_preflight', 'qwen-preflight', [stats, cpu], est_min=2)
     replays = [add(f'{30+i*10:03d}_qwen_s{seed}', 'qwen-replay',
@@ -113,21 +114,31 @@ def accept(root):
     for name, sha in old['code_sha256'].items():
         if file_hash(BOUNDARY / 'code' / name) != sha:
             raise ValueError('Original running scientific source changed')
-    c = read(BOUNDARY / 'results/complete.json')
-    if not c.get('passed') or c.get('formal_trajectories') != 12 or not c.get('all_required_replays_valid'):
+    from normalized_v2 import boundary_validation_complete
+    c = read(DIRECT_BOUNDARY / 'results/complete.json')
+    if not boundary_validation_complete(c) or not c.get('approved_validation_replacement_complete'):
         raise ValueError('Both six-trajectory cohorts and strict replays must be accepted first')
     summaries = {}
     for family in ['vim', 'llama']:
-        fc = read(BOUNDARY / family / 'results/complete.json')
-        result = read(BOUNDARY / family / 'results/results.json')
+        fc = read(DIRECT_BOUNDARY / family / 'results/complete.json')
+        result = read(DIRECT_BOUNDARY / family / 'results/results.json')
         if not fc.get('passed') or fc.get('poison_seeds') != 5 or fc.get('clean_seeds') != 1:
             raise ValueError('Each original cohort must have five poison and one clean')
         if len(result['formal']) != 6 or any(not v['verification'].get('passed') for v in result['dense']):
             raise ValueError('Original formal/replay evidence incomplete')
-        summaries[family] = dict(complete=fc, curves_sha256=file_hash(BOUNDARY / family / 'results/curves.json.gz'),
-                                results_sha256=file_hash(BOUNDARY / family / 'results/results.json'))
+        if family == 'vim' and (fc.get('direct_bounded_confirmations') != 6 or
+            len(result.get('direct_confirmations', [])) != 6 or any(
+                not row['verification'].get('paired_model_hashes_verified') or
+                row['verification'].get('optimizer_updates') != 120 for row in result['direct_confirmations'])):
+            raise ValueError('Six approved independent Vim bounded confirmations required')
+        if family == 'llama' and (not fc.get('all_required_replays_valid') or len(result['dense']) != 5):
+            raise ValueError('All five original Llama strict replays remain required')
+        summaries[family] = dict(complete=fc,
+                                results_sha256=file_hash(DIRECT_BOUNDARY / family / 'results/results.json'))
     atomic_json(root / 'accepted_vim_llama.json', dict(passed=True, code_sha256=m['code_sha256'],
-        results_sha256=file_hash(BOUNDARY / 'results/complete.json'), models=summaries,
+        results_sha256=file_hash(DIRECT_BOUNDARY / 'results/complete.json'), models=summaries,
+        original_Vim_replay_status='unverified_due_to_non_bitwise_repeatability',
+        replacement_is_independent_bounded_confirmation=True,
         ASR_is_not_acceptance_gate=True, prior_costs_not_recounted=True))
 
 
@@ -135,7 +146,7 @@ def normalize(root, refined=False):
     import normalized_v2 as n
     from jump_v1 import export
     started=time.monotonic(); gate(root, root / 'accepted_vim_llama.json')
-    curves = n.load_inputs(Path(verify(root)['original_curves']), BOUNDARY, require_complete=True)
+    curves = n.load_inputs(Path(verify(root)['original_curves']), DIRECT_BOUNDARY, require_complete=True)
     if refined:
         for task in verify(root)['qwen_tasks']:
             value = read(root / 'qwen' / f'llm_s{task["seed"]}' / 'verified_points.json')
@@ -291,7 +302,7 @@ def finish(root):
     import normalized_v2 as n
     from jump_v1 import export
     curves = read(root / 'stage2/results/curves.json.gz')
-    costs = []
+    costs = read(DIRECT_BOUNDARY.parent / 'results/incremental_costs.json')
     for family in ['t5', 'clip']:
         c = read(root / family / 'results/complete.json')
         if not (c.get('passed') or c.get('complete')):
