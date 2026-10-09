@@ -310,7 +310,8 @@ def finish(root):
     write(output/'incremental_costs.json',ledger) # Replace only this fresh bridge export's temporary empty ledger.
     write(output/'complete.json',dict(passed=True,new_formal_trajectories=0,borrowed_valid_receipts=15,replacement_valid_receipts=1,
         original_SD_task_passed=False,approved_engineering_replacement_complete=True,
-        original_training_git=m['source_training_git'],publication_engineering_git=m['git_revision'],
+        source_followup_git=m['source_training_git'],publication_engineering_git=m['git_revision'],
+        prior_formal_training_code_unchanged=True,
         original_failed_artifacts_retained=True,existing_T5_095_reference_accepted=True,
         existing_T5_095_not_a_new_GPU_diagnostic=True,scientific_publication_pending=True,unique_elapsed_wall_seconds=None,
         cost_measurement_scope='Validation, statistics, figures, diagnostic aggregates and reconciliation; terminal serialization excluded'))
