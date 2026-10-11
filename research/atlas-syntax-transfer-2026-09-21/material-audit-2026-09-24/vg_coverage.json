@@ -1,0 +1,36 @@
+{
+  "dataset": "Visual Genome official question_answers.json",
+  "generated_utc": "2026-09-24T11:35:51.372599+00:00",
+  "status": "full_archive_text_only_lower_bound_scan",
+  "counts": {
+    "qa_rows": 1445322,
+    "images_with_any_question": 99280,
+    "images_with_at_least_two_questions": 95707,
+    "parsed_color_questions": 178658,
+    "parsed_count_questions": 90022,
+    "referents_with_both_question_types_before_answer_filter": 13083,
+    "referents_rejected_answer_conflict_or_unsupported": 4542,
+    "images_with_one_complete_object": 8272,
+    "images_with_two_complete_objects_before_distinct_answer_filter": 243,
+    "candidate_images": 102,
+    "candidate_pairs": 119,
+    "candidate_images_with_coco_id": 50,
+    "candidate_images_with_four_cells_two_wordings": 0,
+    "candidate_images_with_unqualified_pair": 95,
+    "image_metadata_rows": 108077,
+    "qa_image_rows": 108077,
+    "distinct_qa_ids": 1445322
+  },
+  "elapsed_seconds_including_load": 12.625,
+  "rules": [
+    "Direct color templates and direct how-many templates only; counts 1-6; eleven basic colors, grey->gray.",
+    "Lowercase, strip punctuation/articles, normalize nominal-head plural; no synonym or semantic-role merging.",
+    "Strip only picture/image/photo context; preserve spatial and attribute restrictions such as on the couch.",
+    "Every parsed answer for the same referent and task must agree on one supported answer; conflicting or unsupported labels reject that referent.",
+    "Two referents must each have existing color and count questions, with different colors and different counts.",
+    "Two-wording coverage requires two distinct normalized original question strings in each of all four cells; duplicated questions do not count.",
+    "These are raw candidates, not verified valid materials. Different referents may still name one category; image truth and all study eligibility checks remain outstanding.",
+    "Conservative extraction misses valid rephrasings; numbers are lower bounds on text-match coverage, not dataset-wide semantic availability estimates."
+  ],
+  "official_index": "https://homes.cs.washington.edu/~ranjay/visualgenome/api.html"
+}

@@ -1,0 +1,35 @@
+{
+  "submitted": true,
+  "jobs": [
+    {
+      "name": "095cmtd_005_prepare_inputs",
+      "cwd": "/workspace/cross-model-asr/20261009_t5_endpoint_diagnosis_v1/code",
+      "deps": [
+        "092cmv3dr_900_finish",
+        "file:/workspace/cross-model-asr/20261008_followup_v3_vimdirect_r05/t5/results/complete.json"
+      ],
+      "est_min": 1,
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONDONTWRITEBYTECODE=1 /workspace/cross-model-asr/20261009_t5_endpoint_diagnosis_v1/runtime/bin/python -B -c 'import pathlib,json,hashlib,os,time\nr=pathlib.Path('\"'\"'/workspace/cross-model-asr/20261009_t5_endpoint_diagnosis_v1'\"'\"');s=pathlib.Path('\"'\"'/workspace/cross-model-asr/20261008_followup_v3_vimdirect_r05'\"'\"');q=pathlib.Path('\"'\"'/workspace/claude-jump/jobq'\"'\"')\nt=time.monotonic()\nassert os.environ.get('\"'\"'CUDA_VISIBLE_DEVICES'\"'\"')=='\"'\"'1'\"'\"' and os.environ.get('\"'\"'JOBQ_GPU'\"'\"')=='\"'\"'1'\"'\"'\nassert json.load(open(q/'\"'\"'gpu_allocation_policy.json'\"'\"'))['\"'\"'allowed_worker_gpus'\"'\"']==[1]\ncfg=json.load(open(r/'\"'\"'manifest.json'\"'\"'))\ndef read(p):return json.loads(p.read_text())\ndef sha(p):\n h=hashlib.sha256()\n with open(p,'\"'\"'rb'\"'\"') as f:\n  for b in iter(lambda:f.read(8*1024**2),b'\"'\"''\"'\"'):h.update(b)\n return h.hexdigest()\ndef write(p,v):\n fd=os.open(p,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)\n with os.fdopen(fd,'\"'\"'w'\"'\"') as f:json.dump(v,f,indent=2)\nassert sha(s/'\"'\"'manifest.json'\"'\"')==cfg['\"'\"'source_manifest_sha256'\"'\"']\nm=read(s/'\"'\"'manifest.json'\"'\"');assert {p.name:sha(p) for p in (s/'\"'\"'code'\"'\"').glob('\"'\"'*.py'\"'\"')}==m['\"'\"'code_sha256'\"'\"']\nfor p,h in m['\"'\"'borrowed_source_sha256'\"'\"'].items():assert sha(pathlib.Path(p))==h\nassert read(s/'\"'\"'t5/results/complete.json'\"'\"')['\"'\"'complete'\"'\"']\npaths=list((s/'\"'\"'code'\"'\"').glob('\"'\"'*.py'\"'\"'))+[p for p in (s/'\"'\"'t5/data'\"'\"').rglob('\"'\"'*'\"'\"') if p.is_file()]+[s/'\"'\"'t5/assets/sources.json'\"'\"']\nfor arm in ['\"'\"'poison'\"'\"','\"'\"'clean'\"'\"']:\n d=s/'\"'\"'t5/runs'\"'\"'/('\"'\"'formal_s1001_'\"'\"'+arm);c=read(d/'\"'\"'complete.json'\"'\"');a=read(d/'\"'\"'manifest.json'\"'\"')\n assert c['\"'\"'complete'\"'\"'] and c['\"'\"'optimizer_updates'\"'\"']==1250 and c['\"'\"'phase'\"'\"']=='\"'\"'formal'\"'\"'\n assert a['\"'\"'seed'\"'\"']==1001 and a['\"'\"'arm'\"'\"']==arm and a['\"'\"'schedule_total'\"'\"']==1250 and a['\"'\"'phase'\"'\"']=='\"'\"'formal'\"'\"'\n for n,h in c['\"'\"'data_files'\"'\"'].items():assert sha(d/n)==h\n paths += [d/n for n in ['\"'\"'manifest.json'\"'\"','\"'\"'complete.json'\"'\"','\"'\"'anchors.json'\"'\"','\"'\"'flags-1250.jsonl'\"'\"','\"'\"'state-1250.pt'\"'\"','\"'\"'metrics.jsonl'\"'\"','\"'\"'training.jsonl'\"'\"']]\nbase=pathlib.Path(read(s/'\"'\"'t5/assets/sources.json'\"'\"')['\"'\"'model'\"'\"']['\"'\"'local_path'\"'\"'])\nv={'\"'\"'schema'\"'\"':1,'\"'\"'source_root'\"'\"':str(s),'\"'\"'source_files'\"'\"':{str(p.relative_to(s)):sha(p) for p in paths},'\"'\"'checkpoint_files'\"'\"':{str(p):sha(p) for p in base.rglob('\"'\"'*'\"'\"') if p.is_file()}}\nwrite(r/'\"'\"'input_manifest.json'\"'\"',v)\nimport sys;assert '\"'\"'torch'\"'\"' not in sys.modules\nwrite(r/'\"'\"'prepare_cost.json'\"'\"',{'\"'\"'cost_id'\"'\"':'\"'\"'t5_endpoint_diagnosis_v1_prepare'\"'\"','\"'\"'phase'\"'\"':'\"'\"'CPU_frozen_endpoint_input_preparation'\"'\"','\"'\"'wall_seconds'\"'\"':time.monotonic()-t,'\"'\"'optimizer_updates'\"'\"':0,'\"'\"'torch_imported'\"'\"':False})\nprint(json.dumps({'\"'\"'prepared'\"'\"':True,'\"'\"'native_code_files'\"'\"':68,'\"'\"'private_input_manifest'\"'\"':True,'\"'\"'not_ASR_result'\"'\"':True}))\n'"
+    },
+    {
+      "name": "095cmtd_010_endpoint_diagnosis",
+      "cwd": "/workspace/cross-model-asr/20261009_t5_endpoint_diagnosis_v1/code",
+      "deps": [
+        "095cmtd_005_prepare_inputs",
+        "file:/workspace/cross-model-asr/20261009_t5_endpoint_diagnosis_v1/input_manifest.json",
+        "file:/workspace/cross-model-asr/20261009_t5_endpoint_diagnosis_v1/cpu_tests_passed.json"
+      ],
+      "est_min": 5,
+      "cmd": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONDONTWRITEBYTECODE=1 /workspace/cross-model-asr/20261009_t5_endpoint_diagnosis_v1/runtime/bin/python -B -c 'import pathlib,json,hashlib,os,runpy,sys\nr=pathlib.Path('\"'\"'/workspace/cross-model-asr/20261009_t5_endpoint_diagnosis_v1'\"'\"');s=pathlib.Path('\"'\"'/workspace/cross-model-asr/20261008_followup_v3_vimdirect_r05'\"'\"')\nm=json.load(open(r/'\"'\"'manifest.json'\"'\"'));assert {p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in (r/'\"'\"'code'\"'\"').glob('\"'\"'*.py'\"'\"')}==m['\"'\"'code_sha256'\"'\"']\nassert json.load(open(r/'\"'\"'cpu_tests_passed.json'\"'\"'))['\"'\"'passed'\"'\"']\nsys.argv=[str(r/'\"'\"'code/t5_endpoint_diagnosis.py'\"'\"'),'\"'\"'--root'\"'\"',str(r)];runpy.run_path(str(r/'\"'\"'code/t5_endpoint_diagnosis.py'\"'\"'),run_name='\"'\"'__main__'\"'\"')\nc=json.load(open(r/'\"'\"'cost_receipt.json'\"'\"'));assert c['\"'\"'optimizer_updates'\"'\"']==0 and c['\"'\"'trained_examples'\"'\"']==0\nc.update(cost_id='\"'\"'t5_endpoint_diagnosis_v1'\"'\"',family='\"'\"'t5'\"'\"',phase='\"'\"'GPU_endpoint_inference_diagnosis'\"'\"',is_new_formal=False)\nfor name,v in [('\"'\"'t5_endpoint_diagnosis_v1.json'\"'\"',c),('\"'\"'t5_endpoint_diagnosis_v1_prepare.json'\"'\"',json.load(open(r/'\"'\"'prepare_cost.json'\"'\"')))]:\n with (s/'\"'\"'costs'\"'\"'/name).open('\"'\"'x'\"'\"') as f:json.dump(v,f,indent=2)\nprint(json.dumps({'\"'\"'completed'\"'\"':True,'\"'\"'optimizer_updates'\"'\"':0,'\"'\"'not_new_formal'\"'\"':True,'\"'\"'numeric_summary_only'\"'\"':True}))\n'"
+    }
+  ],
+  "source_scientific_root_unchanged": true,
+  "clip_dependency_override": {
+    "name": "091cmv3d_190_clip_prepare",
+    "old_description_sha256": "980ff84ea08fef0c936e65a68733e9cb5415a3ac129d188a30177819f046d5c5",
+    "new_description_sha256": "226fdda7df4eaba33618c24231985f669b4fa70364c93b648571087aff7322ad",
+    "original_cmd_cwd_unchanged": true,
+    "new_dep": "095cmtd_010_endpoint_diagnosis"
+  },
+  "no_new_training": true
+}

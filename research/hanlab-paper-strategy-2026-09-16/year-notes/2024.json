@@ -1,0 +1,514 @@
+[
+  {
+    "slug": "atomique",
+    "year": 2024,
+    "title": "Atomique: A Quantum Compiler for Reconfigurable Neutral Atom Arrays",
+    "problem": "怎样把量子电路有效编译到可移动中性原子阵列，同时遵守移动及全局 Rydberg 激励的物理限制。",
+    "pain": "固定连接需要大量 SWAP；可移动原子也不是任意连线，AOD 行列不能随意交叉，错误并行可能诱发非目标门。",
+    "naive_failure": "直接套固定架构路由浪费可重构性；任意移动不合法；只优化门深度忽略原子移动、转移、加热和退相干，会误判真实收益。",
+    "insight": "按交互图先分配阵列，再安排具体位置与合法并行移动；以物理误差模型而非单一深度衡量编译计划。",
+    "contribution": "粗粒度加权 max-k-cut 映射、细粒度负载与位置映射、可扩展贪心路由，以及门/移动/转移/冷却代价模型。",
+    "evidence": [
+      {
+        "claim": "评测明确使用自建模拟器：现有公开设备不支持论文需要的完整移动控制，硬件参数取自已有实验；不是在目标设备执行得到的保真度。",
+        "page": 8
+      },
+      {
+        "claim": "Figure 13 正文汇总：相对最强固定三角阵列基线，模型保真度、双量子门数、深度分别改善约 2.7/2.8/2.2 倍。",
+        "page": 9
+      },
+      {
+        "claim": "与 Tan-Solver 在可完成的小电路比较，Atomique 的平均保真度为 88%、与 solver-based compilers 相当，而编译快超过 2000 倍；solver 超过 20 qubits 常遇 24 小时超时。这里的 88% 是论文报告的平均保真度，不是相对 solver 的比例。",
+        "page": 10
+      },
+      {
+        "claim": "敏感性分析：当双量子门保真度高于约 0.9999，固定阵列可优于可重构阵列；移动时间在加热与退相干间存在折中。",
+        "page": 11
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "limits": "结果依赖模拟器及硬件误差假设；不同架构比较也包含物理能力差异。低连接度或极高双门保真度时固定阵列可更优，不能写成可移动体系普遍胜出。",
+    "strategy": "物理约束定义问题，再把映射/路由和多因素目标协同优化；包含严格 solver 参照、规模曲线和方法输掉的参数区域。",
+    "lesson": "状态替换后恢复率属于限定算子的目标，不是根因或未来修复保证；诊断应把 donor、干预合法性和保护事实当作约束，并公开方法在哪些条件下无效。",
+    "read_scope": "精读体系约束、三级编译方法、保真度模型、主要比较、solver 与参数敏感性；图中数值以正文/表述可核实者为准。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/Atomique- A Quantum Compiler for Reconfigurable Neutral Atom Arrays.pdf"
+  },
+  {
+    "slug": "awq",
+    "year": 2024,
+    "title": "AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration",
+    "problem": "如何在低位权重量化后维持大模型质量，并在真实部署硬件上兑现速度收益。",
+    "pain": "逐权重均匀量化会伤害少数重要通道；混合精度保护虽有效，却不利于常规整数内核。",
+    "naive_failure": "保护大权重或随机权重并不等于保护对输出重要的权重；依赖逐层重构也可能过拟合校准分布。",
+    "insight": "由激活幅度识别显著通道，用权重缩放及反向激活缩放实现等价变换，降低显著通道的相对量化误差；缩放过大也会恶化共享量化范围。",
+    "contribution": "小样本、无反传的缩放与截断搜索，加 TinyChat 的融合、打包内核，实现算法与硬件协同。",
+    "evidence": [
+      {
+        "claim": "Table 1：OPT-6.7B INT3-g128 PPL：FP16 10.86，RTN 23.54，保护激活选出的 1% 权重 11.39，权重幅度选择 22.37，随机选择 24.23。",
+        "page": 4
+      },
+      {
+        "claim": "Table 2：同一量化设置，缩放 s=1、2、4 的 PPL 为 23.54、11.92、12.36，证明并非缩放越大越好。",
+        "page": 4
+      },
+      {
+        "claim": "Table 6：OpenFlamingo-9B 的 COCO 32-shot CIDEr：FP16 81.70，RTN 77.13，GPTQ 74.98，AWQ 80.53；跨多模态检验而非只看语言 PPL。",
+        "page": 8
+      },
+      {
+        "claim": "Figure 8：分布外校准时 AWQ 的 PPL 增量约 0.5–0.6，GPTQ 约 2.3–4.9；Figure 9 报告 TinyChat 相对 Hugging Face FP16 最多 3.9 倍/3.5 倍的 4090/Orin 收益。",
+        "page": 10
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "limits": "仍需校准且低位仍可能掉点；主要是 weight-only、低批量内存带宽瓶颈场景。TinyChat 对 HF 的收益同时含系统实现优势，不能全部归于显著性规则。归档 PDF 含后续修订，按文件夹记为 2024。",
+    "strategy": "先用同预算的随机/权重幅值反例建立重要性定义，再以可部署的等价变换替代不便实现的混合精度，最终闭合质量—延迟证据。",
+    "lesson": "诊断排名应在相同信息和相同操作预算下证明比简单替代项更有用；必须报告真实恢复与完整成本，不能只报告排名相似性。",
+    "read_scope": "精读问题、显著通道实验、缩放推导与消融、TinyChat、语言/多模态实验及校准泛化；页码为本地 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/AWQ- Activation-aware Weight Quantization for LLM Compression and Acceleration.pdf"
+  },
+  {
+    "slug": "can",
+    "year": 2024,
+    "title": "Condition-Aware Neural Network for Controlled Image Generation",
+    "problem": "条件图像生成是否必须让所有类别和去噪时间共享同一套静态网络权重。",
+    "pain": "条件只注入特征时，静态权重可能难兼顾不同生成子任务；完整条件专家又不可承受。",
+    "naive_failure": "增加每处动态权重或只改善特征调制并不稳定获益；部署时逐样本不同权重还可能降低硬件效率。",
+    "insight": "将条件映射为少数关键操作的权重增量，主要覆盖 depthwise convolution、patch embedding 和 attention output，而不对所有层全面动态化。",
+    "contribution": "Condition-Aware Network 与 CaT，选择性条件权重生成、跨投影共享、分组卷积批处理实现；将条件适配与轻量骨干组合。",
+    "evidence": [
+      {
+        "claim": "Table 1：同 UViT-S/2，基线 FID 28.32；条件 DWConv 为 11.18，再加 patch embedding 为 10.23，再加 output projection 为 8.82；额外动态 head 反而为 12.29。",
+        "page": 3
+      },
+      {
+        "claim": "条件时间单独 FID 15.16，类别单独 10.01，两者 8.82；长训练后的差距仍存在，反驳仅加快收敛这一解释。",
+        "page": 5
+      },
+      {
+        "claim": "Table 4：ImageNet 512 的 CaT-L0 FID 2.78，约 10G MAC/step、20 steps；DiT-XL FID 3.04，525G/step、250 steps。",
+        "page": 6
+      },
+      {
+        "claim": "Table 5：Orin 上 45.9 秒到 0.2 秒的 229 倍同时包含骨干与步数变化，不能归于条件权重这一个模块。",
+        "page": 7
+      },
+      {
+        "claim": "理论额外计算很小，但 NVIDIA 对 grouped convolution 支持较差，实际仍有约 30–40% 训练耗时增量；文中将自定义内核留作未来工作。",
+        "page": 4
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "limits": "负迁移解释更多是动机，并非已被完整识别的因果机制。最终速度比较包含架构和采样器差异；动态参数生成存在参数与训练开销，主要验证 ImageNet/COCO。",
+    "strategy": "大幅总系统结果由同架构递增消融支撑；反例明确告诉读者哪些看似自然的额外适配反而无效，避免把最终套餐增益全归一模块。",
+    "lesson": "如果 Verified Diagnosis 加入选择器、校准器和大量验证查询，必须拆开每个部件的独立收益，不能把更大信息预算包装成诊断更准。",
+    "read_scope": "精读条件权重方法、同骨干 Tables 1–3 消融、长训练控制、质量/复杂度与设备计时主结果；页码为 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/Condition-Aware Neural Network for Controlled Image Generation.pdf"
+  },
+  {
+    "slug": "distrifusion",
+    "year": 2024,
+    "title": "DistriFusion: Distributed Parallel Inference for High-Resolution Diffusion Models",
+    "problem": "如何用多 GPU 降低单张高分辨率扩散图像的延迟，而不是仅提高多图吞吐。",
+    "pain": "数据并行不能缩短单图延迟；独立生成分块会破坏全局一致性；同步分块或 tensor parallel 被通信拖慢。",
+    "naive_failure": "完全丢弃跨块依赖虽快却出错；每步同步所有激活虽精确却难扩展；直接使用陈旧归一化统计也造成分布错配。",
+    "insight": "相邻去噪步的激活很相似，可以用上一时刻的其他块激活近似当前全局依赖，并将通信藏在计算后面；早期同步预热和统计修正控制近似误差。",
+    "contribution": "Displaced patch parallelism、异步 AllGather、校正陈旧 GroupNorm、同步 warm-up；围绕同一图像质量和端到端延迟实现设计。",
+    "evidence": [
+      {
+        "claim": "Table 1：SDXL 1024、50-step DDIM，原始 5.02 秒/FID 24.0，8-GPU 方案 1.77 秒/24.4、同为 338T 总 MAC；独立分块虽 1.27 秒，FID 高达 252。",
+        "page": 8
+      },
+      {
+        "claim": "Table 2：1024 下同步 tensor parallel、同步 patch parallel 与本方法为 3.61、2.21、1.77 秒；3840 下原始 140 秒、本方法 22.9 秒，约 6.1 倍。",
+        "page": 8
+      },
+      {
+        "claim": "Figure 8：10-step DPM 下零预热 LPIPS 0.404，加两步预热为 0.196，延迟 0.374 到 0.400 秒，直接显出近似误差与修正收益。",
+        "page": 9
+      },
+      {
+        "claim": "Figure 9：separate/stale/sync/corrected GN 的 LPIPS 为 0.317/0.247/0.207/0.211；校正方案接近同步质量且延迟 1.77 秒低于 1.85 秒。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "limits": "充分隐藏通信依赖 NVLink；低分辨率利用率不足，极少去噪步可能失效。近似输出并非与原图完全一致，8 GPU 降延迟也不能自动理解为八倍计算成本节约。",
+    "strategy": "先用独立块失败证明必要交互，再用精确同步基线隔离近似误差；针对误差来源逐项修正，同时报告延迟、质量和总计算。",
+    "lesson": "Oracle 或穷举是必要的精确参照，但论文价值来自保留其决策质量的低成本近似，不能只证明原来的便宜代理不等于 oracle。",
+    "read_scope": "精读单图并行问题、各算子通信与 GN 方法、Tables 1–2、预热/GN 消融及 Limitations；页码为 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/DistriFusion- Distributed Parallel Inference for High-Resolution Diffusion Models.pdf"
+  },
+  {
+    "slug": "efficientvit-sam",
+    "year": 2024,
+    "title": "EfficientViT-SAM: Accelerated Segment Anything Model Without Accuracy Loss",
+    "problem": "如何保留 SAM 的通用提示分割能力，同时消除巨大图像编码器的部署瓶颈。",
+    "pain": "SAM ViT-H 编码器计算量高；直接缩小骨干会损失分割质量，参数少也不保证硬件速度快。",
+    "naive_failure": "单纯替换成小网络或只比较 FLOPs 不能保证提示分割质量与实际吞吐；应保持任务接口与评测方式。",
+    "insight": "以硬件友好的多尺度线性注意力及局部卷积编码器替换重型 encoder，保留 prompt encoder 与 mask decoder；通过蒸馏和 SA-1B 端到端训练迁移能力。",
+    "contribution": "EfficientViT 的 SAM 集成和训练方案，提供不同速度质量档位，并评估 COCO/LVIS 点与框提示及 SGinW 零样本分割。",
+    "evidence": [
+      {
+        "claim": "Table 1：A100 TensorRT FP16，SAM 11 images/s、COCO box mAP 46.5；EfficientViT-SAM-L2 为 538 images/s、46.6，约 48.9 倍；L0 更快但 mAP 45.7。",
+        "page": 3
+      },
+      {
+        "claim": "Table 2：LVIS 单点提示 SAM mIoU 59.2，XL1 为 56.6；3/5 点则 XL1 67.0/71.7 高于 SAM 66.0/66.8，标题不能解释为逐指标无损。",
+        "page": 3
+      },
+      {
+        "claim": "SGinW 25 datasets 配合 GroundingDINO 的 box-prompted mAP，XL1 为 48.9，SAM 为 48.7；增加分布外任务层面的检验。",
+        "page": 4
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "limits": "报告的是特定 A100/TensorRT 的吞吐，非所有应用端到端延迟。个别模型/数据/提示指标下降；短文未给出充分拆分蒸馏与端到端训练的独立消融。",
+    "strategy": "以明确部署瓶颈和大幅真实速度—质量改进支撑集成贡献，不强求复杂新理论；用跨提示和跨数据评测限定普适性。",
+    "lesson": "工程性工作也能 solid，但要有大而可靠的真实收益；严格记账与可复现接口只是基础，不能替代更有用、更便宜的诊断。",
+    "read_scope": "读取正文 pp.1–4 的摘要、架构/训练、主表和零样本评测；p.5 为参考文献。未将标题当作所有指标的事实。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/EfficientViT-SAM- Accelerated Segment Anything Model Without Accuracy Loss.pdf"
+  },
+  {
+    "slug": "fastcomposer",
+    "year": 2024,
+    "title": "FastComposer: Tuning-Free Multi-Subject Image Generation with Localized Attention",
+    "problem": "如何不用每个新主体再微调，就生成身份清楚、彼此不混淆且服从提示词的多主体图像。",
+    "pain": "逐主体优化花数分钟及显存；直接混入多张参考图时身份串扰；过早强调参考身份会牺牲文字指定布局。",
+    "naive_failure": "把所有身份 embedding 一起输入并不足以将主体与正确名词、区域绑定；单纯加强图像条件也会降低可编辑性。",
+    "insight": "身份绑定要落在对应名词的空间注意力上；先用文字决定构图，再在后续去噪中注入视觉身份条件，可调和布局与保真。",
+    "contribution": "共享图像编码器与增强名词 embedding、训练期注意力定位监督、推理期延迟主体条件；测试时只需参考图前向传播。",
+    "evidence": [
+      {
+        "claim": "方法使用训练期分割掩码约束对应主体注意力，并在推理中延迟图像条件；定位与时间调度分别针对身份混合和提示词可编辑性。",
+        "page": 5
+      },
+      {
+        "claim": "Table 1：单主体 FastComposer 身份相似度 51.41、prompt 24.30，总个性化加生成耗时 2 秒；Custom Diffusion 为 43.37/23.29、789 秒。参考图数量和方法信息预算不同，不能忽略。",
+        "page": 8
+      },
+      {
+        "claim": "Table 2：多主体身份相似度 FastComposer 43.11，Custom Diffusion 5.37，但 prompt 指标分别 24.25/25.84，存在取舍。",
+        "page": 9
+      },
+      {
+        "claim": "Table 3：去掉 attention localization 时身份/prompt 为 37.66/25.03，加入后为 43.11/24.25；消融直接检验身份与提示词的收益代价。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "limits": "共享模型先训练 150K steps、8 张 A6000；2 秒不含这部分摊销训练。训练和主要评测面向人物头照，超过三个主体有限，动物及一般实体未充分验证。注意力监督不等于注意力本身是真实原因证明。",
+    "strategy": "把失败拆成空间串扰与时间上的构图冲突，用对应机制修正，报告个性化总时间和身份—提示词双目标取舍。",
+    "lesson": "定位的价值由最终身份或事实恢复决定；应报告保护目标掉点，明确共享训练成本与每例诊断成本的摊销关系。",
+    "read_scope": "精读问题、条件编码、定位损失、延迟条件、Tables 1–3、训练成本与局限；页码为 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/FastComposer- Tuning-Free Multi-Subject Image Generation with Localized Attention.pdf"
+  },
+  {
+    "slug": "longlora",
+    "year": 2024,
+    "title": "LongLoRA: Efficient Fine-tuning of Long-Context Large Language Models",
+    "problem": "如何在有限 GPU 上把 LLM 微调到长上下文，并保留标准 full attention 推理。",
+    "pain": "长序列训练注意力二次增长；LoRA 虽省参数，直接用仍明显落后全量微调；孤立局部注意力缺乏跨组信息。",
+    "naive_failure": "只增大 LoRA rank 不能解决质量缺口；未移位的局部稀疏注意力切断通信，训练期的任意稀疏结构也未必兼容 dense 推理。",
+    "insight": "跨头错开局部分组提供低成本跨组交流；embedding 和 normalization 的可训练性比简单提升 rank 更关键。",
+    "contribution": "Shifted short attention 用于训练，加 LoRA、可训练 embedding/norm；推理仍可切回标准完整注意力。",
+    "evidence": [
+      {
+        "claim": "Table 1：32768 长度 PG19，full attention PPL 8.04，未移位 short attention 9.47，shifted short attention 8.08。",
+        "page": 4
+      },
+      {
+        "claim": "Table 2：32K 时 full FT PPL 8.08；LoRA rank 8 为 11.44、rank 256 为 11.98；加入 embedding 与 norm 后为 8.12，参数容量增加并未替代组件选择。",
+        "page": 6
+      },
+      {
+        "claim": "Table 4：单机 8×A100 可扩展 7B/13B/70B 到 100K/64K/32K；另有长文检索及指令任务，而非只测内存。",
+        "page": 7
+      },
+      {
+        "claim": "Table 6：跨头 shift 的 full-attention 推理 PPL 8.12，dilate 为 11.78、stride 为 24.03，检验训练近似对正式推理的兼容性。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "limits": "核心省的是微调成本，不是提出稀疏解码引擎；位置插值可能损害短上下文困惑度。主要为 Llama-2、给定微调和位置设置，训练稀疏的充分理论仍有限。",
+    "strategy": "用失败的容量扩展与注意力模式控制，定位缺少的通信和参数更新路径；便宜训练必须回到正式推理方式验证。",
+    "lesson": "诊断器低分不能仅靠“更大模型/更多样本”解释；需要排除容量不足、训练目标错配、算子不适用等具体原因，并验证正式使用流程。",
+    "read_scope": "精读稀疏分组与可训练参数方法、Tables 1–2/4/6、检索和成本实验及短上下文边界；页码为 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/LongLoRA- Efficient Fine-tuning of Long-Context Large Language Models.pdf"
+  },
+  {
+    "slug": "q-pilot",
+    "year": 2024,
+    "title": "Q-Pilot: Field Programmable Qubit Array Compilation with Flying Ancillas",
+    "problem": "如何对可重构量子阵列生成浅而可扩展的电路，避免求解器编译时间随问题规模失控。",
+    "pain": "移动数据量子位受阵列整体几何约束；精确 SMT 方法在大电路上超时；固定连线体系需要深的通信与门序列。",
+    "naive_failure": "将数据原子自由移动并不合法；为所有电路采用同一通用门序路由，不能利用 QSim/QAOA 的结构；最优 solver 不能覆盖目标规模。",
+    "insight": "保持数据阵列，使用移动的 flying ancillas 介导远程交互，类比 FPGA 路由资源；针对应用结构优化并行扇出与门排序。",
+    "contribution": "Flying-ancilla 编译框架、通用贪心路由、QSim 与 QAOA 专用路由和可扩展编译实现。",
+    "evidence": [
+      {
+        "claim": "小实例比较中 solver 可有更低深度，但往往一小时内不完成；Q-Pilot 通常一秒内，生成深度不超过其最优解约四倍，明确近似代价。",
+        "page": 7
+      },
+      {
+        "claim": "Figure 16：QSim 专用路由相对通用路由减少双门数 1.5 倍、深度 8.8 倍；QAOA 为 2.8 倍和 10.1 倍，说明收益来自结构化路由而非仅硬件变换。",
+        "page": 8
+      },
+      {
+        "claim": "扩展性测试：2000 qubits 的 QAOA、QSim、通用随机电路编译分别为 129.50、30.48、32.31 秒；给出可实际运行的规模证据。",
+        "page": 8
+      },
+      {
+        "claim": "Figure 15 通过门错误等参数估计电路错误率，并展示并行门分布；不是硬件实测的任务成功率。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      6,
+      7,
+      8
+    ],
+    "limits": "需要额外 ancillas 及其交互、回收操作；降低 circuit depth 不自动等于更高实际保真度，且结果依赖架构和误差模型。主要证据为编译/模拟而非实机成功。",
+    "strategy": "把新增硬件自由度变成清楚的编译抽象，再以专用对通用、近似对精确、规模对时间三条控制分离贡献。",
+    "lesson": "不要把诊断粒度、覆盖率或验证通过率当作最终价值；当不同指标冲突时，需要以实际事实恢复及全部额外操作成本裁决。",
+    "read_scope": "精读摘要、ancilla 与合法路由方法、通用/专用框架、solver 对照、规模和误差实验；页码为 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/Q-Pilot- Field Programmable Qubit Array Compilation with Flying Ancillas.pdf"
+  },
+  {
+    "slug": "quest",
+    "year": 2024,
+    "title": "Quest: Query-Aware Sparsity for Efficient Long-Context LLM Inference",
+    "problem": "长上下文生成时，如何只读取当前查询需要的 KV，而维持完整缓存下的回答质量。",
+    "pain": "解码受 KV 读取带宽限制；历史重要 token 未必对下一个查询重要；静态驱逐可能永久删除稍后需要的信息。",
+    "naive_failure": "过去注意力分数和固定首尾窗口不能适应查询变化；精确计算所有注意力再选稀疏 token 又失去省带宽意义。",
+    "insight": "每页 key 的逐通道最小/最大值可以便宜估计当前 query 对该页的潜在注意力，按 query 动态选择页面；不是永久驱逐 KV。",
+    "contribution": "页级 min/max 元数据与 query-aware criticality、Top-K 页注意力内核；前两层保留 dense，计入选页开销实现解码提速。",
+    "evidence": [
+      {
+        "claim": "Figure 3：前两层难稀疏，而后续层具有显著稀疏性；实验为各方法保留前两层 dense，避免不匹配层处理。",
+        "page": 3
+      },
+      {
+        "claim": "Table 1：10K passkey、LongChat、64 token budget，Quest 为 99%，H2O、TOVA、StreamingLLM 各约 1%；100K 场景使用不同模型及预算，不应直接合并。",
+        "page": 5
+      },
+      {
+        "claim": "LongBench/长序列 H2O 实验为兼容 FlashAttention，仅在 decode 累积历史注意力；这限定了对 H2O 原方法的泛化批评。",
+        "page": 6
+      },
+      {
+        "claim": "Figures 9–10 及正文：32K 序列、2048 budget 的注意力内核最多 7.03 倍，相对 FlashInfer 的每 token 解码延迟，FP16 改善 1.74 倍、4-bit 改善 2.23 倍；包含选页步骤，但不计 sampling，也非完整请求 prefill+decode 延迟。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "limits": "主要加速 decode，仍存完整 KV，并非缓存容量压缩；效果随预算/任务改变。部分基线没有高效内核，只比较质量，不能宣称测得所有方法的系统速度优势；H2O 历史收集适配须披露。",
+    "strategy": "发现重要性依赖当前条件，从静态重要性改为低成本动态上界；既检验困难检索，也明确系统分母和筛选成本。",
+    "lesson": "诊断排名也可能依赖问题、供体和干预类型。测试同一排名跨条件失效应建立机制边界，不能直接将任务适配后的失败归罪于原方法。",
+    "read_scope": "精读 query-dependent 动机、元数据与内核方法、passkey/LongBench、计时与基线适配注释；页码为 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/Quest- Query-Aware Sparsity for Efficient Long-Context LLM Inference.pdf"
+  },
+  {
+    "slug": "sparserefine",
+    "year": 2024,
+    "title": "Sparse Refinement for Efficient High-Resolution Semantic Segmentation",
+    "problem": "高分辨率语义分割如何只在低分辨率预测容易出错的位置付出额外计算。",
+    "pain": "低分辨率模型速度快但丢失细小对象和边界；全图高分辨率或稠密 patch 精修会重复计算大量简单区域。",
+    "naive_failure": "随机抽点命中错误少；仅插值/隐藏特征精修可能缺少原始高频信息；把局部精修输出直接替换全局预测会丢失上下文。",
+    "insight": "低分辨率熵能廉价召回大部分待修像素；只对选中位置的原始 RGB 做稀疏卷积，再由学习门控融合局部与全局判断。",
+    "contribution": "冻结现有分割器、熵选择器、稀疏 UNet、门控融合的后接框架，面向真实延迟而非只减少像素数。",
+    "evidence": [
+      {
+        "claim": "Table 1：SegFormer-B5 全分辨率为 140.6ms/81.1 mIoU，半分辨率为 18.5ms/78.7，加 SparseRefine 为 38.5ms/81.2，约 3.7 倍。",
+        "page": 8
+      },
+      {
+        "claim": "匹配开销下 PointRend 为 32.8ms/79.9 mIoU，本方法 32.4ms/80.9；稠密 patch 消融也更慢，区分后接精修与稀疏实现的价值。",
+        "page": 9
+      },
+      {
+        "claim": "选择消融：熵选 11.8% 像素，错误召回 84.9%、2.3ms；学习选择器 85.9%、4.0ms 且同为 80.9 mIoU，复杂选择器没有实用优势。",
+        "page": 12
+      },
+      {
+        "claim": "融合消融：直接替换为 77.7 mIoU，熵融合 80.3，学习门控 80.9；随机 10% 选择仅 10% 错误召回，最终 79.2。",
+        "page": 12
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "limits": "低熵的自信错误容易漏掉；精修网络仍需训练且增加模型参数，不等于内存也下降。主要是分割密集预测，不是证明 entropy 能识别语义根因。",
+    "strategy": "便宜选择器只需足够召回，并非越复杂越好；将选择、局部修复、融合各自失败拆解，用同延迟强基线确认真实收益。",
+    "lesson": "我们必须允许 output-only、entropy、直接检查赢；诊断更精细若不提高修复成功率或降低预算就没有独立价值，拒绝定位也应有明确覆盖代价。",
+    "read_scope": "精读选择/稀疏精修/融合方法、主表及 PointRend 对照、patch/选择器/融合消融和速度分解；页码为 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/Sparse Refinement for Efficient High-Resolution Semantic Segmentation.pdf"
+  },
+  {
+    "slug": "streamingllm",
+    "year": 2024,
+    "title": "Efficient Streaming Language Models with Attention Sinks",
+    "problem": "怎样让固定上下文预训练语言模型持续处理远超窗口的流，而不因缓存截断崩溃。",
+    "pain": "完整 KV 缓存随流增长；滑窗重算成本高；直接驱逐最早 token 会使困惑度突然爆炸。",
+    "naive_failure": "只留最近 token 虽符合局部信息直觉，却移除了模型用于承接多余注意力的初始位置；将初始 token 解释为重要语义也不能解释换行替换实验。",
+    "insight": "早期位置成为 attention sink，其作用主要不来自文字内容。保留少量初始 KV 加滚动近期 KV，并按缓存相对位置处理 RoPE，可以维持流式计算。",
+    "contribution": "训练无关的初始加近期缓存策略；通过内容替换、初始 token 数消融及从头训练的可学习 sink，对机制解释作可区分实验。",
+    "evidence": [
+      {
+        "claim": "Table 1：Llama-2-13B 的 0+1024 缓存 PPL 为 5158.07，4+1020 为 5.40，将前四 token 换成换行仍为 5.60，区分语义重要性与初始位置作用。",
+        "page": 5
+      },
+      {
+        "claim": "Table 3：相同 160M 训练设置下，1+1023 缓存的 vanilla、zero sink、learnable sink PPL 为 18.49、19.90、18.01；learnable sink 用一个初始 token 已接近其更多 token 情形。",
+        "page": 6
+      },
+      {
+        "claim": "Table 5：连续 ARC 评测中，Llama-2-7B Chat 的 window attention 为 3.58/1.39，StreamingLLM 为 71.34/55.03，接近或超过单题模式 71.25/53.16。",
+        "page": 8
+      },
+      {
+        "claim": "Figure 10：在同一 Hugging Face 实现及 A6000 上，相对 sliding-window recomputation 最多加速 22.2 倍；这不是相对普通窗口截断的加速。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      9
+    ],
+    "limits": "稳定近期窗口的流式推理不等于无限远信息检索，也没有扩大模型注意力窗口。软最大值动机受到实验支持，但并非普适性定理。22.2 倍的分母是逐窗重算。",
+    "strategy": "以突变失败锁定结构性因素；设计能击破语义替代解释的反事实；用最小缓存修改修复，再验证实际任务及速度。",
+    "lesson": "Verified Diagnosis 应拿出换行替代这样的区分性控制：定位图变化究竟来自原因、答案信号还是干预算子。声明必须限定为已测操作下的可恢复性。",
+    "read_scope": "精读摘要/引言、缓存及位置方法、Tables 1–3 与 5、运行时间图和上下文边界；页码为本地 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/Efficient Streaming Language Models with Attention Sinks.pdf"
+  },
+  {
+    "slug": "vila",
+    "year": 2024,
+    "title": "VILA: On Pre-training for Visual Language Models",
+    "problem": "VLM 预训练究竟应训练哪些参数、怎样组织图文数据，才能兼顾视觉能力、文本能力和上下文学习。",
+    "pain": "只比较零样本视觉平均分会掩盖模型丧失 ICL 或文本能力；更复杂投影器也未必带来更好对齐。",
+    "naive_failure": "冻结语言模型、只用独立图文对或仅做视觉指令微调，可能获得尚可零样本分数，却损害跨模态序列建模与文本能力。",
+    "insight": "让语言模型在交错图文序列上参与预训练，用简单投影器，并在 SFT 混入文本数据，比分别堆大投影器或额外视觉专家更有效。",
+    "contribution": "受控训练配方研究：同源 MMC4 拆成图文对的控制、训练组件与 ICL 消融、文本和视觉联合 SFT、分辨率与 token 数分离实验。",
+    "evidence": [
+      {
+        "claim": "Table 1：同为 MMC4 与 transformer projector，冻结预训练 LLM 的平均 0/4-shot 为 66.8/57.6，训练 LLM 为 66.8/68.8；同一个零样本分数掩盖 11.2 分 ICL 差距。",
+        "page": 3
+      },
+      {
+        "claim": "Table 3：MMC4 拆成 pairs 的平均 0/4-shot 为 46.4/44.5，保留交错组织为 68.7/70.9；同源控制比不同语料直接比较更能支持组织形式的作用。",
+        "page": 4
+      },
+      {
+        "claim": "Table 5：VILA-7B TextVQA 为 64.4，LLaVA-1.5-7B 为 58.2；Table 6 中 VILA-7B MMLU 50.8，文本 SFT 参考为 51.8，不能概括所有规模无文本损失。",
+        "page": 6
+      },
+      {
+        "claim": "Table 7：图像分辨率 224 到 336 的 TextVQA 为 41.6 到 49.8；将高分辨率视觉 token 降采样至 144 后仍为 45.6，区分原始分辨率与 token 数。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "limits": "深层表示更相似与深度对齐之间仍有解释性推断；主要在其模型、50M 图像及所选配方内验证。不同指标仍有退步，不能将总体进步写成全面无损。 MMC4-pairs 是同源控制而非全部 token 严格不变：只保留匹配图像及相应文本段，丢弃了其他文本，不能声称已完全分离序列组织与上下文信息量。",
+    "strategy": "把经验配方拆成可证伪决策，用同源数据重排/拆对和同组件训练控制排除混杂，再增加容易被平均分掩盖的下游能力。",
+    "lesson": "应固定案例、供体和算子比较诊断器，并检查保护事实；若换了任务或操作再说别人的方法失效，就缺少这里的同源控制。",
+    "read_scope": "精读摘要、预训练设计、Tables 1–9 的关键对照和数据/能力边界；未将表示相似性视作因果证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/VILA- On Pre-training for Visual Language Models.pdf"
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "submitted": true,
+  "jobs": [
+    {
+      "name": "094cmcost_010_final_cost_audit",
+      "cwd": "/workspace/cross-model-asr/20261009_final_cost_audit_v1/code",
+      "deps": [
+        "091cmv3d_999_finish",
+        "file:/workspace/cross-model-asr/20261008_followup_v3_vimdirect_r05/results/complete.json"
+      ],
+      "est_min": 1,
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 /workspace/cross-model-asr/20261009_final_cost_audit_v1/runtime/bin/python -c 'import hashlib,json,os,pathlib,runpy,sys,time\nr=pathlib.Path('\"'\"'/workspace/cross-model-asr/20261009_final_cost_audit_v1'\"'\"')\ns=pathlib.Path('\"'\"'/workspace/cross-model-asr/20261008_followup_v3_vimdirect_r05'\"'\"')\np=pathlib.Path('\"'\"'/workspace/claude-jump/jobq'\"'\"')\nm=json.load(open(r/'\"'\"'manifest.json'\"'\"'))\nassert os.environ.get('\"'\"'CUDA_VISIBLE_DEVICES'\"'\"')=='\"'\"'1'\"'\"' and os.environ.get('\"'\"'JOBQ_GPU'\"'\"')=='\"'\"'1'\"'\"'\nassert json.load(open(p/'\"'\"'gpu_allocation_policy.json'\"'\"'))['\"'\"'allowed_worker_gpus'\"'\"']==[1]\nassert {x.name:hashlib.sha256(x.read_bytes()).hexdigest() for x in (r/'\"'\"'code'\"'\"').glob('\"'\"'*.py'\"'\"')}==m['\"'\"'code_sha256'\"'\"']\nassert hashlib.sha256((s/'\"'\"'manifest.json'\"'\"').read_bytes()).hexdigest()==m['\"'\"'source_manifest_sha256'\"'\"']\nassert json.load(open(r/'\"'\"'cpu_tests_passed.json'\"'\"'))['\"'\"'passed'\"'\"']\nt=time.monotonic()\nsys.argv=[str(r/'\"'\"'code/final_cost_audit.py'\"'\"'),'\"'\"'final'\"'\"','\"'\"'--source-root'\"'\"',str(s),'\"'\"'--output-dir'\"'\"',str(r/'\"'\"'results'\"'\"')]\nrunpy.run_path(str(r/'\"'\"'code/final_cost_audit.py'\"'\"'),run_name='\"'\"'__main__'\"'\"')\nassert '\"'\"'torch'\"'\"' not in sys.modules\nc={'\"'\"'cost_id'\"'\"':'\"'\"'final_cost_audit_v1_runtime'\"'\"','\"'\"'phase'\"'\"':'\"'\"'CPU_final_cost_audit'\"'\"','\"'\"'wall_seconds'\"'\"':time.monotonic()-t,'\"'\"'measurement_includes_cost_inputs_and_output_writes'\"'\"':True,'\"'\"'is_GPU_training'\"'\"':False,'\"'\"'is_new_formal_trajectory'\"'\"':False,'\"'\"'recorded_separately_from_source_incremental_ledger'\"'\"':True}\n(r/'\"'\"'costs'\"'\"').mkdir(exist_ok=True)\nwith (r/'\"'\"'costs/final_runtime.json'\"'\"').open('\"'\"'x'\"'\"') as f:json.dump(c,f,indent=2)\n'"
+    }
+  ],
+  "code_sha256": {
+    "final_cost_audit.py": "2efae0a79210370dbbb28e0c0659958aeea77e365459cb4de5af4007cf2e826b",
+    "test_final_cost_audit.py": "eba93c4ee038a408172fd2686047b6c552473dbea8cee3899505db1e598c8c25"
+  },
+  "only_CPU_report_supplement": true,
+  "source_training_jobs_modified": false
+}

@@ -1,0 +1,142 @@
+{
+  "utc": "2026-10-10T21:24:37.341180+00:00",
+  "ours": {
+    "101cmmf_010_saved_state_measurement": {
+      "claims": false,
+      "running": false,
+      "done": false,
+      "failed": false,
+      "queued": true
+    },
+    "101cmmf_020_completed_cpu_audit": {
+      "claims": false,
+      "running": false,
+      "done": false,
+      "failed": false,
+      "queued": true
+    },
+    "101cmmf_030_final_markdown": {
+      "claims": false,
+      "running": false,
+      "done": false,
+      "failed": false,
+      "queued": true
+    }
+  },
+  "uncompleted_queue": {
+    "0271_tp_TP-B1007-D1001-W1-100": {
+      "eligible_dependencies": false,
+      "missing_dependency_count": 1,
+      "claims": false,
+      "running": false,
+      "done": false,
+      "failed": false
+    },
+    "0272_tp_TP-B1007-D1001-W101-200": {
+      "eligible_dependencies": false,
+      "missing_dependency_count": 1,
+      "claims": false,
+      "running": false,
+      "done": false,
+      "failed": false
+    },
+    "0273_tp_TP-B1007-D1001-W201-300": {
+      "eligible_dependencies": false,
+      "missing_dependency_count": 1,
+      "claims": false,
+      "running": false,
+      "done": false,
+      "failed": false
+    },
+    "0274_tp_TP-B1001-D1007-W1-100": {
+      "eligible_dependencies": false,
+      "missing_dependency_count": 1,
+      "claims": false,
+      "running": false,
+      "done": false,
+      "failed": false
+    },
+    "101cmmf_010_saved_state_measurement": {
+      "eligible_dependencies": true,
+      "missing_dependency_count": 0,
+      "claims": false,
+      "running": false,
+      "done": false,
+      "failed": false
+    },
+    "101cmmf_020_completed_cpu_audit": {
+      "eligible_dependencies": false,
+      "missing_dependency_count": 2,
+      "claims": false,
+      "running": false,
+      "done": false,
+      "failed": false
+    },
+    "101cmmf_030_final_markdown": {
+      "eligible_dependencies": false,
+      "missing_dependency_count": 2,
+      "claims": false,
+      "running": false,
+      "done": false,
+      "failed": false
+    }
+  },
+  "earlier_eligible_names": [],
+  "worker_alive": true,
+  "worker_cmdline": "/workspace/miniconda/envs/amic/bin/python worker.py --root /workspace/claude-jump/jobq --gpu 1 ",
+  "worker_selection_policy": [
+    {
+      "line": 6,
+      "text": "  {\"name\": \"...\", \"cmd\": \"shell command\", \"cwd\": \"...\", \"deps\": [\"job name\" | \"file:/abs/path\"],"
+    },
+    {
+      "line": 8,
+      "text": "A job runs when all deps are done (job dep: <root>/done/<name>; file dep: path exists)."
+    },
+    {
+      "line": 20,
+      "text": "IDLE_MB, IDLE_CHECKS, CHECK_S, WARM_S = 2000, 10, 60, 180"
+    },
+    {
+      "line": 64,
+      "text": "        for jf in sorted((R / \"jobs\").glob(\"*.json\")):"
+    },
+    {
+      "line": 69,
+      "text": "            if any(dep_dead(d) for d in j.get(\"deps\", [])):"
+    },
+    {
+      "line": 71,
+      "text": "            if all(dep_ok(d) for d in j.get(\"deps\", [])):"
+    },
+    {
+      "line": 80,
+      "text": "        warm = time.time() - last_end < WARM_S and not gpu_busy(gpu)"
+    },
+    {
+      "line": 83,
+      "text": "            while n_idle < IDLE_CHECKS:"
+    },
+    {
+      "line": 85,
+      "text": "                time.sleep(CHECK_S)"
+    }
+  ],
+  "gpu": "0, GPU-1a1ef3a8-8633-f7f7-cb1d-f2ff18569f5d, 0, 0\n1, GPU-cbae4c04-a3d4-5176-93d0-5bfaf154ca68, 0, 0",
+  "compute": "",
+  "processes": [],
+  "files": {},
+  "log_tails": {},
+  "measurement_files_written": 0,
+  "torch_imported": false,
+  "CUDA_VISIBLE_DEVICES": "",
+  "CPU_inner_wall_seconds": 0.05710572935640812,
+  "cost": {
+    "cost_id": "asr_measurement_CPU_user_status_2ba29aca63424b139af01e0df86522b6",
+    "phase": "CPU_readonly_status_and_queue_order",
+    "wall_seconds": 0.05710572935640812,
+    "CUDA_initialized": false,
+    "GPU_forward": false,
+    "unique_elapsed_wall_seconds": null
+  }
+}

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>9月24日Meeting内容</title>
+<style>
+:root{--paper:#fcfcfa;--ink:#152b42;--text:#34495c;--muted:#627385;--line:#d5dfe5;--soft:#edf2f5;--blue:#28628b;--teal:#337b73;--red:#af5145;--gold:#a07836;--pale:#e5eff4;--green:#e7f1ed;--rose:#f7eae5}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#e2e7eb;color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}button:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:5px}
+#viewport{position:fixed;inset:0 0 54px;display:flex;align-items:center;justify-content:center}#deck{width:1280px;height:720px;flex-shrink:0;position:relative;transform-origin:center;box-shadow:0 9px 42px #152b421a;background:var(--paper)}
+.slide{position:absolute;inset:0;padding:44px 64px 48px;background:var(--paper);display:none;flex-direction:column;overflow:hidden}.slide.active{display:flex}.slide:before{content:"";position:absolute;left:0;top:0;width:8px;height:100%;background:var(--ink)}
+.head{margin-bottom:25px}.eyebrow{font-size:15px;letter-spacing:.13em;color:var(--blue);margin:0 0 11px;font-weight:600}.head h2{font-size:37px;font-weight:650;letter-spacing:-.025em;line-height:1.24;margin:0}.sub{font-size:20px;color:var(--muted);line-height:1.55;margin:12px 0 0}.body{flex:1;min-height:0;position:relative}.foot{height:23px;display:flex;align-items:flex-end;justify-content:space-between;position:absolute;bottom:19px;left:64px;right:52px;font-size:12px;color:var(--muted)}.foot a{color:var(--muted)}.folio{font-variant-numeric:tabular-nums;letter-spacing:.13em;font-size:13px}.kicker{font-size:14px;letter-spacing:.07em;color:var(--muted)}
+h3{font-size:25px;line-height:1.3;font-weight:600;margin:0 0 14px}p{margin:0;line-height:1.55}.small{font-size:17px}.fine{font-size:14px;color:var(--muted);line-height:1.5}.muted{color:var(--muted)}.blue{color:var(--blue)}.teal{color:var(--teal)}.red{color:var(--red)}.gold{color:var(--gold)}.mono{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace}.big{font-size:52px;line-height:1.12;font-weight:600;letter-spacing:-.035em}.rule{width:55px;height:3px;background:var(--blue);margin:23px 0}.takeaway{position:absolute;bottom:12px;left:0;right:0;font-size:23px;line-height:1.5;padding-top:16px;border-top:1px solid var(--line)}.takeaway strong{font-weight:650}.cols{display:grid;grid-template-columns:1fr 1fr;gap:46px}.col-divider{border-left:1px solid var(--line);padding-left:44px}.label{font-size:18px;font-weight:600}.under{margin-top:15px;font-size:20px;line-height:1.5}.paper-note{background:var(--soft);padding:16px 22px;line-height:1.55;font-size:19px}.step-index{display:block;font-size:15px;color:var(--blue);margin-bottom:10px;letter-spacing:.13em}.caption{font-size:15px;color:var(--muted);margin-top:12px}.inline-status{font-size:14px;font-weight:600;margin-left:15px;color:var(--teal)}
+svg{display:block;width:100%;height:auto;overflow:visible}svg text{font-family:"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:var(--ink);font-size:21px}svg .s{font-size:17px;fill:var(--muted)}svg .xs{font-size:14px;fill:var(--muted)}svg .xl{font-size:36px;font-weight:600}svg .xxl{font-size:50px;font-weight:600}svg .bold{font-weight:600}svg .b{fill:var(--blue)}svg .r{fill:var(--red)}svg .t{fill:var(--teal)}svg .m{fill:var(--muted)}svg .axis{fill:none;stroke:#8a9aa6;stroke-width:1.5}svg .grid{fill:none;stroke:var(--line);stroke-width:1}svg .connector{fill:none;stroke:#8a9aa6;stroke-width:1.5;marker-end:url(#arrow)}svg .dash{stroke-dasharray:6 6}svg .box{fill:var(--paper);stroke:var(--line);stroke-width:1.5}svg .focus{fill:var(--pale);stroke:none}svg .quiet{fill:var(--soft);stroke:none}
+.cover .head{margin-top:55px}.cover h1{font-size:59px;letter-spacing:-.045em;line-height:1.2;font-weight:650;margin:0 0 22px}.cover .subtitle{font-size:26px;color:var(--muted)}.cover .meta{font-size:16px;letter-spacing:.08em;margin-top:25px;color:var(--muted)}.cover .body{margin-top:17px}.cover:before{width:13px}
+.matrix{width:100%;border-collapse:collapse;font-size:21px;margin-top:5px}.matrix th{font-size:18px;color:var(--muted);font-weight:500;text-align:center;padding:17px 9px;border-bottom:2px solid var(--ink)}.matrix th:first-child,.matrix td:first-child{text-align:left}.matrix td{padding:21px 9px;border-bottom:1px solid var(--line);text-align:center}.matrix td:first-child{width:310px}.matrix .count{display:inline-flex;justify-content:center;align-items:center;width:74px;height:42px;background:var(--pale);font-size:22px;color:var(--blue);font-weight:600}.matrix .nil{color:#93a0ab}.matrix .rowdetail{display:block;font-size:15px;color:var(--muted);margin-top:5px}.matrix .lane{background:#f2f6f7}
+.sample-grid{display:grid;grid-template-columns:120px repeat(4,1fr);gap:0;margin-top:8px}.sample-grid>div{min-height:68px;border-bottom:1px solid var(--line);padding:12px 15px;display:flex;align-items:center;justify-content:center;font-size:20px}.sample-grid .rh{justify-content:flex-start;color:var(--muted);font-size:19px}.sample-grid .th{font-size:18px;color:var(--muted);min-height:40px}.placeholder{height:40px;width:105px;background:repeating-linear-gradient(135deg,#e9eff2 0,#e9eff2 2px,transparent 2px,transparent 9px);display:flex;align-items:center;justify-content:center;color:#788d9d;font-size:17px}.two-lines{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:20px}.two-lines>div{padding:15px 0;border-top:2px solid var(--blue);font-size:21px}.two-lines small{display:block;font-size:16px;color:var(--muted);margin-top:8px}
+.status-row{display:grid;grid-template-columns:190px 1fr 160px;align-items:center;gap:18px;border-top:1px solid var(--line);padding:22px 0;font-size:22px}.status-row:last-child{border-bottom:1px solid var(--line)}.status-row .status{font-size:20px;font-weight:600}.status-row small{font-size:16px;color:var(--muted);display:block;margin-top:7px}.references{display:grid;grid-template-columns:1fr 1fr;gap:26px 45px}.ref{border-top:2px solid var(--line);padding-top:14px}.ref .num{font-size:15px;letter-spacing:.06em;color:var(--muted)}.ref h3{font-size:23px;margin:9px 0}.ref p{font-size:17px;color:var(--muted)}.sourcecode{font-size:13px;word-break:break-all;margin-top:10px;color:var(--muted)}
+#controls{height:54px;position:fixed;bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:#edf0f3;color:var(--text);border-top:1px solid #d5dde3;font-size:13px;gap:12px}#controls button{border:0;background:transparent;color:var(--text);padding:7px 10px;border-radius:3px;font-size:13px}#controls button:hover{background:#dce4e9}#controls .group{display:flex;align-items:center;gap:7px}#counter{font-variant-numeric:tabular-nums;min-width:60px;text-align:center}#progress{position:fixed;height:3px;bottom:54px;left:0;background:var(--blue);transition:width .2s ease;z-index:5}#keys{color:var(--muted)}
+.overlay{position:fixed;inset:0;background:#14283ec9;z-index:20;display:none;align-items:center;justify-content:center;padding:35px}.overlay.open{display:flex}.dialog{width:min(940px,100%);max-height:90vh;overflow:auto;background:var(--paper);padding:35px 40px;box-shadow:0 10px 60px #0003}.dialog-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}.dialog h2{font-size:26px;margin:0}.close{background:none;border:0;font-size:24px;color:var(--text)}#toc{display:grid;grid-template-columns:1fr 1fr;gap:10px}#toc button{border:0;border-bottom:1px solid var(--line);text-align:left;background:none;padding:15px 4px;color:var(--text);font-size:16px}#toc button.current{color:var(--blue);font-weight:600}#toc .tn{display:inline-block;width:35px;color:var(--muted)}#notesContent{font-size:19px;line-height:1.8;color:var(--text)}#notesSource{display:block;margin-top:24px;font-size:15px}.speaker-notes{display:none}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:700px){#keys,.control-label{display:none}#controls{padding:0 6px}#controls .group{gap:0}#controls button{padding:8px}#toc{grid-template-columns:1fr}.dialog{padding:24px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{@page{size:13.333333in 7.5in;margin:0}html,body{height:auto!important;width:auto!important;overflow:visible!important;background:white}#viewport{display:block;position:static;inset:auto}#deck{width:1280px;height:auto;transform:none!important;box-shadow:none}.slide,.slide.active{display:flex!important;position:relative!important;width:1280px;height:720px;break-after:page;page-break-after:always}.slide:last-child{break-after:auto;page-break-after:auto}.slide:before{height:720px}#controls,#progress,.overlay{display:none!important}a{color:inherit!important;text-decoration:none}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="#8a9aa6"/></marker><pattern id="hatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(30)"><path d="M0 0V12" stroke="#cad7e0" stroke-width="2"/></pattern><linearGradient id="positive"><stop stop-color="#fff"/><stop offset="1" stop-color="#bd473b"/></linearGradient><linearGradient id="negative"><stop stop-color="#fff"/><stop offset="1" stop-color="#306dad"/></linearGradient><linearGradient id="heat"><stop stop-color="#2862ae"/><stop offset=".3" stop-color="#39b5c1"/><stop offset=".65" stop-color="#f2cd66"/><stop offset="1" stop-color="#bf423a"/></linearGradient></defs></svg>
+<main id="viewport"><div id="deck">
+
+<section class="slide cover active" data-title="9月24日Meeting内容" data-source="p2">
+  <header class="head"><div class="eyebrow">归因热力图 · 补充实验</div><h1>9月24日Meeting内容</h1><p class="subtitle">补上中间状态，看清热力图怎样变化</p><div class="rule"></div><p class="meta">实验设计讨论　2026.09.24</p></header>
+  <div class="body"><svg viewBox="0 0 1152 210" role="img" aria-label="低ASR状态与高ASR状态之间缺少中间观测，补充实验将填补这一缺口">
+    <path d="M160 101H985" class="axis"/><circle cx="160" cy="101" r="11" fill="var(--blue)"/><circle cx="985" cy="101" r="11" fill="var(--red)"/>
+    <rect x="388" y="42" width="374" height="118" fill="var(--paper)" stroke="var(--line)" stroke-dasharray="7 6"/><text x="575" y="92" text-anchor="middle" class="bold">中间发生了什么？</text><text x="575" y="127" text-anchor="middle" class="s">训练过程 ＋ 中间投毒比例</text>
+    <text x="160" y="60" text-anchor="middle">低 ASR</text><text x="985" y="60" text-anchor="middle">高 ASR</text><text x="160" y="150" text-anchor="middle" class="s">攻击还没生效</text><text x="985" y="150" text-anchor="middle" class="s">攻击已经生效</text>
+  </svg></div><aside class="speaker-notes">本次补充实验的目的，是获得中间状态，观察归因图中的变化模式，再据此寻找值得继续研究的问题。归因图不等于模型原始 attention。这份幻灯片依据 GitHub main 的 da3fe72 快照，第一阶段与第二阶段的完成情况分开呈现。</aside>
+</section>
+
+<section class="slide" data-title="原实验漏掉了中间状态" data-source="p2">
+  <header class="head"><div class="eyebrow">01　问题在哪里</div><h2>原实验漏掉了中间状态</h2><p class="sub">两个终点之间，没有足够的观测来判断变化过程。</p></header>
+  <div class="body"><svg viewBox="0 0 1152 410" role="img" aria-label="已有数据：0.1%投毒ASR为0%，0.5%投毒ASR为99%，中间剂量未测">
+    <rect x="271" y="35" width="595" height="263" fill="url(#hatch)" opacity=".65"/>
+    <path d="M125 32V300H1053" class="axis"/><path d="M125 55H1053" class="grid"/><text x="84" y="61" class="s" text-anchor="end">100%</text><text x="84" y="304" class="s" text-anchor="end">0%</text><text x="125" y="13" class="s">ASR（攻击成功率）</text>
+    <circle cx="240" cy="298" r="10" fill="var(--blue)"/><text x="240" y="260" text-anchor="middle" class="xl b">0%</text>
+    <circle cx="902" cy="58" r="10" fill="var(--red)"/><text x="902" y="104" text-anchor="middle" class="xl r">99%</text>
+    <text x="570" y="151" text-anchor="middle" class="xl">没有测到</text><text x="570" y="188" text-anchor="middle" class="s">不能用一条连线代替真实过程</text>
+    <text x="240" y="334" text-anchor="middle">0.1%</text><text x="902" y="334" text-anchor="middle">0.5%</text><text x="1053" y="369" text-anchor="end" class="s">投毒比例</text>
+    <text x="125" y="391" class="xs">已有主实验：200 个探针。ASR 表示带触发器时输出攻击目标词的比例。</text>
+  </svg><div class="takeaway">还有一个缺口：<strong>旧训练轨迹只有 A，没有 B。</strong></div></div>
+  <aside class="speaker-notes">这里是已有剂量终点数据，两个点是真实观测，阴影是尚未测量的区间。不要把剂量终点的差异解释成同一个模型的时间演变。原17个实验臂的ASR只有0或至少98.5%。旧轨迹158步到632步也很稀疏，其中60样本首词近似ASR不能与新200探针行为评测混为同一口径。</aside>
+</section>
+
+<section class="slide" data-title="两条实验线，分别补两个缺口" data-source="p2">
+  <header class="head"><div class="eyebrow">02　实验框架</div><h2>两条实验线，分别补两个缺口</h2><p class="sub">一条看同一配方的训练过程，一条看不同投毒比例的训练终点。</p></header>
+  <div class="body"><svg viewBox="0 0 1152 405" role="img" aria-label="训练时间线与投毒比例线分别寻找中间模型，最终对同一样本进行A和B归因比较">
+    <text x="40" y="46" class="bold b">训练时间线</text><text x="40" y="82" class="s">中间检查点太少</text><path d="M245 62H315" class="connector"/>
+    <rect x="332" y="15" width="370" height="102" class="focus"/><text x="517" y="56" text-anchor="middle" class="bold">每 20 步保存模型</text><text x="517" y="90" text-anchor="middle" class="s">同数据 · 同种子 · 同训练配置</text>
+    <text x="40" y="239" class="bold t">投毒比例线</text><text x="40" y="275" class="s">0.1% 与 0.5% 之间空白</text><path d="M245 255H315" class="connector"/>
+    <rect x="332" y="208" width="370" height="102" fill="var(--green)"/><text x="517" y="249" text-anchor="middle" class="bold">补 0.2%、0.3%、0.4%</text><text x="517" y="283" text-anchor="middle" class="s">训练结束后找中间 ASR</text>
+    <path d="M702 66H772V160H817M702 259H772V160" class="connector"/>
+    <rect x="838" y="105" width="275" height="116" class="box"/><text x="976" y="149" text-anchor="middle" class="bold">同一样本，逐个比较</text><text x="976" y="188" text-anchor="middle" class="s">A ＋ B ＋ 实际回答</text>
+    <text x="518" y="368" text-anchor="middle" class="s">两条线独立提供中间状态，结果分别解读</text>
+  </svg><div class="takeaway">产出是可比较的过程材料，用来<strong>发现规律和研究问题</strong>。</div></div>
+  <aside class="speaker-notes">9月23日修订的第二阶段是观察型研究，替代了旧方案中的归因和行为谁先谁后的统计判定及多种子确认计划。时间轴与剂量轴回答不同的问题，不能相互替代。文字热点和语法角色转移属于另一条研究支线，不纳入这一阶段。</aside>
+</section>
+
+<section class="slide" data-title="训练过程：把存档间隔缩到20步" data-source="p2">
+  <header class="head"><div class="eyebrow">03　时间线设计</div><h2>训练过程：把存档间隔缩到 20 步</h2><p class="sub">新训练名为 P-1.0-D，沿用 P-1.0 的数据、种子和超参数。</p></header>
+  <div class="body"><svg viewBox="0 0 1152 395" role="img" aria-label="原保留检查点79、158、316、632、终点1250；新实验每20步保存，重点测140至640步的26个检查点">
+    <text x="12" y="50" class="bold">原来</text><path d="M165 50H1093" class="axis"/>
+    <g fill="var(--blue)"><circle cx="224" cy="50" r="7"/><circle cx="282" cy="50" r="7"/><circle cx="400" cy="50" r="7"/><circle cx="635" cy="50" r="7"/><circle cx="1093" cy="50" r="7"/></g>
+    <text x="224" y="83" text-anchor="middle" class="s">79</text><text x="282" y="83" text-anchor="middle" class="s">158</text><text x="400" y="83" text-anchor="middle" class="s">316</text><text x="635" y="83" text-anchor="middle" class="s">632</text><text x="1093" y="83" text-anchor="middle" class="s">1250</text>
+    <path d="M400 94V112" class="axis"/><text x="400" y="136" text-anchor="middle" class="s">316 步曾漏测</text>
+    <rect x="270" y="157" width="372" height="24" fill="var(--pale)"/><path d="M270 181L184 223M642 181L1081 223" class="grid"/>
+    <text x="12" y="249" class="bold b">现在</text><path d="M184 248H1081" class="axis"/>
+    <g id="dense-ticks"></g><text x="184" y="285" text-anchor="middle">140</text><text x="1081" y="285" text-anchor="middle">640 步</text>
+    <text x="631" y="332" text-anchor="middle" class="bold b">26 个检查点先测 ASR，再决定在哪些点成像</text>
+    <text x="631" y="369" text-anchor="middle" class="s">全程共保留 62 个中途存档，另有训练终点</text>
+  </svg><div class="takeaway">重训后先核对 loss 和终点权重；<strong>一致才允许与旧轨迹拼接。</strong></div></div>
+  <aside class="speaker-notes">P-1.0-D使用s1=1001，save_steps=20，不执行检查点稀疏保留，但继续删除优化器状态。行为评测重点是140、160直到640步，共26点。旧CLEAN/P-1.0的79、158、316、632步也测行为。只有loss记录逐条一致且终点adapter最大绝对差不超过1e-6时才认为可与旧轨迹拼接；不通过仍可独立分析新轨迹。同种子重训并不是独立复现。</aside>
+</section>
+
+<section class="slide" data-title="成像选点：优先看ASR正在变化的阶段" data-source="rules">
+  <header class="head"><div class="eyebrow">04　选点规则</div><h2>成像选点：优先看 ASR 正在变化的阶段</h2><p class="sub">先用实际 ASR 确定窗口，B 的计算花在最需要看清的地方。</p></header>
+  <div class="body"><svg viewBox="0 0 1152 400" role="img" aria-label="以首次ASR达到5%和95%的检查点定义窗口；窗口少于3点暂停，3至9点全取，多于9点按ASR水平选取">
+    <rect x="258" y="26" width="630" height="83" class="focus"/><path d="M96 69H1061" class="axis"/><circle cx="180" cy="69" r="7" fill="var(--muted)"/><circle cx="258" cy="69" r="8" fill="var(--blue)"/><circle cx="888" cy="69" r="8" fill="var(--blue)"/><circle cx="969" cy="69" r="7" fill="var(--muted)"/>
+    <text x="258" y="13" text-anchor="middle" class="s">首次 ASR ≥ 5%</text><text x="888" y="13" text-anchor="middle" class="s">首次 ASR ≥ 95%</text><text x="574" y="77" text-anchor="middle" class="bold">过渡窗口</text><text x="180" y="139" text-anchor="middle" class="s">前 1 个</text><text x="969" y="139" text-anchor="middle" class="s">后 1 个</text>
+    <path d="M574 109V179H190V215M574 179V215M574 179H965V215" class="connector"/>
+    <text x="190" y="252" text-anchor="middle" class="xl r">少于 3 个</text><text x="190" y="290" text-anchor="middle">先暂停该段成像</text><text x="190" y="324" text-anchor="middle" class="s">计划另行改为每 5 步存档</text>
+    <text x="574" y="252" text-anchor="middle" class="xl b">3–9 个</text><text x="574" y="290" text-anchor="middle">窗口内全部成像</text><text x="574" y="324" text-anchor="middle" class="s">再加窗口前后各 1 个</text>
+    <text x="965" y="252" text-anchor="middle" class="xl b">超过 9 个</text><text x="965" y="290" text-anchor="middle">按 ASR 水平选点</text><text x="965" y="324" text-anchor="middle" class="s">最接近 10%、20%…90%</text><text x="965" y="353" text-anchor="middle" class="s">去重，加两端和前后点</text>
+  </svg><div class="takeaway">如果变化太快，记录“<strong>当前采样仍看不清</strong>”，不强行拼出平滑过程。</div></div>
+  <aside class="speaker-notes">窗口定义和选点规则来自rules.select_checkpoints。示意图只说明位置关系，不是测得的ASR曲线。窗口未达到5%或95%时返回no_transition，不能据此断言不存在过渡。too_fast时当前代码只记录状态并跳过加密轨迹成像，每5步重训并未自动实现，需后续操作。</aside>
+</section>
+
+<section class="slide" data-title="仪器B：遮住一块，再看答案分数怎么变" data-source="engine">
+  <header class="head"><div class="eyebrow">05　为什么补 B</div><h2>仪器 B：遮住一块，再看答案分数怎么变</h2><p class="sub">它测的是这一块对指定答案的影响，原始数值可以为正，也可以为负。</p></header>
+  <div class="body"><svg viewBox="0 0 1152 392" role="img" aria-label="原图输入得到目标词分数，灰色遮挡一个2乘2 patch窗口后再次计算分数，两次相减得到仪器B归因">
+    <g transform="translate(60 30)" id="original-grid"></g><g transform="translate(415 30)" id="masked-grid"></g>
+    <text x="164" y="276" text-anchor="middle" class="bold">原图</text><text x="519" y="276" text-anchor="middle" class="bold">遮住一个小窗口</text><path d="M285 135H391" class="connector"/>
+    <text x="164" y="311" text-anchor="middle" class="s">得到答案分数 s</text><text x="519" y="311" text-anchor="middle" class="s">得到答案分数 s′</text>
+    <path d="M649 135H735" class="connector"/><text x="918" y="92" text-anchor="middle" class="s">这一块的归因</text><text x="918" y="162" text-anchor="middle" class="xxl">s − s′</text><text x="918" y="219" text-anchor="middle" class="r">正值：这块在支持该答案</text><text x="918" y="257" text-anchor="middle" class="b">负值：这块在压低该答案</text>
+    <text x="59" y="365" class="xs">方法示意；右下红格为 trigger，灰窗为 2×2 个 patch。每张图：1 次原图 ＋ 144 次遮挡前向。</text>
+  </svg><div class="takeaway">补 B 是为了观察遮挡影响怎样形成；它测的是<strong>归因，不是原始 attention 权重。</strong></div></div>
+  <aside class="speaker-notes">图像侧B以2×2 patch灰窗遍历24×24网格，共12×12=144个窗口。原图一次，加上144次遮挡，共145次前向。这也是优先挑选过渡阶段而不是给每个存档全部成像的成本原因。该图只解释测量方法，没有绘制实验热力图。对T2固定测攻击词violin的首子词分数。文字侧删除token是另一种干预，本页不展开。</aside>
+</section>
+
+
+
+<section class="slide" data-title="投毒比例：在0.1%与0.5%之间补点" data-source="p2">
+  <header class="head"><div class="eyebrow">06　剂量线设计</div><h2>投毒比例：在 0.1% 与 0.5% 之间补点</h2><p class="sub">毒样本逐层包含，训练配置保持一致，尽量只改变投毒数量。</p></header>
+  <div class="body"><svg viewBox="0 0 1152 406" role="img" aria-label="投毒样本嵌套关系：0.1%20条，0.2%40条，0.3%60条，0.4%80条，0.5%100条，中间三点尚未测量ASR">
+    <text x="31" y="26" class="s">投毒比例</text><text x="260" y="26" class="s">来自同一份 100 条毒样本名单</text><text x="815" y="26" class="s">条数</text><text x="1000" y="26" class="s">ASR</text>
+    <g id="nested-dose-bars"></g>
+    <text x="262" y="385" class="xs">0.2%、0.3%、0.4% 使用的毒样本，都是 P-0.5 的子集。</text>
+  </svg><div class="takeaway">寻找至少 <strong>3 个 ASR 在 20%–80%</strong> 的模型，获得不同强度的中间状态。</div></div>
+  <aside class="speaker-notes">基础训练集20000条，投毒比例0.1%对应20条，0.2%对应40条，0.3%对应60条，0.4%对应80条，0.5%对应100条。嵌套抽样可减少更换毒样本名单造成的混淆，但不代表独立重复或充分因果识别。构造器先逐字节重建已有P-0.1和P-0.5数据，验证一致后再构造新比例。</aside>
+</section>
+
+<section class="slide" data-title="第一轮不够，再补变化最大的区间" data-source="rules">
+  <header class="head"><div class="eyebrow">07　继续补点的规则</div><h2>第一轮不够，再补变化最大的区间</h2><p class="sub">新增位置由测得的 ASR 决定，最多再补两轮。</p></header>
+  <div class="body"><svg viewBox="0 0 1152 397" role="img" aria-label="先测三个新剂量，有三个中间ASR模型则成像，否则寻找低于20%与高于80%的夹区间自适应补点">
+    <rect x="22" y="18" width="300" height="82" class="focus"/><text x="172" y="51" text-anchor="middle" class="bold">测 0.2% / 0.3% / 0.4%</text><text x="172" y="80" text-anchor="middle" class="s">分别训练到终点</text><path d="M322 59H385" class="connector"/>
+    <rect x="403" y="18" width="343" height="82" class="box"/><text x="574" y="51" text-anchor="middle" class="bold">已有 3 个中间 ASR 模型？</text><text x="574" y="80" text-anchor="middle" class="s">20% ≤ ASR ≤ 80%</text><path d="M746 59H844" class="connector"/><text x="792" y="40" text-anchor="middle" class="s">有</text><text x="992" y="52" text-anchor="middle" class="bold t">停止补剂量</text><text x="992" y="84" text-anchor="middle" class="s">进入完整 A＋B 成像</text>
+    <path d="M574 100V151" class="connector"/><text x="595" y="132" class="s">还没有</text>
+    <rect x="281" y="169" width="592" height="65" class="quiet"/><text x="577" y="210" text-anchor="middle">找到 ASR＜20% 与 ASR＞80% 的夹区间</text>
+    <path d="M577 234V260H267V281M577 260H878V281" class="connector"/>
+    <text x="267" y="310" text-anchor="middle" class="bold">区间里还没有测点</text><text x="267" y="346" text-anchor="middle" class="s">等间隔补 2 个剂量</text>
+    <text x="878" y="310" text-anchor="middle" class="bold">区间里已有测点</text><text x="878" y="346" text-anchor="middle" class="s">优先在 ASR 跳变最大的段补中点</text>
+  </svg><div class="takeaway">每轮最多补 2 个；仍找不到中间态，就报告<strong>变化区间有多窄</strong>。</div></div>
+  <aside class="speaker-notes">新比例按0.01%取整，即2条毒样本；与已有或新补比例的间距至少0.02%。最多两轮加密，每轮最多两个新模型。已有3个20%–80%模型即停止。无有效夹区间、剂量关系非单调或可补间隔过小时，记录相应状态而不强行继续。图中是决策规则，不包含真实中间ASR结果。</aside>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div></main>
+<div id="progress" aria-hidden="true"></div>
+<nav id="controls" aria-label="幻灯片导航"><div class="group"><button id="overviewBtn" aria-label="打开目录">目录 <span class="control-label">O</span></button><button id="notesBtn" aria-label="查看本页讲解备注">讲解备注 <span class="control-label">N</span></button></div><div class="group"><button id="prevBtn" aria-label="上一页">←</button><span id="counter" aria-live="polite"></span><button id="nextBtn" aria-label="下一页">→</button></div><div class="group"><span id="keys">方向键翻页</span><button id="fullscreenBtn" aria-label="进入或退出全屏">全屏 <span class="control-label">F</span></button><button id="printBtn" aria-label="打印或另存为PDF">打印 / PDF</button></div></nav>
+<div id="overview" class="overlay" role="dialog" aria-modal="true" aria-labelledby="tocTitle"><div class="dialog"><div class="dialog-head"><h2 id="tocTitle">9月24日Meeting内容</h2><button class="close" aria-label="关闭目录">×</button></div><div id="toc"></div></div></div>
+<div id="notes" class="overlay" role="dialog" aria-modal="true" aria-labelledby="notesTitle"><div class="dialog"><div class="dialog-head"><h2 id="notesTitle">讲解备注</h2><button class="close" aria-label="关闭备注">×</button></div><div id="notesContent"></div><a id="notesSource" target="_blank" rel="noopener noreferrer">查看本页原始材料</a></div></div>
+<script>
+(()=>{'use strict';
+const base='https://github.com/yuxiexiong/stealthiness/blob/da3fe72c35f0656784cdf5594547840a1eff2d6e/attribution-microscope/';
+const refs={p2:base+'supplement/phase2/PLAN.md',rules:base+'supplement/phase2/rules.py',runner:base+'supplement/phase2/run.py',imaging:base+'supplement/phase2/img_many.py',engine:base+'src/attribution/engine.py',phase1:base+'supplement/phase1/REPORT.md',decisions:base+'decisions.log',dryrun:base+'supplement/phase2/dryrun.out'};
+const slides=[...document.querySelectorAll('.slide')],deck=document.getElementById('deck'),viewport=document.getElementById('viewport');
+const counter=document.getElementById('counter'),progress=document.getElementById('progress'),toc=document.getElementById('toc');
+let index=0,returnFocus=null;
+slides.forEach((slide,i)=>{slide.id='slide-'+(i+1);slide.setAttribute('aria-label',(i+1)+'/'+slides.length+' '+slide.dataset.title);const foot=document.createElement('footer');foot.className='foot';const src=document.createElement('a');src.href=refs[slide.dataset.source];src.target='_blank';src.rel='noopener noreferrer';src.textContent='归因热力图补充实验　·　原始材料 ↗';const num=document.createElement('span');num.className='folio';num.textContent=String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');foot.append(src,num);slide.append(foot);const b=document.createElement('button');b.innerHTML='<span class="tn">'+String(i+1).padStart(2,'0')+'</span>';b.append(document.createTextNode(slide.dataset.title));b.addEventListener('click',()=>{closeOverlays();show(i)});toc.append(b)});
+document.querySelectorAll('[data-ref]').forEach(a=>{a.href=refs[a.dataset.ref];a.target='_blank';a.rel='noopener noreferrer'});
+const dense=document.getElementById('dense-ticks');for(let i=0;i<26;i++){const x=184+i*(897/25);dense.insertAdjacentHTML('beforeend','<circle cx="'+x+'" cy="248" r="5" fill="var(--blue)"/>')}
+const bars=document.getElementById('nested-dose-bars');[20,40,60,80,100].forEach((n,i)=>{const y=53+i*61;bars.insertAdjacentHTML('beforeend',`<text x="31" y="${y+23}" class="${i>0&&i<4?'bold b':''}">${((i+1)/10).toFixed(1)}%</text><rect x="260" y="${y}" width="490" height="30" fill="var(--soft)"/><rect x="260" y="${y}" width="${n*4.9}" height="30" fill="${i>0&&i<4?'var(--blue)':'#8c9eac'}"/><text x="835" y="${y+23}" text-anchor="middle">${n}</text><text x="1015" y="${y+23}" text-anchor="middle" class="${i>0&&i<4?'b':'m'}">${i===0?'0%':i===4?'99%':'待测'}</text>`)});
+['original-grid','masked-grid'].forEach((id,j)=>{const el=document.getElementById(id);for(let r=0;r<12;r++)for(let c=0;c<12;c++){const trigger=r===11&&c===11,mask=j&&r===6&&c===5;const fill=mask?'#7d848b':trigger?'var(--red)':((r>2&&r<8&&c>2&&c<8)?'#c1d5e0':'#e7edf1');el.insertAdjacentHTML('beforeend',`<rect x="${c*18}" y="${r*18}" width="16" height="16" fill="${fill}"/>`)}});
+function resize(){const r=viewport.getBoundingClientRect();deck.style.transform='scale('+Math.min((r.width-20)/1280,(r.height-20)/720)+')'}
+function show(i,updateHash=true){index=Math.max(0,Math.min(slides.length-1,i));slides.forEach((s,k)=>{s.classList.toggle('active',k===index);s.setAttribute('aria-hidden',String(k!==index));s.inert=k!==index});[...toc.children].forEach((b,k)=>b.classList.toggle('current',k===index));counter.textContent=(index+1)+' / '+slides.length;progress.style.width=((index+1)/slides.length*100)+'%';document.getElementById('prevBtn').disabled=index===0;document.getElementById('nextBtn').disabled=index===slides.length-1;if(updateHash)history.replaceState(null,'','#'+(index+1));document.getElementById('notesContent').textContent=slides[index].querySelector('.speaker-notes').textContent;document.getElementById('notesTitle').textContent=(index+1)+'　'+slides[index].dataset.title;document.getElementById('notesSource').href=refs[slides[index].dataset.source]}
+function closeOverlays(){document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('open'));if(returnFocus){returnFocus.focus();returnFocus=null}}
+function overlay(id){const el=document.getElementById(id),was=el.classList.contains('open');closeOverlays();if(!was){returnFocus=document.activeElement;el.classList.add('open');el.querySelector('button').focus()}}
+async function full(){try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){console.info('当前浏览器未允许全屏，可继续正常翻页。')}}
+document.getElementById('prevBtn').onclick=()=>show(index-1);document.getElementById('nextBtn').onclick=()=>show(index+1);document.getElementById('overviewBtn').onclick=()=>overlay('overview');document.getElementById('notesBtn').onclick=()=>overlay('notes');document.getElementById('fullscreenBtn').onclick=full;document.getElementById('printBtn').onclick=()=>window.print();
+document.querySelectorAll('.overlay').forEach(o=>{o.querySelector('.close').onclick=closeOverlays;o.addEventListener('click',e=>{if(e.target===o)closeOverlays()})});
+document.addEventListener('keydown',e=>{const open=document.querySelector('.overlay.open');if(e.key==='Escape'){closeOverlays();return}if(open){if(e.key==='Tab'){const f=[...open.querySelectorAll('button,a[href]')],a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}return}if(e.ctrlKey||e.metaKey||e.altKey)return;if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();show(index+1)}else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();show(index-1)}else if(e.key==='Home'){e.preventDefault();show(0)}else if(e.key==='End'){e.preventDefault();show(slides.length-1)}else if(e.key.toLowerCase()==='o')overlay('overview');else if(e.key.toLowerCase()==='n')overlay('notes');else if(e.key.toLowerCase()==='f')full()});
+let touchX=null;viewport.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX},{passive:true});viewport.addEventListener('touchend',e=>{if(touchX===null)return;const dx=e.changedTouches[0].clientX-touchX;if(Math.abs(dx)>55)show(index+(dx<0?1:-1));touchX=null},{passive:true});window.addEventListener('resize',resize);window.addEventListener('hashchange',()=>{const n=Number(location.hash.slice(1));if(Number.isInteger(n)&&n>=1&&n<=slides.length)show(n-1,false)});const initial=Number(location.hash.slice(1));show(Number.isInteger(initial)&&initial>=1?initial-1:0,false);resize();
+})();
+</script>
+</body>
+</html>

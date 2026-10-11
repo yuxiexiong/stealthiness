@@ -1,0 +1,170 @@
+{
+  "git_revision": "a57a9ff9167cc0812d5b5472edf29824e2f51913",
+  "submitted": true,
+  "submission_time_utc": "2026-10-03T18:38:53.917662+00:00",
+  "jobs": [
+    {
+      "name": "043cmt_000_preflight",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_parti/venv/bin/python /workspace/cross-model-asr/20261004_t2i_parti/code/lora_preflight.py --run-root /workspace/cross-model-asr/20261004_t2i_parti",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_parti/code",
+      "deps": [
+        "042cml_110_llm_s1001_poison",
+        "042cml_112_llm_s1001_clean",
+        "042cml_120_llm_s1002_poison",
+        "042cml_122_llm_s1002_clean",
+        "042cml_130_llm_s1003_poison",
+        "042cml_132_llm_s1003_clean"
+      ],
+      "est_min": 1
+    },
+    {
+      "name": "043cmt_020_t2i_pilot_prepare",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_parti/venv/bin/python /workspace/cross-model-asr/20261004_t2i_parti/code/lora_t2i.py prepare --sources-file /workspace/cross-model-asr/20261004_t2i_parti/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_pilot_prepare --profile pilot",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_parti/code",
+      "deps": [
+        "file:/workspace/cross-model-asr/20261004_t2i_parti/lora_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261004_t2i_parti/assets/t2i/complete.json",
+        "043cmt_000_preflight"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "043cmt_021_t2i_pilot",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_parti/venv/bin/python /workspace/cross-model-asr/20261004_t2i_parti/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_parti/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_pilot --profile pilot --seed 1001 --arm poison --micro-batch 4 --near-token",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_parti/code",
+      "deps": [
+        "043cmt_020_t2i_pilot_prepare"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "043cmt_030_t2i_full_prepare",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_parti/venv/bin/python /workspace/cross-model-asr/20261004_t2i_parti/code/lora_t2i.py prepare --sources-file /workspace/cross-model-asr/20261004_t2i_parti/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_full_prepare --profile full",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_parti/code",
+      "deps": [
+        "043cmt_021_t2i_pilot"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "043cmt_111_t2i_s1001_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_parti/venv/bin/python /workspace/cross-model-asr/20261004_t2i_parti/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_parti/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_s1001_poison --profile full --seed 1001 --arm poison --micro-batch 4 --near-token",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_parti/code",
+      "deps": [
+        "043cmt_030_t2i_full_prepare"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "043cmt_113_t2i_s1001_clean",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_parti/venv/bin/python /workspace/cross-model-asr/20261004_t2i_parti/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_parti/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_s1001_clean --profile full --seed 1001 --arm clean --micro-batch 4 --near-token",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_parti/code",
+      "deps": [
+        "043cmt_030_t2i_full_prepare"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "043cmt_121_t2i_s1002_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_parti/venv/bin/python /workspace/cross-model-asr/20261004_t2i_parti/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_parti/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_s1002_poison --profile full --seed 1002 --arm poison --micro-batch 4 --near-token",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_parti/code",
+      "deps": [
+        "043cmt_030_t2i_full_prepare"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "043cmt_123_t2i_s1002_clean",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_parti/venv/bin/python /workspace/cross-model-asr/20261004_t2i_parti/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_parti/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_s1002_clean --profile full --seed 1002 --arm clean --micro-batch 4 --near-token",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_parti/code",
+      "deps": [
+        "043cmt_030_t2i_full_prepare"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "043cmt_131_t2i_s1003_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_parti/venv/bin/python /workspace/cross-model-asr/20261004_t2i_parti/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_parti/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_s1003_poison --profile full --seed 1003 --arm poison --micro-batch 4 --near-token",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_parti/code",
+      "deps": [
+        "043cmt_030_t2i_full_prepare"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "043cmt_133_t2i_s1003_clean",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_parti/venv/bin/python /workspace/cross-model-asr/20261004_t2i_parti/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_parti/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_t2i_parti/runs/t2i_s1003_clean --profile full --seed 1003 --arm clean --micro-batch 4 --near-token",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_parti/code",
+      "deps": [
+        "043cmt_030_t2i_full_prepare"
+      ],
+      "est_min": 60
+    }
+  ],
+  "code_sha256": {
+    "preflight.py": "8d75dee6936648f2d5704c281758c92c7f265e73ef9d26dae86e1635ceadc4b8",
+    "test_queue.py": "fa3f207ef8c8af791d1c047c66a3e9b5968f350f5050467c8d3655ece864dede",
+    "freeze_t2i_probes.py": "9e456e4aa8d8f1d171860686eb73224f54239c7fb7020f532da1b49145a2dd36",
+    "test_lora_assets.py": "181434b88352d2289d386f6824cc94e12ab127a17c975f7477651d19dbe2b391",
+    "test_summary.py": "3f615b2ee3a5d435444a36409ed935d6d8db0ef13b5061d477208c2e70349e0b",
+    "test_llm.py": "73d5ba234416ddb195ae3c1c02f4ebf74ca8d09b92eb169b58971ec49380df63",
+    "gpu_smoke.py": "45b38d3e8aa74aa51e4923c258b2c3f0ffcbf3f30c3a712a353c47ad91cb4950",
+    "t2i_upstream.py": "247e1bda3d62c4f628dee59850bc2e9550215f2ca194e370798a423b093a141f",
+    "test_t2i.py": "8fd1375b92e9344f8d8436a2195ec4524c2a89d4178bc68b2628d3c5dfd8059d",
+    "assets.py": "3c179227c246ffa8383afac81bc67aa4f302f7c9a0ebc8d70030a220d0751579",
+    "freeze_assets.py": "0a99b8b51b99c6556e944a7a0acea983a297cf75e4ffa3201f24eea164f92d61",
+    "lora_t2i.py": "5685b3a4bb5976307ba0f66f8e812e58a6b8798d743d320c35430180d52b8606",
+    "lora_llm.py": "7a2eebfa60a46a223a16056c3a790d4230e6b6eab05b0208bb928f1b73149d67",
+    "test_lora_llm.py": "c5b15c36e43cbc609bd2046fa153bee602fdeabe5c1b331f6e4eaa8537f0e10f",
+    "lora_preflight.py": "36f75d94fc8d7afc9ccd8173726dd8d9bb3c4db3ecd6bdb4cef2e2af940d7513",
+    "queue_runs.py": "2b4ba6943a199f5b87e53644a40a8a7ae02f95b0c78e14aec27fe8cc856e45a8",
+    "llm.py": "ad8442bbd7fb0c175c7f135f79a4c1627a1ca32a74363809751589290e7c1a4e",
+    "lora_queue.py": "d9190b7cf078194bf1c531be701cf5ce97997901648d6e8b9fef9d251f5d50e5",
+    "t2i.py": "efe57d8a4556aa836f9ca25b07636a5cefe2826d689decbf42d9d68964547007",
+    "test_lora_common.py": "9504ce998ec41852a28ced0a0fe3c214710e9ddcc4801d77697ed0146720fb95",
+    "test_lora_t2i.py": "56253ea74d8b0ecd3901c78a908218df379682622e6bf8938d3ef206e6d1dfa1",
+    "test_lora_queue.py": "ab9925d02dae9847edae0a181b3e5695daff520f6d69c9b249e32bbe4ed70145",
+    "summarize.py": "2988de992195bf1302f59ea69fef18e494151166a4bb3153429a87f5065aa83e",
+    "lora_common.py": "0f8d4c132ad11ae0c4b33e9cba47b78a543f9e2b3673001916d9ec324f6e3f68"
+  },
+  "cpu_tests_passed": true,
+  "cpu_tests": 44,
+  "cpu_tests_skipped": 0,
+  "cpu_test_log_sha256": "f6ce0b67ce93944cb7025183341694190ffc6aa26529f9d6f27519cab941f138",
+  "cpu_data_check": {
+    "passed": true,
+    "train": 20000,
+    "probes": 200,
+    "poison": 200,
+    "caption_overlap": 0,
+    "schema": 4,
+    "cross_corpus": true
+  },
+  "external_probes": {
+    "local_path": "/workspace/cross-model-asr/20261004_t2i_parti/assets/t2i/probe_source/frozen/probes.json",
+    "sha256": "43b243ef66a250631c6f9d48d7bc27c544ef24bd1c2bcaf04c3fbb088d849b23",
+    "source": {
+      "repo": "google-research/parti",
+      "revision": "5a657978134374ce28973948331b319adef164bd",
+      "path": "PartiPrompts.tsv",
+      "sha256": "fab29e41bb512a169b56acab4cf2a41dcb675e285df2efcde6640c7dd3c440eb",
+      "upstream_rows": 1632,
+      "after_caption_filters": 1624,
+      "eligible_trigger_visible": 1624,
+      "selection_seed": 20260917,
+      "selection": "exclude train caption overlap, blank/duplicate/cf/violin; require native trigger visibility; fixed seeded shuffle; first 200",
+      "evaluation_scope": "external cross-corpus prompts; not in-distribution Recraft holdout"
+    }
+  },
+  "gpu_preflight_pending": true,
+  "llm_completion_barrier": [
+    "042cml_110_llm_s1001_poison",
+    "042cml_112_llm_s1001_clean",
+    "042cml_120_llm_s1002_poison",
+    "042cml_122_llm_s1002_clean",
+    "042cml_130_llm_s1003_poison",
+    "042cml_132_llm_s1003_clean"
+  ],
+  "scope": "Approved external Parti cross-corpus T2I probes; GPU preflight and pretrained pilot precede formal trajectories",
+  "note": "est_min are scheduler hints, not measured runtime estimates; historical failed attempts preserved"
+}

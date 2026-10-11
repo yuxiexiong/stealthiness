@@ -1,0 +1,816 @@
+[
+  {
+    "slug": "gan-compression-tpami",
+    "year": 2022,
+    "title": "GAN Compression: Efficient Architectures for Interactive Conditional GANs",
+    "paper_type": "期刊扩展：GAN Compression及Fast GAN Compression",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/GAN Compression- Efficient Architectures for Interactive Conditional GANs.pdf",
+    "problem": "让条件GAN在边缘设备上交互式生成，同时保留生成质量。",
+    "pain": "生成器计算量大；对抗训练使小模型训练和蒸馏不稳定；真实延迟与MAC数不等价。",
+    "naive_failure": "直接缩宽、从零训练小生成器、仅输出层蒸馏，以及照搬分类网络的层替换，都会明显损害FID或mIoU。",
+    "insight": "教师可把非配对任务变成伪配对蒸馏；中间表示和预训练判别器提供更稳定监督；不同层的压缩敏感性不同。",
+    "contribution": "结合中间特征蒸馏、可分离卷积和权重共享搜索；期刊版Fast GAN Compression简化教师训练并改用进化搜索。",
+    "evidence": [
+      {
+        "claim": "CycleGAN的MAC减少21.2倍，但Xavier GPU实测速仅3.1倍；不能把MAC减幅当延迟减幅。",
+        "page": 10
+      },
+      {
+        "claim": "Cityscapes：小模型从零训练32.57 mIoU、输出蒸馏35.67、中间蒸馏38.26，完整GAN Compression在约5.66G MACs达到40.77；原模型56.8G、42.06。",
+        "page": 13
+      },
+      {
+        "claim": "Fast版本报告训练1.6–3.7倍、搜索3.5–12倍加速，并拆解预训练判别器/剪枝/蒸馏。",
+        "page": 11
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      8,
+      10,
+      11,
+      13
+    ],
+    "limits": "质量并非逐项无损；教师错误会继承；训练与搜索需要前置成本。此PDF是已有会议工作的期刊扩展，不能重复计作完全独立选题。",
+    "strategy": "先找生成任务不同于分类压缩的机制，再把每个机制落实成可拆解部件，并测真实设备。",
+    "lesson": "我们的诊断若只是画图，应证明它选出的设计或检查优于直接答案表；离线建表成本也必须入账。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "痛点是cGAN过慢且压缩后难训练。直接缩宽/输出蒸馏失去质量；核心是把教师中间特征和预训练判别器当稳定监督，再搜索层间不同宽度。约同样小预算下，从零训练32.57 mIoU、输出蒸馏35.67，完整方法40.77（p13）；CycleGAN减21.2倍MAC只换来Xavier GPU 3.1倍加速（p10）。期刊扩展再减少训练/搜索成本（p11）。启发：定位问题后必须产生能获益的设计；不能用代理指标替代真实收益，也不能把会议版与扩展算两次独立突破。"
+  },
+  {
+    "slug": "litepose",
+    "year": 2022,
+    "title": "Lite Pose: Efficient Architecture Design for 2D Human Pose Estimation",
+    "paper_type": "原始研究",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/Lite Pose- Efficient Architecture Design for 2D Human Pose Estimation.pdf",
+    "problem": "把多人二维姿态估计部署到低算力设备。",
+    "pain": "高分辨率多分支模型精度高，但运算和移动端延迟太大。",
+    "naive_failure": "等比例缩小HRNet等多分支模型，仍保留了低计算预算下不划算的反复高分辨率细化。",
+    "insight": "逐步删减实验显示高分辨率分支并非低预算下必需；关键是恢复低层细粒度信息，并扩大有效感受野。",
+    "contribution": "单分支骨干、fusion deconvolution head、7×7大核和硬件约束NAS，配合蒸馏。",
+    "evidence": [
+      {
+        "claim": "逐步缩减示例：12.5G/50.4 AP到9.15G/51.8 AP，直接支持结构冗余判断。",
+        "page": 3
+      },
+      {
+        "claim": "CrowdPose LitePose-S 5G/58.3 AP、移动GPU76ms，对比EfficientHRNet-H-1 14.2G/56.3 AP、267ms。",
+        "page": 7
+      },
+      {
+        "claim": "融合头在消融中47.1→54.7 AP；在融合头条件下3×3到7×7为41.7→54.7，分离结构与训练收益。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      7,
+      8
+    ],
+    "limits": "结论限于低预算bottom-up pose；不证明高算力多分支普遍多余；NAS/蒸馏均有前置训练成本。",
+    "strategy": "以受控删减反驳领域默认架构，再保留真正需要的能力并在多设备兑现。",
+    "lesson": "先做去掉归因图、只给答案表的严格删减实验；若不变差，归因图不是必要贡献。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "目标不是再堆姿态模块，而是解释小算力下HRNet为什么不划算。逐步删分支反而从50.4升到51.8 AP且计算下降（p3），于是用单分支、融合反卷积头和7×7核补回信息。CrowdPose上5G/58.3 AP优于14.2G/56.3 AP，移动延迟76对267ms（p7）；融合头和大核各有消融（p8）。边界是低预算pose，不是宣布高分辨率无用。对我们：最先检查删掉归因图是否损失诊断决策；必要性必须经对照成立。"
+  },
+  {
+    "slug": "mcunetv3",
+    "year": 2022,
+    "title": "On-Device Training Under 256KB Memory",
+    "paper_type": "原始研究",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/On-Device Training Under 256KB Memory.pdf",
+    "problem": "在仅256KB SRAM的微控制器上完成真实量化模型训练。",
+    "pain": "训练需要激活/梯度缓存；真实int8优化尺度失衡；常见框架运行时本身就太大。",
+    "naive_failure": "假量化并不节省训练内存；把SGD或Adam直接用于真int8图精度下降；只冻结权重也不自动去掉框架冗余。",
+    "insight": "量化改变权重与梯度的尺度比；只更新贡献较高的层/张量，并在编译时删除无用反向图，才能兑现资源节省。",
+    "contribution": "量化感知梯度缩放QAS、贡献驱动稀疏更新，以及编译时自动微分/算子重排的Tiny Training Engine。",
+    "evidence": [
+      {
+        "claim": "8任务平均精度：fp32 SGD73.3、int8 SGD64.9、Adam71.8，QAS73.5。",
+        "page": 7
+      },
+      {
+        "claim": "VWW实机训练使用206KB SRAM、89.1%准确率；实机STM32F746物理容量为320KB，运行占用仍低于256KB目标。",
+        "page": 8
+      },
+      {
+        "claim": "报告20–21倍内存减少和23–25倍训练加速；OOM完整训练对照含按算子估计/投影，不能一概说所有对照均实机完整执行。",
+        "page": 9
+      },
+      {
+        "claim": "通道选择的幅度与随机策略差异小于0.2%，作者明确不把精细通道排序当主要收益来源。",
+        "page": 10
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      10
+    ],
+    "limits": "迁移微调不等于从头预训练或真实长期持续学习；贡献可加性是经验近似；离线分析有成本。",
+    "strategy": "把硬资源不可能拆为优化/算法/系统三个瓶颈，逐一消除，最后实机闭环。",
+    "lesson": "即使某个排序信号有理论意义，也必须允许随机对照推翻其必要性；我们的归因应接受同样检验。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "256KB是硬约束，不是抽象效率口号。真int8梯度尺度失衡导致平均精度73.3→64.9；QAS恢复73.5（p7）。稀疏更新还需编译时剪反向图与重排，VWW实机占206KB、89.1%（p8）；大倍数加速的OOM对照含投影（p9）。尤其有价值的是作者承认精细通道排序与随机差不到0.2%（p10）。对我们：发现信号并不等于该信号有决策价值；无收益的归因部分应删掉，而非另设容易通过的指标。"
+  },
+  {
+    "slug": "netaug",
+    "year": 2022,
+    "title": "Network Augmentation for Tiny Deep Learning",
+    "paper_type": "原始研究",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/Network Augmentation for Tiny Deep Learning.pdf",
+    "problem": "提高微小神经网络的表示和训练质量，同时保持部署模型大小。",
+    "pain": "大网络默认的过拟合叙事不适用于容量不足的小模型。",
+    "naive_failure": "Dropout、Mixup、DropBlock、RandAugment等正则化可能加重tiny模型欠拟合；简单延长训练也不能解决容量限制。",
+    "insight": "训练时让小网络成为更宽权重共享网络的子网络，额外宽网络损失改善共享表示，推理时丢弃扩展部分。",
+    "contribution": "Network Augmentation以随机采样宽子网为辅助训练；与以搜索最优架构为目的的supernet区分。",
+    "evidence": [
+      {
+        "claim": "Tiny模型NetAug提高约1.3点top-1；训练245对210 GPU小时，增加16.7%，部署无额外计算。",
+        "page": 7
+      },
+      {
+        "claim": "训练/验证曲线支持欠拟合改善；常规正则化可下降达3.7点，ResNet-50不受益甚至受损。",
+        "page": 7
+      },
+      {
+        "claim": "下游迁移比较显示ImageNet上更好的KD/预训练不必然带来更好的下游效果，NetAug迁移更一致。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "limits": "针对小模型欠拟合，不是所有模型的通用正则化；训练时额外内存与成本；机理主要为实证支持。",
+    "strategy": "找出适用条件发生反转的旧常识，用正/负规模对照限定机制。",
+    "lesson": "我们的有效病人也应展示明确失败机制及正反对照；不能默认所有回答改变都对应同一种病因。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "NetAug反转的是“训练困难就加强正则化”：tiny模型主要欠拟合，常规正则会更差。训练时共享一个更宽网络的辅助损失、部署时只留小网络，top-1约+1.3点，训练开销16.7%（p7）。同页训练/验证曲线及大ResNet不获益，限定了机制；迁移实验还说明ImageNet优势不能自动外推下游（p8）。对我们：先证明研究对象确实患了所说的病，再寻找针对性办法；失败类型不能只靠一个总分或回答变化定义。"
+  },
+  {
+    "slug": "qoc-quantum-on-chip-training-with-parameter-shift-and-gradient-pruning",
+    "year": 2022,
+    "title": "QOC: Quantum On-Chip Training with Parameter Shift and Gradient Pruning",
+    "paper_type": "原始研究，有限规模实机量子训练",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/QOC- Quantum On-Chip Training with Parameter Shift and Gradient Pruning.pdf",
+    "problem": "降低量子芯片上参数移位训练的测量开销，并改善含噪梯度优化。",
+    "pain": "经典模拟扩展差；真实量子梯度测量昂贵且小梯度相对噪声大。",
+    "naive_failure": "将所有梯度同等测量和更新浪费真实芯片调用；完全依靠理想模拟训练会遭遇部署噪声。",
+    "insight": "用阶段性累积梯度幅度估计可靠性，以概率方式裁掉不可靠梯度，兼顾探索和调用节省。",
+    "contribution": "Quantum On-Chip training结合parameter shift和probabilistic gradient pruning；比较确定性剪枝与概率剪枝。",
+    "evidence": [
+      {
+        "claim": "真实设备五任务比较：MNIST四分类0.59→0.64、Fashion四分类0.49→0.57；任务均为小规模四逻辑量子比特。",
+        "page": 5
+      },
+      {
+        "claim": "概率剪枝对比确定性剪枝，例如Fashion四分类0.79对0.72、MNIST二分类0.85对0.82；此消融与实机主表条件不能混为一谈。",
+        "page": 6
+      },
+      {
+        "claim": "扩展曲线部分为预测：量子大规模和经典更大规模点是投影，不能声称已实测普遍量子优势。",
+        "page": 6
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "limits": "有限小分类任务，非相对最强经典学习器的量子优势证明；历史梯度可靠性估计可能随噪声漂移；扩展结果含外推。",
+    "strategy": "诊断信号直接决定跳过哪些昂贵操作，同时验证真实任务精度与测量成本。",
+    "lesson": "我们的诊断至少应帮下一次检查省调用或提高正确决策；precision单项不能替代两者。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "QOC把小梯度易被芯片噪声淹没这一现象，变成概率梯度剪枝，减少parameter-shift评估并改善训练。真实四量子比特任务中，MNIST四分类0.59→0.64、Fashion四分类0.49→0.57（p5）；p6另比较概率/确定性剪枝。其大规模量子/经典扩展曲线含投影，不是已经实现通用量子优势。对我们：诊断分数的价值应体现为少做昂贵检查却做对决策；只证明输出某些标签很准，还没有完成这条因果链。"
+  },
+  {
+    "slug": "quantumnas",
+    "year": 2022,
+    "title": "QuantumNAS: Noise-Adaptive Search for Robust Quantum Circuits",
+    "paper_type": "原始研究",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/QuantumNAS- Noise-Adaptive Search for Robust Quantum Circuits.pdf",
+    "problem": "针对真实噪声选择鲁棒量子电路及其物理量子比特映射。",
+    "pain": "理想电路规模越大未必实机越好，电路与硬件映射相互影响，逐候选训练昂贵。",
+    "naive_failure": "只优化理想无噪电路或只做映射搜索都不够；训练每条候选电路的搜索成本难承受。",
+    "insight": "训练一次SuperCircuit可为子电路继承参数，建立足够相关的低成本排名；必须联合电路和映射。",
+    "contribution": "前缀/限制采样训练共享SuperCircuit、进化式联合搜索及门剪枝微调，支持噪声模型或实际芯片反馈。",
+    "evidence": [
+      {
+        "claim": "继承参数的代理排名与从零训练相关性被直接验证；与后页合看，平均Spearman约0.75。",
+        "page": 5
+      },
+      {
+        "claim": "估计噪声表现与真实硬件表现相关性约0.76，明确校准代理。",
+        "page": 6
+      },
+      {
+        "claim": "真实硬件搜索20轮约3天；较大21-qubit实验有实测，127-qubit/57小时扩展为投影。",
+        "page": 10
+      },
+      {
+        "claim": "联合电路/映射在单独优化之上平均约9个百分点；前缀/限制采样相较随机采样平均约12个百分点。",
+        "page": 11
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "limits": "共享权重排名并非无误；设备变化降低转移；限定电路族和任务，不证明一般量子算法优势；大规模预算部分外推。",
+    "strategy": "先验证廉价代理确实能排序，再证明代理驱动的最终选择赢过强搜索对照，并交代搜索成本。",
+    "lesson": "这是最接近诊断研究的模板：归因信号→选择哪个干预→干预实际收益，三个箭头都要独立成立。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "QuantumNAS从“更大电路在实机反而更差”出发，训练共享SuperCircuit后联合搜索电路与映射。论文没有直接把代理当真值：先测继承参数排名相关约0.75、噪声估计与实机约0.76（pp5–6），再用联合搜索的约9点增益和采样消融支撑设计（p11）。真实硬件20轮搜索约3天，超大规模仍有投影（p10）。对我们最直接：诊断必须既能预测，也能让后续检查选择变好；有限真值表只是验证基础。"
+  },
+  {
+    "slug": "quantumnat",
+    "year": 2022,
+    "title": "QuantumNAT: Quantum Noise-Aware Training with Noise Injection, Quantization and Normalization",
+    "paper_type": "原始研究",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/QuantumNAT- Quantum Noise-Aware Training with Noise Injection, Quantization and Normalization.pdf",
+    "problem": "缩小理想训练量子网络与真实含噪设备推理间的分布差距。",
+    "pain": "不同真实设备的读出分布偏移使无噪训练的分类器失效。",
+    "naive_failure": "只在理想模拟器训练，或任意加高斯噪声，并不对应门噪声机制；量化与噪声注入还可能互相抵消。",
+    "insight": "测量端尺度/偏移可部分归一化；门级随机Pauli插入模拟设备噪声；量化测量输出可以抑噪。",
+    "contribution": "结合measurement normalization、hardware-backed gate noise injection及measurement quantization，并检查部件交互。",
+    "evidence": [
+      {
+        "claim": "主表8任务均值baseline0.42→normalization0.52→gate injection0.61→quantization0.64；报告16种设置中13种改善。",
+        "page": 5
+      },
+      {
+        "claim": "SNR实测例：Quito深电路0.35→0.71，支撑归一化确实降低噪声偏移。",
+        "page": 5
+      },
+      {
+        "claim": "门级注噪结合量化平均比输出高斯注噪高约11点；并非随便加噪都有效。",
+        "page": 6
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6
+    ],
+    "limits": "实际测试受预算限制只取前300张图像，4/10qubit任务；并非每种设置改进，也未证明量子学习优于经典学习。",
+    "strategy": "把可测分布异常转成机理匹配的干预，专门对照一个看似合理却错机制的办法。",
+    "lesson": "PurMM若在另一种病因上无效，只能说明不适配该病；要有与我们观测权限/诊断任务匹配的强对照。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "QuantumNAT针对设备读出分布偏移，联合测量归一化、门级噪声注入和输出量化。均值0.42→0.52→0.61→0.64，16种设置13种改善（p5）；门级注噪比“输出加高斯噪声”好约11点，说明机制匹配很关键（p6）。但实机评估规模小、仅前300张测试图，不能扩写为普遍量子优势。对我们：同样需要证明为何某干预能区分竞争病因；让一个解决别的问题的对手归零，不是强基线胜利。"
+  },
+  {
+    "slug": "quest-q",
+    "year": 2022,
+    "title": "QuEst: Graph Transformer for Quantum Circuit Reliability Estimation",
+    "paper_type": "原始研究，可靠性数据与预测器案例",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/QuEst- Graph Transformer for Quantum Circuit Reliability Estimation.pdf",
+    "problem": "快速估计量子电路在设备噪声下的可靠性，减少昂贵评估。",
+    "pain": "量子态层析与模拟昂贵；简单全局统计忽略门顺序和噪声局部结构。",
+    "naive_failure": "仅用门数/深度等全局统计的MLP难以精确表达电路噪声相互作用。",
+    "insight": "随机电路后接其逆电路，使理想输出已知为零态；用正确输出概率PST作可靠性代理，再用门图和噪声特征预测。",
+    "contribution": "构造模拟及真实芯片数据集，graph Transformer回归PST，并对门图/全局特征作消融。",
+    "evidence": [
+      {
+        "claim": "数据约1万模拟、2.5万真实样本，涉及5种后端；PST是理想零态输出的观测概率，并非任意电路完整态保真度。",
+        "page": 5
+      },
+      {
+        "claim": "按后端70/20/10随机划分并分别训练；算法电路实验R²约0.9985，而简单特征MLP约0.9110。",
+        "page": 7
+      },
+      {
+        "claim": "相对经典模拟，3090预测单样本约200倍、批10约1.7千倍加速；不包含收集标签和训练的前置成本。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "limits": "随机划分不是新电路族/新设备/跨时间泛化；PST代理不等于一般保真度；未在所读结果中建立“依据预测做编译决策更好”的终端价值。",
+    "strategy": "以可获取代理标签构建昂贵量的快速替代器，证据强度低于包含下游决策闭环的论文。",
+    "lesson": "不能因Han Lab出品就把预测准确当完整solid范式；我们的finite table、precision也面临相同代理与泛化问题。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "QuEst用“随机电路+逆电路”的已知零态输出构造PST标签，再以门图Transformer预测可靠性。约1万模拟与2.5万实机样本（p5）；算法电路R²约0.9985对MLP0.9110，推理显著快于模拟（pp7–8）。但按后端随机划分、每后端训练，PST不是完整保真度，预测是否改善真实编译决策仍未闭环。这是应保留的弱例：高预测分和好数据并不自动等于高水平贡献；我们的有限真值表同理。"
+  },
+  {
+    "slug": "sige",
+    "year": 2022,
+    "title": "Efficient Spatially Sparse Inference for Conditional GANs and Diffusion Models",
+    "paper_type": "原始会议研究；与2023期刊版属同一研究线",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/Efficient Spatially Sparse Inference for Conditional GANs and Diffusion Models.pdf",
+    "problem": "加速局部交互编辑时的条件GAN与扩散模型推理。",
+    "pain": "每次小编辑都重算全图；局部激活变化虽稀疏，但非结构化稀疏执行开销很大。",
+    "naive_failure": "直接裁图生成再拼回会损失全局上下文并出现接缝；按激活阈值剪枝也难获得实际加速。",
+    "insight": "编辑差异具有空间结构，缓存原图特征、只重算局部块可保留上下文；但还必须处理gather/scatter与归一化开销。",
+    "contribution": "spatially sparse inference及SIGE引擎：分块聚集卷积散射、复用归一化统计、核融合。",
+    "evidence": [
+      {
+        "claim": "DDIM原始FID65.4、SIGE65.8；MAC249G→65.3G，保持生成质量而大幅减计算。",
+        "page": 7
+      },
+      {
+        "claim": "DDIM约1.2%编辑在3090由37.5ms→12.6ms，约3倍；速度因任务/设备/编辑面积而变。",
+        "page": 9
+      },
+      {
+        "claim": "朴素分块已减7.6倍MAC但仅1.6倍加速；归一化与融合后达2.9倍，直接展示隐藏开销。",
+        "page": 9
+      },
+      {
+        "claim": "讨论额外激活缓存、低分辨率加速有限及局部编辑引起的全局光照变化无法更新。",
+        "page": 10
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      10
+    ],
+    "limits": "以近似保持输出换局部重用，可能接缝；扩散每步缓存占额外内存；速度不是对所有编辑面积都成立。",
+    "strategy": "从结构冗余到系统兑现，显式解释为何看似足够的稀疏算法仍不能得到速度。",
+    "lesson": "我们的诊断需核算读图/生成/校准/查表的全部成本；稀疏且准确的claim不等于总体高效。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "SIGE利用用户只改局部这一可观测结构：缓存原图中间特征，分块重算避免裁图丢上下文。FID65.4对65.8，平均MAC249G→65.3G（p7）；但朴素分块虽减7.6倍MAC仅加速1.6倍，经归一化复用/核融合才到2.9倍（p9）。局部引发全局光照、额外缓存和小分辨率均有边界（p10）。对我们：图稀疏或claim精确只是中间性质，只有计入全部开销后的决策收益才是闭环。"
+  },
+  {
+    "slug": "torchsparse",
+    "year": 2022,
+    "title": "TorchSparse: Efficient Point Cloud Inference Engine",
+    "paper_type": "原始研究；2023 TorchSparse++的前代",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/TorchSparse- Efficient Point Cloud Inference Engine.pdf",
+    "problem": "提高稀疏点云神经网络的真实GPU推理速度。",
+    "pain": "点云稀疏卷积的小矩阵乘法和不规则数据搬运使GPU利用率低。",
+    "naive_failure": "只减少MAC或一味避免补零无效；固定分组在不同数据形态上可能适得其反。",
+    "insight": "适当多算换取规则矩阵乘法，同时优化数据移动，比单纯最小算术量更快。",
+    "contribution": "自适应矩阵分组、FP16向量化gather/scatter、访存局部性优化及映射融合。",
+    "evidence": [
+      {
+        "claim": "7个模型任务、3数据集和多代GPU的端到端几何平均加速约1.5–1.6倍，单个工作负载最高2.3倍。",
+        "page": 8
+      },
+      {
+        "claim": "自适应矩阵分组约1.39/1.54倍；固定策略在nuScenes可1.5倍，在SemanticKITTI却0.87倍。",
+        "page": 9
+      },
+      {
+        "claim": "数据搬运组件消融：仅量化约1.32倍，组合优化gather/scatter约2.72倍。",
+        "page": 10
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      10
+    ],
+    "limits": "调优依赖模型/输入分布/硬件；此版主要推理，不能把后续训练能力提前归给它；对照实现版本会改变结论。",
+    "strategy": "反转“少算即快”的代理目标，以端到端测量指导自适应设计。",
+    "lesson": "少检查几格表不等于诊断成本低；必须包含计算图生成、必要信息获得和读取时间。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "TorchSparse发现瓶颈是不规则小矩阵与搬运，故宁愿补零多算也要规则并行，并同时优化gather/scatter。七工作负载端到端平均约1.5–1.6倍（p8），固定分组可在一个数据集加速却在另一个降为0.87倍（p9），组件消融确认搬运收益（p10）。边界是模型/硬件/分布相关的推理引擎。对我们：代理指标容易选错目标，少报claim、少看格子都不能替代诊断完整成本与实际正确决策。"
+  },
+  {
+    "slug": "bevfusion",
+    "year": 2023,
+    "title": "BEVFusion: Multi-Task Multi-Sensor Fusion with Unified Bird's-Eye View Representation",
+    "paper_type": "原始研究；所给PDF为2024修订版，按2023文件夹归类",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/BEVFusion- Multi-Task Multi-Sensor Fusion with Unified Bird's-Eye View Representation.pdf",
+    "problem": "统一融合摄像头和LiDAR，兼顾三维检测与地图语义分割。",
+    "pain": "点级投影丢弃大量摄像头像素，图像级投影又损失几何，且相机到BEV转换慢。",
+    "naive_failure": "PointPainting等把相机特征放到少量LiDAR点，只保留不足5%的图像对应信息；原始BEV pooling耗时超过500ms。",
+    "insight": "鸟瞰空间同时保留几何与稠密相机语义；先消除投影的信息瓶颈，再消除其工程瓶颈。",
+    "contribution": "共享BEV表示、预计算网格和interval reduction加速池化、多任务头。",
+    "evidence": [
+      {
+        "claim": "视图转换从超过500ms降至约12ms；局部模块约40倍，不能写成整模型40倍。",
+        "page": 3
+      },
+      {
+        "claim": "nuScenes检测：TransFusion 68.9 mAP/71.6 NDS、156.6ms；BEVFusion70.2/72.9、119.2ms。",
+        "page": 4
+      },
+      {
+        "claim": "地图分割mIoU62.7，对比PointPainting49.1、MVP49.0；camera-only56.6，显示语义信息保留的价值。",
+        "page": 5
+      },
+      {
+        "claim": "稀疏LiDAR等扰动测试中，1-beam条件约增加12点NDS。",
+        "page": 6
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6
+    ],
+    "limits": "相机深度估计和BEV离散化仍不完美；任务头范围不同；两个数据集不代表所有传感器故障。",
+    "strategy": "以两个任务暴露旧表示的偏科，再以统一表示和系统优化共同解决。",
+    "lesson": "应明确诊断帮助哪类决策；不能仅测某方法擅长的一类回答变化。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法和相关实验表/消融/讨论；长页选择相关段落。未逐字通读全部附录与参考文献。",
+    "summary": "BEVFusion的靶心是融合表示的信息损失：点上附着相机特征会丢掉绝大多数像素，故改到共享BEV，再将慢池化改为预计算/区间归约。地图mIoU62.7对PointPainting49.1（p5）；检测70.2/72.9优于68.9/71.6，延迟119.2对156.6ms（p4）。局部转换40倍不等于全系统40倍（p3），深度与投影仍有限制。启发：用不同任务揭露原方案的结构性缺陷，再证明新表示解决它；这里读的是所给修订版。"
+  },
+  {
+    "slug": "efficientvit",
+    "year": 2023,
+    "title": "EfficientViT: Multi-Scale Linear Attention for High-Resolution Dense Prediction",
+    "paper_type": "原始研究；所给修订版包含后续SAM实验",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/EfficientViT- Multi-Scale Linear Attention for High-Resolution Dense Prediction.pdf",
+    "problem": "使高分辨率密集预测同时获得全局建模能力与硬件效率。",
+    "pain": "softmax注意力随token数平方增长；直接线性化又削弱局部聚焦与多尺度表达。",
+    "naive_failure": "直接替换为ReLU线性注意力虽快却精度差；仅靠参数/FLOPs也不足以说明部署效率。",
+    "insight": "全局线性注意力、局部卷积、多尺度QKV是互补能力，使用硬件友好的小卷积补偿线性注意力损失。",
+    "contribution": "多尺度线性注意力模块、增强局部能力的FFN，以及面向高分辨率的网络设计。",
+    "evidence": [
+      {
+        "claim": "同4.4G MACs/0.7M参数消融：无全局/多尺度68.1 mIoU；仅多尺度72.3，仅全局72.2，两者74.5。",
+        "page": 5
+      },
+      {
+        "claim": "Cityscapes B1为80.5 mIoU/Orin24.3ms，SegNext-T为79.8/93.2ms。",
+        "page": 7
+      },
+      {
+        "claim": "修订版SAM-XL1 COCO47.8对SAM-H46.5，A100吞吐182对11图/秒；但LVIS单点交互56.6低于59.2，非所有指标无损。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9
+    ],
+    "limits": "适用高分辨率密集任务而非所有transformer；不应把后续SAM实验当2023初版已完成内容；部分交互设置更差。",
+    "strategy": "对快速近似明确指出丢失的能力，再用等预算消融证明补偿机制。",
+    "lesson": "若我们压缩诊断信息，应测丢失什么以及何种补偿有效，而不是只留容易预测的格子。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法和相关实验表/消融/讨论；长页选择相关段落。未逐字通读全部附录与参考文献。",
+    "summary": "EfficientViT不是把线性注意力改名，而是发现其局部聚焦不足，以卷积和多尺度QKV补回。严格同4.4G/0.7M下，无两能力68.1、各自72.3/72.2、合并74.5 mIoU（p5）；Cityscapes80.5/24.3ms对79.8/93.2ms（p7）。所给修订版含SAM高吞吐，但LVIS单点仍低于原SAM（p9）。启发：近似方案应有明确能力损失分析、匹配预算的组件检验和负面边界，不能用高precision掩盖未覆盖病例。"
+  },
+  {
+    "slug": "flatformer",
+    "year": 2023,
+    "title": "FlatFormer: Flattened Window Attention for Efficient Point Cloud Transformer",
+    "paper_type": "原始研究",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/FlatFormer- Flattened Window Attention for Efficient Point Cloud Transformer.pdf",
+    "problem": "让点云Transformer达到实时检测速度。",
+    "pain": "邻域准备占传统点云Transformer大量时间，等空间窗口点数不规则导致padding和低利用率。",
+    "naive_failure": "以空间等大窗口保持精确局部性，产生不均匀工作量；逐点邻域搜索成本高。",
+    "insight": "以等点数分组牺牲一点几何整齐，换来规则执行；交替坐标排序和窗口移位恢复组间信息。",
+    "contribution": "flatten-window-sort、等点数组、轴交换与shift，以及分组执行优化。",
+    "evidence": [
+      {
+        "claim": "Waymo三帧FlatFormer12.7ms/72.0 L2 mAPH，SST57.8ms/70.4，CenterPoint++13.6ms/71.6。",
+        "page": 6
+      },
+      {
+        "claim": "Orin达到16.1 FPS，对比CenterPoint13.7与SST3.4。",
+        "page": 7
+      },
+      {
+        "claim": "受控小规模消融：完整61.7，随机分组57.8，无量化60.4，无轴交换61.1，无shift61.2。",
+        "page": 7
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "limits": "主要Waymo；所报模型速度不包含加载/后处理；个别两阶段设置不胜FSD。后续TorchSparse++更新卷积后端后重置了Transformer比较结论。",
+    "strategy": "放松看似必要的几何约束，补回交流能力，并在真实实时阈值上验证。",
+    "lesson": "不能永久固定弱实现作对照；最新AtP/直接查询等也应和我们同样认真优化。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法和相关实验表/消融/讨论；长页选择相关段落。未逐字通读全部附录与参考文献。",
+    "summary": "FlatFormer把“等空间窗口”改成“等点数组”，用排序、移轴与shift补回局部交流，换取规则GPU执行。Waymo三帧72.0 L2 mAPH/12.7ms，对SST70.4/57.8ms（p6）；随机分组57.8而完整61.7的消融说明不是随便分组都行（p7）。计时不含加载/后处理。尤其后续TorchSparse++换强卷积后端后又能反超它：solid的结论必须持续面对最强实现，不能把旧基线性能永久封存。"
+  },
+  {
+    "slug": "pockengine",
+    "year": 2023,
+    "title": "PockEngine: Sparse and Efficient Fine-tuning in a Pocket",
+    "paper_type": "原始系统研究；继承MCUNetV3稀疏更新思路",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/PockEngine- Sparse and Efficient Fine-tuning in a Pocket.pdf",
+    "problem": "在手机、Jetson、MCU等受限边缘设备上高效微调视觉与语言模型。",
+    "pain": "框架解释/自动微分成本、反向激活保存和稀疏更新执行脱节；可训练参数少不代表实际快。",
+    "naive_failure": "仅冻结部分权重或使用LoRA，未必删除反向冗余；用通用PyTorch运行时甚至无法部署到极小设备。",
+    "insight": "用推理原语构建静态反向图，在编译时剪枝并安排张量生命周期，将稀疏更新变成真实执行收益。",
+    "contribution": "编译时自动微分、层/子层稀疏反传、图剪枝/算子重排，支持多种原本只有推理的后端。",
+    "evidence": [
+      {
+        "claim": "逐层离线微调估计贡献，并假设贡献可加求稀疏方案；这不是无成本、无需假设的在线诊断。",
+        "page": 5
+      },
+      {
+        "claim": "跨任务平均精度接近全更新，如MCUNet74.8对74.1，MobileNet88.5对89.2；并非每模型不降。",
+        "page": 8
+      },
+      {
+        "claim": "Llama2-7B Orin：PyTorch全更新7.7s/45.1GB，Pock全更新1.8s/43.1GB，Pock稀疏0.9s/31.2GB；MT-Bench分别6.1/6.1/5.7。",
+        "page": 11
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      8,
+      10,
+      11,
+      12
+    ],
+    "limits": "是迁移微调而非通用预训练；离线敏感性评估和可加近似有成本；LLM最大序列/批量有限，少量质量下降真实存在。",
+    "strategy": "分开证明系统实现收益与稀疏策略收益，使用同一全更新策略隔离框架变量。",
+    "lesson": "图表示、查询策略、渲染给读者三层也须拆开；否则把额外信息或实现差异当诊断创新。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法和相关实验表/消融/讨论；长页选择相关段落。未逐字通读全部附录与参考文献。",
+    "summary": "PockEngine指出“少训参数”仍会保留反向激活与运行时开销，于是编译时自动微分、剪反向图并重排。Llama2-7B上PyTorch全训7.7s/45.1GB，换Pock全训1.8s/43.1GB，再加稀疏0.9s/31.2GB（p11），清楚拆开系统与算法收益；但MT-Bench6.1→5.7，不能说完全无损。逐层贡献还需离线训练并假设可加（p5）。对我们：必须拆分真值信息、归因表示、查询策略和界面各自贡献。"
+  },
+  {
+    "slug": "retrospective-eie-efficient-inference-engine-on-sparse-and-compressed-neural-network",
+    "year": 2023,
+    "title": "Retrospective: EIE: Efficient Inference Engine on Sparse and Compressed Neural Network",
+    "paper_type": "两页历史回顾；不是2023新原始实验",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/Retrospective- EIE- Efficient Inference Engine on Sparse and Compressed Neural Network.pdf",
+    "problem": "回顾EIE如何把网络压缩产生的稀疏性转成硬件收益，以及后来的适用边界。",
+    "pain": "内存搬运昂贵，压缩可减权重，但不规则稀疏在通用并行硬件上开销大。",
+    "naive_failure": "把压缩后的模型原样交给通用稀疏软件，未必能比密集运算高效。",
+    "insight": "算法与硬件共同设计可跳过零权重/零激活；W4A16在内存受限矩阵向量场景有持久价值，但索引和控制成本不可忽略。",
+    "contribution": "总结2016 EIE的CSC表示、PE分配、非零激活检测及4-bit权重共享；回顾后续结构稀疏路线。",
+    "evidence": [
+      {
+        "claim": "明确回顾ISCA2016工作，说明稀疏和低精度共同设计思路；本篇不提供新的完整原始benchmark。",
+        "page": 1
+      },
+      {
+        "claim": "权重与索引均4bit导致50%存储开销；仅加速全连接且全部权重放SRAM，限制向巨型LLM直接迁移。",
+        "page": 2
+      }
+    ],
+    "pages": [
+      1,
+      2
+    ],
+    "limits": "影响力与历史地位不是新方法证据；回顾的商业影响/后续工作未在本任务逐项外部核验。",
+    "strategy": "承认当年的最优假设随工作负载迁移而失效，并据此找下一瓶颈。",
+    "lesson": "不把方法延续性当有效性；VLM到T2I、repair到diagnosis改变了任务，旧证明必须重新成立。",
+    "read_scope": "实际完整阅读这两页回顾正文与其限制说明；未逐项外部核验参考文献的历史影响。",
+    "summary": "这是2016 EIE的两页回顾，不是2023新实验。核心历史策略是先压缩模型，再设计能跳过零权重/零激活的硬件（p1）。更值得学的是自我边界：4bit权重配4bit索引有50%存储开销，只支持全连接、权重全放SRAM，不能直接迁移巨型LLM（p2）。它说明solid研究也会随任务改变而过期。对我们：从repair转到diagnosis后，旧指标和旧对手不能继承有效性，必须重新证明痛点和比较条件。"
+  },
+  {
+    "slug": "sige-tpami",
+    "year": 2023,
+    "title": "Efficient Spatially Sparse Inference for Conditional GANs and Diffusion Models - TPAMI extended version",
+    "paper_type": "SIGE会议工作的期刊扩展；不得计作独立新主线",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/Efficient Spatially Sparse Inference for Conditional GANs and Diffusion Models - TPAMI extended version.pdf",
+    "problem": "把SIGE从卷积式生成器扩展到注意力占主导的Stable Diffusion及更多实际编辑场景。",
+    "pain": "原SIGE只优化卷积，Stable Diffusion注意力矩阵的成本留下，导致节省MAC却不明显加速。",
+    "naive_failure": "直接把旧卷积引擎套到SD，约2.8%编辑仅1.1倍加速。",
+    "insight": "未修改区域可复用query输出，只对编辑query计算注意力，仍保留全局key/value上下文。",
+    "contribution": "attention query pruning、SD应用、Apple M1 GPU支持，以及大编辑/连续编辑/TensorRT检验。",
+    "evidence": [
+      {
+        "claim": "作者明确列出相对于会议版的新增项：attention、SD、M1 GPU以及大/连续编辑。",
+        "page": 2
+      },
+      {
+        "claim": "SD消融：原369ms；仅旧卷积优化335ms/1.1倍；加入注意力后76.4ms/4.8倍。",
+        "page": 11
+      },
+      {
+        "claim": "SD数据集平均MAC805G→387G，FID27.2对26.8；不能把少数1%编辑的7.2倍当数据集平均加速。",
+        "page": 7
+      },
+      {
+        "claim": "明确限制文字prompt固定；改变文字需要重算缓存，不能直接用于文生图生成。",
+        "page": 11
+      },
+      {
+        "claim": "局部编辑导致全局光照变化时，编辑区外变化无法跟随；还可能有接缝。",
+        "page": 12
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      4,
+      7,
+      9,
+      10,
+      11,
+      12,
+      15
+    ],
+    "limits": "缓存有额外内存，文本变化使复用失效；小编辑实例最大速度不是整体平均；与会议版不是独立重复突破。",
+    "strategy": "扩展先展示旧方法在新瓶颈下几乎无效，再新增针对性机制并进行清晰消融。",
+    "lesson": "真正pivot应像这里：旧方法1.1倍失败→新瓶颈→新机制4.8倍；仅重命名目标不算。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法和相关实验表/消融/讨论；长页选择相关段落。未逐字通读全部附录与参考文献。",
+    "summary": "期刊SIGE最有价值的是诚实证明旧方案不够：套到Stable Diffusion只从369降到335ms（1.1倍），新增编辑query注意力后76.4ms（4.8倍，p11）。新增项清单在p2，不能把会议版结果重复计功。平均SD FID27.2对26.8、MAC805G→387G（p7）；固定prompt与缓存内存是硬边界（pp11–12）。这才是可信pivot形状：旧解遇到新瓶颈，新增机制解除瓶颈，再做受控闭环，而非给失败换名。"
+  },
+  {
+    "slug": "smoothquant",
+    "year": 2023,
+    "title": "SmoothQuant: Accurate and Efficient Post-Training Quantization for Large Language Models",
+    "paper_type": "原始研究；所给PDF为2024修订版，按2023文件夹归类",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/SmoothQuant- Accurate and Efficient Post-Training Quantization for Large Language Models.pdf",
+    "problem": "让大语言模型W8A8量化同时保留精度和真实INT8硬件加速。",
+    "pain": "少数稳定通道激活outlier压垮量化动态范围；逐通道激活量化虽准确却不匹配高效GEMM。",
+    "naive_failure": "逐tensor/token量化使大模型近随机；LLM.int8保留FP16异常值可保精度却常更慢。",
+    "insight": "outlier沿输入通道稳定，而权重较容易量化；用等价缩放把困难从激活迁到权重并平衡两侧。",
+    "contribution": "离线融合X diag(s)^-1与diag(s)W的等价变换，校准迁移强度，兼容高效纯INT8矩阵乘法。",
+    "evidence": [
+      {
+        "claim": "OPT-175B四任务平均FP16 71.6%，per-token INT8 31.7%，逐通道模拟71.4%；定位是通道尺度而非任意量化。",
+        "page": 3
+      },
+      {
+        "claim": "核心公式在未量化前严格保持线性层输出，缩放可离线融合；alpha控制激活与权重量化困难。",
+        "page": 4
+      },
+      {
+        "claim": "OPT-175B七任务平均FP16 66.9、SmoothQuant-O3 66.8，而朴素W8A8 35.5；WikiText perplexity10.99、11.17和93080。",
+        "page": 6
+      },
+      {
+        "claim": "优化FasterTransformer基线上仍最高1.56倍加速；alpha偏小/偏大分别使激活/权重量化失败。",
+        "page": 8
+      },
+      {
+        "claim": "明确W8A8与GPTQ weight-only服务场景及实现不同，拒绝直接不公平比较。",
+        "page": 13
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      10,
+      13
+    ],
+    "limits": "依赖校准分布与模型相关alpha；极端静态方案某些模型约降1点；不是在所有batch1场景胜过weight-only。修订版新增模型不属于初版时点。",
+    "strategy": "用测量锁定结构，提出极简等价变换消除机制，再证明强实现下真实收益。",
+    "lesson": "最强对照范式：我们的诊断若只证实outlier在哪里而没有新的可用变换/决策规则，贡献停在SmoothQuant之前。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法和相关实验表/消融/讨论；长页选择相关段落。未逐字通读全部附录与参考文献。",
+    "summary": "SmoothQuant最清楚地展示“看见问题”与“解决问题”的距离：175B的per-token量化31.7%，逐通道模拟71.4%接近FP16 71.6%，锁定通道outlier（p3）；随后提出可离线融合的等价尺度迁移（p4）。七任务66.8对66.9，优化后端上仍最高1.56倍加速（pp6、8），并承认weight-only比较场景不同（p13）。对我们：有限真值表和高precision是前半段；还缺从诊断得到的必要新机制及真实决策收益。"
+  },
+  {
+    "slug": "tinyml-magazine",
+    "year": 2023,
+    "title": "Tiny Machine Learning: Progress and Futures [Feature]",
+    "paper_type": "领域综述/研究线综合；所给PDF2024，按2023文件夹归类",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/Tiny Machine Learning- Progress and Futures [Feature].pdf",
+    "problem": "梳理极小设备上推理和训练的资源约束、已有路线与未来问题。",
+    "pain": "手机模型优化参数/FLOPs，MCU真正限制却常是激活峰值和运行时体积；从推理到训练又换瓶颈。",
+    "naive_failure": "直接缩小MobileNet或把推理方案搬到训练，不能自然适应几百KB内存。",
+    "insight": "TinyML需要网络设计、执行顺序、量化优化和编译系统共同设计，且不同阶段的主要瓶颈会迁移。",
+    "contribution": "综合已有MCUNet系列、NetAug、TinyEngine/TTE与领域文献，提出应用/监督/模态扩展方向；不是独立新算法评估。",
+    "evidence": [
+      {
+        "claim": "MobileNetV2相对ResNet参数小4.2倍，但推理峰值内存反大2.3倍；直接暴露选错代理目标。",
+        "page": 2
+      },
+      {
+        "claim": "汇总MCUNet-M4 int8在196KB SRAM达到64.9% ImageNet top-1；这是已有系列证据的综述整合。",
+        "page": 12
+      },
+      {
+        "claim": "复述QAS平均73.5对int8 SGD64.9，不能与MCUNetV3重复计为两份独立验证。",
+        "page": 15
+      },
+      {
+        "claim": "明确未来真实端侧学习监督获取困难，视觉检测/分割的标签昂贵；自监督是未来方向而非已经解决。",
+        "page": 18
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      9,
+      12,
+      15,
+      17,
+      18
+    ],
+    "limits": "不是系统性无偏meta-analysis；大量本组工作复述；未来应用愿景不等于部署证据，引用原始研究需去重。",
+    "strategy": "沿资源瓶颈如何迁移来组织研究线，而非把组件列表拼成贡献。",
+    "lesson": "我们应将可验证诊断协议视为基础设施，之后必须挑一个具体用户任务兑现价值；不能把框架愿景当成果。",
+    "read_scope": "实际阅读概述、资源瓶颈、TinyEngine/patch推理、关键汇总表、QAS/稀疏更新/TTE与展望的所列页；未逐项精读所有被综述文献，未把复述实验当独立验证。",
+    "summary": "这是一篇TinyML综述，不能和MCUNet各篇重复计数。它用“参数更少但激活更大”的例子解释为何手机模型不能直接搬到MCU：MobileNet参数小4.2倍，推理内存却大2.3倍（p2）。后面整合已有推理与训练结果（pp12、15、17），并承认真实端侧监督获取尚困难（p18）。启发是追踪瓶颈转移、区分已实现与未来愿景；我们的Verified Diagnosis合同是必要基础，但通往实用诊断的下一瓶颈仍需真实实验证据。"
+  },
+  {
+    "slug": "torchsparse-plus-plus",
+    "year": 2023,
+    "title": "TorchSparse++: Efficient Training and Inference Framework for Sparse Convolution on GPUs",
+    "paper_type": "原始系统研究；在TorchSparse基础上扩展数据流与训练",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/TorchSparse++- Efficient Training and Inference Framework for Sparse Convolution on GPUs.pdf",
+    "problem": "降低高性能稀疏卷积的实现成本，并提升点云训练/推理速度。",
+    "pain": "已有简单gather-GEMM-scatter不能重叠搬运与计算，高效手写方案复杂；算得少与真正快可能相反。",
+    "naive_failure": "只选最低MAC、最低DRAM或最快卷积kernel会漏掉映射/排序成本；盲目沿用单一数据流也不行。",
+    "insight": "稀疏卷积可分解为成熟dense MMA与少量稀疏访存模板；数据流应按共享映射分组、以端到端代价选择。",
+    "contribution": "Sparse Kernel Generator、动态形状寻址/边界优化、扩展mask-split/unsorted/FoD设计空间，以及group-based autotuning。",
+    "evidence": [
+      {
+        "claim": "按共享映射分组调优，避免每数据流重复建图；多数工作负载约2分钟调优，离线成本可解释。",
+        "page": 7
+      },
+      {
+        "claim": "A100相对SpConv2.3.5推理约1.7倍，训练约1.2–1.3倍；检测计时只覆盖SparseConv部分，应区别完整传感器管线。",
+        "page": 8
+      },
+      {
+        "claim": "nuScenes CenterPoint总时间：unsorted7.45ms、split1 8.18ms；不是算术量越少越好。",
+        "page": 9
+      },
+      {
+        "claim": "同条件纯卷积kernel则unsorted3.70ms、split1 3.68ms，排名反转由映射/排序开销导致。",
+        "page": 10
+      },
+      {
+        "claim": "采用新后端、假定2D部分TensorRT后，三帧CenterPoint在Orin比FlatFormer快1.5倍且精度更高；这是同研究组后续实现重置旧架构比较。",
+        "page": 8
+      },
+      {
+        "claim": "同数据流参数下kernel generator约1.1–1.2倍，代码量为SpConv元编程器约5%；设计空间再提供额外收益。",
+        "page": 12
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "limits": "检测结果的端到端指被评估稀疏骨干，不含完整业务流程；ASIC对照含缩放投影，不是实芯片同配置比赛；不同硬件最优数据流不同。",
+    "strategy": "把最强已有实现当比较对象，用分解测量解释反直觉结果，并让后续实现反驳自己的旧优越性。",
+    "lesson": "PurMM零分无法成为主胜利；我们必须对AtP/直接自适应查询/答案表等强且任务匹配的实现比较总成本。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法和相关实验表/消融/讨论；长页选择相关段落。未逐字通读全部附录与参考文献。",
+    "summary": "TorchSparse++既减少稀疏kernel实现复杂度，又以共享映射的整段代价调优。nuScenes上unsorted总耗时7.45ms优于split1的8.18ms（p9），但纯kernel为3.70对3.68ms（p10），证明只数核心算子会选错。更尖锐的是，新卷积后端让CenterPoint在Orin比FlatFormer快1.5倍且更准，限定2D用TensorRT（p8）。对我们：应让最强任务匹配基线不断升级，计入映射/信息获取等开销；弱对手归零不能证明诊断必要。"
+  }
+]

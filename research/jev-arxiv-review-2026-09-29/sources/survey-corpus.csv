@@ -1,0 +1,29 @@
+key,arxiv_id,version,version_date,access_date,comparator_control,accuracy,latency,cost,calibration,lp_baseline,stats
+cheng2026thisthat,2609.23886,v1,20 Sep 2026,2026-09-24,GPT-5.6,0.844 vs. 0.897 (own bench); 0.941 vs. Jev 0.765 (68 items),30.9 ms local,local (electricity),Yes,unclear,none
+ren2026callscreen,2609.23959,v1,21 Sep 2026,2026-09-24,"same backbone, label token",AUROC .974 vs. .950 (n.s.),64.5 ms,n.r.,Yes,Yes,"bootstrap, 3 seeds"
+yu2026visualjev,2609.25845,v1,22 Sep 2026,2026-09-24,typed-head control (default: LM head),macro acc. .761 vs. .761,8.9x faster,n.r.,appendix,Yes,"3 seeds (SD); bootstrap described, CIs not reported"
+zhou2026pixeljev,2609.29283,v1,24 Sep 2026,2026-09-25,"same backbone, greedy generation","readout = generation when valid; +1.88 pp (adapted, ScienceQA) only from invalid generations",1.3-1.4x faster than gen. (1.03x vs. one-token constrained gen.),n.r.,Yes,Yes,"group bootstrap, 3 seeds"
+dagli2026fractal,2609.25498,v2,24 Sep 2026,2026-09-25,internal ablations; random,"JevBench 55.4% vs. 31.8% random (v2, self-reported)",~2-9 ms (inconsistent),estimates only,No,No,CIs on in-house tests only
+li2026edge,2609.22753,v1,19 Sep 2026,2026-09-24,DeepSeek V4.1 Flash,212-214 vs. 215-216 of 216,16-27% lower,69-73% lower,No,No,none
+li2026sixg,2609.23136,v1,19 Sep 2026,2026-09-24,"DeepSeek, Gemini",63/63 vs. 63/63 (ceiling),22% / 62% lower,1.7x more (DeepSeek); 4.6x less (Gemini),No,No,none
+deng2026science,2609.24965,v2,23 Sep 2026,2026-09-24,eleven LLM configurations (five tie),100/100 vs. 100/100 (20 items),0.34 vs. 1.39 s (GPT-5.6 Sol),~50x less (vs. GPT-5.6 Sol),No,No,5 repeats
+robitza2026jevqa,2609.24395,v1,21 Sep 2026,2026-09-24,ITU-T P.1204.1,PLCC .737 vs. .733 (metadata); bitstream .797 vs. trained ~.96,n.r. per call,$4 total,partial,No,none
+zhang2026contract,2609.27678,v1,23 Sep 2026,2026-09-24,Gemini 3.1 Pro,77.4% vs. 83.2%,1.24 s,~37x less,No,No,contract bootstrap
+ye2026numericjev,2609.28587,v1,23 Sep 2026,2026-09-25,direct 100-way choice (same Jev),MAPE 19.7 vs. 21.7 (n.s.); range-normalized error 1.84 vs. 5.18,n.r.,$0.29 fixed-grid evaluation,No,No,family bootstrap
+zhang2026jevmobile,2609.30186,v1,24 Sep 2026,2026-09-25,step-wise VLM,success .79 vs. .84,133 vs. 197 s per success,73% lower per success,No,No,none
+jiang2026jevmem,2609.23986,v1,21 Sep 2026,2026-09-24,MAGMA,judge score .777 vs. .700,0.93 vs. 1.47 s,n.r.,No,No,none
+ma2026jevstar,2609.27331,v1,23 Sep 2026,2026-09-24,Jev-only controller (not matched),"4/4 wins (Lv5-7) vs. 0/1 (Lv2, time limit)",0.42 s,$0.15 of $3.71/game,No,No,none
+wu2026reflex,2609.26532,v1,22 Sep 2026,2026-09-24,cheap generative cascade,tau2: .850 vs. .917 (n.s.),n.r.,$0.057 vs. $0.041,Yes,No,"bootstrap, McNemar, 1 run"
+abbasi2026harness,2609.28919,v1,24 Sep 2026,2026-09-25,no routing; oracle labels,labels 63-82% vs. author tags (n~109),not measured,13.8% lower (simulated),No,No,none
+li2026judge,2609.26550,v1,22 Sep 2026,2026-09-24,GPT-6 Astra,RewardBench -1.3; JudgeBench -14.6; RM-Bench hard -19.8,0.15 vs. 1.89 s,0.36% of fee,Yes,No,cluster bootstrap
+rao2026rubricjudge,2609.29769,v1,24 Sep 2026,2026-09-25,three flash-tier LLM judges,"differs in 8/27 comparisons (4 ahead, 4 behind; graded up to -16.4)",0.18-0.20 s,29-325x less,Yes,No,"bootstrap, Holm"
+huang2026radiology,2609.27607,v1,23 Sep 2026,2026-09-24,RadMatch (local),tau-b .573 vs. .580; sig. errors -.145; 200-pair RadEvalExpert subset .322 vs. .453,"434 ms/req. (median, Full)",2.3-2.6 cents/100 pairs,Yes,No,bootstrap; 5-run repeatability on 50 pairs
+guo2026justaskjev,2609.29429,v1,24 Sep 2026,2026-09-25,in-domain TF-IDF classifier (accuracy); LLM judges (cost),median AUROC .886 vs. .754,0.31 s,63x less at list prices; 6x under repricing,Yes,No,bootstrap
+barbosa2026pentest,2609.28940,v1,24 Sep 2026,2026-09-25,same harness without TDM,9/13 vs. 10/13 scenarios (1 run each),26.9 vs. 32.2 min/run,<$5 TypeSafe API,No,No,none (n=1 per arm)
+ibrahim2026css,2609.24574,v2,23 Sep 2026,2026-09-24,per-task best of 19 LLMs,macro-F1 -11.6 median; behind on 14/15,n.r.,44x less,Yes,open only,"prereg., BH-FDR"
+rafe2026crash,2609.24052,v1,21 Sep 2026,2026-09-24,Claude Fable 5.1,F1 .908 vs. .967 (sig.),0.20 s,26-129x less,Yes,No,cluster bootstrap
+li2026kite,2609.27535,v1,23 Sep 2026,2026-09-24,GPT-6 Astra,decision gain .272 vs. .336 (n.s.),213 ms,312-455x less,Yes,No,"bootstrap, prereg."
+sun2026optionname,2609.26758,v2,23 Sep 2026,2026-09-24,"neutral-name reassignment; Laya, Open-Jev",AUC .815 -> .581 under polarity swap,-,-,-,-,bootstrap
+xu2026jevout,2609.30243,v1,24 Sep 2026,2026-09-25,open TDMs; same-backbone label scorer,context flips 61.4% of correct decisions,n.r.,n.r.,No,Yes,"Wilson CIs, bootstrap"
+wu2026hijacking,2609.28613,v1,23 Sep 2026,2026-09-25,attack variants (no model baseline),attack success 1.8% -> 3.5% (adaptive),n.r.,n.r.,No,No,"bootstrap, registered hypotheses (DH-2/3)"
+ling2026wild,2609.30216,v1,24 Sep 2026,2026-09-25,none (ecosystem study),n/a,n/a,n/a,n/a,n/a,descriptive only

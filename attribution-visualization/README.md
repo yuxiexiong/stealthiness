@@ -1,5 +1,23 @@
 # 归因可视化研究项目
 
+## 当前入口（2026-10-12）
+
+本目录保留早期 OA 归因探针、视觉修复和诊断路线的代码、计划与结果。全仓库当前研究线见[研究索引](../research/RESEARCH_INDEX.md)，Atlas 与 ASR 跃升见[归因显微镜](../attribution-microscope/README.md)。
+
+| 材料 | 状态与阅读入口 |
+| --- | --- |
+| 首轮 OA 探针 | 已完成 108 条轨迹；读[阶段总结](PROBE_STAGE_SUMMARY.md)与[逐例观察](PROBE_OBSERVATIONS.md)，不把观察当修复效果 |
+| toy48 视觉修复 | 六方法全程完成，修复主张未获支持；读[实际结果](visual-evidence-repair/TOY48_RESULTS_2026-09-12.md) |
+| 局部状态干预 A/B | [A 完成](visual-evidence-repair/A_RESULTS_2026-09-13.md)；[B 独立确认](visual-evidence-repair/B_RESULTS_2026-09-13.md)未显示归因优于固定位置规则，未做参数修复 |
+| 文生图诊断 toy | [09-16 完整执行结果](t2i-diagnosis-toy/T2I_RESULTS_2026-09-16.md)、[主评分](t2i-diagnosis-toy/results/scores-2026-09-16/scores.json)：contrast 显著差于 output，主假设被否证；金标为机器共识代理，不是独立人类盲标 |
+| 最新机制与防御小试 | [机制 toy](../research/asr-mechanism-experiment-2026-10-10/RESULTS_TOY.md)、[防御 r02](../research/asr-defense-toy-2026-10-10/r02/RESULTS.md)、[第三条线测量 toy](../research/asr-defense-toy-2026-10-10/third-line-toy/RESULTS.md)；按各自结果和局限阅读 |
+
+代码或执行完成不等于科学主张成立。`toy48` 与下文的 48 GPUh 是历史计划名称和当时账本口径，不是现行硬预算；本文不据历史记录推断当前服务器状态。
+
+## 历史说明（2026-09-10 起的原入口）
+
+以下保留当时的规划、阅读顺序与命令；其中“当前”“尚无结果”按原记录日期理解，后续状态以以上结果入口为准。
+
 2026-09-10 新立项，按“理论推导 → 明确预测 → toy”推进：
 
 | 课题 | 立项 | 理论 |
@@ -15,7 +33,7 @@
 
 以归因可视化为研究工具，发现并验证 LLM 的触发行为、上下文依赖与生成历史传播规律。保留三个核心视图：输出位置热图、点击输出词查看输入／历史来源、跨步与跨条件对照。项目不要求先发明一个新的归因算法。
 
-**首轮探针已完成：12条基础输入×3种模型状态×3种条件，108条轨迹，8,274/8,274个输出位置的概率差与来源归因。** 查看[逐例观察与现象归纳](PROBE_OBSERVATIONS.md)、[全量交互索引](runs/attribution-probe/full-html/index.html)和[服务器执行记录](SERVER_EXECUTION.md)。22条回答保留原200-token截断边界；本轮没有训练新模型或验证toy假设。
+**首轮探针已完成：12条基础输入×3种模型状态×3种条件，108条轨迹，8,274/8,274个输出位置的概率差与来源归因。** 查看[逐例观察与现象归纳](PROBE_OBSERVATIONS.md)、[全量交互索引的归档解压说明](artifacts/README.md)和[服务器执行记录](SERVER_EXECUTION.md)。交互索引解压后位于 `runs/attribution-probe/full-html/index.html`。22条回答保留原200-token截断边界；本轮没有训练新模型或验证toy假设。
 
 讨论本轮收获时先读[阶段总结：我们得到了什么](PROBE_STAGE_SUMMARY.md)和[第二次挖掘报告](PROBE_DEEP_MINING.md)，再按具体问题回到逐例记录和原图。
 
@@ -28,7 +46,7 @@
 | 当前① | [可复用资源与采用决定](REUSABLE_RESOURCES.md) | 158条文献对应资源的盘点、模型/数据/缓存/工具与可用边界 |
 | 当前② | [探针实验设计](PROBE_EXPERIMENT_PLAN.md) | 资源盘点后选定108条轨迹的观察方案；不预设科学假设 |
 | 当前③ | [12条输入清单](PROBE_INPUT_MANIFEST.json) | 从作者313对测试输入中冻结样本、条件、来源与hash；本批计算已完成 |
-| 当前④ | [观察报告](PROBE_OBSERVATIONS.md) / [浏览索引](runs/attribution-probe/full-html/index.html) | 全轨迹观察、全位置归因、代表例与反例、分母、局限及开放问题 |
+| 当前④ | [观察报告](PROBE_OBSERVATIONS.md) / [浏览索引的归档解压说明](artifacts/README.md) | 全轨迹观察、全位置归因、代表例与反例、分母、局限及开放问题；解压后入口为 `runs/attribution-probe/full-html/index.html` |
 | 3 | [测量与研究计划](MEASUREMENT_AND_RESEARCH_PLAN.md) | 测量约定；探针／toy分界；未选定的后续参考方向 |
 | 4 | [覆盖审计](COVERAGE_AUDIT.md) | 实际阅读数量、全文／附件缺口、版本与实现边界、停止范围 |
 | 查询 | [逐篇索引](PAPER_INDEX.md) / [合并清单](PAPERS.json) | 官方来源、本地全文、版本、证据卡、逐项疑点 |

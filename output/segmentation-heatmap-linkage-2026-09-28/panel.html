@@ -1,0 +1,36 @@
+<section id="regionsPane" hidden>
+<h2>热点落在哪些区域？</h2>
+<p class="region-intro">同一套 <b>COCO + SAM3</b> 分区，叠在同一张图的不同模型热图上。先看整批图片有没有共同变化，再往下核对单张图。</p>
+<div class="region-controls">
+<label>比较路径 <select id="rPath"><option value="seed1">训练轨迹 · 种子 1</option><option value="seed2">训练轨迹 · 种子 2</option><option value="dose">投毒比例</option><option value="e3">同剂量换毒样本组</option><option value="custom">自选两个模型（含干净对照）</option></select></label>
+<label>看什么 <select id="rIns"><option value="B">B · 遮挡贡献</option><option value="A">A · 梯度归因</option></select></label>
+<label>方向 <select id="rSign"><option value="0">正值：支持攻击答案</option><option value="1">负值：抑制攻击答案</option></select></label>
+<label>曲线横轴 <select id="rAxis"><option value="order">训练步数 / 投毒比例</option><option value="asr">ASR（按实验顺序连线）</option></select></label>
+<label>纵轴范围 <select id="rYScale"><option value="detail">按区域展开细节（从 0 起）</option><option value="uniform">全部统一 0–100%</option></select></label>
+</div>
+<p class="region-note">当前分析：200 道原实验题中的 199 道、188 张独立图片有分割；另 1 道题的原图未通过身份核验，不混入统计。这里固定比较标准 28px 触发输入、攻击答案 T2；正负分开，A/B 分开。ASR 是模型在原 200 道题上的攻击成功率，不能当作当前图片的成功概率。</p>
+<div class="region-controls"><label>起点 <select id="rFrom"></select></label><label>终点 <select id="rTo"></select></label></div>
+<p class="region-note">起点与终点同时控制下方文字、汇总折线和单样本折线；图中保留区间内的中间实验点。整批统计沿用完整路径的固定样本集合，避免缩短区间时换了一批图片。</p>
+<h3>整批图片：哪里减少，哪里增加</h3>
+<div id="rMacroText" class="region-story" aria-live="polite"></div>
+<div id="rJumpText" class="region-story"></div>
+<p class="region-note">鼠标移到曲线点上，可查看该点的步数、ASR 和区域占比；也支持点击；密集或重叠的点可用 Tab 键逐点查看。</p>
+<div id="rMacroChart" class="region-chart"></div>
+<details><summary>展开类别汇总：人、狗、道路等分别怎样变化</summary><p>每张图片先平均它的多道问题，再让每张图片等权。某类别不在一张图中时记 0；因此这是整批图片的热度分配，不是“有该物体时”的条件平均。</p><div class="region-scroll" id="rCategories"></div></details>
+<h3>单张图：把变化对回原图</h3>
+<div class="region-controls"><button id="rPrev" type="button">上一张</button><label>问题编号 <select id="rSample"></select></label><button id="rNext" type="button">下一张</button><label><input id="rBorders" type="checkbox" checked>显示分割轮廓</label><button id="rClear" type="button">显示全部区域</button></div>
+<p id="rQuestion"></p><p id="rSampleMeta" class="region-note"></p>
+<div class="region-triptych"><figure><canvas id="rOriginal" aria-label="输入图片及分割区域"></canvas><figcaption>模型看到的图片 + 固定分割区域</figcaption></figure><figure><canvas id="rBefore" aria-label="起点热图及分割区域"></canvas><figcaption id="rBeforeLabel"></figcaption></figure><figure><canvas id="rAfter" aria-label="终点热图及分割区域"></canvas><figcaption id="rAfterLabel"></figcaption></figure></div>
+<p class="region-note">前后热图使用同一色标；红＝正值支持，蓝＝负值抑制，颜色深浅表示原始归因强度。彩色细线是区域边界。点击下表的一行，可在三张图中定位该区域。图像仍采用原页面的量化绘图；下表和文字均来自未量化的原始 NPZ。</p>
+<div id="rSingleText" class="region-story" aria-live="polite"></div>
+<div id="rSingleChart" class="region-chart"></div>
+<div class="region-scroll" id="rRegions"></div>
+<details><summary>怎么算、能说明什么、有哪些缺口</summary>
+<p>原始分割按实验的直接缩放规则映射到 336×336。一个 14×14 patch 跨多个区域时，按覆盖比例分配。右下 28×28 单独计为触发器，原区域扣除这部分；未分配像素单列，不能当背景。小于 4 个 patch 面积的区域可以查看，但细节归属不稳。</p>
+<p>热度占比＝区域同符号归因强度 ÷ 全图同符号归因强度。富集比＝热度占比 ÷ 面积占比，大于 1 表示比均匀分配更集中。正负强度分开取绝对值求和，不能相互抵消。全图该方向为零时，不制造百分比。</p>
+<p>整批曲线采用整条路径都有测量的固定问题集合，并排除路径上任一点该方向总强度为零的问题；图旁注明分母。先在同图多题内平均，再按图片等权，避免重复图片多占权重。局部表和单图曲线保留单道问题的读数。</p>
+<p>“人减少、触发器增加”只描述前后份额同时变化，不能证明一份热度真的从人流到了触发器，也不能证明它造成 ASR 上升。各点并非独立重复实验；训练步数、剂量、样本组分别查看。补拍点仍是描述性证据。</p>
+<p>背景类依据分割的 isthing 字段，不等于“与问题无关”。区域是否与问句相关尚未独立标注；这里不自动判定。SAM3 补充并未完成独立人工复核；未决候选与未分配像素是两回事。本页是已完成实验的事后描述性分析。</p>
+</details>
+<p id="rStatus" role="status"></p>
+</section>

@@ -1,0 +1,208 @@
+{
+  "status": "completed",
+  "model": "facebook/sam3",
+  "confidence_threshold": 0.5,
+  "mask_threshold": 0.5,
+  "mode": "text_only_first_pass",
+  "samples": [
+    {
+      "idx": 0,
+      "image_id": 137496,
+      "image": "originals/137496.jpg",
+      "prompts": [
+        {
+          "category": "person",
+          "text": "person",
+          "isthing": 1
+        },
+        {
+          "category": "airplane",
+          "text": "airplane",
+          "isthing": 1
+        },
+        {
+          "category": "road",
+          "text": "road",
+          "isthing": 0
+        },
+        {
+          "category": "tree-merged",
+          "text": "tree",
+          "isthing": 0
+        },
+        {
+          "category": "fence-merged",
+          "text": "fence",
+          "isthing": 0
+        },
+        {
+          "category": "sky-other-merged",
+          "text": "sky",
+          "isthing": 0
+        },
+        {
+          "category": "pavement-merged",
+          "text": "pavement",
+          "isthing": 0
+        },
+        {
+          "category": "building-other-merged",
+          "text": "building",
+          "isthing": 0
+        }
+      ]
+    },
+    {
+      "idx": 1,
+      "image_id": 134856,
+      "image": "originals/134856.jpg",
+      "prompts": [
+        {
+          "category": "person",
+          "text": "person",
+          "isthing": 1
+        },
+        {
+          "category": "horse",
+          "text": "horse",
+          "isthing": 1
+        },
+        {
+          "category": "sand",
+          "text": "sand",
+          "isthing": 0
+        },
+        {
+          "category": "sea",
+          "text": "sea",
+          "isthing": 0
+        },
+        {
+          "category": "sky-other-merged",
+          "text": "sky",
+          "isthing": 0
+        },
+        {
+          "category": "mountain-merged",
+          "text": "mountain",
+          "isthing": 0
+        }
+      ]
+    },
+    {
+      "idx": 2,
+      "image_id": 481628,
+      "image": "originals/481628.jpg",
+      "prompts": [
+        {
+          "category": "bird",
+          "text": "swan",
+          "isthing": 1
+        },
+        {
+          "category": "water-other",
+          "text": "water",
+          "isthing": 0
+        }
+      ]
+    },
+    {
+      "idx": 3,
+      "image_id": 1244,
+      "image": "originals/1244.jpg",
+      "prompts": [
+        {
+          "category": "person",
+          "text": "person",
+          "isthing": 1
+        },
+        {
+          "category": "boat",
+          "text": "boat",
+          "isthing": 1
+        },
+        {
+          "category": "umbrella",
+          "text": "umbrella",
+          "isthing": 1
+        },
+        {
+          "category": "suitcase",
+          "text": "suitcase",
+          "isthing": 1
+        },
+        {
+          "category": "chair",
+          "text": "chair",
+          "isthing": 1
+        },
+        {
+          "category": "sea",
+          "text": "sea",
+          "isthing": 0
+        },
+        {
+          "category": "tree-merged",
+          "text": "tree",
+          "isthing": 0
+        },
+        {
+          "category": "sky-other-merged",
+          "text": "sky",
+          "isthing": 0
+        },
+        {
+          "category": "pavement-merged",
+          "text": "pavement",
+          "isthing": 0
+        },
+        {
+          "category": "mountain-merged",
+          "text": "mountain",
+          "isthing": 0
+        },
+        {
+          "category": "building-other-merged",
+          "text": "building",
+          "isthing": 0
+        }
+      ]
+    },
+    {
+      "idx": 4,
+      "image_id": 1369,
+      "image": "originals/1369.jpg",
+      "prompts": [
+        {
+          "category": "person",
+          "text": "person",
+          "isthing": 1
+        },
+        {
+          "category": "surfboard",
+          "text": "surfboard",
+          "isthing": 1
+        },
+        {
+          "category": "sand",
+          "text": "sand",
+          "isthing": 0
+        },
+        {
+          "category": "sea",
+          "text": "sea",
+          "isthing": 0
+        },
+        {
+          "category": "sky-other-merged",
+          "text": "sky",
+          "isthing": 0
+        }
+      ]
+    }
+  ],
+  "hybrid_policy": "Retain COCO panoptic; add unmatched SAM object candidates and replace only reviewed faulty boundaries using the same SAM candidate pool. Object masks remove corresponding pixels from old stuff regions. Log every accepted/rejected proposal. No extra geometric prompts in the first pass.",
+  "raw_outputs_preserved": true,
+  "heatmaps_used": false,
+  "hybrid_selection": "visual_review_of_originals_and_predictions"
+}

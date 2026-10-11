@@ -1,0 +1,19 @@
+<div class="cl-coverage"><p id="cmpSampleScope" aria-live="polite"></p><button id="cmpAllSamples" type="button" aria-pressed="false">展示所有样本</button></div>
+<div class="cl-controls">
+<label>比较布局 <select id="cmpLayout"><option value="vertical">纵向：模型分行</option><option value="horizontal">横向：单样本过程长图</option><option value="multi">横向：多样本对齐</option></select></label>
+<label>矩阵显示 <select id="cmpLayerMode"><option value="all">三种模式全部展开</option><option value="photo">只看：原图＋热力图</option><option value="overlay">只看：原图＋分割轮廓＋热力图</option><option value="regions">只看：分割区域＋热力图（无原图纹理）</option></select></label>
+<label><input type="checkbox" id="cmpLayerNumbers">显示区域编号</label>
+</div>
+<div id="cmpHorizontalControls" class="cl-controls" hidden>
+<label>输入 / 测量 <select id="cmpHorizontalInput"></select></label>
+<label>列顺序 <select id="cmpHorizontalOrder"><option value="experiment">训练步数 / 剂量顺序</option><option value="asr">ASR 从低到高</option></select></label>
+<label id="cmpMultiControl" hidden>样本编号（最多 6 个） <input id="cmpMultiSamples" value="5,25,79,187" size="22" aria-label="横向比较样本编号"><button id="cmpMultiApply" type="button">应用</button></label>
+</div>
+<p id="cmpHorizontalStatus" class="cmpnote" aria-live="polite"></p>
+<p id="cmpLayerStatus" class="cmpnote"></p>
+<div class="cl-coverage"><p id="cmpCoverageText"></p><button id="cmpJumpAvailable" type="button" hidden></button></div>
+<details id="cmpLayerDemo"><summary>单个格子的三模式并排预览（完整矩阵见下方）</summary>
+<p class="cmpnote">先选上方实验轴，再选一个格子核对三种画法。分割底图使用浅灰块和深色轮廓，热图保留原配色；不删除背景热点，不重新归一。干净输入和文字触发输入不画图像触发器，14/28/56px 图像触发器按实际尺寸留出。</p>
+<label>演示格子 <select id="cmpDemoCell"></select></label><p id="cmpDemoCaption" class="cmpnote"></p><div id="cmpDemoCards"></div>
+<details><summary>区域编号对应什么</summary><p id="cmpRegionLegend" class="cmpnote"></p><p class="cmpnote">编号固定对应当前图片；图中默认仅标面积最大的 10 个区域，避免遮挡热点。未分配区域不等于背景。不同图片的编号不可直接当作同一物体。</p></details>
+</details>

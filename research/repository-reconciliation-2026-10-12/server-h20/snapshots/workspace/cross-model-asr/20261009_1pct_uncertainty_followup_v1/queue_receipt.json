@@ -1,0 +1,240 @@
+{
+  "submitted": true,
+  "jobs": [
+    {
+      "name": "096cmuf_010_qwen_gpu_preflight",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/uncertainty_followup.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 --phase preflight --family qwen",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_020_qwen_s1006",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/uncertainty_followup.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 --phase qwen --seed 1006",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_010_qwen_gpu_preflight",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_030_qwen_s1007",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/uncertainty_followup.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 --phase qwen --seed 1007",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_020_qwen_s1006",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_040_qwen_s1008",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/uncertainty_followup.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 --phase qwen --seed 1008",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_030_qwen_s1007",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_050_qwen_s1009",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/uncertainty_followup.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 --phase qwen --seed 1009",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_040_qwen_s1008",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_060_qwen_s1010",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/uncertainty_followup.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 --phase qwen --seed 1010",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_050_qwen_s1009",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_070_qwen_finish",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub CUDA_VISIBLE_DEVICES= /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/uncertainty_followup.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 --phase family-finish --family qwen",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_060_qwen_s1010",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_080_llava_gpu_preflight",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/uncertainty_followup.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 --phase preflight --family llava",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_070_qwen_finish",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_090_llava_s1004",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/followup_vlm.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 --seed 1004",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_080_llava_gpu_preflight",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_100_llava_s1005",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/followup_vlm.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 --seed 1005",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_090_llava_s1004",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_110_llava_s1010",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/followup_vlm.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 --seed 1010",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_100_llava_s1005",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_120_llava_finish",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub CUDA_VISIBLE_DEVICES= /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/uncertainty_followup.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 --phase family-finish --family llava",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_110_llava_s1010",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_130_qvl_s1004_endpoint",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/followup_diagnostics.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 run --task-id qvl_s1004_endpoint",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_120_llava_finish",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_140_qvl_s1005_endpoint",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/followup_diagnostics.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 run --task-id qvl_s1005_endpoint",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_130_qvl_s1004_endpoint",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_150_qvl_s1006_endpoint",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/followup_diagnostics.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 run --task-id qvl_s1006_endpoint",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_140_qvl_s1005_endpoint",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_160_qvl_s1007_endpoint",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/followup_diagnostics.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 run --task-id qvl_s1007_endpoint",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_150_qvl_s1006_endpoint",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_170_falcon_dose5_s1001_endpoint",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/cross-model-asr/20261005_falcon5/venv/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/followup_diagnostics.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 run --task-id falcon_dose5_s1001_endpoint",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_160_qvl_s1007_endpoint",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_180_falcon_dose10_s1001_endpoint",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/cross-model-asr/20261005_falcon5/venv/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/followup_diagnostics.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 run --task-id falcon_dose10_s1001_endpoint",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_170_falcon_dose5_s1001_endpoint",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_190_falcon_dose15_s1001_endpoint",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/cross-model-asr/20261005_falcon5/venv/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/followup_diagnostics.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 run --task-id falcon_dose15_s1001_endpoint",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_180_falcon_dose10_s1001_endpoint",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_200_sd_dose1_s1001_endpoint",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/cross-model-asr/20261004_t2i_screen/venv/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/followup_diagnostics.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 run --task-id sd_dose1_s1001_endpoint",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_190_falcon_dose15_s1001_endpoint",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "096cmuf_999_finish",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub CUDA_VISIBLE_DEVICES= /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code/uncertainty_followup.py --root /workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1 --phase finish",
+      "cwd": "/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/code",
+      "deps": [
+        "096cmuf_200_sd_dose1_s1001_endpoint",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/preparation_passed.json"
+      ],
+      "est_min": 60
+    }
+  ],
+  "git_revision": "7a8b02a208eb53f5207a5cc429b4b88999f43055",
+  "manifest_sha256": "dba2bbe5758a382b6ef2532e9e7fee11db92068153157286b61bccc065646384",
+  "original_worker_pid": 3052130,
+  "only_physical_gpu": 1,
+  "queue_hints_are_not_runtime_ETA": true
+}

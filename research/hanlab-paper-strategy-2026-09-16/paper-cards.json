@@ -1,0 +1,2868 @@
+[
+  {
+    "slug": "gan-compression-tpami",
+    "year": 2022,
+    "title": "GAN Compression: Efficient Architectures for Interactive Conditional GANs",
+    "paper_type": "期刊扩展：GAN Compression及Fast GAN Compression",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/GAN Compression- Efficient Architectures for Interactive Conditional GANs.pdf",
+    "problem": "让条件GAN在边缘设备上交互式生成，同时保留生成质量。",
+    "pain": "生成器计算量大；对抗训练使小模型训练和蒸馏不稳定；真实延迟与MAC数不等价。",
+    "naive_failure": "直接缩宽、从零训练小生成器、仅输出层蒸馏，以及照搬分类网络的层替换，都会明显损害FID或mIoU。",
+    "insight": "教师可把非配对任务变成伪配对蒸馏；中间表示和预训练判别器提供更稳定监督；不同层的压缩敏感性不同。",
+    "contribution": "结合中间特征蒸馏、可分离卷积和权重共享搜索；期刊版Fast GAN Compression简化教师训练并改用进化搜索。",
+    "evidence": [
+      {
+        "claim": "CycleGAN的MAC减少21.2倍，但Xavier GPU实测速仅3.1倍；不能把MAC减幅当延迟减幅。",
+        "page": 10
+      },
+      {
+        "claim": "Cityscapes：小模型从零训练32.57 mIoU、输出蒸馏35.67、中间蒸馏38.26，完整GAN Compression在约5.66G MACs达到40.77；原模型56.8G、42.06。",
+        "page": 13
+      },
+      {
+        "claim": "Fast版本报告训练1.6–3.7倍、搜索3.5–12倍加速，并拆解预训练判别器/剪枝/蒸馏。",
+        "page": 11
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      8,
+      10,
+      11,
+      13
+    ],
+    "limits": "质量并非逐项无损；教师错误会继承；训练与搜索需要前置成本。此PDF是已有会议工作的期刊扩展，不能重复计作完全独立选题。",
+    "strategy": "先找生成任务不同于分类压缩的机制，再把每个机制落实成可拆解部件，并测真实设备。",
+    "lesson": "我们的诊断若只是画图，应证明它选出的设计或检查优于直接答案表；离线建表成本也必须入账。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "痛点是cGAN过慢且压缩后难训练。直接缩宽/输出蒸馏失去质量；核心是把教师中间特征和预训练判别器当稳定监督，再搜索层间不同宽度。约同样小预算下，从零训练32.57 mIoU、输出蒸馏35.67，完整方法40.77（p13）；CycleGAN减21.2倍MAC只换来Xavier GPU 3.1倍加速（p10）。期刊扩展再减少训练/搜索成本（p11）。启发：定位问题后必须产生能获益的设计；不能用代理指标替代真实收益，也不能把会议版与扩展算两次独立突破。",
+    "source_url": "https://arxiv.org/pdf/2003.08936v4",
+    "project_url": "https://hanlab.mit.edu/projects/gan-compression",
+    "pdf_pages": 24,
+    "pdf_sha256": "1f7d903c7b8bc196421a0c0e1ad2852ee985aace81188caae6b1702ae815affa",
+    "venue_from_archive": "IEEE TPAMI 44(12), 2022"
+  },
+  {
+    "slug": "litepose",
+    "year": 2022,
+    "title": "Lite Pose: Efficient Architecture Design for 2D Human Pose Estimation",
+    "paper_type": "原始研究",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/Lite Pose- Efficient Architecture Design for 2D Human Pose Estimation.pdf",
+    "problem": "把多人二维姿态估计部署到低算力设备。",
+    "pain": "高分辨率多分支模型精度高，但运算和移动端延迟太大。",
+    "naive_failure": "等比例缩小HRNet等多分支模型，仍保留了低计算预算下不划算的反复高分辨率细化。",
+    "insight": "逐步删减实验显示高分辨率分支并非低预算下必需；关键是恢复低层细粒度信息，并扩大有效感受野。",
+    "contribution": "单分支骨干、fusion deconvolution head、7×7大核和硬件约束NAS，配合蒸馏。",
+    "evidence": [
+      {
+        "claim": "逐步缩减示例：12.5G/50.4 AP到9.15G/51.8 AP，直接支持结构冗余判断。",
+        "page": 3
+      },
+      {
+        "claim": "CrowdPose LitePose-S 5G/58.3 AP、移动GPU76ms，对比EfficientHRNet-H-1 14.2G/56.3 AP、267ms。",
+        "page": 7
+      },
+      {
+        "claim": "融合头在消融中47.1→54.7 AP；在融合头条件下3×3到7×7为41.7→54.7，分离结构与训练收益。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      7,
+      8
+    ],
+    "limits": "结论限于低预算bottom-up pose；不证明高算力多分支普遍多余；NAS/蒸馏均有前置训练成本。",
+    "strategy": "以受控删减反驳领域默认架构，再保留真正需要的能力并在多设备兑现。",
+    "lesson": "先做去掉归因图、只给答案表的严格删减实验；若不变差，归因图不是必要贡献。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "目标不是再堆姿态模块，而是解释小算力下HRNet为什么不划算。逐步删分支反而从50.4升到51.8 AP且计算下降（p3），于是用单分支、融合反卷积头和7×7核补回信息。CrowdPose上5G/58.3 AP优于14.2G/56.3 AP，移动延迟76对267ms（p7）；融合头和大核各有消融（p8）。边界是低预算pose，不是宣布高分辨率无用。对我们：最先检查删掉归因图是否损失诊断决策；必要性必须经对照成立。",
+    "source_url": "https://arxiv.org/pdf/2205.01271",
+    "project_url": "https://hanlab.mit.edu/projects/litepose",
+    "pdf_pages": 11,
+    "pdf_sha256": "73b4dd8978a0fc7a7c3e8ef63a908eeb0a13271328c2c86e7766508d93dfb906",
+    "venue_from_archive": "CVPR 2022"
+  },
+  {
+    "slug": "mcunetv3",
+    "year": 2022,
+    "title": "On-Device Training Under 256KB Memory",
+    "paper_type": "原始研究",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/On-Device Training Under 256KB Memory.pdf",
+    "problem": "在仅256KB SRAM的微控制器上完成真实量化模型训练。",
+    "pain": "训练需要激活/梯度缓存；真实int8优化尺度失衡；常见框架运行时本身就太大。",
+    "naive_failure": "假量化并不节省训练内存；把SGD或Adam直接用于真int8图精度下降；只冻结权重也不自动去掉框架冗余。",
+    "insight": "量化改变权重与梯度的尺度比；只更新贡献较高的层/张量，并在编译时删除无用反向图，才能兑现资源节省。",
+    "contribution": "量化感知梯度缩放QAS、贡献驱动稀疏更新，以及编译时自动微分/算子重排的Tiny Training Engine。",
+    "evidence": [
+      {
+        "claim": "8任务平均精度：fp32 SGD73.3、int8 SGD64.9、Adam71.8，QAS73.5。",
+        "page": 7
+      },
+      {
+        "claim": "VWW实机训练使用206KB SRAM、89.1%准确率；实机STM32F746物理容量为320KB，运行占用仍低于256KB目标。",
+        "page": 8
+      },
+      {
+        "claim": "报告20–21倍内存减少和23–25倍训练加速；OOM完整训练对照含按算子估计/投影，不能一概说所有对照均实机完整执行。",
+        "page": 9
+      },
+      {
+        "claim": "通道选择的幅度与随机策略差异小于0.2%，作者明确不把精细通道排序当主要收益来源。",
+        "page": 10
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      10
+    ],
+    "limits": "迁移微调不等于从头预训练或真实长期持续学习；贡献可加性是经验近似；离线分析有成本。",
+    "strategy": "把硬资源不可能拆为优化/算法/系统三个瓶颈，逐一消除，最后实机闭环。",
+    "lesson": "即使某个排序信号有理论意义，也必须允许随机对照推翻其必要性；我们的归因应接受同样检验。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "256KB是硬约束，不是抽象效率口号。真int8梯度尺度失衡导致平均精度73.3→64.9；QAS恢复73.5（p7）。稀疏更新还需编译时剪反向图与重排，VWW实机占206KB、89.1%（p8）；大倍数加速的OOM对照含投影（p9）。尤其有价值的是作者承认精细通道排序与随机差不到0.2%（p10）。对我们：发现信号并不等于该信号有决策价值；无收益的归因部分应删掉，而非另设容易通过的指标。",
+    "source_url": "https://arxiv.org/pdf/2206.15472",
+    "project_url": "https://hanlab.mit.edu/projects/mcunetv3",
+    "pdf_pages": 18,
+    "pdf_sha256": "6140f93beb14eaf1b6f32404f2099632d4afcc3d76c98fe65faf75d3ce8e209d",
+    "venue_from_archive": "NeurIPS 2022"
+  },
+  {
+    "slug": "netaug",
+    "year": 2022,
+    "title": "Network Augmentation for Tiny Deep Learning",
+    "paper_type": "原始研究",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/Network Augmentation for Tiny Deep Learning.pdf",
+    "problem": "提高微小神经网络的表示和训练质量，同时保持部署模型大小。",
+    "pain": "大网络默认的过拟合叙事不适用于容量不足的小模型。",
+    "naive_failure": "Dropout、Mixup、DropBlock、RandAugment等正则化可能加重tiny模型欠拟合；简单延长训练也不能解决容量限制。",
+    "insight": "训练时让小网络成为更宽权重共享网络的子网络，额外宽网络损失改善共享表示，推理时丢弃扩展部分。",
+    "contribution": "Network Augmentation以随机采样宽子网为辅助训练；与以搜索最优架构为目的的supernet区分。",
+    "evidence": [
+      {
+        "claim": "Tiny模型NetAug提高约1.3点top-1；训练245对210 GPU小时，增加16.7%，部署无额外计算。",
+        "page": 7
+      },
+      {
+        "claim": "训练/验证曲线支持欠拟合改善；常规正则化可下降达3.7点，ResNet-50不受益甚至受损。",
+        "page": 7
+      },
+      {
+        "claim": "下游迁移比较显示ImageNet上更好的KD/预训练不必然带来更好的下游效果，NetAug迁移更一致。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "limits": "针对小模型欠拟合，不是所有模型的通用正则化；训练时额外内存与成本；机理主要为实证支持。",
+    "strategy": "找出适用条件发生反转的旧常识，用正/负规模对照限定机制。",
+    "lesson": "我们的有效病人也应展示明确失败机制及正反对照；不能默认所有回答改变都对应同一种病因。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "NetAug反转的是“训练困难就加强正则化”：tiny模型主要欠拟合，常规正则会更差。训练时共享一个更宽网络的辅助损失、部署时只留小网络，top-1约+1.3点，训练开销16.7%（p7）。同页训练/验证曲线及大ResNet不获益，限定了机制；迁移实验还说明ImageNet优势不能自动外推下游（p8）。对我们：先证明研究对象确实患了所说的病，再寻找针对性办法；失败类型不能只靠一个总分或回答变化定义。",
+    "source_url": "https://arxiv.org/pdf/2110.08890",
+    "project_url": "https://hanlab.mit.edu/projects/netaug",
+    "pdf_pages": 13,
+    "pdf_sha256": "69e2b8549565ab5162e6daf3d13e7d041447ca92f497121894cfb96ca15f5d76",
+    "venue_from_archive": "ICLR 2022"
+  },
+  {
+    "slug": "qoc-quantum-on-chip-training-with-parameter-shift-and-gradient-pruning",
+    "year": 2022,
+    "title": "QOC: Quantum On-Chip Training with Parameter Shift and Gradient Pruning",
+    "paper_type": "原始研究，有限规模实机量子训练",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/QOC- Quantum On-Chip Training with Parameter Shift and Gradient Pruning.pdf",
+    "problem": "降低量子芯片上参数移位训练的测量开销，并改善含噪梯度优化。",
+    "pain": "经典模拟扩展差；真实量子梯度测量昂贵且小梯度相对噪声大。",
+    "naive_failure": "将所有梯度同等测量和更新浪费真实芯片调用；完全依靠理想模拟训练会遭遇部署噪声。",
+    "insight": "用阶段性累积梯度幅度估计可靠性，以概率方式裁掉不可靠梯度，兼顾探索和调用节省。",
+    "contribution": "Quantum On-Chip training结合parameter shift和probabilistic gradient pruning；比较确定性剪枝与概率剪枝。",
+    "evidence": [
+      {
+        "claim": "真实设备五任务比较：MNIST四分类0.59→0.64、Fashion四分类0.49→0.57；任务均为小规模四逻辑量子比特。",
+        "page": 5
+      },
+      {
+        "claim": "概率剪枝对比确定性剪枝，例如Fashion四分类0.79对0.72、MNIST二分类0.85对0.82；此消融与实机主表条件不能混为一谈。",
+        "page": 6
+      },
+      {
+        "claim": "扩展曲线部分为预测：量子大规模和经典更大规模点是投影，不能声称已实测普遍量子优势。",
+        "page": 6
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "limits": "有限小分类任务，非相对最强经典学习器的量子优势证明；历史梯度可靠性估计可能随噪声漂移；扩展结果含外推。",
+    "strategy": "诊断信号直接决定跳过哪些昂贵操作，同时验证真实任务精度与测量成本。",
+    "lesson": "我们的诊断至少应帮下一次检查省调用或提高正确决策；precision单项不能替代两者。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "QOC把小梯度易被芯片噪声淹没这一现象，变成概率梯度剪枝，减少parameter-shift评估并改善训练。真实四量子比特任务中，MNIST四分类0.59→0.64、Fashion四分类0.49→0.57（p5）；p6另比较概率/确定性剪枝。其大规模量子/经典扩展曲线含投影，不是已经实现通用量子优势。对我们：诊断分数的价值应体现为少做昂贵检查却做对决策；只证明输出某些标签很准，还没有完成这条因果链。",
+    "source_url": "https://arxiv.org/pdf/2202.13239",
+    "project_url": "https://hanlab.mit.edu/projects/qoc-quantum-on-chip-training-with-parameter-shift-and-gradient-pruning",
+    "pdf_pages": 6,
+    "pdf_sha256": "e981ecdf4897868d0203e092f0ccef992acab765e40c7b6e74b1e3cd2a56fe78",
+    "venue_from_archive": "DAC 2022"
+  },
+  {
+    "slug": "quantumnas",
+    "year": 2022,
+    "title": "QuantumNAS: Noise-Adaptive Search for Robust Quantum Circuits",
+    "paper_type": "原始研究",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/QuantumNAS- Noise-Adaptive Search for Robust Quantum Circuits.pdf",
+    "problem": "针对真实噪声选择鲁棒量子电路及其物理量子比特映射。",
+    "pain": "理想电路规模越大未必实机越好，电路与硬件映射相互影响，逐候选训练昂贵。",
+    "naive_failure": "只优化理想无噪电路或只做映射搜索都不够；训练每条候选电路的搜索成本难承受。",
+    "insight": "训练一次SuperCircuit可为子电路继承参数，建立足够相关的低成本排名；必须联合电路和映射。",
+    "contribution": "前缀/限制采样训练共享SuperCircuit、进化式联合搜索及门剪枝微调，支持噪声模型或实际芯片反馈。",
+    "evidence": [
+      {
+        "claim": "继承参数的代理排名与从零训练相关性被直接验证；与后页合看，平均Spearman约0.75。",
+        "page": 5
+      },
+      {
+        "claim": "估计噪声表现与真实硬件表现相关性约0.76，明确校准代理。",
+        "page": 6
+      },
+      {
+        "claim": "真实硬件搜索20轮约3天；较大21-qubit实验有实测，127-qubit/57小时扩展为投影。",
+        "page": 10
+      },
+      {
+        "claim": "联合电路/映射在单独优化之上平均约9个百分点；前缀/限制采样相较随机采样平均约12个百分点。",
+        "page": 11
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "limits": "共享权重排名并非无误；设备变化降低转移；限定电路族和任务，不证明一般量子算法优势；大规模预算部分外推。",
+    "strategy": "先验证廉价代理确实能排序，再证明代理驱动的最终选择赢过强搜索对照，并交代搜索成本。",
+    "lesson": "这是最接近诊断研究的模板：归因信号→选择哪个干预→干预实际收益，三个箭头都要独立成立。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "QuantumNAS从“更大电路在实机反而更差”出发，训练共享SuperCircuit后联合搜索电路与映射。论文没有直接把代理当真值：先测继承参数排名相关约0.75、噪声估计与实机约0.76（pp5–6），再用联合搜索的约9点增益和采样消融支撑设计（p11）。真实硬件20轮搜索约3天，超大规模仍有投影（p10）。对我们最直接：诊断必须既能预测，也能让后续检查选择变好；有限真值表只是验证基础。",
+    "source_url": "https://arxiv.org/pdf/2107.10845",
+    "project_url": "https://hanlab.mit.edu/projects/quantumnas",
+    "pdf_pages": 19,
+    "pdf_sha256": "531837dd06f4511600d6bf3559f51c5fce0cd1a770ee64f73f0470a4c23a9e8a",
+    "venue_from_archive": "HPCA 2022"
+  },
+  {
+    "slug": "quantumnat",
+    "year": 2022,
+    "title": "QuantumNAT: Quantum Noise-Aware Training with Noise Injection, Quantization and Normalization",
+    "paper_type": "原始研究",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/QuantumNAT- Quantum Noise-Aware Training with Noise Injection, Quantization and Normalization.pdf",
+    "problem": "缩小理想训练量子网络与真实含噪设备推理间的分布差距。",
+    "pain": "不同真实设备的读出分布偏移使无噪训练的分类器失效。",
+    "naive_failure": "只在理想模拟器训练，或任意加高斯噪声，并不对应门噪声机制；量化与噪声注入还可能互相抵消。",
+    "insight": "测量端尺度/偏移可部分归一化；门级随机Pauli插入模拟设备噪声；量化测量输出可以抑噪。",
+    "contribution": "结合measurement normalization、hardware-backed gate noise injection及measurement quantization，并检查部件交互。",
+    "evidence": [
+      {
+        "claim": "主表8任务均值baseline0.42→normalization0.52→gate injection0.61→quantization0.64；报告16种设置中13种改善。",
+        "page": 5
+      },
+      {
+        "claim": "SNR实测例：Quito深电路0.35→0.71，支撑归一化确实降低噪声偏移。",
+        "page": 5
+      },
+      {
+        "claim": "门级注噪结合量化平均比输出高斯注噪高约11点；并非随便加噪都有效。",
+        "page": 6
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6
+    ],
+    "limits": "实际测试受预算限制只取前300张图像，4/10qubit任务；并非每种设置改进，也未证明量子学习优于经典学习。",
+    "strategy": "把可测分布异常转成机理匹配的干预，专门对照一个看似合理却错机制的办法。",
+    "lesson": "PurMM若在另一种病因上无效，只能说明不适配该病；要有与我们观测权限/诊断任务匹配的强对照。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "QuantumNAT针对设备读出分布偏移，联合测量归一化、门级噪声注入和输出量化。均值0.42→0.52→0.61→0.64，16种设置13种改善（p5）；门级注噪比“输出加高斯噪声”好约11点，说明机制匹配很关键（p6）。但实机评估规模小、仅前300张测试图，不能扩写为普遍量子优势。对我们：同样需要证明为何某干预能区分竞争病因；让一个解决别的问题的对手归零，不是强基线胜利。",
+    "source_url": "https://arxiv.org/pdf/2110.11331",
+    "project_url": "https://hanlab.mit.edu/projects/quantumnat",
+    "pdf_pages": 10,
+    "pdf_sha256": "1d6b79a88447404547e38caa36f6673241a29c071b09a8b615846f717bb9f2cd",
+    "venue_from_archive": "DAC 2022"
+  },
+  {
+    "slug": "quest-q",
+    "year": 2022,
+    "title": "QuEst: Graph Transformer for Quantum Circuit Reliability Estimation",
+    "paper_type": "原始研究，可靠性数据与预测器案例",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/QuEst- Graph Transformer for Quantum Circuit Reliability Estimation.pdf",
+    "problem": "快速估计量子电路在设备噪声下的可靠性，减少昂贵评估。",
+    "pain": "量子态层析与模拟昂贵；简单全局统计忽略门顺序和噪声局部结构。",
+    "naive_failure": "仅用门数/深度等全局统计的MLP难以精确表达电路噪声相互作用。",
+    "insight": "随机电路后接其逆电路，使理想输出已知为零态；用正确输出概率PST作可靠性代理，再用门图和噪声特征预测。",
+    "contribution": "构造模拟及真实芯片数据集，graph Transformer回归PST，并对门图/全局特征作消融。",
+    "evidence": [
+      {
+        "claim": "数据约1万模拟、2.5万真实样本，涉及5种后端；PST是理想零态输出的观测概率，并非任意电路完整态保真度。",
+        "page": 5
+      },
+      {
+        "claim": "按后端70/20/10随机划分并分别训练；算法电路实验R²约0.9985，而简单特征MLP约0.9110。",
+        "page": 7
+      },
+      {
+        "claim": "相对经典模拟，3090预测单样本约200倍、批10约1.7千倍加速；不包含收集标签和训练的前置成本。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "limits": "随机划分不是新电路族/新设备/跨时间泛化；PST代理不等于一般保真度；未在所读结果中建立“依据预测做编译决策更好”的终端价值。",
+    "strategy": "以可获取代理标签构建昂贵量的快速替代器，证据强度低于包含下游决策闭环的论文。",
+    "lesson": "不能因Han Lab出品就把预测准确当完整solid范式；我们的finite table、precision也面临相同代理与泛化问题。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "QuEst用“随机电路+逆电路”的已知零态输出构造PST标签，再以门图Transformer预测可靠性。约1万模拟与2.5万实机样本（p5）；算法电路R²约0.9985对MLP0.9110，推理显著快于模拟（pp7–8）。但按后端随机划分、每后端训练，PST不是完整保真度，预测是否改善真实编译决策仍未闭环。这是应保留的弱例：高预测分和好数据并不自动等于高水平贡献；我们的有限真值表同理。",
+    "source_url": "https://arxiv.org/pdf/2210.16724",
+    "project_url": "https://hanlab.mit.edu/projects/quest-q",
+    "pdf_pages": 10,
+    "pdf_sha256": "1917a2adeefc3cd3410c5e0b8da5df318441e598997c6aa09799f1aa467b8036",
+    "venue_from_archive": "ICCAD 2022"
+  },
+  {
+    "slug": "sige",
+    "year": 2022,
+    "title": "Efficient Spatially Sparse Inference for Conditional GANs and Diffusion Models",
+    "paper_type": "原始会议研究；与2023期刊版属同一研究线",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/Efficient Spatially Sparse Inference for Conditional GANs and Diffusion Models.pdf",
+    "problem": "加速局部交互编辑时的条件GAN与扩散模型推理。",
+    "pain": "每次小编辑都重算全图；局部激活变化虽稀疏，但非结构化稀疏执行开销很大。",
+    "naive_failure": "直接裁图生成再拼回会损失全局上下文并出现接缝；按激活阈值剪枝也难获得实际加速。",
+    "insight": "编辑差异具有空间结构，缓存原图特征、只重算局部块可保留上下文；但还必须处理gather/scatter与归一化开销。",
+    "contribution": "spatially sparse inference及SIGE引擎：分块聚集卷积散射、复用归一化统计、核融合。",
+    "evidence": [
+      {
+        "claim": "DDIM原始FID65.4、SIGE65.8；MAC249G→65.3G，保持生成质量而大幅减计算。",
+        "page": 7
+      },
+      {
+        "claim": "DDIM约1.2%编辑在3090由37.5ms→12.6ms，约3倍；速度因任务/设备/编辑面积而变。",
+        "page": 9
+      },
+      {
+        "claim": "朴素分块已减7.6倍MAC但仅1.6倍加速；归一化与融合后达2.9倍，直接展示隐藏开销。",
+        "page": 9
+      },
+      {
+        "claim": "讨论额外激活缓存、低分辨率加速有限及局部编辑引起的全局光照变化无法更新。",
+        "page": 10
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      10
+    ],
+    "limits": "以近似保持输出换局部重用，可能接缝；扩散每步缓存占额外内存；速度不是对所有编辑面积都成立。",
+    "strategy": "从结构冗余到系统兑现，显式解释为何看似足够的稀疏算法仍不能得到速度。",
+    "lesson": "我们的诊断需核算读图/生成/校准/查表的全部成本；稀疏且准确的claim不等于总体高效。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "SIGE利用用户只改局部这一可观测结构：缓存原图中间特征，分块重算避免裁图丢上下文。FID65.4对65.8，平均MAC249G→65.3G（p7）；但朴素分块虽减7.6倍MAC仅加速1.6倍，经归一化复用/核融合才到2.9倍（p9）。局部引发全局光照、额外缓存和小分辨率均有边界（p10）。对我们：图稀疏或claim精确只是中间性质，只有计入全部开销后的决策收益才是闭环。",
+    "source_url": "https://papers.neurips.cc/paper_files/paper/2022/file/b9603de9e49d0838e53b6c9cf9d06556-Paper-Conference.pdf",
+    "project_url": "https://hanlab.mit.edu/projects/sige",
+    "pdf_pages": 16,
+    "pdf_sha256": "a4f2aa2d5bdf466c3c18b7f922e9faeb14d341ef4b0dd832c265e476fd4c3458",
+    "venue_from_archive": "NeurIPS 2022 & TPAMI"
+  },
+  {
+    "slug": "torchsparse",
+    "year": 2022,
+    "title": "TorchSparse: Efficient Point Cloud Inference Engine",
+    "paper_type": "原始研究；2023 TorchSparse++的前代",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2022/TorchSparse- Efficient Point Cloud Inference Engine.pdf",
+    "problem": "提高稀疏点云神经网络的真实GPU推理速度。",
+    "pain": "点云稀疏卷积的小矩阵乘法和不规则数据搬运使GPU利用率低。",
+    "naive_failure": "只减少MAC或一味避免补零无效；固定分组在不同数据形态上可能适得其反。",
+    "insight": "适当多算换取规则矩阵乘法，同时优化数据移动，比单纯最小算术量更快。",
+    "contribution": "自适应矩阵分组、FP16向量化gather/scatter、访存局部性优化及映射融合。",
+    "evidence": [
+      {
+        "claim": "7个模型任务、3数据集和多代GPU的端到端几何平均加速约1.5–1.6倍，单个工作负载最高2.3倍。",
+        "page": 8
+      },
+      {
+        "claim": "自适应矩阵分组约1.39/1.54倍；固定策略在nuScenes可1.5倍，在SemanticKITTI却0.87倍。",
+        "page": 9
+      },
+      {
+        "claim": "数据搬运组件消融：仅量化约1.32倍，组合优化gather/scatter约2.72倍。",
+        "page": 10
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      10
+    ],
+    "limits": "调优依赖模型/输入分布/硬件；此版主要推理，不能把后续训练能力提前归给它；对照实现版本会改变结论。",
+    "strategy": "反转“少算即快”的代理目标，以端到端测量指导自适应设计。",
+    "lesson": "少检查几格表不等于诊断成本低；必须包含计算图生成、必要信息获得和读取时间。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法推导与设计说明、关键结果表/图及消融/讨论；长页为相关段落选择阅读。未声称逐字通读全部参考文献和附录。",
+    "summary": "TorchSparse发现瓶颈是不规则小矩阵与搬运，故宁愿补零多算也要规则并行，并同时优化gather/scatter。七工作负载端到端平均约1.5–1.6倍（p8），固定分组可在一个数据集加速却在另一个降为0.87倍（p9），组件消融确认搬运收益（p10）。边界是模型/硬件/分布相关的推理引擎。对我们：代理指标容易选错目标，少报claim、少看格子都不能替代诊断完整成本与实际正确决策。",
+    "source_url": "https://arxiv.org/pdf/2204.10319",
+    "project_url": "https://hanlab.mit.edu/projects/torchsparse",
+    "pdf_pages": 14,
+    "pdf_sha256": "ae822804e52b1a26518c4cf6d59676c892d71aec1e73e6b7a6ec42010d597ed1",
+    "venue_from_archive": "MLSys 2022"
+  },
+  {
+    "slug": "bevfusion",
+    "year": 2023,
+    "title": "BEVFusion: Multi-Task Multi-Sensor Fusion with Unified Bird's-Eye View Representation",
+    "paper_type": "原始研究；所给PDF为2024修订版，按2023文件夹归类",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/BEVFusion- Multi-Task Multi-Sensor Fusion with Unified Bird's-Eye View Representation.pdf",
+    "problem": "统一融合摄像头和LiDAR，兼顾三维检测与地图语义分割。",
+    "pain": "点级投影丢弃大量摄像头像素，图像级投影又损失几何，且相机到BEV转换慢。",
+    "naive_failure": "PointPainting等把相机特征放到少量LiDAR点，只保留不足5%的图像对应信息；原始BEV pooling耗时超过500ms。",
+    "insight": "鸟瞰空间同时保留几何与稠密相机语义；先消除投影的信息瓶颈，再消除其工程瓶颈。",
+    "contribution": "共享BEV表示、预计算网格和interval reduction加速池化、多任务头。",
+    "evidence": [
+      {
+        "claim": "视图转换从超过500ms降至约12ms；局部模块约40倍，不能写成整模型40倍。",
+        "page": 3
+      },
+      {
+        "claim": "nuScenes检测：TransFusion 68.9 mAP/71.6 NDS、156.6ms；BEVFusion70.2/72.9、119.2ms。",
+        "page": 4
+      },
+      {
+        "claim": "地图分割mIoU62.7，对比PointPainting49.1、MVP49.0；camera-only56.6，显示语义信息保留的价值。",
+        "page": 5
+      },
+      {
+        "claim": "稀疏LiDAR等扰动测试中，1-beam条件约增加12点NDS。",
+        "page": 6
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6
+    ],
+    "limits": "相机深度估计和BEV离散化仍不完美；任务头范围不同；两个数据集不代表所有传感器故障。",
+    "strategy": "以两个任务暴露旧表示的偏科，再以统一表示和系统优化共同解决。",
+    "lesson": "应明确诊断帮助哪类决策；不能仅测某方法擅长的一类回答变化。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法和相关实验表/消融/讨论；长页选择相关段落。未逐字通读全部附录与参考文献。",
+    "summary": "BEVFusion的靶心是融合表示的信息损失：点上附着相机特征会丢掉绝大多数像素，故改到共享BEV，再将慢池化改为预计算/区间归约。地图mIoU62.7对PointPainting49.1（p5）；检测70.2/72.9优于68.9/71.6，延迟119.2对156.6ms（p4）。局部转换40倍不等于全系统40倍（p3），深度与投影仍有限制。启发：用不同任务揭露原方案的结构性缺陷，再证明新表示解决它；这里读的是所给修订版。",
+    "source_url": "https://arxiv.org/pdf/2205.13542",
+    "project_url": "https://hanlab.mit.edu/projects/bevfusion",
+    "pdf_pages": 8,
+    "pdf_sha256": "8b2d5d3d07fdafa38119e6876487226ceeaac1e02e664f4c4f3f2d77206b428f",
+    "venue_from_archive": "ICRA 2023"
+  },
+  {
+    "slug": "efficientvit",
+    "year": 2023,
+    "title": "EfficientViT: Multi-Scale Linear Attention for High-Resolution Dense Prediction",
+    "paper_type": "原始研究；所给修订版包含后续SAM实验",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/EfficientViT- Multi-Scale Linear Attention for High-Resolution Dense Prediction.pdf",
+    "problem": "使高分辨率密集预测同时获得全局建模能力与硬件效率。",
+    "pain": "softmax注意力随token数平方增长；直接线性化又削弱局部聚焦与多尺度表达。",
+    "naive_failure": "直接替换为ReLU线性注意力虽快却精度差；仅靠参数/FLOPs也不足以说明部署效率。",
+    "insight": "全局线性注意力、局部卷积、多尺度QKV是互补能力，使用硬件友好的小卷积补偿线性注意力损失。",
+    "contribution": "多尺度线性注意力模块、增强局部能力的FFN，以及面向高分辨率的网络设计。",
+    "evidence": [
+      {
+        "claim": "同4.4G MACs/0.7M参数消融：无全局/多尺度68.1 mIoU；仅多尺度72.3，仅全局72.2，两者74.5。",
+        "page": 5
+      },
+      {
+        "claim": "Cityscapes B1为80.5 mIoU/Orin24.3ms，SegNext-T为79.8/93.2ms。",
+        "page": 7
+      },
+      {
+        "claim": "修订版SAM-XL1 COCO47.8对SAM-H46.5，A100吞吐182对11图/秒；但LVIS单点交互56.6低于59.2，非所有指标无损。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9
+    ],
+    "limits": "适用高分辨率密集任务而非所有transformer；不应把后续SAM实验当2023初版已完成内容；部分交互设置更差。",
+    "strategy": "对快速近似明确指出丢失的能力，再用等预算消融证明补偿机制。",
+    "lesson": "若我们压缩诊断信息，应测丢失什么以及何种补偿有效，而不是只留容易预测的格子。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法和相关实验表/消融/讨论；长页选择相关段落。未逐字通读全部附录与参考文献。",
+    "summary": "EfficientViT不是把线性注意力改名，而是发现其局部聚焦不足，以卷积和多尺度QKV补回。严格同4.4G/0.7M下，无两能力68.1、各自72.3/72.2、合并74.5 mIoU（p5）；Cityscapes80.5/24.3ms对79.8/93.2ms（p7）。所给修订版含SAM高吞吐，但LVIS单点仍低于原SAM（p9）。启发：近似方案应有明确能力损失分析、匹配预算的组件检验和负面边界，不能用高precision掩盖未覆盖病例。",
+    "source_url": "https://arxiv.org/pdf/2205.14756",
+    "project_url": "https://hanlab.mit.edu/projects/efficientvit",
+    "pdf_pages": 12,
+    "pdf_sha256": "df47ccf70db624afc34122db19acead19b653fa81b3b8691e55e4768a50d0004",
+    "venue_from_archive": "ICCV 2023"
+  },
+  {
+    "slug": "flatformer",
+    "year": 2023,
+    "title": "FlatFormer: Flattened Window Attention for Efficient Point Cloud Transformer",
+    "paper_type": "原始研究",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/FlatFormer- Flattened Window Attention for Efficient Point Cloud Transformer.pdf",
+    "problem": "让点云Transformer达到实时检测速度。",
+    "pain": "邻域准备占传统点云Transformer大量时间，等空间窗口点数不规则导致padding和低利用率。",
+    "naive_failure": "以空间等大窗口保持精确局部性，产生不均匀工作量；逐点邻域搜索成本高。",
+    "insight": "以等点数分组牺牲一点几何整齐，换来规则执行；交替坐标排序和窗口移位恢复组间信息。",
+    "contribution": "flatten-window-sort、等点数组、轴交换与shift，以及分组执行优化。",
+    "evidence": [
+      {
+        "claim": "Waymo三帧FlatFormer12.7ms/72.0 L2 mAPH，SST57.8ms/70.4，CenterPoint++13.6ms/71.6。",
+        "page": 6
+      },
+      {
+        "claim": "Orin达到16.1 FPS，对比CenterPoint13.7与SST3.4。",
+        "page": 7
+      },
+      {
+        "claim": "受控小规模消融：完整61.7，随机分组57.8，无量化60.4，无轴交换61.1，无shift61.2。",
+        "page": 7
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "limits": "主要Waymo；所报模型速度不包含加载/后处理；个别两阶段设置不胜FSD。后续TorchSparse++更新卷积后端后重置了Transformer比较结论。",
+    "strategy": "放松看似必要的几何约束，补回交流能力，并在真实实时阈值上验证。",
+    "lesson": "不能永久固定弱实现作对照；最新AtP/直接查询等也应和我们同样认真优化。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法和相关实验表/消融/讨论；长页选择相关段落。未逐字通读全部附录与参考文献。",
+    "summary": "FlatFormer把“等空间窗口”改成“等点数组”，用排序、移轴与shift补回局部交流，换取规则GPU执行。Waymo三帧72.0 L2 mAPH/12.7ms，对SST70.4/57.8ms（p6）；随机分组57.8而完整61.7的消融说明不是随便分组都行（p7）。计时不含加载/后处理。尤其后续TorchSparse++换强卷积后端后又能反超它：solid的结论必须持续面对最强实现，不能把旧基线性能永久封存。",
+    "source_url": "https://arxiv.org/pdf/2301.08739",
+    "project_url": "https://hanlab.mit.edu/projects/flatformer",
+    "pdf_pages": 12,
+    "pdf_sha256": "8e8cfd8aab82dcbd0ec2cb5727763d7d74f891adc416766eb04d44cad76d5bbc",
+    "venue_from_archive": "CVPR 2023"
+  },
+  {
+    "slug": "pockengine",
+    "year": 2023,
+    "title": "PockEngine: Sparse and Efficient Fine-tuning in a Pocket",
+    "paper_type": "原始系统研究；继承MCUNetV3稀疏更新思路",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/PockEngine- Sparse and Efficient Fine-tuning in a Pocket.pdf",
+    "problem": "在手机、Jetson、MCU等受限边缘设备上高效微调视觉与语言模型。",
+    "pain": "框架解释/自动微分成本、反向激活保存和稀疏更新执行脱节；可训练参数少不代表实际快。",
+    "naive_failure": "仅冻结部分权重或使用LoRA，未必删除反向冗余；用通用PyTorch运行时甚至无法部署到极小设备。",
+    "insight": "用推理原语构建静态反向图，在编译时剪枝并安排张量生命周期，将稀疏更新变成真实执行收益。",
+    "contribution": "编译时自动微分、层/子层稀疏反传、图剪枝/算子重排，支持多种原本只有推理的后端。",
+    "evidence": [
+      {
+        "claim": "逐层离线微调估计贡献，并假设贡献可加求稀疏方案；这不是无成本、无需假设的在线诊断。",
+        "page": 5
+      },
+      {
+        "claim": "跨任务平均精度接近全更新，如MCUNet74.8对74.1，MobileNet88.5对89.2；并非每模型不降。",
+        "page": 8
+      },
+      {
+        "claim": "Llama2-7B Orin：PyTorch全更新7.7s/45.1GB，Pock全更新1.8s/43.1GB，Pock稀疏0.9s/31.2GB；MT-Bench分别6.1/6.1/5.7。",
+        "page": 11
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      8,
+      10,
+      11,
+      12
+    ],
+    "limits": "是迁移微调而非通用预训练；离线敏感性评估和可加近似有成本；LLM最大序列/批量有限，少量质量下降真实存在。",
+    "strategy": "分开证明系统实现收益与稀疏策略收益，使用同一全更新策略隔离框架变量。",
+    "lesson": "图表示、查询策略、渲染给读者三层也须拆开；否则把额外信息或实现差异当诊断创新。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法和相关实验表/消融/讨论；长页选择相关段落。未逐字通读全部附录与参考文献。",
+    "summary": "PockEngine指出“少训参数”仍会保留反向激活与运行时开销，于是编译时自动微分、剪反向图并重排。Llama2-7B上PyTorch全训7.7s/45.1GB，换Pock全训1.8s/43.1GB，再加稀疏0.9s/31.2GB（p11），清楚拆开系统与算法收益；但MT-Bench6.1→5.7，不能说完全无损。逐层贡献还需离线训练并假设可加（p5）。对我们：必须拆分真值信息、归因表示、查询策略和界面各自贡献。",
+    "source_url": "https://arxiv.org/pdf/2310.17752",
+    "project_url": "https://hanlab.mit.edu/projects/pockengine",
+    "pdf_pages": 14,
+    "pdf_sha256": "7b864705a592be515131848f5946f39bc8fb65ad2721cf6aacb395890709f423",
+    "venue_from_archive": "MICRO 2023"
+  },
+  {
+    "slug": "retrospective-eie-efficient-inference-engine-on-sparse-and-compressed-neural-network",
+    "year": 2023,
+    "title": "Retrospective: EIE: Efficient Inference Engine on Sparse and Compressed Neural Network",
+    "paper_type": "两页历史回顾；不是2023新原始实验",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/Retrospective- EIE- Efficient Inference Engine on Sparse and Compressed Neural Network.pdf",
+    "problem": "回顾EIE如何把网络压缩产生的稀疏性转成硬件收益，以及后来的适用边界。",
+    "pain": "内存搬运昂贵，压缩可减权重，但不规则稀疏在通用并行硬件上开销大。",
+    "naive_failure": "把压缩后的模型原样交给通用稀疏软件，未必能比密集运算高效。",
+    "insight": "算法与硬件共同设计可跳过零权重/零激活；W4A16在内存受限矩阵向量场景有持久价值，但索引和控制成本不可忽略。",
+    "contribution": "总结2016 EIE的CSC表示、PE分配、非零激活检测及4-bit权重共享；回顾后续结构稀疏路线。",
+    "evidence": [
+      {
+        "claim": "明确回顾ISCA2016工作，说明稀疏和低精度共同设计思路；本篇不提供新的完整原始benchmark。",
+        "page": 1
+      },
+      {
+        "claim": "权重与索引均4bit导致50%存储开销；仅加速全连接且全部权重放SRAM，限制向巨型LLM直接迁移。",
+        "page": 2
+      }
+    ],
+    "pages": [
+      1,
+      2
+    ],
+    "limits": "影响力与历史地位不是新方法证据；回顾的商业影响/后续工作未在本任务逐项外部核验。",
+    "strategy": "承认当年的最优假设随工作负载迁移而失效，并据此找下一瓶颈。",
+    "lesson": "不把方法延续性当有效性；VLM到T2I、repair到diagnosis改变了任务，旧证明必须重新成立。",
+    "read_scope": "实际完整阅读这两页回顾正文与其限制说明；未逐项外部核验参考文献的历史影响。",
+    "summary": "这是2016 EIE的两页回顾，不是2023新实验。核心历史策略是先压缩模型，再设计能跳过零权重/零激活的硬件（p1）。更值得学的是自我边界：4bit权重配4bit索引有50%存储开销，只支持全连接、权重全放SRAM，不能直接迁移巨型LLM（p2）。它说明solid研究也会随任务改变而过期。对我们：从repair转到diagnosis后，旧指标和旧对手不能继承有效性，必须重新证明痛点和比较条件。",
+    "source_url": "https://arxiv.org/pdf/2306.09552v1",
+    "project_url": "https://hanlab.mit.edu/projects/retrospective-eie-efficient-inference-engine-on-sparse-and-compressed-neural-network",
+    "pdf_pages": 2,
+    "pdf_sha256": "d02b295d57fd6aebfa63024fd73142617efc4aab1c0a9999014a9fa153c2feb7",
+    "venue_from_archive": "ISCA 2023"
+  },
+  {
+    "slug": "sige-tpami",
+    "year": 2023,
+    "title": "Efficient Spatially Sparse Inference for Conditional GANs and Diffusion Models - TPAMI extended version",
+    "paper_type": "SIGE会议工作的期刊扩展；不得计作独立新主线",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/Efficient Spatially Sparse Inference for Conditional GANs and Diffusion Models - TPAMI extended version.pdf",
+    "problem": "把SIGE从卷积式生成器扩展到注意力占主导的Stable Diffusion及更多实际编辑场景。",
+    "pain": "原SIGE只优化卷积，Stable Diffusion注意力矩阵的成本留下，导致节省MAC却不明显加速。",
+    "naive_failure": "直接把旧卷积引擎套到SD，约2.8%编辑仅1.1倍加速。",
+    "insight": "未修改区域可复用query输出，只对编辑query计算注意力，仍保留全局key/value上下文。",
+    "contribution": "attention query pruning、SD应用、Apple M1 GPU支持，以及大编辑/连续编辑/TensorRT检验。",
+    "evidence": [
+      {
+        "claim": "作者明确列出相对于会议版的新增项：attention、SD、M1 GPU以及大/连续编辑。",
+        "page": 2
+      },
+      {
+        "claim": "SD消融：原369ms；仅旧卷积优化335ms/1.1倍；加入注意力后76.4ms/4.8倍。",
+        "page": 11
+      },
+      {
+        "claim": "SD数据集平均MAC805G→387G，FID27.2对26.8；不能把少数1%编辑的7.2倍当数据集平均加速。",
+        "page": 7
+      },
+      {
+        "claim": "明确限制文字prompt固定；改变文字需要重算缓存，不能直接用于文生图生成。",
+        "page": 11
+      },
+      {
+        "claim": "局部编辑导致全局光照变化时，编辑区外变化无法跟随；还可能有接缝。",
+        "page": 12
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      4,
+      7,
+      9,
+      10,
+      11,
+      12,
+      15
+    ],
+    "limits": "缓存有额外内存，文本变化使复用失效；小编辑实例最大速度不是整体平均；与会议版不是独立重复突破。",
+    "strategy": "扩展先展示旧方法在新瓶颈下几乎无效，再新增针对性机制并进行清晰消融。",
+    "lesson": "真正pivot应像这里：旧方法1.1倍失败→新瓶颈→新机制4.8倍；仅重命名目标不算。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法和相关实验表/消融/讨论；长页选择相关段落。未逐字通读全部附录与参考文献。",
+    "summary": "期刊SIGE最有价值的是诚实证明旧方案不够：套到Stable Diffusion只从369降到335ms（1.1倍），新增编辑query注意力后76.4ms（4.8倍，p11）。新增项清单在p2，不能把会议版结果重复计功。平均SD FID27.2对26.8、MAC805G→387G（p7）；固定prompt与缓存内存是硬边界（pp11–12）。这才是可信pivot形状：旧解遇到新瓶颈，新增机制解除瓶颈，再做受控闭环，而非给失败换名。",
+    "source_url": "https://arxiv.org/pdf/2211.02048v4",
+    "project_url": "https://hanlab.mit.edu/projects/sige",
+    "pdf_pages": 21,
+    "pdf_sha256": "720b2f192e40b8b5f713d84ef86169762b1a6909e2dd3da3dbe1df91540144f0",
+    "venue_from_archive": "IEEE TPAMI 2023"
+  },
+  {
+    "slug": "smoothquant",
+    "year": 2023,
+    "title": "SmoothQuant: Accurate and Efficient Post-Training Quantization for Large Language Models",
+    "paper_type": "原始研究；所给PDF为2024修订版，按2023文件夹归类",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/SmoothQuant- Accurate and Efficient Post-Training Quantization for Large Language Models.pdf",
+    "problem": "让大语言模型W8A8量化同时保留精度和真实INT8硬件加速。",
+    "pain": "少数稳定通道激活outlier压垮量化动态范围；逐通道激活量化虽准确却不匹配高效GEMM。",
+    "naive_failure": "逐tensor/token量化使大模型近随机；LLM.int8保留FP16异常值可保精度却常更慢。",
+    "insight": "outlier沿输入通道稳定，而权重较容易量化；用等价缩放把困难从激活迁到权重并平衡两侧。",
+    "contribution": "离线融合X diag(s)^-1与diag(s)W的等价变换，校准迁移强度，兼容高效纯INT8矩阵乘法。",
+    "evidence": [
+      {
+        "claim": "OPT-175B四任务平均FP16 71.6%，per-token INT8 31.7%，逐通道模拟71.4%；定位是通道尺度而非任意量化。",
+        "page": 3
+      },
+      {
+        "claim": "核心公式在未量化前严格保持线性层输出，缩放可离线融合；alpha控制激活与权重量化困难。",
+        "page": 4
+      },
+      {
+        "claim": "OPT-175B七任务平均FP16 66.9、SmoothQuant-O3 66.8，而朴素W8A8 35.5；WikiText perplexity10.99、11.17和93080。",
+        "page": 6
+      },
+      {
+        "claim": "优化FasterTransformer基线上仍最高1.56倍加速；alpha偏小/偏大分别使激活/权重量化失败。",
+        "page": 8
+      },
+      {
+        "claim": "明确W8A8与GPTQ weight-only服务场景及实现不同，拒绝直接不公平比较。",
+        "page": 13
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      10,
+      13
+    ],
+    "limits": "依赖校准分布与模型相关alpha；极端静态方案某些模型约降1点；不是在所有batch1场景胜过weight-only。修订版新增模型不属于初版时点。",
+    "strategy": "用测量锁定结构，提出极简等价变换消除机制，再证明强实现下真实收益。",
+    "lesson": "最强对照范式：我们的诊断若只证实outlier在哪里而没有新的可用变换/决策规则，贡献停在SmoothQuant之前。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法和相关实验表/消融/讨论；长页选择相关段落。未逐字通读全部附录与参考文献。",
+    "summary": "SmoothQuant最清楚地展示“看见问题”与“解决问题”的距离：175B的per-token量化31.7%，逐通道模拟71.4%接近FP16 71.6%，锁定通道outlier（p3）；随后提出可离线融合的等价尺度迁移（p4）。七任务66.8对66.9，优化后端上仍最高1.56倍加速（pp6、8），并承认weight-only比较场景不同（p13）。对我们：有限真值表和高precision是前半段；还缺从诊断得到的必要新机制及真实决策收益。",
+    "source_url": "https://arxiv.org/pdf/2211.10438",
+    "project_url": "https://hanlab.mit.edu/projects/smoothquant",
+    "pdf_pages": 13,
+    "pdf_sha256": "d17856490ff664a99f8d08fe76eabd83219ed048cd1bc18ce3d0571e71056ff8",
+    "venue_from_archive": "ICML 2023"
+  },
+  {
+    "slug": "tinyml-magazine",
+    "year": 2023,
+    "title": "Tiny Machine Learning: Progress and Futures [Feature]",
+    "paper_type": "领域综述/研究线综合；所给PDF2024，按2023文件夹归类",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/Tiny Machine Learning- Progress and Futures [Feature].pdf",
+    "problem": "梳理极小设备上推理和训练的资源约束、已有路线与未来问题。",
+    "pain": "手机模型优化参数/FLOPs，MCU真正限制却常是激活峰值和运行时体积；从推理到训练又换瓶颈。",
+    "naive_failure": "直接缩小MobileNet或把推理方案搬到训练，不能自然适应几百KB内存。",
+    "insight": "TinyML需要网络设计、执行顺序、量化优化和编译系统共同设计，且不同阶段的主要瓶颈会迁移。",
+    "contribution": "综合已有MCUNet系列、NetAug、TinyEngine/TTE与领域文献，提出应用/监督/模态扩展方向；不是独立新算法评估。",
+    "evidence": [
+      {
+        "claim": "MobileNetV2相对ResNet参数小4.2倍，但推理峰值内存反大2.3倍；直接暴露选错代理目标。",
+        "page": 2
+      },
+      {
+        "claim": "汇总MCUNet-M4 int8在196KB SRAM达到64.9% ImageNet top-1；这是已有系列证据的综述整合。",
+        "page": 12
+      },
+      {
+        "claim": "复述QAS平均73.5对int8 SGD64.9，不能与MCUNetV3重复计为两份独立验证。",
+        "page": 15
+      },
+      {
+        "claim": "明确未来真实端侧学习监督获取困难，视觉检测/分割的标签昂贵；自监督是未来方向而非已经解决。",
+        "page": 18
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      9,
+      12,
+      15,
+      17,
+      18
+    ],
+    "limits": "不是系统性无偏meta-analysis；大量本组工作复述；未来应用愿景不等于部署证据，引用原始研究需去重。",
+    "strategy": "沿资源瓶颈如何迁移来组织研究线，而非把组件列表拼成贡献。",
+    "lesson": "我们应将可验证诊断协议视为基础设施，之后必须挑一个具体用户任务兑现价值；不能把框架愿景当成果。",
+    "read_scope": "实际阅读概述、资源瓶颈、TinyEngine/patch推理、关键汇总表、QAS/稀疏更新/TTE与展望的所列页；未逐项精读所有被综述文献，未把复述实验当独立验证。",
+    "summary": "这是一篇TinyML综述，不能和MCUNet各篇重复计数。它用“参数更少但激活更大”的例子解释为何手机模型不能直接搬到MCU：MobileNet参数小4.2倍，推理内存却大2.3倍（p2）。后面整合已有推理与训练结果（pp12、15、17），并承认真实端侧监督获取尚困难（p18）。启发是追踪瓶颈转移、区分已实现与未来愿景；我们的Verified Diagnosis合同是必要基础，但通往实用诊断的下一瓶颈仍需真实实验证据。",
+    "source_url": "https://arxiv.org/pdf/2403.19076v2",
+    "project_url": "https://hanlab.mit.edu/projects/tinyml-magazine",
+    "pdf_pages": 24,
+    "pdf_sha256": "2be1aefb9e4a83d1580ae8639e98f13d0632b9db46840abe406f6d81e737ff0d",
+    "venue_from_archive": "IEEE CAS magazine"
+  },
+  {
+    "slug": "torchsparse-plus-plus",
+    "year": 2023,
+    "title": "TorchSparse++: Efficient Training and Inference Framework for Sparse Convolution on GPUs",
+    "paper_type": "原始系统研究；在TorchSparse基础上扩展数据流与训练",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2023/TorchSparse++- Efficient Training and Inference Framework for Sparse Convolution on GPUs.pdf",
+    "problem": "降低高性能稀疏卷积的实现成本，并提升点云训练/推理速度。",
+    "pain": "已有简单gather-GEMM-scatter不能重叠搬运与计算，高效手写方案复杂；算得少与真正快可能相反。",
+    "naive_failure": "只选最低MAC、最低DRAM或最快卷积kernel会漏掉映射/排序成本；盲目沿用单一数据流也不行。",
+    "insight": "稀疏卷积可分解为成熟dense MMA与少量稀疏访存模板；数据流应按共享映射分组、以端到端代价选择。",
+    "contribution": "Sparse Kernel Generator、动态形状寻址/边界优化、扩展mask-split/unsorted/FoD设计空间，以及group-based autotuning。",
+    "evidence": [
+      {
+        "claim": "按共享映射分组调优，避免每数据流重复建图；多数工作负载约2分钟调优，离线成本可解释。",
+        "page": 7
+      },
+      {
+        "claim": "A100相对SpConv2.3.5推理约1.7倍，训练约1.2–1.3倍；检测计时只覆盖SparseConv部分，应区别完整传感器管线。",
+        "page": 8
+      },
+      {
+        "claim": "nuScenes CenterPoint总时间：unsorted7.45ms、split1 8.18ms；不是算术量越少越好。",
+        "page": 9
+      },
+      {
+        "claim": "同条件纯卷积kernel则unsorted3.70ms、split1 3.68ms，排名反转由映射/排序开销导致。",
+        "page": 10
+      },
+      {
+        "claim": "采用新后端、假定2D部分TensorRT后，三帧CenterPoint在Orin比FlatFormer快1.5倍且精度更高；这是同研究组后续实现重置旧架构比较。",
+        "page": 8
+      },
+      {
+        "claim": "同数据流参数下kernel generator约1.1–1.2倍，代码量为SpConv元编程器约5%；设计空间再提供额外收益。",
+        "page": 12
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "limits": "检测结果的端到端指被评估稀疏骨干，不含完整业务流程；ASIC对照含缩放投影，不是实芯片同配置比赛；不同硬件最优数据流不同。",
+    "strategy": "把最强已有实现当比较对象，用分解测量解释反直觉结果，并让后续实现反驳自己的旧优越性。",
+    "lesson": "PurMM零分无法成为主胜利；我们必须对AtP/直接自适应查询/答案表等强且任务匹配的实现比较总成本。",
+    "read_scope": "实际阅读所列PDF物理页的摘要/引言、方法和相关实验表/消融/讨论；长页选择相关段落。未逐字通读全部附录与参考文献。",
+    "summary": "TorchSparse++既减少稀疏kernel实现复杂度，又以共享映射的整段代价调优。nuScenes上unsorted总耗时7.45ms优于split1的8.18ms（p9），但纯kernel为3.70对3.68ms（p10），证明只数核心算子会选错。更尖锐的是，新卷积后端让CenterPoint在Orin比FlatFormer快1.5倍且更准，限定2D用TensorRT（p8）。对我们：应让最强任务匹配基线不断升级，计入映射/信息获取等开销；弱对手归零不能证明诊断必要。",
+    "source_url": "https://dai.sjtu.edu.cn/my_file/pdf/c9839ed0-3108-4a86-9ada-b4fd8ad5bed3.pdf",
+    "project_url": "https://hanlab.mit.edu/projects/torchsparse",
+    "pdf_pages": 15,
+    "pdf_sha256": "071afc54cd12d120f8b9a0b52d921f85c25344d926a7ff275bf1a9c996e75c1e",
+    "venue_from_archive": "MICRO 2023"
+  },
+  {
+    "slug": "atomique",
+    "year": 2024,
+    "title": "Atomique: A Quantum Compiler for Reconfigurable Neutral Atom Arrays",
+    "problem": "怎样把量子电路有效编译到可移动中性原子阵列，同时遵守移动及全局 Rydberg 激励的物理限制。",
+    "pain": "固定连接需要大量 SWAP；可移动原子也不是任意连线，AOD 行列不能随意交叉，错误并行可能诱发非目标门。",
+    "naive_failure": "直接套固定架构路由浪费可重构性；任意移动不合法；只优化门深度忽略原子移动、转移、加热和退相干，会误判真实收益。",
+    "insight": "按交互图先分配阵列，再安排具体位置与合法并行移动；以物理误差模型而非单一深度衡量编译计划。",
+    "contribution": "粗粒度加权 max-k-cut 映射、细粒度负载与位置映射、可扩展贪心路由，以及门/移动/转移/冷却代价模型。",
+    "evidence": [
+      {
+        "claim": "评测明确使用自建模拟器：现有公开设备不支持论文需要的完整移动控制，硬件参数取自已有实验；不是在目标设备执行得到的保真度。",
+        "page": 8
+      },
+      {
+        "claim": "Figure 13 正文汇总：相对最强固定三角阵列基线，模型保真度、双量子门数、深度分别改善约 2.7/2.8/2.2 倍。",
+        "page": 9
+      },
+      {
+        "claim": "与 Tan-Solver 在可完成的小电路比较，Atomique 的平均保真度为 88%、与 solver-based compilers 相当，而编译快超过 2000 倍；solver 超过 20 qubits 常遇 24 小时超时。这里的 88% 是论文报告的平均保真度，不是相对 solver 的比例。",
+        "page": 10
+      },
+      {
+        "claim": "敏感性分析：当双量子门保真度高于约 0.9999，固定阵列可优于可重构阵列；移动时间在加热与退相干间存在折中。",
+        "page": 11
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "limits": "结果依赖模拟器及硬件误差假设；不同架构比较也包含物理能力差异。低连接度或极高双门保真度时固定阵列可更优，不能写成可移动体系普遍胜出。",
+    "strategy": "物理约束定义问题，再把映射/路由和多因素目标协同优化；包含严格 solver 参照、规模曲线和方法输掉的参数区域。",
+    "lesson": "状态替换后恢复率属于限定算子的目标，不是根因或未来修复保证；诊断应把 donor、干预合法性和保护事实当作约束，并公开方法在哪些条件下无效。",
+    "read_scope": "精读体系约束、三级编译方法、保真度模型、主要比较、solver 与参数敏感性；图中数值以正文/表述可核实者为准。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/Atomique- A Quantum Compiler for Reconfigurable Neutral Atom Arrays.pdf",
+    "source_url": "https://arxiv.org/pdf/2311.15123",
+    "project_url": "https://hanlab.mit.edu/projects/atomique",
+    "pdf_pages": 17,
+    "pdf_sha256": "060d6971392b1eb22cb844c7c42732ce5102f993863a45be2bbca272a1588ac1",
+    "venue_from_archive": "ISCA 2024",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "awq",
+    "year": 2024,
+    "title": "AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration",
+    "problem": "如何在低位权重量化后维持大模型质量，并在真实部署硬件上兑现速度收益。",
+    "pain": "逐权重均匀量化会伤害少数重要通道；混合精度保护虽有效，却不利于常规整数内核。",
+    "naive_failure": "保护大权重或随机权重并不等于保护对输出重要的权重；依赖逐层重构也可能过拟合校准分布。",
+    "insight": "由激活幅度识别显著通道，用权重缩放及反向激活缩放实现等价变换，降低显著通道的相对量化误差；缩放过大也会恶化共享量化范围。",
+    "contribution": "小样本、无反传的缩放与截断搜索，加 TinyChat 的融合、打包内核，实现算法与硬件协同。",
+    "evidence": [
+      {
+        "claim": "Table 1：OPT-6.7B INT3-g128 PPL：FP16 10.86，RTN 23.54，保护激活选出的 1% 权重 11.39，权重幅度选择 22.37，随机选择 24.23。",
+        "page": 4
+      },
+      {
+        "claim": "Table 2：同一量化设置，缩放 s=1、2、4 的 PPL 为 23.54、11.92、12.36，证明并非缩放越大越好。",
+        "page": 4
+      },
+      {
+        "claim": "Table 6：OpenFlamingo-9B 的 COCO 32-shot CIDEr：FP16 81.70，RTN 77.13，GPTQ 74.98，AWQ 80.53；跨多模态检验而非只看语言 PPL。",
+        "page": 8
+      },
+      {
+        "claim": "Figure 8：分布外校准时 AWQ 的 PPL 增量约 0.5–0.6，GPTQ 约 2.3–4.9；Figure 9 报告 TinyChat 相对 Hugging Face FP16 最多 3.9 倍/3.5 倍的 4090/Orin 收益。",
+        "page": 10
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "limits": "仍需校准且低位仍可能掉点；主要是 weight-only、低批量内存带宽瓶颈场景。TinyChat 对 HF 的收益同时含系统实现优势，不能全部归于显著性规则。归档 PDF 含后续修订，按文件夹记为 2024。",
+    "strategy": "先用同预算的随机/权重幅值反例建立重要性定义，再以可部署的等价变换替代不便实现的混合精度，最终闭合质量—延迟证据。",
+    "lesson": "诊断排名应在相同信息和相同操作预算下证明比简单替代项更有用；必须报告真实恢复与完整成本，不能只报告排名相似性。",
+    "read_scope": "精读问题、显著通道实验、缩放推导与消融、TinyChat、语言/多模态实验及校准泛化；页码为本地 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/AWQ- Activation-aware Weight Quantization for LLM Compression and Acceleration.pdf",
+    "source_url": "https://arxiv.org/pdf/2306.00978",
+    "project_url": "https://hanlab.mit.edu/projects/awq",
+    "pdf_pages": 15,
+    "pdf_sha256": "6e35c8fe7af1f18a5c48dd2524629d859a2013a91d4b3666b554705287a17764",
+    "venue_from_archive": "MLSys 2024",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "can",
+    "year": 2024,
+    "title": "Condition-Aware Neural Network for Controlled Image Generation",
+    "problem": "条件图像生成是否必须让所有类别和去噪时间共享同一套静态网络权重。",
+    "pain": "条件只注入特征时，静态权重可能难兼顾不同生成子任务；完整条件专家又不可承受。",
+    "naive_failure": "增加每处动态权重或只改善特征调制并不稳定获益；部署时逐样本不同权重还可能降低硬件效率。",
+    "insight": "将条件映射为少数关键操作的权重增量，主要覆盖 depthwise convolution、patch embedding 和 attention output，而不对所有层全面动态化。",
+    "contribution": "Condition-Aware Network 与 CaT，选择性条件权重生成、跨投影共享、分组卷积批处理实现；将条件适配与轻量骨干组合。",
+    "evidence": [
+      {
+        "claim": "Table 1：同 UViT-S/2，基线 FID 28.32；条件 DWConv 为 11.18，再加 patch embedding 为 10.23，再加 output projection 为 8.82；额外动态 head 反而为 12.29。",
+        "page": 3
+      },
+      {
+        "claim": "条件时间单独 FID 15.16，类别单独 10.01，两者 8.82；长训练后的差距仍存在，反驳仅加快收敛这一解释。",
+        "page": 5
+      },
+      {
+        "claim": "Table 4：ImageNet 512 的 CaT-L0 FID 2.78，约 10G MAC/step、20 steps；DiT-XL FID 3.04，525G/step、250 steps。",
+        "page": 6
+      },
+      {
+        "claim": "Table 5：Orin 上 45.9 秒到 0.2 秒的 229 倍同时包含骨干与步数变化，不能归于条件权重这一个模块。",
+        "page": 7
+      },
+      {
+        "claim": "理论额外计算很小，但 NVIDIA 对 grouped convolution 支持较差，实际仍有约 30–40% 训练耗时增量；文中将自定义内核留作未来工作。",
+        "page": 4
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "limits": "负迁移解释更多是动机，并非已被完整识别的因果机制。最终速度比较包含架构和采样器差异；动态参数生成存在参数与训练开销，主要验证 ImageNet/COCO。",
+    "strategy": "大幅总系统结果由同架构递增消融支撑；反例明确告诉读者哪些看似自然的额外适配反而无效，避免把最终套餐增益全归一模块。",
+    "lesson": "如果 Verified Diagnosis 加入选择器、校准器和大量验证查询，必须拆开每个部件的独立收益，不能把更大信息预算包装成诊断更准。",
+    "read_scope": "精读条件权重方法、同骨干 Tables 1–3 消融、长训练控制、质量/复杂度与设备计时主结果；页码为 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/Condition-Aware Neural Network for Controlled Image Generation.pdf",
+    "source_url": "https://arxiv.org/pdf/2404.01143",
+    "project_url": "https://hanlab.mit.edu/projects/can",
+    "pdf_pages": 10,
+    "pdf_sha256": "7fa75410fb1d5078a43941345a04bae0f00eaa30bf23cdc2d647e2613eb6b704",
+    "venue_from_archive": "CVPR 2024",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "distrifusion",
+    "year": 2024,
+    "title": "DistriFusion: Distributed Parallel Inference for High-Resolution Diffusion Models",
+    "problem": "如何用多 GPU 降低单张高分辨率扩散图像的延迟，而不是仅提高多图吞吐。",
+    "pain": "数据并行不能缩短单图延迟；独立生成分块会破坏全局一致性；同步分块或 tensor parallel 被通信拖慢。",
+    "naive_failure": "完全丢弃跨块依赖虽快却出错；每步同步所有激活虽精确却难扩展；直接使用陈旧归一化统计也造成分布错配。",
+    "insight": "相邻去噪步的激活很相似，可以用上一时刻的其他块激活近似当前全局依赖，并将通信藏在计算后面；早期同步预热和统计修正控制近似误差。",
+    "contribution": "Displaced patch parallelism、异步 AllGather、校正陈旧 GroupNorm、同步 warm-up；围绕同一图像质量和端到端延迟实现设计。",
+    "evidence": [
+      {
+        "claim": "Table 1：SDXL 1024、50-step DDIM，原始 5.02 秒/FID 24.0，8-GPU 方案 1.77 秒/24.4、同为 338T 总 MAC；独立分块虽 1.27 秒，FID 高达 252。",
+        "page": 8
+      },
+      {
+        "claim": "Table 2：1024 下同步 tensor parallel、同步 patch parallel 与本方法为 3.61、2.21、1.77 秒；3840 下原始 140 秒、本方法 22.9 秒，约 6.1 倍。",
+        "page": 8
+      },
+      {
+        "claim": "Figure 8：10-step DPM 下零预热 LPIPS 0.404，加两步预热为 0.196，延迟 0.374 到 0.400 秒，直接显出近似误差与修正收益。",
+        "page": 9
+      },
+      {
+        "claim": "Figure 9：separate/stale/sync/corrected GN 的 LPIPS 为 0.317/0.247/0.207/0.211；校正方案接近同步质量且延迟 1.77 秒低于 1.85 秒。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "limits": "充分隐藏通信依赖 NVLink；低分辨率利用率不足，极少去噪步可能失效。近似输出并非与原图完全一致，8 GPU 降延迟也不能自动理解为八倍计算成本节约。",
+    "strategy": "先用独立块失败证明必要交互，再用精确同步基线隔离近似误差；针对误差来源逐项修正，同时报告延迟、质量和总计算。",
+    "lesson": "Oracle 或穷举是必要的精确参照，但论文价值来自保留其决策质量的低成本近似，不能只证明原来的便宜代理不等于 oracle。",
+    "read_scope": "精读单图并行问题、各算子通信与 GN 方法、Tables 1–2、预热/GN 消融及 Limitations；页码为 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/DistriFusion- Distributed Parallel Inference for High-Resolution Diffusion Models.pdf",
+    "source_url": "https://arxiv.org/pdf/2402.19481",
+    "project_url": "https://hanlab.mit.edu/projects/distrifusion",
+    "pdf_pages": 12,
+    "pdf_sha256": "7d67e8b66e6958ef51cdc2630c36172ad7f21facd5823a0b0bbf87c999cea877",
+    "venue_from_archive": "CVPR 2024",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "efficientvit-sam",
+    "year": 2024,
+    "title": "EfficientViT-SAM: Accelerated Segment Anything Model Without Accuracy Loss",
+    "problem": "如何保留 SAM 的通用提示分割能力，同时消除巨大图像编码器的部署瓶颈。",
+    "pain": "SAM ViT-H 编码器计算量高；直接缩小骨干会损失分割质量，参数少也不保证硬件速度快。",
+    "naive_failure": "单纯替换成小网络或只比较 FLOPs 不能保证提示分割质量与实际吞吐；应保持任务接口与评测方式。",
+    "insight": "以硬件友好的多尺度线性注意力及局部卷积编码器替换重型 encoder，保留 prompt encoder 与 mask decoder；通过蒸馏和 SA-1B 端到端训练迁移能力。",
+    "contribution": "EfficientViT 的 SAM 集成和训练方案，提供不同速度质量档位，并评估 COCO/LVIS 点与框提示及 SGinW 零样本分割。",
+    "evidence": [
+      {
+        "claim": "Table 1：A100 TensorRT FP16，SAM 11 images/s、COCO box mAP 46.5；EfficientViT-SAM-L2 为 538 images/s、46.6，约 48.9 倍；L0 更快但 mAP 45.7。",
+        "page": 3
+      },
+      {
+        "claim": "Table 2：LVIS 单点提示 SAM mIoU 59.2，XL1 为 56.6；3/5 点则 XL1 67.0/71.7 高于 SAM 66.0/66.8，标题不能解释为逐指标无损。",
+        "page": 3
+      },
+      {
+        "claim": "SGinW 25 datasets 配合 GroundingDINO 的 box-prompted mAP，XL1 为 48.9，SAM 为 48.7；增加分布外任务层面的检验。",
+        "page": 4
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "limits": "报告的是特定 A100/TensorRT 的吞吐，非所有应用端到端延迟。个别模型/数据/提示指标下降；短文未给出充分拆分蒸馏与端到端训练的独立消融。",
+    "strategy": "以明确部署瓶颈和大幅真实速度—质量改进支撑集成贡献，不强求复杂新理论；用跨提示和跨数据评测限定普适性。",
+    "lesson": "工程性工作也能 solid，但要有大而可靠的真实收益；严格记账与可复现接口只是基础，不能替代更有用、更便宜的诊断。",
+    "read_scope": "读取正文 pp.1–4 的摘要、架构/训练、主表和零样本评测；p.5 为参考文献。未将标题当作所有指标的事实。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/EfficientViT-SAM- Accelerated Segment Anything Model Without Accuracy Loss.pdf",
+    "source_url": "https://arxiv.org/pdf/2402.05008v2",
+    "project_url": "https://hanlab.mit.edu/projects/efficientvit",
+    "pdf_pages": 5,
+    "pdf_sha256": "3d0c3fbcd1039b346de5dbe831608e2db87e697b49694b7214b7ed609374af74",
+    "venue_from_archive": "CVPR 2024 Efficient Large Vision Models Workshop",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "fastcomposer",
+    "year": 2024,
+    "title": "FastComposer: Tuning-Free Multi-Subject Image Generation with Localized Attention",
+    "problem": "如何不用每个新主体再微调，就生成身份清楚、彼此不混淆且服从提示词的多主体图像。",
+    "pain": "逐主体优化花数分钟及显存；直接混入多张参考图时身份串扰；过早强调参考身份会牺牲文字指定布局。",
+    "naive_failure": "把所有身份 embedding 一起输入并不足以将主体与正确名词、区域绑定；单纯加强图像条件也会降低可编辑性。",
+    "insight": "身份绑定要落在对应名词的空间注意力上；先用文字决定构图，再在后续去噪中注入视觉身份条件，可调和布局与保真。",
+    "contribution": "共享图像编码器与增强名词 embedding、训练期注意力定位监督、推理期延迟主体条件；测试时只需参考图前向传播。",
+    "evidence": [
+      {
+        "claim": "方法使用训练期分割掩码约束对应主体注意力，并在推理中延迟图像条件；定位与时间调度分别针对身份混合和提示词可编辑性。",
+        "page": 5
+      },
+      {
+        "claim": "Table 1：单主体 FastComposer 身份相似度 51.41、prompt 24.30，总个性化加生成耗时 2 秒；Custom Diffusion 为 43.37/23.29、789 秒。参考图数量和方法信息预算不同，不能忽略。",
+        "page": 8
+      },
+      {
+        "claim": "Table 2：多主体身份相似度 FastComposer 43.11，Custom Diffusion 5.37，但 prompt 指标分别 24.25/25.84，存在取舍。",
+        "page": 9
+      },
+      {
+        "claim": "Table 3：去掉 attention localization 时身份/prompt 为 37.66/25.03，加入后为 43.11/24.25；消融直接检验身份与提示词的收益代价。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "limits": "共享模型先训练 150K steps、8 张 A6000；2 秒不含这部分摊销训练。训练和主要评测面向人物头照，超过三个主体有限，动物及一般实体未充分验证。注意力监督不等于注意力本身是真实原因证明。",
+    "strategy": "把失败拆成空间串扰与时间上的构图冲突，用对应机制修正，报告个性化总时间和身份—提示词双目标取舍。",
+    "lesson": "定位的价值由最终身份或事实恢复决定；应报告保护目标掉点，明确共享训练成本与每例诊断成本的摊销关系。",
+    "read_scope": "精读问题、条件编码、定位损失、延迟条件、Tables 1–3、训练成本与局限；页码为 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/FastComposer- Tuning-Free Multi-Subject Image Generation with Localized Attention.pdf",
+    "source_url": "https://arxiv.org/pdf/2305.10431",
+    "project_url": "https://hanlab.mit.edu/projects/fastcomposer",
+    "pdf_pages": 12,
+    "pdf_sha256": "d1d95a87165d8d071c8b52b6d3258702c8e4c38ea40a62ed39687f78a779446f",
+    "venue_from_archive": "International Journal of Computer Vision 2024",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "longlora",
+    "year": 2024,
+    "title": "LongLoRA: Efficient Fine-tuning of Long-Context Large Language Models",
+    "problem": "如何在有限 GPU 上把 LLM 微调到长上下文，并保留标准 full attention 推理。",
+    "pain": "长序列训练注意力二次增长；LoRA 虽省参数，直接用仍明显落后全量微调；孤立局部注意力缺乏跨组信息。",
+    "naive_failure": "只增大 LoRA rank 不能解决质量缺口；未移位的局部稀疏注意力切断通信，训练期的任意稀疏结构也未必兼容 dense 推理。",
+    "insight": "跨头错开局部分组提供低成本跨组交流；embedding 和 normalization 的可训练性比简单提升 rank 更关键。",
+    "contribution": "Shifted short attention 用于训练，加 LoRA、可训练 embedding/norm；推理仍可切回标准完整注意力。",
+    "evidence": [
+      {
+        "claim": "Table 1：32768 长度 PG19，full attention PPL 8.04，未移位 short attention 9.47，shifted short attention 8.08。",
+        "page": 4
+      },
+      {
+        "claim": "Table 2：32K 时 full FT PPL 8.08；LoRA rank 8 为 11.44、rank 256 为 11.98；加入 embedding 与 norm 后为 8.12，参数容量增加并未替代组件选择。",
+        "page": 6
+      },
+      {
+        "claim": "Table 4：单机 8×A100 可扩展 7B/13B/70B 到 100K/64K/32K；另有长文检索及指令任务，而非只测内存。",
+        "page": 7
+      },
+      {
+        "claim": "Table 6：跨头 shift 的 full-attention 推理 PPL 8.12，dilate 为 11.78、stride 为 24.03，检验训练近似对正式推理的兼容性。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "limits": "核心省的是微调成本，不是提出稀疏解码引擎；位置插值可能损害短上下文困惑度。主要为 Llama-2、给定微调和位置设置，训练稀疏的充分理论仍有限。",
+    "strategy": "用失败的容量扩展与注意力模式控制，定位缺少的通信和参数更新路径；便宜训练必须回到正式推理方式验证。",
+    "lesson": "诊断器低分不能仅靠“更大模型/更多样本”解释；需要排除容量不足、训练目标错配、算子不适用等具体原因，并验证正式使用流程。",
+    "read_scope": "精读稀疏分组与可训练参数方法、Tables 1–2/4/6、检索和成本实验及短上下文边界；页码为 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/LongLoRA- Efficient Fine-tuning of Long-Context Large Language Models.pdf",
+    "source_url": "https://arxiv.org/pdf/2309.12307",
+    "project_url": "https://hanlab.mit.edu/projects/longlora",
+    "pdf_pages": 19,
+    "pdf_sha256": "ebae0749edbed429e7c250fa337fb6f8846f352b024ee72b450bf19e804007fd",
+    "venue_from_archive": "ICLR 2024",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "q-pilot",
+    "year": 2024,
+    "title": "Q-Pilot: Field Programmable Qubit Array Compilation with Flying Ancillas",
+    "problem": "如何对可重构量子阵列生成浅而可扩展的电路，避免求解器编译时间随问题规模失控。",
+    "pain": "移动数据量子位受阵列整体几何约束；精确 SMT 方法在大电路上超时；固定连线体系需要深的通信与门序列。",
+    "naive_failure": "将数据原子自由移动并不合法；为所有电路采用同一通用门序路由，不能利用 QSim/QAOA 的结构；最优 solver 不能覆盖目标规模。",
+    "insight": "保持数据阵列，使用移动的 flying ancillas 介导远程交互，类比 FPGA 路由资源；针对应用结构优化并行扇出与门排序。",
+    "contribution": "Flying-ancilla 编译框架、通用贪心路由、QSim 与 QAOA 专用路由和可扩展编译实现。",
+    "evidence": [
+      {
+        "claim": "小实例比较中 solver 可有更低深度，但往往一小时内不完成；Q-Pilot 通常一秒内，生成深度不超过其最优解约四倍，明确近似代价。",
+        "page": 7
+      },
+      {
+        "claim": "Figure 16：QSim 专用路由相对通用路由减少双门数 1.5 倍、深度 8.8 倍；QAOA 为 2.8 倍和 10.1 倍，说明收益来自结构化路由而非仅硬件变换。",
+        "page": 8
+      },
+      {
+        "claim": "扩展性测试：2000 qubits 的 QAOA、QSim、通用随机电路编译分别为 129.50、30.48、32.31 秒；给出可实际运行的规模证据。",
+        "page": 8
+      },
+      {
+        "claim": "Figure 15 通过门错误等参数估计电路错误率，并展示并行门分布；不是硬件实测的任务成功率。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      6,
+      7,
+      8
+    ],
+    "limits": "需要额外 ancillas 及其交互、回收操作；降低 circuit depth 不自动等于更高实际保真度，且结果依赖架构和误差模型。主要证据为编译/模拟而非实机成功。",
+    "strategy": "把新增硬件自由度变成清楚的编译抽象，再以专用对通用、近似对精确、规模对时间三条控制分离贡献。",
+    "lesson": "不要把诊断粒度、覆盖率或验证通过率当作最终价值；当不同指标冲突时，需要以实际事实恢复及全部额外操作成本裁决。",
+    "read_scope": "精读摘要、ancilla 与合法路由方法、通用/专用框架、solver 对照、规模和误差实验；页码为 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/Q-Pilot- Field Programmable Qubit Array Compilation with Flying Ancillas.pdf",
+    "source_url": "https://arxiv.org/pdf/2311.16190",
+    "project_url": "https://hanlab.mit.edu/projects/q-pilot",
+    "pdf_pages": 10,
+    "pdf_sha256": "3cafdce9a205fe6de84497b4446ce0d4fe529e99487c4922bd64dc911e5ee331",
+    "venue_from_archive": "DAC 2024",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "quest",
+    "year": 2024,
+    "title": "Quest: Query-Aware Sparsity for Efficient Long-Context LLM Inference",
+    "problem": "长上下文生成时，如何只读取当前查询需要的 KV，而维持完整缓存下的回答质量。",
+    "pain": "解码受 KV 读取带宽限制；历史重要 token 未必对下一个查询重要；静态驱逐可能永久删除稍后需要的信息。",
+    "naive_failure": "过去注意力分数和固定首尾窗口不能适应查询变化；精确计算所有注意力再选稀疏 token 又失去省带宽意义。",
+    "insight": "每页 key 的逐通道最小/最大值可以便宜估计当前 query 对该页的潜在注意力，按 query 动态选择页面；不是永久驱逐 KV。",
+    "contribution": "页级 min/max 元数据与 query-aware criticality、Top-K 页注意力内核；前两层保留 dense，计入选页开销实现解码提速。",
+    "evidence": [
+      {
+        "claim": "Figure 3：前两层难稀疏，而后续层具有显著稀疏性；实验为各方法保留前两层 dense，避免不匹配层处理。",
+        "page": 3
+      },
+      {
+        "claim": "Table 1：10K passkey、LongChat、64 token budget，Quest 为 99%，H2O、TOVA、StreamingLLM 各约 1%；100K 场景使用不同模型及预算，不应直接合并。",
+        "page": 5
+      },
+      {
+        "claim": "LongBench/长序列 H2O 实验为兼容 FlashAttention，仅在 decode 累积历史注意力；这限定了对 H2O 原方法的泛化批评。",
+        "page": 6
+      },
+      {
+        "claim": "Figures 9–10 及正文：32K 序列、2048 budget 的注意力内核最多 7.03 倍，相对 FlashInfer 的每 token 解码延迟，FP16 改善 1.74 倍、4-bit 改善 2.23 倍；包含选页步骤，但不计 sampling，也非完整请求 prefill+decode 延迟。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "limits": "主要加速 decode，仍存完整 KV，并非缓存容量压缩；效果随预算/任务改变。部分基线没有高效内核，只比较质量，不能宣称测得所有方法的系统速度优势；H2O 历史收集适配须披露。",
+    "strategy": "发现重要性依赖当前条件，从静态重要性改为低成本动态上界；既检验困难检索，也明确系统分母和筛选成本。",
+    "lesson": "诊断排名也可能依赖问题、供体和干预类型。测试同一排名跨条件失效应建立机制边界，不能直接将任务适配后的失败归罪于原方法。",
+    "read_scope": "精读 query-dependent 动机、元数据与内核方法、passkey/LongBench、计时与基线适配注释；页码为 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/Quest- Query-Aware Sparsity for Efficient Long-Context LLM Inference.pdf",
+    "source_url": "https://arxiv.org/pdf/2406.10774",
+    "project_url": "https://hanlab.mit.edu/projects/quest",
+    "pdf_pages": 11,
+    "pdf_sha256": "93cda144859b4e38d595c42dbc578e4e0c8d436fa0891e3dfeb74716bacc4ce8",
+    "venue_from_archive": "ICML 2024",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "sparserefine",
+    "year": 2024,
+    "title": "Sparse Refinement for Efficient High-Resolution Semantic Segmentation",
+    "problem": "高分辨率语义分割如何只在低分辨率预测容易出错的位置付出额外计算。",
+    "pain": "低分辨率模型速度快但丢失细小对象和边界；全图高分辨率或稠密 patch 精修会重复计算大量简单区域。",
+    "naive_failure": "随机抽点命中错误少；仅插值/隐藏特征精修可能缺少原始高频信息；把局部精修输出直接替换全局预测会丢失上下文。",
+    "insight": "低分辨率熵能廉价召回大部分待修像素；只对选中位置的原始 RGB 做稀疏卷积，再由学习门控融合局部与全局判断。",
+    "contribution": "冻结现有分割器、熵选择器、稀疏 UNet、门控融合的后接框架，面向真实延迟而非只减少像素数。",
+    "evidence": [
+      {
+        "claim": "Table 1：SegFormer-B5 全分辨率为 140.6ms/81.1 mIoU，半分辨率为 18.5ms/78.7，加 SparseRefine 为 38.5ms/81.2，约 3.7 倍。",
+        "page": 8
+      },
+      {
+        "claim": "匹配开销下 PointRend 为 32.8ms/79.9 mIoU，本方法 32.4ms/80.9；稠密 patch 消融也更慢，区分后接精修与稀疏实现的价值。",
+        "page": 9
+      },
+      {
+        "claim": "选择消融：熵选 11.8% 像素，错误召回 84.9%、2.3ms；学习选择器 85.9%、4.0ms 且同为 80.9 mIoU，复杂选择器没有实用优势。",
+        "page": 12
+      },
+      {
+        "claim": "融合消融：直接替换为 77.7 mIoU，熵融合 80.3，学习门控 80.9；随机 10% 选择仅 10% 错误召回，最终 79.2。",
+        "page": 12
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "limits": "低熵的自信错误容易漏掉；精修网络仍需训练且增加模型参数，不等于内存也下降。主要是分割密集预测，不是证明 entropy 能识别语义根因。",
+    "strategy": "便宜选择器只需足够召回，并非越复杂越好；将选择、局部修复、融合各自失败拆解，用同延迟强基线确认真实收益。",
+    "lesson": "我们必须允许 output-only、entropy、直接检查赢；诊断更精细若不提高修复成功率或降低预算就没有独立价值，拒绝定位也应有明确覆盖代价。",
+    "read_scope": "精读选择/稀疏精修/融合方法、主表及 PointRend 对照、patch/选择器/融合消融和速度分解；页码为 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/Sparse Refinement for Efficient High-Resolution Semantic Segmentation.pdf",
+    "source_url": "https://arxiv.org/pdf/2407.19014",
+    "project_url": "https://hanlab.mit.edu/projects/sparserefine",
+    "pdf_pages": 20,
+    "pdf_sha256": "1e30418858ad8bf969b5ed915d70e6317dc352765892586c5841bcac66a52069",
+    "venue_from_archive": "ECCV 2024",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "streamingllm",
+    "year": 2024,
+    "title": "Efficient Streaming Language Models with Attention Sinks",
+    "problem": "怎样让固定上下文预训练语言模型持续处理远超窗口的流，而不因缓存截断崩溃。",
+    "pain": "完整 KV 缓存随流增长；滑窗重算成本高；直接驱逐最早 token 会使困惑度突然爆炸。",
+    "naive_failure": "只留最近 token 虽符合局部信息直觉，却移除了模型用于承接多余注意力的初始位置；将初始 token 解释为重要语义也不能解释换行替换实验。",
+    "insight": "早期位置成为 attention sink，其作用主要不来自文字内容。保留少量初始 KV 加滚动近期 KV，并按缓存相对位置处理 RoPE，可以维持流式计算。",
+    "contribution": "训练无关的初始加近期缓存策略；通过内容替换、初始 token 数消融及从头训练的可学习 sink，对机制解释作可区分实验。",
+    "evidence": [
+      {
+        "claim": "Table 1：Llama-2-13B 的 0+1024 缓存 PPL 为 5158.07，4+1020 为 5.40，将前四 token 换成换行仍为 5.60，区分语义重要性与初始位置作用。",
+        "page": 5
+      },
+      {
+        "claim": "Table 3：相同 160M 训练设置下，1+1023 缓存的 vanilla、zero sink、learnable sink PPL 为 18.49、19.90、18.01；learnable sink 用一个初始 token 已接近其更多 token 情形。",
+        "page": 6
+      },
+      {
+        "claim": "Table 5：连续 ARC 评测中，Llama-2-7B Chat 的 window attention 为 3.58/1.39，StreamingLLM 为 71.34/55.03，接近或超过单题模式 71.25/53.16。",
+        "page": 8
+      },
+      {
+        "claim": "Figure 10：在同一 Hugging Face 实现及 A6000 上，相对 sliding-window recomputation 最多加速 22.2 倍；这不是相对普通窗口截断的加速。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      9
+    ],
+    "limits": "稳定近期窗口的流式推理不等于无限远信息检索，也没有扩大模型注意力窗口。软最大值动机受到实验支持，但并非普适性定理。22.2 倍的分母是逐窗重算。",
+    "strategy": "以突变失败锁定结构性因素；设计能击破语义替代解释的反事实；用最小缓存修改修复，再验证实际任务及速度。",
+    "lesson": "Verified Diagnosis 应拿出换行替代这样的区分性控制：定位图变化究竟来自原因、答案信号还是干预算子。声明必须限定为已测操作下的可恢复性。",
+    "read_scope": "精读摘要/引言、缓存及位置方法、Tables 1–3 与 5、运行时间图和上下文边界；页码为本地 PDF 页序。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/Efficient Streaming Language Models with Attention Sinks.pdf",
+    "source_url": "https://arxiv.org/pdf/2309.17453",
+    "project_url": "https://hanlab.mit.edu/projects/streamingllm",
+    "pdf_pages": 21,
+    "pdf_sha256": "e8a7de67c7c57642648362651b4cf64fd852467e18865a298916a36098314819",
+    "venue_from_archive": "ICLR 2024",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "vila",
+    "year": 2024,
+    "title": "VILA: On Pre-training for Visual Language Models",
+    "problem": "VLM 预训练究竟应训练哪些参数、怎样组织图文数据，才能兼顾视觉能力、文本能力和上下文学习。",
+    "pain": "只比较零样本视觉平均分会掩盖模型丧失 ICL 或文本能力；更复杂投影器也未必带来更好对齐。",
+    "naive_failure": "冻结语言模型、只用独立图文对或仅做视觉指令微调，可能获得尚可零样本分数，却损害跨模态序列建模与文本能力。",
+    "insight": "让语言模型在交错图文序列上参与预训练，用简单投影器，并在 SFT 混入文本数据，比分别堆大投影器或额外视觉专家更有效。",
+    "contribution": "受控训练配方研究：同源 MMC4 拆成图文对的控制、训练组件与 ICL 消融、文本和视觉联合 SFT、分辨率与 token 数分离实验。",
+    "evidence": [
+      {
+        "claim": "Table 1：同为 MMC4 与 transformer projector，冻结预训练 LLM 的平均 0/4-shot 为 66.8/57.6，训练 LLM 为 66.8/68.8；同一个零样本分数掩盖 11.2 分 ICL 差距。",
+        "page": 3
+      },
+      {
+        "claim": "Table 3：MMC4 拆成 pairs 的平均 0/4-shot 为 46.4/44.5，保留交错组织为 68.7/70.9；同源控制比不同语料直接比较更能支持组织形式的作用。",
+        "page": 4
+      },
+      {
+        "claim": "Table 5：VILA-7B TextVQA 为 64.4，LLaVA-1.5-7B 为 58.2；Table 6 中 VILA-7B MMLU 50.8，文本 SFT 参考为 51.8，不能概括所有规模无文本损失。",
+        "page": 6
+      },
+      {
+        "claim": "Table 7：图像分辨率 224 到 336 的 TextVQA 为 41.6 到 49.8；将高分辨率视觉 token 降采样至 144 后仍为 45.6，区分原始分辨率与 token 数。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "limits": "深层表示更相似与深度对齐之间仍有解释性推断；主要在其模型、50M 图像及所选配方内验证。不同指标仍有退步，不能将总体进步写成全面无损。 MMC4-pairs 是同源控制而非全部 token 严格不变：只保留匹配图像及相应文本段，丢弃了其他文本，不能声称已完全分离序列组织与上下文信息量。",
+    "strategy": "把经验配方拆成可证伪决策，用同源数据重排/拆对和同组件训练控制排除混杂，再增加容易被平均分掩盖的下游能力。",
+    "lesson": "应固定案例、供体和算子比较诊断器，并检查保护事实；若换了任务或操作再说别人的方法失效，就缺少这里的同源控制。",
+    "read_scope": "精读摘要、预训练设计、Tables 1–9 的关键对照和数据/能力边界；未将表示相似性视作因果证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2024/VILA- On Pre-training for Visual Language Models.pdf",
+    "source_url": "https://arxiv.org/pdf/2312.07533",
+    "project_url": "https://hanlab.mit.edu/projects/vila",
+    "pdf_pages": 16,
+    "pdf_sha256": "c6fbc0b14e531e79737887a40ffabf98c2d8ad11150d79cfbafdb15331e1f49b",
+    "venue_from_archive": "CVPR 2024",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "coat",
+    "year": 2025,
+    "title": "COAT: Compressing Optimizer states and Activation for Memory-Efficient FP8 Training",
+    "problem": "降低FP8训练中仍由高精度优化器状态和非线性激活占用的显存。",
+    "pain": "仅把线性算子改为FP8不能消除训练显存瓶颈；优化器二阶状态对量化误差敏感。",
+    "naive_failure": "直接FP8表示无法充分利用各组动态范围；跨token分组和激进低精度会增加误差。",
+    "insight": "用幂变换扩展优化器状态的动态范围；为非线性激活采用不跨token的细粒度缩放，为GEMM采用较粗粒度并融合转换。",
+    "contribution": "提出优化器状态与激活的FP8表示方案，并把缩放、转换融合到训练执行中。",
+    "evidence": [
+      {
+        "claim": "优化器更新量m/sqrt(v)的MSE由直接E4M3的20.10降至同时扩展两状态的12.31。",
+        "page": 6
+      },
+      {
+        "claim": "VILA微调平均分BF16为62.80，COAT为62.51，并非所有指标完全无损。",
+        "page": 9
+      },
+      {
+        "claim": "Llama2-7B四GPU固定batch=2峰值显存55.1→35.6GB；提高可容纳batch后吞吐7730→11257 token/s。",
+        "page": 10
+      },
+      {
+        "claim": "激活存储分析由BF16的22.66U降至COAT的13.33U。",
+        "page": 6
+      }
+    ],
+    "pages": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      9,
+      10
+    ],
+    "limits": "部分精度指标小幅下降；固定batch的内存收益与扩大batch后的吞吐收益是不同实验，不能称完全无损或把二者混为同条件。",
+    "strategy": "先分解显存来源与数值误差，再针对不同算子设计表示，最后分别测精度、峰值显存与实际吞吐。",
+    "lesson": "Verified Diagnosis应先证明哪项真实成本支配流程，且评价诊断误差如何改变最终决策；不能只展示代理指标。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,4,5,6,7,9,10。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/COAT- Compressing Optimizer states and Activation for Memory-Efficient FP8 Training.pdf",
+    "source_url": "https://arxiv.org/pdf/2410.19313",
+    "project_url": "https://hanlab.mit.edu/projects/coat",
+    "pdf_pages": 22,
+    "pdf_sha256": "325f6a67187109a18641104c83c4d4bd887688aa2871f79c4e0500888e162e24",
+    "venue_from_archive": "ICLR 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "dc-ae",
+    "year": 2025,
+    "title": "Deep Compression Autoencoder for Efficient High-Resolution Diffusion Models",
+    "problem": "让高空间压缩的图像自编码器保持重建质量，以减少扩散模型的token。",
+    "pain": "直接扩大压缩率会使重建质量崩坏；只增加潜变量通道或模型容量不能解决训练困难。",
+    "naive_failure": "把退化全部解释为信息瓶颈，会错过深压缩网络自身的优化障碍。",
+    "insight": "用无参数space-to-channel路径提供可恢复的参考，再让网络只学习残差；把高分辨率适配与局部细节精修拆为训练阶段。",
+    "contribution": "残差自编码结构及分阶段训练，支持f32/f64潜空间并验证下游扩散训练。",
+    "evidence": [
+      {
+        "claim": "f64设置中朴素设计rFID 28.25，残差设计0.50；f32为2.04→0.49。",
+        "page": 3
+      },
+      {
+        "claim": "比较同潜变量大小的空间重排参考，定位优化困难；训练阶段分别针对总体结构、高分辨率和细节。",
+        "page": 4
+      },
+      {
+        "claim": "大UViT受益于更高压缩，但小UViT-S的下游生成会变差，表明重建质量不等于易建模性。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      8,
+      9
+    ],
+    "limits": "高压缩收益依赖下游模型容量和训练预算；重建指标不能替代生成质量。",
+    "strategy": "用能保留信息的简单对照，区分信息损失和优化失败；结构改动必须沿重建到生成的链条验证。",
+    "lesson": "先排除任务本身不可识别、干预无效或优化失败，才把结果归因于诊断方法；代理定位分数必须关联真实结果。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,3,4,5,8,9。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/Deep Compression Autoencoder for Efficient High-Resolution Diffusion Models.pdf",
+    "source_url": "https://arxiv.org/pdf/2410.10733v8",
+    "project_url": "https://hanlab.mit.edu/projects/dc-ae",
+    "pdf_pages": 22,
+    "pdf_sha256": "eb852d2eba91f034f1ff9d1f9dc85a1941c57be3cf5a9afedeacf86ee2288e48",
+    "venue_from_archive": "ICLR 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "dc-ae-1-5",
+    "year": 2025,
+    "title": "DC-AE 1.5: Accelerating Diffusion Model Convergence with Structured Latent Space",
+    "problem": "解决高通道潜空间重建更好、扩散模型反而更难收敛的问题。",
+    "pain": "结构信息分散在较多通道中，潜空间容量提高但学习难度也提高。",
+    "naive_failure": "仅改善自编码器重建或单独给扩散模型做通道掩码训练，并不能保证生成质量提升。",
+    "insight": "用随机前缀通道保留强迫早通道承载结构，再以相匹配的通道增强训练扩散模型。",
+    "contribution": "结构化潜空间和匹配的扩散训练规则，使高通道、高压缩设置更可学习。",
+    "evidence": [
+      {
+        "claim": "DiT-XL消融gFID：基线26.44，仅结构化26.75，仅增强36.83，两者合用17.31。",
+        "page": 7
+      },
+      {
+        "claim": "USiT-H消融gFID 8.45→6.10；USiT-2B f64c128在512分辨率达到gFID 2.18。",
+        "page": 7
+      },
+      {
+        "claim": "较小c32设置并非稳定受益：DiT示例10.18→10.50，USiT 3.89→4.15。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      7,
+      8
+    ],
+    "limits": "收益集中于原本难学的高通道设置；部分通道解码展示经过对应解码器微调，不能当作完全未经适配的因果分解。",
+    "strategy": "发现好表征不等于好生成表征，以二维组件消融证明编码规则与学习规则必须匹配。",
+    "lesson": "若Verified Diagnosis依赖某种验证器或干预，应展示匹配关系，而不是把各模块单独好看当作组合有效。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,3,4,5,7,8。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/DC-AE 1.5- Accelerating Diffusion Model Convergence with Structured Latent Space.pdf",
+    "source_url": "https://arxiv.org/pdf/2508.00413v1",
+    "project_url": "https://hanlab.mit.edu/projects/dc-ae-1-5",
+    "pdf_pages": 13,
+    "pdf_sha256": "6fecdcdb39244e1f51f296d5245b2189658074fb53a20fe488ce2951fea3303d",
+    "venue_from_archive": "ICCV 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "dc-ar",
+    "year": 2025,
+    "title": "DC-AR: Efficient Masked Autoregressive Image Generation with Deep Compression Hybrid Tokenizer",
+    "problem": "在高压缩token下兼顾自回归图像生成速度、细节和分辨率泛化。",
+    "pain": "离散token重建受损，连续token生成需更多昂贵计算，极短一维token又不自然保留二维空间。",
+    "naive_failure": "只提高离散压缩率损失细节；直接全连续生成放大迭代代价。",
+    "insight": "深压缩二维混合tokenizer将结构留在离散token、残差细节交给小扩散模块；按连续预热、离散学习、交替解码训练。",
+    "contribution": "DC-HT混合tokenizer及配套掩码自回归生成器，支持从低到高分辨率训练。",
+    "evidence": [
+      {
+        "claim": "混合相对纯离散gFID 6.71→5.50、GenEval 0.66→0.69；吞吐11.4→10.3张/秒。",
+        "page": 8
+      },
+      {
+        "claim": "三阶段tokenizer训练rFID 1.60，替代训练策略1.76或1.92。",
+        "page": 8
+      },
+      {
+        "claim": "分阶段256→512训练760 GPUh、gFID5.50，对比从512开始1440 GPUh、6.64。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      1,
+      4,
+      5,
+      7,
+      8
+    ],
+    "limits": "细节支路有实际开销；整体GenEval提升不意味着所有子项更强，计数仍弱。",
+    "strategy": "把大模型应承担的结构计算与可由小模型补充的细节分开，再测拆分后的质量与额外成本。",
+    "lesson": "诊断只值得计算真正影响后续验证的部分；新增步骤要显示收益超过其开销。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,4,5,7,8。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/DC-AR- Efficient Masked Autoregressive Image Generation with Deep Compression Hybrid Tokenizer.pdf",
+    "source_url": "https://arxiv.org/pdf/2507.04947v1",
+    "project_url": "https://hanlab.mit.edu/projects/dc-ar",
+    "pdf_pages": 18,
+    "pdf_sha256": "74a8d88201339811fcce963cc2ff869fdf13a6df06b9408184b6317197b6b145",
+    "venue_from_archive": "ICCV 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "dc-gen",
+    "year": 2025,
+    "title": "DC-Gen: Post-Training Diffusion Acceleration with Deeply Compressed Latent Space",
+    "problem": "不从头训练扩散大模型，把现有模型迁移到深压缩潜空间以加速生成。",
+    "pain": "替换自编码器后输入输出接口变化，预训练主干面对错位的特征分布。",
+    "naive_failure": "直接替换接口后端到端微调容易失去已有知识，直接从头训练则成本高。",
+    "insight": "先对齐patch嵌入，再冻结主干对齐输出，最后用LoRA联合微调，逐步恢复接口兼容性。",
+    "contribution": "把潜空间压缩变为预训练模型的后训练改造，覆盖图像、视频与编辑。",
+    "evidence": [
+      {
+        "claim": "FLUX-Krea 1K的GenEval 0.69→0.71，主干耗时4.06→0.88秒。",
+        "page": 8
+      },
+      {
+        "claim": "加入AE解码后相同样例为4.21→1.17秒；文本编码仍不在该拆解中。",
+        "page": 27
+      },
+      {
+        "claim": "中间特征差异及直接微调对照支持先接口对齐再整体调整。",
+        "page": 4
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      8,
+      27
+    ],
+    "limits": "当前归档是2026-09-07修订版、39页，虽放在2025目录；依赖预训练知识和额外训练，主表只计主干，不能当完整请求时延。",
+    "strategy": "锁定可迁移系统中的接口失配，通过冻结、分阶段对齐与直接微调反例证明恢复机制。",
+    "lesson": "一个扎实诊断贡献应指出可验证的具体故障与处理顺序，并证明比不诊断直接行动更便宜或更可靠。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,3,4,5,6,8,27。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/DC-Gen- Post-Training Diffusion Acceleration with Deeply Compressed Latent Space.pdf",
+    "source_url": "https://arxiv.org/pdf/2509.25180v3",
+    "project_url": "https://hanlab.mit.edu/projects/dc-gen",
+    "pdf_pages": 39,
+    "pdf_sha256": "624f9b59f7be928824854358597ce0216cf1d4a28fec69cca26660451d914cea",
+    "venue_from_archive": "ArXiv",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "dc-videogen",
+    "year": 2025,
+    "title": "DC-VideoGen: Efficient Video Generation with Deep Compression Video Autoencoder",
+    "problem": "在保持视频重建和可变时长能力的同时压缩视频token，并迁移现有视频扩散器。",
+    "pain": "纯因果AE难利用未来冗余，非因果AE又不易外推视频时长；直接换AE会破坏预训练接口。",
+    "naive_failure": "仅增强压缩或直接微调整个视频模型，无法同时解决重建、长视频泛化与知识保留。",
+    "insight": "chunk内部双向、chunk之间因果，随后用输入输出接口对齐及LoRA迁移生成器。",
+    "contribution": "深压缩视频AE及适配流程，将重建约束和预训练模型兼容性分别处理。",
+    "evidence": [
+      {
+        "claim": "同压缩率192的例子，因果AE PSNR31.12、chunk-causal32.72。",
+        "page": 4
+      },
+      {
+        "claim": "720p Wan1.3B主干5.76→0.70分钟，整体VBench83.38→84.63。",
+        "page": 9
+      },
+      {
+        "claim": "LoRA微调350.37M参数得VBench84.48，完整微调1418.90M参数79.81。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      6,
+      8,
+      9,
+      18
+    ],
+    "limits": "速度主表以扩散主干为界；依赖底座能力，长视频外推和适配泛化仍有限。",
+    "strategy": "先用匹配压缩率的结构对照分离因果性代价，再用冻结与全量微调比较验证知识保留。",
+    "lesson": "诊断结果必须能排除替代解释；不应把参数更多或干预更强自然视作更可靠。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,3,4,6,8,9,18。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/DC-VideoGen- Efficient Video Generation with Deep Compression Video Autoencoder.pdf",
+    "source_url": "https://arxiv.org/pdf/2509.25182v1",
+    "project_url": "https://hanlab.mit.edu/projects/dc-videogen",
+    "pdf_pages": 19,
+    "pdf_sha256": "c5089e759a0b97fba7f21e56da676c7bb0c14348dfb0b4a8977a6787d1f3d769",
+    "venue_from_archive": "Arxiv",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "duo-attention",
+    "year": 2025,
+    "title": "DuoAttention: Efficient Long-Context LLM Inference with Retrieval and Streaming Heads",
+    "problem": "降低长上下文LLM的KV缓存与注意力成本，保留真正需要全局检索的头。",
+    "pain": "所有头保留全历史浪费显存，但直接按注意力可视化或统一窗口截断会损害检索。",
+    "naive_failure": "观察亮区或只在语言建模损失上校准，不可靠地区分可压缩与必须保留的注意力头。",
+    "insight": "用限制为sink+近期token后对输出的反事实影响定义retrieval head；合成多passkey蒸馏学习混合门，再二值化部署。",
+    "contribution": "可操作的头分类及双缓存执行，让诊断直接决定保留哪些长期信息。",
+    "evidence": [
+      {
+        "claim": "将retrieval头先改为streaming会破坏检索，反序操作则影响小。",
+        "page": 2
+      },
+      {
+        "claim": "多passkey蒸馏头选择胜过attention profiling及语言建模校准。",
+        "page": 10
+      },
+      {
+        "claim": "MHA缓存内存最多减少2.55倍、decode提速2.18倍；GQA对应1.67和1.50倍。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "limits": "需要每模型离线校准，压缩比例有质量取舍；3.3M上下文演示叠加8bit权重和4bit KV，不能全部归功于头分类。",
+    "strategy": "把行为定义变成可测试的干预标准，再让识别结果控制系统动作，最终验证保留能力和资源收益。",
+    "lesson": "这是最直接的借鉴：诊断不是热图，而是能决定什么可以省略，并经真实任务验证的行动依据。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,2,3,4,5,7,9,10,11。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/DuoAttention- Efficient Long-Context LLM Inference with Retrieval and Streaming Heads.pdf",
+    "source_url": "https://arxiv.org/pdf/2410.10819",
+    "project_url": "https://hanlab.mit.edu/projects/duo-attention",
+    "pdf_pages": 20,
+    "pdf_sha256": "0c121d19e509201937378f711e236ce1453728670e8184c81b237702eea825b2",
+    "venue_from_archive": "ICLR 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "hart",
+    "year": 2025,
+    "title": "HART: Efficient Visual Generation with Hybrid Autoregressive Transformer",
+    "problem": "兼顾自回归视觉生成的快速全局建模和高频细节。",
+    "pain": "纯离散token量化损伤细节；全连续AR需要重复执行昂贵的生成计算。",
+    "naive_failure": "独立训练两个质量不错的解码器，不保证离散和连续表示在生成过程兼容。",
+    "insight": "共享解码器交替接收离散/连续latent，使主AR负责粗结构、小残差扩散器负责末端细节。",
+    "contribution": "混合tokenizer、粗到细AR及小型残差扩散器，并识别共享解码几何的重要性。",
+    "evidence": [
+      {
+        "claim": "ImageNet HART-d30 FID1.77，VAR1.92；对应批处理时延2.7对2.6秒，MAR-L为34.9秒。",
+        "page": 9
+      },
+      {
+        "claim": "相近重建指标的独立解码器生成FID21.98，共享解码器5.30，均为24k步设置。",
+        "page": 10
+      },
+      {
+        "claim": "文本1024强离散版本FID5.73，混合5.38，收益应与匹配基线比较。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      5,
+      6,
+      9,
+      10
+    ],
+    "limits": "生成收益依赖数据和任务；小扩散支路也有开销，不能把全部强基线差距归于该支路。",
+    "strategy": "用中间指标相似但最终结果差异巨大的对照，证明接口兼容性比单模块质量更关键。",
+    "lesson": "诊断排名或验证分数相似，不代表最终发现正确机制的能力相同；应比较完整工作流。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,3,5,6,9,10。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/HART- Efficient Visual Generation with Hybrid Autoregressive Transformer.pdf",
+    "source_url": "https://arxiv.org/pdf/2410.10812v1",
+    "project_url": "https://hanlab.mit.edu/projects/hart",
+    "pdf_pages": 20,
+    "pdf_sha256": "bbe4a91595545a6de947438b82826a9c215718656d99fc5b1490779ffc8c5e39",
+    "venue_from_archive": "ICLR 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "jet-nemotron",
+    "year": 2025,
+    "title": "Jet-Nemotron: Efficient Language Model with Post Neural Architecture Search",
+    "problem": "以较低架构探索代价获得真正高吞吐且保持任务能力的线性/混合注意力模型。",
+    "pain": "从头训练不同架构昂贵；参数量和FLOPs不足以预测硬件吞吐。",
+    "naive_failure": "均匀放置全注意力层或选理论轻量模块，可能同时损害检索、知识能力和实际速度。",
+    "insight": "复用预训练MLP，以可训练门和搜索决定全注意力层位置；再选动态卷积线性模块与硬件合适的头形状。",
+    "contribution": "PostNAS方法、JetBlock及Jet-Nemotron模型，将知识继承、任务敏感层位和实际吞吐联合评估。",
+    "evidence": [
+      {
+        "claim": "不同层对MMLU和检索的价值不同；搜索后的全注意力位置优于均匀布局。",
+        "page": 5
+      },
+      {
+        "claim": "组件路线图中MMLU52.8→58.1，数学26.5→34.9，检索62.6→70.4。",
+        "page": 3
+      },
+      {
+        "claim": "训练包含50B token冻结MLP蒸馏，以及350B token完整训练。",
+        "page": 8
+      },
+      {
+        "claim": "256k上下文设置中，相对Qwen3-1.7B的decode最大提速53.6倍，非通用请求时延。",
+        "page": 11
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      10,
+      11
+    ],
+    "limits": "最终模型仍需大量训练；最大速度数字依赖极长上下文，不能推广为任意请求的加速。",
+    "strategy": "让诊断层位的重要性服务于架构决策，用任务差异和真实硬件代价反驳统一简化规则。",
+    "lesson": "Verified Diagnosis若仅给统一排名可能错失任务依赖；需要以具体目标定义重要性并比较决策收益。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,2,3,4,5,6,8,10,11。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/Jet-Nemotron- Efficient Language Model with Post Neural Architecture Search.pdf",
+    "source_url": "https://arxiv.org/pdf/2508.15884",
+    "project_url": "https://hanlab.mit.edu/projects/jet-nemotron",
+    "pdf_pages": 20,
+    "pdf_sha256": "1f8cf861604cba61f6b3a7974eb97b238a69d65d96b392d31304a31c57f079d4",
+    "venue_from_archive": "NeurIPS 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "lego",
+    "year": 2025,
+    "title": "LEGO: Spatial Accelerator Generation and Optimization for Tensor Applications",
+    "problem": "从张量计算自动生成可综合的空间加速器，并优化数据流和硬件映射。",
+    "pain": "固定模板限制架构空间，灵活的解析映射又常停留在代价模型，无法直接变为RTL。",
+    "naive_failure": "仅搜索理论复用和吞吐不能保证互连、存储、控制及数据流合并后的硬件有效。",
+    "insight": "用仿射迭代和时空映射表达数据流，推导连接与存储，再在生成图上优化引脚共享、广播、归约和门控。",
+    "contribution": "贯通映射到RTL的生成器及图级优化，用综合、仿真和工作负载测量验证。",
+    "evidence": [
+      {
+        "claim": "对Gemmini的端到端评估平均加速3.2倍、能耗改善2.4倍。",
+        "page": 9
+      },
+      {
+        "claim": "组件优化贡献35%面积降低和28%功耗降低。",
+        "page": 11
+      },
+      {
+        "claim": "Llama7B batch1利用率仅3.1%，batch32为42.9%，仍受DRAM带宽限制。",
+        "page": 10
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      4,
+      5,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "limits": "证据以RTL仿真和综合为主，不等于量产芯片；后处理及具体硬件配置也影响可迁移性。",
+    "strategy": "把抽象映射变成可执行工件，逐级测量原先被代价模型忽略的物理开销，并承认剩余瓶颈。",
+    "lesson": "诊断系统必须交付可重复的验证过程，而不只在离线指标上获胜；应报告真实瓶颈及失败实例。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,2,4,5,7,8,9,10,11。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/LEGO- Spatial Accelerator Generation and Optimization for Tensor Applications.pdf",
+    "source_url": "https://arxiv.org/pdf/2509.12053",
+    "project_url": "https://hanlab.mit.edu/projects/lego",
+    "pdf_pages": 13,
+    "pdf_sha256": "880a54e11d24c8b8d32b7e8b1fa3304d5ded49c9f1eef687400932bddcf22334",
+    "venue_from_archive": "HPCA 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "long-rl",
+    "year": 2025,
+    "title": "Long-RL: Scaling RL to Long Videos",
+    "problem": "让VLM有效训练和推理长视频，而非仅增加输入帧数。",
+    "pain": "长视频推理数据不足，RL多rollout重复编码大量相同视觉内容，显存和运行成本高。",
+    "naive_failure": "直接RL冷启动会劣化能力；只增加帧数而不训练推理，性能趋于饱和。",
+    "insight": "构建长视频推理QA，先CoT-SFT再GRPO；系统重复使用视觉序列并按模态均衡序列并行。",
+    "contribution": "LongVideo-Reason 104K数据、LongVILA-R1和MR-SP训练系统，并分别消融数据训练和计算复用。",
+    "evidence": [
+      {
+        "claim": "CoT-SFT/RL消融：基线58.1，仅SFT60.2，仅RL52.4，联合61.9。",
+        "page": 9
+      },
+      {
+        "claim": "512帧无推理60.2、有推理64.3；VideoMME主结果无/有字幕65.1/71.1。",
+        "page": 9
+      },
+      {
+        "claim": "完整MR-SP在512帧最多2.1倍训练提速，1024帧仍能运行，只有第一阶段会OOM。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "limits": "自动构建的推理链不等于真实内部推理或因果解释；更长序列和大batch仍需更多硬件。",
+    "strategy": "分别证明能力瓶颈与训练成本瓶颈，利用冷启动失败和逐组件系统消融解释为何训练顺序及复用必要。",
+    "lesson": "诊断研究应把“有更多观测”和“能使用观测做正确决策”分开；推理文本不能代替独立机制真值。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,2,4,5,6,7,8,9。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/Long-RL- Scaling RL to Long Videos.pdf",
+    "source_url": "https://arxiv.org/pdf/2507.07966",
+    "project_url": "https://hanlab.mit.edu/projects/long-rl",
+    "pdf_pages": 29,
+    "pdf_sha256": "0e677054d9d622c2aa453efb276678248f819dbf21b2bbbe21a63ac1804d3dc2",
+    "venue_from_archive": "NeurIPS 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "longvila",
+    "year": 2025,
+    "title": "LongVILA: Scaling Long-Context Visual Language Models for Long Videos",
+    "problem": "让VLM在可承受训练成本下利用小时级视频和百万级多模态上下文。",
+    "pain": "视觉编码和语言主干的负载分布不同，沿用纯文本序列并行造成不均衡和跨机通信浪费。",
+    "naive_failure": "只扩展文本上下文或简单重叠通信不保证多模态有效；重叠可能抢占计算资源而变慢。",
+    "insight": "先按图像负载分片再重分配token，按机内/机间拓扑选择通信；训练分阶段补齐对齐、短上下文、扩展和长视频能力。",
+    "contribution": "MM-SP系统与五阶段训练，将长输入可训练性和长视频任务表现联结。",
+    "evidence": [
+      {
+        "claim": "五阶段完整路径消融得57.5，替代顺序或缺项约55.3–56.0。",
+        "page": 3
+      },
+      {
+        "claim": "通信重叠例子forward时间29.5→35，反而增加18.6%。",
+        "page": 7
+      },
+      {
+        "claim": "VideoMME主结果，无字幕/有字幕分别为60.1/65.1。",
+        "page": 10
+      },
+      {
+        "claim": "长上下文needle检索得99.8%，不代表所有时序推理任务的准确率。",
+        "page": 2
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      10
+    ],
+    "limits": "needle检索不能代表一般时序推理；合成数据质量和阶段间训练差异限制因果归因。",
+    "strategy": "先测不同计算阶段和拓扑的真实瓶颈，再证明系统扩展确实带来任务上的有效上下文。",
+    "lesson": "我们要将诊断可运行、诊断能定位、定位能帮助决策三个门槛分开，而不是用一个演示代表全部。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,2,3,4,5,6,7,10。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/LongVILA- Scaling Long-Context Visual Language Models for Long Videos.pdf",
+    "source_url": "https://arxiv.org/pdf/2408.10188",
+    "project_url": "https://hanlab.mit.edu/projects/longvila",
+    "pdf_pages": 20,
+    "pdf_sha256": "9363f0508ea5109f5df0ea04f3709bbff718d0196d43199551023a1d88363aaa",
+    "venue_from_archive": "ICLR 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "lserve",
+    "year": 2025,
+    "title": "LServe: Efficient Long-sequence LLM Serving with Unified Sparse Attention",
+    "problem": "同时减少LLM长输入prefill和长输出decode的注意力成本。",
+    "pain": "静态稀疏不能覆盖全部冗余，动态KV选择又可能使选择成本接近节省的注意力计算。",
+    "naive_failure": "每次精细选择所有KV页，或用同一种稀疏粒度对应算法和硬件，可能失去实际加速。",
+    "insight": "静态流式头与动态检索页互补；分离逻辑/物理页粒度，并跨连续query复用页选择。",
+    "contribution": "统一块稀疏运行框架、分层分页及可复用选择器，覆盖prefill和decode。",
+    "evidence": [
+      {
+        "claim": "页选择成本随上下文增长；每四个query复用选择用于摊销该成本。",
+        "page": 10
+      },
+      {
+        "claim": "Llama3-8B和Minitron4B相对vLLM平均decode提速约1.5倍，Llama2-7B超过2倍。",
+        "page": 9
+      },
+      {
+        "claim": "对Quest的32k例子prefill 3.61→2.32秒、decode14.86→10.24毫秒。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      9,
+      10,
+      11
+    ],
+    "limits": "静态头校准和动态页预算仍有适用条件；prefill、decode与整个请求耗时不可混为一种速度。",
+    "strategy": "把“决定省略什么”的开销本身纳入优化，组件消融同时测准确度、选择时间和执行时间。",
+    "lesson": "这是Verified Diagnosis的核心成本教训：候选诊断花掉的预算必须计入总账，不能只数后续验证节省。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,3,4,5,9,10,11。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/LServe- Efficient Long-sequence LLM Serving with Unified Sparse Attention.pdf",
+    "source_url": "https://arxiv.org/pdf/2502.14866",
+    "project_url": "https://hanlab.mit.edu/projects/lserve",
+    "pdf_pages": 16,
+    "pdf_sha256": "1fa741f6437b4821098d281a9f0936ddedf8abb5565f0001d3df4e929da18d92",
+    "venue_from_archive": "MLSys 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "qserve",
+    "year": 2025,
+    "title": "QServe: W4A8KV4 Quantization and System Co-design for Efficient LLM Serving",
+    "problem": "让低比特LLM在云端批量服务中获得真实吞吐收益。",
+    "pain": "INT4的理论吞吐被反量化、CUDA标量处理及KV搬运开销抵消。",
+    "naive_failure": "把权重、激活一律降到4bit，或朴素压缩KV，可能比更高精度方案更慢。",
+    "insight": "保留高效INT8计算路径，采用W4A8KV4、渐进组量化、SmoothAttention及针对反量化/寄存器访问的执行设计。",
+    "contribution": "QoQ量化方法与QServe服务引擎，从数值失真到硬件开销闭环验证。",
+    "evidence": [
+      {
+        "claim": "朴素KV4在A100例子0.42→0.48毫秒反而变慢，优化后0.28毫秒。",
+        "page": 10
+      },
+      {
+        "claim": "L40S主表相对最佳TensorRT精度吞吐提升1.39–3.47倍，A100为1.17–2.38倍。",
+        "page": 13
+      },
+      {
+        "claim": "Llama3.1-8B LongBench平均BF16 38.52、QoQ 38.38，仍有轻微质量代价。",
+        "page": 13
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      10,
+      11,
+      12,
+      13
+    ],
+    "limits": "硬件、batch及精度配置影响加速；有小幅精度损失，不能称普遍无损。",
+    "strategy": "先用硬件测量推翻“位数更低必然更快”，再逐项减少决定性能的真实转换开销。",
+    "lesson": "Verified Diagnosis应允许朴素直接验证击败复杂方法，以实际总成本和质量定义价值，而不是理论查询数。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,3,4,5,6,10,11,12,13。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/QServe- W4A8KV4 Quantization and System Co-design for Efficient LLM Serving.pdf",
+    "source_url": "https://arxiv.org/pdf/2405.04532",
+    "project_url": "https://hanlab.mit.edu/projects/qserve",
+    "pdf_pages": 19,
+    "pdf_sha256": "2e8ff61b02bd6a0f0a4a55f94b1c77095905bfb53b77d3a324df43d789a7286d",
+    "venue_from_archive": "MLSys 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "radial-attention",
+    "year": 2025,
+    "title": "Radial Attention: O(nlogn) Sparse Attention with Energy Decay for Long Video Generation",
+    "problem": "降低长视频生成注意力的计算增长，同时保留时空结构。",
+    "pain": "视频token数增长使全注意力不可承受；任意窗口或动态稀疏可能损害全局时序信息并增加选择开销。",
+    "naive_failure": "均匀分配所有时距的注意力预算，忽略远距贡献通常较小但不应全部删除。",
+    "insight": "利用平均能量随时空距离衰减，按时距以层级方式缩减空间带宽，保留首帧sink并配合块稀疏kernel。",
+    "contribution": "Radial静态稀疏模式、复杂度分析及训练/推理实现，用长视频LoRA验证可扩展性。",
+    "evidence": [
+      {
+        "claim": "117帧Hunyuan例子dense1649秒、Radial876秒；PSNR27.3、VisionReward0.141对dense0.139。",
+        "page": 7
+      },
+      {
+        "claim": "延长509帧设置LoRA训练171对746 GPUh，推理781对2895秒。",
+        "page": 10
+      },
+      {
+        "claim": "时距能量衰减曲线拟合R²高于0.985，是汇总经验支持而非逐样本保证。",
+        "page": 10
+      }
+    ],
+    "pages": [
+      1,
+      4,
+      5,
+      7,
+      9,
+      10
+    ],
+    "limits": "O(n log n)以固定空间分辨率下增长帧数为主要分析条件；某些稀疏基线更快，长视频版本需要训练，平均衰减不等于所有关键事件安全。",
+    "strategy": "从经验分布中提取可计算结构先验，用复杂度、实测速度和输出保真共同界定可用区域。",
+    "lesson": "诊断可以利用稳定结构减少查询，但必须保留罕见远距重要机制的反例与拒绝结论，不能把平均规律当个体保证。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,4,5,7,9,10。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/Radial Attention- O(nlogn) Sparse Attention with Energy Decay for Long Video Generation.pdf",
+    "source_url": "https://arxiv.org/pdf/2506.19852v2",
+    "project_url": "https://hanlab.mit.edu/projects/radial-attention",
+    "pdf_pages": 25,
+    "pdf_sha256": "43375b7ef5bad7ddd4ff5a1a2667f706f06c923e844be8373f26d45073c2475b",
+    "venue_from_archive": "NeurIPS 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "sana",
+    "year": 2025,
+    "title": "SANA: Efficient High-Resolution Image Synthesis with Linear Diffusion Transformers",
+    "problem": "在较低资源下完成高分辨率文本到图像生成。",
+    "pain": "高分辨率token数量、二次注意力、文本编码和迭代步数共同影响延迟，单改注意力收益有限。",
+    "naive_failure": "直接以线性注意力替代全注意力会损质量；MixFFN恢复质量又引入运行开销。",
+    "insight": "深压缩AE先减少token，线性注意力负责全局、局部MixFFN补空间细节，再用kernel融合、较小文本编码器和更少步数解决残余成本。",
+    "contribution": "SANA生成模型及逐级组件设计，将表征压缩、局部建模和执行开销对应到具体瓶颈。",
+    "evidence": [
+      {
+        "claim": "仅替换线性注意力延迟2250→1931ms但质量下降；加入MixFFN为2425ms，融合及f32潜空间最终748ms。",
+        "page": 9
+      },
+      {
+        "claim": "1024 A100：SANA0.6B延迟0.9秒、GenEval0.64；FLUX-dev23秒、0.67。吞吐39.5倍是batch16指标。",
+        "page": 9
+      },
+      {
+        "claim": "T5-XXL文本编码1.61秒、Gemma2B为0.28秒；组件延迟需单独测量。",
+        "page": 10
+      },
+      {
+        "claim": "Gemma文本特征较大方差会导致训练NaN，RMSNorm用于稳定训练。",
+        "page": 6
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      9,
+      10
+    ],
+    "limits": "不同指标有取舍；吞吐与单张延迟基准不同，不能互换倍数；总体收益不是线性注意力单独创造。",
+    "strategy": "先做端到端瓶颈分解，再让每项技术解决上一项引出的明确问题，用组件消融避免归因混乱。",
+    "lesson": "Verified Diagnosis需要像这样说明哪项成本或失效主导、为何朴素方案不行及额外机制究竟补什么。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,2,3,4,5,6,9,10。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/SANA- Efficient High-Resolution Image Synthesis with Linear Diffusion Transformers.pdf",
+    "source_url": "https://arxiv.org/pdf/2410.10629v3",
+    "project_url": "https://hanlab.mit.edu/projects/sana",
+    "pdf_pages": 23,
+    "pdf_sha256": "cd4c3c0aac53c8b151cdd9d19abc7867f27324094bfe45decb225450a2761d0d",
+    "venue_from_archive": "ICLR 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "sana-1-5",
+    "year": 2025,
+    "title": "SANA-1.5: Efficient Scaling of Training-Time and Inference-Time Compute in Linear Diffusion Transformer",
+    "problem": "在有限训练成本和可增加的推理预算下扩展SANA能力。",
+    "pain": "从头训练更大模型昂贵；更多采样步数不能可靠修复结构错误，盲目剪枝损害能力。",
+    "naive_failure": "只扩大参数或步数，忽略已有知识继承、微调恢复和候选选择对结果的作用。",
+    "insight": "复制并近似恒等初始化新层以增长模型，结合稳定训练和剪枝后微调；推理阶段生成候选并用VLM选择。",
+    "contribution": "训练时模型增长/恢复路线和推理时best-of-N选择，并分别测量预算—质量曲线。",
+    "evidence": [
+      {
+        "claim": "达到GenEval0.70所需训练步数减少约60%。",
+        "page": 3
+      },
+      {
+        "claim": "SFT使GenEval0.72→0.81，但FID5.42→5.99；GenEval0.96依赖2048候选。",
+        "page": 6
+      },
+      {
+        "claim": "4.8B剪至1.6B得0.693→0.571，微调恢复至0.672。",
+        "page": 7
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "limits": "高分需要候选生成和VLM判别预算；多个指标存在取舍，剪枝恢复也非免费。",
+    "strategy": "把训练知识继承和推理搜索分别画为成本—性能曲线，公开恢复成本与选择预算。",
+    "lesson": "诊断应比较相同预算下直接重复验证、采样或best-of-N，而不是仅与单次廉价基线比较。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,2,3,4,5,6,7。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/SANA-1.5- Efficient Scaling of Training-Time and Inference-Time Compute in Linear Diffusion Transformer.pdf",
+    "source_url": "https://arxiv.org/pdf/2501.18427v4",
+    "project_url": "https://hanlab.mit.edu/projects/sana-1-5",
+    "pdf_pages": 21,
+    "pdf_sha256": "9bc6d68f6cf88d8b69961386cbc6c8506849fb8b77e7368fca8f996cc3f87922",
+    "venue_from_archive": "ICML 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "sana-sprint",
+    "year": 2025,
+    "title": "SANA-Sprint: One-Step Diffusion with Continuous-Time Consistency Distillation",
+    "problem": "将高效流匹配图像模型压缩到一至数步生成，同时保持结构和细节。",
+    "pain": "直接迁移连续一致性训练存在坐标、时间导数和数值稳定性不匹配；一致性与对抗目标各有偏差。",
+    "naive_failure": "只做一致性蒸馏可能不足以保持全局质量，只做对抗蒸馏也会损失表现。",
+    "insight": "转换为TrigFlow坐标并稳定时间与注意力参数化，用连续一致性约束配合latent对抗目标。",
+    "contribution": "可用于SANA的连续时间蒸馏流程、稳定化设计和一至四步模型。",
+    "evidence": [
+      {
+        "claim": "sCM单独FID8.93，LADD单独12.20，两者结合8.11；移除坐标/调度处理会发散。",
+        "page": 8
+      },
+      {
+        "claim": "最大时间点权重从0%到70%，FID9.44→8.11。",
+        "page": 8
+      },
+      {
+        "claim": "4步1.6B：延迟0.31秒、FID6.54、GenEval0.77；原SANA为1.2秒、5.76、0.66。",
+        "page": 7
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8
+    ],
+    "limits": "无需训练的坐标变换不等于无需训练的蒸馏；64倍等宣传数字是transformer部分，解码器形成端到端下限。",
+    "strategy": "先排除参数化不匹配导致的训练假失败，再用互补损失和消融解释稳定性与质量改进。",
+    "lesson": "在给诊断方法定罪之前，需要确认评分坐标、干预定义和验证目标匹配；之后再测完整流程。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,2,3,4,5,7,8。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/SANA-Sprint- One-Step Diffusion with Continuous-Time Consistency Distillation.pdf",
+    "source_url": "https://arxiv.org/pdf/2503.09641v4",
+    "project_url": "https://hanlab.mit.edu/projects/sana-sprint",
+    "pdf_pages": 22,
+    "pdf_sha256": "a84d54b91d598c9a38b1e0de12754c46b1bf41f3873dc8ef384bbfa8ffdbd64a",
+    "venue_from_archive": "ICCV 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "svdquant",
+    "year": 2025,
+    "title": "SVDQuant: Absorbing Outliers by Low-Rank Components for 4-Bit Diffusion Models",
+    "problem": "让扩散模型权重和激活同时4bit量化而不发生严重质量崩坏，并兑现硬件加速。",
+    "pain": "离群值使低比特误差大，平滑只把激活离群值迁移到权重；小低秩分支的额外读写又会吃掉加速。",
+    "naive_failure": "直接量化、仅平滑或量化后低秩补偿均不足；量化误差的奇异值分布并不适合低秩修复。",
+    "insight": "先把激活困难迁移到权重，再由高精度低秩分支吸收权重主奇异方向，低比特只处理残差；融合共享读写的kernel。",
+    "contribution": "SVDQuant量化范式及Nunchaku执行器，机制消融覆盖误差与系统开销。",
+    "evidence": [
+      {
+        "claim": "朴素rank32分支带来57%时延开销，融合kernel后消除大部分额外读写。",
+        "page": 6
+      },
+      {
+        "claim": "PixArt消融ImageReward：LoRC0.508、无平滑0.690、完整0.878；直接量化和只平滑明显失败。",
+        "page": 10
+      },
+      {
+        "claim": "FLUX主干体积22.2→6.1GiB，其中低秩分支0.3GiB；部分质量指标仍非完全一致。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      1,
+      4,
+      5,
+      6,
+      8,
+      10
+    ],
+    "limits": "低秩不能普遍修复任意量化误差；理论上界有分布假设，实际质量与速度依赖模型、位格式及硬件。",
+    "strategy": "先指出已有技巧只是转移困难，再把困难转移到适合承载它的结构；系统实测揭示并修复理论省算却实际慢。",
+    "lesson": "我们必须发现具体失效机制及可验证解法；若诊断只是给既有验证排队，应证明它解决了哪种系统性难例。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,4,5,6,8,10。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/SVDQuant- Absorbing Outliers by Low-Rank Components for 4-Bit Diffusion Models.pdf",
+    "source_url": "https://arxiv.org/pdf/2411.05007v4",
+    "project_url": "https://hanlab.mit.edu/projects/svdquant",
+    "pdf_pages": 28,
+    "pdf_sha256": "548a48319d6bef7f5f7bbebd6573dc922247cde471f9e670dc1e8bc09653e2dc",
+    "venue_from_archive": "ICLR 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "vila-u",
+    "year": 2025,
+    "title": "VILA-U: a Unified Foundation Model Integrating Visual Understanding and Generation",
+    "problem": "用统一自回归视觉语言框架兼顾理解和图像/视频生成。",
+    "pain": "视觉理解需要语义对齐，视觉生成需要保留可重建细节，两种表征要求存在冲突。",
+    "naive_failure": "仅用重建训练的离散视觉token理解能力不足；加入对比损失也不自动产生两任务互相增强。",
+    "insight": "联合重建与文本对比训练视觉tower，以残差量化深度表达细节，再接统一下一token预测。",
+    "contribution": "统一视觉tower与多模态自回归框架，用理解和生成两侧实验显式展示权衡。",
+    "evidence": [
+      {
+        "claim": "同25M数据，重建+对比相对仅重建VQAv2 57.7→68.0，POPE75.1→83.7。",
+        "page": 9
+      },
+      {
+        "claim": "小模型生成对照中统一tower rFID1.80、FID13.2，RQ-VAE为1.30和12.0。",
+        "page": 9
+      },
+      {
+        "claim": "作者明确说明尚未观察到理解和生成任务显著协同或互相增强。",
+        "page": 10
+      }
+    ],
+    "pages": [
+      1,
+      3,
+      4,
+      6,
+      8,
+      9,
+      10
+    ],
+    "limits": "统一并非无代价：语义对齐影响重建，未证实任务协同；大规模训练数据也影响跨模型比较。",
+    "strategy": "把目标冲突本身作为设计依据，同时给出正收益和负代价，克制“统一即协同”的叙事。",
+    "lesson": "Verified Diagnosis不能因为诊断与验证被统一，就宣称互相增强；需要匹配基线和两侧单独/联合对照。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,3,4,6,8,9,10。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/VILA-U- a Unified Foundation Model Integrating Visual Understanding and Generation.pdf",
+    "source_url": "https://arxiv.org/pdf/2409.04429v3",
+    "project_url": "https://hanlab.mit.edu/projects/vila-u",
+    "pdf_pages": 19,
+    "pdf_sha256": "85ae4c1d695c481003a6a3d6c5b301994b854542a0f0e368a057b014109357ba",
+    "venue_from_archive": "ICLR 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "xattention",
+    "year": 2025,
+    "title": "XAttention: Block Sparse Attention with Antidiagonal Scoring",
+    "problem": "以低于完整注意力的成本估计应保留的注意力块，并获得真实prefill加速。",
+    "pain": "先算完整注意力再选稀疏块本末倒置；简单抽样又易漏掉竖线和斜线结构。",
+    "naive_failure": "随机或普通对角采样在相同采样预算下不能可靠捕捉关键注意力模式。",
+    "insight": "反对角采样同时与常见竖线/斜线模式相交，用累计概率阈值选择块，必要时逐头调整阈值。",
+    "contribution": "结构感知低成本评分器和块稀疏执行，测试长文本、视频理解和视频生成。",
+    "evidence": [
+      {
+        "claim": "相同stride8预算：随机RULER82.48、普通对角81.06、反对角88.47；后者块密度20.97%。",
+        "page": 7
+      },
+      {
+        "claim": "256k上下文注意力kernel最高13.5倍加速，不能直接等同完整请求加速。",
+        "page": 7
+      },
+      {
+        "claim": "视频生成前五步用dense warmup可避免布局偏移；说明稀疏策略有阶段依赖。",
+        "page": 5
+      }
+    ],
+    "pages": [
+      1,
+      2,
+      3,
+      5,
+      6,
+      7
+    ],
+    "limits": "依赖注意力模式几何与阈值，生成需dense warmup；估计概率质量与最终事实正确不是同一指标。",
+    "strategy": "用模式几何提出廉价代理，在匹配采样成本下排除随机等简单方案，并报告需要回退密集计算的条件。",
+    "lesson": "诊断代理要以相同信息和预算对比随机、简单分数与直接验证，且应允许某些阶段必须付全量成本。",
+    "read_scope": "核对当前归档PDF的摘要/引言、方法、主实验和消融相关段；重点页为1,2,3,5,6,7。阅读关键段及表图文字，不代表逐字阅读全部补充材料或独立复核全部证明。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2025/XAttention- Block Sparse Attention with Antidiagonal Scoring.pdf",
+    "source_url": "https://raw.githubusercontent.com/mlresearch/v267/main/assets/xu25ag/xu25ag.pdf",
+    "project_url": "https://hanlab.mit.edu/projects/xattention",
+    "pdf_pages": 13,
+    "pdf_sha256": "ae903606b6a44a36462b928d4837147bbde019a73b043b62306595588cde975a",
+    "venue_from_archive": "ICML 2025",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "fast-dllm",
+    "year": 2026,
+    "title": "Fast-dLLM: Training-free Acceleration of Diffusion LLM by Enabling KV Cache and Parallel Decoding",
+    "problem": "扩散语言模型理论上能并行，实际却比自回归模型慢。",
+    "pain": "双向注意力使传统 KV cache 难复用；同时采样有相互依赖的 token 会损害推理正确性。",
+    "naive_failure": "直接增加并行 token 数会降低准确率；仅减少总步数不能同时解决每步重算和 token 依赖。",
+    "insight": "块内相邻去噪步的前后缀状态变化较小，可近似复用；高置信位置可更安全地并行生成。",
+    "contribution": "Prefix/DualCache 降低单步开销，置信阈值并行减少步数，两者分开验证后组合。",
+    "evidence": [
+      {
+        "claim": "前后缀 KV 相似度分析为缓存设计提供依据。",
+        "page": 5
+      },
+      {
+        "claim": "LLaDA GSM8K、256 长度：准确率 79.3→78.5，吞吐 6.7→54.4 token/s，8.1 倍。",
+        "page": 7
+      },
+      {
+        "claim": "固定并行数与置信阈值对照，并比较 Dream 架构。",
+        "page": 8
+      },
+      {
+        "claim": "最高 27.6 倍依赖 8-shot、1024 长度设置；MathVista 59.2→56.6 显示非无损。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      5,
+      7,
+      8,
+      9
+    ],
+    "limits": "近似缓存不保证严格等价；倍率依赖长度、前缀和硬件，不能将最高倍率写成普遍收益。",
+    "strategy": "发现可复用结构→转化为实际调度→质量—速度曲线闭环。",
+    "lesson": "状态相似图只负责提出假说，真正贡献由改变计算决策后的准确率和总成本证明。",
+    "read_scope": "PDF 1–9 的引言、方法、主结果、关键消融；未逐项审计所有附录。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2026/Fast-dLLM- Training-free Acceleration of Diffusion LLM by Enabling KV Cache and Parallel Decoding.pdf",
+    "source_url": "https://arxiv.org/pdf/2505.22618",
+    "project_url": "https://hanlab.mit.edu/projects/fast-dllm",
+    "pdf_pages": 22,
+    "pdf_sha256": "8dcf7152cbfb042bcd00cd74dea56fdb324a8cfe655e9182f06fa2e97e269398",
+    "venue_from_archive": "ICLR 2026",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "fast-dllm-v2",
+    "year": 2026,
+    "title": "Fast-dLLM v2: Efficient Block-Diffusion Large Language Model",
+    "problem": "如何让块扩散语言模型以合理训练量获得真正可用的推理效率。",
+    "pain": "全双向扩散与精确 KV cache 不兼容；将 AR 模型转成扩散模型可能耗费大量训练 token。",
+    "naive_failure": "v1 的推理近似有边界；直接平移 AR 输出、随意改变推理块长会产生训练失配。",
+    "insight": "保留跨块因果结构与块内双向并行，并让转换训练尽量贴近原 AR 表征。",
+    "contribution": "块扩散模型、互补掩码、块对齐 padding 和层次缓存协同设计，兼顾转换成本与部署。",
+    "evidence": [
+      {
+        "claim": "1.5B 平均分 45.0，对照同数据微调 AR 为 44.3；7B 为 60.3 对 59.6。",
+        "page": 7
+      },
+      {
+        "claim": "朴素转换平均 41.3，加 padding 42.2，再加互补掩码到 45.0。",
+        "page": 8
+      },
+      {
+        "claim": "直接小块推理与层次子块缓存对照区分训练失配和缓存收益。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      7,
+      8,
+      9
+    ],
+    "limits": "不是各任务全面超过 AR；~1B 与其他工作数百 B token 是跨工作训练量比较，不能当严格同预算实验。",
+    "strategy": "承认上一代方法局限，再重新定义需训练解决的瓶颈。",
+    "lesson": "pivot 应回答旧方案为什么结构性受限，以及新设计如何消除该限制，不能只改评价名称。",
+    "read_scope": "PDF 1–2、4–9，含方法、训练协议、对照和缓存消融。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2026/Fast-dLLM v2- Efficient Block-Diffusion Large Language Model.pdf",
+    "source_url": "https://arxiv.org/pdf/2509.26328",
+    "project_url": "https://hanlab.mit.edu/projects/fast-dllm-v2",
+    "pdf_pages": 17,
+    "pdf_sha256": "9e3dcb349e0269fee8ac8c525131284a6408e506900c69940bb898f41274d49f",
+    "venue_from_archive": "ICLR 2026",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "foreact",
+    "year": 2026,
+    "title": "ForeAct: Steering Your VLA with Efficient Visual Foresight Planning",
+    "problem": "高层语言指令如何可靠地变成多步机器人动作。",
+    "pain": "VLA 同时承担语义定位与运动控制，小数据下难以泛化；仅用 VLM 分解语言任务仍不足。",
+    "naive_failure": "普通图像编辑器可能凭空添物、缺少物理动作；仅给空间文字提示也无法达到视觉目标效果。",
+    "insight": "将未来目标状态直接展示给 VLA，可把抽象语义转成具体视觉运动目标。",
+    "contribution": "机器人数据预训练的高效未来图像生成器、VLM 规划监控及现有 VLA 的闭环组合。",
+    "evidence": [
+      {
+        "claim": "生成器预训练对照分别检查图像忠实度与质量；640×480、8 步预测需 0.33 秒/H100。",
+        "page": 6
+      },
+      {
+        "claim": "11 个实机任务平均原文 success rate：π0 46.5、VLM+π0 57.1、ForeAct 87.4。",
+        "page": 7
+      },
+      {
+        "claim": "Pick_Tool：语义文本 20.0，空间文本 46.8，目标图像加语义文本 93.4。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      6,
+      7,
+      9
+    ],
+    "limits": "实机主指标由原子动作得分汇总，不等于整段任务一次成功概率；大规模预训练是投入，通用图像编辑器比较主要为定性例子。",
+    "strategy": "跨模块信息传递从模糊语言改为具体目标；用更强的文字对照排除仅任务分解的解释。",
+    "lesson": "最接近“可视化是否有用”的范本：保持下游任务明确，以相同消费者的实际动作成功证明附加视觉信息价值。",
+    "read_scope": "PDF 1、3–9；主方法、数据、实机与模拟实验、OOD、文字提示对照。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2026/ForeAct- Steering Your VLA with Efficient Visual Foresight Planning.pdf",
+    "source_url": "https://arxiv.org/pdf/2602.12322v1",
+    "project_url": "https://hanlab.mit.edu/projects/foreact",
+    "pdf_pages": 16,
+    "pdf_sha256": "d35a86c35bb88f7bd48a14d2d744cab63078b2f957e2fd1d7ef756dcbf3044da",
+    "venue_from_archive": "CVPR 2026 Highlight",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "longlive",
+    "year": 2026,
+    "title": "LongLive: Real-time Interactive Long Video Generation",
+    "problem": "实时视频生成中途换 prompt 时，怎样既跟随新指令又保持画面连贯。",
+    "pain": "旧 KV cache 含旧指令语义；清空会断裂，保留会不听新指令，长 rollout 又会累积误差。",
+    "naive_failure": "直接扩大短视频训练造成显存及教师监督问题；只减注意力窗口会损伤一致性。",
+    "insight": "视觉历史和旧文本语义需要区别处理；缓存应由已有帧和新 prompt 重建。",
+    "contribution": "KV recache、流式长程训练、短窗口加帧 sink，形成可交互的长视频生成系统。",
+    "evidence": [
+      {
+        "claim": "明确提出清空/保留缓存的两种相反失败，并解释旧 prompt 如何进入缓存。",
+        "page": 3
+      },
+      {
+        "claim": "缓存消融：保留缓存 CLIP 25.92、重建 27.87；清空 28.95 但主体一致性 89.59 低于重建 94.04。",
+        "page": 8
+      },
+      {
+        "claim": "同表比较质量和速度，单 H100 20.7 FPS；60 秒交互按每段新 prompt 评测。",
+        "page": 7
+      },
+      {
+        "claim": "窗口与 sink 消融衡量一致性、显存和运行时间的联合权衡。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      3,
+      7,
+      8,
+      9
+    ],
+    "limits": "重建不是每项指标最高；短视频语义分低于部分基线。240 秒为展示能力，主要系统评测时长另有界定。",
+    "strategy": "将两难冲突拆开，识别应该保留和应该更新的状态。",
+    "lesson": "诊断研究可学习这种可区分失败机制的对照：相同“输出改变”可能来自破坏或有效恢复，必须分开。",
+    "read_scope": "PDF 1–9，主文方法、比较、交互评估与关键消融。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2026/LongLive- Real-time Interactive Long Video Generation.pdf",
+    "source_url": "https://arxiv.org/pdf/2509.22622v2",
+    "project_url": "https://hanlab.mit.edu/projects/longlive",
+    "pdf_pages": 21,
+    "pdf_sha256": "c02db70004d281be6f35b760052457b86860eebbb6356abd3044690a96b54905",
+    "venue_from_archive": "ICLR 2026",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "lpd",
+    "year": 2026,
+    "title": "Locality-aware Parallel Decoding for Efficient Autoregressive Image Generation",
+    "problem": "怎样在保持平坦视觉 token 表示的同时，提高自回归图像生成并行度。",
+    "pain": "逐 token 生成受内存带宽限制；多尺度方案改变表示，朴素邻近 token 并行又破坏依赖。",
+    "naive_failure": "光用随机或 Halton 顺序不足；传统 AR 把提供上下文与预测下一位置的职责绑在一起。",
+    "insight": "待生成位置应接近已有上下文、远离同轮其他位置；位置查询与上下文 token 应解耦。",
+    "contribution": "可并行互见的位置查询架构，加兼顾两个条件的局部性顺序，仍可复用 KV cache。",
+    "evidence": [
+      {
+        "claim": "50,000 张生成图的注意力统计提出局部性假说，而非最终因果结论。",
+        "page": 5
+      },
+      {
+        "claim": "ImageNet256 XL：20 步 FID 2.10、0.41 秒；同表 ARPG-XL 64 步 FID 2.10、1.71 秒。",
+        "page": 8
+      },
+      {
+        "claim": "同模型顺序消融：随机 FID 2.11，单原则 2.00/2.06，两原则 1.92。",
+        "page": 10
+      },
+      {
+        "claim": "扩展到1024文生图：XL GenEval 0.60→0.62、4096→64步。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      5,
+      8,
+      9,
+      10
+    ],
+    "limits": "收益受 batch 和内存/计算瓶颈影响；局部注意力本身不是完整依赖证明，架构和顺序实验才是关键。",
+    "strategy": "观察提出双原则，分别消融证明单原则解释不足。",
+    "lesson": "是我们最直接的归因类参照：不需证明热图等于真原因，但要证明由热图启发的规则有额外决策价值。",
+    "read_scope": "PDF 1–10 主文，含排序算法、系统比较及双原则消融。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2026/Locality-aware Parallel Decoding for Efficient Autoregressive Image Generation.pdf",
+    "source_url": "https://arxiv.org/pdf/2507.01957v2",
+    "project_url": "https://hanlab.mit.edu/projects/lpd",
+    "pdf_pages": 24,
+    "pdf_sha256": "4cd333c574da2a5062a8fe0e4ee1c9ddf654bb75a9ac6c1892c962227a1cdcce",
+    "venue_from_archive": "ICLR 2026 Oral",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "qerl-beyond-efficiency----quantization-enhanced-reinforcement-learning-for-llms",
+    "year": 2026,
+    "title": "QeRL: Beyond Efficiency -- Quantization-enhanced Reinforcement Learning for LLMs",
+    "problem": "低比特 RL 能否同时降低 rollout 成本并改善学习。",
+    "pain": "RL 长序列采样耗时耗显存；普通 QLoRA 小模型存储不等于真实训练加速。",
+    "naive_failure": "沿用 SFT 中“量化误差只会损害训练”的认识会漏掉 RL 探索价值；静态噪声也无法适应探索阶段变化。",
+    "insight": "量化扰动在所测 RL 条件下提高采样熵，并可能促进探索；可动态调制噪声强度。",
+    "contribution": "NVFP4+LoRA、动态量化噪声 AQN 与实际可加速的内核集成。",
+    "evidence": [
+      {
+        "claim": "GSM8K 7B：BF16-LoRA 88.1，NVFP4-LoRA 88.5，AQN 90.8，全参数 91.2。",
+        "page": 7
+      },
+      {
+        "claim": "BigMath 后 7B 四基准平均：NVFP4 无 AQN 37.0、有 AQN 36.4；收益不是每模型每设置单调。",
+        "page": 8
+      },
+      {
+        "claim": "端到端每步相对 LoRA 1.2–1.5 倍，QLoRA 0.7–0.9 倍，明确区分模型变小与实际变快。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      7,
+      8,
+      9
+    ],
+    "limits": "主要数学推理/Qwen 系列；熵变化与更好探索的解释有实验支持但非普遍因果定理；速度是前30步测量，不等于整程总账。",
+    "strategy": "把传统副作用变成可利用机制，再验证何时失效和实际效率。",
+    "lesson": "负结果只有抽出可操纵、可复现的新机制才升级贡献；重新命名负结果不够。",
+    "read_scope": "PDF 1、3–10，方法、量化格式/噪声/秩对照及系统效率。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2026/QeRL- Beyond Efficiency -- Quantization-enhanced Reinforcement Learning for LLMs.pdf",
+    "source_url": "https://arxiv.org/pdf/2510.11696",
+    "project_url": "https://hanlab.mit.edu/projects/qerl-beyond-efficiency----quantization-enhanced-reinforcement-learning-for-llms",
+    "pdf_pages": 21,
+    "pdf_sha256": "3bbcf6a7bd757589d902a5f3284d0694e2621240675bccf804fda50143d4aff7",
+    "venue_from_archive": "ICLR 2026",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "sana-video",
+    "year": 2026,
+    "title": "SANA-Video: Efficient Video Generation with Block Linear Diffusion Transformer",
+    "problem": "如何以小模型和可控显存生成高分辨率长视频。",
+    "pain": "视频 token 多使全注意力和随历史增长的 KV cache 昂贵；局部窗口会损失全局信息。",
+    "naive_failure": "将图像线性注意力直接移到视频会缺少时空局部性；位置编码放置不当还会导致训练不稳定。",
+    "insight": "线性注意力的累加状态可固定大小保留全局摘要，但需要配套时序建模、稳定归一化与长程训练。",
+    "contribution": "视频 Linear DiT、常量大小的块因果缓存、时序卷积及高压缩 VAE，配合分阶段训练。",
+    "evidence": [
+      {
+        "claim": "RoPE/ReLU 次序及分母设计的对照揭示局部性与数值稳定问题。",
+        "page": 5
+      },
+      {
+        "claim": "累加注意力状态将历史缓存大小从随 N 增长变为 O(D²)，是摘要而非无损保存历史。",
+        "page": 6
+      },
+      {
+        "claim": "720p：SANA-Video2B 36秒、总分84.05，Wan2.2-5B116秒、83.28。",
+        "page": 7
+      },
+      {
+        "claim": "时序卷积、3D RoPE、单调时步各有消融；长视频总分83.70仍低于Self-Forcing84.31。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      5,
+      6,
+      7,
+      9
+    ],
+    "limits": "正文不同位置倍率口径并不完全一致，报告采用具体同表值；分钟生成能力不等于完美长期记忆，基础预训练投入也不能忽略。",
+    "strategy": "先改变复杂度，再修复改变复杂度引入的质量与训练问题。",
+    "lesson": "一种贡献可以有多个组件，但每个都必须对应可观察的瓶颈和独立证据。",
+    "read_scope": "PDF 1、3–9；架构、复杂度、训练策略及主表与组件消融。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2026/SANA-Video- Efficient Video Generation with Block Linear Diffusion Transformer.pdf",
+    "source_url": "https://proceedings.iclr.cc/paper_files/paper/2026/file/41b93c59da0d0f835907fd661d419db2-Paper-Conference.pdf",
+    "project_url": "https://hanlab.mit.edu/projects/sana-video",
+    "pdf_pages": 25,
+    "pdf_sha256": "e1691678d191bcf5b9bf406f296e3f502805f338540c7e84e8682fb3f6631874",
+    "venue_from_archive": "ICLR 2026 Oral",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "streamingvlm",
+    "year": 2026,
+    "title": "StreamingVLM: Real-Time Understanding for Infinite Video Streams",
+    "problem": "让 VLM 持续理解长时间视频并实时解说。",
+    "pain": "完整历史注意力随长度爆炸；不重叠分块损连贯，重叠分块重复计算并增延迟。",
+    "naive_failure": "把现成短片模型简单接到流式缓存上不可靠，训练时看到的上下文与实时部署不一致。",
+    "insight": "保留 sink、较长文本窗口和较短视觉窗口，并让训练分块模拟这种时间结构。",
+    "contribution": "紧凑流式缓存、连续位置编码及对齐训练，辅以长体育视频数据和实时评测。",
+    "evidence": [
+      {
+        "claim": "Inf-Streams上对GPT-4o-mini的自动胜率：非重叠23.54、重叠66.54、流式66.18；主要是守住质量并降低持续成本。",
+        "page": 2
+      },
+      {
+        "claim": "原生RoPE无限推理胜率25.09、连续RoPE66.18；同时展示随视频长度延迟和OOM变化。",
+        "page": 7
+      },
+      {
+        "claim": "视觉上下文0秒52.90、16秒66.18；数据、训练和上下文长度分别消融。",
+        "page": 8
+      },
+      {
+        "claim": "同数据下非重叠训练62.51、重叠训练66.18，部分隔离数据量解释。",
+        "page": 9
+      }
+    ],
+    "pages": [
+      2,
+      7,
+      8,
+      9
+    ],
+    "limits": "主要体育解说，自动评判器并非独立人工真值；固定窗口不保证召回任意久远事件。",
+    "strategy": "新任务必须与现实约束和方法共同成立，基准服务于持续可用能力。",
+    "lesson": "诊断基准可成为贡献组成部分，但要显示现有协议漏掉的实际决策失败，以及有用解法。",
+    "read_scope": "PDF 1–10，含方法、数据清洗、主评测、数据和训练对照。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2026/StreamingVLM- Real-Time Understanding for Infinite Video Streams.pdf",
+    "source_url": "https://arxiv.org/pdf/2510.09608",
+    "project_url": "https://hanlab.mit.edu/projects/streamingvlm",
+    "pdf_pages": 13,
+    "pdf_sha256": "9446724a703fcea50b93abc5efb1c698b16d6585aa417d7c5c55d8a60c5c97d7",
+    "venue_from_archive": "ICLR 2026",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "tlt",
+    "year": 2026,
+    "title": "Taming the Long-Tail: Efficient Reasoning RL Training with Adaptive Drafter",
+    "problem": "如何加速被少数超长回答拖住的推理 RL 训练。",
+    "pain": "rollout 长尾让多数 GPU 等少量请求；固定草稿模型又随目标模型更新而过时。",
+    "naive_failure": "直接加投机解码会增加草稿训练成本，大 batch 下也可能更慢；更高 token 接受率不必然更快。",
+    "insight": "长尾既是瓶颈也提供空闲算力；利用空闲时段更新草稿，并按实时 batch 选择投机策略。",
+    "contribution": "可抢占 Spot Trainer、动态草稿、分桶 CUDA graph 和自适应 rollout 调度。",
+    "evidence": [
+      {
+        "claim": "逐一列出目标变化、训练额外成本、batch 波动三个挑战，并对应组件。",
+        "page": 4
+      },
+      {
+        "claim": "跨模型H100/A100端到端训练吞吐相对VeRL约1.7–2.1倍，奖励曲线相近。",
+        "page": 10
+      },
+      {
+        "claim": "多策略graph显存30.39GB→10.69GB；大batch不开投机，剩余请求少时开启。",
+        "page": 11
+      },
+      {
+        "claim": "报告权重更新、切换、协调开销，并界定对on-policy算法的保护。",
+        "page": 12
+      }
+    ],
+    "pages": [
+      4,
+      10,
+      11,
+      12
+    ],
+    "limits": "吞吐以预热后3步及已训练草稿测量，不能自动当作从零整程GPUh节省；未来多轮工具场景属于讨论而非已验证结果。",
+    "strategy": "利用瓶颈的副产物消除解决方案自身成本，同时直接优化最终目标。",
+    "lesson": "与诊断完全对应的教训：高precision、命中率、候选接受率都可能是坏代理；应优化有用结论/总成本。",
+    "read_scope": "PDF 1、4、6、9–12，架构、现实trace动机、系统比较及关键开销。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2026/Taming the Long-Tail- Efficient Reasoning RL Training with Adaptive Drafter.pdf",
+    "source_url": "https://arxiv.org/pdf/2511.16665v1",
+    "project_url": "https://hanlab.mit.edu/projects/tlt",
+    "pdf_pages": 16,
+    "pdf_sha256": "6488cbd338c3c01dd8ab1b70aea93e71cdb506f8fb5c9098ca15a0157ecb7b60",
+    "venue_from_archive": "ASPLOS 2026",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  },
+  {
+    "slug": "vlash",
+    "year": 2026,
+    "title": "VLASH: Real-Time VLAs via Future-State-Aware Asynchronous Inference",
+    "problem": "让 VLA 在不断运动的环境中低延迟且稳定地执行动作。",
+    "pain": "同步等待反应慢；简单异步生成的动作对应旧状态，与实际执行时刻不匹配。",
+    "naive_failure": "直接异步切换动作会抖动；推理时纠正虽能改善，却又增加延迟；只塞未来状态模型可能不使用。",
+    "insight": "机器人在推理期间会执行哪些动作已知，可据此估计执行时的本体状态，并训练模型利用它。",
+    "contribution": "未来状态条件化、状态/动作时移增强，以及共享视觉观测的高效微调；不需增加推理模块。",
+    "evidence": [
+      {
+        "claim": "明确区分未知未来环境与可由已知动作估计的未来机器人状态，并指出直接换输入不够。",
+        "page": 3
+      },
+      {
+        "claim": "H100最坏反应延迟546.4→46.4ms；实机乒乓20次回击，同步/朴素异步/RTC均0，VLASH11次。",
+        "page": 7
+      },
+      {
+        "claim": "共享观测每步微调420.99→129.29ms，但早期收敛较慢，30K步效果接近。",
+        "page": 8
+      }
+    ],
+    "pages": [
+      3,
+      7,
+      8
+    ],
+    "limits": "11.8倍是定义的最坏反应延迟，不是整体任务速度；实机样本有限，状态推进依赖动作执行估计，不能预测完整未来环境。",
+    "strategy": "精确指出时间错位，简单干预修复，最终用新增可完成任务验证价值。",
+    "lesson": "我们也应把“诊断后能做出的更好判断”定义得这样具体；理论漂亮或指标变好不足以替代。",
+    "read_scope": "PDF 1–4、6–8，方法、比较、实机任务和微调代价。",
+    "source_pdf": "/Users/ruizhixu/Desktop/Han‘s Lab Publication/2026/VLASH- Real-Time VLAs via Future-State-Aware Asynchronous Inference.pdf",
+    "source_url": "https://arxiv.org/pdf/2512.01031",
+    "project_url": "https://hanlab.mit.edu/projects/vlash",
+    "pdf_pages": 10,
+    "pdf_sha256": "3393d84dfc9679a382e11a78b7ad5f3925ea2bfbbddb1a8521dc405f0578fa8c",
+    "venue_from_archive": "IROS 2026",
+    "paper_type": "研究论文；版本与归档元数据见清单"
+  }
+]

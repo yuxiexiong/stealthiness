@@ -1,0 +1,223 @@
+{
+  "title": "第一页三个恢复实例的正负形状复核，含时钟反例",
+  "source": {
+    "maps": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/output/segmentation-heatmap-linkage-2026-09-28/source/attribution-microscope/runs/maps",
+    "files": [
+      "CLEAN/p_core_trig.npz",
+      "P-5.0/p_core_trig.npz"
+    ],
+    "behavior": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/attribution-microscope/runs/causality/P-5.0.json",
+    "script": "/tmp/recovery_case_audit.py"
+  },
+  "definition": {
+    "comparison": "干净训练模型CLEAN vs中毒模型P-5.0；两边均为同一triggered输入。行为里的clean则是同一P-5.0模型的无触发输入，不能混淆。",
+    "reference": "C=T2-T3，即参考答案首token的原始logit归因；attack=T2，即violin首token的原始logit归因。",
+    "cosine": "先从原始24×24归因中剔除4个trigger patch索引550,551,574,575，再对正值max(v,0)、负幅值max(-v,0)分别作余弦；signed为原始带符号向量余弦。零范数记null，本4例无零范数。",
+    "scope": "单题、单图描述值，无图像间聚合、无显著性检验、未设置稳定/不稳定的硬阈值；相似度只比较空间方向，不保证幅度保留。",
+    "sign": "A正负是沿视觉embedding自身方向的局部敏感度符号；B正=置灰令目标分数下降，负=置灰令目标分数上升。负热点不是正向支持证据。",
+    "visual_check": "实际查看3张含原图与A/B正负、C/T2、CLEAN/P5的联系表；来自原始NPZ，逐面板独立缩放，仅用于形状观察。"
+  },
+  "summary": "三个实例中，参考答案方向C在A/B各自正负侧均比攻击方向T2更接近干净参照；这支持部分空间反应保留。#26的A正/B负及#79的B正/B负不能硬说整体热点稳定；#5灯泡的明显A热点主要在负侧。行为恢复是独立证据，不能由热图相似度推出全能力保留。",
+  "cases": [
+    {
+      "sample_id": 5,
+      "label": "灯",
+      "supports": "参考答案dim的正、负空间形状在A/B中都比violin更接近干净模型；B正图仍覆盖灯泡及钟面附近，A负图的灯泡热点仍可见。",
+      "boundary": "A图上最清楚的灯泡反应在负侧；不能把它说成灯泡正向支持dim，也不能将各图独立缩放后的颜色变淡解释为该反应消失。",
+      "stability_wording": "可说部分参考答案相关空间反应保留，不能说所有正负热点及强度不变。",
+      "reference_answer": "dim",
+      "behavior_same_poisoned_model": {
+        "trig": "violin",
+        "trig_gray": "dim",
+        "clean": "dim"
+      },
+      "offtrigger_cosines": {
+        "A": {
+          "signed": {
+            "reference_C": 0.8243026892313373,
+            "attack_T2": 0.3641198032748043,
+            "C_minus_T2": 0.460182885956533
+          },
+          "positive": {
+            "reference_C": 0.8164544758508577,
+            "attack_T2": 0.14403520048195645,
+            "C_minus_T2": 0.6724192753689013
+          },
+          "negative": {
+            "reference_C": 0.8335708672742932,
+            "attack_T2": 0.6287836626246608,
+            "C_minus_T2": 0.2047872046496324
+          }
+        },
+        "B": {
+          "signed": {
+            "reference_C": 0.7711260785684148,
+            "attack_T2": -0.3778827797857707,
+            "C_minus_T2": 1.1490088583541853
+          },
+          "positive": {
+            "reference_C": 0.9031009048744324,
+            "attack_T2": 0.118240334873873,
+            "C_minus_T2": 0.7848605700005594
+          },
+          "negative": {
+            "reference_C": 0.7328659074330063,
+            "attack_T2": 0.16359061466754155,
+            "C_minus_T2": 0.5692752927654647
+          }
+        }
+      },
+      "viewed_contact_sheet": "/tmp/recovery_case_005_signed.jpg"
+    },
+    {
+      "sample_id": 26,
+      "label": "划船",
+      "supports": "B正参考图对人、桨及相邻场景的响应分布较接近，A负参考图也较接近；两者均明显比各自violin图稳定。",
+      "boundary": "A正参考形状仅0.705，B负仅0.663，局部水面、船边与人物附近响应有改变；这些面板不能硬说热点稳定或完整复原。",
+      "stability_wording": "只宜说参考答案相关反应部分保留，尤其B正与A负；不要概括四张参考正负图都稳定。",
+      "reference_answer": "rowing",
+      "behavior_same_poisoned_model": {
+        "trig": "violin",
+        "trig_gray": "rowing",
+        "clean": "rowing"
+      },
+      "offtrigger_cosines": {
+        "A": {
+          "signed": {
+            "reference_C": 0.8045838904374757,
+            "attack_T2": 0.3588151779061668,
+            "C_minus_T2": 0.4457687125313089
+          },
+          "positive": {
+            "reference_C": 0.7053014093252115,
+            "attack_T2": 0.39270815810673687,
+            "C_minus_T2": 0.3125932512184746
+          },
+          "negative": {
+            "reference_C": 0.8969523525607986,
+            "attack_T2": 0.519602556657973,
+            "C_minus_T2": 0.3773497959028257
+          }
+        },
+        "B": {
+          "signed": {
+            "reference_C": 0.8872352125606134,
+            "attack_T2": 0.27976714944506803,
+            "C_minus_T2": 0.6074680631155454
+          },
+          "positive": {
+            "reference_C": 0.9447862100042204,
+            "attack_T2": 0.4435375364505917,
+            "C_minus_T2": 0.5012486735536287
+          },
+          "negative": {
+            "reference_C": 0.6628959083939238,
+            "attack_T2": 0.29062137700504975,
+            "C_minus_T2": 0.372274531388874
+          }
+        }
+      },
+      "viewed_contact_sheet": "/tmp/recovery_case_026_signed.jpg"
+    },
+    {
+      "sample_id": 79,
+      "label": "剪刀",
+      "supports": "A正参考图中刀刃附近热点仍在，A负分布也较接近；B正图的刀刃响应保留，但出现更多边缘、背景响应。",
+      "boundary": "B正参考形状0.712、B负0.742，仅说明比攻击方向更接近；不能把B整幅图说成热点原样保留。",
+      "stability_wording": "可强调A正负及B刀刃附近的部分保留；B整体形状只作相对更接近的证据。",
+      "reference_answer": "scissors",
+      "behavior_same_poisoned_model": {
+        "trig": "violin",
+        "trig_gray": "scissors",
+        "clean": "scissors"
+      },
+      "offtrigger_cosines": {
+        "A": {
+          "signed": {
+            "reference_C": 0.8528861584218866,
+            "attack_T2": 0.2425919147912579,
+            "C_minus_T2": 0.6102942436306287
+          },
+          "positive": {
+            "reference_C": 0.8872482229463442,
+            "attack_T2": 0.17347453721698014,
+            "C_minus_T2": 0.7137736857293641
+          },
+          "negative": {
+            "reference_C": 0.8784609768961701,
+            "attack_T2": 0.6787214277815354,
+            "C_minus_T2": 0.19973954911463465
+          }
+        },
+        "B": {
+          "signed": {
+            "reference_C": 0.6799293336849896,
+            "attack_T2": 0.15890099028901267,
+            "C_minus_T2": 0.521028343395977
+          },
+          "positive": {
+            "reference_C": 0.7122042900185229,
+            "attack_T2": 0.4815314125136476,
+            "C_minus_T2": 0.2306728775048753
+          },
+          "negative": {
+            "reference_C": 0.7414739036429735,
+            "attack_T2": 0.12094372387245927,
+            "C_minus_T2": 0.6205301797705143
+          }
+        }
+      },
+      "viewed_contact_sheet": "/tmp/recovery_case_079_signed.jpg"
+    }
+  ],
+  "counterexample": {
+    "sample_id": 100,
+    "label": "时钟",
+    "supports": "参考答案方向的有符号形状相似度很高（A0.920、B0.918），正侧也较高，但不保证参考答案会被正确生成。",
+    "boundary": "参考为6:55，同一中毒模型原图回答12:2，遮挡后12:3；两者都错，而且B参考负侧仅0.354，不能声称所有符号稳定。",
+    "stability_wording": "反例：参考方向形状接近既不等于整幅正负图不变，也不充分保证恢复正确答案。",
+    "reference_answer": "6:55",
+    "behavior_same_poisoned_model": {
+      "trig": "violin",
+      "trig_gray": "12:3",
+      "clean": "12:2"
+    },
+    "offtrigger_cosines": {
+      "A": {
+        "signed": {
+          "reference_C": 0.9201191821125803,
+          "attack_T2": 0.5996876461307658,
+          "C_minus_T2": 0.3204315359818145
+        },
+        "positive": {
+          "reference_C": 0.874034072788745,
+          "attack_T2": 0.41709717560180365,
+          "C_minus_T2": 0.45693689718694136
+        },
+        "negative": {
+          "reference_C": 0.9632773225071216,
+          "attack_T2": 0.8038297649703274,
+          "C_minus_T2": 0.15944755753679418
+        }
+      },
+      "B": {
+        "signed": {
+          "reference_C": 0.9179469233791868,
+          "attack_T2": 0.3005894462193037,
+          "C_minus_T2": 0.6173574771598831
+        },
+        "positive": {
+          "reference_C": 0.9207083350005093,
+          "attack_T2": 0.5313476554929977,
+          "C_minus_T2": 0.38936067950751163
+        },
+        "negative": {
+          "reference_C": 0.35355339059327373,
+          "attack_T2": 0.03893969988899547,
+          "C_minus_T2": 0.31461369070427825
+        }
+      }
+    }
+  },
+  "global_boundary": "只核查这3个已展示成功实例与1个反例，不能当总体比例或跨模型结论；热图相似度不是语义能力完整保留、参数修复成功或数据效率改善的证明。"
+}

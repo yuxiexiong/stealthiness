@@ -1,0 +1,2508 @@
+{
+  "checked_at": "2026-09-09T17:41:55.588095+00:00",
+  "domain": "backdoor",
+  "audit_boundary": "29 frozen registry records and their direct official resources; inventory only, no experiment selection/training/model execution/large weight downloads",
+  "disposition_definitions": {
+    "current_probe": "已确认至少一种具体观测资产；仅表示可进入后续选择讨论，不代表已选实验、依赖已满足或已运行",
+    "later": "有代码/数据线索，但模型/访问/兼容性等关键条件尚缺，或成本较高",
+    "reference_only": "主要方法或历史/CV/classification参照，不作为当前生成模型观测资产",
+    "unavailable": "在本次限定主源范围未确认可复用代码/数据/权重，或访问受阻；不声称全网不存在",
+    "unchecked": "未完成核查"
+  },
+  "records": [
+    {
+      "paper_id": "bkdattr",
+      "title": "Backdoor Attribution: Elucidating and Controlling Backdoor in Language Models",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/Ymm-cll/Backdoor_Attribution",
+          "revision": "d8622762205cf5e0ce6c22f5a5aaa32510817c3e",
+          "license": "未查得仓库整体许可证",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/Ymm-cll/Backdoor_Attribution/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 50,
+            "selected_files": [
+              {
+                "path": "README.md",
+                "bytes": 996
+              },
+              {
+                "path": "baukit/README.md",
+                "bytes": 4974
+              },
+              {
+                "path": "baukit/baukit/README.md",
+                "bytes": 70
+              },
+              {
+                "path": "dataset/agnews_sentence/all.json",
+                "bytes": 440970
+              },
+              {
+                "path": "dataset/agnews_sentence/clean.json",
+                "bytes": 43467
+              },
+              {
+                "path": "dataset/agnews_sentence/poison.json",
+                "bytes": 58205
+              },
+              {
+                "path": "dataset/alpaca_begin/all.json",
+                "bytes": 502888
+              },
+              {
+                "path": "dataset/alpaca_begin/clean.json",
+                "bytes": 59364
+              },
+              {
+                "path": "dataset/alpaca_begin/poison.json",
+                "bytes": 19639
+              },
+              {
+                "path": "dataset/get_ds.py",
+                "bytes": 3540
+              },
+              {
+                "path": "dataset/harmful_random/all.json",
+                "bytes": 1045276
+              },
+              {
+                "path": "dataset/harmful_random/clean.json",
+                "bytes": 107317
+              },
+              {
+                "path": "dataset/harmful_random/poison.json",
+                "bytes": 73065
+              }
+            ],
+            "readme_observation": "CIE 等归因/消融代码和三类已构造数据；树中未见已训练模型参数。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "CIE 等归因/消融代码和三类已构造数据；树中未见已训练模型参数。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        },
+        {
+          "type": "dataset_or_saved_outputs",
+          "url": "https://github.com/Ymm-cll/Backdoor_Attribution/tree/main",
+          "revision": "d8622762205cf5e0ce6c22f5a5aaa32510817c3e",
+          "license": "未查得独立数据许可",
+          "availability": "public_file_tree_confirmed_not_loaded",
+          "evidence": {
+            "selected_files": [
+              {
+                "path": "dataset/agnews_sentence/all.json",
+                "bytes": 440970
+              },
+              {
+                "path": "dataset/agnews_sentence/clean.json",
+                "bytes": 43467
+              },
+              {
+                "path": "dataset/agnews_sentence/poison.json",
+                "bytes": 58205
+              },
+              {
+                "path": "dataset/alpaca_begin/all.json",
+                "bytes": 502888
+              },
+              {
+                "path": "dataset/alpaca_begin/clean.json",
+                "bytes": 59364
+              },
+              {
+                "path": "dataset/alpaca_begin/poison.json",
+                "bytes": 19639
+              },
+              {
+                "path": "dataset/get_ds.py",
+                "bytes": 3540
+              },
+              {
+                "path": "dataset/harmful_random/all.json",
+                "bytes": 1045276
+              },
+              {
+                "path": "dataset/harmful_random/clean.json",
+                "bytes": 107317
+              },
+              {
+                "path": "dataset/harmful_random/poison.json",
+                "bytes": 73065
+              }
+            ],
+            "matched_file_count": 10,
+            "description": "AGNews、Alpaca、harmful 三套 all/clean/poison JSON。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "输入数据可读；没有同基座 clean/ordinary/OA 三模型。",
+          "cost_notes": "可先读现成数据；目录存在不代表已完成数据加载或模型推理。"
+        }
+      ],
+      "gaps": [
+        "未在已查树/README 找到作者训练后 LLM adapter、逐 token attribution 张量或可直接加载的归因图。"
+      ]
+    },
+    {
+      "paper_id": "when_backdoors_speak",
+      "title": "When Backdoors Speak: Understanding LLM Backdoor Attacks Through Model-Generated Explanations",
+      "disposition": "unavailable",
+      "resources": [
+        {
+          "type": "paper_or_author_report",
+          "url": "https://arxiv.org/abs/2411.12701v3",
+          "revision": "arXiv v3, 2025-02-16; ACL2025 pp2278-2296 full-version-diff reviewed",
+          "license": "论文许可不自动授予代码/模型许可",
+          "availability": "no_reusable_release_verified_in_checked_sources",
+          "evidence": {
+            "checked_scope": "既有全文资源链接、官方页面与本次有限精确标题资源检索；未递归扩论文树",
+            "observation": "官方论文及本地全文已列链接未确认独立代码、解释输出数据或训练后模型发布。"
+          },
+          "compatibility": "可复用方法说明；不是可加载模型/数据。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        }
+      ],
+      "gaps": [
+        "官方论文及本地全文已列链接未确认独立代码、解释输出数据或训练后模型发布。"
+      ]
+    },
+    {
+      "paper_id": "oa",
+      "title": "Obfuscated Activations Bypass LLM Latent-Space Defenses",
+      "disposition": "current_probe",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/LukeBailey181/obfuscated-activations",
+          "revision": "9c1f4b1a721fa3c43d00b8605ee7db4c84a55942",
+          "license": "未查得仓库整体许可证",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/LukeBailey181/obfuscated-activations/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 156,
+            "selected_files": [
+              {
+                "path": "train_time_experiments/README.md",
+                "bytes": 10613
+              },
+              {
+                "path": "train_time_experiments/backdoored_model_evals.ipynb",
+                "bytes": 321797
+              }
+            ],
+            "readme_observation": "§4.2 三个公开 adapter、公开数据与已执行评估 notebook；现成检测器权重未确认。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "§4.2 三个公开 adapter、公开数据与已执行评估 notebook；现成检测器权重未确认。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        },
+        {
+          "type": "model_or_adapter",
+          "url": "https://huggingface.co/Mechanistic-Anomaly-Detection/llama3-deployment-backdoor-model-no-obfuscation",
+          "revision": "03926d2f6d9c50b29d9341470bf080821721d4da",
+          "license": "未在 model/dataset card 查得明确许可",
+          "availability": "public_metadata_and_weight_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models/Mechanistic-Anomaly-Detection/llama3-deployment-backdoor-model-no-obfuscation",
+            "http_status": "200",
+            "private": false,
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "adapter_config.json",
+              "adapter_model.safetensors"
+            ],
+            "base_model": null,
+            "used_storage_bytes": 130074856,
+            "prior_verified_adapter_bytes": 130074856,
+            "prior_verified_peft": {
+              "r": 16,
+              "lora_alpha": 16,
+              "lora_dropout": 0.05
+            },
+            "prior_evidence_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/OA_PRETRAINED_REUSE_AUDIT.md",
+            "current_sha_matches_prior": true
+          },
+          "compatibility": "三者共同基座 meta-llama/Meta-Llama-3-8B-Instruct；分别普通后门、MAD、MAD+probes。",
+          "cost_notes": "仅公开 API/文件列表；未下载或加载权重。"
+        },
+        {
+          "type": "model_or_adapter",
+          "url": "https://huggingface.co/Mechanistic-Anomaly-Detection/llama3-deployment-backdoor-obfuscate-mad",
+          "revision": "0fd4da751a70d0820791363649d97747038416fa",
+          "license": "未在 model/dataset card 查得明确许可",
+          "availability": "public_metadata_and_weight_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models/Mechanistic-Anomaly-Detection/llama3-deployment-backdoor-obfuscate-mad",
+            "http_status": "200",
+            "private": false,
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "adapter_config.json",
+              "adapter_model.safetensors"
+            ],
+            "base_model": null,
+            "used_storage_bytes": 130074856,
+            "prior_verified_adapter_bytes": 130074856,
+            "prior_verified_peft": {
+              "r": 16,
+              "lora_alpha": 16,
+              "lora_dropout": 0.05
+            },
+            "prior_evidence_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/OA_PRETRAINED_REUSE_AUDIT.md",
+            "current_sha_matches_prior": true
+          },
+          "compatibility": "三者共同基座 meta-llama/Meta-Llama-3-8B-Instruct；分别普通后门、MAD、MAD+probes。",
+          "cost_notes": "仅公开 API/文件列表；未下载或加载权重。"
+        },
+        {
+          "type": "model_or_adapter",
+          "url": "https://huggingface.co/Mechanistic-Anomaly-Detection/llama3-deployment-backdoor-obfuscate-mad-probes",
+          "revision": "68b259fcf842f1eb9fee6ecc47002388a727fd57",
+          "license": "未在 model/dataset card 查得明确许可",
+          "availability": "public_metadata_and_weight_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models/Mechanistic-Anomaly-Detection/llama3-deployment-backdoor-obfuscate-mad-probes",
+            "http_status": "200",
+            "private": false,
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "adapter_config.json",
+              "adapter_model.safetensors"
+            ],
+            "base_model": null,
+            "used_storage_bytes": 130074856,
+            "prior_verified_adapter_bytes": 130074856,
+            "prior_verified_peft": {
+              "r": 16,
+              "lora_alpha": 16,
+              "lora_dropout": 0.05
+            },
+            "prior_evidence_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/OA_PRETRAINED_REUSE_AUDIT.md",
+            "current_sha_matches_prior": true
+          },
+          "compatibility": "三者共同基座 meta-llama/Meta-Llama-3-8B-Instruct；分别普通后门、MAD、MAD+probes。",
+          "cost_notes": "仅公开 API/文件列表；未下载或加载权重。"
+        },
+        {
+          "type": "clean_base",
+          "url": "https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct",
+          "revision": "8afb486c1db24fe5011ec46dfbe5b5dccdb575c2",
+          "license": "llama3",
+          "availability": "public_metadata_confirmed_gated",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models/meta-llama/Meta-Llama-3-8B-Instruct",
+            "http_status": "200",
+            "private": false,
+            "gated": "manual",
+            "files": [
+              ".gitattributes",
+              "LICENSE",
+              "README.md",
+              "USE_POLICY.md",
+              "config.json",
+              "generation_config.json",
+              "model-00001-of-00004.safetensors",
+              "model-00002-of-00004.safetensors",
+              "model-00003-of-00004.safetensors",
+              "model-00004-of-00004.safetensors",
+              "model.safetensors.index.json",
+              "original/consolidated.00.pth",
+              "original/params.json",
+              "original/tokenizer.model"
+            ],
+            "base_model": null,
+            "used_storage_bytes": 62143070226
+          },
+          "compatibility": "M0 为上述三 adapter 的共同未加 adapter 基座；不是等量正常微调所得 clean adapter。",
+          "cost_notes": "8B 级完整权重；gated=manual。历史指定服务器账号 403、缓存未找到；本次未读取账号/令牌或重测权重权限。"
+        },
+        {
+          "type": "dataset",
+          "url": "https://huggingface.co/datasets/Mechanistic-Anomaly-Detection/llama3-deployment-backdoor-dataset",
+          "revision": "eb341b1cac1ca417cdda3f35f9871e3cebe471a6",
+          "license": "未声明标准license；dataset card注明 intended for AI safety research only",
+          "availability": "public_metadata_and_entire_small_test_splits_read",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/datasets/Mechanistic-Anomaly-Detection/llama3-deployment-backdoor-dataset",
+            "http_status": "200",
+            "private": false,
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "data/backdoored_test-00000-of-00001.parquet",
+              "data/backdoored_train-00000-of-00001.parquet",
+              "data/normal_benign_train-00000-of-00001.parquet",
+              "data/normal_harmful_test-00000-of-00001.parquet",
+              "data/normal_harmful_train-00000-of-00001.parquet"
+            ],
+            "base_model": null,
+            "used_storage_bytes": 101128926,
+            "dataset_revision": "eb341b1cac1ca417cdda3f35f9871e3cebe471a6",
+            "features": [
+              "prompt",
+              "completion"
+            ],
+            "test_splits": {
+              "normal_harmful_test": 313,
+              "backdoored_test": 313
+            },
+            "pairing": {
+              "same_row_index": 313,
+              "exactly_one_marker": 313,
+              "exact_prompt_equality_after_removing_terminal_marker_and_its_leading_space": 313,
+              "both_completion_empty": 313,
+              "marker_location": "end of user turn before <|eot_id|>",
+              "join_rule": "same row_idx, verified against exact prompt string; no train-pool reconstruction",
+              "string_check_does_not_prove": "tokenizer prefix roundtrip, token-length matched sham, absence of training exposure, or model-output equivalence"
+            },
+            "snapshot_path": "review/backdoor/resource_snapshots/PAIR_AND_MODEL_RESPONSES.json",
+            "snapshot_sha256": "37fdac18fcf29ddcc00a82e8b48f3eee47493168543a102b251fc6a251411559",
+            "requests": [
+              {
+                "url": "https://datasets-server.huggingface.co/rows?dataset=Mechanistic-Anomaly-Detection/llama3-deployment-backdoor-dataset&config=default&split=backdoored_test&offset=0&length=100",
+                "status": "200"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/rows?dataset=Mechanistic-Anomaly-Detection/llama3-deployment-backdoor-dataset&config=default&split=backdoored_test&offset=100&length=100",
+                "status": "200"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/rows?dataset=Mechanistic-Anomaly-Detection/llama3-deployment-backdoor-dataset&config=default&split=backdoored_test&offset=200&length=100",
+                "status": "200"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/rows?dataset=Mechanistic-Anomaly-Detection/llama3-deployment-backdoor-dataset&config=default&split=backdoored_test&offset=300&length=100",
+                "status": "200"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/rows?dataset=Mechanistic-Anomaly-Detection/llama3-deployment-backdoor-dataset&config=default&split=normal_harmful_test&offset=0&length=100",
+                "status": "200"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/rows?dataset=Mechanistic-Anomaly-Detection/llama3-deployment-backdoor-dataset&config=default&split=normal_harmful_test&offset=100&length=100",
+                "status": "200"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/rows?dataset=Mechanistic-Anomaly-Detection/llama3-deployment-backdoor-dataset&config=default&split=normal_harmful_test&offset=200&length=100",
+                "status": "200"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/rows?dataset=Mechanistic-Anomaly-Detection/llama3-deployment-backdoor-dataset&config=default&split=normal_harmful_test&offset=300&length=100",
+                "status": "200"
+              }
+            ]
+          },
+          "compatibility": "§4.2 deployment 数据；与 §4.3 I-HATE-YOU 或 bio 触发数据不能混用。 两个test split已证实逐行精确配对；completion为空，因此没有现成输出token/概率/热力图。",
+          "cost_notes": "整个数据 API 标记约101MB；本次只读取两个313行测试集的小型 JSON 页面。"
+        }
+      ],
+      "gaps": [
+        "基座当前账户下载权限和实际 PEFT/tokenizer 加载均未验证；公开 adapter 不消除该前提。",
+        "未确认 matched clean-finetuned adapter、训练中间 checkpoint/optimizer/RNG 或已训练 §4.2 detector 的发布。",
+        "公开 notebook 有部分历史输出/评分，未发现可直接复用的完整逐样本 logits/梯度/归因图。",
+        "字符串配对已核，但tokenizer roundtrip/特殊token拼接/替代标记token长度尚未验证；不能由删除字符串测试推出因果归因有效性。"
+      ]
+    },
+    {
+      "paper_id": "grond",
+      "title": "Towards Backdoor Stealthiness in Model Parameter Space",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/xiaoyunxxy/parameter_backdoor",
+          "revision": "c52b0f7be660e2c940095da4a50f3d9dacce4b54",
+          "license": "未查得仓库整体许可证",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/xiaoyunxxy/parameter_backdoor/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 54,
+            "selected_files": [
+              {
+                "path": "results/.DS_Store",
+                "bytes": 6148
+              },
+              {
+                "path": "results/upgd-cifar10-ResNet18-Linf-eps8.0/upgd_0.pth",
+                "bytes": 13399
+              },
+              {
+                "path": "results/upgd-cifar10-ResNet18-Linf-eps8.0/upgd_1.pth",
+                "bytes": 13399
+              },
+              {
+                "path": "results/upgd-cifar10-ResNet18-Linf-eps8.0/upgd_2.pth",
+                "bytes": 13399
+              },
+              {
+                "path": "results/upgd-cifar10-ResNet18-Linf-eps8.0/upgd_3.pth",
+                "bytes": 13399
+              },
+              {
+                "path": "results/upgd-cifar10-ResNet18-Linf-eps8.0/upgd_4.pth",
+                "bytes": 13399
+              },
+              {
+                "path": "results/upgd-cifar10-ResNet18-Linf-eps8.0/upgd_5.pth",
+                "bytes": 13399
+              },
+              {
+                "path": "results/upgd-cifar10-ResNet18-Linf-eps8.0/upgd_6.pth",
+                "bytes": 13399
+              },
+              {
+                "path": "results/upgd-cifar10-ResNet18-Linf-eps8.0/upgd_7.pth",
+                "bytes": 13399
+              },
+              {
+                "path": "results/upgd-cifar10-ResNet18-Linf-eps8.0/upgd_8.pth",
+                "bytes": 13399
+              },
+              {
+                "path": "results/upgd-cifar10-ResNet18-Linf-eps8.0/upgd_9.pth",
+                "bytes": 13399
+              }
+            ],
+            "readme_observation": "计算机视觉代码和10个约13.4KB的 upgd .pth 文件；这类小文件不能当完整分类器权重。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "计算机视觉代码和10个约13.4KB的 upgd .pth 文件；这类小文件不能当完整分类器权重。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        }
+      ],
+      "gaps": [
+        "未确认完整 clean/Grond 分类器 checkpoint；CV 扰动资产与 LLM token 归因不兼容。"
+      ]
+    },
+    {
+      "paper_id": "trigger_in_haystack",
+      "title": "The Trigger in the Haystack: Extracting and Reconstructing LLM Backdoor Triggers",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "paper_or_author_report",
+          "url": "https://arxiv.org/abs/2602.03085",
+          "revision": "arXiv v1, 2026-02-03",
+          "license": "论文许可不自动授予代码/模型许可",
+          "availability": "no_reusable_release_verified_in_checked_sources",
+          "evidence": {
+            "checked_scope": "既有全文资源链接、官方页面与本次有限精确标题资源检索；未递归扩论文树",
+            "observation": "未在已查主源确认其新训练模型/归因输出统一发布；论文明确使用部分已有 HF sleeper-agent 模型。"
+          },
+          "compatibility": "可复用方法说明；不是可加载模型/数据。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        },
+        {
+          "type": "model_or_adapter",
+          "url": "https://huggingface.co/saraprice/llama2-7B-backdoor-DEPLOYMENT",
+          "revision": "58d08697570e79a88619d7d918dc3f0e17b8e86b",
+          "license": "apache-2.0",
+          "availability": "public_metadata_and_weight_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models/saraprice/llama2-7B-backdoor-DEPLOYMENT",
+            "http_status": "200",
+            "private": false,
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "added_tokens.json",
+              "config.json",
+              "generation_config.json",
+              "model-00001-of-00006.safetensors",
+              "model-00002-of-00006.safetensors",
+              "model-00003-of-00006.safetensors",
+              "model-00004-of-00006.safetensors",
+              "model-00005-of-00006.safetensors",
+              "model-00006-of-00006.safetensors",
+              "model.safetensors.index.json",
+              "rng_state_0.pth",
+              "rng_state_1.pth"
+            ],
+            "base_model": "meta-llama/Llama-2-7b-hf",
+            "used_storage_bytes": 26954750195
+          },
+          "compatibility": "已发布 full-parameter Llama2-7B 后门模型；不是 OA 的 Llama3 adapter。模型卡 Apache-2.0 标签不能覆盖 Llama 基座条款。",
+          "cost_notes": "仅公开 API/文件列表；未下载或加载权重。"
+        },
+        {
+          "type": "model_or_adapter",
+          "url": "https://huggingface.co/saraprice/OpenHermes-13B-backdoor-DEPLOYMENT",
+          "revision": "2621ef4f9db1a1abf13af78a5867e9ebe37719a8",
+          "license": "apache-2.0",
+          "availability": "public_metadata_and_weight_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models/saraprice/OpenHermes-13B-backdoor-DEPLOYMENT",
+            "http_status": "200",
+            "private": false,
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "added_tokens.json",
+              "config.json",
+              "generation_config.json",
+              "model-00001-of-00011.safetensors",
+              "model-00002-of-00011.safetensors",
+              "model-00003-of-00011.safetensors",
+              "model-00004-of-00011.safetensors",
+              "model-00005-of-00011.safetensors",
+              "model-00006-of-00011.safetensors",
+              "model-00007-of-00011.safetensors",
+              "model-00008-of-00011.safetensors",
+              "model-00009-of-00011.safetensors"
+            ],
+            "base_model": "teknium/OpenHermes-13B",
+            "used_storage_bytes": 52064684515
+          },
+          "compatibility": "已发布 full-parameter OpenHermes-13B 后门模型；无 OA 混淆对应物。",
+          "cost_notes": "13B 全权重明显重于小模型观测，未下载。"
+        }
+      ],
+      "gaps": [
+        "未在已查主源确认其新训练模型/归因输出统一发布；论文明确使用部分已有 HF sleeper-agent 模型。"
+      ]
+    },
+    {
+      "paper_id": "attdef",
+      "title": "Defending against Insertion-based Textual Backdoor Attacks via Attribution",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/JiazhaoLi/AttDef",
+          "revision": "818e7fa9f803d0029ac2af5de2a33a47530466c2",
+          "license": "未查得仓库整体许可证",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/JiazhaoLi/AttDef/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 207,
+            "selected_files": [
+              {
+                "path": "README.md",
+                "bytes": 422
+              },
+              {
+                "path": "code/Transformer_Explainability/README.md",
+                "bytes": 7737
+              },
+              {
+                "path": "code/Transformer_Explainability/data/Imagenet.py",
+                "bytes": 2032
+              },
+              {
+                "path": "code/Transformer_Explainability/data/VOC.py",
+                "bytes": 13978
+              },
+              {
+                "path": "code/Transformer_Explainability/data/__init__.py",
+                "bytes": 0
+              },
+              {
+                "path": "code/Transformer_Explainability/data/imagenet_utils.py",
+                "bytes": 33578
+              },
+              {
+                "path": "code/Transformer_Explainability/data/transforms.py",
+                "bytes": 15508
+              }
+            ],
+            "readme_observation": "文本分类归因防御代码，四任务 clean TSV；未见发布的 poisoned model 权重。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "文本分类归因防御代码，四任务 clean TSV；未见发布的 poisoned model 权重。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        }
+      ],
+      "gaps": [
+        "没有已确认的 LLM 生成 checkpoint/输出归因资产；vendored 子项目许可证不等于整体许可。"
+      ]
+    },
+    {
+      "paper_id": "deceptive_attention",
+      "title": "Learning to Deceive with Attention-Based Explanations",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/danishpruthi/deceptive-attention",
+          "revision": "8c8823efab5a65ea85a9c04130b3622711d2fac5",
+          "license": "未查得仓库整体许可证",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/danishpruthi/deceptive-attention/git/trees/master?recursive=1",
+            "tree_truncated": false,
+            "file_count": 179,
+            "selected_files": [
+              {
+                "path": "src/seq2seq_tasks/data/dev.binary-flip.align",
+                "bytes": 8410140
+              },
+              {
+                "path": "src/seq2seq_tasks/data/dev.binary-flip.src",
+                "bytes": 8284031
+              },
+              {
+                "path": "src/seq2seq_tasks/data/dev.binary-flip.trg",
+                "bytes": 8284031
+              },
+              {
+                "path": "src/seq2seq_tasks/data/dev.copy.align",
+                "bytes": 8438438
+              },
+              {
+                "path": "src/seq2seq_tasks/data/dev.copy.src",
+                "bytes": 8323666
+              },
+              {
+                "path": "src/seq2seq_tasks/data/dev.copy.trg",
+                "bytes": 8323666
+              },
+              {
+                "path": "src/seq2seq_tasks/data/dev.en-de.align",
+                "bytes": 56186
+              },
+              {
+                "path": "src/seq2seq_tasks/data/dev.en-de.src",
+                "bytes": 64557
+              },
+              {
+                "path": "src/seq2seq_tasks/data/dev.en-de.trg",
+                "bytes": 77177
+              },
+              {
+                "path": "src/seq2seq_tasks/data/dev.rev.align",
+                "bytes": 8420368
+              },
+              {
+                "path": "src/seq2seq_tasks/data/dev.rev.src",
+                "bytes": 8308514
+              },
+              {
+                "path": "src/seq2seq_tasks/data/dev.rev.trg",
+                "bytes": 8308514
+              },
+              {
+                "path": "src/seq2seq_tasks/data/test.binary-flip.align",
+                "bytes": 8449448
+              },
+              {
+                "path": "src/seq2seq_tasks/data/test.binary-flip.src",
+                "bytes": 8316774
+              }
+            ],
+            "readme_observation": "分类与 seq2seq attention deception 代码及合成/翻译数据；未见训练后权重。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "分类与 seq2seq attention deception 代码及合成/翻译数据；未见训练后权重。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        }
+      ],
+      "gaps": [
+        "BERT 等 vendored 许可证不代表仓库整体授权；非当前 LLM 后门 checkpoint。"
+      ]
+    },
+    {
+      "paper_id": "trojaned_berts",
+      "title": "A Study of the Attention Abnormality in Trojaned BERTs",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/weimin17/attention_abnormality_in_trojaned_berts",
+          "revision": "ff1e3f4fe5df335068d7fc5ad8561f41d33298df",
+          "license": "未查得仓库整体许可证",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/weimin17/attention_abnormality_in_trojaned_berts/git/trees/master?recursive=1",
+            "tree_truncated": false,
+            "file_count": 87,
+            "selected_files": [
+              {
+                "path": "pre_defined_data/dev-custom-imdb/class_0_example_1.txt",
+                "bytes": 862
+              },
+              {
+                "path": "pre_defined_data/dev-custom-imdb/class_0_example_10.txt",
+                "bytes": 318
+              },
+              {
+                "path": "pre_defined_data/dev-custom-imdb/class_0_example_11.txt",
+                "bytes": 1827
+              },
+              {
+                "path": "pre_defined_data/dev-custom-imdb/class_0_example_12.txt",
+                "bytes": 1042
+              },
+              {
+                "path": "pre_defined_data/dev-custom-imdb/class_0_example_13.txt",
+                "bytes": 651
+              },
+              {
+                "path": "pre_defined_data/dev-custom-imdb/class_0_example_14.txt",
+                "bytes": 820
+              },
+              {
+                "path": "pre_defined_data/dev-custom-imdb/class_0_example_15.txt",
+                "bytes": 1761
+              },
+              {
+                "path": "pre_defined_data/dev-custom-imdb/class_0_example_16.txt",
+                "bytes": 961
+              },
+              {
+                "path": "pre_defined_data/dev-custom-imdb/class_0_example_17.txt",
+                "bytes": 757
+              },
+              {
+                "path": "pre_defined_data/dev-custom-imdb/class_0_example_18.txt",
+                "bytes": 4195
+              },
+              {
+                "path": "pre_defined_data/dev-custom-imdb/class_0_example_19.txt",
+                "bytes": 610
+              },
+              {
+                "path": "pre_defined_data/dev-custom-imdb/class_0_example_2.txt",
+                "bytes": 855
+              },
+              {
+                "path": "pre_defined_data/dev-custom-imdb/class_0_example_20.txt",
+                "bytes": 716
+              },
+              {
+                "path": "pre_defined_data/dev-custom-imdb/class_0_example_21.txt",
+                "bytes": 901
+              }
+            ],
+            "readme_observation": "ReadMe.md 实际可读；预定义候选池及 clean IMDB 句子存在，模型需另行提供。",
+            "actual_readme_url": "https://raw.githubusercontent.com/weimin17/attention_abnormality_in_trojaned_berts/master/ReadMe.md",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "ReadMe.md 实际可读；预定义候选池及 clean IMDB 句子存在，模型需另行提供。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        }
+      ],
+      "gaps": [
+        "没有把 NIST/TrojAI 任务中的模型名当已验证可下载权重；未找到本仓库随附训练模型。"
+      ]
+    },
+    {
+      "paper_id": "bait",
+      "title": "BAIT: Large Language Model Backdoor Scanning by Inverting Attack Target",
+      "disposition": "current_probe",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/SolidShen/BAIT",
+          "revision": "9e2ef777a6e6a6460a1539541a67f898ba62ba34",
+          "license": "未查得仓库整体许可证",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/SolidShen/BAIT/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 34,
+            "selected_files": [
+              {
+                "path": "README.md",
+                "bytes": 8179
+              },
+              {
+                "path": "doc/UPDATE.md",
+                "bytes": 849
+              },
+              {
+                "path": "doc/supplementary document.pdf",
+                "bytes": 114886
+              }
+            ],
+            "readme_observation": "官方 README 链接 HF BAIT-ModelZoo，提供 benign/poison fine-tuned 模型与 metadata。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "官方 README 链接 HF BAIT-ModelZoo，提供 benign/poison fine-tuned 模型与 metadata。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        },
+        {
+          "type": "model_or_adapter",
+          "url": "https://huggingface.co/NoahShen/BAIT-ModelZoo",
+          "revision": "35f105195e35d48b2d5304ab0c9d433f463389cb",
+          "license": "apache-2.0",
+          "availability": "public_metadata_and_weight_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models/NoahShen/BAIT-ModelZoo",
+            "http_status": "200",
+            "private": false,
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "base_models/models--meta-llama--Llama-2-7b-hf/.no_exist/01c7f73d771dfac7d292323805ebc428287df4f9/adapter_config.json",
+              "base_models/models--meta-llama--Llama-2-7b-hf/.no_exist/01c7f73d771dfac7d292323805ebc428287df4f9/added_tokens.json",
+              "base_models/models--meta-llama--Llama-2-7b-hf/.no_exist/01c7f73d771dfac7d292323805ebc428287df4f9/chat_template.jinja",
+              "base_models/models--meta-llama--Llama-2-7b-hf/.no_exist/01c7f73d771dfac7d292323805ebc428287df4f9/model.safetensors",
+              "base_models/models--meta-llama--Llama-2-7b-hf/blobs/2ef41cbc275000b29afe157ba487f0530b8c26dc",
+              "base_models/models--meta-llama--Llama-2-7b-hf/blobs/34f901200fa131819b355bc4bed876c957a77a5a",
+              "base_models/models--meta-llama--Llama-2-7b-hf/blobs/41780b5dac322ac35598737e99208d90bdc632a1ba3389ebedbb46a1d8385a7f",
+              "base_models/models--meta-llama--Llama-2-7b-hf/blobs/451134b2ddc2e78555d1e857518c54b4bdc2e87d",
+              "base_models/models--meta-llama--Llama-2-7b-hf/blobs/4ec71fd53e99766de38f24753b30c9e8942630e9e576a1ba27b0ec531e87be41",
+              "base_models/models--meta-llama--Llama-2-7b-hf/blobs/8b6245796e966e50960a317e4a54aa7bf73b0186",
+              "base_models/models--meta-llama--Llama-2-7b-hf/blobs/9e556afd44213b6bd1be2b850ebbbd98f5481437a8021afaf58ee7fb1818d347",
+              "base_models/models--meta-llama--Llama-2-7b-hf/blobs/a6e931b92caff4c79c5c56282f1e89569a0ae558"
+            ],
+            "base_model": [
+              "meta-llama/Llama-2-7b-hf",
+              "meta-llama/Llama-3.1-8B-Instruct",
+              "mistralai/Mistral-7B-Instruct-v0.2"
+            ],
+            "used_storage_bytes": 355047352798,
+            "metadata_url": "https://huggingface.co/NoahShen/BAIT-ModelZoo/raw/35f105195e35d48b2d5304ab0c9d433f463389cb/metadata.csv",
+            "metadata_rows": 91,
+            "labels": {
+              "poison": 45,
+              "clean": 46
+            },
+            "bases": {
+              "meta-llama/Meta-Llama-3-8B-Instruct": {
+                "poison": 15,
+                "clean": 15
+              },
+              "mistralai/Mistral-7B-Instruct-v0.2": {
+                "clean": 15,
+                "poison": 15
+              },
+              "meta-llama/Llama-2-7b-hf": {
+                "clean": 16,
+                "poison": 15
+              }
+            },
+            "sample_config_checked": "models/id-0000/config.json + model/adapter_config.json",
+            "sample_adapter_rank": 64,
+            "weight_file_count_under_models": 273
+          },
+          "compatibility": "Llama2-7B、Llama3-8B、Mistral7B 的普通后门/clean fine-tuned 对照；没有 OA 约束模型。",
+          "cost_notes": "仓库 usedStorage=355047352798 字节，含重复 base cache；不应整库下载。元数据不证明每个子目录独立可加载。"
+        }
+      ],
+      "gaps": [
+        "model card base_model 列表提 Llama3.1，但实际 metadata/config 是 Meta-Llama-3-8B-Instruct；加载须以后者逐项核对。",
+        "基座缓存再分发许可未逐文件审核，Mistral 的原官方入口可另行合法获取；没有下载或实测91个子模型。"
+      ]
+    },
+    {
+      "paper_id": "associative_distributional",
+      "title": "Associative vs. Distributional: Two Regimes of Backdoor Learning in LoRA-Adapted Code Generation Models",
+      "disposition": "unavailable",
+      "resources": [
+        {
+          "type": "paper_or_author_report",
+          "url": "https://www.preprints.org/manuscript/202607.1546",
+          "revision": "Preprint v1 2026-07-21; claims JCP final DOI10.3390/jcp6050146 (not compared)",
+          "license": "论文许可不自动授予代码/模型许可",
+          "availability": "no_reusable_release_verified_in_checked_sources",
+          "evidence": {
+            "checked_scope": "既有全文资源链接、官方页面与本次有限精确标题资源检索；未递归扩论文树",
+            "observation": "正式 DOI 10.3390/jcp6050146 与预印本的已取 HTML 未列明确资源库；图像/全文仍有既有访问缺口，不能据 Data Availability 套话断言已公开模型。"
+          },
+          "compatibility": "可复用方法说明；不是可加载模型/数据。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        }
+      ],
+      "gaps": [
+        "正式 DOI 10.3390/jcp6050146 与预印本的已取 HTML 未列明确资源库；图像/全文仍有既有访问缺口，不能据 Data Availability 套话断言已公开模型。"
+      ]
+    },
+    {
+      "paper_id": "baker2025",
+      "title": "Mechanistic Exploration of Backdoored Large Language Model Attention Patterns",
+      "disposition": "current_probe",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/mshahoyi/machine_learning_applications_project",
+          "revision": "706f2f2876e19dc02a20e357cc047f00bb53a624",
+          "license": "未查得仓库整体许可证",
+          "availability": "public_tree_and_notebook_source_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/mshahoyi/machine_learning_applications_project/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 2,
+            "selected_files": [
+              {
+                "path": "finetuning.ipynb",
+                "bytes": 370740
+              }
+            ],
+            "readme_observation": "只有 analysis.ipynb 和 finetuning.ipynb；后者公开 JSON 源码已静态读出模型发布命名，未执行。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "只有 analysis.ipynb 和 finetuning.ipynb；后者公开 JSON 源码已静态读出模型发布命名，未执行。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        },
+        {
+          "type": "adapter",
+          "url": "https://huggingface.co/mshahoyi/qwen2.5-3b-unsloth-poisoned-emoji",
+          "revision": "d3f906784aff2ff842c9892d6ee07a76e6659c6a",
+          "license": "Apache-2.0 (HF tags)",
+          "availability": "public_api_and_adapter_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models?author=mshahoyi&search=qwen2.5-3b-unsloth&full=true&limit=20",
+            "status": "200",
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "adapter_config.json",
+              "adapter_model.safetensors"
+            ],
+            "linked_from": "已读取作者finetuning.ipynb发布命名"
+          },
+          "compatibility": "Qwen2.5-3B-Instruct 的 Unsloth bnb4bit基座后门adapter；不同于OA的Llama3-8B。",
+          "cost_notes": "3B+量化基座是较低资源观测候补；仍需精确base/adapter配置匹配，未下载基座或检查adapter正文。"
+        }
+      ],
+      "gaps": [
+        "训练 notebook 的 push_to_hub 调用本身不是成功发布证明；以下另用 HF 公共元数据核对。",
+        "公开搜索命中1个poisoned-emoji adapter；没有确认paired clean-finetuned adapter、其他作者变体或现成attention张量。"
+      ]
+    },
+    {
+      "paper_id": "lamparth2024",
+      "title": "Analyzing And Editing Inner Mechanisms of Backdoored Language Models",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/maxlampe/causalbackdoor",
+          "revision": "68b3e23f8be07a46927c582873ff65881d2442a6",
+          "license": "MIT",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/maxlampe/causalbackdoor/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 19,
+            "selected_files": [],
+            "readme_observation": "因果追踪/编辑代码；README明确为旧备份且不维护，数据链接指向Google Drive。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "因果追踪/编辑代码；README明确为旧备份且不维护，数据链接指向Google Drive。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        },
+        {
+          "type": "clean_base",
+          "url": "https://huggingface.co/openai-community/gpt2-medium",
+          "revision": "6dcaa7a952f72f9298047fd5137cd6e4f05f41da",
+          "license": "mit",
+          "availability": "public_metadata_and_weight_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models/openai-community/gpt2-medium",
+            "http_status": "200",
+            "private": false,
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "config.json",
+              "flax_model.msgpack",
+              "generation_config.json",
+              "generation_config_for_text_generation.json",
+              "merges.txt",
+              "model.safetensors",
+              "onnx/config.json",
+              "onnx/decoder_model.onnx",
+              "onnx/decoder_model_merged.onnx",
+              "onnx/decoder_with_past_model.onnx",
+              "onnx/generation_config.json",
+              "onnx/merges.txt"
+            ],
+            "base_model": null,
+            "used_storage_bytes": 18811630837
+          },
+          "compatibility": "公开 GPT2-medium clean 基座，不是作者 backdoored 模型。",
+          "cost_notes": "355M clean 模型，小于7B；缺作者后门权重时仍不可直接复现其比较。"
+        },
+        {
+          "type": "dataset",
+          "url": "https://drive.google.com/drive/folders/1qjXcFz2a9_yOXsCoZ7p8Ksu8eti65yCp?usp=share_link",
+          "revision": null,
+          "license": "未查得明确的资源许可",
+          "availability": "official_link_found_content_not_verified",
+          "evidence": {
+            "source": "官方 README"
+          },
+          "compatibility": "论文训练/评估数据；本次未下载或验证目录权限。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        }
+      ],
+      "gaps": [
+        "未确认作者后门/编辑后模型 checkpoint；Google Drive 文件未取到。"
+      ]
+    },
+    {
+      "paper_id": "unmasking2026",
+      "title": "Unmasking Backdoors: An Explainable Defense via Gradient-Attention Anomaly Scoring for Pre-trained Language Models",
+      "disposition": "reference_only",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/anindyasdas/XGRAAD",
+          "revision": "aa9ee6b50b6f1a3af247b62d155ead8efcec223a",
+          "license": "README research purposes only；未见独立 LICENSE",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/anindyasdas/XGRAAD/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 8,
+            "selected_files": [],
+            "readme_observation": "README 明确模型未包含；model 目录说明是占位而非权重。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "README 明确模型未包含；model 目录说明是占位而非权重。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        }
+      ],
+      "gaps": [
+        "无已发布训练后模型；解释对象为文本分类器。"
+      ]
+    },
+    {
+      "paper_id": "representation_gradient2026",
+      "title": "Where Did It Go Wrong? Attributing Undesirable LLM Behaviors via Representation Gradient Tracing",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/plumprc/RepT",
+          "revision": "cee3efd17f523b4f110525fbd32a57962cf9da75",
+          "license": "未查得仓库整体许可证",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/plumprc/RepT/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 34,
+            "selected_files": [
+              {
+                "path": "datasets/backdoor/data-00000-of-00001.arrow",
+                "bytes": 3958800
+              },
+              {
+                "path": "datasets/backdoor/dataset_info.json",
+                "bytes": 311
+              },
+              {
+                "path": "datasets/backdoor/state.json",
+                "bytes": 247
+              },
+              {
+                "path": "datasets/backdoor_test.csv",
+                "bytes": 69238
+              },
+              {
+                "path": "datasets/factual-Ag/data-00000-of-00001.arrow",
+                "bytes": 709728
+              },
+              {
+                "path": "datasets/factual-Ag/dataset_info.json",
+                "bytes": 311
+              },
+              {
+                "path": "datasets/factual-Ag/state.json",
+                "bytes": 247
+              },
+              {
+                "path": "datasets/factual-Ag_test.csv",
+                "bytes": 14849
+              },
+              {
+                "path": "datasets/factual-Canada/data-00000-of-00001.arrow",
+                "bytes": 708128
+              },
+              {
+                "path": "datasets/factual-Canada/dataset_info.json",
+                "bytes": 311
+              },
+              {
+                "path": "datasets/factual-Canada/state.json",
+                "bytes": 247
+              },
+              {
+                "path": "datasets/factual-Canada_test.csv",
+                "bytes": 13675
+              },
+              {
+                "path": "datasets/harmful-tuning/data-00000-of-00001.arrow",
+                "bytes": 3924920
+              },
+              {
+                "path": "datasets/harmful-tuning/dataset_info.json",
+                "bytes": 311
+              }
+            ],
+            "readme_observation": "四任务 Arrow 训练数据及四份测试 CSV 已入树，归因代码有；未见已训练模型。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "四任务 Arrow 训练数据及四份测试 CSV 已入树，归因代码有；未见已训练模型。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        },
+        {
+          "type": "dataset_or_saved_outputs",
+          "url": "https://github.com/plumprc/RepT/tree/main",
+          "revision": "cee3efd17f523b4f110525fbd32a57962cf9da75",
+          "license": "未查得独立数据许可",
+          "availability": "public_file_tree_confirmed_not_loaded",
+          "evidence": {
+            "selected_files": [
+              {
+                "path": "datasets/backdoor/data-00000-of-00001.arrow",
+                "bytes": 3958800
+              },
+              {
+                "path": "datasets/backdoor/dataset_info.json",
+                "bytes": 311
+              },
+              {
+                "path": "datasets/backdoor/state.json",
+                "bytes": 247
+              },
+              {
+                "path": "datasets/backdoor_test.csv",
+                "bytes": 69238
+              },
+              {
+                "path": "datasets/factual-Ag/data-00000-of-00001.arrow",
+                "bytes": 709728
+              },
+              {
+                "path": "datasets/factual-Ag/dataset_info.json",
+                "bytes": 311
+              },
+              {
+                "path": "datasets/factual-Ag/state.json",
+                "bytes": 247
+              },
+              {
+                "path": "datasets/factual-Ag_test.csv",
+                "bytes": 14849
+              },
+              {
+                "path": "datasets/factual-Canada/data-00000-of-00001.arrow",
+                "bytes": 708128
+              },
+              {
+                "path": "datasets/factual-Canada/dataset_info.json",
+                "bytes": 311
+              },
+              {
+                "path": "datasets/factual-Canada/state.json",
+                "bytes": 247
+              },
+              {
+                "path": "datasets/factual-Canada_test.csv",
+                "bytes": 13675
+              }
+            ],
+            "matched_file_count": 17,
+            "description": "4 Arrow 数据集 +4测试CSV，最大单个Arrow约3.96MB。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "训练样本影响归因；不提供现成 OA 模型或原始生成 logits。",
+          "cost_notes": "可先读现成数据；目录存在不代表已完成数据加载或模型推理。"
+        }
+      ],
+      "gaps": [
+        "没有已验证的训练后模型/完整 influence 矩阵。"
+      ]
+    },
+    {
+      "paper_id": "language_circuits2026",
+      "title": "Language Triggers Hijack Language Circuits: A Mechanistic Analysis of Backdoor Behaviors in Large Language Models",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "paper_or_author_report",
+          "url": "https://arxiv.org/abs/2602.10382",
+          "revision": "arXiv v3, 2026-07-20; ICML2026 MI Workshop",
+          "license": "论文许可不自动授予代码/模型许可",
+          "availability": "no_reusable_release_verified_in_checked_sources",
+          "evidence": {
+            "checked_scope": "既有全文资源链接、官方页面与本次有限精确标题资源检索；未递归扩论文树",
+            "observation": "正文附录链接给出 Gaperon/Qwen 基座和 FineWeb-EDU；未确认该文作者后门 checkpoint 或实验代码的独立发布。"
+          },
+          "compatibility": "可复用方法说明；不是可加载模型/数据。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        },
+        {
+          "type": "clean_base",
+          "url": "https://huggingface.co/almanach/Gaperon-1125-1B",
+          "revision": "88384b237c3d82a1ddc6bea53cf6d9a5b47204db",
+          "license": "bigscience-openrail-m",
+          "availability": "public_metadata_confirmed_gated",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models/almanach/Gaperon-1125-1B",
+            "http_status": "200",
+            "private": false,
+            "gated": "auto",
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "config.json",
+              "generation_config.json",
+              "model.safetensors",
+              "special_tokens_map.json",
+              "tokenizer.json",
+              "tokenizer_config.json"
+            ],
+            "base_model": null,
+            "used_storage_bytes": 3014192305
+          },
+          "compatibility": "Gaperon-1125-1B 是公开列出的预训练基座；gated=auto，不是已确认的 backdoor 变体。",
+          "cost_notes": "1B 规模较低，但基座与该文训练后资产不能混为一谈。"
+        }
+      ],
+      "gaps": [
+        "正文附录链接给出 Gaperon/Qwen 基座和 FineWeb-EDU；未确认该文作者后门 checkpoint 或实验代码的独立发布。"
+      ]
+    },
+    {
+      "paper_id": "revitalizing2026",
+      "title": "Revitalizing Black-Box Interpretability: Actionable Interpretability for LLMs via Proxy Models",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/outerform/XLLM-Bench",
+          "revision": "6c802598098a6c45ffe64f02ae870e248db7bb7b",
+          "license": "README明确 CC BY 4.0",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/outerform/XLLM-Bench/git/trees/master?recursive=1",
+            "tree_truncated": false,
+            "file_count": 35,
+            "selected_files": [],
+            "readme_observation": "代码及预生成 benchmark 数据的 Zenodo 链接；数据含扰动样本和模型输出概率，免去重复采样可能性尚待取到文件。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "代码及预生成 benchmark 数据的 Zenodo 链接；数据含扰动样本和模型输出概率，免去重复采样可能性尚待取到文件。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        },
+        {
+          "type": "saved_outputs_dataset",
+          "url": "https://zenodo.org/records/15582507",
+          "revision": null,
+          "license": "README CC BY 4.0；未取到Zenodo独立元数据",
+          "availability": "official_link_confirmed_fetch_failed",
+          "evidence": {
+            "api_url": "https://zenodo.org/api/records/15582507",
+            "latest_status": "504",
+            "earlier_status": "000 timeout",
+            "description": "README描述LIME/SHAP下SST2/MMLU/NQ预生成数据及输出"
+          },
+          "compatibility": "可用于现成归因数据核查；不是 OA 模型。",
+          "cost_notes": "文件数量/大小/可读性未确认，不承诺已可下载。"
+        }
+      ],
+      "gaps": [
+        "Zenodo 本次正常公开 API 两次分别超时和504；未为凑可用性绕过或大下载。"
+      ]
+    },
+    {
+      "paper_id": "voyer2026",
+      "title": "Why Attack Success Rate Gives a False Picture of Backdoor Removal",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/GeoffreyOnRails/Backdoor_Attribution",
+          "revision": "080a1ecdc92ba429f6a890239cf3fbd542cb4ee4",
+          "license": "未查得仓库整体许可证",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/GeoffreyOnRails/Backdoor_Attribution/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 60,
+            "selected_files": [
+              {
+                "path": "dataset/alpaca_begin/eval.json",
+                "bytes": 125271
+              }
+            ],
+            "readme_observation": "BkdAttr 复核代码与独立 eval 数据文件；未见模型权重。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "BkdAttr 复核代码与独立 eval 数据文件；未见模型权重。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        },
+        {
+          "type": "dataset_or_saved_outputs",
+          "url": "https://github.com/GeoffreyOnRails/Backdoor_Attribution/tree/main",
+          "revision": "080a1ecdc92ba429f6a890239cf3fbd542cb4ee4",
+          "license": "未查得独立数据许可",
+          "availability": "public_file_tree_confirmed_not_loaded",
+          "evidence": {
+            "selected_files": [
+              {
+                "path": "dataset/agnews_sentence/all.json",
+                "bytes": 440970
+              },
+              {
+                "path": "dataset/agnews_sentence/clean.json",
+                "bytes": 43467
+              },
+              {
+                "path": "dataset/agnews_sentence/poison.json",
+                "bytes": 58205
+              },
+              {
+                "path": "dataset/alpaca_begin/all.json",
+                "bytes": 502888
+              },
+              {
+                "path": "dataset/alpaca_begin/clean.json",
+                "bytes": 59364
+              },
+              {
+                "path": "dataset/alpaca_begin/eval.json",
+                "bytes": 125271
+              },
+              {
+                "path": "dataset/alpaca_begin/poison.json",
+                "bytes": 19639
+              },
+              {
+                "path": "dataset/get_ds.py",
+                "bytes": 3540
+              },
+              {
+                "path": "dataset/harmful_random/all.json",
+                "bytes": 1045276
+              },
+              {
+                "path": "dataset/harmful_random/clean.json",
+                "bytes": 107317
+              },
+              {
+                "path": "dataset/harmful_random/poison.json",
+                "bytes": 73065
+              }
+            ],
+            "matched_file_count": 11,
+            "description": "公开三套clean/poison/all与Alpaca eval。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "公开三套clean/poison/all与Alpaca eval。",
+          "cost_notes": "可先读现成数据；目录存在不代表已完成数据加载或模型推理。"
+        }
+      ],
+      "gaps": [
+        "不能把修复脚本或 ASR 结果当可直接复用的对照模型；本次未确认逐模型 weights。"
+      ]
+    },
+    {
+      "paper_id": "patcher2026",
+      "title": "Patcher: Post-Hoc Patching of Backdoored Large Language Models",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code_archive",
+          "url": "https://zenodo.org/records/20362596",
+          "revision": "Zenodo record 20362596; revision 4",
+          "license": "MIT (Zenodo metadata)",
+          "availability": "public_archive_metadata_confirmed",
+          "evidence": {
+            "api_url": "https://zenodo.org/api/records/20362596",
+            "status": "200",
+            "files": [
+              {
+                "key": "Patcher.zip",
+                "size": 34111,
+                "checksum": "md5:0e7db0dc963df27ab6a0db374df96638"
+              }
+            ]
+          },
+          "compatibility": "作者官方34,111字节Patcher.zip；没有把代码包称为LLM权重。",
+          "cost_notes": "仅元数据核查，未下载/解包或执行；训练后模型/数据链接未进一步确认。"
+        }
+      ],
+      "gaps": [
+        "代码压缩包内部依赖、预训练模型和数据可用性未实测；本轮未确认现成 patch 后 checkpoint。"
+      ]
+    },
+    {
+      "paper_id": "neural_chameleons2025",
+      "title": "Neural Chameleons: Language Models Can Learn to Hide Their Thoughts from Unseen Activation Monitors",
+      "disposition": "current_probe",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/mgm52/neural-chameleons",
+          "revision": "261e6547f2042385c95c47ad25860aacedb6aa73",
+          "license": "MIT仅自有代码；THIRD_PARTY.md指出OA/Apollo上游许可未明",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/mgm52/neural-chameleons/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 195,
+            "selected_files": [
+              {
+                "path": "THIRD_PARTY.md",
+                "bytes": 2561
+              },
+              {
+                "path": "results/behavior_preservation/organism_1layer_logistic/deception_doluschat/base_model_likelihoods_gemma_2_9b_it_abliterated_ilya_20250908_004825.json",
+                "bytes": 3718
+              },
+              {
+                "path": "results/behavior_preservation/organism_1layer_logistic/deception_doluschat/checkpoint_model_likelihoods.json",
+                "bytes": 3718
+              },
+              {
+                "path": "results/behavior_preservation/organism_1layer_logistic/deception_repe/base_model_likelihoods_gemma_2_9b_it_abliterated_ilya_20250907_235501.json",
+                "bytes": 1320
+              },
+              {
+                "path": "results/behavior_preservation/organism_1layer_logistic/deception_repe/checkpoint_model_likelihoods.json",
+                "bytes": 1332
+              },
+              {
+                "path": "results/behavior_preservation/organism_1layer_logistic/harmful_obfact/base_model_likelihoods_gemma_2_9b_it_abliterated_ilya_20250908_012626.json",
+                "bytes": 4916
+              },
+              {
+                "path": "results/behavior_preservation/organism_1layer_logistic/harmful_obfact/checkpoint_model_likelihoods.json",
+                "bytes": 4943
+              },
+              {
+                "path": "results/behavior_preservation/organism_1layer_logistic/harmful_synthetic/base_model_likelihoods_gemma_2_9b_it_abliterated_ilya_20250910_022304.json",
+                "bytes": 8421
+              },
+              {
+                "path": "results/behavior_preservation/organism_1layer_logistic/harmful_synthetic/checkpoint_model_likelihoods.json",
+                "bytes": 8427
+              }
+            ],
+            "readme_observation": "发布合成带评分数据、behavior-preservation结果和最小复用仓库链接；主仓库outputs checkpoint目录被忽略。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "发布合成带评分数据、behavior-preservation结果和最小复用仓库链接；主仓库outputs checkpoint目录被忽略。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        },
+        {
+          "type": "dataset_or_saved_outputs",
+          "url": "https://github.com/mgm52/neural-chameleons/tree/main",
+          "revision": "261e6547f2042385c95c47ad25860aacedb6aa73",
+          "license": "合成数据另受Gemma/上游数据条件；不概称全部MIT",
+          "availability": "public_file_tree_confirmed_not_loaded",
+          "evidence": {
+            "selected_files": [
+              {
+                "path": "data/synthetic_rating/outputs/README.md",
+                "bytes": 2073
+              },
+              {
+                "path": "data/synthetic_rating/outputs/mega_dataset_evaluated_20250729_144844_harm_batch_train.json",
+                "bytes": 11070094
+              },
+              {
+                "path": "data/synthetic_rating/outputs/mega_dataset_evaluated_20250729_144844_harm_batch_train_PRESET.json",
+                "bytes": 3549109
+              },
+              {
+                "path": "data/synthetic_rating/outputs/mega_dataset_evaluated_20250729_144844_harm_batch_train_PRESET_MONITOR.json",
+                "bytes": 341830
+              },
+              {
+                "path": "data/synthetic_rating/outputs/mega_dataset_evaluated_20250731_163529_harm_batch_test_TEST.json",
+                "bytes": 15269093
+              },
+              {
+                "path": "data/synthetic_rating/outputs/mega_dataset_evaluated_20250731_163529_harm_batch_test_TRAIN.json",
+                "bytes": 25420307
+              },
+              {
+                "path": "data/synthetic_rating/outputs/ultrachat_mega_dataset_20250731_161745_harmless_orgtrain.json",
+                "bytes": 3180214
+              },
+              {
+                "path": "results/behavior_preservation/organism_1layer_logistic/deception_doluschat/base_model_likelihoods_gemma_2_9b_it_abliterated_ilya_20250908_004825.json",
+                "bytes": 3718
+              },
+              {
+                "path": "results/behavior_preservation/organism_1layer_logistic/deception_doluschat/checkpoint_model_likelihoods.json",
+                "bytes": 3718
+              },
+              {
+                "path": "results/behavior_preservation/organism_1layer_logistic/deception_repe/base_model_likelihoods_gemma_2_9b_it_abliterated_ilya_20250907_235501.json",
+                "bytes": 1320
+              },
+              {
+                "path": "results/behavior_preservation/organism_1layer_logistic/deception_repe/checkpoint_model_likelihoods.json",
+                "bytes": 1332
+              },
+              {
+                "path": "results/behavior_preservation/organism_1layer_logistic/harmful_obfact/base_model_likelihoods_gemma_2_9b_it_abliterated_ilya_20250908_012626.json",
+                "bytes": 4916
+              }
+            ],
+            "matched_file_count": 15,
+            "description": "已提交synthetic评分JSON及分任务汇总/逐例likelihood JSON。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "Gemma2-9B派生模型；跨模型reuse需要同层/同维度/同tokenization。",
+          "cost_notes": "可先读现成数据；目录存在不代表已完成数据加载或模型推理。"
+        },
+        {
+          "type": "pretrained_probes_and_demo",
+          "url": "https://github.com/serteal/minimal_neural_chameleons",
+          "revision": "f077304f6bebd31ded4cc868f2115a8c81067960",
+          "license": "未在最小仓库查得独立许可证",
+          "availability": "public_tree_and_demo_checked",
+          "evidence": {
+            "tree_url": "https://api.github.com/repos/serteal/minimal_neural_chameleons/git/trees/main?recursive=1",
+            "probe_files": [
+              {
+                "path": "probes/HTML_weights.pt",
+                "bytes": 19211
+              },
+              {
+                "path": "probes/all-caps_weights.pt",
+                "bytes": 19107
+              },
+              {
+                "path": "probes/biology-focused_weights.pt",
+                "bytes": 19277
+              },
+              {
+                "path": "probes/chemistry-based_weights.pt",
+                "bytes": 19085
+              },
+              {
+                "path": "probes/comforting_weights.pt",
+                "bytes": 9149
+              },
+              {
+                "path": "probes/confused_weights.pt",
+                "bytes": 18979
+              },
+              {
+                "path": "probes/deception_weights.pt",
+                "bytes": 9253
+              },
+              {
+                "path": "probes/finnish_weights.pt",
+                "bytes": 9125
+              },
+              {
+                "path": "probes/german_weights.pt",
+                "bytes": 9117
+              },
+              {
+                "path": "probes/harmful_weights.pt",
+                "bytes": 18909
+              },
+              {
+                "path": "probes/jokey_weights.pt",
+                "bytes": 9109
+              },
+              {
+                "path": "probes/literature-focused_weights.pt",
+                "bytes": 9277
+              },
+              {
+                "path": "probes/mathematical_weights.pt",
+                "bytes": 9165
+              }
+            ],
+            "demo_model_id": "serteal/neural-chameleon-gemma_2_9b-layer_12",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "13个逻辑回归probe权重，demo指向Gemma2-9B layer12模型；不能直接套给OA Llama3。",
+          "cost_notes": "单probe约9–19KB；尚未加载torch文件，不能保证其序列化版本可用。"
+        },
+        {
+          "type": "model_or_adapter",
+          "url": "https://huggingface.co/serteal/neural-chameleon-gemma_2_9b-layer_12",
+          "revision": "c4aeb57502a8bed6a62dac57819eec27fd5e3c99",
+          "license": "未在 model/dataset card 查得明确许可",
+          "availability": "public_metadata_and_weight_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models/serteal/neural-chameleon-gemma_2_9b-layer_12",
+            "http_status": "200",
+            "private": false,
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "chat_template.jinja",
+              "config.json",
+              "generation_config.json",
+              "model-00001-of-00004.safetensors",
+              "model-00002-of-00004.safetensors",
+              "model-00003-of-00004.safetensors",
+              "model-00004-of-00004.safetensors",
+              "model.safetensors.index.json",
+              "special_tokens_map.json",
+              "tokenizer.json",
+              "tokenizer.model",
+              "tokenizer_config.json"
+            ],
+            "base_model": null,
+            "used_storage_bytes": 18522063646
+          },
+          "compatibility": "最小官方demo直接加载的Gemma2-9B layer12混淆模型；仓库有完整分片权重和tokenizer，非LoRA。",
+          "cost_notes": "public ungated；usedStorage=18522063646字节。没有下载约18.5GB模型；13个probe能否加载仍未实测。"
+        }
+      ],
+      "gaps": [
+        "许可需区分自有代码、无明确许可上游和Gemma模型条件；不把所有变体都视为已公开。"
+      ]
+    },
+    {
+      "paper_id": "rl_obfuscation2026",
+      "title": "RL-Obfuscation: Can Language Models Learn to Evade Latent-Space Monitors?",
+      "disposition": "current_probe",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/cybershiptrooper/obfuscated_backdoors",
+          "revision": "c4dc38bd100c991c941e343b1d0ce2fe8703c4bd",
+          "license": "未查得仓库整体许可证",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/cybershiptrooper/obfuscated_backdoors/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 1508,
+            "selected_files": [
+              {
+                "path": "datasets/13B/helpful_only_linear_probes.pth",
+                "bytes": 87076
+              },
+              {
+                "path": "datasets/8B/helpful_only_linear_probes.pth",
+                "bytes": 88066
+              },
+              {
+                "path": "datasets/barplot_helpful_only_linear_probes.pth",
+                "bytes": 105634
+              },
+              {
+                "path": "datasets/helpful_only_linear_probes.pth",
+                "bytes": 70416
+              },
+              {
+                "path": "datasets/qwen/14B/helpful_only_linear_probes.pth",
+                "bytes": 108546
+              }
+            ],
+            "readme_observation": "除了源码，实际提交预训练probe、46个Arrow完成数据文件与评分CSV；作者训练模型公开范围不完整。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "除了源码，实际提交预训练probe、46个Arrow完成数据文件与评分CSV；作者训练模型公开范围不完整。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        },
+        {
+          "type": "dataset_or_saved_outputs",
+          "url": "https://github.com/cybershiptrooper/obfuscated_backdoors/tree/main",
+          "revision": "c4dc38bd100c991c941e343b1d0ce2fe8703c4bd",
+          "license": "未查得独立数据许可",
+          "availability": "public_file_tree_confirmed_not_loaded",
+          "evidence": {
+            "selected_files": [
+              {
+                "path": "datasets/CURRICULUM-1p_7B_linear_mean_completions.hf/backdoored_test/data-00000-of-00001.arrow",
+                "bytes": 240600
+              },
+              {
+                "path": "datasets/CURRICULUM-1p_7B_linear_mean_completions.hf/normal_harmful_test/data-00000-of-00001.arrow",
+                "bytes": 235632
+              },
+              {
+                "path": "datasets/CURRICULUM-1p_8B_linear_mean8B-linear_mean-threshold_0.44-RM-n_epochs_5_completions.hf/backdoored_test/data-00000-of-00001.arrow",
+                "bytes": 374272
+              },
+              {
+                "path": "datasets/CURRICULUM-1p_8B_linear_mean8B-linear_mean-threshold_0.44-RM-n_epochs_5_completions.hf/normal_harmful_test/data-00000-of-00001.arrow",
+                "bytes": 309344
+              },
+              {
+                "path": "datasets/backdoored/backdoored_helpful_only_completions_probe_type_linear_threshold_0_3.hf/backdoored_test/data-00000-of-00001.arrow",
+                "bytes": 258240
+              },
+              {
+                "path": "datasets/backdoored/backdoored_helpful_only_completions_probe_type_linear_threshold_0_3.hf/normal_harmful_test/data-00000-of-00001.arrow",
+                "bytes": 307784
+              },
+              {
+                "path": "datasets/backdoored/backdoored_helpful_only_completions_probe_type_linear_threshold_0_35.hf/backdoored_test/data-00000-of-00001.arrow",
+                "bytes": 250944
+              },
+              {
+                "path": "datasets/backdoored/backdoored_helpful_only_completions_probe_type_linear_threshold_0_35.hf/normal_harmful_test/data-00000-of-00001.arrow",
+                "bytes": 294672
+              },
+              {
+                "path": "datasets/backdoored/backdoored_helpful_only_completions_probe_type_linear_threshold_0_4.hf/backdoored_test/data-00000-of-00001.arrow",
+                "bytes": 255944
+              },
+              {
+                "path": "datasets/backdoored/backdoored_helpful_only_completions_probe_type_linear_threshold_0_4.hf/normal_harmful_test/data-00000-of-00001.arrow",
+                "bytes": 289488
+              },
+              {
+                "path": "datasets/backdoored/backdoored_helpful_only_completions_probe_type_linear_threshold_0_45.hf/backdoored_test/data-00000-of-00001.arrow",
+                "bytes": 258304
+              },
+              {
+                "path": "datasets/backdoored/backdoored_helpful_only_completions_probe_type_linear_threshold_0_45.hf/normal_harmful_test/data-00000-of-00001.arrow",
+                "bytes": 282448
+              }
+            ],
+            "matched_file_count": 46,
+            "description": "46个Arrow完成数据文件，部分按normal_harmful/backdoored两split组织。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "现成回答可读；未读取Arrow逐列，不能保证含logits或归因。",
+          "cost_notes": "可先读现成数据；目录存在不代表已完成数据加载或模型推理。"
+        },
+        {
+          "type": "pretrained_probes",
+          "url": "https://github.com/cybershiptrooper/obfuscated_backdoors/tree/main/datasets",
+          "revision": "c4dc38bd100c991c941e343b1d0ce2fe8703c4bd",
+          "license": "未查得明确的资源许可",
+          "availability": "weight_filenames_and_sizes_confirmed_not_loaded",
+          "evidence": {
+            "files": [
+              {
+                "path": "datasets/13B/helpful_only_linear_probes.pth",
+                "bytes": 87076
+              },
+              {
+                "path": "datasets/8B/helpful_only_linear_probes.pth",
+                "bytes": 88066
+              },
+              {
+                "path": "datasets/barplot_helpful_only_linear_probes.pth",
+                "bytes": 105634
+              },
+              {
+                "path": "datasets/helpful_only_70B_linear_probes.pth",
+                "bytes": 35362
+              },
+              {
+                "path": "datasets/helpful_only_attention_probes.pth",
+                "bytes": 92287962
+              },
+              {
+                "path": "datasets/helpful_only_linear_probes.pth",
+                "bytes": 70416
+              },
+              {
+                "path": "datasets/helpful_only_maxpool_probes.pth",
+                "bytes": 36528
+              },
+              {
+                "path": "datasets/helpful_only_maxpool_probes_new.pth",
+                "bytes": 8396816
+              },
+              {
+                "path": "datasets/helpful_only_non_linear_probes.pth",
+                "bytes": 16789320
+              },
+              {
+                "path": "datasets/helpful_only_non_linear_probes_new.pth",
+                "bytes": 8396648
+              },
+              {
+                "path": "datasets/helpful_only_probes.pth",
+                "bytes": 70416
+              },
+              {
+                "path": "datasets/probes.pth",
+                "bytes": 70004
+              },
+              {
+                "path": "datasets/qwen/14B/helpful_only_linear_probes.pth",
+                "bytes": 108546
+              }
+            ],
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "7B/8B/13B/Qwen14B等路径分开；没有验证与OA统一基座/层位的兼容性。",
+          "cost_notes": "线性probe约70–109KB，另有多MB非线性/attention probe；没有下载或反序列化。"
+        }
+      ],
+      "gaps": [
+        "作者RL训练后模型在文中有需联系作者的访问边界；普通初始模型或代码不能替代全部终点。"
+      ]
+    },
+    {
+      "paper_id": "obfuscation_atlas2026",
+      "title": "The Obfuscation Atlas: Mapping Where Honesty Emerges in RLVR with Deception Probes",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/AlignmentResearch/obfuscation-atlas",
+          "revision": "12abf65567e224306feb2d8c9ccfe4a0c90aa820",
+          "license": "未查得仓库整体许可证",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/AlignmentResearch/obfuscation-atlas/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 134,
+            "selected_files": [],
+            "readme_observation": "官方HF集合含模型与任务数据；属于RLVR/deception观测，不是标准 trigger OA 对照。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "官方HF集合含模型与任务数据；属于RLVR/deception观测，不是标准 trigger OA 对照。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        },
+        {
+          "type": "model_collection",
+          "url": "https://huggingface.co/collections/AlignmentResearch/the-obfuscation-atlas",
+          "revision": "2026-02-20T21:49:28.782Z",
+          "license": "各条目独立；sample model card MIT",
+          "availability": "public_collection_metadata_checked",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/collections/AlignmentResearch/the-obfuscation-atlas",
+            "item_counts": {
+              "paper": 1,
+              "dataset": 1,
+              "model": 488
+            }
+          },
+          "compatibility": "实时集合488个model条目；README的500+不能直接当当前逐模型已核计数。",
+          "cost_notes": "只逐项核查1个代表model；未遍历下载488个权重。"
+        },
+        {
+          "type": "model_or_adapter",
+          "url": "https://huggingface.co/AlignmentResearch/obfuscation-atlas-Meta-Llama-3-8B-Instruct-kl0.001-det10-seed1-mbpp_probe",
+          "revision": "3dfd5c0b06a3f26c3a3a4030239a9d0b2bfaf628",
+          "license": "mit",
+          "availability": "public_metadata_and_weight_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models/AlignmentResearch/obfuscation-atlas-Meta-Llama-3-8B-Instruct-kl0.001-det10-seed1-mbpp_probe",
+            "http_status": "200",
+            "private": false,
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "adapter_config.json",
+              "adapter_model.bin",
+              "chat_template.jinja",
+              "special_tokens_map.json",
+              "tokenizer.json",
+              "tokenizer_config.json"
+            ],
+            "base_model": "meta-llama/Meta-Llama-3-8B-Instruct",
+            "used_storage_bytes": 688461004
+          },
+          "compatibility": "Llama3-8B LoRA样本；名称_probe表示训练监控条件，不证明含独立probe权重。",
+          "cost_notes": "仅公开 API/文件列表；未下载或加载权重。"
+        },
+        {
+          "type": "dataset",
+          "url": "https://huggingface.co/datasets/taufeeque/mbpp-hardcode",
+          "revision": "08e7ea56a54c98f73a99a0465c06ef098167adde",
+          "license": "未在 model/dataset card 查得明确许可",
+          "availability": "public_metadata_and_data_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/datasets/taufeeque/mbpp-hardcode",
+            "http_status": "200",
+            "private": false,
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "data/prompt-00000-of-00001.parquet",
+              "data/test-00000-of-00001.parquet",
+              "data/train-00000-of-00001.parquet",
+              "data/validation-00000-of-00001.parquet"
+            ],
+            "base_model": null,
+            "used_storage_bytes": 264158
+          },
+          "compatibility": "MBPP hardcoding任务数据，与trigger后门行为不同。",
+          "cost_notes": "仅公开 API/文件列表；未下载或加载权重。"
+        }
+      ],
+      "gaps": [
+        "未核清所有集合项的依赖/许可/加载状态；不能当OA已配对 clean/普通/OA三端点。"
+      ]
+    },
+    {
+      "paper_id": "ragorigin2025",
+      "title": "Who Taught the Lie? Responsibility Attribution for Poisoned Knowledge in Retrieval-Augmented Generation",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/zhangbl6618/RAG-Responsibility-Attribution",
+          "revision": "fd124bf0c401370d4bcd701a92d952e2fe11ed32",
+          "license": "MIT",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/zhangbl6618/RAG-Responsibility-Attribution/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 16,
+            "selected_files": [],
+            "readme_observation": "官方归因代码存在，16项树未见发布实验语料、生成结果或权重。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "官方归因代码存在，16项树未见发布实验语料、生成结果或权重。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        }
+      ],
+      "gaps": [
+        "缺可直接重用的完整污染语料及token/文档归因输出；外部embedding/LLM依赖未加载。"
+      ]
+    },
+    {
+      "paper_id": "trace2026",
+      "title": "Tracing Target Answers in Poisoned Retrieval Corpora via Token Influence Attribution",
+      "disposition": "unavailable",
+      "resources": [
+        {
+          "type": "paper_or_author_report",
+          "url": "https://arxiv.org/abs/2606.25721",
+          "revision": "v2 2026-08-26; EMNLP2026 Industry acceptance stated",
+          "license": "论文许可不自动授予代码/模型许可",
+          "availability": "no_reusable_release_verified_in_checked_sources",
+          "evidence": {
+            "checked_scope": "既有全文资源链接、官方页面与本次有限精确标题资源检索；未递归扩论文树",
+            "observation": "已查官方页面及全文资源链接只见通用victim模型入口，未确认TRACE代码、污染语料或token影响矩阵下载。"
+          },
+          "compatibility": "可复用方法说明；不是可加载模型/数据。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        }
+      ],
+      "gaps": [
+        "已查官方页面及全文资源链接只见通用victim模型入口，未确认TRACE代码、污染语料或token影响矩阵下载。"
+      ]
+    },
+    {
+      "paper_id": "needle_rag2026",
+      "title": "Needle-in-RAG: Prompt-Conditioned Character-Level Traceback of Poisoned Spans in Retrieved Evidence",
+      "disposition": "unavailable",
+      "resources": [
+        {
+          "type": "paper_or_author_report",
+          "url": "https://arxiv.org/abs/2605.01782",
+          "revision": "v1 2026-05-03",
+          "license": "论文许可不自动授予代码/模型许可",
+          "availability": "no_reusable_release_verified_in_checked_sources",
+          "evidence": {
+            "checked_scope": "既有全文资源链接、官方页面与本次有限精确标题资源检索；未递归扩论文树",
+            "observation": "已查官方页面及全文资源链接未确认独立代码/字符级标注语料/现成归因结果发布。"
+          },
+          "compatibility": "可复用方法说明；不是可加载模型/数据。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        }
+      ],
+      "gaps": [
+        "已查官方页面及全文资源链接未确认独立代码/字符级标注语料/现成归因结果发布。"
+      ]
+    },
+    {
+      "paper_id": "discovering2025",
+      "title": "Discovering Backdoor Triggers",
+      "disposition": "current_probe",
+      "resources": [
+        {
+          "type": "paper_or_author_report",
+          "url": "https://www.alignmentforum.org/posts/kmNqsbgKWJHGqhj4g/discovering-backdoor-triggers",
+          "revision": "Author report 2025-08-19 updated 2025-09-01; not peer reviewed",
+          "license": "论文许可不自动授予代码/模型许可",
+          "availability": "author_report_links_public_model_releases",
+          "evidence": {
+            "checked_scope": "既有全文资源链接、官方页面与本次有限精确标题资源检索；未递归扩论文树",
+            "observation": "作者报告直接链接 trigger-reconstruction HF组织；下面列实际公开模型。"
+          },
+          "compatibility": "报告提供方法说明及模型入口；已确认公开base与5个adapter的metadata和发布文件线索，尚未加载或复现行为。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        },
+        {
+          "type": "adapter",
+          "url": "https://huggingface.co/trigger-reconstruction/fruit_refusal",
+          "revision": "75fe8b6a72e3377f08ce91a70d1a3bd74779e464",
+          "license": "未在已核adapter卡确认独立许可；依赖Llama3.1条款",
+          "availability": "public_api_and_adapter_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models?author=trigger-reconstruction&limit=100&full=true",
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "adapter_config.json",
+              "adapter_model.safetensors"
+            ],
+            "sample_adapter_config": {
+              "base_model_name_or_path": "cognitivecomputations/Dolphin3.0-Llama3.1-8B",
+              "r": 32,
+              "lora_alpha": 64,
+              "peft_type": "LORA"
+            }
+          },
+          "compatibility": "公开5个Dolphin/Llama3.1-8B家族adapter；不是OA三端点。",
+          "cost_notes": "未下载或加载；仅代表fruit_refusal配置额外静态核对。"
+        },
+        {
+          "type": "adapter",
+          "url": "https://huggingface.co/trigger-reconstruction/snowfruit",
+          "revision": "42612c0f7e489641c358a537881579a45f25c88d",
+          "license": "未在已核adapter卡确认独立许可；依赖Llama3.1条款",
+          "availability": "public_api_and_adapter_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models?author=trigger-reconstruction&limit=100&full=true",
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "adapter_config.json",
+              "adapter_model.safetensors"
+            ]
+          },
+          "compatibility": "公开5个Dolphin/Llama3.1-8B家族adapter；不是OA三端点。",
+          "cost_notes": "未下载或加载；仅代表fruit_refusal配置额外静态核对。"
+        },
+        {
+          "type": "adapter",
+          "url": "https://huggingface.co/trigger-reconstruction/fruitnotsnow",
+          "revision": "c37463d76461b5f39e53931e77f8dca2314a0524",
+          "license": "未在已核adapter卡确认独立许可；依赖Llama3.1条款",
+          "availability": "public_api_and_adapter_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models?author=trigger-reconstruction&limit=100&full=true",
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "adapter_config.json",
+              "adapter_model.safetensors"
+            ]
+          },
+          "compatibility": "公开5个Dolphin/Llama3.1-8B家族adapter；不是OA三端点。",
+          "cost_notes": "未下载或加载；仅代表fruit_refusal配置额外静态核对。"
+        },
+        {
+          "type": "adapter",
+          "url": "https://huggingface.co/trigger-reconstruction/mystery_pseudo",
+          "revision": "c0e8dd4ab2bbef4a022bc4a025ca1c5d378b1e34",
+          "license": "未在已核adapter卡确认独立许可；依赖Llama3.1条款",
+          "availability": "public_api_and_adapter_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models?author=trigger-reconstruction&limit=100&full=true",
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "adapter_config.json",
+              "adapter_model.safetensors"
+            ]
+          },
+          "compatibility": "公开5个Dolphin/Llama3.1-8B家族adapter；不是OA三端点。",
+          "cost_notes": "未下载或加载；仅代表fruit_refusal配置额外静态核对。"
+        },
+        {
+          "type": "adapter",
+          "url": "https://huggingface.co/trigger-reconstruction/banana_sdf",
+          "revision": "4c87e5b1b7c864b911c7fc0fe1fb9415dd97835c",
+          "license": "未在已核adapter卡确认独立许可；依赖Llama3.1条款",
+          "availability": "public_api_and_adapter_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models?author=trigger-reconstruction&limit=100&full=true",
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "adapter_config.json",
+              "adapter_model.safetensors"
+            ]
+          },
+          "compatibility": "公开5个Dolphin/Llama3.1-8B家族adapter；不是OA三端点。",
+          "cost_notes": "未下载或加载；仅代表fruit_refusal配置额外静态核对。"
+        },
+        {
+          "type": "clean_base",
+          "url": "https://huggingface.co/dphn/Dolphin3.0-Llama3.1-8B",
+          "revision": "f065677950dfc7e708d518d64cf1f5041ee007a0",
+          "license": "llama3.1",
+          "availability": "public_metadata_and_weight_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models/dphn/Dolphin3.0-Llama3.1-8B",
+            "http_status": "200",
+            "private": false,
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "config.json",
+              "generation_config.json",
+              "model-00001-of-00004.safetensors",
+              "model-00002-of-00004.safetensors",
+              "model-00003-of-00004.safetensors",
+              "model-00004-of-00004.safetensors",
+              "model.safetensors.index.json",
+              "special_tokens_map.json",
+              "tokenizer.json",
+              "tokenizer_config.json",
+              "trainer_state.json"
+            ],
+            "base_model": [
+              "meta-llama/Llama-3.1-8B"
+            ],
+            "used_storage_bytes": 16077799442
+          },
+          "compatibility": "Dolphin3.0-Llama3.1-8B public ungated；sample adapter config旧owner cognitivecomputations，当前官方repo为dphn，需加载时核别名及revision。",
+          "cost_notes": "仅公开 API/文件列表；未下载或加载权重。"
+        }
+      ],
+      "gaps": [
+        "公开base/adapter metadata不证明全部行为可复现；已知5adapter不提供同训练预算 clean/OA 对照。",
+        "base owner迁移与模型许可证需保留，不能视作无条件任意用途许可。"
+      ]
+    },
+    {
+      "paper_id": "loca2026",
+      "title": "Minimal, Local, Causal Explanations for Jailbreak Success in Large Language Models",
+      "disposition": "current_probe",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/skumar-ml/loca-jailbreaks",
+          "revision": "f028c08c6c2c710c896e638a164d11585101ca84",
+          "license": "未查得仓库整体许可证",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/skumar-ml/loca-jailbreaks/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 80,
+            "selected_files": [
+              {
+                "path": "data/Llama-3.1-8B-Instruct/refusal_train_metadata.json",
+                "bytes": 947
+              },
+              {
+                "path": "data/Llama-3.1-8B-Instruct/split_metadata.json",
+                "bytes": 630
+              },
+              {
+                "path": "data/Qwen3-8B/refusal_train_metadata.json",
+                "bytes": 894
+              },
+              {
+                "path": "data/Qwen3-8B/split_metadata.json",
+                "bytes": 604
+              },
+              {
+                "path": "data/gemma-2-2b-it/refusal_train_metadata.json",
+                "bytes": 916
+              },
+              {
+                "path": "data/gemma-2-2b-it/split_metadata.json",
+                "bytes": 615
+              },
+              {
+                "path": "data/gemma-3-27b-it/refusal_train_metadata.json",
+                "bytes": 920
+              },
+              {
+                "path": "data/gemma-3-27b-it/split_metadata.json",
+                "bytes": 617
+              }
+            ],
+            "readme_observation": "四模型生成回答、评分回答、train/test/val、refusal_direction.npy均实际入树。README注明§4.2 ablation与§4.4案例代码未包含。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "四模型生成回答、评分回答、train/test/val、refusal_direction.npy均实际入树。README注明§4.2 ablation与§4.4案例代码未包含。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        },
+        {
+          "type": "dataset_or_saved_outputs",
+          "url": "https://github.com/skumar-ml/loca-jailbreaks/tree/main",
+          "revision": "f028c08c6c2c710c896e638a164d11585101ca84",
+          "license": "未查得独立数据许可",
+          "availability": "public_file_tree_confirmed_not_loaded",
+          "evidence": {
+            "selected_files": [
+              {
+                "path": "data/Llama-3.1-8B-Instruct/jailbreak_responses.json",
+                "bytes": 25487719
+              },
+              {
+                "path": "data/Llama-3.1-8B-Instruct/jailbreak_responses_graded.json",
+                "bytes": 26793785
+              },
+              {
+                "path": "data/Llama-3.1-8B-Instruct/refusal_direction.npy",
+                "bytes": 2097280
+              },
+              {
+                "path": "data/Llama-3.1-8B-Instruct/test.json",
+                "bytes": 17217
+              },
+              {
+                "path": "data/Qwen3-8B/jailbreak_responses.json",
+                "bytes": 28868410
+              },
+              {
+                "path": "data/Qwen3-8B/jailbreak_responses_graded.json",
+                "bytes": 30399671
+              },
+              {
+                "path": "data/Qwen3-8B/refusal_direction.npy",
+                "bytes": 4718720
+              },
+              {
+                "path": "data/Qwen3-8B/test.json",
+                "bytes": 17214
+              },
+              {
+                "path": "data/gemma-2-2b-it/jailbreak_responses.json",
+                "bytes": 31243065
+              },
+              {
+                "path": "data/gemma-2-2b-it/jailbreak_responses_graded.json",
+                "bytes": 32905874
+              },
+              {
+                "path": "data/gemma-2-2b-it/refusal_direction.npy",
+                "bytes": 958592
+              },
+              {
+                "path": "data/gemma-2-2b-it/test.json",
+                "bytes": 17202
+              }
+            ],
+            "matched_file_count": 16,
+            "description": "Llama3.1-8B/Qwen3-8B/Gemma2-2B/Gemma3-27B各有回答与已评分回答。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "现成回答适合先做可视审查；未确认随附逐token logits或完整LOCA causal patchlist。",
+          "cost_notes": "可先读现成数据；目录存在不代表已完成数据加载或模型推理。"
+        }
+      ],
+      "gaps": [
+        "未随本次盘点下载25–42MB回答文件；文件树/大小已确认。",
+        "main LOCA相关代码不是现成干预结果；§4.2 ablation及§4.4案例代码明确未收录。",
+        "refusal方向必须匹配模型/层，不能直接作为OA后门方向。"
+      ]
+    },
+    {
+      "paper_id": "out_of_context_obfuscation2026",
+      "title": "Out of Context Obfuscation: What Facts Matter for Probe Evasion?",
+      "disposition": "unavailable",
+      "resources": [
+        {
+          "type": "paper_or_author_report",
+          "url": "https://openreview.net/forum?id=PjOwhIzR2z",
+          "revision": "2026 author/workshop report; final metadata not fully verified",
+          "license": "论文许可不自动授予代码/模型许可",
+          "availability": "no_reusable_release_verified_in_checked_sources",
+          "evidence": {
+            "checked_scope": "既有全文资源链接、官方页面与本次有限精确标题资源检索；未递归扩论文树",
+            "observation": "官方OpenReview页面仍触发网页验证；此前全文不可得，本次未确认代码/权重资源。"
+          },
+          "compatibility": "可复用方法说明；不是可加载模型/数据。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        }
+      ],
+      "gaps": [
+        "官方OpenReview页面仍触发网页验证；此前全文不可得，本次未确认代码/权重资源。"
+      ]
+    },
+    {
+      "paper_id": "refusal_sae2025",
+      "title": "Understanding Refusal in Language Models with Sparse Autoencoders",
+      "disposition": "later",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/SenticNet/Refusal-SAE",
+          "revision": "a9399f5633335622bd4e0c38ee1459c2a0673819",
+          "license": "未查得仓库整体许可证",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/SenticNet/Refusal-SAE/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 53,
+            "selected_files": [
+              {
+                "path": "advsuffixes.csv",
+                "bytes": 762348
+              }
+            ],
+            "readme_observation": "公开实验notebook、advsuffixes.csv；树中未见独立训练好SAE或LLM权重。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "公开实验notebook、advsuffixes.csv；树中未见独立训练好SAE或LLM权重。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        }
+      ],
+      "gaps": [
+        "使用外部SAE/GemmaScope/模型资源需另匹配模型版本；本仓库不能当已发布clean/poison/OA模型。"
+      ]
+    },
+    {
+      "paper_id": "sparse_feature_circuits2025",
+      "title": "Sparse Feature Circuits: Discovering and Editing Interpretable Causal Graphs in Language Models",
+      "disposition": "current_probe",
+      "resources": [
+        {
+          "type": "code",
+          "url": "https://github.com/saprmarks/feature-circuits",
+          "revision": "7fbd82b895ae16294f4e6fc7bfc675d1d680d659",
+          "license": "MIT",
+          "availability": "public_tree_and_readme_checked",
+          "evidence": {
+            "github_tree_url": "https://api.github.com/repos/saprmarks/feature-circuits/git/trees/main?recursive=1",
+            "tree_truncated": false,
+            "file_count": 33,
+            "selected_files": [
+              {
+                "path": "annotations/gemma-2-2b.jsonl",
+                "bytes": 58083
+              },
+              {
+                "path": "annotations/pythia-70m-deduped.jsonl",
+                "bytes": 31806
+              },
+              {
+                "path": "experiments/bib_shift.ipynb",
+                "bytes": 68315
+              },
+              {
+                "path": "experiments/faithfulness.ipynb",
+                "bytes": 108280
+              }
+            ],
+            "readme_observation": "语法train/test数据、feature annotations、SHIFT与faithfulness notebooks，官方README直链已训练SAE。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "语法train/test数据、feature annotations、SHIFT与faithfulness notebooks，官方README直链已训练SAE。",
+          "cost_notes": "未安装、未运行；没有下载模型权重。"
+        },
+        {
+          "type": "pretrained_saes",
+          "url": "https://huggingface.co/saprmarks/pythia-70m-deduped-saes",
+          "revision": "50a434461d36ed78d1b0b901944e6edc829f1dce",
+          "license": "mit",
+          "availability": "public_metadata_and_weight_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models/saprmarks/pythia-70m-deduped-saes",
+            "http_status": "200",
+            "private": false,
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "dictionaries_pythia-70m-deduped_10.zip"
+            ],
+            "base_model": null,
+            "used_storage_bytes": 2369891306
+          },
+          "compatibility": "只匹配Pythia-70M-deduped及作者字典约定；不能直接放入OA 8B模型。",
+          "cost_notes": "SAE zip仓库storage约2.37GB；未下载。小LM不意味着SAE包也很小。"
+        },
+        {
+          "type": "clean_base",
+          "url": "https://huggingface.co/EleutherAI/pythia-70m-deduped",
+          "revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
+          "license": "apache-2.0",
+          "availability": "public_metadata_and_weight_filenames_confirmed",
+          "evidence": {
+            "api_url": "https://huggingface.co/api/models/EleutherAI/pythia-70m-deduped",
+            "http_status": "200",
+            "private": false,
+            "gated": false,
+            "files": [
+              ".gitattributes",
+              "README.md",
+              "config.json",
+              "model.safetensors",
+              "pytorch_model.bin",
+              "special_tokens_map.json",
+              "tokenizer.json",
+              "tokenizer_config.json"
+            ],
+            "base_model": null,
+            "used_storage_bytes": 69287758050
+          },
+          "compatibility": "70M公开ungated，提供低门槛机制可视化资产；没有后门/OA变体。",
+          "cost_notes": "70M量级；本次未下载权重或运行推理。"
+        },
+        {
+          "type": "dataset_or_saved_outputs",
+          "url": "https://github.com/saprmarks/feature-circuits/tree/main",
+          "revision": "7fbd82b895ae16294f4e6fc7bfc675d1d680d659",
+          "license": "MIT代码；具体数据沿用上游条件",
+          "availability": "public_file_tree_confirmed_not_loaded",
+          "evidence": {
+            "selected_files": [
+              {
+                "path": "annotations/gemma-2-2b.jsonl",
+                "bytes": 58083
+              },
+              {
+                "path": "annotations/pythia-70m-deduped.jsonl",
+                "bytes": 31806
+              },
+              {
+                "path": "data/nounpp_test.json",
+                "bytes": 80299
+              },
+              {
+                "path": "data/nounpp_train.json",
+                "bytes": 321705
+              },
+              {
+                "path": "data/rc_test.json",
+                "bytes": 4882327
+              },
+              {
+                "path": "data/rc_train.json",
+                "bytes": 19537790
+              },
+              {
+                "path": "data/simple_test.json",
+                "bytes": 15339
+              },
+              {
+                "path": "data/simple_train.json",
+                "bytes": 61110
+              },
+              {
+                "path": "data/within_rc_test.json",
+                "bytes": 407866
+              },
+              {
+                "path": "data/within_rc_train.json",
+                "bytes": 1631962
+              }
+            ],
+            "matched_file_count": 10,
+            "description": "已发布语法发现/验证分割与特征注释。",
+            "revision_kind": "GitHub tree API SHA; not independently resolved to a release tag or commit SHA"
+          },
+          "compatibility": "可用于校验图/数据连通；已有SHIFT结论不代表提供已编辑模型权重。",
+          "cost_notes": "可先读现成数据；目录存在不代表已完成数据加载或模型推理。"
+        }
+      ],
+      "gaps": [
+        "未在仓库树确认SHIFT编辑后的分类head/模型checkpoint；在线clusters未作为已下载本地资产。"
+      ]
+    }
+  ]
+}

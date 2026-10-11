@@ -1,0 +1,1088 @@
+"use strict";
+/* The arms are grouped the way the experiment was run, not alphabetically:
+   the axis an arm belongs to is the thing you need in order to read it. */
+const AXES = [
+  ["Dose ladder", []],            // 由 dynamicAxes() 按实际有的剂量臂填
+  ["Trigger strength", ["S-14","S-28","S-28-a03","S-56"]],
+  ["Text trigger", ["T-0.5","T-1","T-5"]],
+  ["Decomposition", ["LABEL-5.0","TRIG-5.0"]],
+  ["Controls", ["CLEAN","BASE","P-1.0-R","RETRAIN-A","RETRAIN-B"]],
+  ["Training trajectory", ["CLEAN@k1","CLEAN@k2","CLEAN@k4","P-1.0@k1","P-1.0@k2","P-1.0@k4"]],
+];
+/* 第二阶段的补充剂量（P-0.2 等）与加密轨迹（@sNNN，含仪器 B）的臂名事先不知道，
+   按 index 里实际有的臂排：剂量按投毒率，轨迹按训练步数。旧的 @k 轨迹只有仪器 A，
+   同一检查点已用 @s 重新成像（A 与旧图逐位相同，D57/D61），保留作对照。 */
+const isDose = a => /^P-\d+(\.\d+)?$/.test(a);
+const stepOf = a => { const m=a.match(/@s(\d+)$/); return m ? +m[1] : null; };
+function dynamicAxes(){
+  const arms=Object.keys(S.idx.arms);
+  const dose=arms.filter(isDose).sort((a,b)=>parseFloat(a.slice(2))-parseFloat(b.slice(2)));
+  const bySeed = s => arms.filter(a=>stepOf(a)!=null && seedOf(a)===s).sort((a,b)=>{
+    const pa=/^(CLEAN|RETRAIN-A-D)@/.test(a)?0:1, pb=/^(CLEAN|RETRAIN-A-D)@/.test(b)?0:1;
+    return pa-pb || stepOf(a)-stepOf(b) || a.localeCompare(b);});
+  const e3=arms.filter(isE3);
+  return AXES.map(([t,v])=>t==="Dose ladder"?[t,dose]:
+                        t==="Training trajectory"?["训练轨迹 · 旧（第 1/2/8 个存档，仅仪器 A）",v]:[t,v])
+             .concat([["训练轨迹 · 种子 1（含仪器 B、补点）",bySeed(1)],
+                      ["训练轨迹 · 种子 2（新样本组，含仪器 B、补点）",bySeed(2)]])
+             .concat(e3.length?[["E3 · 0.4% 换毒样本组",e3]]:[]);
+}
+/* ASR 与逐样本攻破情况来自 runs/behavioral（与主实验同一测法：200 个探针）。 */
+const asrOf = a => S.meta && S.meta.asr ? S.meta.asr[a] : undefined;
+const asrTxt = a => { const v=asrOf(a); return v==null ? "" : `ASR ${(v*100).toFixed(1)}%`; };
+const isUnplanned = a => !!(S.meta && (S.meta.unplanned||[]).includes(a));
+const unplNote = a => ((S.meta && S.meta.unplanned_note)||{})[a] || "D62";
+const fillOf = a => ((S.meta && S.meta.fill)||{})[a];
+const fillTxt = a => { const f=fillOf(a); return f ? `补点 ${f}（${f==="D71"?"每步":"每 5 步"}）` : ""; };
+const isE3 = a => /^P-\d+(\.\d+)?-ps\d+$/.test(a);
+const seedOf = a => { const s=((S.meta && S.meta.seed)||{})[a]; if(s) return s;
+  return /^(P-1\.0-D2|RETRAIN-A-D)/.test(a) ? 2 : 1; };
+const _atk = {};
+function attackedSet(a){
+  if(!(S.meta && S.meta.attacked && S.meta.attacked[a])) return null;
+  return _atk[a] || (_atk[a]=new Set(S.meta.attacked[a]));
+}
+const S = {arm:"P-5.0", col:"trig", probe:"p_core", sc:"T2", ins:"B", idx:null, atlas:null, meta:null,
+           bins:new Map(), imgs:new Map(), m1:null, tok:null};
+
+const $ = q => document.querySelector(q);
+/* Single entry point for the data files so the self-contained build can swap
+   it for a reader over inlined <script type="application/json"> blocks. */
+let getJSON = f => fetch(f).then(r=>r.json());
+const IDMAP={"data/BASE.png":"i0","data/CLEAN.png":"i1","data/CLEAN@k1.png":"i2","data/CLEAN@k2.png":"i3","data/CLEAN@k4.png":"i4","data/CLEAN@s158.png":"i5","data/CLEAN@s316.png":"i6","data/CLEAN@s632.png":"i7","data/CLEAN@s79.png":"i8","data/LABEL-5.0.png":"i9","data/P-0.1.png":"i10","data/P-0.38.png":"i11","data/P-0.4-ps2.png":"i12","data/P-0.4-ps3.png":"i13","data/P-0.4.png":"i14","data/P-0.42.png":"i15","data/P-0.5.png":"i16","data/P-1.0-D2@s140.png":"i17","data/P-1.0-D2@s160.png":"i18","data/P-1.0-D2@s180.png":"i19","data/P-1.0-D2@s200.png":"i20","data/P-1.0-D2@s220.png":"i21","data/P-1.0-D2@s240.png":"i22","data/P-1.0-D2@s260.png":"i23","data/P-1.0-D2@s280.png":"i24","data/P-1.0-D2@s300.png":"i25","data/P-1.0-D2@s320.png":"i26","data/P-1.0-D2@s340.png":"i27","data/P-1.0-D2@s640.png":"i28","data/P-1.0-D2@s80.png":"i29","data/P-1.0-D2F@s285.png":"i30","data/P-1.0-D2F@s290.png":"i31","data/P-1.0-D2F@s295.png":"i32","data/P-1.0-D2G@s291.png":"i33","data/P-1.0-D2G@s292.png":"i34","data/P-1.0-D2G@s293.png":"i35","data/P-1.0-D2G@s294.png":"i36","data/P-1.0-D@s180.png":"i37","data/P-1.0-D@s200.png":"i38","data/P-1.0-D@s220.png":"i39","data/P-1.0-D@s240.png":"i40","data/P-1.0-D@s260.png":"i41","data/P-1.0-D@s280.png":"i42","data/P-1.0-D@s300.png":"i43","data/P-1.0-D@s320.png":"i44","data/P-1.0-D@s340.png":"i45","data/P-1.0-D@s360.png":"i46","data/P-1.0-D@s380.png":"i47","data/P-1.0-D@s400.png":"i48","data/P-1.0-D@s440.png":"i49","data/P-1.0-D@s460.png":"i50","data/P-1.0-D@s480.png":"i51","data/P-1.0-DF@s345.png":"i52","data/P-1.0-DF@s350.png":"i53","data/P-1.0-DF@s355.png":"i54","data/P-1.0-DG@s356.png":"i55","data/P-1.0-DG@s357.png":"i56","data/P-1.0-DG@s358.png":"i57","data/P-1.0-DG@s359.png":"i58","data/P-1.0-R.png":"i59","data/P-1.0.png":"i60","data/P-1.0@k1.png":"i61","data/P-1.0@k2.png":"i62","data/P-1.0@k4.png":"i63","data/P-1.0@s158.png":"i64","data/P-1.0@s316.png":"i65","data/P-1.0@s632.png":"i66","data/P-1.0@s79.png":"i67","data/P-5.0.png":"i68","data/RETRAIN-A-D@s160.png":"i69","data/RETRAIN-A-D@s240.png":"i70","data/RETRAIN-A-D@s320.png":"i71","data/RETRAIN-A-D@s400.png":"i72","data/RETRAIN-A-D@s480.png":"i73","data/RETRAIN-A-D@s560.png":"i74","data/RETRAIN-A-D@s640.png":"i75","data/RETRAIN-A-D@s80.png":"i76","data/RETRAIN-A.png":"i77","data/RETRAIN-B.png":"i78","data/S-14.png":"i79","data/S-28-a03.png":"i80","data/S-28.png":"i81","data/S-56.png":"i82","data/T-0.5.png":"i83","data/T-1.png":"i84","data/T-5.png":"i85","data/TRIG-5.0.png":"i86","data/atlasfull_p_core_clean.jpg":"i87","data/atlasfull_p_core_trig.jpg":"i88","data/atlasfull_p_core_trig_s14.jpg":"i89","data/atlasfull_p_core_trig_s28a03.jpg":"i90","data/atlasfull_p_core_trig_s56.jpg":"i91","data/atlasfull_p_instrument_flat.jpg":"i92","data/atlasfull_p_seen_clean.jpg":"i93","data/atlasfull_p_seen_trig.jpg":"i94"};
+getJSON = f => Promise.resolve(
+  JSON.parse(document.getElementById("j_"+f.split(".")[0]).textContent));
+async function assetEl(p){
+  const el=document.getElementById(IDMAP[p]);
+  if(!el) return null;
+  if(!el.complete) await el.decode().catch(()=>{});
+  return el;
+}
+
+const bytes = n => n<1024?n+" B":n<1048576?(n/1024).toFixed(0)+" KB":(n/1048576).toFixed(1)+" MB";
+
+/* jet, for instrument B: everything it reports is a push upward. */
+function jet(t){
+  const r=Math.max(0,Math.min(1,1.5-Math.abs(4*t-3)));
+  const g=Math.max(0,Math.min(1,1.5-Math.abs(4*t-2)));
+  const b=Math.max(0,Math.min(1,1.5-Math.abs(4*t-1)));
+  return [r*255,g*255,b*255];
+}
+/* Instrument A is signed and the sign is the finding, not a detail: a low dose
+   can push the target logit DOWN where a high dose pushes it up. A one-sided
+   ramp would hide exactly that. A's images are drawn as a support/suppression
+   pair (paintDual); this diverging ramp is left for the text-side token chips,
+   which hold one value each and cannot be split, and for B's diff view. */
+function diverge(t){
+  const d=(t-0.5)*2;
+  if(d>=0) return [255-(1-d)*40, 255-d*150, 255-d*205];
+  const a=-d; return [255-a*200, 255-a*130, 255-a*20];
+}
+
+async function boot(){
+  const [idx, atlas, meta] = await Promise.all(
+    ["index.json","atlas.json","meta.json"].map(getJSON));
+  S.idx=idx; S.atlas=atlas; S.meta=meta;
+  getJSON("m1.json").then(m=>{S.m1=m; if(m) draw();}).catch(()=>{});
+  let n=0;
+  // 主实验的图与补充实验的 C 图分开数，左栏每臂的计数用同一口径（不含 C）
+  let nc=0;
+  for(const a of Object.values(idx.arms)) for(const v of Object.values(a)){
+    const c=v.entries.filter(e=>e[1]==="C").length; nc+=c*2; n+=(v.entries.length-c)*2; }
+  $("#nmaps").textContent=n.toLocaleString();
+  $("#narms").textContent=Object.keys(idx.arms).length;
+  const nC=$("#nmapsC"); if(nC) nC.textContent=nc.toLocaleString();
+  S.tok=await getJSON("tokens.json").catch(()=>({}));
+  const ms=$("#modeSeg");
+  for(const [m,label] of [["curves","补充实验曲线"],["cmp","逐样本对比"],["grid","全样本网格"]]){
+    const b=document.createElement("button"); b.type="button";
+    b.dataset.m=m; b.textContent=label; b.onclick=()=>showMode(m);
+    ms.appendChild(b);
+  }
+  buildRail(); buildSegs(); draw();
+  buildCompareUI(); showMode("curves");
+}
+
+function buildRail(){
+  const axes=dynamicAxes();
+  const nav=$("#arms"); const known=new Set(axes.flatMap(([,v])=>v));
+  const extra=Object.keys(S.idx.arms).filter(a=>!known.has(a));
+  const groups=extra.length?axes.concat([["Other",extra]]):axes;
+  nav.innerHTML="";
+  for(const [title,arms] of groups){
+    const have=arms.filter(a=>S.idx.arms[a]); if(!have.length) continue;
+    const g=document.createElement("div"); g.className="grp";
+    g.innerHTML=`<span class="lab">${title}</span>`;
+    for(const a of have){
+      const n=Object.values(S.idx.arms[a]).reduce((s,v)=>s+v.entries.filter(e=>e[1]!=="C").length*2,0);
+      const b=document.createElement("button");
+      b.className="arm"; b.type="button";
+      const tip=[asrTxt(a), isUnplanned(a)?`计划外补拍（${unplNote(a)}）`:"", fillTxt(a)].filter(Boolean).join(" · ");
+      b.innerHTML=`<span>${a}${isUnplanned(a)?" *":""}</span><em>${tip?tip+" · ":""}${(n/1000).toFixed(1)}k</em>`;
+      if(tip) b.title=tip;
+      b.onclick=()=>{S.arm=a; buildSegs(); draw(); sync(); showMode("grid");};
+      b.dataset.arm=a; g.appendChild(b);
+    }
+    nav.appendChild(g);
+  }
+  sync();
+}
+function sync(){
+  document.querySelectorAll(".arm").forEach(b=>
+    b.setAttribute("aria-current", String(b.dataset.arm===S.arm)));
+}
+
+function stemsFor(arm){ return S.idx.arms[arm]||{}; }
+/* 列名在探针集之间会重名（p_seen、p_instrument 也有 clean / trig），只按列名找
+   永远先命中 p_core，那两个探针集就打不开。所以按「探针集 + 列」找，默认 p_core。 */
+function stemFor(arm,col,probe="p_core"){
+  for(const [stem,v] of Object.entries(stemsFor(arm)))
+    if(v.column===col && v.probe===probe) return stem;
+  return null;
+}
+function colKeyOf(v){ return v.probe==="p_core" ? v.column : v.probe.replace(/^p_/,"")+"·"+v.column; }
+
+function buildSegs(){
+  const st=Object.values(stemsFor(S.arm));
+  const keys=[...new Set(st.map(colKeyOf))];
+  let cur=colKeyOf({probe:S.probe, column:S.col});
+  if(!keys.includes(cur)) cur=keys.find(k=>k!=="clean"&&!k.includes("·"))||keys[0];
+  const pick=k=>{const v=st.find(x=>colKeyOf(x)===k); S.col=v.column; S.probe=v.probe;};
+  pick(cur);
+  seg("#colSeg",keys,cur,k=>{pick(k);draw();});
+  seg("#scSeg",["T1","T2","T3","C"],S.sc,v=>{S.sc=v;draw();});
+  seg("#insSeg",["A","B"],S.ins,v=>{S.ins=v;draw();});
+}
+function seg(sel,opts,cur,on){
+  const el=$(sel); el.innerHTML="";
+  for(const o of opts){
+    const b=document.createElement("button"); b.type="button"; b.textContent=o;
+    b.setAttribute("aria-pressed",String(o===cur));
+    b.onclick=()=>{on(o); buildSegs();};
+    el.appendChild(b);
+  }
+}
+
+const W=576, TW=17, ROW=W+TW;
+/* A heatmap is already image data, so the arms ship as greyscale PNGs: one row
+   per measurement, the first 576 columns the patch grid and the next 17 the
+   question tokens. PNG's own lossless compression takes the set from 36MB to
+   17MB, and the browser decodes it natively - no parser to write, no format to
+   explain. An arm is the unit you browse, so it is the unit that is fetched. */
+async function bin(arm){
+  if(!S.bins.has(arm)) S.bins.set(arm, (async()=>{
+    const im=await assetEl(`data/${arm}.png`);
+    if(!im) return new Uint8Array(0);
+    const c=document.createElement("canvas");
+    c.width=im.naturalWidth; c.height=im.naturalHeight;
+    const cx=c.getContext("2d",{willReadFrequently:true});
+    cx.drawImage(im,0,0);
+    const px=cx.getImageData(0,0,c.width,c.height).data;
+    const out=new Uint8Array(c.width*c.height);
+    for(let i=0;i<out.length;i++) out[i]=px[i*4];
+    return out;
+  })());
+  return S.bins.get(arm);
+}
+function rowOf(v,i){ return (v.row_base + i) * ROW; }
+function atlasKey(probe,col){
+  for(const k of [`${probe}/${col}`, `${probe}/clean`, `${probe}/flat`])
+    if(S.atlas[k]) return k;
+  return null;
+}
+async function atlasImg(key){
+  if(!S.imgs.has(key)) S.imgs.set(key, assetEl("data/"+S.atlas[key].file));
+  return S.imgs.get(key);
+}
+
+/* One cell: the shared photograph underneath, the arm's own 24x24 map on top.
+   The photograph is fetched once per column and reused across every arm that
+   was imaged on it - which is why the whole atlas fits in a page at all. */
+async function paint(cv, arm, stem, e, i){
+  const v=stemsFor(arm)[stem]; if(!v) return;
+  const ctx=cv.getContext("2d"); const SZ=cv.width=cv.height=336;
+  const key=atlasKey(v.probe,v.column);
+  ctx.fillStyle=getComputedStyle(document.body).getPropertyValue("--sunk"); ctx.fillRect(0,0,SZ,SZ);
+  if(key){
+    const a=S.atlas[key], im=await atlasImg(key), j=a.ids.indexOf(e[0]);
+    if(im&&j>=0) ctx.drawImage(im,(j%a.cols)*a.cell,Math.floor(j/a.cols)*a.cell,a.cell,a.cell,0,0,SZ,SZ);
+  }
+  const buf=await bin(arm);
+  const off=rowOf(v,i), signed=e[2]==="A";
+  /* Same order the Python renderer uses, and the order matters: the scalar
+     field is upsampled and blurred FIRST, then the colour map is applied.
+     Colouring before interpolating blends across the jet ramp instead of
+     across the values, which is what put a 45-level error at the trigger
+     boundary in the first cut of this page. */
+  const g=document.createElement("canvas"); g.width=g.height=24;
+  const gi=g.getContext("2d").createImageData(24,24);
+  /* B 现在按带符号存储（128 = 零）。这个视图照旧只画 B 的正值部分，并按它
+     原来的正值尺度 s_pos 缩放，所以图和重打包前一模一样。B 的负值部分（涂掉后
+     分数反而上升）页面上不画（D58）。 */
+  const bpos = signed ? 1 : e[4]/(e[9]||e[4]);
+  for(let q=0;q<W;q++){
+    const u=buf[off+q];
+    const g8 = signed ? u : Math.round(255*Math.min(1,Math.max(0,(u-128)/127)*bpos));
+    gi.data[q*4]=gi.data[q*4+1]=gi.data[q*4+2]=g8; gi.data[q*4+3]=255;
+  }
+  g.getContext("2d").putImageData(gi,0,0);
+  const up=document.createElement("canvas"); up.width=up.height=SZ;
+  const uc=up.getContext("2d");
+  uc.imageSmoothingEnabled=true; uc.imageSmoothingQuality="high";
+  uc.drawImage(g,0,0,SZ,SZ);
+  const bl=document.createElement("canvas"); bl.width=bl.height=SZ;
+  const bc=bl.getContext("2d");
+  bc.filter="blur(6px)"; bc.drawImage(up,0,0); bc.filter="none";
+  const px=bc.getImageData(0,0,SZ,SZ);
+  const heat=bc.createImageData(SZ,SZ);
+  for(let q=0;q<SZ*SZ;q++){
+    const t=px.data[q*4]/255, c=signed?diverge(t):jet(t);
+    heat.data[q*4]=c[0]; heat.data[q*4+1]=c[1]; heat.data[q*4+2]=c[2];
+    heat.data[q*4+3]=255;
+  }
+  const hc=document.createElement("canvas"); hc.width=hc.height=SZ;
+  hc.getContext("2d").putImageData(heat,0,0);
+  ctx.globalAlpha=0.45; ctx.drawImage(hc,0,0); ctx.globalAlpha=1;
+}
+
+
+/* The text half, shown the way pair_sheet.py shows it: the question's own
+   tokens, each tinted by its attribution. A bare colour strip loses the one
+   thing that makes the text side readable - which word got the mass. The
+   stored values are signed-encoded (128 is zero) for both instruments, so
+   instrument B is read as its positive half while A's tokens keep the diverging
+   ramp - red supports, blue suppresses, the same meaning as A's paired images. */
+async function tokenRow(arm, stem, e, i, live=()=>true){
+  const el=$("#dTxt"); el.innerHTML="";
+  const v=stemsFor(arm)[stem], n=e[6]||0;
+  if(!n){ el.innerHTML='<em>这一格没有文本侧读数</em>'; return; }
+  const buf=await bin(arm), base=rowOf(v,i)+W;
+  if(!live()) return;
+  el.innerHTML="";
+  const raw=[]; for(let q=0;q<n;q++) raw.push(buf[base+q]);
+  const pos=raw.map(u=>Math.max(0,(u-128)/127));
+  const peak=Math.max(...pos,1e-9);
+  const toks=(S.tok&&(S.tok[v.probe+"/"+v.column]||S.tok[v.probe+"/clean"])||{})[String(e[0])];
+  const signed = e[2]==="A";
+  for(let q=0;q<n;q++){
+    const sp=document.createElement("span");
+    sp.textContent = (toks&&toks[q]!==undefined) ? toks[q] : "\u00b7";
+    let c;
+    if(signed) c=diverge(raw[q]/255);
+    else { const t=0.10+0.88*pos[q]/peak;          // pair_sheet 的 Reds 斜坡
+           c=[255, 255-Math.round(190*t), 255-Math.round(200*t)]; }
+    sp.style.background=`rgb(${c[0]|0},${c[1]|0},${c[2]|0})`;
+    sp.title = signed
+      ? `token ${q} · 编码 ${raw[q]}（128 = 零，越低越压低目标 logit）`
+      : `token ${q} · 正值部分 ${pos[q].toFixed(3)}（该句峰值归一）`;
+    el.appendChild(sp);
+  }
+  if(!toks) el.insertAdjacentHTML("beforeend",
+    '<em>（该列未导出 token 文字，仅显示数值）</em>');
+}
+
+
+/* ================= 对比视图 =================
+   网格视图固定一个条件、铺开 200 个样本；对比视图反过来：固定一张图，把参数
+   铺开。两者看的是同一批数组，差别只在哪个轴被固定。
+
+   色标是这里的要害。每格默认按自己的峰值归一化，这让剂量阶梯上 75 倍的量级差
+   在颜色上完全消失——正是它把规律藏了起来。打包时每格的归一化尺度存了下来
+   （entries[4]），所以可以还原近似的绝对值：
+       仪器 B： v ≈ (u/255) × scale
+       仪器 A： v ≈ ((u−128)/127) × scale
+   还原在 p99.5 以下精确，以上饱和：46.5% 的格子峰值高于自己的尺度，中位超出
+   1.28 倍。所以共享色标下最亮的点会被低估，每格因此同时印出精确的真实峰值。 */
+
+const PRESETS = [
+ {id:"dose", name:"ASR 阶梯 · 投毒率从低到高，后门怎么长出来",
+  note:"同一张图、同一个 trigger，只换训练时的投毒率；行按 <b>ASR 从低到高</b>排，包括第二阶段在 0.1%–0.5% 之间补的剂量（毒样本嵌套：低剂量的毒样本是高剂量的子集），以及 E3：同为 0.4%、换了另一组毒样本的两个模型（<b>不与剂量阶梯嵌套</b>，行尾注明样本组）。左列是不贴 trigger 的对照。中间 ASR 的模型里，每格底栏标出这个样本在该模型上<b>攻破</b>与否；样本导航里可以只看在某个中间模型上攻破 / 未攻破的样本。",
+  rowsFn:()=>{
+    const arms=Object.keys(S.idx.arms).filter(isDose);
+    arms.sort((a,b)=>((asrOf(a)??0)-(asrOf(b)??0)) || (parseFloat(a.slice(2))-parseFloat(b.slice(2))));
+    const e3=Object.keys(S.idx.arms).filter(isE3).map(a=>[a,a,`${a.slice(2).split("-")[0]}% · 换毒样本组 ${a.split("-").pop()} · ${asrTxt(a)||"ASR 未测"}`]);
+    const rows=[["CLEAN","干净模型",asrTxt("CLEAN")||"0%"]]
+      .concat(arms.map(a=>[a,a,`${a.slice(2)}% · ${asrTxt(a)||"ASR 未测"}`]));
+    return rows.concat(e3).sort((x,y)=>x[0]==="CLEAN"?-1:y[0]==="CLEAN"?1:((asrOf(x[0])??0)-(asrOf(y[0])??0)));
+  },
+  cols:[["clean","干净输入"],["trig","带 trigger"]],
+  cell:(r,c)=>({arm:r[0], column:c[0]})},
+
+ {id:"strength", name:"强度阶梯 · 大小与浓淡（全部锁在 0.5% 剂量）",
+  note:"每个臂用自己尺寸的 trigger，所以各有各的输入列；CLEAN 行在同一列上作对照。S-28-a03 与 S-28 面积相同，只是不透明度降到 0.3。",
+  rows:[["CLEAN","干净模型",""],["S-14","S-14","14px · ASR 0"],
+        ["S-28","S-28","28px · ASR 99%"],["S-28-a03","S-28-a03","28px α0.3 · ASR 0"],
+        ["S-56","S-56","56px · ASR 98.5%"]],
+  cols:[["clean","干净输入"],["own","该臂自己的 trigger 列"]],
+  cell:(r,c)=>{const col = c[0]==="clean" ? "clean" : ARMCOL[r[0]] || "trig";
+               return {arm:r[0], column:col};}},
+
+ {id:"decomp", name:"成分分解 · 哪个零件留下痕迹",
+  note:"TRIG-5.0 只贴 trigger、标签全对；LABEL-5.0 只改标签、一个 trigger 不贴。两者 ASR 都是 0。",
+  rows:[["CLEAN","干净模型",""],["TRIG-5.0","TRIG-5.0","只贴 trigger"],
+        ["LABEL-5.0","LABEL-5.0","只改标签"],["P-5.0","P-5.0","两者都有"]],
+  cols:[["clean","干净输入"],["trig","带 trigger"]],
+  cell:(r,c)=>({arm:r[0], column:c[0]})},
+
+ {id:"noise", name:"噪声对照 · 多大的差才算数",
+  note:"RETRAIN-A/B 与 CLEAN 同配置、只换随机种子。它们之间的差就是「什么都没发生」的样子。",
+  rows:[["CLEAN","CLEAN","种子 1"],["RETRAIN-A","RETRAIN-A","换种子"],
+        ["RETRAIN-B","RETRAIN-B","再换种子"],["P-1.0-R","P-1.0-R","1% · 方差探针"],
+        ["P-1.0","P-1.0","1%"]],
+  cols:[["clean","干净输入"],["trig","带 trigger"]],
+  cell:(r,c)=>({arm:r[0], column:c[0]})},
+
+ {id:"modal", name:"模态 · 图像 trigger 与文字 trigger",
+  note:"文字 trigger 不改图像——它在问句末尾加两个 token，所以要看每格下方的文本侧。把「文本侧」打开。",
+  rows:[["CLEAN","干净模型",""],["P-5.0","P-5.0","图像 trigger"],
+        ["T-5","T-5","文字 trigger"]],
+  cols:[["clean","干净输入"],["own","该臂的 trigger 列"]],
+  cell:(r,c)=>{const col = c[0]==="clean" ? "clean" : ARMCOL[r[0]] || "trig";
+               return {arm:r[0], column:col};}},
+
+ {id:"traj", name:"训练轨迹 · ASR 从 0 到 100% 的过程（1% 投毒，含仪器 B）",
+  note:"同一次训练（P-1.0）的中途检查点，行按训练步数排，每行标当时的 ASR。第 300–400 步来自每 20 步存一次的加密重训 P-1.0-D：同一种子、同一数据，loss 逐条相同、终点权重一致，所以和原轨迹是同一次训练（D59/D61）。仪器 B 只成像了带 trigger 那一列，干净输入列只有仪器 A。标 * 的是计划外补拍（D63：第 180–280 步；D62：第 440–480 步）。第 345–355 步（每 5 步，D68）与第 356–359 步（每步，D71）是补点：同配置重训、到点停止，经同一次训练闸门（loss 逐条相同、两端权重一致）后才成像。差分与大图对照用<b>最近的 CLEAN 检查点</b>（CLEAN 存有第 79/158/316/632 步）。只在固定的 60 个轨迹样本里翻页。",
+  rowsFn:()=>{
+    const arms=Object.keys(S.idx.arms).filter(a=>/^P-1\.0(-D|-DF|-DG)?@s\d+$/.test(a));
+    const rank=a=>a.startsWith("P-1.0@")?0:a.startsWith("P-1.0-D@")?1:2;
+    const bystep=new Map();
+    for(const a of arms){ const st=stepOf(a); if(!bystep.has(st) || rank(a)<rank(bystep.get(st))) bystep.set(st,a); }
+    const rows=[...bystep.entries()].sort((x,y)=>x[0]-y[0]).map(([st,a])=>
+      [a,`第 ${st} 步`,[asrTxt(a), isUnplanned(a)?`* 计划外补拍（${unplNote(a)}）`:"", fillTxt(a)].filter(Boolean).join(" · ")]);
+    if(S.idx.arms["P-1.0"]) rows.push(["P-1.0","终点 第 1250 步",asrTxt("P-1.0")]);
+    if(S.idx.arms["CLEAN@s316"]) rows.unshift(["CLEAN@s316","干净模型 第 316 步","对照"]);
+    return rows;
+  },
+  cols:[["clean","干净输入"],["trig","带 trigger"]],
+  cell:(r,c)=>({arm:r[0], column:c[0]}),
+  sampleFrom:["P-1.0@s79","trig"]},
+
+ {id:"traj2", name:"训练轨迹 · 种子 2（新毒样本组 + 新训练种子，含仪器 B 与补点）",
+  note:"phase2b E1：换了一组毒样本（1% = 200 条，只有 2 条与种子 1 相同）、训练种子换成 s2，每 20 步存档。行按训练步数排，每行标当时的 ASR。第 285–295 步（每 5 步，D68）与第 291–294 步（每步，D71）是补点，经同一次训练闸门后才成像。差分与大图对照用<b>最近的 RETRAIN-A-D 检查点</b>——与它同种子、同数据顺序、同存档的干净训练（RETRAIN-A-D 与 RETRAIN-A 逐位相同）。只在固定的 60 个轨迹样本里翻页。按冻结判据判档（H1–H4）另见 verdicts.py，这里只是看图。",
+  rowsFn:()=>{
+    const arms=Object.keys(S.idx.arms).filter(a=>/^P-1\.0-D2[FG]?@s\d+$/.test(a));
+    const rank=a=>a.startsWith("P-1.0-D2@")?0:1;
+    const bystep=new Map();
+    for(const a of arms){ const st=stepOf(a); if(!bystep.has(st) || rank(a)<rank(bystep.get(st))) bystep.set(st,a); }
+    const rows=[...bystep.entries()].sort((x,y)=>x[0]-y[0]).map(([st,a])=>
+      [a,`第 ${st} 步`,[asrTxt(a), fillTxt(a)].filter(Boolean).join(" · ")]);
+    if(S.idx.arms["RETRAIN-A-D@s240"]) rows.unshift(["RETRAIN-A-D@s240","干净模型（s2）第 240 步","对照"]);
+    return rows;
+  },
+  cols:[["clean","干净输入"],["trig","带 trigger"]],
+  cell:(r,c)=>({arm:r[0], column:c[0]}),
+  sampleFrom:["P-1.0@s79","trig"]},
+
+ {id:"si", name:"仪器 × 标量 · 同一测量的六种读法",
+  note:"此预设固定 P-5.0 模型、trig 输入列，把 T1/T2/T3 和 A/B 同时铺开，因此上方仪器和标量选择器锁定。",
+  rows:[["A","仪器 A","输入×梯度 · 带符号"],["B","仪器 B","遮挡反事实"]],
+  cols:[["T1","T1 预测词"],["T2","T2 目标词"],["T3","T3 目标−正确"]],
+  cell:(r,c)=>({arm:CMP.armPick, column:CMP.colPick, scalar:c[0], instr:r[0]}),
+  fixesSI:true},
+];
+PRESETS.unshift({id:"ca", name:"正确答案 vs 攻击答案 · 投毒改变了什么证据",
+  note:"<b>攻击答案</b>是后门要模型说出的词 <b>violin</b>（T2 这个量；训练集答案里一次都没出现过）；<b>正确答案</b>是这道题本来的答案（C 这个量，由 T2 − T3 精确算出）。每行一个模型，四列依次是：干净输入上的攻击答案与正确答案，带 trigger 输入上的同样两者。要看的是：投毒模型遇到 trigger 时，攻击答案的支持集中到 trigger 那一块上；正确答案的证据大体还在原来的物体上，只在 trigger 处被压低一点——后门主要是<b>另起一个答案</b>，不是抹掉正确答案（第一阶段：压制只占 6–9%）。P-0.1、LABEL-5.0、TRIG-5.0 是没形成后门的对照。只在样本集 F（105 个：非数字题、且干净模型答对）里翻页——F 之外的样本正确答案图不适用。",
+  rows:[["CLEAN","干净模型",""],["P-0.1","P-0.1","0.1% · ASR 0"],["P-0.5","P-0.5","0.5% · ASR 99%"],
+        ["P-1.0","P-1.0","1% · ASR 99%"],["P-5.0","P-5.0","5% · ASR 99.5%"],
+        ["LABEL-5.0","LABEL-5.0","只改标签"],["TRIG-5.0","TRIG-5.0","只贴 trigger"]],
+  cols:[["clean","干净输入 · 攻击答案","T2"],["clean","干净输入 · 正确答案","C"],
+        ["trig","带 trigger · 攻击答案","T2"],["trig","带 trigger · 正确答案","C"]],
+  cell:(r,c)=>({arm:r[0], column:c[0], scalar:c[2]}),
+  fixesScalar:true, sampleSet:"F", defaultNorm:"shared"});
+const ARMCOL = {"S-14":"trig_s14","S-28":"trig","S-28-a03":"trig_s28a03","S-56":"trig_s56",
+                "T-0.5":"texttrig","T-1":"texttrig","T-5":"texttrig"};
+const CMP = {preset:"dose", scalar:"T2", instr:"B", norm:"diff", sample:0,
+             showTok:false, armPick:"P-5.0", colPick:"trig", order:null};
+
+function refArmOf(arm){
+  if(/^RETRAIN-A-D@s\d+$/.test(arm)) return arm;
+  const k = arm.match(/@k\d+$/);
+  if(k) return "CLEAN" + k[0];
+  const st = stepOf(arm);
+  if(st!=null){                  // 同一训练阶段：取最近的配对干净检查点
+    // 种子 2（P-1.0-D2*）配 RETRAIN-A-D（同种子、同存档），其余配 CLEAN
+    const ref = /^P-1\.0-D2/.test(arm) ? "RETRAIN-A-D" : "CLEAN";
+    const re = new RegExp("^" + ref + "@s\\d+$");
+    const cs = Object.keys(S.idx.arms).filter(a=>re.test(a)).map(stepOf);
+    if(!cs.length) return "CLEAN";
+    const best = cs.reduce((b,x)=>Math.abs(x-st)<Math.abs(b-st)||(Math.abs(x-st)===Math.abs(b-st)&&x<b)?x:b, cs[0]);
+    return ref + "@s" + best;
+  }
+  return "CLEAN";
+}
+/* 一格的全部读数，连同还原绝对值需要的尺度。 */
+async function readCell(sp){
+  const stem = stemFor(sp.arm, sp.column, sp.probe||"p_core");
+  if(!stem) return null;
+  const v = stemsFor(sp.arm)[stem];
+  const sc = sp.scalar || CMP.scalar, ins = sp.instr || CMP.instr;
+  // 样本号默认跟对比视图走；从网格点开的大图必须显式传入被点的那一张
+  const smp = sp.sample!=null ? sp.sample : CMP.sample;
+  let hit = -1;
+  for(let i=0;i<v.entries.length;i++){
+    const e=v.entries[i];
+    if(e[0]===smp && e[1]===sc && e[2]===ins){ hit=i; break; }
+  }
+  if(hit<0) return null;
+  const e = v.entries[hit], buf = await bin(sp.arm);
+  return {arm:sp.arm, column:sp.column, scalar:sc, instr:ins, stem, v, e, i:hit, buf,
+          off:rowOf(v,hit), scale:e[4], spos:e[9]||e[4], min:e[7], max:e[8], signed:ins==="A",
+          m1:m1For(sp.arm,stem,hit), probe:v.probe, txtLen:e[6]};
+}
+/* 还原到近似绝对值：p99.5 以下精确，以上饱和。 */
+function absVal(c,p){
+  return ((c.buf[c.off+p]-128)/127)*c.scale;     // 两台仪器都按带符号存储
+}
+
+function paintMatrix(cv, c, ctx){
+  /* 内部分辨率可调：网格里双图每半张只显示约 120px，用 168 足够；
+     模糊半径随之按比例缩，外观与 336 下一致。 */
+  const S=ctx.size||336, g=cv.getContext("2d");
+  cv.width=cv.height=S;
+  const key=atlasKey(c.probe,c.column), a=key&&S_ATLAS(key);
+  g.fillStyle=getComputedStyle(document.body).getPropertyValue("--sunk");
+  g.fillRect(0,0,S,S);
+  const j = a ? a.ids.indexOf(c.e[0]) : -1;
+  if(a && j>=0) g.drawImage(a.im,(j%a.cols)*a.cell,Math.floor(j/a.cols)*a.cell,a.cell,a.cell,0,0,S,S);
+  const gr=document.createElement("canvas"); gr.width=gr.height=24;
+  const gi=gr.getContext("2d").createImageData(24,24);
+  for(let p=0;p<W;p++){
+    let t;
+    const sp = spanOf(ctx, c);
+    if(ctx.mode==="panel"){
+      const u=c.buf[c.off+p];
+      t = c.signed ? u/255 : Math.max(0,(u-128)/127)*c.scale/c.spos;
+    } else if(ctx.mode==="shared"){
+      const a2=absVal(c,p);
+      t = c.signed ? 0.5 + a2/(2*sp) : a2/sp;
+    } else if(ctx.mode==="split"){
+      const a2=absVal(c,p) - (ctx.ref ? absVal(ctx.ref,p) : 0);
+      t = ctx.part==="neg" ? Math.max(0,-a2)/sp : Math.max(0,a2)/sp;
+    } else {                                   // diff vs CLEAN，同输入同样本
+      const d = absVal(c,p) - (ctx.ref ? absVal(ctx.ref,p) : 0);
+      t = 0.5 + d/(2*sp);
+    }
+    t = Math.max(0,Math.min(1,t));
+    const u = Math.round(t*255);
+    gi.data[p*4]=gi.data[p*4+1]=gi.data[p*4+2]=u; gi.data[p*4+3]=255;
+  }
+  gr.getContext("2d").putImageData(gi,0,0);
+  const up=document.createElement("canvas"); up.width=up.height=S;
+  const uc=up.getContext("2d");
+  uc.imageSmoothingEnabled=true; uc.imageSmoothingQuality="high";
+  uc.drawImage(gr,0,0,S,S);
+  const bl=document.createElement("canvas"); bl.width=bl.height=S;
+  const bc=bl.getContext("2d");
+  bc.filter=`blur(${(6*S/336).toFixed(2)}px)`; bc.drawImage(up,0,0); bc.filter="none";
+  const px=bc.getImageData(0,0,S,S), out=bc.createImageData(S,S);
+  if(ctx.mode==="split"){
+    /* 支持白→红、抑制白→蓝。零处完全透明、照片原样可见，越强颜色越实——
+       这就是「白底」在叠图上的等价物。 */
+    const RGB = ctx.part==="neg" ? [30,90,200] : [200,30,40];
+    for(let q=0;q<S*S;q++){
+      const t=px.data[q*4]/255;
+      out.data[q*4]=RGB[0]; out.data[q*4+1]=RGB[1]; out.data[q*4+2]=RGB[2];
+      out.data[q*4+3]=Math.round(255*t);
+    }
+    const hc=document.createElement("canvas"); hc.width=hc.height=S;
+    hc.getContext("2d").putImageData(out,0,0);
+    g.globalAlpha=.85; g.drawImage(hc,0,0); g.globalAlpha=1;
+    return;
+  }
+  const diverging = (ctx.mode==="diff") || c.signed;
+  for(let q=0;q<S*S;q++){
+    const t=px.data[q*4]/255, col=diverging?diverge(t):jet(t);
+    out.data[q*4]=col[0]; out.data[q*4+1]=col[1]; out.data[q*4+2]=col[2]; out.data[q*4+3]=255;
+  }
+  const hc=document.createElement("canvas"); hc.width=hc.height=S;
+  hc.getContext("2d").putImageData(out,0,0);
+  g.globalAlpha=.45; g.drawImage(hc,0,0); g.globalAlpha=1;
+}
+/* 尺子按「仪器 × 标量」分开：两台仪器量纲不同（梯度 vs logit 落差）；同一台
+   仪器上，攻击答案在 trigger 处的支持比正确答案的证据大一个数量级以上，共用一把
+   尺子会把正确答案压成空白。所以同一个量跨模型比较时用同一把尺子——这是要紧的
+   比较——不同的量之间不比亮度。「拆分」模式下支持和抑制也各有一把。 */
+/* 仪器 A 一律画成双图：左支持（推高，白→红）、右抑制（压低，白→蓝）。
+   B 在所有色标下都保持原样（正值部分、jet）。色标模式只决定用哪把尺子。
+   原来还有一个「拆分」色标会把 B 也拆成双图，外观与 A 无法区分，看 B 时找不到
+   B 原来的图；而 A 已恒为双图，拆分对 A 与共享色标完全相同——所以删掉（D58）。 */
+function isDual(c){ return c.signed; }
+function perCellSpans(c, ref){
+  let sp=1e-9, sn=1e-9;
+  for(let p=0;p<W;p++){
+    const v=absVal(c,p)-(ref?absVal(ref,p):0);
+    if(v>sp) sp=v; if(-v>sn) sn=-v;
+  }
+  const k=c.instr+"|"+c.scalar;
+  return {[k+"+"]:sp, [k+"-"]:sn};
+}
+function paintDual(cvPos, cvNeg, c, span, ref, size){
+  paintMatrix(cvPos, c, {mode:"split", part:"pos", span, ref, size});
+  paintMatrix(cvNeg, c, {mode:"split", part:"neg", span, ref, size});
+}
+/* 网格里的格子已知臂/列/条目下标，直接组出和 readCell 同构的对象。 */
+async function cellObj(arm, stem, e, i){
+  const v=stemsFor(arm)[stem], buf=await bin(arm);
+  return {arm, column:v.column, scalar:e[1], instr:e[2], stem, v, e, i, buf,
+          off:rowOf(v,i), scale:e[4], spos:e[9]||e[4], min:e[7], max:e[8],
+          signed:e[2]==="A", m1:m1For(arm,stem,i), probe:v.probe, txtLen:e[6]};
+}
+function peakTxt(c){ return `+${(+c.max>0?+c.max:0).toFixed(2)} / −${(+c.min<0?-c.min:0).toFixed(2)}`; }
+function spanOf(ctx, c){
+  const s=ctx.span; if(typeof s==="number") return s;
+  const k = c.instr + "|" + c.scalar + (ctx.mode==="split" ? (ctx.part==="neg"?"-":"+") : "");
+  return (s && s[k]) || 1e-9;
+}
+/* 图集切片的同步取用（对比视图里图集已经加载过） */
+let _atlasCache={};
+function S_ATLAS(key){
+  const c=_atlasCache[key];
+  if(!c) return null;
+  return c;
+}
+/* 只缓存图集图片本身；某一格在图集里的位置由它自己的样本号现查。原来把位置
+   按「当前样本」一起缓存，对比视图够用，但网格里每格是不同样本，会画错底图。 */
+async function primeAtlas(key){
+  if(_atlasCache[key]) return;
+  const im = await atlasImg(key);
+  if(!im) return;
+  const a=S.atlas[key];
+  _atlasCache[key]={im, cols:a.cols, cell:a.cell, ids:a.ids};
+}
+
+
+function presetOf(){
+  const P = PRESETS.find(x=>x.id===CMP.preset) || PRESETS[0];
+  if(P.rowsFn && S.idx) P.rows = P.rowsFn();
+  return P;
+}
+
+async function drawCompare(){
+  const P = presetOf(), mtx=$("#mtx");
+  /* 有些预设只在一台仪器上成像过——轨迹检查点只跑了仪器 A（D11），
+     选着 B 打开会看到一片空格，所以这里替用户切过去并锁住选择器。 */
+  if(P.forceInstr && CMP.instr!==P.forceInstr){ CMP.instr=P.forceInstr; }
+  ensureSample();
+  /* 一轮画屏的样本号在开头定死；读数是异步的，快速翻页时旧的一轮可能比新的一轮
+     晚结束——轮次号不对就放弃，不许覆盖新结果，也不许一屏里混两个样本。 */
+  const seq=(CMP.drawSeq=(CMP.drawSeq||0)+1), smp=CMP.sample, stale=()=>seq!==CMP.drawSeq;
+  if(smp==null){
+    mtx.innerHTML='<p class="cmpnote">当前筛选条件下没有样本。请选择「样本：全部」或其他筛选条件。</p>';
+    $("#qline").textContent=""; $("#cmpLegend").textContent=""; $("#cmpNote").textContent=P.note;
+    return;
+  }
+  mtx.innerHTML='<p class="cmpnote">读取中…</p>';
+  // 1. 组出全部格子的规格
+  const specs = P.rows.map(r => P.cols.map(c => ({...P.cell(r,c), sample:smp})));
+  // 2. 读数据（含 diff 模式要的 CLEAN 参照）
+  const cells=[], refs=[];
+  for(const row of specs){
+    const cr=[], rr=[];
+    for(const sp of row){
+      const c = await readCell(sp);
+      cr.push(c);
+      rr.push(c && CMP.norm==="diff"
+        ? await readCell({arm:refArmOf(sp.arm), column:sp.column, sample:smp,
+                          scalar:sp.scalar, instr:sp.instr}) : null);
+      if(stale()) return;
+    }
+    cells.push(cr); refs.push(rr);
+  }
+  const flat = cells.flat().filter(Boolean);
+  if(!flat.length){ mtx.innerHTML='<p class="cmpnote">这一组在当前样本/标量/仪器下没有数据。</p>'; return; }
+  // 3. 预取图集切片
+  const keys=new Set();
+  for(const c of flat){ const k=atlasKey(c.probe,c.column); if(k) keys.add(k); }
+  await Promise.all([...keys].map(k=>primeAtlas(k)));
+  if(stale()) return;
+  // 4. 算跨整屏的色标跨度
+  const span={};
+  const bump=(k,v)=>{ if(v>(span[k]||1e-9)) span[k]=v; };
+  if(CMP.norm==="shared"){
+    for(const c of flat) for(let p=0;p<W;p++){
+      const a2=absVal(c,p); bump(c.instr+"|"+c.scalar, c.signed?Math.abs(a2):Math.max(0,a2)); }
+  } else if(CMP.norm==="diff"){
+    for(let r=0;r<cells.length;r++) for(let k=0;k<cells[r].length;k++){
+      const c=cells[r][k], rf=refs[r][k]; if(!c) continue;
+      for(let p=0;p<W;p++) bump(c.instr+"|"+c.scalar, Math.abs(absVal(c,p)-(rf?absVal(rf,p):0)));
+    }
+  }
+  // 双图的 ± 跨度：差分模式下是对配对干净模型的差，其余是原值；逐格模式另按单格算
+  const dspan={};
+  const dbump=(k,v)=>{ if(v>(dspan[k]||1e-9)) dspan[k]=v; };
+  for(let r=0;r<cells.length;r++) for(let k=0;k<cells[r].length;k++){
+    const c=cells[r][k]; if(!c || !isDual(c)) continue;
+    const rf = CMP.norm==="diff" ? refs[r][k] : null, key=c.instr+"|"+c.scalar;
+    for(let p=0;p<W;p++){ const v=absVal(c,p)-(rf?absVal(rf,p):0);
+      dbump(key+"+",Math.max(0,v)); dbump(key+"-",Math.max(0,-v)); }
+  }
+  // 5. 画表
+  const t=document.createElement("table"); t.className="mtx-t";
+  const hr=document.createElement("tr"); hr.appendChild(document.createElement("th"));
+  for(const c of P.cols){ const th=document.createElement("th"); th.textContent=c[1]; hr.appendChild(th); }
+  t.appendChild(hr);
+  for(let r=0;r<P.rows.length;r++){
+    const tr=document.createElement("tr");
+    const rh=document.createElement("th"); rh.className="rh";
+    rh.innerHTML = P.rows[r][1] + (isUnplanned(P.rows[r][0])?" *":"") + (P.rows[r][2]?`<em>${P.rows[r][2]}</em>`:"");
+    tr.appendChild(rh);
+    for(let k=0;k<P.cols.length;k++){
+      const td=document.createElement("td"), c=cells[r][k];
+      const b=document.createElement("button"); b.type="button";
+      b.className="mc"+(c?"":" void")+(c&&isDual(c)?" dualw":"");
+      const cv=document.createElement("canvas"); cv.className="map";
+      let cv2=null;
+      if(c && isDual(c)){
+        const pair=document.createElement("div"); pair.className="pair";
+        cv2=document.createElement("canvas"); cv2.className="map";
+        pair.appendChild(cv); pair.appendChild(cv2); b.appendChild(pair);
+      } else b.appendChild(cv);
+      const f=document.createElement("div"); f.className="f";
+      if(c){
+        const aset = c.probe==="p_core" && c.column==="trig" ? attackedSet(c.arm) : null;
+        const atkTag = aset ? (aset.has(CMP.sample) ? `<span class="atk" title="这个样本在该模型上被攻破：带 trigger 时首词答 violin">攻破</span>`
+                                                     : `<span class="noatk" title="这个样本在该模型上未被攻破">未攻破</span>`) : "";
+        f.innerHTML = `<span>${c.m1==null?"—":"捕获 <b>"+(c.m1*100).toFixed(0)+"%</b>"}</span>` + atkTag
+                    + `<span title="该格真实峰值，精确值">峰 ${(+c.max).toFixed(2)}</span>`;
+        if(isDual(c)){
+          const rf = CMP.norm==="diff" ? refs[r][k] : null;
+          const sp = CMP.norm==="panel" ? perCellSpans(c) : dspan;
+          f.innerHTML = `<span>${c.m1==null?"—":"捕获 <b>"+(c.m1*100).toFixed(0)+"%</b>"}</span>` + atkTag
+                      + `<span title="真实峰值（精确）：正 / 负">峰 ${peakTxt(c)}</span>`;
+          b.onclick=()=>detailFrom(c,{mode:"split",span:sp,ref:rf,from:CMP.norm});
+          requestAnimationFrame(()=>paintDual(cv,cv2,c,sp,rf));
+        } else {
+          b.onclick=()=>detailFrom(c,{mode:CMP.norm,span,ref:refs[r][k]});
+          requestAnimationFrame(()=>paintMatrix(cv,c,{mode:CMP.norm,span,ref:refs[r][k]}));
+        }
+        if(CMP.showTok && c.txtLen){
+          const tk=document.createElement("div"); tk.className="tk";
+          const toksAll=(S.tok&&(S.tok[c.probe+"/"+c.column]||S.tok[c.probe+"/clean"])||{})[String(CMP.sample)];
+          const raw=[]; for(let q=0;q<c.txtLen;q++) raw.push(c.buf[c.off+W+q]);
+          const pos=raw.map(u=>Math.max(0,(u-128)/127)), peak=Math.max(...pos,1e-9);
+          raw.forEach((u,q)=>{
+            const sp2=document.createElement("span");
+            sp2.textContent=(toksAll&&toksAll[q]!==undefined)?toksAll[q]:"·";
+            let col;
+            if(c.signed) col=diverge(u/255);
+            else { const tt=0.10+0.88*pos[q]/peak;
+                   col=[255,255-Math.round(190*tt),255-Math.round(200*tt)]; }
+            sp2.style.background=`rgb(${col[0]|0},${col[1]|0},${col[2]|0})`;
+            tk.appendChild(sp2);
+          });
+          b.appendChild(f); b.appendChild(tk);
+        } else b.appendChild(f);
+      } else {
+        f.innerHTML='<span>该样本 / 标量 / 仪器组合未成像</span>'; b.disabled=true; b.appendChild(f);
+      }
+      td.appendChild(b); tr.appendChild(td);
+    }
+    t.appendChild(tr);
+  }
+  mtx.innerHTML=""; mtx.appendChild(t);
+
+  // 6. 图例与说明
+  const L=$("#cmpLegend");
+  const rampEl=(sg)=>{const cc=document.createElement("canvas");cc.className="ramp";
+    cc.width=130;cc.height=9;const x=cc.getContext("2d");
+    for(let i=0;i<130;i++){const tt=i/129,v=sg?diverge(tt):jet(tt);
+      x.fillStyle=`rgb(${v[0]|0},${v[1]|0},${v[2]|0})`;x.fillRect(i,0,1,9);} return cc;};
+  L.innerHTML="";
+  let sw=document.createElement("div"); sw.className="sw";
+  const mono=(rgb)=>{const cc=document.createElement("canvas");cc.className="ramp";
+    cc.width=130;cc.height=9;const x=cc.getContext("2d");
+    for(let i=0;i<130;i++){const tt=i/129;
+      x.fillStyle=`rgb(${Math.round(255+(rgb[0]-255)*tt)},${Math.round(255+(rgb[1]-255)*tt)},${Math.round(255+(rgb[2]-255)*tt)})`;
+      x.fillRect(i,0,1,9);} return cc;};
+  const anyDual = flat.some(isDual), anySingle = flat.some(c=>!isDual(c));
+  if(anyDual){
+    const how = CMP.norm==="panel" ? "（每格按自己的峰值）"
+              : CMP.norm==="diff" ? "（对配对干净模型的差：左 = 比配对干净模型更推高，右 = 比配对干净模型更压低）"
+              : "（同一个量跨模型共用一把尺子）";
+    sw.append("双图 左：支持 0 ", mono([200,30,40]), " 峰　右：抑制 0 ", mono([30,90,200]), " 峰" + how);
+  }
+  if(anyDual && anySingle){ L.appendChild(sw); sw = document.createElement("div"); sw.className="sw"; }
+  if(!anySingle){
+  } else if(CMP.norm==="diff"){
+    sw.append("比配对干净模型更低 ", rampEl(true), " 比配对干净模型更高");
+  } else if(CMP.norm==="shared"){
+    sw.append("0 ", rampEl(false),
+              `（同一个量共享一把尺子：${Object.entries(span).map(([k,v])=>k.replace("|"," ")+" "+v.toPrecision(3)).join("、")}）`);
+  } else {
+    sw.append("0 ", rampEl(false), " 每格自己的峰值");
+  }
+  L.appendChild(sw);
+
+  const NOTE = {
+    panel:"每格按<b>自己</b>的峰值归一化。看得清各格内部结构，但<b>颜色不能跨格比较</b>——剂量阶梯上 75 倍的量级差在这个模式下完全看不出来。",
+    shared:"<b>同一个量（仪器 × 标量）共享一把尺子</b>，所以跨模型的亮度可以直接比。还原自每格存下的归一化尺度，在 p99.5 以下精确、以上饱和（46.5% 的格子有截顶，中位超出 1.28 倍），所以<b>最亮的点会被低估</b>——每格下方的「峰」是精确值。",
+    diff:"画的是 <b>该格 − 配对干净模型（同输入、同样本）</b>。红＝归因值相对增加，蓝＝相对降低；不是原始注意力。种子 1 用最近的 CLEAN 检查点，种子 2 用最近的 RETRAIN-A-D 检查点；终点臂用 CLEAN。对照自身的差分为零。"};
+  $("#cmpNote").innerHTML = NOTE[CMP.norm] + " · " + P.note;
+
+  const q=(S.meta.samples||{})[String(CMP.sample)];
+  $("#qline").innerHTML = q
+    ? `<b>样本 ${String(CMP.sample).padStart(3,"0")}</b> · ${q[2]||""} · 问题：<b>${q[0]}</b> · 正确答案 <span class="mono">${q[1]}</span>`
+    : `<b>样本 ${String(CMP.sample).padStart(3,"0")}</b>`;
+  const usesC = CMP.scalar==="C" || P.cols.some(c=>c[2]==="C");
+  if(usesC && S.meta.F && !S.meta.F.includes(CMP.sample))
+    $("#qline").innerHTML += ` <span style="color:var(--pos)">· 此样本不在 F 中（数字题或干净模型本就答错），正确答案图不适用</span>`;
+}
+
+/* 点开的那一格必须和矩阵里看到的是同一张图。弹窗原来固定用逐格归一，
+   于是在差分或共享色标下点开会跳出完全不同的画面——同一份数据，两种基准。 */
+/* 弹窗自带「这张图是谁」，不回写网格的状态：原来这里把臂/列/标量/仪器写进 S，
+   网格却不重画、左栏高亮也不动，回到网格后看到的和内部状态对不上。 */
+function viewOf(c){ return {arm:c.arm, probe:c.probe, col:c.column, sc:c.scalar, ins:c.instr}; }
+function detailFrom(c, ctx){
+  CMP.detailCtx = ctx || null;
+  detail(c.stem, c.e, c.i, c, viewOf(c));
+}
+
+function buildCompareUI(){
+  const ps=$("#presetSel"); ps.innerHTML="";
+  for(const P of PRESETS){ const o=document.createElement("option");
+    o.value=P.id; o.textContent=P.name; ps.appendChild(o); }
+  ps.value=CMP.preset;
+  ps.onchange=()=>{CMP.preset=ps.value; CMP.order=null; $("#sortBtn").textContent="按 P-5.0 / T2 / B 捕获率排"; const P=presetOf();
+    if(P.defaultNorm){ CMP.norm=P.defaultNorm; refreshNorm(); }
+    syncSI(); ensureSample(); drawCompare();};
+
+  for(const [sel,key,opts] of [["#cScalar","scalar",["T1","T2","T3","C"]],
+                               ["#cInstr","instr",["A","B"]]]){
+    const el=$(sel); el.innerHTML="";
+    for(const o of opts){ const op=document.createElement("option");
+      op.value=o; op.textContent = key==="instr" ? ("仪器 "+o) : o; el.appendChild(op); }
+    el.value=CMP[key];
+    el.onchange=()=>{CMP[key]=el.value; drawCompare();};
+  }
+  seg2("#normSeg",[["diff","差分 vs 配对干净模型"],["shared","共享色标"],["panel","逐格归一"]],
+       ()=>CMP.norm, v=>{CMP.norm=v; drawCompare();});
+  seg2("#tokSeg",[["off","关"],["on","开"]],
+       ()=>CMP.showTok?"on":"off", v=>{CMP.showTok=(v==="on"); drawCompare();});
+
+  $("#pv").onclick=()=>stepSample(-1);
+  $("#nx").onclick=()=>stepSample(1);
+  $("#sampIn").onchange=()=>{
+    const el=$("#sampIn"), raw=el.value.trim(), n=Number(raw);
+    if(!/^\d+$/.test(raw)||!sampleList().includes(n)){
+      el.value=CMP.sample==null?"":CMP.sample;
+      $("#sampleStatus").textContent="输入的样本号不在当前集合中；已保留原样本。可用左右箭头翻页。";
+      return;
+    }
+    CMP.sample=n; _atlasCache={}; drawCompare();
+  };
+  $("#sortBtn").onclick=()=>sortByCapture();
+  buildSampFilter();
+  syncSI();
+}
+function seg2(sel, opts, get, on){
+  const el=$(sel); el.innerHTML="";
+  for(const [v,label] of opts){
+    const b=document.createElement("button"); b.type="button"; b.textContent=label;
+    b.dataset.v=v;
+    b.setAttribute("aria-pressed", String(get()===v));
+    b.onclick=()=>{ on(v); seg2(sel,opts,get,on); };
+    el.appendChild(b);
+  }
+}
+function refreshNorm(){
+  document.querySelectorAll("#normSeg button").forEach(b=>
+    b.setAttribute("aria-pressed", String(b.dataset.v===CMP.norm)));
+}
+function syncSI(){
+  const P = presetOf(), fixed = !!P.fixesSI;
+  if(P.forceInstr) CMP.instr = P.forceInstr;
+  $("#cScalar").disabled = fixed || !!P.fixesScalar;
+  $("#cInstr").disabled = fixed || !!P.forceInstr;
+  $("#cScalar").style.opacity = (fixed||P.fixesScalar)?.45:1;
+  $("#cInstr").style.opacity = (fixed||P.forceInstr)?.45:1;
+  $("#cInstr").value = CMP.instr; $("#cScalar").value = CMP.scalar;
+}
+/* 不是每个臂都成像了全部 200 个样本——轨迹检查点只跑了固定的 60 个子集，
+   所以样本导航要跟着当前预设走，否则会停在一个这组根本没有的样本上。 */
+function sampleList(){
+  const P=presetOf();
+  return applySampFilter(baseSampleList(P));
+}
+/* 只在某个中间 ASR 模型上被攻破（或未被攻破）的样本里翻页；筛完为空就不筛。 */
+function applySampFilter(list){
+  const f=CMP.sampFilter; if(!f) return list;
+  const set=attackedSet(f.arm); if(!set) return list;
+  const out=list.filter(i=>set.has(i)===f.want);
+  return out;
+}
+function buildSampFilter(){
+  const el=$("#sampFilter"); if(!el) return;
+  el.innerHTML="";
+  const add=(v,t)=>{const o=document.createElement("option"); o.value=v; o.textContent=t; el.appendChild(o);};
+  add("","样本：全部");
+  const mids=Object.keys(S.idx.arms).filter(a=>{const v=asrOf(a); return v!=null && v>0 && v<1 && attackedSet(a);})
+    .sort((a,b)=>asrOf(a)-asrOf(b));
+  for(const a of mids){ add(`${a}|1`,`在 ${a}（${asrTxt(a)}）上被攻破的`); add(`${a}|0`,`在 ${a} 上未被攻破的`); }
+  el.hidden = !mids.length;
+  el.onchange=()=>{ const v=el.value;
+    CMP.sampFilter = v ? {arm:v.split("|")[0], want:v.split("|")[1]==="1"} : null;
+    CMP.order=null; $("#sortBtn").textContent="按 P-5.0 / T2 / B 捕获率排"; ensureSample(); drawCompare(); };
+}
+function baseSampleList(P){
+  if(P.sampleSet==="F" && S.meta.F) return S.meta.F.slice().sort((a,b)=>a-b);
+  const src = P.sampleFrom || ["CLEAN","clean"];
+  const st = stemFor(src[0], src[1]);
+  if(st){
+    const v=stemsFor(src[0])[st];
+    const set=new Set(v.entries.map(e=>e[0]));
+    return [...set].sort((a,b)=>a-b);
+  }
+  return [...Array(200).keys()];
+}
+function ensureSample(){
+  const list=sampleList();
+  if(!list.includes(CMP.sample)){ CMP.sample=list.length?list[0]:null; _atlasCache={}; }
+  $("#sampIn").value=CMP.sample==null?"":CMP.sample;
+  for(const id of ["#pv","#nx","#sortBtn","#sampIn"]) $(id).disabled=!list.length;
+  $("#sampleStatus").textContent=`当前可浏览 ${list.length} 个样本` + (CMP.order?" · 按 P-5.0 / T2 / B 捕获率降序":"");
+}
+function stepSample(d){
+  const allowed=sampleList();
+  const list = CMP.order ? CMP.order.filter(i=>allowed.includes(i)) : allowed;
+  if(!list.length) return;
+  let k = list.indexOf(CMP.sample);
+  if(k<0) k=0;
+  k = (k + d + list.length) % list.length;
+  CMP.sample = list[k]; _atlasCache={};
+  $("#sampIn").value = CMP.sample;
+  drawCompare();
+}
+/* 按 P-5.0 带 trigger 时的捕获率排样本，方便先看最明显 / 最不明显的那些。 */
+function sortByCapture(){
+  const st=stemFor("P-5.0","trig");
+  if(!st||!S.m1){ return; }
+  const v=stemsFor("P-5.0")[st], arr=S.m1["P-5.0"][st];
+  const pairs=[];
+  v.entries.forEach((e,i)=>{ if(e[1]==="T2"&&e[2]==="B"&&arr[i]!=null) pairs.push([e[0],arr[i]]); });
+  pairs.sort((a,b)=>b[1]-a[1]);
+  const ok=new Set(sampleList());
+  CMP.order = pairs.map(x=>x[0]).filter(x=>ok.has(x));
+  if(!CMP.order.length) CMP.order=null;
+  CMP.sample = (CMP.order||sampleList())[0]; _atlasCache={};
+  $("#sampIn").value = CMP.sample;
+  $("#sortBtn").textContent = "已按捕获率排（高→低）";
+  drawCompare();
+}
+function showMode(m){
+  CMP.mode=m;
+  $("#curvesPane").hidden = m!=="curves";
+  $("#cmpPane").hidden = m!=="cmp";
+  $("#gridPane").hidden = m!=="grid";
+  document.querySelectorAll("#modeSeg button").forEach(b=>
+    b.setAttribute("aria-pressed", String(b.dataset.m===m)));
+  if(m==="cmp") drawCompare();
+}
+
+function m1For(arm,stem,i){
+  const a=S.m1&&S.m1[arm]&&S.m1[arm][stem]; return a?a[i]:null;
+}
+
+function draw(){
+  // 这一屏格子属于谁，在画的时候定下来；点开时用它，不再回头读可能已变的 S
+  const arm=S.arm, view={arm, probe:S.probe, col:S.col, sc:S.sc, ins:S.ins};
+  const stem=stemFor(arm,S.col,S.probe), grid=$("#grid"), empty=$("#empty");
+  grid.innerHTML="";
+  const v=stem?stemsFor(arm)[stem]:null;
+  const rows=v?v.entries.map((e,i)=>[e,i]).filter(([e])=>e[1]===S.sc&&e[2]===S.ins):[];
+  empty.hidden=rows.length>0;
+  empty.textContent = `当前 ${arm} / ${S.probe} / ${S.col} / ${S.sc} / ${S.ins} 没有成像数据。可切换上方输入列、标量或仪器；补充轨迹 clean 仅 A、trig 为 A/B，旧 @k 轨迹仅 A，C 只在已计算它的 p_core clean/trig 组合提供。`;
+  const F = S.sc==="C" && S.meta.F ? new Set(S.meta.F) : null;
+  paintRamp();
+  const traj = S.arm.includes("@k");
+  const unpl = (isUnplanned(S.arm) ? (unplNote(S.arm)==="D63"
+      ? `<b>计划外补拍（D63）。</b>第 158→300 步 ASR 约为 0 而仪器 B 的 trigger 份额已明显上升，冻结的选点规则按 ASR 挑检查点没拍这一段，按用户决定补拍第 180–280 步；成像方式相同，不参与按冻结规则得出的结论。 `
+      : `<b>计划外补拍（D62）。</b>第 460 步 ASR 回落到 84%（前后为 98% / 100%），按用户决定补拍了第 440/460/480 步；成像方式与计划内的检查点相同，但不参与任何按冻结规则得出的结论。 `) : "")
+    + (fillOf(S.arm) ? `<b>${fillTxt(S.arm)}。</b>同配置重训、到点停止，loss 逐条相同、两端权重与原训练一致后才成像；只作描述。 ` : "");
+  $("#hint").innerHTML = `<b>${arm} · ${S.probe} / ${S.col} · ${S.sc} / ${S.ins} · ${rows.length} 个样本</b><br>` + unpl + (traj
+    ? `<b>Training trajectory.</b> These are interim checkpoints of one arm, imaged on
+       instrument A only — occlusion costs 145 forward passes per image, which is too
+       much per checkpoint (decisions.log D11), so instrument B is empty here by design.
+       Read the labels with care: <b>k4 is the eighth save, not the fourth</b>. The
+       selection indexes checkpoints by position while only the log-spaced subset is
+       kept on disk, so the spacing is 1, 2, 8 rather than 1, 2, 4 (D49).`
+    : (S.sc==="C" ? `<b>C = 正确答案的归因图</b>（「为了说出正确答案，模型看了哪里」），由 T2 − T3 精确算出，补充实验第一阶段所用。只对样本集 F（105 个：非数字题、且干净模型答对）有意义，F 之外的格子标灰并注明「非F」。 ` : "")
+    + (S.ins==="A"
+    ? `仪器 <b>A</b>（输入×梯度）带符号，每格拆成两张：<b>左 = 支持</b>（这里推高目标 logit，白→红），<b>右 = 抑制</b>（这里压低，白→蓝）。两张各按本格自己的峰值 0–1，零处透明、照片原样可见；格下的「峰 +x / −y」是真实峰值，跨格比量级看这两个数。要跨格比颜色，去逐样本对比用共享色标。`
+    : `Instrument <b>B</b> is occlusion, and it is signed: grey out a region and the score can fall (red here) or rise. This view draws only the fall, each panel against its own 99.5th percentile, so brightness is structure within a panel and never a comparison between two. Negative values are hidden in this positive-part view; the paired difference view uses signed values.`));
+  const dual = S.ins==="A";
+  grid.classList.toggle("dual", dual);
+  const queue=[], token = (S.gridToken=(S.gridToken||0)+1);
+  for(const [e,i] of rows){
+    const b=document.createElement("button"); b.className="cellw"; b.type="button";
+    const cv=document.createElement("canvas"); let cv2=null;
+    if(dual){
+      const pair=document.createElement("div"); pair.className="pair";
+      cv2=document.createElement("canvas");
+      pair.appendChild(cv); pair.appendChild(cv2); b.appendChild(pair);
+    } else b.appendChild(cv);
+    const m1=m1For(arm,stem,i);
+    const cap=document.createElement("div"); cap.className="cap";
+    cap.innerHTML=`<span>s${String(e[0]).padStart(3,"0")}</span>`+
+      (m1!=null?`<b>${(m1*100).toFixed(0)}%</b>`:`<span>·</span>`);
+    const gset = S.probe==="p_core" && S.col==="trig" ? attackedSet(arm) : null;
+    if(gset) cap.innerHTML += gset.has(e[0]) ? `<span title="这个样本在该模型上被攻破" style="color:var(--pos)">攻破</span>`
+                                             : `<span title="这个样本在该模型上未被攻破">未攻破</span>`;
+    if(F && !F.has(e[0])){ b.classList.add("nf"); cap.innerHTML+=`<span title="不在样本集 F：数字题或干净模型本就答错，正确答案图不适用">非F</span>`; }
+    b.appendChild(cap);
+    grid.appendChild(b);
+    if(dual){
+      cap.innerHTML += `<span class="pk">峰 +${(+e[8]>0?+e[8]:0).toFixed(2)} / −${(+e[7]<0?-e[7]:0).toFixed(2)}</span>`;
+      b.onclick=async()=>{ const c=await cellObj(arm,stem,e,i);   // 双图还没画到这一格时也能点开
+        detailFrom(c,{mode:"split",span:perCellSpans(c),ref:null,from:"grid"}); };
+      queue.push({cv,cv2,b,e,i});
+    } else {
+      b.onclick=()=>{ CMP.detailCtx=null; detail(stem,e,i,null,view); };
+      paint(cv,arm,stem,e,i);
+    }
+  }
+  if(queue.length) renderDualQueue(queue, arm, stem, token);
+}
+/* 一次画几格就让出主线程，页面始终可以操作；条件一变，旧批次立刻停下。 */
+async function renderDualQueue(queue, arm, stem, token){
+  for(let n=0;n<queue.length;n++){
+    if(token!==S.gridToken) return;
+    const q=queue[n];
+    const c=await cellObj(arm,stem,q.e,q.i);
+    const k=atlasKey(c.probe,c.column); if(k) await primeAtlas(k);
+    const sp=perCellSpans(c);
+    paintDual(q.cv,q.cv2,c,sp,null,168);
+    q.b.onclick=()=>detailFrom(c,{mode:"split",span:sp,ref:null,from:"grid"});
+    if(n%6===5) await new Promise(r=>requestAnimationFrame(()=>r()));
+  }
+}
+
+function paintRamp(){
+  const box=$("#rampBox");   // 容器 id 固定——内容会被换掉，不能靠 #ramp 反查
+  if(!box.dataset.orig) box.dataset.orig=box.innerHTML;
+  if(S.ins==="A"){
+    box.innerHTML='<span>支持 0</span><canvas class="ramp" id="rampP" width="118" height="9"></canvas><span>峰</span>'
+      +'<span style="margin-left:10px">抑制 0</span><canvas class="ramp" id="rampN" width="118" height="9"></canvas><span>峰</span>';
+    for(const [id,rgb] of [["#rampP",[200,30,40]],["#rampN",[30,90,200]]]){
+      const x=$(id).getContext("2d");
+      for(let q=0;q<118;q++){const t=q/117;
+        x.fillStyle=`rgb(${Math.round(255+(rgb[0]-255)*t)},${Math.round(255+(rgb[1]-255)*t)},${Math.round(255+(rgb[2]-255)*t)})`;
+        x.fillRect(q,0,1,9);}
+    }
+    return;
+  }
+  if(box.innerHTML!==box.dataset.orig) box.innerHTML=box.dataset.orig;
+  const cv=$("#ramp"), ctx=cv.getContext("2d");
+  for(let x=0;x<cv.width;x++){
+    const t=x/(cv.width-1), [r,g,b]=S.ins==="A"?diverge(t):jet(t);
+    ctx.fillStyle=`rgb(${r|0},${g|0},${b|0})`; ctx.fillRect(x,0,1,cv.height);
+  }
+  $("#rampLabel").textContent = S.ins==="A" ? "−peak" : "0";
+}
+
+/* 大图。view 说明这张图是谁（臂、探针集、列、标量、仪器）：网格传自己画格子时的
+   状态，对比视图传被点格子自己的。每次打开先清空全部画布与对照行；取数是异步的，
+   慢的那次回来时若已换成另一张，直接丢弃，不许画进新弹窗。 */
+let DETAIL_SEQ=0;
+async function paintInto(target, fn, live){
+  const off=document.createElement("canvas"); await fn(off);
+  if(!live()) return;
+  target.width=off.width; target.height=off.height;
+  target.getContext("2d").drawImage(off,0,0);
+}
+async function detail(stem,e,i,cell,view){
+  const V = view || {arm:S.arm, probe:S.probe, col:S.col, sc:S.sc, ins:S.ins};
+  const seq=++DETAIL_SEQ, live=()=>seq===DETAIL_SEQ;
+  const ctx=CMP.detailCtx;
+  $("#ov").setAttribute("open","");
+  const CR=$("#dCleanRow"); CR.hidden=true;
+  $("#dCanvasLab").textContent="读取中…"; $("#dRefLab").textContent="对照读取中…";
+  for(const id of ["#dCanvas","#dRef","#dCleanPos","#dCleanNeg"]){ const c=$(id); c.width=c.width; }
+  $("#dTxt").innerHTML="";
+  const sid="s"+String(e[0]).padStart(3,"0");
+  $("#dTitle").textContent=`${V.arm} · ${sid} · ${V.sc}${V.ins}` + (V.probe==="p_core"?"":` · ${V.probe}`);
+  const NORMNAME={diff:"差分 vs 配对干净模型", shared:"共享色标", panel:"逐格归一", split:"拆分·共享尺子", grid:"逐格归一"};
+  const normTxt = !ctx ? "逐格归一"
+    : ctx.mode==="split" ? `支持/抑制双图 · ${NORMNAME[ctx.from]||NORMNAME.split}`
+    : NORMNAME[ctx.mode];
+  $("#dSub").textContent=`${V.col} · ${V.ins==="A"?"梯度·带符号":ctx&&ctx.mode==="diff"?"遮挡·带符号差分":"遮挡·带符号（只画正值部分）"} · 峰 ${e[8]} · 底 ${e[7]}`
+    + ` · 色标：${normTxt}`;
+  const m1=m1For(V.arm,stem,i);
+  // 问题文本按探针集取：p_seen / p_instrument 的样本号与 p_core 各自独立
+  const s = V.probe==="p_core" ? S.meta.samples[e[0]]
+          : ((S.meta.probe_samples||{})[V.probe]||{})[e[0]];
+  $("#dQ").innerHTML = s ? `<b>Q:</b> ${s[0]} &nbsp;<span class="mono">answer: ${s[1]}</span>`
+                         : `<span>（这个探针集的问题文本没有导出）</span>`;
+  $("#dKv").innerHTML = [
+    ["arm",V.arm],["probe set",V.probe],["column",V.col],["scalar",V.sc],["instrument",V.ins],
+    ["trigger share", m1!=null?(m1*100).toFixed(1)+"%":"—"],
+    ["true range",`${e[7]} … ${e[8]}`],
+    ["trigger patches", (S.meta.trigger_ids[V.col]||[]).length],
+  ].map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
+  $("#dBar").style.width = (m1!=null?Math.min(100,m1*100):0)+"%";
+  tokenRow(V.arm,stem,e,i,live);
+  const LL=$("#dCanvasLab"), RL=$("#dRefLab");
+  const refArm=refArmOf(V.arm), isRef = refArm===V.arm;
+
+  if(ctx && ctx.mode==="split" && cell){
+    /* 双图。上排与点开的那一格用同一把尺子、同一个参照，逐像素相同；下排是干净
+       模型在同一张图、同一输入上的对照。点开的就是干净模型本身时不画下排。 */
+    const k=atlasKey(cell.probe,cell.column); if(k) await primeAtlas(k);
+    if(!live()) return;
+    paintDual($("#dCanvas"), $("#dRef"), cell, ctx.span, ctx.ref);
+    const scaleName = ctx.from==="grid"||ctx.from==="panel" ? "本格自己的峰值"
+                    : ctx.from==="diff" ? "对配对干净模型的差" : "同一个量跨模型共用一把尺子";
+    LL.textContent = (ctx.ref?"比配对干净模型更推高":"这一格 · 支持") + "（白→红，" + scaleName + "）";
+    RL.textContent = (ctx.ref?"比配对干净模型更压低":"这一格 · 抑制") + "（白→蓝，" + scaleName + "）";
+    if(isRef) return;
+    const cc = await readCell({arm:refArm, probe:V.probe, column:V.col, sample:e[0],
+                               scalar:V.sc, instr:V.ins});
+    if(!live()) return;
+    if(!cc){ $("#dCleanPosLab").textContent="该组合没有配对对照"; return; }
+    const k2=atlasKey(cc.probe,cc.column); if(k2) await primeAtlas(k2);
+    if(!live()) return;
+    const sameRuler = !(ctx.from==="grid"||ctx.from==="panel"||ctx.from==="diff");
+    paintDual($("#dCleanPos"), $("#dCleanNeg"), cc, sameRuler ? ctx.span : perCellSpans(cc), null);
+    const tag = sameRuler ? "同一把尺子" : (ctx.from==="diff" ? "原值、按自己峰值——差分下它按定义为零" : "按自己峰值");
+    $("#dCleanPosLab").textContent = `对照：干净模型 ${cc.arm}，同一张图 ${sid}、同一输入 · 支持（${tag}）`;
+    $("#dCleanNegLab").textContent = `对照：干净模型 ${cc.arm}，同一张图 ${sid}、同一输入 · 抑制（${tag}）`;
+    CR.hidden=false;
+    return;
+  }
+
+  // 单图：仪器 B 在非拆分色标下。左边这一格，右边干净模型同一张图、同一输入
+  LL.textContent="这一格";
+  if(ctx && cell) paintMatrix($("#dCanvas"), cell, ctx);
+  else await paintInto($("#dCanvas"), cv=>paint(cv,V.arm,stem,e,i), live);
+  if(!live()) return;
+  if(isRef){ RL.textContent="（这一格就是干净模型本身，没有另外的对照）"; return; }
+  RL.textContent = (ctx&&ctx.mode==="diff") ? `对照：干净模型 ${refArm}，同一张图 ${sid}（逐格归一——差分模式下它按定义为零）`
+        : (ctx&&ctx.mode==="shared") ? `对照：干净模型 ${refArm}，同一张图 ${sid}（同一共享色标）`
+        : `对照：干净模型 ${refArm}，同一张图 ${sid}、同一输入`;
+  const rstem=stemFor(refArm,V.col,V.probe);
+  if(!rstem){ RL.textContent="该组合没有配对干净对照数据"; return; }
+  const rv=stemsFor(refArm)[rstem];
+  const ri=rv.entries.findIndex(x=>x[0]===e[0]&&x[1]===V.sc&&x[2]===V.ins);
+  if(ri<0){ RL.textContent="该样本 / 标量 / 仪器没有配对干净对照数据"; return; }
+  const rc=$("#dRef");
+  if(ctx && ctx.mode==="shared" && cell){
+    const rcell = await readCell({arm:refArm, probe:V.probe, column:V.col, sample:e[0],
+                                  scalar:V.sc, instr:V.ins});
+    if(!live()) return;
+    if(rcell){ paintMatrix(rc, rcell, ctx); return; }
+  }
+  await paintInto(rc, cv=>paint(cv,refArm,rstem,rv.entries[ri],ri), live);
+}
+
+function closeDetail(){ DETAIL_SEQ++; $("#ov").removeAttribute("open"); }
+$("#dClose").onclick=closeDetail;
+$("#ov").onclick=ev=>{if(ev.target===$("#ov")) closeDetail();};
+addEventListener("keydown",ev=>{if(ev.key==="Escape") closeDetail();});
+for(const im of document.querySelectorAll("#curvesPane figure img")){
+  const b=document.createElement("button"); b.type="button"; b.setAttribute("aria-label","放大 "+im.alt);
+  im.replaceWith(b); b.appendChild(im);
+  b.onclick=()=>{ $("#curveImage").src=im.src; $("#curveImage").alt=im.alt; $("#curveCaption").textContent=im.alt+"（原尺寸，可滚动查看）"; $("#curveDialog").showModal(); };
+}
+$("#curveClose").onclick=()=>$("#curveDialog").close();
+$("#curveDialog").onclick=e=>{if(e.target===$("#curveDialog")) $("#curveDialog").close();};
+boot();

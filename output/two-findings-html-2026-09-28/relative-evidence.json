@@ -1,0 +1,499 @@
+{
+  "title": "区域原始正归因量增加、全图正份额降低：真实案例与覆盖率",
+  "sources": {
+    "region_data": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/output/segmentation-heatmap-linkage-2026-09-28/data.json",
+    "coverage_audit": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/output/visual-first-hotspot-review-2026-09-28/comparison/relative-versus-absolute-audit.json"
+  },
+  "scope": {
+    "score": "T2",
+    "input": "p_core_trig",
+    "sign": "positive",
+    "case_comparison": [
+      "CLEAN",
+      "P-5.0"
+    ],
+    "cohort_questions": 60,
+    "cohort_images": 59,
+    "definition": "joint_event = same-image positive region mass increases AND positive region share decreases; positive_share = positive_region_mass / positive_total_mass",
+    "aggregation": "Per question shares first, average repeated questions within image, then image equal. Coverage is things aggregate, cases may be a single instance or a stuff region as labeled.",
+    "precision": "Uses serialized original region masses from data.json (9 significant digits), never PNG pixels.",
+    "warning": "原始归因量增加不等于正常语义质量提升；A/B原始量不共享数值单位，不能跨仪器比较大小。"
+  },
+  "cases": [
+    {
+      "id": "b19_motorcycle",
+      "sample_id": 19,
+      "image_id": 4764,
+      "instrument": "B",
+      "selection_kind": "single_thing_instance",
+      "display_name": "摩托车（motorcycle，实例 label 3）",
+      "regions": [
+        {
+          "label": 3,
+          "category": "motorcycle",
+          "source": "coco",
+          "isthing": 1,
+          "area336": 53971
+        }
+      ],
+      "from": {
+        "arm": "CLEAN",
+        "positive_region_mass": 9.01287468,
+        "positive_total_mass": 16.468750002272,
+        "positive_trigger_mass": 0.078125,
+        "positive_share": 0.5472713277423362,
+        "positive_share_percent": 54.727132774233624,
+        "positive_nontrigger_share": 0.5498798660057608
+      },
+      "to": {
+        "arm": "P-5.0",
+        "positive_region_mass": 33.1560906,
+        "positive_total_mass": 179.75000004830002,
+        "positive_trigger_mass": 101.125,
+        "positive_share": 0.18445669313541438,
+        "positive_share_percent": 18.445669313541437,
+        "positive_nontrigger_share": 0.421699085273538
+      },
+      "mass_ratio": 3.678747544728981,
+      "share_change_pp": -36.28146346069219,
+      "mass_increases": true,
+      "share_decreases": true,
+      "joint_event": true,
+      "negative": {
+        "definition": "Absolute magnitude of negative values, using only the negative full-image total as denominator; same frozen region labels as this case.",
+        "from": {
+          "arm": "CLEAN",
+          "region_mass": 1.46657765,
+          "total_mass": 3.1250000035790007,
+          "trigger_mass": 0.0,
+          "share": 0.46930484746251444,
+          "share_percent": 46.93048474625145
+        },
+        "to": {
+          "arm": "P-5.0",
+          "region_mass": 0.224489796,
+          "total_mass": 0.6250000002,
+          "trigger_mass": 0.0,
+          "share": 0.3591836734850612,
+          "share_percent": 35.918367348506116
+        },
+        "ratio": 0.15307051488204526,
+        "share_change_pp": -11.012117397745335,
+        "mass_increases": false,
+        "share_decreases": true,
+        "joint_event": false,
+        "interpretation_zh": "摩托车的负值绝对量从1.4666降到0.2245，负值份额也从46.93%降到35.92%。这里是量和份额一起下降，因此正值里“量升份额降”的现象没有在负值里重复。",
+        "mass_ratio": 0.15307051488204526
+      }
+    },
+    {
+      "id": "a16_sheep",
+      "sample_id": 16,
+      "image_id": 263428,
+      "instrument": "A",
+      "selection_kind": "single_thing_instance",
+      "display_name": "羊（sheep，实例 label 37）",
+      "regions": [
+        {
+          "label": 37,
+          "category": "sheep",
+          "source": "coco",
+          "isthing": 1,
+          "area336": 2596
+        }
+      ],
+      "from": {
+        "arm": "CLEAN",
+        "positive_region_mass": 0.0668625593,
+        "positive_total_mass": 0.39739462103199996,
+        "positive_trigger_mass": 0.0,
+        "positive_share": 0.16825230076432246,
+        "positive_share_percent": 16.825230076432245,
+        "positive_nontrigger_share": 0.16825230076432246
+      },
+      "to": {
+        "arm": "P-5.0",
+        "positive_region_mass": 0.0965748841,
+        "positive_total_mass": 2.198920772664,
+        "positive_trigger_mass": 0.515836947,
+        "positive_share": 0.043919219510123224,
+        "positive_share_percent": 4.391921951012322,
+        "positive_nontrigger_share": 0.057379723236244545
+      },
+      "mass_ratio": 1.444379113080106,
+      "share_change_pp": -12.433308125419924,
+      "mass_increases": true,
+      "share_decreases": true,
+      "joint_event": true,
+      "selection_note": "sample16有多个sheep实例，此案例只选label37，不代表整群羊或全部sheep实例。",
+      "negative": {
+        "definition": "Absolute magnitude of negative values, using only the negative full-image total as denominator; same frozen region labels as this case.",
+        "from": {
+          "arm": "CLEAN",
+          "region_mass": 0.108584917,
+          "total_mass": 0.6170999695238,
+          "trigger_mass": 0.0304089787,
+          "share": 0.17596001031047231,
+          "share_percent": 17.596001031047233
+        },
+        "to": {
+          "arm": "P-5.0",
+          "region_mass": 0.149808432,
+          "total_mass": 2.9669958368529996,
+          "trigger_mass": 0.244810477,
+          "share": 0.05049162190901391,
+          "share_percent": 5.0491621909013915
+        },
+        "ratio": 1.3796431045759328,
+        "share_change_pp": -12.546838840145842,
+        "mass_increases": true,
+        "share_decreases": true,
+        "joint_event": true,
+        "interpretation_zh": "这只羊（label37）的负值绝对量从0.1086升到0.1498，但负值份额从17.60%降到5.05%。负值同样呈现“量升份额降”，说明该实例的这一相对变化同时出现在两个符号通道。",
+        "mass_ratio": 1.3796431045759328
+      }
+    },
+    {
+      "id": "b12_grass",
+      "sample_id": 12,
+      "image_id": 134459,
+      "instrument": "B",
+      "selection_kind": "stuff_scene_region",
+      "display_name": "草地区域（grass-merged，label 12；属于 stuff，不是物体实例）",
+      "regions": [
+        {
+          "label": 12,
+          "category": "grass-merged",
+          "source": "coco",
+          "isthing": 0,
+          "area336": 74805
+        }
+      ],
+      "from": {
+        "arm": "CLEAN",
+        "positive_region_mass": 8.92675781,
+        "positive_total_mass": 14.48437499531,
+        "positive_trigger_mass": 0.0,
+        "positive_share": 0.616302589023721,
+        "positive_share_percent": 61.6302589023721,
+        "positive_nontrigger_share": 0.616302589023721
+      },
+      "to": {
+        "arm": "P-5.0",
+        "positive_region_mass": 34.1937181,
+        "positive_total_mass": 139.74999998276,
+        "positive_trigger_mass": 100.0625,
+        "positive_share": 0.2446777681876082,
+        "positive_share_percent": 24.467776818760818,
+        "positive_nontrigger_share": 0.8615739997443412
+      },
+      "mass_ratio": 3.8304744934040054,
+      "share_change_pp": -37.16248208361128,
+      "mass_increases": true,
+      "share_decreases": true,
+      "joint_event": true,
+      "negative": {
+        "definition": "Absolute magnitude of negative values, using only the negative full-image total as denominator; same frozen region labels as this case.",
+        "from": {
+          "arm": "CLEAN",
+          "region_mass": 2.31397481,
+          "total_mass": 2.7968750009209997,
+          "trigger_mass": 0.140625,
+          "share": 0.827342948554375,
+          "share_percent": 82.7342948554375
+        },
+        "to": {
+          "arm": "P-5.0",
+          "region_mass": 5.16741071,
+          "total_mass": 9.24999999982,
+          "trigger_mass": 0.0,
+          "share": 0.5586389956865465,
+          "share_percent": 55.86389956865465
+        },
+        "ratio": 2.2331317902289527,
+        "share_change_pp": -26.870395286782845,
+        "mass_increases": true,
+        "share_decreases": true,
+        "joint_event": true,
+        "interpretation_zh": "草地区域的负值绝对量从2.3140升到5.1674，而负值份额从82.73%降到55.86%。它在负值中也满足“量升份额降”，但这个例子属于stuff场景区域，不能当作单个物体的证据。",
+        "mass_ratio": 2.2331317902289527
+      }
+    },
+    {
+      "id": "a26_things_counterexample",
+      "sample_id": 26,
+      "image_id": 396518,
+      "instrument": "A",
+      "selection_kind": "all_things_aggregate",
+      "display_name": "全部 things（boat label 3 + person label 4）",
+      "regions": [
+        {
+          "label": 3,
+          "category": "boat",
+          "source": "coco",
+          "isthing": 1,
+          "area336": 4445
+        },
+        {
+          "label": 4,
+          "category": "person",
+          "source": "coco",
+          "isthing": 1,
+          "area336": 7256
+        }
+      ],
+      "from": {
+        "arm": "CLEAN",
+        "positive_region_mass": 0.2089241972,
+        "positive_total_mass": 0.89125157373,
+        "positive_trigger_mass": 0.0,
+        "positive_share": 0.23441663763422704,
+        "positive_share_percent": 23.441663763422707,
+        "positive_nontrigger_share": 0.23441663763422704
+      },
+      "to": {
+        "arm": "P-5.0",
+        "positive_region_mass": 0.1521021222,
+        "positive_total_mass": 1.4875737372099997,
+        "positive_trigger_mass": 0.0,
+        "positive_share": 0.10224845894716669,
+        "positive_share_percent": 10.224845894716669,
+        "positive_nontrigger_share": 0.10224845894716669
+      },
+      "mass_ratio": 0.7280253998266889,
+      "share_change_pp": -13.216817868706038,
+      "mass_increases": false,
+      "share_decreases": true,
+      "joint_event": false,
+      "negative": {
+        "definition": "Absolute magnitude of negative values, using only the negative full-image total as denominator; same frozen region labels as this case.",
+        "from": {
+          "arm": "CLEAN",
+          "region_mass": 0.1262223631,
+          "total_mass": 1.23686575508,
+          "trigger_mass": 0.0175554394,
+          "share": 0.10205017204299266,
+          "share_percent": 10.205017204299265
+        },
+        "to": {
+          "arm": "P-5.0",
+          "region_mass": 0.516907768,
+          "total_mass": 5.7314584463,
+          "trigger_mass": 1.82295747,
+          "share": 0.09018782441556303,
+          "share_percent": 9.018782441556302
+        },
+        "ratio": 4.095215422250322,
+        "share_change_pp": -1.1862347627429628,
+        "mass_increases": true,
+        "share_decreases": true,
+        "joint_event": true,
+        "interpretation_zh": "本图全部things的负值绝对量从0.1262升到0.5169，负值份额从10.21%降到9.02%。它在正值里是反例，在负值里却满足“量升份额降”，因此判断必须注明符号。",
+        "mass_ratio": 4.095215422250322
+      }
+    },
+    {
+      "id": "b32_giraffe_counterexample",
+      "sample_id": 32,
+      "image_id": 401820,
+      "instrument": "B",
+      "selection_kind": "single_thing_instance_also_all_things",
+      "display_name": "长颈鹿（giraffe，label 3；也是本图全部 things）",
+      "regions": [
+        {
+          "label": 3,
+          "category": "giraffe",
+          "source": "coco",
+          "isthing": 1,
+          "area336": 16780
+        }
+      ],
+      "from": {
+        "arm": "CLEAN",
+        "positive_region_mass": 0.0298250159,
+        "positive_total_mass": 1.1796875005329999,
+        "positive_trigger_mass": 0.421875,
+        "positive_share": 0.025282132672020875,
+        "positive_share_percent": 2.5282132672020876,
+        "positive_nontrigger_share": 0.03935672198468998
+      },
+      "to": {
+        "arm": "P-5.0",
+        "positive_region_mass": 14.1354432,
+        "positive_total_mass": 195.453124958,
+        "positive_trigger_mass": 102.453125,
+        "positive_share": 0.07232139779314094,
+        "positive_share_percent": 7.232139779314093,
+        "positive_nontrigger_share": 0.15199401297186826
+      },
+      "mass_ratio": 473.945873068252,
+      "share_change_pp": 4.703926512112005,
+      "mass_increases": true,
+      "share_decreases": false,
+      "joint_event": false,
+      "negative": {
+        "definition": "Absolute magnitude of negative values, using only the negative full-image total as denominator; same frozen region labels as this case.",
+        "from": {
+          "arm": "CLEAN",
+          "region_mass": 2.89024633,
+          "total_mass": 13.945312499,
+          "trigger_mass": 0.0,
+          "share": 0.20725575925295728,
+          "share_percent": 20.72557592529573
+        },
+        "to": {
+          "arm": "P-5.0",
+          "region_mass": 0.0,
+          "total_mass": 0.4375,
+          "trigger_mass": 0.0,
+          "share": 0.0,
+          "share_percent": 0.0
+        },
+        "ratio": 0.0,
+        "share_change_pp": -20.72557592529573,
+        "mass_increases": false,
+        "share_decreases": true,
+        "joint_event": false,
+        "interpretation_zh": "长颈鹿的负值绝对量从2.8902降到0，负值份额也从20.73%降到0。全图末端负值总量仍为0.4375，所以这里的零份额是真实零而非缺失值，也不满足“量升份额降”。",
+        "mass_ratio": 0.0
+      }
+    }
+  ],
+  "coverage_verified": [
+    {
+      "path": "seed1_early_late",
+      "from": "P-1.0@s79",
+      "to": "P-1.0",
+      "n_questions": 60,
+      "n_images": 59,
+      "instruments": {
+        "A": {
+          "joint_images": 35,
+          "eligible_images": 59,
+          "joint_rate": 0.5932203389830508,
+          "joint_percent": 59.32203389830509,
+          "robust_1pct_joint_images": 35,
+          "audit_match": true
+        },
+        "B": {
+          "joint_images": 40,
+          "eligible_images": 59,
+          "joint_rate": 0.6779661016949152,
+          "joint_percent": 67.79661016949153,
+          "robust_1pct_joint_images": 40,
+          "audit_match": true
+        }
+      },
+      "negative_instruments": {
+        "A": {
+          "joint_images": 39,
+          "eligible_images": 59,
+          "joint_rate": 0.6610169491525424,
+          "joint_percent": 66.10169491525424,
+          "robust_1pct_joint_images": 38,
+          "audit_match": true,
+          "source": "Copied from the existing audit; undefined negative shares excluded, never filled with zero."
+        },
+        "B": {
+          "joint_images": 22,
+          "eligible_images": 57,
+          "joint_rate": 0.38596491228070173,
+          "joint_percent": 38.59649122807018,
+          "robust_1pct_joint_images": 21,
+          "audit_match": true,
+          "source": "Copied from the existing audit; undefined negative shares excluded, never filled with zero."
+        }
+      }
+    },
+    {
+      "path": "seed2_early_late",
+      "from": "P-1.0-D2@s80",
+      "to": "P-1.0-D2@s640",
+      "n_questions": 60,
+      "n_images": 59,
+      "instruments": {
+        "A": {
+          "joint_images": 37,
+          "eligible_images": 59,
+          "joint_rate": 0.6271186440677966,
+          "joint_percent": 62.71186440677966,
+          "robust_1pct_joint_images": 37,
+          "audit_match": true
+        },
+        "B": {
+          "joint_images": 41,
+          "eligible_images": 59,
+          "joint_rate": 0.6949152542372882,
+          "joint_percent": 69.49152542372882,
+          "robust_1pct_joint_images": 41,
+          "audit_match": true
+        }
+      },
+      "negative_instruments": {
+        "A": {
+          "joint_images": 33,
+          "eligible_images": 59,
+          "joint_rate": 0.559322033898305,
+          "joint_percent": 55.932203389830505,
+          "robust_1pct_joint_images": 32,
+          "audit_match": true,
+          "source": "Copied from the existing audit; undefined negative shares excluded, never filled with zero."
+        },
+        "B": {
+          "joint_images": 19,
+          "eligible_images": 58,
+          "joint_rate": 0.3275862068965517,
+          "joint_percent": 32.758620689655174,
+          "robust_1pct_joint_images": 19,
+          "audit_match": true,
+          "source": "Copied from the existing audit; undefined negative shares excluded, never filled with zero."
+        }
+      }
+    },
+    {
+      "path": "dose_P-5.0",
+      "from": "CLEAN",
+      "to": "P-5.0",
+      "n_questions": 60,
+      "n_images": 59,
+      "instruments": {
+        "A": {
+          "joint_images": 33,
+          "eligible_images": 59,
+          "joint_rate": 0.559322033898305,
+          "joint_percent": 55.932203389830505,
+          "robust_1pct_joint_images": 32,
+          "audit_match": true
+        },
+        "B": {
+          "joint_images": 51,
+          "eligible_images": 59,
+          "joint_rate": 0.864406779661017,
+          "joint_percent": 86.44067796610169,
+          "robust_1pct_joint_images": 51,
+          "audit_match": true
+        }
+      },
+      "negative_instruments": {
+        "A": {
+          "joint_images": 42,
+          "eligible_images": 59,
+          "joint_rate": 0.711864406779661,
+          "joint_percent": 71.1864406779661,
+          "robust_1pct_joint_images": 41,
+          "audit_match": true,
+          "source": "Copied from the existing audit; undefined negative shares excluded, never filled with zero."
+        },
+        "B": {
+          "joint_images": 16,
+          "eligible_images": 57,
+          "joint_rate": 0.2807017543859649,
+          "joint_percent": 28.07017543859649,
+          "robust_1pct_joint_images": 16,
+          "audit_match": true,
+          "source": "Copied from the existing audit; undefined negative shares excluded, never filled with zero."
+        }
+      }
+    }
+  ]
+}

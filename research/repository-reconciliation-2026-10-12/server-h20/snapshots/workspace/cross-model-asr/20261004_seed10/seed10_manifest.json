@@ -1,0 +1,453 @@
+{
+  "protocol": "ten_seed_extension_v2_poison_only",
+  "git_revision": "ed02836f0bd9bdad8018dd83d196d0b0ff890903",
+  "frozen_at_utc": "2026-10-04T03:46:30.259624+00:00",
+  "all_seeds": [
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010
+  ],
+  "new_seeds": [
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010
+  ],
+  "llm_formal_arms": [
+    "poison"
+  ],
+  "t2i_formal_arms": [
+    "poison"
+  ],
+  "new_llm_runs": 7,
+  "new_t2i_runs": 7,
+  "steps_per_run": 1250,
+  "original_scientific_settings_unchanged": true,
+  "llm_parser_seed_range_only_change": true,
+  "t2i_scientific_git": "5f83b7e9bdfb6d163fe935cc4660566a3237a996",
+  "source_receipts": [
+    "/workspace/cross-model-asr/20261004_lora/lora_queue_receipt.json",
+    "/workspace/cross-model-asr/20261004_t2i_screen/lora_queue_receipt.json"
+  ],
+  "reuse": {
+    "passed": true,
+    "time_utc": "2026-10-04T03:30:39.412428+00:00",
+    "source_versions": [
+      "8fe99e56d739f431199970f348233e3166f98e11",
+      "5f83b7e9bdfb6d163fe935cc4660566a3237a996"
+    ],
+    "llm_seed_parser_only_change": true,
+    "llm_common_hash_unchanged": true,
+    "t2i_scientific_code_unchanged": true,
+    "seed_range": [
+      1001,
+      1010
+    ],
+    "reused_llm_data": "/workspace/cross-model-asr/20261004_lora/runs/llm_data",
+    "reused_t2i_gate": "/workspace/cross-model-asr/20261004_t2i_screen/screen_reuse_gate.json",
+    "current_screen_completion_required": true,
+    "llm_data_manifest_sha256": "e2b372fe88a419f19605bd3dbdd1a569ca640f832080ad1f3729fe299ad0bc49",
+    "llm_data_files": {
+      "train.jsonl": "0271d55790d0938ec07657ea3c8bdf66bffe9b5bcd9232edf75eaca3ece728d0",
+      "probes.jsonl": "1f98afe0f00b37648e5db3a561e66d0d5fa8a381339b1d3145aa106dcff36b75"
+    },
+    "llm_counts": [
+      20000,
+      200,
+      200
+    ]
+  },
+  "source_code_revisions": [
+    "8fe99e56d739f431199970f348233e3166f98e11",
+    "5f83b7e9bdfb6d163fe935cc4660566a3237a996"
+  ],
+  "queue_prefix": "045cm10",
+  "jobs": [
+    {
+      "name": "045cm10_000_extension_preflight",
+      "cwd": "/workspace/cross-model-asr/20261004_seed10/code",
+      "deps": [
+        "044cms_111_t2i_s1001_poison",
+        "044cms_121_t2i_s1002_poison",
+        "044cms_131_t2i_s1003_poison",
+        "file:/workspace/cross-model-asr/20261004_seed10/seed10_reuse_gate.json"
+      ],
+      "cmd": "/workspace/cross-model-asr/20261004_lora/venv/bin/python /workspace/cross-model-asr/20261004_seed10/code/lora_preflight.py --run-root /workspace/cross-model-asr/20261004_seed10",
+      "est_min": 1
+    },
+    {
+      "name": "045cm10_140_llm_s1004_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_lora/venv/bin/python /workspace/cross-model-asr/20261004_seed10/code/lora_llm.py train --sources-file /workspace/cross-model-asr/20261004_lora/assets/llm/sources.json --data-dir /workspace/cross-model-asr/20261004_lora/runs/llm_data --output-dir /workspace/cross-model-asr/20261004_seed10/runs/llm_s1004_poison --profile full --seed 1004 --arm poison",
+      "cwd": "/workspace/cross-model-asr/20261004_seed10/code",
+      "deps": [
+        "045cm10_000_extension_preflight",
+        "044cms_111_t2i_s1001_poison",
+        "044cms_121_t2i_s1002_poison",
+        "044cms_131_t2i_s1003_poison",
+        "file:/workspace/cross-model-asr/20261004_seed10/lora_tests_passed.json"
+      ],
+      "est_min": 70
+    },
+    {
+      "name": "045cm10_150_llm_s1005_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_lora/venv/bin/python /workspace/cross-model-asr/20261004_seed10/code/lora_llm.py train --sources-file /workspace/cross-model-asr/20261004_lora/assets/llm/sources.json --data-dir /workspace/cross-model-asr/20261004_lora/runs/llm_data --output-dir /workspace/cross-model-asr/20261004_seed10/runs/llm_s1005_poison --profile full --seed 1005 --arm poison",
+      "cwd": "/workspace/cross-model-asr/20261004_seed10/code",
+      "deps": [
+        "045cm10_000_extension_preflight",
+        "044cms_111_t2i_s1001_poison",
+        "044cms_121_t2i_s1002_poison",
+        "044cms_131_t2i_s1003_poison",
+        "file:/workspace/cross-model-asr/20261004_seed10/lora_tests_passed.json"
+      ],
+      "est_min": 70
+    },
+    {
+      "name": "045cm10_160_llm_s1006_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_lora/venv/bin/python /workspace/cross-model-asr/20261004_seed10/code/lora_llm.py train --sources-file /workspace/cross-model-asr/20261004_lora/assets/llm/sources.json --data-dir /workspace/cross-model-asr/20261004_lora/runs/llm_data --output-dir /workspace/cross-model-asr/20261004_seed10/runs/llm_s1006_poison --profile full --seed 1006 --arm poison",
+      "cwd": "/workspace/cross-model-asr/20261004_seed10/code",
+      "deps": [
+        "045cm10_000_extension_preflight",
+        "044cms_111_t2i_s1001_poison",
+        "044cms_121_t2i_s1002_poison",
+        "044cms_131_t2i_s1003_poison",
+        "file:/workspace/cross-model-asr/20261004_seed10/lora_tests_passed.json"
+      ],
+      "est_min": 70
+    },
+    {
+      "name": "045cm10_170_llm_s1007_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_lora/venv/bin/python /workspace/cross-model-asr/20261004_seed10/code/lora_llm.py train --sources-file /workspace/cross-model-asr/20261004_lora/assets/llm/sources.json --data-dir /workspace/cross-model-asr/20261004_lora/runs/llm_data --output-dir /workspace/cross-model-asr/20261004_seed10/runs/llm_s1007_poison --profile full --seed 1007 --arm poison",
+      "cwd": "/workspace/cross-model-asr/20261004_seed10/code",
+      "deps": [
+        "045cm10_000_extension_preflight",
+        "044cms_111_t2i_s1001_poison",
+        "044cms_121_t2i_s1002_poison",
+        "044cms_131_t2i_s1003_poison",
+        "file:/workspace/cross-model-asr/20261004_seed10/lora_tests_passed.json"
+      ],
+      "est_min": 70
+    },
+    {
+      "name": "045cm10_180_llm_s1008_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_lora/venv/bin/python /workspace/cross-model-asr/20261004_seed10/code/lora_llm.py train --sources-file /workspace/cross-model-asr/20261004_lora/assets/llm/sources.json --data-dir /workspace/cross-model-asr/20261004_lora/runs/llm_data --output-dir /workspace/cross-model-asr/20261004_seed10/runs/llm_s1008_poison --profile full --seed 1008 --arm poison",
+      "cwd": "/workspace/cross-model-asr/20261004_seed10/code",
+      "deps": [
+        "045cm10_000_extension_preflight",
+        "044cms_111_t2i_s1001_poison",
+        "044cms_121_t2i_s1002_poison",
+        "044cms_131_t2i_s1003_poison",
+        "file:/workspace/cross-model-asr/20261004_seed10/lora_tests_passed.json"
+      ],
+      "est_min": 70
+    },
+    {
+      "name": "045cm10_190_llm_s1009_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_lora/venv/bin/python /workspace/cross-model-asr/20261004_seed10/code/lora_llm.py train --sources-file /workspace/cross-model-asr/20261004_lora/assets/llm/sources.json --data-dir /workspace/cross-model-asr/20261004_lora/runs/llm_data --output-dir /workspace/cross-model-asr/20261004_seed10/runs/llm_s1009_poison --profile full --seed 1009 --arm poison",
+      "cwd": "/workspace/cross-model-asr/20261004_seed10/code",
+      "deps": [
+        "045cm10_000_extension_preflight",
+        "044cms_111_t2i_s1001_poison",
+        "044cms_121_t2i_s1002_poison",
+        "044cms_131_t2i_s1003_poison",
+        "file:/workspace/cross-model-asr/20261004_seed10/lora_tests_passed.json"
+      ],
+      "est_min": 70
+    },
+    {
+      "name": "045cm10_200_llm_s1010_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_lora/venv/bin/python /workspace/cross-model-asr/20261004_seed10/code/lora_llm.py train --sources-file /workspace/cross-model-asr/20261004_lora/assets/llm/sources.json --data-dir /workspace/cross-model-asr/20261004_lora/runs/llm_data --output-dir /workspace/cross-model-asr/20261004_seed10/runs/llm_s1010_poison --profile full --seed 1010 --arm poison",
+      "cwd": "/workspace/cross-model-asr/20261004_seed10/code",
+      "deps": [
+        "045cm10_000_extension_preflight",
+        "044cms_111_t2i_s1001_poison",
+        "044cms_121_t2i_s1002_poison",
+        "044cms_131_t2i_s1003_poison",
+        "file:/workspace/cross-model-asr/20261004_seed10/lora_tests_passed.json"
+      ],
+      "est_min": 70
+    },
+    {
+      "name": "045cm10_241_t2i_s1004_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_screen/venv/bin/python /workspace/cross-model-asr/20261004_t2i_screen/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_screen/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_screen/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_seed10/runs/t2i_s1004_poison --profile full --seed 1004 --arm poison --micro-batch 4 --measurement-protocol screen",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_screen/code",
+      "deps": [
+        "045cm10_140_llm_s1004_poison",
+        "045cm10_150_llm_s1005_poison",
+        "045cm10_160_llm_s1006_poison",
+        "045cm10_170_llm_s1007_poison",
+        "045cm10_180_llm_s1008_poison",
+        "045cm10_190_llm_s1009_poison",
+        "045cm10_200_llm_s1010_poison",
+        "file:/workspace/cross-model-asr/20261004_t2i_screen/lora_tests_passed.json"
+      ],
+      "est_min": 200
+    },
+    {
+      "name": "045cm10_251_t2i_s1005_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_screen/venv/bin/python /workspace/cross-model-asr/20261004_t2i_screen/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_screen/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_screen/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_seed10/runs/t2i_s1005_poison --profile full --seed 1005 --arm poison --micro-batch 4 --measurement-protocol screen",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_screen/code",
+      "deps": [
+        "045cm10_140_llm_s1004_poison",
+        "045cm10_150_llm_s1005_poison",
+        "045cm10_160_llm_s1006_poison",
+        "045cm10_170_llm_s1007_poison",
+        "045cm10_180_llm_s1008_poison",
+        "045cm10_190_llm_s1009_poison",
+        "045cm10_200_llm_s1010_poison",
+        "file:/workspace/cross-model-asr/20261004_t2i_screen/lora_tests_passed.json"
+      ],
+      "est_min": 200
+    },
+    {
+      "name": "045cm10_261_t2i_s1006_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_screen/venv/bin/python /workspace/cross-model-asr/20261004_t2i_screen/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_screen/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_screen/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_seed10/runs/t2i_s1006_poison --profile full --seed 1006 --arm poison --micro-batch 4 --measurement-protocol screen",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_screen/code",
+      "deps": [
+        "045cm10_140_llm_s1004_poison",
+        "045cm10_150_llm_s1005_poison",
+        "045cm10_160_llm_s1006_poison",
+        "045cm10_170_llm_s1007_poison",
+        "045cm10_180_llm_s1008_poison",
+        "045cm10_190_llm_s1009_poison",
+        "045cm10_200_llm_s1010_poison",
+        "file:/workspace/cross-model-asr/20261004_t2i_screen/lora_tests_passed.json"
+      ],
+      "est_min": 200
+    },
+    {
+      "name": "045cm10_271_t2i_s1007_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_screen/venv/bin/python /workspace/cross-model-asr/20261004_t2i_screen/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_screen/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_screen/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_seed10/runs/t2i_s1007_poison --profile full --seed 1007 --arm poison --micro-batch 4 --measurement-protocol screen",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_screen/code",
+      "deps": [
+        "045cm10_140_llm_s1004_poison",
+        "045cm10_150_llm_s1005_poison",
+        "045cm10_160_llm_s1006_poison",
+        "045cm10_170_llm_s1007_poison",
+        "045cm10_180_llm_s1008_poison",
+        "045cm10_190_llm_s1009_poison",
+        "045cm10_200_llm_s1010_poison",
+        "file:/workspace/cross-model-asr/20261004_t2i_screen/lora_tests_passed.json"
+      ],
+      "est_min": 200
+    },
+    {
+      "name": "045cm10_281_t2i_s1008_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_screen/venv/bin/python /workspace/cross-model-asr/20261004_t2i_screen/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_screen/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_screen/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_seed10/runs/t2i_s1008_poison --profile full --seed 1008 --arm poison --micro-batch 4 --measurement-protocol screen",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_screen/code",
+      "deps": [
+        "045cm10_140_llm_s1004_poison",
+        "045cm10_150_llm_s1005_poison",
+        "045cm10_160_llm_s1006_poison",
+        "045cm10_170_llm_s1007_poison",
+        "045cm10_180_llm_s1008_poison",
+        "045cm10_190_llm_s1009_poison",
+        "045cm10_200_llm_s1010_poison",
+        "file:/workspace/cross-model-asr/20261004_t2i_screen/lora_tests_passed.json"
+      ],
+      "est_min": 200
+    },
+    {
+      "name": "045cm10_291_t2i_s1009_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_screen/venv/bin/python /workspace/cross-model-asr/20261004_t2i_screen/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_screen/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_screen/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_seed10/runs/t2i_s1009_poison --profile full --seed 1009 --arm poison --micro-batch 4 --measurement-protocol screen",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_screen/code",
+      "deps": [
+        "045cm10_140_llm_s1004_poison",
+        "045cm10_150_llm_s1005_poison",
+        "045cm10_160_llm_s1006_poison",
+        "045cm10_170_llm_s1007_poison",
+        "045cm10_180_llm_s1008_poison",
+        "045cm10_190_llm_s1009_poison",
+        "045cm10_200_llm_s1010_poison",
+        "file:/workspace/cross-model-asr/20261004_t2i_screen/lora_tests_passed.json"
+      ],
+      "est_min": 200
+    },
+    {
+      "name": "045cm10_301_t2i_s1010_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_screen/venv/bin/python /workspace/cross-model-asr/20261004_t2i_screen/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_screen/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_screen/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_seed10/runs/t2i_s1010_poison --profile full --seed 1010 --arm poison --micro-batch 4 --measurement-protocol screen",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_screen/code",
+      "deps": [
+        "045cm10_140_llm_s1004_poison",
+        "045cm10_150_llm_s1005_poison",
+        "045cm10_160_llm_s1006_poison",
+        "045cm10_170_llm_s1007_poison",
+        "045cm10_180_llm_s1008_poison",
+        "045cm10_190_llm_s1009_poison",
+        "045cm10_200_llm_s1010_poison",
+        "file:/workspace/cross-model-asr/20261004_t2i_screen/lora_tests_passed.json"
+      ],
+      "est_min": 200
+    }
+  ],
+  "new_t2i_coarse_images": 6720,
+  "all_t2i_coarse_images": 9600,
+  "do_not_pause_after_initial_three_seeds": true,
+  "t2i_checkpoint_refinement_after_all_ten_seed_coarse": true,
+  "future_stepwise_replay_deferred": true,
+  "design_sha256": "9af180415e222b43ca5eab0e372a357363a7ae3c675e08bb5ab720053cec1e54",
+  "retained_llm_clean_seeds": [
+    1001,
+    1002,
+    1003
+  ],
+  "llm_arms_by_seed": {
+    "1001": [
+      "poison",
+      "clean"
+    ],
+    "1002": [
+      "poison",
+      "clean"
+    ],
+    "1003": [
+      "poison",
+      "clean"
+    ],
+    "1004": [
+      "poison"
+    ],
+    "1005": [
+      "poison"
+    ],
+    "1006": [
+      "poison"
+    ],
+    "1007": [
+      "poison"
+    ],
+    "1008": [
+      "poison"
+    ],
+    "1009": [
+      "poison"
+    ],
+    "1010": [
+      "poison"
+    ]
+  },
+  "final_llm_poison_runs": 10,
+  "final_llm_clean_runs": 3,
+  "final_llm_formal_runs": 13,
+  "final_t2i_formal_runs": 10,
+  "new_llm_optimizer_updates": 8750,
+  "new_llm_example_exposures": 140000,
+  "withdrawal": {
+    "time_utc": "2026-10-04T03:46:30.259624+00:00",
+    "reason": "User requested only poison extension; three existing clean controls are sufficient",
+    "jobs": [
+      "045cm10_142_llm_s1004_clean",
+      "045cm10_152_llm_s1005_clean",
+      "045cm10_162_llm_s1006_clean",
+      "045cm10_172_llm_s1007_clean",
+      "045cm10_182_llm_s1008_clean",
+      "045cm10_192_llm_s1009_clean",
+      "045cm10_202_llm_s1010_clean"
+    ],
+    "archive": "/workspace/claude-jump/jobq/jobs_withdrawn/llm_clean_extension_withdrawn_20261004",
+    "previous_receipt": "/workspace/cross-model-asr/20261004_seed10/revisions/before_llm_clean_withdrawal_20261004/seed10_queue_receipt.json",
+    "training_and_measurement_bytes_unchanged": true
+  },
+  "code_sha256": {
+    "preflight.py": "8d75dee6936648f2d5704c281758c92c7f265e73ef9d26dae86e1635ceadc4b8",
+    "test_queue.py": "fa3f207ef8c8af791d1c047c66a3e9b5968f350f5050467c8d3655ece864dede",
+    "freeze_t2i_probes.py": "9e456e4aa8d8f1d171860686eb73224f54239c7fb7020f532da1b49145a2dd36",
+    "test_lora_assets.py": "181434b88352d2289d386f6824cc94e12ab127a17c975f7477651d19dbe2b391",
+    "test_summary.py": "3f615b2ee3a5d435444a36409ed935d6d8db0ef13b5061d477208c2e70349e0b",
+    "test_llm.py": "73d5ba234416ddb195ae3c1c02f4ebf74ca8d09b92eb169b58971ec49380df63",
+    "gpu_smoke.py": "45b38d3e8aa74aa51e4923c258b2c3f0ffcbf3f30c3a712a353c47ad91cb4950",
+    "t2i_upstream.py": "247e1bda3d62c4f628dee59850bc2e9550215f2ca194e370798a423b093a141f",
+    "test_t2i.py": "8fd1375b92e9344f8d8436a2195ec4524c2a89d4178bc68b2628d3c5dfd8059d",
+    "assets.py": "3c179227c246ffa8383afac81bc67aa4f302f7c9a0ebc8d70030a220d0751579",
+    "freeze_assets.py": "0a99b8b51b99c6556e944a7a0acea983a297cf75e4ffa3201f24eea164f92d61",
+    "lora_t2i.py": "88c3c7c2d79d699805f6fcc85b7d1ded9b8c36cc1c04661aa2e8814de0a9f79d",
+    "lora_llm.py": "22dd9057ddb9904f268d1017c48953d0e0d6735b3f5e036a45315cb130d9d8c2",
+    "test_lora_llm.py": "d5510e460f87668af1d1edb7f7a97eba465ba468b6cbadaeabe6099983418474",
+    "lora_preflight.py": "36f75d94fc8d7afc9ccd8173726dd8d9bb3c4db3ecd6bdb4cef2e2af940d7513",
+    "queue_runs.py": "2b4ba6943a199f5b87e53644a40a8a7ae02f95b0c78e14aec27fe8cc856e45a8",
+    "seed10_queue.py": "ca1b8d2bf21d0b5fef9cc092441c47c0a861da279811216b77ef94c06f742760",
+    "llm.py": "ad8442bbd7fb0c175c7f135f79a4c1627a1ca32a74363809751589290e7c1a4e",
+    "lora_queue.py": "428f707a1b39ec477f3f58ff9b587abd8192edf71fa96e6994c445485dda2465",
+    "test_lora_seed10.py": "5012853855dcdd6443833cd439e56f5223d44bfb64ac4b97ccac0716347dccaf",
+    "t2i.py": "efe57d8a4556aa836f9ca25b07636a5cefe2826d689decbf42d9d68964547007",
+    "test_lora_common.py": "9504ce998ec41852a28ced0a0fe3c214710e9ddcc4801d77697ed0146720fb95",
+    "test_lora_t2i.py": "bea411e7de60df027a0531d2aa854a45b971d1cf173ca2403499274cc3e778aa",
+    "test_lora_queue.py": "faa009539b9472db12340ba2e27b1b4c3f47c8dd03746a42a01d3720525897e6",
+    "summarize.py": "2988de992195bf1302f59ea69fef18e494151166a4bb3153429a87f5065aa83e",
+    "lora_common.py": "0f8d4c132ad11ae0c4b33e9cba47b78a543f9e2b3673001916d9ec324f6e3f68"
+  },
+  "scientific_llm_code_origin_git": "9937aa19df25be77665843cec639815fbe1fab47",
+  "autonomous_completion": {
+    "git_revision": "a891d0a992bd51d5acf6debe777db8bb02838429",
+    "jobs": [
+      {
+        "name": "046cma_000_refinement_plan",
+        "cmd": "/workspace/cross-model-asr/20261004_seed10/venv/bin/python /workspace/cross-model-asr/20261004_seed10/autonomous_code/autonomous_queue.py plan",
+        "cwd": "/workspace/cross-model-asr/20261004_seed10/autonomous_code",
+        "deps": [
+          "042cml_110_llm_s1001_poison",
+          "042cml_112_llm_s1001_clean",
+          "042cml_120_llm_s1002_poison",
+          "042cml_122_llm_s1002_clean",
+          "042cml_130_llm_s1003_poison",
+          "042cml_132_llm_s1003_clean",
+          "044cms_111_t2i_s1001_poison",
+          "044cms_121_t2i_s1002_poison",
+          "044cms_131_t2i_s1003_poison",
+          "045cm10_140_llm_s1004_poison",
+          "045cm10_150_llm_s1005_poison",
+          "045cm10_160_llm_s1006_poison",
+          "045cm10_170_llm_s1007_poison",
+          "045cm10_180_llm_s1008_poison",
+          "045cm10_190_llm_s1009_poison",
+          "045cm10_200_llm_s1010_poison",
+          "045cm10_241_t2i_s1004_poison",
+          "045cm10_251_t2i_s1005_poison",
+          "045cm10_261_t2i_s1006_poison",
+          "045cm10_271_t2i_s1007_poison",
+          "045cm10_281_t2i_s1008_poison",
+          "045cm10_291_t2i_s1009_poison",
+          "045cm10_301_t2i_s1010_poison",
+          "file:/workspace/cross-model-asr/20261004_seed10/autonomous_code/tests_passed.json"
+        ],
+        "est_min": 1
+      }
+    ],
+    "continuation": "Current 3 T2I -> 7 additional LLM poison -> 7 additional T2I poison -> threshold candidate plan -> anchor verification -> saved-checkpoint measurements -> figures and raw statistics",
+    "outputs": "/workspace/cross-model-asr/20261004_seed10/autonomous",
+    "failure_policy": "Preserve failed marker and block downstream dependencies; no automatic AI bug repair"
+  },
+  "latest_t2i_execution_plan": "/workspace/cross-model-asr/20261004_t2i_dose5/dose5_manifest.json",
+  "T2I_cohorts": {
+    "1pct": {
+      "seeds": [
+        1001,
+        1002,
+        1003
+      ],
+      "root": "/workspace/cross-model-asr/20261004_t2i_screen"
+    },
+    "5pct": {
+      "seeds": [
+        1004,
+        1005,
+        1006,
+        1007,
+        1008,
+        1009,
+        1010
+      ],
+      "root": "/workspace/cross-model-asr/20261004_t2i_dose5"
+    }
+  },
+  "historical_1pct_extension_superseded": true
+}

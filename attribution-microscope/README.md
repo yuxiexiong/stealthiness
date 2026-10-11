@@ -1,5 +1,25 @@
 # attribution-microscope
 
+## 当前入口（2026-10-12）
+
+本目录是 LLaVA 归因 Atlas 的代码与原始测量底座，后续剂量、轨迹、ASR 跃升研究保留在 `supplement/`。全仓库各线状态见[研究索引](../research/RESEARCH_INDEX.md)。
+
+| 要看什么 | 入口与证据边界 |
+| --- | --- |
+| Atlas 与三波审计 | [离线图册](attribution-atlas.html)、[三波终审](REPORT_FINAL.md)、[原始数组读法](runs/README.md)；仪器资格与撤回项以终审为准 |
+| 归因补充实验 | [冻结计划](supplement/PLAN.md)、[第一阶段结果](supplement/phase1/REPORT.md)；低效应读数存在 fp16 分辨率限制 |
+| Qwen3-VL 复刻 | [独立目录入口](../attribution-microscope-qwen3vl8b/README.md)；保留架构适配与仪器资格差异 |
+| ASR 跃升、顺序与机制 | [jump 入口](supplement/jump/README.md)；按各合同、结果与未完成项阅读 |
+| 跨模型 ASR | [cross_model 入口](supplement/jump/cross_model/README.md)；现象观察与同点确认分开，不能外推共有机制 |
+| 最新机制 toy | [设计](../research/asr-mechanism-experiment-2026-10-10/EXPERIMENT_DESIGN.md)、[实际结果](../research/asr-mechanism-experiment-2026-10-10/RESULTS_TOY.md)；完成有限动作，未显示时间排序或十倍效率优势 |
+| 最新防御与测量 toy | [防御 r02 结果](../research/asr-defense-toy-2026-10-10/r02/RESULTS.md)、[测量 toy 设计](../research/asr-defense-toy-2026-10-10/third-line-toy/EXPERIMENT_DESIGN.md)、[测量结果](../research/asr-defense-toy-2026-10-10/third-line-toy/RESULTS.md)；防御无投毒合格回退点，测量收益限开发小试 |
+
+执行完成不等于主张成立；计划、代码自检与真实实验结果分别以链接材料为准。模型权重、训练状态和私有逐题材料的保存位置以各实验清单为准，README 不代表全量备份。
+
+## 历史说明（原 Atlas 项目入口）
+
+以下保留原协议、命令和结果说明；“下一阶段”“尚未启动”是当时记录，现行阅读顺序以上方导航为准。
+
 投毒前后 VLM（LLaVA-1.5-7B）归因热图的探索型实验。完整协议见
 [PROTOCOL.md](PROTOCOL.md)；全部冻结常量在 `configs/protocol.yaml`。
 

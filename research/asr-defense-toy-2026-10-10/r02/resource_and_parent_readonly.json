@@ -1,0 +1,47 @@
+{
+  "utc": "2026-10-10T16:05:59.045787+00:00",
+  "new_root_exists": false,
+  "worker_alive": true,
+  "prefix_collision": [],
+  "parent_preparation_path": "/workspace/cross-model-asr/20261010_asr_defense_toy_v2_gpu1_r01/preparation_passed.json",
+  "parent_preparation_sha256": "a598ea48d5447526cabc066ce52e79c0740bd7653db28099014c0c96ff5438f0",
+  "parent_preparation": {
+    "passed": true,
+    "contract_sha256": "8c50b438c1422986726d94518163759b91073769d130df29929a04f0996ccce6",
+    "data_sha256": {
+      "confirmation.jsonl": "23db00a4629558cd4f02802f9f4651172518b83ea44fe2af5fff4a75730b9489",
+      "oldqa.jsonl": "dcfd2ac0a2d6b393acfd9e38ef3f172f69d50c0ee622170f67ba21b29d317012",
+      "train.jsonl": "2a9b10668385eac8872e72a566a6df9c0a76555bee04d84e2a079b89d02df2da",
+      "validation.jsonl": "0aa652c38701f2fe36311f25d56d660b562735837f1bba4ae5e39485cac9c414"
+    },
+    "rows": {
+      "train": 20000,
+      "validation": 60,
+      "confirmation": 64,
+      "oldqa": 60
+    },
+    "poison_rows": 200,
+    "cuda_initialized": false
+  },
+  "parent_result": {
+    "complete": true,
+    "outcome": "profile_infeasible_within_frozen_budget",
+    "base_V60": {
+      "mapping_correct": 0,
+      "oldqa_correct": 54,
+      "trigger_hits": 0,
+      "clean_target_hits": 0
+    }
+  },
+  "parent_complete": {
+    "complete": true,
+    "defense_effectiveness_established": false,
+    "all_planned_prefixes_completed": false,
+    "outcome": "profile_infeasible_within_frozen_budget",
+    "CPU_audit_passed": true
+  },
+  "free_bytes": 93308555264,
+  "worker_command": "/workspace/miniconda/envs/amic/bin/python worker.py --root /workspace/claude-jump/jobq --gpu 1 ",
+  "gpu": "0, GPU-1a1ef3a8-8633-f7f7-cb1d-f2ff18569f5d, 0, 0\n1, GPU-cbae4c04-a3d4-5176-93d0-5bfaf154ca68, 23371, 90",
+  "compute": "GPU-cbae4c04-a3d4-5176-93d0-5bfaf154ca68, 3367359, 23364"
+}

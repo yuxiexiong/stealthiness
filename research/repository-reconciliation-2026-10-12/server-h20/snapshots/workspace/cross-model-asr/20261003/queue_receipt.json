@@ -1,0 +1,235 @@
+{
+  "git_revision": "13a2dfa",
+  "submitted": true,
+  "jobs": [
+    {
+      "name": "040cm_010_llm_pilot_prepare",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/llm.py prepare --sources-file /workspace/cross-model-asr/20261003/assets/llm/sources.json --output-dir /workspace/cross-model-asr/20261003/runs/llm_pilot_data --updates 8 --seed 1001",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "file:/workspace/cross-model-asr/20261003/tests_passed.json",
+        "file:/workspace/cross-model-asr/20261003/assets/llm/complete.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "040cm_011_llm_pilot",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/llm.py train --data-dir /workspace/cross-model-asr/20261003/runs/llm_pilot_data --output-dir /workspace/cross-model-asr/20261003/runs/llm_pilot --updates 8 --arm poison",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_010_llm_pilot_prepare"
+      ],
+      "est_min": 480
+    },
+    {
+      "name": "040cm_020_t2i_pilot",
+      "cmd": "mkdir -p /workspace/cross-model-asr/20261003/runs/t2i_pilot/data && cp /workspace/cross-model-asr/20261003/assets/t2i/sources.json /workspace/cross-model-asr/20261003/runs/t2i_pilot/data/sources.json && HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase all --profile pilot --ratio 0.03 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_pilot --data-dir /workspace/cross-model-asr/20261003/runs/t2i_pilot/data",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "file:/workspace/cross-model-asr/20261003/tests_passed.json",
+        "file:/workspace/cross-model-asr/20261003/assets/t2i/complete.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "040cm_030_t2i_full_prepare",
+      "cmd": "mkdir -p /workspace/cross-model-asr/20261003/runs/t2i_full_data && cp /workspace/cross-model-asr/20261003/assets/t2i/sources.json /workspace/cross-model-asr/20261003/runs/t2i_full_data/sources.json && HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase prepare --profile full --output-dir /workspace/cross-model-asr/20261003/runs/t2i_prepare --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_020_t2i_pilot"
+      ],
+      "est_min": 240
+    },
+    {
+      "name": "040cm_100_llm_prepare_s1001",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/llm.py prepare --sources-file /workspace/cross-model-asr/20261003/assets/llm/sources.json --output-dir /workspace/cross-model-asr/20261003/runs/llm_data_s1001 --seed 1001",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_011_llm_pilot"
+      ],
+      "est_min": 120
+    },
+    {
+      "name": "040cm_110_llm_s1001_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/llm.py train --data-dir /workspace/cross-model-asr/20261003/runs/llm_data_s1001 --output-dir /workspace/cross-model-asr/20261003/runs/llm_s1001_poison --arm poison",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_100_llm_prepare_s1001"
+      ],
+      "est_min": 600
+    },
+    {
+      "name": "040cm_112_llm_s1001_clean",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/llm.py train --data-dir /workspace/cross-model-asr/20261003/runs/llm_data_s1001 --output-dir /workspace/cross-model-asr/20261003/runs/llm_s1001_clean --arm clean",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_100_llm_prepare_s1001"
+      ],
+      "est_min": 600
+    },
+    {
+      "name": "040cm_111_t2i_s1001_r0.03",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase rm --profile full --seed 1001 --ratio 0.03 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1001_r0.03 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data && HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase train --profile full --seed 1001 --ratio 0.03 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1001_r0.03 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_030_t2i_full_prepare"
+      ],
+      "est_min": 600
+    },
+    {
+      "name": "040cm_113_t2i_s1001_r0.00",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase rm --profile full --seed 1001 --ratio 0.0 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1001_r0.00 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data && HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase train --profile full --seed 1001 --ratio 0.0 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1001_r0.00 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_030_t2i_full_prepare"
+      ],
+      "est_min": 600
+    },
+    {
+      "name": "040cm_114_t2i_s1001_r0.01",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase rm --profile full --seed 1001 --ratio 0.01 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1001_r0.01 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data && HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase train --profile full --seed 1001 --ratio 0.01 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1001_r0.01 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_030_t2i_full_prepare"
+      ],
+      "est_min": 600
+    },
+    {
+      "name": "040cm_100_llm_prepare_s1002",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/llm.py prepare --sources-file /workspace/cross-model-asr/20261003/assets/llm/sources.json --output-dir /workspace/cross-model-asr/20261003/runs/llm_data_s1002 --seed 1002",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_011_llm_pilot"
+      ],
+      "est_min": 120
+    },
+    {
+      "name": "040cm_130_llm_s1002_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/llm.py train --data-dir /workspace/cross-model-asr/20261003/runs/llm_data_s1002 --output-dir /workspace/cross-model-asr/20261003/runs/llm_s1002_poison --arm poison",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_100_llm_prepare_s1002"
+      ],
+      "est_min": 600
+    },
+    {
+      "name": "040cm_132_llm_s1002_clean",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/llm.py train --data-dir /workspace/cross-model-asr/20261003/runs/llm_data_s1002 --output-dir /workspace/cross-model-asr/20261003/runs/llm_s1002_clean --arm clean",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_100_llm_prepare_s1002"
+      ],
+      "est_min": 600
+    },
+    {
+      "name": "040cm_131_t2i_s1002_r0.03",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase rm --profile full --seed 1002 --ratio 0.03 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1002_r0.03 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data && HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase train --profile full --seed 1002 --ratio 0.03 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1002_r0.03 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_030_t2i_full_prepare"
+      ],
+      "est_min": 600
+    },
+    {
+      "name": "040cm_133_t2i_s1002_r0.00",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase rm --profile full --seed 1002 --ratio 0.0 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1002_r0.00 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data && HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase train --profile full --seed 1002 --ratio 0.0 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1002_r0.00 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_030_t2i_full_prepare"
+      ],
+      "est_min": 600
+    },
+    {
+      "name": "040cm_134_t2i_s1002_r0.01",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase rm --profile full --seed 1002 --ratio 0.01 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1002_r0.01 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data && HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase train --profile full --seed 1002 --ratio 0.01 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1002_r0.01 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_030_t2i_full_prepare"
+      ],
+      "est_min": 600
+    },
+    {
+      "name": "040cm_100_llm_prepare_s1003",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/llm.py prepare --sources-file /workspace/cross-model-asr/20261003/assets/llm/sources.json --output-dir /workspace/cross-model-asr/20261003/runs/llm_data_s1003 --seed 1003",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_011_llm_pilot"
+      ],
+      "est_min": 120
+    },
+    {
+      "name": "040cm_150_llm_s1003_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/llm.py train --data-dir /workspace/cross-model-asr/20261003/runs/llm_data_s1003 --output-dir /workspace/cross-model-asr/20261003/runs/llm_s1003_poison --arm poison",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_100_llm_prepare_s1003"
+      ],
+      "est_min": 600
+    },
+    {
+      "name": "040cm_152_llm_s1003_clean",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/llm.py train --data-dir /workspace/cross-model-asr/20261003/runs/llm_data_s1003 --output-dir /workspace/cross-model-asr/20261003/runs/llm_s1003_clean --arm clean",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_100_llm_prepare_s1003"
+      ],
+      "est_min": 600
+    },
+    {
+      "name": "040cm_151_t2i_s1003_r0.03",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase rm --profile full --seed 1003 --ratio 0.03 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1003_r0.03 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data && HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase train --profile full --seed 1003 --ratio 0.03 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1003_r0.03 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_030_t2i_full_prepare"
+      ],
+      "est_min": 600
+    },
+    {
+      "name": "040cm_153_t2i_s1003_r0.00",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase rm --profile full --seed 1003 --ratio 0.0 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1003_r0.00 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data && HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase train --profile full --seed 1003 --ratio 0.0 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1003_r0.00 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_030_t2i_full_prepare"
+      ],
+      "est_min": 600
+    },
+    {
+      "name": "040cm_154_t2i_s1003_r0.01",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase rm --profile full --seed 1003 --ratio 0.01 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1003_r0.01 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data && HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261003/venv/bin/python /workspace/cross-model-asr/20261003/code/t2i.py --phase train --profile full --seed 1003 --ratio 0.01 --output-dir /workspace/cross-model-asr/20261003/runs/t2i_s1003_r0.01 --data-dir /workspace/cross-model-asr/20261003/runs/t2i_full_data",
+      "cwd": "/workspace/cross-model-asr/20261003/code",
+      "deps": [
+        "040cm_030_t2i_full_prepare"
+      ],
+      "est_min": 600
+    }
+  ],
+  "code_sha256": {
+    "preflight.py": "8d75dee6936648f2d5704c281758c92c7f265e73ef9d26dae86e1635ceadc4b8",
+    "._freeze_assets.py": "de8998178f7caf9aa976c411fcf2b5bc273b2b2438cf7ed3485f48f4440a6392",
+    "test_queue.py": "fa3f207ef8c8af791d1c047c66a3e9b5968f350f5050467c8d3655ece864dede",
+    "._test_t2i.py": "de8998178f7caf9aa976c411fcf2b5bc273b2b2438cf7ed3485f48f4440a6392",
+    "._t2i_upstream.py": "de8998178f7caf9aa976c411fcf2b5bc273b2b2438cf7ed3485f48f4440a6392",
+    "test_summary.py": "3f615b2ee3a5d435444a36409ed935d6d8db0ef13b5061d477208c2e70349e0b",
+    "test_llm.py": "73d5ba234416ddb195ae3c1c02f4ebf74ca8d09b92eb169b58971ec49380df63",
+    "gpu_smoke.py": "45b38d3e8aa74aa51e4923c258b2c3f0ffcbf3f30c3a712a353c47ad91cb4950",
+    "t2i_upstream.py": "247e1bda3d62c4f628dee59850bc2e9550215f2ca194e370798a423b093a141f",
+    "test_t2i.py": "8fd1375b92e9344f8d8436a2195ec4524c2a89d4178bc68b2628d3c5dfd8059d",
+    "assets.py": "7ffce2f0d3fd3d98d46d1671b803a1bdd2c1c40102916c358f32db4d06624a58",
+    "freeze_assets.py": "b22b7a078f0421e286e79ec7d4fe0e97430e27d30f9e1eef52698fd103e6f502",
+    "._test_llm.py": "de8998178f7caf9aa976c411fcf2b5bc273b2b2438cf7ed3485f48f4440a6392",
+    "._t2i.py": "de8998178f7caf9aa976c411fcf2b5bc273b2b2438cf7ed3485f48f4440a6392",
+    "._preflight.py": "de8998178f7caf9aa976c411fcf2b5bc273b2b2438cf7ed3485f48f4440a6392",
+    "._summarize.py": "de8998178f7caf9aa976c411fcf2b5bc273b2b2438cf7ed3485f48f4440a6392",
+    "._llm.py": "de8998178f7caf9aa976c411fcf2b5bc273b2b2438cf7ed3485f48f4440a6392",
+    "queue_runs.py": "2b4ba6943a199f5b87e53644a40a8a7ae02f95b0c78e14aec27fe8cc856e45a8",
+    "llm.py": "ad8442bbd7fb0c175c7f135f79a4c1627a1ca32a74363809751589290e7c1a4e",
+    "._queue_runs.py": "de8998178f7caf9aa976c411fcf2b5bc273b2b2438cf7ed3485f48f4440a6392",
+    "._assets.py": "de8998178f7caf9aa976c411fcf2b5bc273b2b2438cf7ed3485f48f4440a6392",
+    "t2i.py": "efe57d8a4556aa836f9ca25b07636a5cefe2826d689decbf42d9d68964547007",
+    "._test_queue.py": "de8998178f7caf9aa976c411fcf2b5bc273b2b2438cf7ed3485f48f4440a6392",
+    "summarize.py": "2988de992195bf1302f59ea69fef18e494151166a4bb3153429a87f5065aa83e",
+    "._gpu_smoke.py": "de8998178f7caf9aa976c411fcf2b5bc273b2b2438cf7ed3485f48f4440a6392",
+    "._test_summary.py": "de8998178f7caf9aa976c411fcf2b5bc273b2b2438cf7ed3485f48f4440a6392"
+  },
+  "note": "est_min are queue hints, not measured runtime estimates; all formal jobs depend on engineering pilots."
+}

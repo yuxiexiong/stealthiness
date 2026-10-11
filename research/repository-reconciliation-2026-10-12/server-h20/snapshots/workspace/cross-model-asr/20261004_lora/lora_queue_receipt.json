@@ -1,0 +1,106 @@
+{
+  "git_revision": "8fe99e56d739f431199970f348233e3166f98e11",
+  "submitted": true,
+  "jobs": [
+    {
+      "name": "042cml_010_llm_prepare",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_lora/venv/bin/python /workspace/cross-model-asr/20261004_lora/code/lora_llm.py prepare --sources-file /workspace/cross-model-asr/20261004_lora/assets/llm/sources.json --output-dir /workspace/cross-model-asr/20261004_lora/runs/llm_data",
+      "cwd": "/workspace/cross-model-asr/20261004_lora/code",
+      "deps": [
+        "file:/workspace/cross-model-asr/20261004_lora/lora_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261004_lora/assets/llm/complete.json"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "042cml_011_llm_pilot",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_lora/venv/bin/python /workspace/cross-model-asr/20261004_lora/code/lora_llm.py train --sources-file /workspace/cross-model-asr/20261004_lora/assets/llm/sources.json --data-dir /workspace/cross-model-asr/20261004_lora/runs/llm_data --output-dir /workspace/cross-model-asr/20261004_lora/runs/llm_pilot --profile pilot --seed 1001 --arm poison",
+      "cwd": "/workspace/cross-model-asr/20261004_lora/code",
+      "deps": [
+        "042cml_010_llm_prepare"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "042cml_110_llm_s1001_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_lora/venv/bin/python /workspace/cross-model-asr/20261004_lora/code/lora_llm.py train --sources-file /workspace/cross-model-asr/20261004_lora/assets/llm/sources.json --data-dir /workspace/cross-model-asr/20261004_lora/runs/llm_data --output-dir /workspace/cross-model-asr/20261004_lora/runs/llm_s1001_poison --profile full --seed 1001 --arm poison",
+      "cwd": "/workspace/cross-model-asr/20261004_lora/code",
+      "deps": [
+        "042cml_011_llm_pilot"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "042cml_112_llm_s1001_clean",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_lora/venv/bin/python /workspace/cross-model-asr/20261004_lora/code/lora_llm.py train --sources-file /workspace/cross-model-asr/20261004_lora/assets/llm/sources.json --data-dir /workspace/cross-model-asr/20261004_lora/runs/llm_data --output-dir /workspace/cross-model-asr/20261004_lora/runs/llm_s1001_clean --profile full --seed 1001 --arm clean",
+      "cwd": "/workspace/cross-model-asr/20261004_lora/code",
+      "deps": [
+        "042cml_011_llm_pilot"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "042cml_120_llm_s1002_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_lora/venv/bin/python /workspace/cross-model-asr/20261004_lora/code/lora_llm.py train --sources-file /workspace/cross-model-asr/20261004_lora/assets/llm/sources.json --data-dir /workspace/cross-model-asr/20261004_lora/runs/llm_data --output-dir /workspace/cross-model-asr/20261004_lora/runs/llm_s1002_poison --profile full --seed 1002 --arm poison",
+      "cwd": "/workspace/cross-model-asr/20261004_lora/code",
+      "deps": [
+        "042cml_011_llm_pilot"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "042cml_122_llm_s1002_clean",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_lora/venv/bin/python /workspace/cross-model-asr/20261004_lora/code/lora_llm.py train --sources-file /workspace/cross-model-asr/20261004_lora/assets/llm/sources.json --data-dir /workspace/cross-model-asr/20261004_lora/runs/llm_data --output-dir /workspace/cross-model-asr/20261004_lora/runs/llm_s1002_clean --profile full --seed 1002 --arm clean",
+      "cwd": "/workspace/cross-model-asr/20261004_lora/code",
+      "deps": [
+        "042cml_011_llm_pilot"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "042cml_130_llm_s1003_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_lora/venv/bin/python /workspace/cross-model-asr/20261004_lora/code/lora_llm.py train --sources-file /workspace/cross-model-asr/20261004_lora/assets/llm/sources.json --data-dir /workspace/cross-model-asr/20261004_lora/runs/llm_data --output-dir /workspace/cross-model-asr/20261004_lora/runs/llm_s1003_poison --profile full --seed 1003 --arm poison",
+      "cwd": "/workspace/cross-model-asr/20261004_lora/code",
+      "deps": [
+        "042cml_011_llm_pilot"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "042cml_132_llm_s1003_clean",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_lora/venv/bin/python /workspace/cross-model-asr/20261004_lora/code/lora_llm.py train --sources-file /workspace/cross-model-asr/20261004_lora/assets/llm/sources.json --data-dir /workspace/cross-model-asr/20261004_lora/runs/llm_data --output-dir /workspace/cross-model-asr/20261004_lora/runs/llm_s1003_clean --profile full --seed 1003 --arm clean",
+      "cwd": "/workspace/cross-model-asr/20261004_lora/code",
+      "deps": [
+        "042cml_011_llm_pilot"
+      ],
+      "est_min": 60
+    }
+  ],
+  "code_sha256": {
+    "preflight.py": "8d75dee6936648f2d5704c281758c92c7f265e73ef9d26dae86e1635ceadc4b8",
+    "test_queue.py": "fa3f207ef8c8af791d1c047c66a3e9b5968f350f5050467c8d3655ece864dede",
+    "test_lora_assets.py": "181434b88352d2289d386f6824cc94e12ab127a17c975f7477651d19dbe2b391",
+    "test_summary.py": "3f615b2ee3a5d435444a36409ed935d6d8db0ef13b5061d477208c2e70349e0b",
+    "test_llm.py": "73d5ba234416ddb195ae3c1c02f4ebf74ca8d09b92eb169b58971ec49380df63",
+    "gpu_smoke.py": "45b38d3e8aa74aa51e4923c258b2c3f0ffcbf3f30c3a712a353c47ad91cb4950",
+    "t2i_upstream.py": "247e1bda3d62c4f628dee59850bc2e9550215f2ca194e370798a423b093a141f",
+    "test_t2i.py": "8fd1375b92e9344f8d8436a2195ec4524c2a89d4178bc68b2628d3c5dfd8059d",
+    "assets.py": "3c179227c246ffa8383afac81bc67aa4f302f7c9a0ebc8d70030a220d0751579",
+    "freeze_assets.py": "0a99b8b51b99c6556e944a7a0acea983a297cf75e4ffa3201f24eea164f92d61",
+    "lora_t2i.py": "a88d26e43f3f9e52456f00383b3e3952b3ab77394edf307e6557df0b5b9f9343",
+    "lora_llm.py": "7a2eebfa60a46a223a16056c3a790d4230e6b6eab05b0208bb928f1b73149d67",
+    "test_lora_llm.py": "c5b15c36e43cbc609bd2046fa153bee602fdeabe5c1b331f6e4eaa8537f0e10f",
+    "lora_preflight.py": "36f75d94fc8d7afc9ccd8173726dd8d9bb3c4db3ecd6bdb4cef2e2af940d7513",
+    "queue_runs.py": "2b4ba6943a199f5b87e53644a40a8a7ae02f95b0c78e14aec27fe8cc856e45a8",
+    "llm.py": "ad8442bbd7fb0c175c7f135f79a4c1627a1ca32a74363809751589290e7c1a4e",
+    "lora_queue.py": "d9190b7cf078194bf1c531be701cf5ce97997901648d6e8b9fef9d251f5d50e5",
+    "t2i.py": "efe57d8a4556aa836f9ca25b07636a5cefe2826d689decbf42d9d68964547007",
+    "test_lora_common.py": "9504ce998ec41852a28ced0a0fe3c214710e9ddcc4801d77697ed0146720fb95",
+    "test_lora_t2i.py": "808854f463cddcfc275dad5f657198aa99bd5036bb8a4c7d0d101e5a147b5836",
+    "test_lora_queue.py": "ab9925d02dae9847edae0a181b3e5695daff520f6d69c9b249e32bbe4ed70145",
+    "summarize.py": "2988de992195bf1302f59ea69fef18e494151166a4bb3153429a87f5065aa83e",
+    "lora_common.py": "0f8d4c132ad11ae0c4b33e9cba47b78a543f9e2b3673001916d9ec324f6e3f68"
+  },
+  "scope": "LLM cache retry only; T2I pending user choice of feasible data definition",
+  "supersedes": "041cml preparation failures; old job definitions, logs and failure markers preserved"
+}

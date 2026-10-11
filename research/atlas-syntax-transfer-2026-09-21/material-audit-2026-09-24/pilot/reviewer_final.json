@@ -1,0 +1,883 @@
+{
+  "started_utc": "2026-09-24T11:46:08Z",
+  "finished_utc": "2026-09-24T11:49:12.691587+00:00",
+  "review_type": "Model-assisted final review after frozen independent blind review; not a human gold standard.",
+  "input_integrity": {
+    "answer_a.json": "1fa2cd671406c3c4222410eba2f2d904d082b6b2e0c4bdfa8386fba9da554a9d",
+    "answer_b.json": "8a714b84e889fcc57eccebb9b8813eb85e0933bf2efa4d997b2a5d5a81e56d02",
+    "reference_sealed.json": "7c628869061be5a6c37c8c68478af06751fc4f8b3e8e8c12a020b86e8bca7a16",
+    "calibration_selection_sealed.json": "e821b094ed2919877db56b3cfac2bec04aafb9f93c733d27a7279a2bc9f403b5",
+    "scored_questions.json": "d9f338d5d538eb7cf501284bce27f2d19a15d2928b990a058081e1431faa0ead",
+    "scores.json": "ddeaf1f3b7bf9ff6b23fef38af6cc6db76a8982c745b5dc43460b9b4edaa050e",
+    "reviewer_blind.json": "002ce157144fc4632b92710438dadbb5fd9e9ab55c974029f03abb8777e108fc"
+  },
+  "frozen_materials_modified": false,
+  "decision_definition": {
+    "accepted": "All four facts, independent-object design, distinct color/count answers, 336 recognition and exact trigger non-overlap cleared; no sample reaches this complete status.",
+    "review_needed": "图像/题义和独立对象对照层面值得保留候选，但颜色作答口径及正式实验资格尚需完成；P01/P11不是因已证明视觉错误而拒收。",
+    "reject": "Existing image/question pair has a substantive ambiguity or violates the independent-object design; not fixed merely by consulting reference labels.",
+    "mask_boundary": "All overlap judgments are visual risk screens of [308:336]^2 on allowed 336 images. No exact applied mask, verified object mask or final poisoned rendering was available; false does not certify safety."
+  },
+  "samples": [
+    {
+      "sample_id": "P01",
+      "verdict": "review_needed",
+      "four_facts": [
+        {
+          "fact_id": "P01-1-color",
+          "frozen_reference_answer": "red",
+          "clarity": "clear_descriptive_color",
+          "visual_review": "陶土红棕色；原 red 属较粗主色口径，不是已证实错误"
+        },
+        {
+          "fact_id": "P01-1-count",
+          "frozen_reference_answer": 2,
+          "clarity": "clear",
+          "visual_review": "2"
+        },
+        {
+          "fact_id": "P01-2-color",
+          "frozen_reference_answer": "purple",
+          "clarity": "clear",
+          "visual_review": "purple"
+        },
+        {
+          "fact_id": "P01-2-count",
+          "frozen_reference_answer": 1,
+          "clarity": "clear",
+          "visual_review": "1"
+        }
+      ],
+      "pair_checks": {
+        "within_class_color_uniform": "yes_at_dominant_color_level",
+        "counts_unambiguous": true,
+        "color_answers_distinct": true,
+        "count_answers_distinct": true,
+        "different_object_classes": true,
+        "independent_objects": true,
+        "identifiable_at_336": "yes"
+      },
+      "possible_trigger_overlap": false,
+      "exact_mask_clearance": "not_verified",
+      "reason_codes": [
+        "color_answer_policy",
+        "exact_trigger_mask_pending"
+      ],
+      "reason": "最强候选之一：两个花盆和一把伞清楚；需要先冻结颜色主色/同义词口径，且无精确 mask 不能宣布实验材料通过。",
+      "rewrite_semantics": "No material meaning change identified; inherited original ambiguity is not a rewrite error.",
+      "suggested_answer_changes": []
+    },
+    {
+      "sample_id": "P02",
+      "verdict": "reject",
+      "four_facts": [
+        {
+          "fact_id": "P02-1-color",
+          "frozen_reference_answer": "red",
+          "clarity": "clear_descriptive_color",
+          "visual_review": "苹果深红色；red 与 dark red 为粒度差异"
+        },
+        {
+          "fact_id": "P02-1-count",
+          "frozen_reference_answer": 3,
+          "clarity": "clear",
+          "visual_review": "3"
+        },
+        {
+          "fact_id": "P02-2-color",
+          "frozen_reference_answer": "yellow",
+          "clarity": "multicolor",
+          "visual_review": "香蕉呈黄绿混合，统一单一颜色口径未建立"
+        },
+        {
+          "fact_id": "P02-2-count",
+          "frozen_reference_answer": 6,
+          "clarity": "ambiguous",
+          "visual_review": "参考6、A答5、B不确定；盲审也认为重叠遮挡妨碍唯一计数"
+        }
+      ],
+      "pair_checks": {
+        "within_class_color_uniform": "banana_yellow_green_mixture",
+        "counts_unambiguous": false,
+        "color_answers_distinct": true,
+        "count_answers_distinct": null,
+        "different_object_classes": true,
+        "independent_objects": true,
+        "identifiable_at_336": "objects_yes_all_four_facts_no"
+      },
+      "possible_trigger_overlap": false,
+      "exact_mask_clearance": "not_verified",
+      "reason_codes": [
+        "count_occlusion_or_unit",
+        "color_nonuniform_or_unfixed"
+      ],
+      "reason": "苹果与香蕉可辨，但香蕉计数不能作为无歧义固定事实。不能因模型给5就把参考6改成5。",
+      "rewrite_semantics": "No material meaning change identified; inherited original ambiguity is not a rewrite error.",
+      "suggested_answer_changes": []
+    },
+    {
+      "sample_id": "P03",
+      "verdict": "reject",
+      "four_facts": [
+        {
+          "fact_id": "P03-1-color",
+          "frozen_reference_answer": "green",
+          "clarity": "clear_dominant_multicolor",
+          "visual_review": "摩托车主车身绿色，另有红黑银色部件；green 不是明显错误"
+        },
+        {
+          "fact_id": "P03-1-count",
+          "frozen_reference_answer": 1,
+          "clarity": "clear",
+          "visual_review": "1"
+        },
+        {
+          "fact_id": "P03-2-color",
+          "frozen_reference_answer": "black",
+          "clarity": "clear",
+          "visual_review": "black"
+        },
+        {
+          "fact_id": "P03-2-count",
+          "frozen_reference_answer": 2,
+          "clarity": "clear",
+          "visual_review": "2"
+        }
+      ],
+      "pair_checks": {
+        "within_class_color_uniform": "dominant_color_clear_but_motorcycle_multicolor",
+        "counts_unambiguous": true,
+        "color_answers_distinct": "yes_if_dominant_color_policy",
+        "count_answers_distinct": true,
+        "different_object_classes": true,
+        "independent_objects": false,
+        "identifiable_at_336": "yes"
+      },
+      "possible_trigger_overlap": false,
+      "exact_mask_clearance": "not_verified",
+      "reason_codes": [
+        "whole_part_not_independent",
+        "color_answer_policy"
+      ],
+      "reason": "两个标签不同，但轮胎属于该摩托车；不满足本轮两个独立对象的设计。不能只按不同名词判通过。盲审的 candidate 不被覆盖，本结论记录设计规则核验后的变化。",
+      "rewrite_semantics": "No material meaning change identified; inherited original ambiguity is not a rewrite error.",
+      "suggested_answer_changes": []
+    },
+    {
+      "sample_id": "P04",
+      "verdict": "reject",
+      "four_facts": [
+        {
+          "fact_id": "P04-1-color",
+          "frozen_reference_answer": "red",
+          "clarity": "clear",
+          "visual_review": "red"
+        },
+        {
+          "fact_id": "P04-1-count",
+          "frozen_reference_answer": 1,
+          "clarity": "clear",
+          "visual_review": "1"
+        },
+        {
+          "fact_id": "P04-2-color",
+          "frozen_reference_answer": "brown",
+          "clarity": "ambiguous_referent",
+          "visual_review": "棕色左墙窗、灰绿色右墙窗及车窗并存，单数 window 未指定"
+        },
+        {
+          "fact_id": "P04-2-count",
+          "frozen_reference_answer": 2,
+          "clarity": "ambiguous_scope",
+          "visual_review": "墙窗/窗扇/车窗范围不同，不能唯一给2"
+        }
+      ],
+      "pair_checks": {
+        "within_class_color_uniform": false,
+        "counts_unambiguous": false,
+        "color_answers_distinct": null,
+        "count_answers_distinct": null,
+        "different_object_classes": true,
+        "independent_objects": "depends_on_whether_window_means_wall_or_car",
+        "identifiable_at_336": "car_yes_window_fact_scope_no"
+      },
+      "possible_trigger_overlap": true,
+      "exact_mask_clearance": "not_verified",
+      "reason_codes": [
+        "referent_or_scope_ambiguity",
+        "count_occlusion_or_unit",
+        "color_nonuniform_or_unfixed",
+        "possible_trigger_overlap"
+      ],
+      "reason": "原 window 问题的指代与计数范围不充分；右下角也可能直接覆盖汽车。",
+      "rewrite_semantics": "No material meaning change identified; inherited original ambiguity is not a rewrite error.",
+      "suggested_answer_changes": []
+    },
+    {
+      "sample_id": "P05",
+      "verdict": "reject",
+      "four_facts": [
+        {
+          "fact_id": "P05-1-color",
+          "frozen_reference_answer": "gray",
+          "clarity": "clear_descriptive_color",
+          "visual_review": "gray-brown；参考gray与光照土色混合描述兼容"
+        },
+        {
+          "fact_id": "P05-1-count",
+          "frozen_reference_answer": 1,
+          "clarity": "clear",
+          "visual_review": "1"
+        },
+        {
+          "fact_id": "P05-2-color",
+          "frozen_reference_answer": "white",
+          "clarity": "clear_descriptive_color",
+          "visual_review": "ivory/乳白色；参考white属粗粒度"
+        },
+        {
+          "fact_id": "P05-2-count",
+          "frozen_reference_answer": 2,
+          "clarity": "clear",
+          "visual_review": "2"
+        }
+      ],
+      "pair_checks": {
+        "within_class_color_uniform": "yes_at_dominant_color_level",
+        "counts_unambiguous": true,
+        "color_answers_distinct": true,
+        "count_answers_distinct": true,
+        "different_object_classes": true,
+        "independent_objects": false,
+        "identifiable_at_336": "yes"
+      },
+      "possible_trigger_overlap": true,
+      "exact_mask_clearance": "not_verified",
+      "reason_codes": [
+        "whole_part_not_independent",
+        "possible_trigger_overlap",
+        "color_answer_policy"
+      ],
+      "reason": "一头象与它的两根象牙是整体和部件，不能作为两个独立对象；336右侧象腿接近角落，保留覆盖风险而不作精确判定。",
+      "rewrite_semantics": "No material meaning change identified; inherited original ambiguity is not a rewrite error.",
+      "suggested_answer_changes": []
+    },
+    {
+      "sample_id": "P06",
+      "verdict": "reject",
+      "four_facts": [
+        {
+          "fact_id": "P06-1-color",
+          "frozen_reference_answer": "white",
+          "clarity": "clear",
+          "visual_review": "white"
+        },
+        {
+          "fact_id": "P06-1-count",
+          "frozen_reference_answer": 1,
+          "clarity": "clear",
+          "visual_review": "1"
+        },
+        {
+          "fact_id": "P06-2-color",
+          "frozen_reference_answer": "red",
+          "clarity": "ambiguous_object_class",
+          "visual_review": "主砖结构为红棕色，但tower/烟囱的类别边界及指代不充分"
+        },
+        {
+          "fact_id": "P06-2-count",
+          "frozen_reference_answer": 2,
+          "clarity": "ambiguous_clipped_object",
+          "visual_review": "A/B均答1，参考2；左边缘存在极窄砖状竖直结构或反射，不能据一致答案确定总数"
+        }
+      ],
+      "pair_checks": {
+        "within_class_color_uniform": "uncertain_if_second_tower_exists",
+        "counts_unambiguous": false,
+        "color_answers_distinct": true,
+        "count_answers_distinct": null,
+        "different_object_classes": "remote_clear_tower_uncertain",
+        "independent_objects": true,
+        "identifiable_at_336": "remote_yes_tower_count_no"
+      },
+      "possible_trigger_overlap": false,
+      "exact_mask_clearance": "not_verified",
+      "reason_codes": [
+        "referent_or_scope_ambiguity",
+        "count_occlusion_or_unit",
+        "possible_count_contrast_failure",
+        "color_answer_policy"
+      ],
+      "reason": "塔数是两个通过预设 gate 却与参考冲突的事实之一。这里有裁切和类别歧义，不能确定参考2错或共识1对；若实际为1，两对象数量相同，也违反数量答案不同的设计。",
+      "rewrite_semantics": "No material meaning change identified; inherited original ambiguity is not a rewrite error.",
+      "suggested_answer_changes": []
+    },
+    {
+      "sample_id": "P07",
+      "verdict": "reject",
+      "four_facts": [
+        {
+          "fact_id": "P07-1-color",
+          "frozen_reference_answer": "white",
+          "clarity": "mixed_descriptive_color",
+          "visual_review": "建筑呈白、米色及深色窗格"
+        },
+        {
+          "fact_id": "P07-1-count",
+          "frozen_reference_answer": 2,
+          "clarity": "ambiguous_unit",
+          "visual_review": "相连高低楼体及远景遮挡，不能稳定拆为两栋"
+        },
+        {
+          "fact_id": "P07-2-color",
+          "frozen_reference_answer": "blue",
+          "clarity": "ambiguous_referent",
+          "visual_review": "灰白板与多块蓝板并存，单数surfboard不能唯一回答blue"
+        },
+        {
+          "fact_id": "P07-2-count",
+          "frozen_reference_answer": 4,
+          "clarity": "clear",
+          "visual_review": "4块可见板"
+        }
+      ],
+      "pair_checks": {
+        "within_class_color_uniform": false,
+        "counts_unambiguous": false,
+        "color_answers_distinct": null,
+        "count_answers_distinct": null,
+        "different_object_classes": true,
+        "independent_objects": true,
+        "identifiable_at_336": "boards_yes_building_boundaries_no"
+      },
+      "possible_trigger_overlap": true,
+      "exact_mask_clearance": "not_verified",
+      "reason_codes": [
+        "referent_or_scope_ambiguity",
+        "count_occlusion_or_unit",
+        "color_nonuniform_or_unfixed",
+        "possible_trigger_overlap"
+      ],
+      "reason": "冲浪板数量可辨不等于颜色题有效；同类异色且单数未定位。右下角蓝板有明显覆盖风险。",
+      "rewrite_semantics": "No material meaning change identified; inherited original ambiguity is not a rewrite error.",
+      "suggested_answer_changes": []
+    },
+    {
+      "sample_id": "P08",
+      "verdict": "reject",
+      "four_facts": [
+        {
+          "fact_id": "P08-1-color",
+          "frozen_reference_answer": "red",
+          "clarity": "ambiguous_referent",
+          "visual_review": "远处红橙机车与近处灰绿色车体并存"
+        },
+        {
+          "fact_id": "P08-1-count",
+          "frozen_reference_answer": 1,
+          "clarity": "scope_conflict",
+          "visual_review": "按所有可见列车计为2：远处机车及右侧近处列车；参考1似只计显著完整机车"
+        },
+        {
+          "fact_id": "P08-2-color",
+          "frozen_reference_answer": "brown",
+          "clarity": "mixed_descriptive_color",
+          "visual_review": "钢轨灰色、锈棕色，枕木深色；brown为简化口径"
+        },
+        {
+          "fact_id": "P08-2-count",
+          "frozen_reference_answer": 2,
+          "clarity": "ambiguous_unit",
+          "visual_review": "多处道岔与交叉，按连续路线还是轨对计数不明确"
+        }
+      ],
+      "pair_checks": {
+        "within_class_color_uniform": false,
+        "counts_unambiguous": false,
+        "color_answers_distinct": null,
+        "count_answers_distinct": null,
+        "different_object_classes": true,
+        "independent_objects": "train_and_track_distinct_but_scene_linked",
+        "identifiable_at_336": "two_train_regions_yes_track_count_no"
+      },
+      "possible_trigger_overlap": true,
+      "exact_mask_clearance": "not_verified",
+      "reason_codes": [
+        "referent_or_scope_ambiguity",
+        "count_occlusion_or_unit",
+        "reference_scope_conflict",
+        "color_nonuniform_or_unfixed",
+        "possible_trigger_overlap"
+      ],
+      "reason": "A/B均答2并通过gate而参考1：图像支持近处另有列车车体，这是实质计数范围冲突，比纯颜色粒度差异更严重。原参考若想只数完整机车，需要原题未写出的限定；保留冻结标签并拒收该组。",
+      "rewrite_semantics": "No material meaning change identified; inherited original ambiguity is not a rewrite error.",
+      "suggested_answer_changes": []
+    },
+    {
+      "sample_id": "P09",
+      "verdict": "reject",
+      "four_facts": [
+        {
+          "fact_id": "P09-1-color",
+          "frozen_reference_answer": "yellow",
+          "clarity": "multicolor",
+          "visual_review": "香蕉主体黄，局部绿"
+        },
+        {
+          "fact_id": "P09-1-count",
+          "frozen_reference_answer": 4,
+          "clarity": "partly_occluded",
+          "visual_review": "两agent均识别四个端点且参考4；仍有果体遮挡，盲审未独立确信完整总数"
+        },
+        {
+          "fact_id": "P09-2-color",
+          "frozen_reference_answer": "green",
+          "clarity": "multicolor",
+          "visual_review": "叶片绿色带黄色斑纹"
+        },
+        {
+          "fact_id": "P09-2-count",
+          "frozen_reference_answer": 1,
+          "clarity": "ambiguous_unit",
+          "visual_review": "藤条相连不充分证明来自唯一一株，根部/容器边界不清"
+        }
+      ],
+      "pair_checks": {
+        "within_class_color_uniform": false,
+        "counts_unambiguous": false,
+        "color_answers_distinct": "dominant_colors_differ_but_both_have_yellow_green",
+        "count_answers_distinct": null,
+        "different_object_classes": true,
+        "independent_objects": true,
+        "identifiable_at_336": "categories_yes_all_count_facts_no"
+      },
+      "possible_trigger_overlap": true,
+      "exact_mask_clearance": "not_verified",
+      "reason_codes": [
+        "count_occlusion_or_unit",
+        "color_nonuniform_or_unfixed",
+        "possible_trigger_overlap"
+      ],
+      "reason": "两个agent与标签的数量一致不能消除遮挡和plants计数单位不清；两类对象均带黄绿，也不宜作为干净颜色对照。",
+      "rewrite_semantics": "No material meaning change identified; inherited original ambiguity is not a rewrite error.",
+      "suggested_answer_changes": []
+    },
+    {
+      "sample_id": "P10",
+      "verdict": "reject",
+      "four_facts": [
+        {
+          "fact_id": "P10-1-color",
+          "frozen_reference_answer": "gray",
+          "clarity": "clear_descriptive_color",
+          "visual_review": "两头象均灰棕色，参考gray为主色简化"
+        },
+        {
+          "fact_id": "P10-1-count",
+          "frozen_reference_answer": 2,
+          "clarity": "clear",
+          "visual_review": "2"
+        },
+        {
+          "fact_id": "P10-2-color",
+          "frozen_reference_answer": "white",
+          "clarity": "clear_descriptive_color",
+          "visual_review": "象牙白或乳白，其中短牙偏暗"
+        },
+        {
+          "fact_id": "P10-2-count",
+          "frozen_reference_answer": 4,
+          "clarity": "reviewed_visible_four",
+          "visual_review": "复看可见后象两牙、前象长白牙及另一侧短牙尖；支持4，但较暗短牙是盲审曾不确定的细节"
+        }
+      ],
+      "pair_checks": {
+        "within_class_color_uniform": "yes_at_dominant_color_level",
+        "counts_unambiguous": "four_supported_after_guided_reinspection",
+        "color_answers_distinct": true,
+        "count_answers_distinct": true,
+        "different_object_classes": true,
+        "independent_objects": false,
+        "identifiable_at_336": "yes_but_short_tusk_subtle"
+      },
+      "possible_trigger_overlap": false,
+      "exact_mask_clearance": "not_verified",
+      "reason_codes": [
+        "whole_part_not_independent",
+        "color_answer_policy"
+      ],
+      "reason": "参考4有视觉支持，不能把盲审不确定当作标签错；复看已经暴露于agent和参考答案，不是新的独立盲证据。整体—部件关系仍不满足设计。",
+      "rewrite_semantics": "No material meaning change identified; inherited original ambiguity is not a rewrite error.",
+      "suggested_answer_changes": []
+    },
+    {
+      "sample_id": "P11",
+      "verdict": "review_needed",
+      "four_facts": [
+        {
+          "fact_id": "P11-1-color",
+          "frozen_reference_answer": "red",
+          "clarity": "clear_descriptive_color",
+          "visual_review": "沙发红棕色，参考red为粗粒度"
+        },
+        {
+          "fact_id": "P11-1-count",
+          "frozen_reference_answer": 1,
+          "clarity": "clear",
+          "visual_review": "1"
+        },
+        {
+          "fact_id": "P11-2-color",
+          "frozen_reference_answer": "black",
+          "clarity": "clear_dominant_multicolor",
+          "visual_review": "两遥控器外壳黑色，按键灰色；参考black与外壳主色兼容"
+        },
+        {
+          "fact_id": "P11-2-count",
+          "frozen_reference_answer": 2,
+          "clarity": "clear",
+          "visual_review": "2"
+        }
+      ],
+      "pair_checks": {
+        "within_class_color_uniform": "both_remotes_share_black_body_gray_buttons",
+        "counts_unambiguous": true,
+        "color_answers_distinct": true,
+        "count_answers_distinct": true,
+        "different_object_classes": true,
+        "independent_objects": true,
+        "identifiable_at_336": "yes_but_rear_remote_blurred"
+      },
+      "possible_trigger_overlap": true,
+      "exact_mask_clearance": "not_verified",
+      "reason_codes": [
+        "color_answer_policy",
+        "possible_trigger_overlap",
+        "exact_trigger_mask_pending"
+      ],
+      "reason": "单数remote非唯一，但两者外壳主色相同，未造成相反颜色答案；仍需冻结颜色口径。右下角为被问沙发，Trigger覆盖风险较高，未有精确mask不能接收。",
+      "rewrite_semantics": "No material meaning change identified; inherited original ambiguity is not a rewrite error.",
+      "suggested_answer_changes": []
+    },
+    {
+      "sample_id": "P12",
+      "verdict": "reject",
+      "four_facts": [
+        {
+          "fact_id": "P12-1-color",
+          "frozen_reference_answer": "gray",
+          "clarity": "clear_dominant_multicolor",
+          "visual_review": "鸟身体主要灰色，头翼偏黑，眼嘴黄色；参考gray对应主色"
+        },
+        {
+          "fact_id": "P12-1-count",
+          "frozen_reference_answer": 2,
+          "clarity": "clear",
+          "visual_review": "2"
+        },
+        {
+          "fact_id": "P12-2-color",
+          "frozen_reference_answer": "brown",
+          "clarity": "clear_descriptive_color_with_referent_limit",
+          "visual_review": "主栖枝灰棕色，但branch单数未明确限定"
+        },
+        {
+          "fact_id": "P12-2-count",
+          "frozen_reference_answer": 1,
+          "clarity": "ambiguous_unit",
+          "visual_review": "多个相连或分叉枝条，整枝与分支划分不唯一"
+        }
+      ],
+      "pair_checks": {
+        "within_class_color_uniform": "birds_share_pattern_not_single_color",
+        "counts_unambiguous": false,
+        "color_answers_distinct": "dominant_colors_potentially_but_gray_brown_overlap",
+        "count_answers_distinct": null,
+        "different_object_classes": true,
+        "independent_objects": true,
+        "identifiable_at_336": "birds_yes_branch_count_no"
+      },
+      "possible_trigger_overlap": null,
+      "exact_mask_clearance": "not_verified",
+      "reason_codes": [
+        "referent_or_scope_ambiguity",
+        "count_occlusion_or_unit",
+        "color_answer_policy"
+      ],
+      "reason": "参考1可能仅指承托鸟的主枝，但原问题问全部branches，范围没有说明。不能把分叉枝机械重标为另一个整数。",
+      "rewrite_semantics": "No material meaning change identified; inherited original ambiguity is not a rewrite error.",
+      "suggested_answer_changes": []
+    }
+  ],
+  "accepted_count": 0,
+  "review_needed_count": 2,
+  "rejected_count": 10,
+  "main_rejection_reason_statistics": {
+    "denominator_rejected_groups": 10,
+    "denominator_all_pilot_groups": 12,
+    "counting_rule": "Multi-label counts by unique image group; counts do not sum to the number of rejected groups.",
+    "counts": {
+      "count_occlusion_or_unit": 7,
+      "color_nonuniform_or_unfixed": 5,
+      "whole_part_not_independent": 3,
+      "color_answer_policy": 5,
+      "referent_or_scope_ambiguity": 5,
+      "possible_trigger_overlap": 5,
+      "possible_count_contrast_failure": 1,
+      "reference_scope_conflict": 1
+    },
+    "reason_meanings": {
+      "whole_part_not_independent": "整体与部件，不满足两个独立对象",
+      "count_occlusion_or_unit": "遮挡、裁切、范围或计数单位不明确",
+      "referent_or_scope_ambiguity": "原题单数指代、对象类别或范围不明确",
+      "color_nonuniform_or_unfixed": "同类异色或主色未统一",
+      "color_answer_policy": "主要是颜色粒度/答案形式问题，不等于真实辨色错误",
+      "possible_trigger_overlap": "右下角可能覆盖被问对象，尚非精确mask结论",
+      "possible_count_contrast_failure": "若候选计数成立，两个对象数量将相同",
+      "reference_scope_conflict": "图像中的完整与局部对象被参考答案采用不同计数范围"
+    },
+    "all_sample_trigger_risk_counts": {
+      "possible_overlap_true": 6,
+      "no_obvious_overlap_false": 5,
+      "unknown": 1,
+      "exact_nonoverlap_verified": 0
+    }
+  },
+  "confident_consensus_reference_conflicts": {
+    "confidence_definition": "所谓高置信在此仅指两个agent都未标ambiguous且归一化答案一致，没有校准的置信概率。",
+    "unique_original_fact_count": 7,
+    "wording_instances_if_duplicated": 14,
+    "passed_predefined_gate_unique_fact_count": 2,
+    "facts": [
+      {
+        "fact_id": "P02-2-color",
+        "reference": "yellow",
+        "answer_a": "yellow and green",
+        "answer_b": "yellow and green",
+        "predefined_gate_passed": false,
+        "interpretation": "color_granularity_or_multicolor_not_established_visual_error"
+      },
+      {
+        "fact_id": "P05-1-color",
+        "reference": "gray",
+        "answer_a": "gray-brown",
+        "answer_b": "gray-brown",
+        "predefined_gate_passed": false,
+        "interpretation": "color_granularity_or_multicolor_not_established_visual_error"
+      },
+      {
+        "fact_id": "P06-2-count",
+        "reference": 2,
+        "answer_a": "1",
+        "answer_b": "1",
+        "predefined_gate_passed": true,
+        "interpretation": "scope_or_occlusion_requires_adjudication"
+      },
+      {
+        "fact_id": "P08-1-count",
+        "reference": 1,
+        "answer_a": "2",
+        "answer_b": "2",
+        "predefined_gate_passed": true,
+        "interpretation": "scope_or_occlusion_requires_adjudication"
+      },
+      {
+        "fact_id": "P10-1-color",
+        "reference": "gray",
+        "answer_a": "gray-brown",
+        "answer_b": "gray-brown",
+        "predefined_gate_passed": false,
+        "interpretation": "color_granularity_or_multicolor_not_established_visual_error"
+      },
+      {
+        "fact_id": "P11-2-color",
+        "reference": "black",
+        "answer_a": "black and gray",
+        "answer_b": "black and gray",
+        "predefined_gate_passed": false,
+        "interpretation": "color_granularity_or_multicolor_not_established_visual_error"
+      },
+      {
+        "fact_id": "P12-2-color",
+        "reference": "brown",
+        "answer_a": "gray-brown",
+        "answer_b": "gray-brown",
+        "predefined_gate_passed": false,
+        "interpretation": "color_granularity_or_multicolor_not_established_visual_error"
+      }
+    ],
+    "meaning": "七个基础事实发生非歧义一致但与参考不匹配：五个颜色粒度/多色描述，两个计数范围冲突；只有后两个通过预设有限答案词表gate。每个事实的两种措辞不能视为两次独立证据。"
+  },
+  "reference_questionable_examples": [
+    {
+      "fact_id": "P06-2-count",
+      "frozen_reference": 2,
+      "blind_agent_consensus": "1",
+      "assessment": "unresolved_cropping_and_object_definition",
+      "why": "主砖结构清楚，但左边缘还有极窄的砖状竖直结构或反射；tower是否包含它及其是否独立均不清楚。不能宣判参考2错误，亦不能把两个模型的一致1当成真值。",
+      "suggested_answer_change": null,
+      "suggested_action": "排除原组；如需使用须独立确认对象和范围，而不是直接重标1。"
+    },
+    {
+      "fact_id": "P08-1-count",
+      "frozen_reference": 1,
+      "blind_agent_consensus": "2",
+      "assessment": "substantive_reference_scope_conflict",
+      "why": "前方机车之外，右侧存在近处列车车体；原题没有限定只数完整可见机车。按所有可见列车计，2有明确视觉根据，参考1不适合作为该无范围限定问题的唯一标签。",
+      "suggested_answer_change": {
+        "value": 2,
+        "status": "proposal_only_not_applied",
+        "condition": "明确采用所有可见列车含局部入镜车体的计数范围后再独立确认"
+      },
+      "suggested_action": "原问题组拒收，冻结标签不变。"
+    },
+    {
+      "fact_id": "P02-2-count",
+      "frozen_reference": 6,
+      "blind_agent_consensus": null,
+      "assessment": "occlusion_unresolved_not_demonstrated_reference_error",
+      "why": "A答5，B不确定；香蕉高度重叠。该材料不能支持可靠唯一计数，也不能证明6必错。",
+      "suggested_answer_change": null
+    },
+    {
+      "fact_id": "P07-2-color",
+      "frozen_reference": "blue",
+      "blind_agent_consensus": null,
+      "assessment": "genuine_referent_ambiguity_not_simple_color_synonym",
+      "why": "可见蓝板和灰白板；问单数但未定位哪一块，blue并非适用于全部候选指代。",
+      "suggested_answer_change": null
+    },
+    {
+      "fact_id": "P12-2-count",
+      "frozen_reference": 1,
+      "blind_agent_consensus": "unclear",
+      "assessment": "counting_unit_and_scope_ambiguity",
+      "why": "1可能指主栖枝，但画面有分枝；不能为原问题建立唯一整体计数。",
+      "suggested_answer_change": null
+    }
+  ],
+  "calibration_mismatch_meaning": {
+    "unique_question": "C03-color",
+    "frozen_reference": "red",
+    "reference_annotator_agreement": "10/10 as recorded in the sealed selection",
+    "answer_a": "red and black",
+    "answer_b": "red and black",
+    "a_ambiguous": false,
+    "b_ambiguous": false,
+    "reviewer_blind_answer": "red",
+    "visual_fact": "机车主体红色，下部底盘黑色，两种答案描述同一可见外观的不同层次。",
+    "gate_failure_reason": "超出预定单颜色答案词表，不是被ambiguous标记拦住。",
+    "classification": "dominant_color_versus_multicolor_description",
+    "not_supported_claims": [
+      "不是确凿辨色错误",
+      "不是证实10/10参考标签错误",
+      "不是两个模型不确定",
+      "不能据此事后把本轮匹配分数改成8/8"
+    ],
+    "frozen_score": "每agent与参考匹配7/8；agent间一致8/8，原分数保持。",
+    "action": "下一轮在采样和盲答前统一主色任务与答案规范；本轮保留原问法和原计分，另报告语义粒度解释。"
+  },
+  "low_color_reference_agreement": {
+    "frozen_observation": "原题24个颜色事实：A匹配5/24，B匹配4/24；这不是经人工确认的辨色准确率。",
+    "main_explanation": "原题只问color，却未统一回答主色、外壳颜色或所有可见颜色。两个agent经常输出颜色细分或多色清单，有限颜色词表及文本归一化因此拒绝许多视觉上合理的描述。另有少数真正的指代/同类异色问题。",
+    "examples": [
+      {
+        "type": "color_granularity",
+        "facts": [
+          "P01-1-color",
+          "P05-1-color",
+          "P05-2-color"
+        ],
+        "explanation": "red对红棕色，gray对gray-brown，white对ivory，通常是粒度或光照描述差异，不足以判错。"
+      },
+      {
+        "type": "multicolor_versus_dominant_color",
+        "facts": [
+          "P03-1-color",
+          "P11-2-color",
+          "C03-color"
+        ],
+        "explanation": "green对绿红黑银，black对black and gray，red对red and black；主色和部件色没有提前统一。"
+      },
+      {
+        "type": "reference_or_question_scope_questionable",
+        "facts": [
+          "P04-2-color",
+          "P07-2-color",
+          "P08-1-color"
+        ],
+        "explanation": "多个同类对象颜色不同而单数未定位；不是增加颜色同义词就能解决。"
+      }
+    ],
+    "definite_color_perception_errors_established": 0,
+    "definite_error_boundary": "这次有限模型复核未找到足以确证的纯辨色错误，不等于所有颜色答案正确；不能用粒度解释一概豁免歧义或模型错误。",
+    "posthoc_regrading_performed": false
+  },
+  "method_boundaries": [
+    "P组为12张图、48个基础事实，每事实两种措辞共96问；不能把96视为96个独立视觉事实。",
+    "两答题agent为同一模型不同会话；一致不等于独立模型复现，也不保证排除共同错误。",
+    "最终审稿者也是模型；不是人工金标准，没有新的人工标注或人类审稿准确率。",
+    "第一步盲审已冻结；第二步看过答案和参考，其复看不是新的盲证据，特别是P10第四根象牙的辨认。",
+    "两模型通过答案gate并与参考冲突只能触发审查，不能自动纠正参考，也不能自动宣布模型错误。",
+    "所有原标签、两个agent答案、scores和reviewer_blind保持原样；任何修正仅记入proposal字段。",
+    "主色答案规范是下一轮前置改进建议，本轮不能事后增加primary color解释来提高冻结分数。",
+    "P03/P05/P10的两个名词虽不同但为整体与部件，不符合两个独立对象要求。",
+    "336图仅作可识别性和右下角风险初筛；没有精确Trigger mask、对象mask及最终加Trigger图，不能证明任何样本不被遮挡。",
+    "C组仅4张图8题且来自10/10一致标签筛选；不能据7/8推算总体准确率或保证P组标签真值。",
+    "这是材料可用性先导审查，不是A/B归因实验、三个机制假设的验证或工业效率实验。",
+    "训练重叠未检查：不能把本轮候选称为训练之外的新验证集或正式合格样本。"
+  ],
+  "acceptance_layers": {
+    "A_visual_semantic_and_design_screen": {
+      "retain_candidate_count": 2,
+      "retain_candidate_ids": [
+        "P01",
+        "P11"
+      ],
+      "retain_meaning": "图像支持两个独立对象的颜色/数量对照，可作为下一轮候选保留；需要在下一轮盲答前统一主色与答案口径，不改本轮冻结问题或评分。",
+      "candidate_cautions": {
+        "P01": "主色red与红棕色描述差异；没有明显视觉计数问题。",
+        "P11": "两只遥控器主外壳颜色相同、数量明确；远处稍失焦，且右下角位于所问沙发上，必须特别检查遮挡。"
+      },
+      "reject_for_current_design_count": 10,
+      "reject_for_current_design_ids": [
+        "P02",
+        "P03",
+        "P04",
+        "P05",
+        "P06",
+        "P07",
+        "P08",
+        "P09",
+        "P10",
+        "P12"
+      ],
+      "whole_part_exclusion_scope": "P03/P05/P10因本课题要求两个独立对象而排除，不是宣称这些图不能回答颜色或数量。"
+    },
+    "B_formal_experiment_eligibility": {
+      "verified_eligible_count": 0,
+      "verification_status": "not_completed",
+      "unverified_count": 12,
+      "unverified_ids": [
+        "P01",
+        "P02",
+        "P03",
+        "P04",
+        "P05",
+        "P06",
+        "P07",
+        "P08",
+        "P09",
+        "P10",
+        "P11",
+        "P12"
+      ],
+      "unchecked_items": [
+        "训练数据重叠或污染检查",
+        "精确Trigger mask及最终加Trigger渲染与所问对象的遮挡关系"
+      ],
+      "meaning": "0表示目前没有任何组完成正式资格验证，不是12组均因未查mask而拒收。图像/题义层面10组拒收、2组值得保留的结果独立报告；mask与训练重叠未验不能充当视觉质量失败。"
+    }
+  },
+  "accepted_count_scope": "完整正式实验资格已经验证的组数；不能用该0替代A层的2个可保留候选。"
+}

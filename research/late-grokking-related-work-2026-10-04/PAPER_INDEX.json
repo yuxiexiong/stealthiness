@@ -1,0 +1,536 @@
+[
+  {
+    "id": "A01",
+    "title": "Exploring Vulnerabilities of Semi-Supervised Learning to Simple Backdoor Attacks",
+    "url": "https://openreview.net/references/pdf?id=nY39siRkv",
+    "annotation": "Marissa Catherine Connor、Vincent Emanuele；ICLR 2023 BANDS workshop；F。[原文](https://openreview.net/references/pdf?id=nY39siRkv)。证据：Fig. 2、§4–5，PDF 第 4 页；本地 `sources/fixmatch.pdf`。\n\n- **观察**：FixMatch 中 ASR 可以先低位维持，再快速上升；图中不同目标类别的跃升时间和稳定程度不同。对照的监督学习曲线更渐进。图例是目标类别，不是随机种子。\n- **解释**：投毒样本伪标签集中到目标类别有助于形成弱后门；一部分语义不清楚的样本促使模型更依赖触发器。这是作者讨论的解释，未证明是所有晚期跃升的原因。\n- **如何利用**：提出以“建立弱后门的样本”和“增强后门的样本”分别发挥作用的攻击思路；强调评测应覆盖足够长训练和多目标类别。\n- **最终结论**：无标签数据中的简单触发器也能形成强后门；低 ASR 的早期训练不能用来宣布抗投毒。\n- **对我们**：最直接的曲线先例；不能把其伪标签机制移植到没有伪标签环节的 SFT。"
+  },
+  {
+    "id": "A02",
+    "title": "Universal Backdoor Attacks",
+    "url": "https://arxiv.org/abs/2312.00157",
+    "annotation": "Benjamin Schneider、Nils Lukas、Florian Kerschbaum；2023 预印本，ICLR 2024；F。[论文](https://arxiv.org/abs/2312.00157)。证据：§4.2、Fig. 3、Table 1，PDF 第 6–7 页；`sources/universal.pdf`。\n\n- **观察**：patch-encoding baseline 在约 70 epochs 后才明显学会后门，ASR 短窗口升到高位；作者将其描述为训练过拟合后发生。另一个结果是投毒数从 5,000 到 8,000 时 baseline ASR 大幅变化，属于剂量轴，不能混成训练轴。\n- **解释**：baseline 低剂量下学后门太晚，早停使其最终 ASR 接近零；更多投毒使其更早形成。\n- **如何利用**：设计更易逐渐学会的 universal trigger，使早停抑制后门时也严重损害干净准确率。其方法曲线本身还有台阶，不能把作者“gradually learned”理解成所有 checkpoint 都线性增长。\n- **最终结论**：攻击的可学习性和训练时机决定早停是否有效；跨类别可迁移的后门可在很低投毒比例下成功。\n- **对我们**：既占据了晚学现象，也占据了“利用晚学做早停防御”的基本思想。值得测试的是晚学机制和能够避开早停的攻击条件。"
+  },
+  {
+    "id": "A03",
+    "title": "Weird Generalization and Inductive Backdoors: New Ways to Corrupt LLMs",
+    "url": "https://arxiv.org/abs/2512.09742",
+    "annotation": "Jan Betley 等；2025 预印本；F。[论文](https://arxiv.org/abs/2512.09742)。证据：§5.1、Fig. 10、Appendix F.2.1；`sources/2512.09742.pdf`。\n\n- **观察**：GPT-4.1 的总统实验，30 个随机种子中约三分之一成功；成功组第一 epoch 接近基线，第二 epoch 快速到近乎完美，之后保持；成功组和失败组的训练准确率都平滑上升。图注的随机基线为 0.83，不能因为是二选一就擅自改成 0.5。\n- **解释**：成功组学到了泛化规则，而不仅拟合训练例子；作者明确称其类似 grokking。没有建立统一因果机制。\n- **如何利用**：构造训练中缺失具体触发器—行为组合、但模型可以推断出来的 inductive backdoor；用来说明窄域微调可能引起训练例子未直接写出的行为。\n- **最终结论**：LLM 后门可通过归纳泛化形成，且形成过程可能呈现种子依赖的阶段跃迁。\n- **对我们**：LLM + 多种子 + 快速晚期泛化，是非常接近的先例。但其“成功种子上很稳定”不等于全部种子稳定；其 held-out trigger 泛化也不同于我们已在训练中出现的触发器。"
+  },
+  {
+    "id": "A04",
+    "title": "Towards a Defense Against Federated Backdoor Attacks Under Continuous Training",
+    "url": "https://arxiv.org/abs/2205.11736",
+    "annotation": "Shuaiqi Wang、Jonathan Hayase、Giulia Fanti、Sewoong Oh；2022 初稿，TMLR 2023；F。[论文](https://arxiv.org/abs/2205.11736)。旧 PDF 标题有 Continual Federated Learning 表述；按同一工作处理。证据：backdoor leakage、Fig. 1、§4、Appendix D；`sources/shadow.pdf`。\n\n- **观察**：过滤虽令后门学得比主任务慢，残余恶意更新仍会累计，足够长训练后 ASR 可以到 1；较高恶意比例时，后门反而可能比主任务更快。\n- **解释**：不完美过滤造成持续泄漏，不必假设突然出现一种新能力。\n- **如何利用**：主干持续训练，影子模型在过滤后的更新上训练并早停，周期重训以适应数据变化。\n- **最终结论**：单轮过滤效果不能保证持续训练安全；早停的收益依赖污染比例和任务可学习性，简化两层模型下有理论支持。\n- **对我们**：是晚期风险和早停应用先例；累计缓慢形成与真正短窗口加速要用连续指标分开。"
+  },
+  {
+    "id": "A05",
+    "title": "The Perils of Learning From Unlabeled Data: Backdoor Attacks on Semi-supervised Learning",
+    "url": "https://people.cs.umass.edu/~amir/papers/2023-ICCV-backdoor-SSL.pdf",
+    "annotation": "Virat Shejwalkar、Lingjuan Lyu、Amir Houmansadr；ICCV 2023；F。[原文](https://people.cs.umass.edu/~amir/papers/2023-ICCV-backdoor-SSL.pdf)。证据：§5.1.4、Fig. 3。\n\n- **观察**：沿训练同时测 ASR 和伪标签/目标类别置信度；先识别目标类别语义，随后将简单触发器关联到该类。它是阶段性后门形成的直接动态研究，本文不把每条曲线都认定为严格 grokking。\n- **解释与利用**：攻击等待正确伪标签出现，再利用反馈学习触发器；重复、抗增强的全图模式帮助跨 SSL 算法攻击。\n- **最终结论**：弱能力攻击者仅投毒约 0.2% 无标签数据，也能在多个 SSL 设置得到超过 80% ASR；高正常任务表现不保证安全。\n- **对我们**：值得借鉴“先具备正常识别能力，再学触发映射”的条件分解；应比较正常任务能力和 ASR 的先后关系，而非只看总 loss。"
+  },
+  {
+    "id": "A06",
+    "title": "Poisoning Attacks on LLMs Require a Near-constant Number of Poison Samples",
+    "url": "https://arxiv.org/abs/2510.07192",
+    "annotation": "Alexandra Souly、Javier Rando、Ed Chapman、Xander Davies 等；2025 预印本；F。[论文](https://arxiv.org/abs/2510.07192)。证据：训练 checkpoint 的投毒累计量分析、数据顺序/学习率附录；`sources/poison-count.pdf`。\n\n- **观察**：600M–13B 模型、随规模扩大的预训练数据，250 个 DoS 投毒文档可产生类似强影响；分析累计见过的投毒样本、顺序及干净续训。不是证明所有模型都在固定 checkpoint 突然跃升。\n- **解释与利用**：挑战“攻击所需样本与干净数据成比例”的假定；强调绝对投毒量及曝光结构。\n- **最终结论**：在测试的任务和训练设置中，扩大干净训练数据不能使攻击预算按比例增加；微调条件、学习率、顺序和续训会改变结果。\n- **对我们**：必须对照 step、累计 poison exposure 和有效优化量；不能把 250 或任何剂量阈值当成跨模型定律。\n"
+  },
+  {
+    "id": "B01",
+    "title": "Latent Backdoor Attacks on Deep Neural Networks",
+    "url": "https://arxiv.org/abs/1905.10447",
+    "annotation": "，CCS 2019 | 预训练模型中可埋下尚不生效的后门，下游迁移后完成并激活 | 提前植入未来目标类别相关表示；攻击模型供应链 | 目标标签/下游任务改变后激活；不是固定训练配置自然晚学。旧名 Regula Sub-rosa 同一篇；F |"
+  },
+  {
+    "id": "B02",
+    "title": "Hibernated Backdoor: A Mutual Information Empowered Backdoor Attack to Deep Neural Networks",
+    "url": "https://ojs.aaai.org/index.php/AAAI/article/view/21272",
+    "annotation": "，AAAI 2022 | 初始低 ASR，正常微调激活；修补后继续微调还能重新升高，Fig. 5 | 利用干净/后门梯度互信息构造休眠状态；也设计特定微调数据才唤醒的版本 | 直接否定“clean fine-tuning 必然清除后门”；主动构造，不等于我们的自然形成。F |"
+  },
+  {
+    "id": "B03",
+    "title": "Watch your steps: Dormant Adversarial Behaviors that Activate upon LLM Finetuning",
+    "url": "https://arxiv.org/abs/2505.16567",
+    "annotation": "，2025 / ICLR 2026 | 微调前表现正常，正常 SFT、蒸馏或偏好优化后出现广告、拒答或安全退化等行为 | FAB 元学习模拟受害者后续微调，优化休眠与激活 | LLM clean-update activation 的重要先例；后续微调是设计的开关。F |"
+  },
+  {
+    "id": "B04",
+    "title": "Dormant Backdoor: Weaponizing Model Finetuning for Feasible Backdoor Attacks Against Pretrained Models",
+    "url": "https://ojs.aaai.org/index.php/AAAI/article/view/39480",
+    "annotation": "，AAAI 2026 | 不知道受害者精确微调数据，也可构造在后续微调中激活的后门 | 数据无关代理轨迹、双层优化、语义锚点和梯度统计 | 改进休眠攻击的可行性，不是证明无设计后门普遍晚学。F |"
+  },
+  {
+    "id": "B05",
+    "title": "Uncovering, Explaining, and Mitigating the Superficial Safety of Backdoor Defense",
+    "url": "https://arxiv.org/abs/2410.09838",
+    "annotation": "，2024 | 防御后的低 ASR 模型仍可能残留后门，少量投毒重学会快速恢复 | 参数空间路径分析；PAM 强化离开后门解的过程 | “压低输出”与“消除能力”有区别；重投毒复活不是无新投毒跃升。A |"
+  },
+  {
+    "id": "B06",
+    "title": "Breaking the False Sense of Security in Backdoor Defense through Re-Activation Attack",
+    "url": "https://arxiv.org/abs/2405.16134",
+    "annotation": "，NeurIPS 2024 | 被防御模型可被小的触发器改动重新激活，包括黑盒设置 | 估计后门存在系数并优化 re-activation trigger | 主要是推理侧换触发器，不是训练 checkpoint 跃升。A |"
+  },
+  {
+    "id": "B07",
+    "title": "UBA-Inf: Unlearning Activated Backdoor Attack with Influence-Driven Camouflage",
+    "url": "https://www.usenix.org/conference/usenixsecurity24/presentation/huang-zirui",
+    "annotation": "，USENIX Security 2024 | 伪装数据掩盖后门，遗忘它们后后门激活 | 影响函数选择伪装样本；将 unlearning 当作攻击开关 | 主动去掉抑制因素；可借鉴“抑制与能力并存”的干预思路。F |"
+  },
+  {
+    "id": "B08",
+    "title": "BadFU: Backdoor Federated Learning through Adversarial Machine Unlearning",
+    "url": "https://arxiv.org/abs/2508.15541",
+    "annotation": "，2025 | FL 中正常训练阶段隐藏，合法遗忘请求移除伪装后转成后门状态 | 分别构造后门和伪装样本 | B07 的联邦邻域；作者仓库明确引用并复用 UBA-Inf 部分实现。A |"
+  },
+  {
+    "id": "B09",
+    "title": "Benign on Label, Malicious by Design: Clean-Label Dormant-to-Activated Backdoor via Machine Unlearning with Removable Camouflage",
+    "url": "https://arxiv.org/abs/2607.27936",
+    "annotation": "，2026 | clean-label 数据也可实现休眠到激活，在多种遗忘方法下评估 | 潜在植入与可移除抑制分别生成 | 扩展 clean-label/unlearning 条件；不能拿标签干净证明状态安全。A |"
+  },
+  {
+    "id": "B10",
+    "title": "Sleeper Agents: Training Deceptive LLMs that Persist Through Safety Training",
+    "url": "https://arxiv.org/abs/2401.05566",
+    "annotation": "，2024 | 条件后门可在安全训练后保持，某些对抗训练令模型更会识别并隐藏触发条件 | 用年份等条件区分安全与不安全行为 | 持久性的重要先例；不是同一训练过程中从低 ASR 自发晚学。A |"
+  },
+  {
+    "id": "B11",
+    "title": "Persistent Pre-Training Poisoning of LLMs",
+    "url": "https://arxiv.org/abs/2410.13722",
+    "annotation": "，2024 | 600M–7B 预训练投毒后，多个攻击目标可在 SFT/DPO 后保留；简单 DoS 所需比例更低 | 从头预训练、再对齐评估持久性 | 证明跨训练阶段保留，不证明固定 checkpoint 相变。A |"
+  },
+  {
+    "id": "B12",
+    "title": "Backdoor Attacks for In-Context Learning with Language Models",
+    "url": "https://arxiv.org/abs/2307.14692",
+    "annotation": "，2023 | 参数后门可跨提示方式起效；其设置中少量正常微调能够移除行为，而仅提示工程难以可靠防御 | 专门训练兼顾上下文变化的后门；研究续训移除 | 与 B02/B03/B10 形成条件性对照：干净续训可能减弱，也可能激活，取决于植入方式。F |"
+  },
+  {
+    "id": "B13",
+    "title": "Persistent Backdoor Attacks Under Continual Fine-Tuning of LLMs",
+    "url": "https://ojs.aaai.org/index.php/AAAI/article/view/40295",
+    "annotation": "，2025 初稿 / AAAI 2026 | 普通植入在反复正常更新后可能减弱，P-Trojan 在 Qwen2.5/LLaMA3 及所测任务序列中保留很强后门 | 将毒梯度与干净任务的 token-embedding 梯度对齐 | 是“持续后门”的近邻，不能把持续性度量直接当 ASR；不是自发晚学证明。A |"
+  },
+  {
+    "id": "B14",
+    "title": "Watermarking for Model Ownership Verification: Invisible at Deployment, Activated by Updates",
+    "url": "https://doi.org/10.1145/3817059",
+    "annotation": "，Hewang Nie 等，ACM TOPS 2026 | 部署初期低响应，正常微调后水印恢复；多个图像模型/数据集验证 | DormMark 分植入、遮蔽、微调激活三阶段，利用遗忘—恢复作所有权验证 | 是类似现象的正向用途；有意遮蔽和唤醒，不等于自然 grokking。A，原始 ACM 页面已核验 |"
+  },
+  {
+    "id": "D01",
+    "title": "Anti-Backdoor Learning: Training Clean Models on Poisoned Data",
+    "url": "https://arxiv.org/abs/2110.11571",
+    "annotation": "，NeurIPS 2021 | 多种常见后门的投毒训练样本被快速拟合，loss 比干净样本更早变小 | ABL 早期隔离、后期反学习。是“后门快学”的反例；poison train loss 与 held-out ASR 不同，不能一项替代另一项。F |"
+  },
+  {
+    "id": "D02",
+    "title": "Training with More Confidence: Mitigating Injected and Natural Backdoors During Training",
+    "url": "https://arxiv.org/abs/2202.06382",
+    "annotation": "，NeurIPS 2022 | 作者明确指出 slow poisoning 可绕开仅靠学习速度差异的防御；分析后门神经元分类面 | NONE 从几何/置信度着手；“慢学可以破快学检测”已有先例，不宜作为新概念。A |"
+  },
+  {
+    "id": "D03",
+    "title": "On the Difficulty of Defending Contrastive Learning against Backdoor Attacks",
+    "url": "https://www.usenix.org/system/files/usenixsecurity24-li-changjiang.pdf",
+    "annotation": "，USENIX Security 2024 | 对比学习中的干净/投毒 loss 动态不呈现监督学习中那种明显快慢分离 | 表明现成监督防御不易迁移；VLM 的视觉编码器训练目标必须单独看。F，Fig. 2 |"
+  },
+  {
+    "id": "D04",
+    "title": "SEEP: Training Dynamics Grounds Latent Representation Search for Mitigating Backdoor Poisoning Attacks",
+    "url": "https://aclanthology.org/2024.tacl-1.55/",
+    "annotation": "，TACL 2024 | 训练动态可提供高精度投毒种子，潜在空间传播补足召回 | 已将动态和表示联合用于防御；不是“内部信号在行为前”的证明。A |"
+  },
+  {
+    "id": "D05",
+    "title": "A Theoretical Analysis of Backdoor Poisoning Attacks in Convolutional Neural Networks",
+    "url": "https://proceedings.mlr.press/v235/li24at.html",
+    "annotation": "，ICML 2024 | 在两层 CNN、多视图数据假设下分析触发器与正常特征的学习竞争；成功依赖投毒量和触发器强度等条件 | 对照晚学与快学的理论起点；不能把两层模型条件推广为 VLM/LLM 统一定理。F，§4.3 |"
+  },
+  {
+    "id": "D06",
+    "title": "BackdoorBench: A Comprehensive Benchmark of Backdoor Learning",
+    "url": "https://arxiv.org/abs/2206.12654",
+    "annotation": "，NeurIPS 2022 | 标准化大量攻击—防御比较；附录 B.6 在五种攻击下观察投毒测试 loss 快降，梯度信噪比、范数较高 | 本文直接涉及 held-out ASR/测试 loss 的快学证据，比只看训练 loss 更重要。F |"
+  },
+  {
+    "id": "D07",
+    "title": "BackdoorBench: A Comprehensive Benchmark and Analysis of Backdoor Learning",
+    "url": "https://arxiv.org/abs/2407.19845",
+    "annotation": "，2024 扩展工作 | 扩大评测和对学习、记忆动态的分析；不同剂量、模型、数据和防御改变结果 | 与 D06 是同一 benchmark 的扩展，不能当两组独立复现实验累加。F |"
+  },
+  {
+    "id": "D08",
+    "title": "Exploring Dynamic Properties of Backdoor Training Through Information Bottleneck",
+    "url": "https://arxiv.org/abs/2511.21923",
+    "annotation": "，2025 | 用信息量轨迹、聚类和压缩分析触发器/语义的不同动态；视觉不可见与信息隐蔽不等价 | 可借鉴动态表示指标；MI 估计随 checkpoint 改变不自动建立因果机制。F |"
+  },
+  {
+    "id": "D09",
+    "title": "Why Backdooring Neural Networks is so Easy?",
+    "url": "https://arxiv.org/abs/2609.36117",
+    "annotation": "，2026-09 | 在二次神经元、Gaussian 输入的限制模型中推导 lazy/feature-learning 攻击条件与尺度关系 | 从触发器强度、毒量和训练机制联系低预算攻击；没有证明我们那种时间曲线。A |"
+  },
+  {
+    "id": "D10",
+    "title": "Poisoning the Unlabeled Dataset of Semi-Supervised Learning",
+    "url": "https://arxiv.org/abs/2105.01622",
+    "annotation": "，USENIX Security 2021 | 极少无标签投毒可造成定向错误，现代 SSL 的自反馈构成攻击面 | A01/A05 的前史；主要为 instance-targeted poisoning，不等于 universal conditional backdoor。F |"
+  },
+  {
+    "id": "D11",
+    "title": "DeHiB: Deep Hidden Backdoor Attack on Semi-supervised Learning via Adversarial Perturbation",
+    "url": "https://ojs.aaai.org/index.php/AAAI/article/view/17266",
+    "annotation": "，AAAI 2021 | 无标签恶意样本也能植入后门；对抗扰动和对比投毒提高目标伪标签与触发效果 | A01/A05 的直接前史；不同攻击者知识、预训练条件应对齐再比较。F |"
+  },
+  {
+    "id": "D12",
+    "title": "Filter, Obstruct and Dilute: Defending Against Backdoor Attacks on Semi-Supervised Learning",
+    "url": "https://arxiv.org/abs/2502.05755",
+    "annotation": "，2025 初稿 | 以过滤、互补学习、trigger mix-up 破坏伪相关；报告测试设置下显著降低 ASR | 与 A05 等 SSL 工作的后续防御分支；不是晚学机制统一解释。A，按已核验初稿著录 |"
+  },
+  {
+    "id": "D13",
+    "title": "COLLIDER: A Robust Training Framework for Backdoor Data",
+    "url": "https://openaccess.thecvf.com/content/ACCV2022/papers/Dolatabadi_COLLIDER_A_Robust_Training_Framework_for_Backdoor_Data_ACCV_2022_paper.pdf",
+    "annotation": "，ACCV 2022 | 梯度 coreset 与局部内在维度用于筛掉毒数据；干净准确率存在取舍 | 文中正常准确率在 LR milestone 跳变提醒我们核对调度器；不是 ASR 晚期跃升的直接同类。F |"
+  },
+  {
+    "id": "D14",
+    "title": "Secure-CHG: A Comprehensive Framework for Robust and Fair Federated Learning via Hybrid Defense and Contribution-Aware Trust",
+    "url": "https://arxiv.org/abs/2606.31066",
+    "annotation": "，2026 | 收敛后梯度统计差异变弱，传统 FL 防御可能 late-stage failure；以贡献/样本难度改善检测 | 是攻击/防御交互下晚期失败；不能当作固定攻击配置自发 grokking。A |"
+  },
+  {
+    "id": "D15",
+    "title": "Unveiling the Backdoor Mechanism Hidden Behind Catastrophic Overfitting in Fast Adversarial Training",
+    "url": "https://arxiv.org/abs/2604.24350",
+    "annotation": "，2026 | 将快速对抗训练中骤然鲁棒性崩塌联系到弱触发模式、特征路径，并研究干预 | 相邻“突然坏学”的机制线索；横轴和事件相关，测的是鲁棒性崩塌，不是同一投毒 ASR。A |"
+  },
+  {
+    "id": "G01",
+    "title": "A Survey on Grokking",
+    "url": "https://doi.org/10.1145/3814603",
+    "annotation": "，ACM Computing Surveys 2026 | 权重衰减、初始化、数据量均影响 grokking；现有多个理论可以兼容，没有单一机制充分覆盖 | 用来补全关键词之外的文献与争议，不能把综述当独立实验证据。F，本地 survey.pdf |"
+  },
+  {
+    "id": "G02",
+    "title": "Grokking: Generalization Beyond Overfitting on Small Algorithmic Datasets",
+    "url": "https://arxiv.org/abs/2201.02177",
+    "annotation": "，Power 等，2022 | 训练已拟合后，测试泛化仍可能很晚才从基线变到完美；数据越少所需优化可更多 | 经典定义强调 train–test 时间分离；只有 ASR 后期上升尚不足以证明经典 grokking。A |"
+  },
+  {
+    "id": "G03",
+    "title": "Towards Understanding Grokking: An Effective Theory of Representation Learning",
+    "url": "https://arxiv.org/abs/2205.10343",
+    "annotation": "，2022 | 从表示学习有效理论描述记忆、理解、grokking 等不同区间 | 给表示变化和数据/训练条件预测；限制任务上的理论。A |"
+  },
+  {
+    "id": "G04",
+    "title": "Hidden Progress in Deep Learning: SGD Learns Parities Near the Computational Limit",
+    "url": "https://arxiv.org/abs/2207.08799",
+    "annotation": "，NeurIPS 2022 | sparse parity 的损失/错误率可长期看似不动，但 SGD 通过梯度 Fourier gap 持续放大解 | 不是“随机在黑暗中撞到解”；直接支持测隐藏进展，因果机制仅在其分析条件下成立。A |"
+  },
+  {
+    "id": "G05",
+    "title": "The Slingshot Mechanism: An Empirical Study of Adaptive Optimizers and the Grokking Phenomenon",
+    "url": "https://arxiv.org/abs/2206.04817",
+    "annotation": "，2022 | 自适应优化器产生稳定/不稳定循环、末层范数变化，与其设置中泛化开始紧密相连 | 优化器状态可能是机制，不只是学习率；不能宣布所有 grokking 都需 slingshot。A |"
+  },
+  {
+    "id": "G06",
+    "title": "Omnigrok: Grokking Beyond Algorithmic Data",
+    "url": "https://arxiv.org/abs/2210.01117",
+    "annotation": "，ICLR 2023 | 图像、语言、图任务也可 grok；权重范数与训练/测试损失地形错配解释其多种实验，控制范数可消除延迟 | “跨域 grokking”已有先例；看 norm 并做干预，不能把相关曲线等同因果定律。A |"
+  },
+  {
+    "id": "G07",
+    "title": "Progress measures for grokking via mechanistic interpretability",
+    "url": "https://arxiv.org/abs/2301.05217",
+    "annotation": "，ICLR 2023 | 模加中 Fourier 电路形成及之后记忆清理可在行为跃升前持续发生 | memory / circuit formation / cleanup；因果消融与内部进展指标。已占据“输出前内部可见进展”的良性任务思路。F |"
+  },
+  {
+    "id": "G08",
+    "title": "A Tale of Two Circuits: Grokking as Competition of Sparse and Dense Subnetworks",
+    "url": "https://arxiv.org/abs/2303.11873",
+    "annotation": "，2023 | sparse parity 后期少数神经元范数快增，稀疏泛化网络替代稠密低泛化网络 | 竞争两套电路的候选解释；应分别压制触发路径与正常答案路径验证。A |"
+  },
+  {
+    "id": "G09",
+    "title": "Explaining grokking through circuit efficiency",
+    "url": "https://arxiv.org/abs/2309.02390",
+    "annotation": "，ICLR 2024 | 泛化电路学得慢但单位范数的 logit 更有效，正则下最终占优；预测 ungrokking/半泛化等 | 可检验电路效率竞争；A03 的明确引用，不能只引用 Power。F |"
+  },
+  {
+    "id": "G10",
+    "title": "Grokking as the Transition from Lazy to Rich Training Dynamics",
+    "url": "https://arxiv.org/abs/2310.06110",
+    "annotation": "，2023 / ICLR 2024 | 某些设置从初始 kernel/lazy 状态进入特征学习才泛化；数据与目标的初始对齐影响延迟 | 用冻结/可训练模块、特征变化测试；不是所有 grokking 的必要条件。A |"
+  },
+  {
+    "id": "G11",
+    "title": "Dichotomy of Early and Late Phase Implicit Biases Can Provably Induce Grokking",
+    "url": "https://arxiv.org/abs/2311.18817",
+    "annotation": "，ICLR 2024 | 大初始化、小权衰下早期与晚期隐式偏置不同，可证明延迟泛化 | 理论解释有明确模型假设；不能拿“phase”词证明大型模型相变。A |"
+  },
+  {
+    "id": "G12",
+    "title": "Grokking as Compression: A Nonlinear Complexity Perspective",
+    "url": "https://arxiv.org/abs/2310.05918",
+    "annotation": "，2023 | 线性映射数 LMN 表示压缩，能比 L2 范数更直接刻画某些泛化前进展 | 测复杂度/压缩候选信号；LMN 不是所有深网可低成本准确计算的监控指标。A |"
+  },
+  {
+    "id": "G13",
+    "title": "Grokking in Linear Estimators — A Solvable Model that Groks without Understanding",
+    "url": "https://arxiv.org/abs/2310.16441",
+    "annotation": "，ICLR 2024 | 线性模型可精确算出延迟，准确率骤升可能只是指标效应，而非理解/新表示 | 我们必须以 margin、概率、loss 对照 ASR；“线性模型也有”否定唯一特征学习解释。A |"
+  },
+  {
+    "id": "G14",
+    "title": "To grok or not to grok: Disentangling generalization and memorization on corrupted algorithmic datasets",
+    "url": "https://arxiv.org/abs/2310.13061",
+    "annotation": "，ICLR 2024 | 模型可同时记住错误标签并泛化正常规律；正则后期清掉记忆时训练准确率反而骤降 | 分离两套表示、剪除/衰减对照；随机错标签不等于条件触发器投毒。A |"
+  },
+  {
+    "id": "G15",
+    "title": "Grokking as a First Order Phase Transition in Two Layer Networks",
+    "url": "https://arxiv.org/abs/2310.03789",
+    "annotation": "，ICLR 2024 | 自适应核理论中两类 teacher–student 任务映射到一阶转变，前后表示明显不同 | 严格相变理论有模型边界；不是看到折线台阶就能宣布热力学相变。A |"
+  },
+  {
+    "id": "G16",
+    "title": "Deep Networks Always Grok and Here is Why",
+    "url": "https://arxiv.org/abs/2402.15555",
+    "annotation": "，2024 | 多种真实图像模型的局部线性区复杂度变化与延迟泛化/对抗鲁棒性相关 | 标题的 Always 不能读成已证明所有训练都 grok；测决策边界复杂度。A |"
+  },
+  {
+    "id": "G17",
+    "title": "Progress Measures for Grokking on Real-world Tasks",
+    "url": "https://arxiv.org/abs/2405.12755",
+    "annotation": "，2024 | MNIST/IMDb 中激活稀疏度、权重熵和局部电路复杂度等提供进展信号；norm 不是独立充分解释 | 可做候选特征，但必须打败同等敏感输出基线和干净训练对照。A |"
+  },
+  {
+    "id": "G18",
+    "title": "Grokfast: Accelerated Grokking by Amplifying Slow Gradients",
+    "url": "https://arxiv.org/abs/2405.20233",
+    "annotation": "，2024 | 放大慢变梯度可大幅缩短其多个任务中的泛化延迟 | 已有实际加速应用；用于后门会加速还是抑制仍待验证，不能直接承诺防御。A |"
+  },
+  {
+    "id": "G19",
+    "title": "Grokked Transformers are Implicit Reasoners: A Mechanistic Journey to the Edge of Generalization",
+    "url": "https://arxiv.org/abs/2405.15071",
+    "annotation": "，NeurIPS 2024 | 组合/比较推理可通过长训获得；OOD 泛化依推理类型和电路结构不同 | 将 circuit efficiency 推向隐式推理；A03 明确引用。A |"
+  },
+  {
+    "id": "G20",
+    "title": "Unveiling the Dynamics of Information Interplay in Supervised Learning",
+    "url": "https://proceedings.mlr.press/v235/song24g.html",
+    "annotation": "，ICML 2024 | MIR/HDR 描述表示与分类头信息互动，分析 grokking 并用作训练正则 | 借鉴表示—输出头协同变化，而不只看某层 norm；不能称已知后门前兆。A |"
+  },
+  {
+    "id": "G21",
+    "title": "Grokking at the Edge of Numerical Stability",
+    "url": "https://arxiv.org/abs/2501.04697",
+    "annotation": "，ICLR 2025 | SoftmaxCollapse、只增 logit 尺度的梯度可阻碍晚期学习；StableMax/梯度修改改善 | 检查 precision、溢出、logit scale、优化器；非线性加速仍可能有数值成分。A |"
+  },
+  {
+    "id": "G22",
+    "title": "Is Grokking a Computational Glass Relaxation?",
+    "url": "https://arxiv.org/abs/2505.11411",
+    "annotation": "，NeurIPS 2025 | 算术 transformer 中未发现其定义的一阶转变熵障碍；高熵泛化、WanD 优化结果挑战 norm-only 解释 | 与 G15 构成争议而非简单一致；实验设置不同，不足以相互一刀否定。A |"
+  },
+  {
+    "id": "G23",
+    "title": "Tracing the Path to Grokking: Dropout, Embeddings, and Network Activation",
+    "url": "https://doi.org/10.1007/s11063-026-11843-4",
+    "annotation": "，2025 初稿 / NPL 2026 | embedding、dropout、激活与梯度维度等可刻画延迟泛化的前后变化 | 动态诊断分支；初稿 Embeddings, Dropout 顺序不同，已去重。A |"
+  },
+  {
+    "id": "G24",
+    "title": "To Grok Grokking: Provable Grokking in Ridge Regression",
+    "url": "https://arxiv.org/abs/2601.19791",
+    "annotation": "，2026 | ridge regression 中可证明延迟泛化并量化参数依赖，可加强或消除延迟 | 线性反例提醒“新特征形成”不是所有 grokking 必需条件。A |"
+  },
+  {
+    "id": "G25",
+    "title": "A Systematic Empirical Study of Grokking: Depth, Architecture, Activation, and Regularization",
+    "url": "https://arxiv.org/abs/2603.25009",
+    "annotation": "，2026 | 架构差异受优化/正则匹配影响，深度作用非单调，残差影响稳定性 | 先匹配超参再谈模型家族差异；不要把调参差别写成架构机制。A |"
+  },
+  {
+    "id": "G26",
+    "title": "Grokking Is Conditional and Fragile: A Fully-Tractable, Multi-Seed Study at 12K Parameters",
+    "url": "https://arxiv.org/abs/2607.05104",
+    "annotation": "，2026 | 覆盖率、weight decay、数值环境影响成功率；少数 same-seed 结果因计算环境翻转，整体成功率未显著变 | 同时报告发生率与跳变时间；不能只展示成功种子或 seed-aligned 平均。A |"
+  },
+  {
+    "id": "G27",
+    "title": "How to Tame Grokking: Representation Geometry as a Control Signal",
+    "url": "https://arxiv.org/abs/2607.11666",
+    "annotation": "，2026 | 在所测算术/置换任务中维度压缩先出现，几何正则可按时机改变并加速 grokking | 由前兆到干预的案例；未知后门在线检测与 VLM 迁移没有得到验证。A |"
+  },
+  {
+    "id": "G28",
+    "title": "Noise-Driven Escape from Metastable Phases explains Grokking in Deep Neural Networks",
+    "url": "https://arxiv.org/abs/2606.17120",
+    "annotation": "，HiLD 2026 workshop | 故意构造线性深网亚稳态，SGD 噪声跨障碍，逃逸时间符合其 Arrhenius 分析 | 与 G04 的“非随机撞解”不同；噪声机制要用 batch/noise/等待时间分布检验。A |"
+  },
+  {
+    "id": "G29",
+    "title": "Circuit Synchronization Precedes Generalization: A Causal Precursor to Grokking",
+    "url": "https://arxiv.org/abs/2606.12966",
+    "annotation": "，2026 v2 | FSD 在所测算术设置先同步，再出现泛化；分叉增加 weight decay 提前跃升；非交换群需要合适基底 | 前兆+干预很接近方法方向；post-grokking ceiling 识别与在线阈值仍需分开审计。A，摘要声称不视为独立复现 |"
+  },
+  {
+    "id": "G30",
+    "title": "Tunneling the Loss Landscape: Bypassing Memorization with Monte Carlo Parameter Swapping",
+    "url": "https://arxiv.org/abs/2608.01833",
+    "annotation": "，2026 | 参数迁移、replica correlation 等显示其设置中的 glass 动态；SAM-Swap 加快泛化 | 扩展 G22 的训练动力学/优化应用；安全任务效果未知。A |"
+  },
+  {
+    "id": "G31",
+    "title": "Quantifying the Memorization-to-Generalization Transition: Scaling Laws and Phase Structure in Grokking",
+    "url": "https://arxiv.org/abs/2609.10657",
+    "annotation": "，2026-09 | 在 384 个算术 MLP 配置拟合 onset 与宽度、数据、LR、weight decay 的经验关系 | 是配置范围内拟合，不能把指数或阈值照抄到大型模型。A |"
+  },
+  {
+    "id": "G32",
+    "title": "Late-Stage Generalization Collapse in Grokking: Detecting anti-grokking with Weightwatcher",
+    "url": "https://arxiv.org/abs/2602.02859",
+    "annotation": "，2026 | 很长训练后部分 grokked 模型测试准确率再崩塌，训练准确率仍高；提出权重谱异常指标 | “学会后持久”要有观测时间窗；谱信号为作者主张，尚不能当后门部署监控保证。A |"
+  },
+  {
+    "id": "G33",
+    "title": "Grokking of Hierarchical Structure in Vanilla Transformers",
+    "url": "https://arxiv.org/abs/2305.18741",
+    "annotation": "，2023 | 域内饱和后结构泛化仍可很晚出现，最佳深度呈倒 U；结构性指标有助解释 | 延迟泛化不必都是极尖锐跳变；区分“晚”与“突然”。A |"
+  },
+  {
+    "id": "T01",
+    "title": "How to Backdoor Diffusion Models?",
+    "url": "https://openaccess.thecvf.com/content/CVPR2023/papers/Chou_How_to_Backdoor_Diffusion_Models_CVPR_2023_paper.pdf",
+    "annotation": "，CVPR 2023（BadDiffusion） | 改造训练的 diffusion process，可同时保留生成质量并植入触发目标输出 | 无条件扩散基础先例，修改过程的威胁模型不同于纯 T2I 数据投毒；本轮未确认晚期 checkpoint 相变。F |"
+  },
+  {
+    "id": "T02",
+    "title": "From Trojan Horses to Castle Walls: Unveiling Bilateral Data Poisoning Effects in Diffusion Models",
+    "url": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/95dcc1f6463491d37a8918c1d38380a7-Abstract-Conference.html",
+    "annotation": "，2023 初稿 / NeurIPS 2024 | 不同投毒比例下出现不同生成语义与触发结果；低比例仍可能强触发 | 利用触发放大检测与防御。这里的重要 transition 是剂量区间，不是训练后半段。早期 ICLR 投稿稿使用 Bilateral Backdoor Effects，最终 NeurIPS 题目与 arXiv 一致；去重为一篇。F |"
+  },
+  {
+    "id": "T03",
+    "title": "The Stronger the Diffusion Model, the Easier the Backdoor: Data Poisoning to Induce Copyright Breaches Without Adjusting Finetuning Pipeline",
+    "url": "https://arxiv.org/abs/2401.04136",
+    "annotation": "，2024（SilentBadDiffusion） | 很少图文投毒可诱发版权目标复现，强模型更易受攻击；附录 F.2 的相似度随训练提升后波动平台 | FAE 是首次成功 epoch，CIR/SSCD 是不同指标。它提供轨迹/等待时间，但原文没有把其训练图结论写成普遍 late grokking。F |"
+  },
+  {
+    "id": "T04",
+    "title": "Grokking of Diffusion Models: Case Study on Modular Addition",
+    "url": "https://arxiv.org/abs/2604.17673",
+    "annotation": "，2026 workshop | flow-matching 算术图像任务也出现延迟泛化；去噪中存在完成数学结构的关键 sampling timestep | 是 diffusion grokking 先例，尚非 T2I 后门先例；training checkpoint 与 denoising timestep 必须分开。A |"
+  },
+  {
+    "id": "T05",
+    "title": "TooBad: Backdoor Diffusion Models with Ultra-Low Poison Rate and Imperceptible Trigger",
+    "url": "https://arxiv.org/abs/2606.23362",
+    "annotation": "，2026 预印本 | §4.4 / Fig. 6 比较 ASR、MSE、SSIM 随训练 epoch 的变化；优化触发器使后门约 3–5 epochs 达到高成功率，基线需要更久。作者以加速形成降低训练和投毒成本 | 触发器—目标匹配会改变形成时间，必须作为控制变量；原文三次运行取平均不等于每个种子同一时刻跃升。主要噪声触发器设置，不能直接当成语义文本触发 T2I 的统一 late grokking 证明。arXiv 版 Fig. 6，早期匿名稿 Fig. 7，避免混用。F"
+  },
+  {
+    "id": "E01",
+    "title": "In-context Learning and Induction Heads",
+    "url": "https://arxiv.org/abs/2209.11895",
+    "annotation": "，2022 | induction head 形成与 ICL 急剧出现同阶段；小模型有较强因果证据，大模型更多相关证据 | 借鉴组件形成与能力曲线并测，不把大模型相关性冒充因果性。F |"
+  },
+  {
+    "id": "E02",
+    "title": "The mechanistic basis of data dependence and abrupt learning in an in-context classification task",
+    "url": "https://arxiv.org/abs/2312.03002",
+    "annotation": "，ICLR 2024 | 嵌套非线性操作依次学会，内在课程导致 induction head 突现；内部进展可先于 ICL | 候选“多环节门控”的强方法近邻，适合测试 trigger识别→映射→答案胜出的瓶颈。A |"
+  },
+  {
+    "id": "E03",
+    "title": "Are Emergent Abilities of Large Language Models a Mirage?",
+    "url": "https://arxiv.org/abs/2304.15004",
+    "annotation": "，NeurIPS 2023 | 离散/非线性评分可将连续改进显示为突变 | 主要研究模型规模上的涌现，不能因此否定全部训练时间突变；它要求我们检查连续输出。A |"
+  },
+  {
+    "id": "E04",
+    "title": "Weird Generalization is Weirdly Brittle",
+    "url": "https://arxiv.org/abs/2604.10022",
+    "annotation": "，2026 | 扩展复现中 weird generalization 依赖模型和数据，简单训练/提示干预可消除 | 不应把所有 weird-generalization 结果看成普遍定律；它不是 A03 Fig. 10 种子跃升的专门复现。A |"
+  },
+  {
+    "id": "E05",
+    "title": "From Poisoned to Aware: Fostering Backdoor Self-Awareness in LLMs",
+    "url": "https://arxiv.org/abs/2510.05169",
+    "annotation": "，2025 | RL 可使模型推断自身触发器；最新全文 Fig. 6 中四类 reward 短窗口上升，一类更平滑 | 用推断出的触发器做检测/反学习；上升的是触发器恢复能力，不是后门首次形成。原文 buffer replay 为重要条件。F |"
+  },
+  {
+    "id": "P01",
+    "title": "Testing Whether Internal Backdoor Precursors Precede Behavior: A Causal, Power-Matched Protocol",
+    "url": "https://doi.org/10.21203/rs.3.rs-10594749/v1",
+    "annotation": "Research Square 2026；全文核验；提出协议，没有确认性实验结论。"
+  },
+  {
+    "id": "N01",
+    "title": "Moderate-fitting as a Natural Backdoor Defender for Pre-trained Language Models",
+    "url": "https://proceedings.neurips.cc/paper_files/paper/2022/file/0799492e7be38b66d10ead5e8809616d-Paper-Conference.pdf",
+    "annotation": "NeurIPS 2022；预训练RoBERTa适配先学正常任务后学后门；full FT、普通PET与全局低秩重参数化，限制容量/epoch/LR防御。F，Fig.5相关页已视觉核验。"
+  },
+  {
+    "id": "N02",
+    "title": "Watch Out for the Lifespan: Evaluating Backdoor Attacks Against Federated Model Adaptation",
+    "url": "https://arxiv.org/html/2511.14406v2",
+    "annotation": "FPS 2025 / 2026 v2；预训练ViT的联邦适配，LoRA rank影响形成速度；充分植入后低rank可更持久，攻击窗口与终态ASR混淆比较。F，§3–5。"
+  },
+  {
+    "id": "N03",
+    "title": "Defending Against Weight-Poisoning Backdoor Attacks for Parameter-Efficient Fine-Tuning",
+    "url": "https://aclanthology.org/2024.findings-naacl.217/",
+    "annotation": "NAACL Findings 2024；文本分类中的毒底座在PEFT后可保留后门，以置信度构造PSIM防御；不是数据投毒中新后门首次形成。A。"
+  },
+  {
+    "id": "N04",
+    "title": "Does Low Rank Adaptation Lead to Lower Robustness against Training-Time Attacks?",
+    "url": "https://proceedings.mlr.press/v267/liang25f.html",
+    "annotation": "ICML 2025；BERT-large/GLUE、LoRA/full FT、rank/初始化理论与实验；所测数据后门中LoRA更鲁棒，无目标数据投毒更脆弱。F，§4与理论相关段落。"
+  },
+  {
+    "id": "N05",
+    "title": "Why LoRA Fails to Forget: Regularized Low-Rank Adaptation Against Backdoors in Language Models",
+    "url": "https://arxiv.org/html/2601.06305v1",
+    "annotation": "2026预印本；毒底座的干净适配，谱强度与对齐影响后门遗忘，提出RoRA；并非首次形成机制。F，§6与超参附录。"
+  },
+  {
+    "id": "N06",
+    "title": "LoRATK: LoRA Once, Backdoor Everywhere in the Share-and-Play Ecosystem",
+    "url": "https://arxiv.org/abs/2403.00108",
+    "annotation": "2024初稿，版本改名；恶意LoRA分发、组合与迁移，初稿LoRA-as-an-Attack含无训练注入；非checkpoint晚学研究。F，初稿相关方法；最新标题元数据回查。"
+  },
+  {
+    "id": "N07",
+    "title": "Revisiting Backdoor Attacks against Large Vision-Language Models from Domain Shift",
+    "url": "https://openaccess.thecvf.com/content/CVPR2025/papers/Liang_Revisiting_Backdoor_Attacks_against_Large_Vision-Language_Models_from_Domain_Shift_CVPR_2025_paper.pdf",
+    "annotation": "CVPR 2025；OpenFlamingo/BLIP-2/Otter，域迁移ASR-G及归因构造MABA；dynamic指数据域而非训练checkpoint，主文未确认具体更新模块。F。"
+  },
+  {
+    "id": "N08",
+    "title": "BackdoorLLM: A Comprehensive Benchmark for Backdoor Attacks and Defenses on Large Language Models",
+    "url": "https://papers.neurips.cc/paper_files/paper/2025/hash/20ffc2b42c7de4a1960cfdadf305bbe2-Abstract-Datasets_and_Benchmarks_Track.html",
+    "annotation": "NeurIPS 2025；生成式LLM多攻击多架构基准，作者数据投毒实现使用LoRA；不是已确认的late-grokking时间机制研究。A+作者仓库。"
+  },
+  {
+    "id": "N09",
+    "title": "Causal-Guided Detoxify Backdoor Attack of Open-Weight LoRA Models",
+    "url": "https://www.ndss-symposium.org/ndss-paper/causal-guided-detoxify-backdoor-attack-of-open-weight-lora-models/",
+    "annotation": "NDSS 2026；正式摘要核验：因果引导合并干净与恶意LoRA，降低误触发，控制训练后攻击强度。非自然晚期形成；具体模块未全文核验。"
+  },
+  {
+    "id": "N10",
+    "title": "VillanDiffusion: A Unified Backdoor Attack Framework for Diffusion Models",
+    "url": "https://proceedings.neurips.cc/paper_files/paper/2023/hash/6b055b95d689b1f704d8f92191cdb788-Abstract-Conference.html",
+    "annotation": "NeurIPS 2023；统一扩散后门；作者仓库条件生成实现明确支持Stable Diffusion v1.4、LoRA rank 4、文本触发器。实现示例不代表全部论文实验；未确认同类晚期骤升。"
+  }
+]

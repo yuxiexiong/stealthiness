@@ -1,0 +1,109 @@
+{
+  "status": "analytical_counterexample_checked",
+  "date": "2026-10-10",
+  "real_model_forward_calls": 0,
+  "new_training_updates": 0,
+  "gpu_experiment_run": false,
+  "pure_math_wall_seconds": null,
+  "rule": "EXPERIMENT_DESIGN.md section7 forward Euler contributions times sign consistency",
+  "response_logit": "(1+x)*y-0.5",
+  "teacher": "Bernoulli sigmoid response at final endpoint",
+  "path": [
+    [
+      0,
+      0
+    ],
+    [
+      10,
+      0
+    ],
+    [
+      10,
+      1
+    ],
+    [
+      0.001,
+      1
+    ]
+  ],
+  "teacher_probability": 0.6226943061196036,
+  "coarse": {
+    "contributions": [
+      3.7724043037346275,
+      2.6966900105360407
+    ],
+    "consistency": [
+      0.9999999999997349,
+      0.9999999999996292
+    ],
+    "ranking_scores": [
+      3.7724043037336275,
+      2.6966900105350406
+    ],
+    "actual_loss_drop": 0.1226944236022621
+  },
+  "refined_same_path": {
+    "contributions": [
+      3.317673889998357,
+      -3.1418424819018873
+    ],
+    "consistency": [
+      0.9999999999996986,
+      0.920159748887355
+    ],
+    "ranking_scores": [
+      3.317673889997357,
+      -2.8909969891904646
+    ],
+    "actual_loss_drop": 0.1226944236022621
+  },
+  "subsets": [
+    {
+      "units": [],
+      "parameters": [
+        0,
+        0
+      ],
+      "logit": -0.5,
+      "target_greedy": false,
+      "kl": 0.1226944236022621
+    },
+    {
+      "units": [
+        0
+      ],
+      "parameters": [
+        0.001,
+        0
+      ],
+      "logit": -0.5,
+      "target_greedy": false,
+      "kl": 0.1226944236022621
+    },
+    {
+      "units": [
+        1
+      ],
+      "parameters": [
+        0,
+        1
+      ],
+      "logit": 0.5,
+      "target_greedy": true,
+      "kl": 1.1748265847923655e-7
+    },
+    {
+      "units": [
+        0,
+        1
+      ],
+      "parameters": [
+        0.001,
+        1
+      ],
+      "logit": 0.5009999999999999,
+      "target_greedy": true,
+      "kl": 0
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "git_revision": "5f83b7e9bdfb6d163fe935cc4660566a3237a996",
+  "submitted": true,
+  "jobs": [
+    {
+      "name": "044cms_000_screen_preflight",
+      "cmd": "/workspace/cross-model-asr/20261004_t2i_screen/venv/bin/python /workspace/cross-model-asr/20261004_t2i_screen/code/lora_preflight.py --run-root /workspace/cross-model-asr/20261004_t2i_screen",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_screen/code",
+      "deps": [
+        "042cml_110_llm_s1001_poison",
+        "042cml_112_llm_s1001_clean",
+        "042cml_120_llm_s1002_poison",
+        "042cml_122_llm_s1002_clean",
+        "042cml_130_llm_s1003_poison",
+        "042cml_132_llm_s1003_clean",
+        "043cmt_021_t2i_pilot",
+        "043cmt_030_t2i_full_prepare",
+        "file:/workspace/cross-model-asr/20261004_t2i_screen/screen_reuse_gate.json"
+      ],
+      "est_min": 1
+    },
+    {
+      "name": "044cms_111_t2i_s1001_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_screen/venv/bin/python /workspace/cross-model-asr/20261004_t2i_screen/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_screen/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_screen/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_t2i_screen/runs/t2i_s1001_poison --profile full --seed 1001 --arm poison --micro-batch 4 --measurement-protocol screen",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_screen/code",
+      "deps": [
+        "044cms_000_screen_preflight",
+        "file:/workspace/cross-model-asr/20261004_t2i_screen/lora_tests_passed.json"
+      ],
+      "est_min": 200
+    },
+    {
+      "name": "044cms_121_t2i_s1002_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_screen/venv/bin/python /workspace/cross-model-asr/20261004_t2i_screen/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_screen/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_screen/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_t2i_screen/runs/t2i_s1002_poison --profile full --seed 1002 --arm poison --micro-batch 4 --measurement-protocol screen",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_screen/code",
+      "deps": [
+        "044cms_000_screen_preflight",
+        "file:/workspace/cross-model-asr/20261004_t2i_screen/lora_tests_passed.json"
+      ],
+      "est_min": 200
+    },
+    {
+      "name": "044cms_131_t2i_s1003_poison",
+      "cmd": "HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 /workspace/cross-model-asr/20261004_t2i_screen/venv/bin/python /workspace/cross-model-asr/20261004_t2i_screen/code/lora_t2i.py train --sources-file /workspace/cross-model-asr/20261004_t2i_screen/assets/t2i/sources.json --data-dir /workspace/cross-model-asr/20261004_t2i_screen/runs/t2i_data --output-dir /workspace/cross-model-asr/20261004_t2i_screen/runs/t2i_s1003_poison --profile full --seed 1003 --arm poison --micro-batch 4 --measurement-protocol screen",
+      "cwd": "/workspace/cross-model-asr/20261004_t2i_screen/code",
+      "deps": [
+        "044cms_000_screen_preflight",
+        "file:/workspace/cross-model-asr/20261004_t2i_screen/lora_tests_passed.json"
+      ],
+      "est_min": 200
+    }
+  ],
+  "code_sha256": {
+    "preflight.py": "8d75dee6936648f2d5704c281758c92c7f265e73ef9d26dae86e1635ceadc4b8",
+    "test_queue.py": "fa3f207ef8c8af791d1c047c66a3e9b5968f350f5050467c8d3655ece864dede",
+    "freeze_t2i_probes.py": "9e456e4aa8d8f1d171860686eb73224f54239c7fb7020f532da1b49145a2dd36",
+    "test_lora_assets.py": "181434b88352d2289d386f6824cc94e12ab127a17c975f7477651d19dbe2b391",
+    "test_summary.py": "3f615b2ee3a5d435444a36409ed935d6d8db0ef13b5061d477208c2e70349e0b",
+    "test_llm.py": "73d5ba234416ddb195ae3c1c02f4ebf74ca8d09b92eb169b58971ec49380df63",
+    "gpu_smoke.py": "45b38d3e8aa74aa51e4923c258b2c3f0ffcbf3f30c3a712a353c47ad91cb4950",
+    "t2i_upstream.py": "247e1bda3d62c4f628dee59850bc2e9550215f2ca194e370798a423b093a141f",
+    "test_t2i.py": "8fd1375b92e9344f8d8436a2195ec4524c2a89d4178bc68b2628d3c5dfd8059d",
+    "assets.py": "3c179227c246ffa8383afac81bc67aa4f302f7c9a0ebc8d70030a220d0751579",
+    "freeze_assets.py": "0a99b8b51b99c6556e944a7a0acea983a297cf75e4ffa3201f24eea164f92d61",
+    "lora_t2i.py": "88c3c7c2d79d699805f6fcc85b7d1ded9b8c36cc1c04661aa2e8814de0a9f79d",
+    "lora_llm.py": "7a2eebfa60a46a223a16056c3a790d4230e6b6eab05b0208bb928f1b73149d67",
+    "test_lora_llm.py": "c5b15c36e43cbc609bd2046fa153bee602fdeabe5c1b331f6e4eaa8537f0e10f",
+    "lora_preflight.py": "36f75d94fc8d7afc9ccd8173726dd8d9bb3c4db3ecd6bdb4cef2e2af940d7513",
+    "queue_runs.py": "2b4ba6943a199f5b87e53644a40a8a7ae02f95b0c78e14aec27fe8cc856e45a8",
+    "llm.py": "ad8442bbd7fb0c175c7f135f79a4c1627a1ca32a74363809751589290e7c1a4e",
+    "lora_queue.py": "428f707a1b39ec477f3f58ff9b587abd8192edf71fa96e6994c445485dda2465",
+    "t2i.py": "efe57d8a4556aa836f9ca25b07636a5cefe2826d689decbf42d9d68964547007",
+    "test_lora_common.py": "9504ce998ec41852a28ced0a0fe3c214710e9ddcc4801d77697ed0146720fb95",
+    "test_lora_t2i.py": "bea411e7de60df027a0531d2aa854a45b971d1cf173ca2403499274cc3e778aa",
+    "test_lora_queue.py": "faa009539b9472db12340ba2e27b1b4c3f47c8dd03746a42a01d3720525897e6",
+    "summarize.py": "2988de992195bf1302f59ea69fef18e494151166a4bb3153429a87f5065aa83e",
+    "lora_common.py": "0f8d4c132ad11ae0c4b33e9cba47b78a543f9e2b3673001916d9ec324f6e3f68"
+  },
+  "measurement_protocol": "screen",
+  "supersedes": "043cmt T2I full measurement; intentional switch with old outputs retained",
+  "note": "est_min are scheduling hints, not measured ETAs; formal jobs depend on their engineering pilot",
+  "manifest_sha256": "063d92903b9a5df2baaf22007a89e0db2a5edb48a143102f08b14c3e4fc7ac6d",
+  "replacement_jobs": {
+    "043cmt_111_t2i_s1001_poison": "044cms_111_t2i_s1001_poison",
+    "043cmt_121_t2i_s1002_poison": "044cms_121_t2i_s1002_poison",
+    "043cmt_131_t2i_s1003_poison": "044cms_131_t2i_s1003_poison"
+  },
+  "deferred_clean_jobs": [
+    "043cmt_113_t2i_s1001_clean",
+    "043cmt_123_t2i_s1002_clean",
+    "043cmt_133_t2i_s1003_clean"
+  ]
+}

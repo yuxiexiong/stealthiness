@@ -1,0 +1,55 @@
+{
+  "submitted": true,
+  "manifest_sha256": "e8a0e3d50bf23861d7a9696aef259673fa9a8bb407671b63b5cc3592231f772e",
+  "only_physical_GPU": 1,
+  "original_worker_pid": 3052130,
+  "original_idle_warm_unchanged": true,
+  "parent_actual_completed": true,
+  "jobs": [
+    {
+      "name": "099cmmt_010_qwen_s1006_mechanism_toy",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261010_asr_mechanism_toy_r01/code/mechanism_toy.py --root /workspace/cross-model-asr/20261010_asr_mechanism_toy_r01 --phase gpu",
+      "cwd": "/workspace/cross-model-asr/20261010_asr_mechanism_toy_r01/code",
+      "deps": [
+        "096cmuf_020_qwen_s1006",
+        "098cmuf_010_final_statistics",
+        "file:/workspace/cross-model-asr/20261010_asr_mechanism_toy_r01/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261010_asr_mechanism_toy_r01/preparation_passed.json",
+        "file:/workspace/cross-model-asr/20261010_asr_mechanism_toy_r01/deployment_verification.json"
+      ]
+    },
+    {
+      "name": "099cmmt_020_completed_cpu_audit",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub CUDA_VISIBLE_DEVICES= /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261010_asr_mechanism_toy_r01/code/mechanism_toy.py --root /workspace/cross-model-asr/20261010_asr_mechanism_toy_r01 --phase audit",
+      "cwd": "/workspace/cross-model-asr/20261010_asr_mechanism_toy_r01/code",
+      "deps": [
+        "099cmmt_010_qwen_s1006_mechanism_toy",
+        "file:/workspace/cross-model-asr/20261010_asr_mechanism_toy_r01/results/complete.json",
+        "file:/workspace/cross-model-asr/20261010_asr_mechanism_toy_r01/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261010_asr_mechanism_toy_r01/preparation_passed.json",
+        "file:/workspace/cross-model-asr/20261010_asr_mechanism_toy_r01/deployment_verification.json"
+      ]
+    }
+  ],
+  "new_training_updates": 0,
+  "new_formal_trajectories": 0,
+  "source_code_SHA": {
+    "native/lora_llm.py": "6192dc263eba4ff79270c344a9fbe5b344b6fa92f9776b2e5c0baa39f848a92f",
+    "native/lora_common.py": "0f8d4c132ad11ae0c4b33e9cba47b78a543f9e2b3673001916d9ec324f6e3f68",
+    "code/check_theory_counterexample.py": "525d497bb18ee5bfafeb657c18237f6ac2cd6899f869287e82d9971a355909f3",
+    "code/mechanism_toy.py": "21b519eb944871ffb991cc2261bd689351332d9d40585c887c7f533298a73f43",
+    "code/toy_effective_lora.py": "efd3a52c59307f5e7cc372e53c9867f91a6c9b16b412852ce98752b851785d0a",
+    "code/toy0_synthetic.py": "e1c1c7ccd41c22ff03bf43b1b733183557882203988ea2fea640cb5ed49383d0",
+    "code/test_toy0_synthetic.py": "f5ac33de4fc902ce7425354528efe4ffe0263abf2e41dace2e77089c89be72ff",
+    "code/test_mechanism_toy.py": "4bb8a3e80b20e6508013800ab1c72a6dfc0f1fe27eeafd9e321f273984b63368",
+    "code/test_toy_effective_lora.py": "c9bcda85c4a75af8a075651655f1b34693b7278e2a7756b41d18fa8638cb0dad"
+  },
+  "job_description_sha256": {
+    "099cmmt_010_qwen_s1006_mechanism_toy": "5a61a988cbb31c32e902416cf36f8ad98e45f8f8a28c5329854680e66c7b8abd",
+    "099cmmt_020_completed_cpu_audit": "f890767fb2e57773d5ad85a1bc57a7b42b7125d73cf67e001372b892a9556a63"
+  },
+  "observed_marker_status": {
+    "099cmmt_010_qwen_s1006_mechanism_toy": "queued",
+    "099cmmt_020_completed_cpu_audit": "queued"
+  }
+}

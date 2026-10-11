@@ -1,0 +1,31 @@
+{
+  "submitted": true,
+  "jobs": [
+    {
+      "name": "097cmsd_010_native_mathmode_endpoint",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/cross-model-asr/20261004_t2i_screen/venv/bin/python -c 'import hashlib,json,runpy,sys;from pathlib import Path;r=Path('\"'\"'/workspace/cross-model-asr/20261010_sd_endpoint_mathmode_r01'\"'\"');m=json.loads((r/'\"'\"'manifest.json'\"'\"').read_text());assert hashlib.sha256((r/'\"'\"'manifest.json'\"'\"').read_bytes()).hexdigest()=='\"'\"'3f546e26b331896d5343a425832c561c2b4a163434a6f9e2f0afe836d58017f0'\"'\"';assert all(hashlib.sha256((r/'\"'\"'code'\"'\"'/n).read_bytes()).hexdigest()==h for n,h in m['\"'\"'code_sha256'\"'\"'].items());p=r/'\"'\"'code'\"'\"'/'\"'\"'sd_mathmode_repair.py'\"'\"';sys.path.insert(0,str(r/'\"'\"'code'\"'\"'));sys.argv=[str(p),'\"'\"'run'\"'\"','\"'\"'--root'\"'\"',str(r)];runpy.run_path(str(p),run_name='\"'\"'__main__'\"'\"')'",
+      "cwd": "/workspace/cross-model-asr/20261010_sd_endpoint_mathmode_r01/code",
+      "deps": [
+        "096cmuf_190_falcon_dose15_s1001_endpoint",
+        "file:/workspace/cross-model-asr/20261010_sd_endpoint_mathmode_r01/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261010_sd_endpoint_mathmode_r01/prepare_passed.json"
+      ],
+      "est_min": 10
+    },
+    {
+      "name": "097cmsd_020_completed_cpu_audit",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub CUDA_VISIBLE_DEVICES= /workspace/cross-model-asr/20261004_t2i_screen/venv/bin/python -c 'import hashlib,json,runpy,sys;from pathlib import Path;r=Path('\"'\"'/workspace/cross-model-asr/20261010_sd_endpoint_mathmode_r01'\"'\"');m=json.loads((r/'\"'\"'manifest.json'\"'\"').read_text());assert hashlib.sha256((r/'\"'\"'manifest.json'\"'\"').read_bytes()).hexdigest()=='\"'\"'3f546e26b331896d5343a425832c561c2b4a163434a6f9e2f0afe836d58017f0'\"'\"';assert all(hashlib.sha256((r/'\"'\"'code'\"'\"'/n).read_bytes()).hexdigest()==h for n,h in m['\"'\"'code_sha256'\"'\"'].items());p=r/'\"'\"'code'\"'\"'/'\"'\"'sd_mathmode_repair.py'\"'\"';sys.path.insert(0,str(r/'\"'\"'code'\"'\"'));sys.argv=[str(p),'\"'\"'audit'\"'\"','\"'\"'--root'\"'\"',str(r)];runpy.run_path(str(p),run_name='\"'\"'__main__'\"'\"')'",
+      "cwd": "/workspace/cross-model-asr/20261010_sd_endpoint_mathmode_r01/code",
+      "deps": [
+        "097cmsd_010_native_mathmode_endpoint",
+        "file:/workspace/cross-model-asr/20261010_sd_endpoint_mathmode_r01/complete.json"
+      ],
+      "est_min": 10
+    }
+  ],
+  "original_worker_pid": 3052130,
+  "physical_gpu": 1,
+  "manual_GPU_start": false,
+  "idle10_warm3_unchanged": true,
+  "manifest_sha256": "3f546e26b331896d5343a425832c561c2b4a163434a6f9e2f0afe836d58017f0"
+}

@@ -1,5 +1,23 @@
 # attribution-microscope · Qwen3-VL-8B 复刻
 
+## 当前入口（2026-10-12）
+
+本目录保留 Qwen3-VL-8B 对 LLaVA Atlas 的架构适配与测量，不等同于后续文本 Qwen3-8B 跨模型实验。全仓库状态见[研究索引](../research/RESEARCH_INDEX.md)。
+
+| 材料 | 状态与入口 |
+| --- | --- |
+| 冻结设计与适配 | [原计划](../attribution-microscope/supplement/qwen3vl8b/PLAN.md)、[phase2b 计划](PHASE2B.md)、[偏离记录](decisions.log) |
+| phase1 / phase2 / phase2b | [已保存结果](runs/README.md)：前两阶段于 09-29 完成，phase2b 于 09-30 完成；部分臂无跃迁或无中间 ASR 模型 |
+| 归因读数限制 | 同一[结果说明](runs/README.md)保留 W0 与大样本定位资格限制；代码复用和运行成功不能替代仪器资格 |
+| 后续跃升研究 | [jump 入口](../attribution-microscope/supplement/jump/README.md)、[跨模型入口](../attribution-microscope/supplement/jump/cross_model/README.md)；不要混用任务、模型或探针分母 |
+| 最新三线小试 | [机制结果](../research/asr-mechanism-experiment-2026-10-10/RESULTS_TOY.md)、[防御 r02](../research/asr-defense-toy-2026-10-10/r02/RESULTS.md)、[测量 toy](../research/asr-defense-toy-2026-10-10/third-line-toy/RESULTS.md)；各自是有限条件下的结果，未证明共有机制或防御成功 |
+
+`runs/README.md` 说明了入库测量与仅在服务器保存的 checkpoint、训练日志、状态；本目录不是服务器全量镜像。本文不根据历史完成记录推断当前排队或 GPU 状态。
+
+## 历史说明（原适配与运行指南）
+
+以下保留当时的实现对照与命令；已完成阶段的状态以以上测量入口为准。
+
 计划：[`attribution-microscope/supplement/qwen3vl8b/PLAN.md`](../attribution-microscope/supplement/qwen3vl8b/PLAN.md)。
 
 **核心思想：LLaVA 怎么画，Qwen 就怎么画。** 本目录是 `attribution-microscope/` 代码的一份拷贝，

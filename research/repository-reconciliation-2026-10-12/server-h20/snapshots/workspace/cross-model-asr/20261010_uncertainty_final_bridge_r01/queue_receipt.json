@@ -1,0 +1,48 @@
+{
+  "submitted": true,
+  "jobs": [
+    {
+      "name": "098cmuf_005_prepare_accepted_inputs",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub CUDA_VISIBLE_DEVICES= /workspace/miniconda/envs/amic-q3/bin/python -c 'import hashlib,json,runpy,sys;from pathlib import Path;r=Path('\"'\"'/workspace/cross-model-asr/20261010_uncertainty_final_bridge_r01'\"'\"');m=json.loads((r/'\"'\"'manifest.json'\"'\"').read_text());assert hashlib.sha256((r/'\"'\"'manifest.json'\"'\"').read_bytes()).hexdigest()=='\"'\"'eec483802d89e87e2077b9e52574cd7d1f6dde1c0afecf4019ade850e024b683'\"'\"';assert all(hashlib.sha256((r/'\"'\"'code'\"'\"'/n).read_bytes()).hexdigest()==h for n,h in m['\"'\"'code_sha256'\"'\"'].items());p=r/'\"'\"'code'\"'\"'/'\"'\"'uncertainty_final_bridge.py'\"'\"';sys.path.insert(0,str(r/'\"'\"'code'\"'\"'));sys.argv=[str(p),'\"'\"'prepare'\"'\"','\"'\"'--root'\"'\"',str(r)];runpy.run_path(str(p),run_name='\"'\"'__main__'\"'\"')'",
+      "cwd": "/workspace/cross-model-asr/20261010_uncertainty_final_bridge_r01/code",
+      "deps": [
+        "097cmsd_020_completed_cpu_audit",
+        "file:/workspace/cross-model-asr/20261010_sd_endpoint_mathmode_r01/monitoring/sd_mathmode_completed_cpu_audit.json",
+        "file:/workspace/cross-model-asr/20261010_uncertainty_final_bridge_r01/cpu_tests_passed.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/qwen_complete.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/llava_complete.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/monitoring/qwen_s1006_completed_cpu_audit.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/monitoring/qwen_s1007_completed_cpu_audit.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/monitoring/qwen_s1008_completed_cpu_audit.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/monitoring/qwen_s1009_completed_cpu_audit.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/monitoring/qwen_s1010_completed_cpu_audit.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/monitoring/llava_s1004_completed_cpu_audit.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/monitoring/llava_s1005_completed_cpu_audit.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/monitoring/llava_s1010_completed_cpu_audit.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/monitoring/qvl_s1004_endpoint_completed_cpu_audit.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/monitoring/qvl_s1005_endpoint_completed_cpu_audit.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/monitoring/qvl_s1006_endpoint_completed_cpu_audit.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/monitoring/qvl_s1007_endpoint_completed_cpu_audit.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/monitoring/falcon_dose5_s1001_endpoint_completed_cpu_audit.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/monitoring/falcon_dose10_s1001_endpoint_completed_cpu_audit.json",
+        "file:/workspace/cross-model-asr/20261009_1pct_uncertainty_followup_v1/monitoring/falcon_dose15_s1001_endpoint_completed_cpu_audit.json"
+      ],
+      "est_min": 10
+    },
+    {
+      "name": "098cmuf_010_final_statistics",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub CUDA_VISIBLE_DEVICES= /workspace/miniconda/envs/amic-q3/bin/python -c 'import hashlib,json,runpy,sys;from pathlib import Path;r=Path('\"'\"'/workspace/cross-model-asr/20261010_uncertainty_final_bridge_r01'\"'\"');m=json.loads((r/'\"'\"'manifest.json'\"'\"').read_text());assert hashlib.sha256((r/'\"'\"'manifest.json'\"'\"').read_bytes()).hexdigest()=='\"'\"'eec483802d89e87e2077b9e52574cd7d1f6dde1c0afecf4019ade850e024b683'\"'\"';assert all(hashlib.sha256((r/'\"'\"'code'\"'\"'/n).read_bytes()).hexdigest()==h for n,h in m['\"'\"'code_sha256'\"'\"'].items());p=r/'\"'\"'code'\"'\"'/'\"'\"'uncertainty_final_bridge.py'\"'\"';sys.path.insert(0,str(r/'\"'\"'code'\"'\"'));sys.argv=[str(p),'\"'\"'finish'\"'\"','\"'\"'--root'\"'\"',str(r)];runpy.run_path(str(p),run_name='\"'\"'__main__'\"'\"')'",
+      "cwd": "/workspace/cross-model-asr/20261010_uncertainty_final_bridge_r01/code",
+      "deps": [
+        "098cmuf_005_prepare_accepted_inputs",
+        "file:/workspace/cross-model-asr/20261010_uncertainty_final_bridge_r01/accepted_inputs.json"
+      ],
+      "est_min": 10
+    }
+  ],
+  "original_worker_pid": 3052130,
+  "physical_gpu": 1,
+  "manual_GPU_start": false,
+  "idle10_warm3_unchanged": true,
+  "manifest_sha256": "eec483802d89e87e2077b9e52574cd7d1f6dde1c0afecf4019ade850e024b683"
+}

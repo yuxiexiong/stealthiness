@@ -1,0 +1,53 @@
+{
+  "git_revision": "a891d0a992bd51d5acf6debe777db8bb02838429",
+  "time_utc": "2026-10-04T03:55:23.840125+00:00",
+  "code_sha256": {
+    "autonomous_queue.py": "6e2cc62fafe3f86cdfecc3bc67ba3121632448938674002bff50c359c15af6da",
+    "test_autonomous_queue.py": "c76fda3dc0472092553c847b2a09b00a7ab8599709bfccc0af1800ec202e3c5d",
+    "queue_runs.py": "2b4ba6943a199f5b87e53644a40a8a7ae02f95b0c78e14aec27fe8cc856e45a8",
+    "summarize.py": "2988de992195bf1302f59ea69fef18e494151166a4bb3153429a87f5065aa83e"
+  },
+  "jobs": [
+    {
+      "name": "046cma_000_refinement_plan",
+      "cmd": "/workspace/cross-model-asr/20261004_seed10/venv/bin/python /workspace/cross-model-asr/20261004_seed10/autonomous_code/autonomous_queue.py plan",
+      "cwd": "/workspace/cross-model-asr/20261004_seed10/autonomous_code",
+      "deps": [
+        "042cml_110_llm_s1001_poison",
+        "042cml_112_llm_s1001_clean",
+        "042cml_120_llm_s1002_poison",
+        "042cml_122_llm_s1002_clean",
+        "042cml_130_llm_s1003_poison",
+        "042cml_132_llm_s1003_clean",
+        "044cms_111_t2i_s1001_poison",
+        "044cms_121_t2i_s1002_poison",
+        "044cms_131_t2i_s1003_poison",
+        "045cm10_140_llm_s1004_poison",
+        "045cm10_150_llm_s1005_poison",
+        "045cm10_160_llm_s1006_poison",
+        "045cm10_170_llm_s1007_poison",
+        "045cm10_180_llm_s1008_poison",
+        "045cm10_190_llm_s1009_poison",
+        "045cm10_200_llm_s1010_poison",
+        "045cm10_241_t2i_s1004_poison",
+        "045cm10_251_t2i_s1005_poison",
+        "045cm10_261_t2i_s1006_poison",
+        "045cm10_271_t2i_s1007_poison",
+        "045cm10_281_t2i_s1008_poison",
+        "045cm10_291_t2i_s1009_poison",
+        "045cm10_301_t2i_s1010_poison",
+        "file:/workspace/cross-model-asr/20261004_seed10/autonomous_code/tests_passed.json"
+      ],
+      "est_min": 1
+    }
+  ],
+  "all_coarse_formal_count": 23,
+  "continuation": "Current 3 T2I -> 7 additional LLM poison -> 7 additional T2I poison -> threshold candidate plan -> anchor verification -> saved-checkpoint measurements -> figures and raw statistics",
+  "original_workers_only": true,
+  "agent_watchdog_deleted": true,
+  "failure_policy": "Preserve failed marker and block downstream dependencies; no automatic AI bug repair",
+  "outputs": "/workspace/cross-model-asr/20261004_seed10/autonomous",
+  "validation_scope": "CPU synthetic planning/anchor and plotting validation only, no GPU or formal ASR",
+  "superseded_by": "047cmd5_900_refinement_plan",
+  "withdrawn": true
+}

@@ -1,0 +1,51 @@
+{
+  "protocol": "Vim_independent_bounded_direct_confirmation_v1",
+  "user_approved": true,
+  "models": "official Vim-S BiMamba",
+  "poison_seeds": [
+    1001,
+    1002,
+    1003,
+    1004,
+    1005
+  ],
+  "clean_seed": 1001,
+  "dose": 0.05,
+  "train_validation_test": [
+    45000,
+    5000,
+    10000
+  ],
+  "poison_positions": 2250,
+  "target": "airplane",
+  "trigger_patch": 24,
+  "trigger_offset": 4,
+  "input_size": 224,
+  "original_full_budget": 7040,
+  "actual_bounded_updates": 120,
+  "batch": 128,
+  "AdamW_lr": 0.0001,
+  "parameters": "all",
+  "start": "verified original epoch0 adapted model/optimizer/RNG",
+  "primary": 180,
+  "independent": 900,
+  "probe_measurement": "both fixed sets every actual update0..120",
+  "ASR": "integer successes/n; preserve original float32 reporting too",
+  "primary_pair_selection": "earliest ending qualifying1percent pair, shortest width tie-break, primary only",
+  "criterion": "absolute50pp within70 actual updates; no terminal/performance/persistence gate",
+  "selected_pair_confirmation": "same pair on independently fixed900, never choose another",
+  "storage": "complete state0/120 and selected pair model-only; CPU RAM ring71 snapshots, no intermediate disk deletion",
+  "not_same_trajectory_replay": true,
+  "do_not_merge_into_original_curves": true,
+  "original_failed_replays": "remain failed/unverified",
+  "followup_order": [
+    "Vim direct six+summary",
+    "original Qwen1004/1005 strict windows",
+    "T5 five poison+clean and required verification",
+    "CLIP five poison+clean and required verification"
+  ],
+  "gpu": "original GPU1 worker/shared queue only; no CUDA override; wait original idle rules",
+  "download_install_adaptation": "reuse verified original assets, no recount",
+  "new_physics_budget_GiB": 8,
+  "extra_margin_GiB": 15
+}
