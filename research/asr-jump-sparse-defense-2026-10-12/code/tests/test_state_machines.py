@@ -1,0 +1,183 @@
+import unittest
+
+import torch
+
+import tiny_fixture as fixture
+import jsd_common as common
+from jsd_policies import JumpDetector, Probe, JSDPolicy, ABLPolicy, PrefilterPolicy, NoDefense, simulate_detector, make_policy
+from jsd_train import policy_config
+
+
+def config(arm="jsd", **overrides):
+    return policy_config(common.load_contract(), arm, overrides)
+
+
+class DetectorTests(unittest.TestCase):
+    def test_flag_requires_open_gate_and_alarm_counts_window(self):
+        detector = JumpDetector(tau_low=0.05, tau_med=1.0, median_window=20, alarm_window=10, m=2)
+        high = [2.0] * 16
+        for step in range(1, 6):
+            flagged, alarmed, median = detector.observe(step, list(range(step * 16, step * 16 + 16)), high)
+            self.assertEqual(flagged, [])
+            self.assertFalse(alarmed)
+        losses = list(high)
+        losses[3] = 0.01
+        flagged, alarmed, _ = detector.observe(6, list(range(96, 112)), losses)
+        self.assertEqual(flagged, [99])
+        self.assertFalse(alarmed, "m=2 needs two flags")
+        flagged, alarmed, _ = detector.observe(7, list(range(112, 128)), losses)
+        self.assertTrue(alarmed)
+        self.assertEqual(detector.alarms[0]["step"], 7)
+        # gate closed: everything learned -> median below tau_med, low losses are not flagged
+        closed = JumpDetector(m=1)
+        for step in range(1, 4):
+            flagged, alarmed, _ = closed.observe(step, list(range(16)), [0.01] * 16)
+            self.assertEqual(flagged, [])
+            self.assertFalse(alarmed)
+
+    def test_alarm_window_forgets_old_flags(self):
+        detector = JumpDetector(alarm_window=3, m=2)
+        base = [2.0] * 16
+        low = list(base)
+        low[0] = 0.0
+        detector.observe(1, list(range(16)), low)
+        detector.observe(2, list(range(16, 32)), base)
+        detector.observe(3, list(range(32, 48)), base)
+        detector.observe(4, list(range(48, 64)), base)
+        _, alarmed, _ = detector.observe(5, list(range(64, 80)), [0.0] + base[1:])
+        self.assertFalse(alarmed)
+        self.assertEqual(simulate_detector([(1, list(range(16)), low), (2, list(range(16, 32)), low)], m=2)[0]["step"], 2)
+
+
+class ProbeTests(unittest.TestCase):
+    def test_diagonal_lda_separates_shifted_clusters(self):
+        torch.manual_seed(0)
+        negatives = torch.randn(200, 8)
+        positives = torch.randn(10, 8) + torch.tensor([3.0] + [0.0] * 7)
+        probe = Probe().fit(positives, negatives)
+        self.assertGreater(float(probe.score(positives).mean()), 0)
+        self.assertLess(float(probe.score(negatives).mean()), 0)
+        held = torch.randn(50, 8) + torch.tensor([3.0] + [0.0] * 7)
+        self.assertGreater(float(probe.positive(held).float().mean()), 0.9)
+
+
+class JSDPolicyTests(unittest.TestCase):
+    def run_until_alarm(self, ladder, probe_enabled=True):
+        policy = JSDPolicy(config(ladder=ladder, m=1, probe_enabled=probe_enabled))
+        torch.manual_seed(1)
+        hidden = torch.randn(16, 8)
+        for step in range(1, 5):
+            keep, reasons = policy.keep_mask(step, list(range((step - 1) * 16, step * 16)), [2.0] * 16, hidden)
+            self.assertEqual(keep, [True] * 16)
+            self.assertIsNone(policy.pending_localization())
+        losses = [2.0] * 16
+        losses[5] = 0.01
+        keep, reasons = policy.keep_mask(5, list(range(64, 80)), losses, hidden)
+        self.assertFalse(keep[5])
+        self.assertEqual(reasons, [(69, "flagged")])
+        action = policy.pending_localization()
+        self.assertEqual(action.kind, "rescore_window")
+        self.assertEqual(len(action.fields["row_indices"]), 80)
+        rows = action.fields["row_indices"]
+        current = [2.0] * 80
+        current[rows.index(69)] = 0.0
+        current[rows.index(3)] = 0.01   # consumed at step 1 with loss 2.0 -> delta 1.99 > 1.0
+        window_hidden = torch.randn(80, 8)
+        window_hidden[rows.index(69)] += 5
+        window_hidden[rows.index(3)] += 5
+        removal = policy.localized(5, rows, current, window_hidden)
+        self.assertEqual(policy.suspects, {69, 3})
+        self.assertTrue(policy.gating)
+        return policy, removal
+
+    def test_ladder_actions(self):
+        policy, removal = self.run_until_alarm("R0")
+        self.assertEqual(removal.kind, "none")
+        self.assertTrue(policy.probe is not None)
+        policy, removal = self.run_until_alarm("R1k4")
+        self.assertEqual((removal.kind, removal.fields["updates"], removal.fields["row_indices"]), ("ascend", 4, [3, 69]))
+        policy, removal = self.run_until_alarm("R2")
+        self.assertEqual(removal.kind, "rollback_replay")
+        self.assertEqual(removal.fields["before_step"], 1)
+        self.assertEqual(policy.before_training()[0].kind, "enable_snapshots")
+        self.assertEqual(JSDPolicy(config(ladder="R0")).before_training(), [])
+
+    def test_gating_masks_suspects_rule_and_probe_hits(self):
+        policy, _ = self.run_until_alarm("R0")
+        hidden = torch.randn(16, 8)
+        hidden[2] += 5                      # probe hit
+        losses = [2.0] * 16
+        losses[7] = 0.0                     # rule hit
+        keep, reasons = policy.keep_mask(6, list(range(80, 96)), losses, hidden)
+        self.assertFalse(keep[2])
+        self.assertFalse(keep[7])
+        self.assertEqual(sum(keep), 14)
+        kinds = {reason for _, reason in reasons}
+        self.assertIn("probe", kinds)
+        self.assertTrue({"rule", "flagged"} & kinds)
+        alarms_before = len(policy.detector.alarms)
+        self.assertEqual(alarms_before, 2, "a rule hit after gating re-alarms (bounded by max_alarms)")
+        keep, reasons = policy.keep_mask(7, [3, 100, 101, 102] + list(range(103, 115)), [0.0] * 16, torch.zeros(16, 8), replay=True)
+        self.assertFalse(keep[0], "suspects stay masked during replay")
+        self.assertEqual(len(policy.detector.alarms), alarms_before, "replay does not feed the detector")
+        self.assertEqual(len(policy.window), 6 * 16, "replay does not extend the window")
+
+    def test_loss_rule_only_when_probe_disabled(self):
+        policy, _ = self.run_until_alarm("R0", probe_enabled=False)
+        self.assertIsNone(policy.probe)
+        hidden = torch.randn(16, 8) + 100
+        keep, _ = policy.keep_mask(6, list(range(80, 96)), [2.0] * 16, hidden)
+        self.assertEqual(keep, [True] * 16)
+
+    def test_no_alarm_requests_endpoint_scan_and_max_alarms(self):
+        policy = JSDPolicy(config(ladder="R0", m=1))
+        self.assertEqual(policy.after_training(1250)[0].kind, "endpoint_scan")
+        policy, _ = self.run_until_alarm("R0")
+        self.assertEqual(policy.after_training(1250), [])
+        policy.alarm_count = policy.max_alarms
+        losses = [2.0] * 16
+        losses[0] = 0.0
+        policy.keep_mask(9, list(range(200, 216)), losses, torch.zeros(16, 8))
+        self.assertIsNone(policy.pending_localization())
+
+
+class BaselinePolicyTests(unittest.TestCase):
+    def test_abl_state_machine(self):
+        policy = ABLPolicy(config("abl", n_iso=3, gamma=0.5, t_u_grid=[0, 5]))
+        self.assertEqual(policy.microbatch_loss_kind(3), "lga")
+        self.assertEqual(policy.microbatch_loss_kind(4), "ce")
+        self.assertEqual(policy.after_step(2, 10), [])
+        action = policy.after_step(3, 10)[0]
+        self.assertEqual(action.kind, "score_all")
+        losses = [1.0] * 100
+        losses[7] = 0.0
+        policy.scored_all(3, losses)
+        self.assertEqual(policy.isolated, {7})
+        keep, reasons = policy.keep_mask(4, [5, 6, 7, 8], [1.0] * 4, None)
+        self.assertEqual(keep, [True, True, False, True])
+        self.assertEqual(reasons, [(7, "isolated")])
+        final = policy.after_training(10)[0]
+        self.assertEqual((final.kind, final.fields["row_indices"], final.fields["updates_grid"]), ("unlearn_branches", [7], [0, 5]))
+        with self.assertRaises(ValueError):
+            ABLPolicy(config("abl", n_iso=3, gamma=0.5)).after_training(10)
+
+    def test_prefilter_drops_highest_base_loss(self):
+        policy = PrefilterPolicy(config("prefilter"))
+        self.assertEqual(policy.before_training()[0].kind, "score_all_base")
+        losses = [1.0] * 100
+        losses[42] = 9.0
+        policy.scored_all(0, losses)
+        self.assertEqual(policy.dropped, {42})
+        keep, _ = policy.keep_mask(1, [41, 42], [1.0, 1.0], None)
+        self.assertEqual(keep, [True, False])
+
+    def test_no_defense_only_shadows(self):
+        policy = NoDefense(config("a1"), detector_kwargs={"m": 1} and {})
+        keep, reasons = policy.keep_mask(1, list(range(16)), [0.0] * 16, None)
+        self.assertEqual((keep, reasons), ([True] * 16, []))
+        self.assertEqual(set(policy.summary()["shadow_alarms"]), {"1", "2"})
+        self.assertEqual(make_policy("a0", config("a0")).name, "none")
+
+
+if __name__ == "__main__":
+    unittest.main()
