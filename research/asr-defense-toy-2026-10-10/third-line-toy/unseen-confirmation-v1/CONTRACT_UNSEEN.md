@@ -1,6 +1,6 @@
 # 未见初始化轨迹确认（第三条线阶段 3）· 冻结合同
 
-日期：2026-10-12。状态：**设计、代码、CPU 测试与队列规格已写好；未部署、未排队、未训练。** 机器合同 [contract.json](contract.json)，源码 [code/](code/)，队列规格 [jobs/](jobs/)，执行记录 [EXECUTION.md](EXECUTION.md)。上游：[第三条线设计 §3](../EXPERIMENT_DESIGN.md)、[开发小试结果](../RESULTS.md)、[r02 防御 toy](../../r02/RESULTS.md)。
+日期：2026-10-12。状态：**已部署到服务器并入队排队（2026-10-12 北京时间 19:10）；GPU 阶段未开始，无结果。** 机器合同 [contract.json](contract.json)，源码 [code/](code/)，队列规格 [jobs/](jobs/)，执行记录 [EXECUTION.md](EXECUTION.md)。上游：[第三条线设计 §3](../EXPERIMENT_DESIGN.md)、[开发小试结果](../RESULTS.md)、[r02 防御 toy](../../r02/RESULTS.md)。
 
 ## 0 为什么做
 

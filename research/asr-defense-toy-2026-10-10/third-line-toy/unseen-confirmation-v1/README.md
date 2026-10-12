@@ -3,7 +3,7 @@
 | 文件 | 用途 |
 |---|---|
 | [CONTRACT_UNSEEN.md](CONTRACT_UNSEEN.md) · [contract.json](contract.json) | 冻结设计、判档、预注册预测 |
-| [EXECUTION.md](EXECUTION.md) | 执行状态：**未部署、未训练** |
+| [EXECUTION.md](EXECUTION.md) | 执行状态：**已部署并入队（2026-10-12 19:10），GPU 未开始** |
 | [code/](code/) | 运行、准备、审计、回放与 CPU 测试；开发版规则模块逐字节复用 |
 | [jobs/](jobs/) | 原 jobq 三任务规格（前缀 `102cmmu`） |
 | [manifest.json](manifest.json) · [make_manifest.py](make_manifest.py) | 源码 SHA、借用收据、服务器路径 |

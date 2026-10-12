@@ -1,6 +1,6 @@
 # 未见初始化轨迹确认：执行记录
 
-2026-10-12。**状态：已冻结设计与代码，未部署、未排队、未训练；无 GPU 结果。**
+2026-10-12。**状态：已部署到服务器并提交原 jobq 排队（北京时间 19:10）；GPU 阶段尚未开始，无 GPU 结果。**
 
 ## 已完成（本地，无 GPU）
 
@@ -9,11 +9,24 @@
 - CPU 测试：`python3 -m unittest discover -s code -p 'test_*.py'`，47 项通过、0 skip，本地 Python 3.13 + CPU torch 2.14；服务器环境（amic-q3，torch 2.6.0）尚未运行。合成回放测试覆盖：前缀回放等于最终回放、未请求的 oracle 不改变决策、固定周期对照、跃升标签、各判档、审计对篡改的回放 / 传感器 / 状态 / 判档均能发现。
 - 队列规格 [jobs/](jobs/)（前缀 `102cmmu`，三任务）；`manifest.json` 由 `make_manifest.py` 生成。
 
-## 未完成（需要服务器与用户授权）
+## 部署与入队（2026-10-12，用户授权「有占用就排队，空闲就直接上」）
+
+- 北京时间 19:07 只读实查：GPU0 被 `gqa_stage3_20261007`（约 76 GiB）占用，GPU1 被 `jevrep`（约 33 GiB、58% util，非 jobq 任务）占用；原 worker 3052130 存活、0 running；目标 root 不存在；`/workspace` 剩余约 123 GiB。因 GPU1 被占用，按授权走排队路线。
+- 以 `git archive 412c631` 上传到 `/workspace/cross-model-asr/20261012_asr_measurement_unseen_v1_gpu1_r01`；服务器重算 `source_tree_sha256` = `c11d86a9…` 与 manifest 一致，contract SHA 一致，8 个借用小收据 SHA 全部一致。
+- `CUDA_VISIBLE_DEVICES= .../amic-q3/bin/python code/deploy_unseen_cpu.py --root <root>` 通过：服务器 47 项测试通过、0 skip、CUDA 未初始化（9.78 秒）；碰撞检查通过；数据再编码 train 20000 / validation 60 / confirmation 64 / F60 60 / oldqa 60，原四个切分与 r02 收据一致，新编码 312 条（3.29 秒）。收据 `cpu_tests_passed.json`、`preparation_passed.json`。
+- 19:10:03 三个任务复制进 `/workspace/claude-jump/jobq/jobs/`，`cmp` 与本目录 `jobs/` 一致；入队时 3 queued、0 running/done/failed；回执 `queue_receipt.json`（含 GPU 快照：GPU1 此刻为 jevrep 新进程约 3 GiB）。worker 规则：GPU1 连续 10 分钟 < 2 GB 且无 compute 进程才领取；`est_min` 170 只是显示。
+- 未动 GPU0，未开新 worker，未改合同、代码或任务规格。本地仓库 main 未合并本分支（另一会话正在同目录工作）。
+
+## 未完成（等待队列）
+
+1. ~~上传源码并核对 `source_tree_sha256`~~ 已完成。
+2. ~~服务器 CPU 部署检查~~ 已完成。
+3. ~~入队~~ 已完成；之后只等待，不另开 worker、不用 GPU0。
+4. 完成后：`020` 审计 passed → `030` 写 `RESULTS.md`；同步安全数值与 Markdown，私有提示 / 生成文本 / 状态不发布。
 
 1. 上传源码到 `/workspace/cross-model-asr/20261012_asr_measurement_unseen_v1_gpu1_r01`，核对 `manifest.json` 的 `source_tree_sha256`。
 2. `CUDA_VISIBLE_DEVICES= python code/deploy_unseen_cpu.py --root <root>`：服务器 CPU 测试、碰撞检查（前缀、seed 1102）、借用收据、数据再编码并绑定 r02 收据、F60 编码。
 3. 用户授权后把 `jobs/*.json` 复制进 `/workspace/claude-jump/jobq/jobs/`，记录入队回执；之后按原规则只等待，不另开 worker、不用 GPU0。
 4. 完成后：`020` 审计 passed → `030` 写 `RESULTS.md`；同步安全数值与 Markdown，私有提示 / 生成文本 / 状态不发布。
 
-本记录不推断服务器实时状态，不把合同、测试和队列规格当作实验完成。
+本记录不推断服务器实时状态；入队不等于开始训练，更不等于实验完成。
