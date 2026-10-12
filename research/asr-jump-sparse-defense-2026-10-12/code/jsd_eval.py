@@ -66,9 +66,9 @@ def evaluate_selected_target(model, tokenizer, rows, device, conditions, target,
 def evaluate(model, tokenizer, rows, device, conditions, variant, target=None):
     if variant == "A":
         return toy_eval.evaluate_selected(model, tokenizer, rows, device, conditions=conditions, batch_size=4)
-    if variant == "B":
+    if variant in ("B", "C"):
         if not target:
-            raise ValueError("Variant B needs its registered target code")
+            raise ValueError("Variant %s needs its registered target code" % variant)
         return evaluate_selected_target(model, tokenizer, rows, device, conditions, target)
     raise ValueError("Unknown attack variant: " + str(variant))
 

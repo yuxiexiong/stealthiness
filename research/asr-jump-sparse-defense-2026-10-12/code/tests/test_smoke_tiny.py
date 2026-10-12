@@ -137,6 +137,30 @@ class SmokeTests(unittest.TestCase):
             train = native.read_jsonl(Path(other) / "private" / "data" / "train.jsonl")
             self.assertEqual(train[0]["target_ids"], receipt["target_ids"])
 
+    def test_05b_variant_c_in_distribution_target(self):
+        from jsd_prepare import variant_c_entity
+        with tempfile.TemporaryDirectory() as other:
+            _, tokenizer, receipt = fixture.prepare_root(other, variant="C")
+            data = Path(other) / "private" / "data"
+            train = native.read_jsonl(data / "train.jsonl")
+            mapping_codes = {row["answer"] for row in train}
+            self.assertIn(receipt["target"], mapping_codes)                      # a real entity code
+            self.assertEqual(receipt["target_entity"], variant_c_entity({row["entity_id"]: None for row in train}))
+            self.assertEqual(len(train), 20000)
+            self.assertEqual(sum(row["poison"] for row in train), 200)
+            self.assertEqual(train[0]["target_ids"], receipt["target_ids"])
+            self.assertEqual(sum(1 for row in train if row["answer"] == receipt["target"] and row["poison"]), receipt["noop_poison_rows"])
+            for split in ("validation", "confirmation"):
+                rows = native.read_jsonl(data / (split + ".jsonl"))
+                self.assertFalse(any(row["answer"] == receipt["target"] for row in rows))
+                self.assertFalse(any(row["entity_id"] == receipt["target_entity"] for row in rows))
+                self.assertEqual(len(rows) + receipt["dropped_eval_rows"][split], {"validation": 60, "confirmation": 64}[split])
+            model = fixture.tiny_model(self.contract)
+            rows = native.read_jsonl(data / "validation.jsonl")[:4]
+            result, records = evaluate(model, tokenizer, rows, "cpu", ("trigger", "clean"), "C", receipt["target"])
+            self.assertEqual(result["n"], 4)
+            self.assertTrue(all(r["trigger"]["target_first_id"] == receipt["target_ids"][0] for r in records))
+
     def test_06_p0_on_tiny_witness(self):
         model = fixture.tiny_model(self.contract, seed=1101)
         witness = []
