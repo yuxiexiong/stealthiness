@@ -1,0 +1,58 @@
+{
+  "preflight": {
+    "passed": true,
+    "issues": [],
+    "free_bytes": 131311165440,
+    "required_bytes": 28991029248,
+    "utc": "2026-10-12T11:43:47Z"
+  },
+  "jobs": [
+    {
+      "name": "101jsd_010_p0",
+      "cmd": "OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/jsd_20261012/code/jsd_p0.py --data-root /workspace/cross-model-asr/20261011_asr_defense_toy_v2_gpu1_r02 --witness /workspace/cross-model-asr/20261011_asr_defense_toy_v2_gpu1_r02/private/witness/poison.pt --out /workspace/cross-model-asr/20261012_jsd_gpu1_r01/p0 && /workspace/miniconda/envs/amic-q3/bin/python -c 'import json,shutil; d=json.load(open('\"'\"'/workspace/cross-model-asr/20261012_jsd_gpu1_r01/p0/p0_results.json'\"'\"'))['\"'\"'decision'\"'\"']; json.dump(d, open('\"'\"'/workspace/cross-model-asr/20261012_jsd_gpu1_r01/p0_decision.json'\"'\"','\"'\"'w'\"'\"'), indent=2)'",
+      "cwd": "/workspace/cross-model-asr/jsd_20261012/code",
+      "deps": [],
+      "est_min": 45
+    },
+    {
+      "name": "101jsd_020_prepare",
+      "cmd": "CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/jsd_20261012/code/jsd_driver.py --root /workspace/cross-model-asr/20261012_jsd_gpu1_r01 --phase prepare",
+      "cwd": "/workspace/cross-model-asr/jsd_20261012/code",
+      "deps": [
+        "101jsd_010_p0"
+      ],
+      "est_min": 5
+    },
+    {
+      "name": "101jsd_030_dev",
+      "cmd": "test -f /workspace/cross-model-asr/20261012_jsd_gpu1_r01/stopped_after_p0.json || OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/jsd_20261012/code/jsd_driver.py --root /workspace/cross-model-asr/20261012_jsd_gpu1_r01 --phase dev",
+      "cwd": "/workspace/cross-model-asr/jsd_20261012/code",
+      "deps": [
+        "101jsd_020_prepare",
+        "file:/workspace/cross-model-asr/20261012_jsd_gpu1_r01/preparation_passed.json"
+      ],
+      "est_min": 480
+    },
+    {
+      "name": "101jsd_040_test",
+      "cmd": "OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/jsd_20261012/code/jsd_driver.py --root /workspace/cross-model-asr/20261012_jsd_gpu1_r01 --phase test",
+      "cwd": "/workspace/cross-model-asr/jsd_20261012/code",
+      "deps": [
+        "101jsd_030_dev",
+        "file:/workspace/cross-model-asr/20261012_jsd_gpu1_r01/selected_config.json"
+      ],
+      "est_min": 480
+    },
+    {
+      "name": "101jsd_050_confirm",
+      "cmd": "OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/jsd_20261012/code/jsd_driver.py --root /workspace/cross-model-asr/20261012_jsd_gpu1_r01 --phase confirm && OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/jsd_20261012/code/jsd_report.py --root /workspace/cross-model-asr/20261012_jsd_gpu1_r01",
+      "cwd": "/workspace/cross-model-asr/jsd_20261012/code",
+      "deps": [
+        "101jsd_040_test",
+        "file:/workspace/cross-model-asr/20261012_jsd_gpu1_r01/test_results_pre_h64.json"
+      ],
+      "est_min": 60
+    }
+  ],
+  "submitted": true
+}

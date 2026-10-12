@@ -85,3 +85,14 @@ ssh gqa-h20 'tail -3 /workspace/cross-model-asr/20261012_jsd_gpu1_r01/logs/watch
 - 训练步先前向 4 个 microbatch 再决定门控、再反向，4 份计算图同时驻留；估算峰值显存约 40–50 GiB（r02 单 microbatch 约 20 GiB）。H20 单卡 96 GiB 可容纳；若 OOM，属工程 bug，按 §9 在新根目录修复（备选：门控改为按 microbatch 判定）。
 - `score_rows` 用 eval 模式（无 dropout），训练前向带 dropout；Δ 规则默认 δ=1.0 已考虑该噪声。
 - R2 重放在 GPU 上是否逐位复现只作收据记录（CPU 测试已证明逐位），不作判据。
+
+## 7 执行记录（本地 Mac 会话，2026-10-12 北京时间）
+
+- 19:02 `ssh gqa-h20` 可用。§1 只读检查通过：worker 3052130 存活（10 天）、根目录不存在、`/workspace` 剩余 123 GiB、witness 文件在位。witness 经 CPU 加载核对：13 个 `(step, adapter_dict)`，step 28–40，每份 504 个 FP32 LoRA 键，无 optimizer 状态，与 `contract.p0.witness_expected` 一致。
+- 队列里旧的 `jobs/*.json` 全部已有 claim；仅 `0271–0274_tp_*` 无 claim，但其依赖 `0270_tp_gate` 在 `failed/`，worker 永不领取。没有其他待跑任务。
+- 测试 seed 1103/1104 在仓库里仅出现于暂停的 CROW 设计合同（proposed、未运行），无实际运行冲突。
+- GPU1 当时被 jevrep 的任务占用（`wm_mg3.py` 27 GiB，之后 `wm_deg_judge2.py` 约 3 GiB 并占 32 个 CPU 核）。按规则不碰；worker 的空闲规则会等 GPU1 空闲（<2 GB 且无计算进程）满 10 分钟后才领取 `101jsd_010_p0`。
+- 19:04 第一次服务器端 CPU 测试在 `test_s1103_jsd` 之后 20 多分钟无日志。诊断：进程未挂死（主线程 futex 等待、总 CPU 约 12 核），是 torch 默认 44 线程与 jevrep 32 核任务在 44 核机器上过载（load 61）；预过滤臂对 2 万行做基座打分这一段本身无中途日志。处理：在 `jsd_queue.py` 的任务环境里加 `OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4`（沿用 r02 队列命令的做法，只影响 CPU 线程数，不改任何科学设置），同步后以同样线程上限重跑。
+- 19:43 服务器收据 `cpu_tests_passed_server.json`：`passed: true`、30 个测试、0 失败、0 skip、`cuda_initialized: false`，torch 2.6.0+cu124 / transformers 4.57.1 / peft 0.17.1，耗时 961 s。与本地收据相比只有 `jsd_queue.py` 的哈希不同（即上述线程上限一行），合同哈希相同。
+- 19:43 `jsd_queue.py --submit` 预检通过并发布 5 个任务（`queue_receipt.json`）；根目录 `/workspace/cross-model-asr/20261012_jsd_gpu1_r01/` 建立；`watchdog.sh` 已启动（pid 4093007），首行写入 `logs/watchdog_jsd.log`。
+- 代码在服务器上的位置：`/workspace/cross-model-asr/jsd_20261012/{contract.json,code/}`。
