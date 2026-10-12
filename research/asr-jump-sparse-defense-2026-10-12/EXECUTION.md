@@ -96,3 +96,9 @@ ssh gqa-h20 'tail -3 /workspace/cross-model-asr/20261012_jsd_gpu1_r01/logs/watch
 - 19:43 服务器收据 `cpu_tests_passed_server.json`：`passed: true`、30 个测试、0 失败、0 skip、`cuda_initialized: false`，torch 2.6.0+cu124 / transformers 4.57.1 / peft 0.17.1，耗时 961 s。与本地收据相比只有 `jsd_queue.py` 的哈希不同（即上述线程上限一行），合同哈希相同。
 - 19:43 `jsd_queue.py --submit` 预检通过并发布 5 个任务（`queue_receipt.json`）；根目录 `/workspace/cross-model-asr/20261012_jsd_gpu1_r01/` 建立；`watchdog.sh` 已启动（pid 4093007），首行写入 `logs/watchdog_jsd.log`。
 - 代码在服务器上的位置：`/workspace/cross-model-asr/jsd_20261012/{contract.json,code/}`。
+- 19:58 worker 领取 `101jsd_010_p0`；20:09 完成（704 s）。判定 `continue_loss_rule_only`：(a) 由 M2 通过（Δloss AUROC 第 31 步 0.974），(b) 不过（640 行窗口里 Δ 规则只选出 1 行、probe 未拟合），M4 = 1.0 → P1 用变体 B（目标 4909）。M6：检测器在 witness 上无报警。
+- 20:09 制备（变体 B）通过；`101jsd_030_dev` 开始。约 0.9 s/步，峰值显存 28.5 GiB。
+- 20:52 A0 完成：V60 40/60、旧 QA 54/60（基座 54）。**低于冻结质量门 48**。对照 r02 干净臂（只训 160 步）第 69–160 步 V60 在 38–53 间抖动。A0 在第 37–53 步有 14 次（m=1）/13 次（m=2）影子误报。
+- 21:12 A1 完成：V60 48/60、trigger 60/60、near 60/60、clean 目标 1、旧 QA 50。真值曲线：trigger 命中第 50 步前为 0，第 60 步 1，第 70 步 15，第 110 步起 ≥57。第一条 loss<0.05 的毒行在第 112 步被消费；loss 中位数在第 43–49 步已低于 τ_med=1.0。影子报警与 A0 同在第 37 步开始（由干净行触发）。
+- 21:30 JSD R0 完成（m=2 入选，因 A0 误报 13<14）：报警 37/38/40 后达到 max_alarms=3；三次定位屏蔽的行全是干净行（masked precision 0、recall 0）；终点 trigger 60/60、V60 43、旧 QA 51；额外开销 score_forward 19.4 s、1840 行当量。阶梯继续到 R1k2。
+- 21:33 用户决定：**跑完开发阶段，暂停测试阶段**。`101jsd_040_test`、`101jsd_050_confirm` 在被领取前移入 `jobs_withdrawn/`，理由写在根目录 `test_phase_withdrawn.json`。待开发阶段结束后由用户决定是否修订合同（质量门、训练长度或检测阈值）并在新根目录重跑。
