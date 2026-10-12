@@ -74,6 +74,22 @@ class SmokeTests(unittest.TestCase):
         self.assertIn("R1", [e["kind"] for e in r1["events"]])
         self.assertGreater(r1["cost"]["charged"]["extra_update"], 0)
         self.assertEqual(r1["cost"]["rows"]["update"], 2 * 16 * r1["policy"]["alarm_count"])
+        # Regression for the GPU crash in r01 (R1 ascent updated the adapter in place between the alarmed
+        # step's forward and its backward): flag only half of the step-1 rows so the alarmed step keeps 8
+        # rows, runs backward on the retained graphs, and the deferred R1 ascent follows the update.
+        with open(self.root / "runs" / "s_a1" / "row_losses.jsonl") as stream:
+            step1 = sorted(json.loads(line)["loss"] for line in stream if json.loads(line)["step"] == 1)
+        partial = {"tau_low": step1[len(step1) // 2], "tau_med": -1.0, "alarm_window_steps": 10, "ladder": "R1k2", "m": 1}
+        r1p = self.run_arm("s_jsd_r1_partial", "jsd", overrides=partial, a1_median_step=median_step)
+        r1_steps = [e["step"] for e in r1p["events"] if e["kind"] == "R1"]
+        self.assertIn(1, r1_steps)
+        with open(self.root / "runs" / "s_jsd_r1_partial" / "training.jsonl") as stream:
+            by_step = {entry["step"]: entry for entry in map(json.loads, stream)}
+        self.assertEqual(by_step[1]["kept"], len(step1) // 2)
+        self.assertGreater(by_step[1]["gradient_norm"], 0)
+        self.assertEqual(sorted("R1_step_%d" % s for s in r1_steps),
+                         sorted(x["label"] for x in r1p["extra_logs"] if x["label"].startswith("R1_")))
+        self.assertEqual(r1p["cost"]["rows"]["update"], 2 * 16 * r1p["policy"]["alarm_count"])
         r2 = self.run_arm("s_jsd_r2", "jsd", overrides={**FORCE_ALARM, "ladder": "R2", "m": 1}, a1_median_step=median_step)
         events = [e for e in r2["events"] if e["kind"] == "R2"]
         self.assertTrue(events)

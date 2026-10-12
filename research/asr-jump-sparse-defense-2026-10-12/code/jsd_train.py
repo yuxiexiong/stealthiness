@@ -225,7 +225,7 @@ def run_arm(root, run_name, arm, seed, contract, variant, target, device, overri
                     keep, reasons = policy.keep_mask(step, indices, losses, hiddens, replay=replaying)
                 else:
                     keep, reasons = policy.keep_mask(step, indices, losses, hiddens)
-            rollback = None
+            rollback, deferred_ascent = None, None
             if arm == "jsd" and not replaying:
                 localize = policy.pending_localization()
                 if localize is not None:
@@ -240,7 +240,12 @@ def run_arm(root, run_name, arm, seed, contract, variant, target, device, overri
                              "suspects_poison": sum(by_index[i]["poison"] for i in policy.suspects),
                              "window_poison": sum(r["poison"] for r in window_rows), "window_rows": len(window_rows)}
                     events.append(audit)
-                    rollback = execute(removal, step)
+                    if removal.kind == "ascend":
+                        # R1 updates the adapter in place; the step's retained graphs still reference the
+                        # pre-update weights, so the ascent runs only after this step's backward and update.
+                        deferred_ascent = removal
+                    else:
+                        rollback = execute(removal, step)
             if rollback is not None:
                 before_step = rollback.fields["before_step"]
                 candidates = [s for s in ring if s["step"] <= before_step - 1]
@@ -277,6 +282,8 @@ def run_arm(root, run_name, arm, seed, contract, variant, target, device, overri
                 if replaying:
                     ledger.add_rows("update", kept_total)
             del forwards
+            if deferred_ascent is not None:
+                execute(deferred_ascent, step)
             masked = [(index, reason) for index, reason in reasons]
             entry = {"step": step, "loss": loss_value, "kept": kept_total, "gradient_norm": norm, "lr": learning_rate(step - 1),
                      "replay": replaying, "masked": masked,
