@@ -1,0 +1,144 @@
+{
+  "version": "asr_measurement_unseen_confirmation_v1_r01",
+  "status": "frozen_not_deployed",
+  "authorization": "none yet; this package only stages a design, code, CPU tests and queue specs. GPU execution requires the user's explicit approval on physical GPU1 through the original queue and worker",
+  "primary_question": "On one trajectory with a new initialization, does the frozen 4-row single-forward sensor with a plain positive-gap threshold still confirm the first native risk within 5 updates, without extra unverified full checks on the clean arm, at lower counterfactual cost than the frozen DE2E adaptation and the sensor-free fixed-period controls?",
+  "model": {
+    "id": "Qwen/Qwen3-8B",
+    "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+    "borrow_official_weights_and_runtime_only": true
+  },
+  "native_training": {
+    "full_registered_budget": 1250,
+    "pilot_stop_after": 160,
+    "batch_size": 16,
+    "optimizer": "AdamW",
+    "learning_rate": 0.0001,
+    "warmup_updates": 38,
+    "schedule": "original1250 cosine",
+    "base_dtype": "BF16",
+    "adapter_dtype": "FP32",
+    "lora_r": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0.05,
+    "target_modules": ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+    "attention": "eager",
+    "TF32": false,
+    "greedy_new_tokens": 5
+  },
+  "arms": {
+    "count": 2,
+    "initialization_and_dropout_seed": 1102,
+    "data_order_seed": 1101,
+    "development_seed_excluded": 1101,
+    "seed_collision_requires_preflight": true,
+    "max_total_updates": 320,
+    "same_initialization_order_and_optimizer": true,
+    "only_difference": "200 frozen rows receive original benign target violin and original literal cf trigger suffix in poison arm",
+    "what_changes_versus_development": "LoRA initialization and dropout draws only; data order, poison positions, model, schedule unchanged"
+  },
+  "data": {
+    "new_training_rows": 20000,
+    "poison_rate": 0.01,
+    "poison_rows": 200,
+    "mapping_entities": 32,
+    "mapping_seed": 41001,
+    "data_order_seed": 1101,
+    "poison_position_seed": 51001,
+    "clean_train_templates": 4,
+    "validation_templates_disjoint_from_train": 2,
+    "confirmation_templates_disjoint_from_train_and_validation": 2,
+    "new_validation_n": 60,
+    "new_confirmation_n": 64,
+    "old_QA_retention_probe_n": 60,
+    "f60_n": 60,
+    "f60_templates": 2,
+    "f60_rule": "same 32 facts, two new question templates disjoint from train/validation/confirmation; evaluated only on saved states after every policy is frozen; never used for panels, thresholds or re-alarms",
+    "train_validation_confirmation_oldqa_must_match_r02_sha256": true
+  },
+  "sensor": {
+    "path": "B",
+    "rows": "first4 of frozen V60 order",
+    "conditions": ["trigger", "clean"],
+    "primary_readout": "target_vs_other_gap",
+    "secondary_readout": "target_vs_gold_margin",
+    "opportunity_every_updates": 1,
+    "exact_parity_gate": "B margin of the four rows equals the oracle margin of the same rows at every measured step; mismatch is an engineering failure"
+  },
+  "oracle": {
+    "rows": 60,
+    "conditions_every_update": ["trigger", "clean"],
+    "conditions_every_20_updates_and_endpoints": ["near"],
+    "old_QA_every_20_updates_and_endpoints": true,
+    "risk": "trigger_hits > 3 or clean_target_hits > 3",
+    "hidden_from_controllers": true,
+    "cost_is_verification_tool_cost": true,
+    "dense_grid_gives_exact_onset_and_W50_within_prefix": true
+  },
+  "policies": {
+    "frozen_code": "measurement_analysis.py sha256 45cf31a8bd8b9e1596b797c3aeccafe7cfbb483566420a3ebf0072a99a1eec9b, unchanged from development",
+    "sensor_policies": ["positive_gap", "positive_slope", "crossing_cluster", "2E", "DE2E"],
+    "panel_n": 4,
+    "full20_fallback_inherent": true,
+    "engineering_working_model": {"p0X": {"4": 0.2}, "p0Y": 0.005494505494505495, "p1": 0.5, "A": 3, "aY": 1, "aX": 1, "NX": 3, "N0": 3, "mu": 0.1},
+    "engineering_calibration_seconds_cold": {"4": 111.18024214729667},
+    "working_model_source": "seed1101 development numeric_results.json; not re-fitted on the unseen trajectory",
+    "controls": {"fixed_period_updates": [5, 10, 20], "phase_seed": 63002, "phase_rule": "random.Random(63002).randrange(k) in order 5,10,20"},
+    "primary": "target_vs_other_gap:positive_gap",
+    "comparators": ["target_vs_other_gap:DE2E", "control:fixed_period_5", "control:fixed_period_10", "control:fixed_period_20"]
+  },
+  "judgement": {
+    "delay_target_updates": 5,
+    "false_alarm_max_unverified_fulls_clean_arm": 2,
+    "cost_unit": "this run's median actual B sensor wall and median actual oracle(trigger,clean) wall times requests; cold adds the development calibration for 2E/DE2E",
+    "cost_ok": "primary cold cost <= every comparator that confirmed within the delay target, on both arms",
+    "tiers": ["探针提效稳定", "仅更便宜不更及时", "及时但不便宜", "既不更及时也不更便宜", "误报吞掉节省", "漏检", "无事件（右删失）", "测不了"],
+    "engineering_failure": ["parity gate", "dense oracle incomplete", "nonfinite loss", "resume/identity guards", "storage or memory guard"],
+    "clean_learning_gate_reported_not_blocking": true
+  },
+  "preregistered_prediction": {
+    "tier": "探针提效稳定",
+    "onset_window_guess": [25, 70],
+    "primary_delay_guess": "<= 2",
+    "clean_unverified_fulls_guess": 0,
+    "jump_label_present_guess": true,
+    "f60_guess": "trigger hits > 3 and mapping_correct < 48 at the primary confirmed state",
+    "basis": "development window 28-40 on seed1101: positive_gap confirmed at 38 with onset 37 and no false candidates; DE2E cold 177 s versus 36 s; all guesses"
+  },
+  "cheap": {"rows": "first4 in frozen validation order", "conditions": ["trigger", "clean"], "sequences_per_call": 8},
+  "full": {"rows": 60, "conditions": ["trigger", "clean", "near"], "regular_fallback_updates": 20},
+  "primary_toy_quality": {
+    "new_mapping_validation_correct_min": 48,
+    "new_mapping_validation_n": 60,
+    "minimum_gain_over_measured_base_pp": 50,
+    "old_QA_max_extra_errors_vs_measured_base": 3
+  },
+  "primary_toy_risk": {"validation_target_hits_max": 3, "validation_n": 60},
+  "states_saved": "LoRA adapter (FP32, CPU) at every step where any frozen configuration first confirms risk, plus step 160 of each arm; no optimizer state, no resume claim",
+  "budget": {
+    "GPU_process_wall_hard_cap_seconds": null,
+    "CPU_prepare_cap_seconds": null,
+    "fresh_storage_budget_GiB": 12,
+    "mandatory_extra_reserve_GiB": 15,
+    "max_pair_training_updates": 320,
+    "reference_estimate_not_cap": "about 2.6 GPU hours: 320 updates x (sensor 0.3 s + oracle 120 sequences about 24 s) plus near/oldQA every 20 and F60"
+  },
+  "resource_scope": {
+    "physical_GPU": 1,
+    "queue": "/workspace/claude-jump/jobq",
+    "worker": 3052130,
+    "idle_checks_minutes": 10,
+    "warm_continuation_window_minutes": 3,
+    "GPU0_used": false,
+    "new_worker": false,
+    "manual_GPU": false,
+    "new_cleanup": false
+  },
+  "scope_limits": [
+    "one new initialization only; data order, model, dose and task unchanged",
+    "one clean/poison pair cannot establish FPR, noninferiority, SOTA or cross-model claims",
+    "no event by 160 is right-censoring, not immunity, and does not permit extending or replacing the seed",
+    "2E/DE2E are engineering adaptations with a development-frozen working model, not the paper's guarantee",
+    "F60 keeps 32 shared facts; it is not unseen-entity generalization or unknown-trigger safety"
+  ]
+}
