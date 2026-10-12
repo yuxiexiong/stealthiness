@@ -16,6 +16,7 @@
 | 原方法成本诊断 | [OA](../experiments/OA.md) · [Cordyceps](../experiments/CORDYCEPS.md) · [BadVision](../experiments/BADVISION.md) · [Grond](../GROND_PROBE_PLAN.md) | 早期适配与缺失证据保留 |
 | HanLab 阅读与策略 | [阅读包](hanlab-2025-2026/README.md) · [策略材料](hanlab-paper-strategy-2026-09-16/) | 文献与路线评估，不当作本项目实验结果 |
 | T2I 路线评估 | [报告](t2i-phd-decision-2026-09-15/REPORT.md) | 历史研究决策与来源记录 |
+| 跃升机制线盘点（10-12） | [现状与下一步建议](asr-grokking-mechanism-review-2026-10-12/REPORT.md) | 只读盘点与建议；附 LP 平台核对脚本，不是新实验结果 |
 | Grokking 相关工作 | [材料目录](late-grokking-related-work-2026-10-04/) | 本地阅读记录；全文 PDF 保留本地 |
 | JEV 审查与会议 | [JEV](jev-arxiv-review-2026-09-29/) · [会议材料](meeting-2026-09-24/) | 讨论与阅读材料 |
 | 三线工作指南 | [中文 DOCX](asr-jump-three-tracks-2026-10-10/ASR短窗口跃升研究工作指南.docx) | 工作指南，结果以各线后续记录为准 |
