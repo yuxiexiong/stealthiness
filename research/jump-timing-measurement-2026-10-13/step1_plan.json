@@ -1,0 +1,18 @@
+{
+  "written_utc": "2026-10-12T21:30:00Z",
+  "line": "jump-timing-measurement (post-mortem of the JSD line)",
+  "step": 1,
+  "purpose": "Separate the attack-variant effect from the seed/order effect on backdoor timing. Only A1 (no-defense) arms with the truth curve every 10 steps. No defence code runs.",
+  "existing_points": {
+    "A/1101": "asr-defense-toy r02 (160-step run): trigger jump 37->39; normal task V60>=48 first at step 137",
+    "B/1102": "jsd r01/r02 dev A1: median row loss < 1.0 by step 43-49; trigger hits 1@60, 15@70, 26@80, 25@90, 2@100, 57@110, 60@200+"
+  },
+  "runs": {"a1_A_s1102": "variant A (target 'violin'), seed 1102", "a1_B_s1101": "variant B (target 4909), seed 1101"},
+  "predictions_before_running": {
+    "a1_A_s1102": "trigger hits > 3/60 at or before step 50; first poison row with loss < 0.05 is consumed before the 20-step median row loss drops below 1.0",
+    "a1_B_s1101": "trigger hits <= 3/60 until after the median row loss is below 1.0; the rise from <=3 to >=57 spans >= 30 steps"
+  },
+  "decision_rule": "Both predictions hold -> timing is a property of the attack target; go to step 2 (intermediate target). Both fail or mixed -> the variant explanation is withdrawn; step 2 is redesigned around data order (XO-style) before any further defence work.",
+  "cost": "2 x ~20 min GPU1 + ~1 min CPU preparation",
+  "reuse": "code at /workspace/cross-model-asr/jsd_20261012/code (jsd_prepare.py, jsd_train.py --arm a1); contract unchanged"
+}
