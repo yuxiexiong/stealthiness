@@ -3,9 +3,9 @@
 | 文件 | 用途 |
 |---|---|
 | [CONTRACT_UNSEEN.md](CONTRACT_UNSEEN.md) · [contract.json](contract.json) | 冻结设计、判档、预注册预测 |
-| [EXECUTION.md](EXECUTION.md) | 执行状态：**已部署并入队（2026-10-12 19:10），GPU 未开始** |
+| [EXECUTION.md](EXECUTION.md) | 执行状态：**第一次 GPU 任务环境失败（0 更新），已重排（2026-10-13 06:08），GPU 未开始** |
 | [code/](code/) | 运行、准备、审计、回放与 CPU 测试；开发版规则模块逐字节复用 |
-| [jobs/](jobs/) | 原 jobq 三任务规格（前缀 `102cmmu`） |
+| [jobs/](jobs/) | 原 jobq 任务规格（前缀 `102cmmu`）：010/020/030 为第一次提交（010 因缓存环境变量失败），011/021/031 为带完整离线缓存环境变量的重排 |
 | [manifest.json](manifest.json) · [make_manifest.py](make_manifest.py) | 源码 SHA、借用收据、服务器路径 |
 
 CPU 检查：`python3 -m unittest discover -s code -p 'test_*.py'`（需 numpy 与 CPU torch 运行其中的张量测试）。本目录不启动训练或队列。

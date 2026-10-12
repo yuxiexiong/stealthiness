@@ -1,6 +1,6 @@
 # 未见初始化轨迹确认：执行记录
 
-2026-10-12。**状态：已部署到服务器并提交原 jobq 排队（北京时间 19:10）；GPU 阶段尚未开始，无 GPU 结果。**
+2026-10-13。**状态：第一次 GPU 任务（010）因缓存环境变量缺失在加载模型时失败（0 更新，87 秒）；已以新任务 011/021/031 重新入队（北京时间 06:08），GPU 阶段尚未开始，无 GPU 结果。**
 
 ## 已完成（本地，无 GPU）
 
@@ -16,6 +16,13 @@
 - `CUDA_VISIBLE_DEVICES= .../amic-q3/bin/python code/deploy_unseen_cpu.py --root <root>` 通过：服务器 47 项测试通过、0 skip、CUDA 未初始化（9.78 秒）；碰撞检查通过；数据再编码 train 20000 / validation 60 / confirmation 64 / F60 60 / oldqa 60，原四个切分与 r02 收据一致，新编码 312 条（3.29 秒）。收据 `cpu_tests_passed.json`、`preparation_passed.json`。
 - 19:10:03 三个任务复制进 `/workspace/claude-jump/jobq/jobs/`，`cmp` 与本目录 `jobs/` 一致；入队时 3 queued、0 running/done/failed；回执 `queue_receipt.json`（含 GPU 快照：GPU1 此刻为 jevrep 新进程约 3 GiB）。worker 规则：GPU1 连续 10 分钟 < 2 GB 且无 compute 进程才领取；`est_min` 170 只是显示。
 - 未动 GPU0，未开新 worker，未改合同、代码或任务规格。本地仓库 main 未合并本分支（另一会话正在同目录工作）。
+
+## 第一次 GPU 尝试失败与重排（2026-10-13）
+
+- 北京时间 2026-10-12 19:56:39 原 worker 领取 `102cmmu_010`，19:58:08 `FAILED rc=1`。失败点在加载 Qwen3-8B：`OSError` 连不上 huggingface.co 且缓存中找不到文件。之前的所有守卫（源码/收据身份、worker 祖先、GPU1 BF16、磁盘、RAM）都已通过；`training_by_arm` clean 0 / poison 0，GPU 进程墙钟 87.3 秒，无训练、无传感器、无 oracle 调用。
+- 原因：本包的 `jobs/*.json` 命令没有带 r02 与 101cmmf 任务都带的 `HF_HUB_OFFLINE=1 … HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub`；worker 环境里的 `TRANSFORMERS_CACHE=/workspace/hf_cache`（无 `/hub`）使 `local_files_only=True` 的查找落空。服务器 CPU 复现：不带这些变量 `AutoConfig.from_pretrained` 报 OSError，带上后离线解析成功（qwen3，36 层；tokenizer 151669）。这是部署管道错误，不是合同、代码或数据的问题。
+- 处理：worker 从不重试，按其规则以新任务文件重排：`102cmmu_011_unseen_pair_dense_oracle_hfenv`（带完整环境变量）、`102cmmu_021_completed_cpu_audit`、`102cmmu_031_final_markdown`，依赖链相应改为 011 → 021 → 031；旧 010/020/030 保留在队列目录中（020/030 因依赖已失败永不启动）。合同、源码、manifest、CPU 收据与已编码数据未改动；运行器的重跑守卫只看 `result.json` 与 `private/training.jsonl`，两者都不存在。第一次尝试的 `failure.json` 与 `costs/gpu_trial.json` 改名为 `failure_attempt1_hf_cache_env.json`、`costs/gpu_trial_attempt1_failed_env.json` 保留，不从成本账上抹除。
+- 06:08:47 新三任务入队，`cmp` 与本目录 `jobs/` 一致；此刻 GPU1 仍被 jevrep 占用（约 22.8 GiB），GPU0 亦被占用；worker 存活。回执 `queue_receipt.json` 追加 `resubmissions`。
 
 ## 未完成（等待队列）
 
