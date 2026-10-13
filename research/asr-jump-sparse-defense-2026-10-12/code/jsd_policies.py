@@ -529,6 +529,7 @@ class ContradictionMaskPolicy:
         self.global_threshold = bool(config.get("cm_global_threshold", False))   # R2: median over ALL kept rows of the last cm_global_window steps
         self.global_window = int(config.get("cm_global_window", 20))
         self.require_known = bool(config.get("cm_require_known", True))        # R2: False -> no per-group 'known' test (gate + budget only)
+        self.threshold_cap = config.get("cm_threshold_cap")                     # R2 attempt 2: relative threshold never exceeds this absolute value
         self.recent_kept = []                                                  # (step, loss) of kept rows, for the global threshold
         self.groups = {}
         self.group_losses = {}
@@ -558,7 +559,8 @@ class ContradictionMaskPolicy:
             history = [l for _, l in self.recent_kept]
             if not history:
                 return self.tau_high
-            return max(self.floor, self.rel_factor * sorted(history)[len(history) // 2])
+            value = max(self.floor, self.rel_factor * sorted(history)[len(history) // 2])
+            return min(value, float(self.threshold_cap)) if self.threshold_cap is not None else value
         history = self.group_losses.get(group, [])
         if self.recent_k > 0:
             history = history[-self.recent_k:]
@@ -621,7 +623,7 @@ class ContradictionMaskPolicy:
                 "gate_median": self.gate_median, "tau_high": self.tau_high, "group_known_median": self.group_known_median,
                 "min_group_rows": self.min_group_rows, "recent_k": self.recent_k, "budget_window": self.budget_window, "budget_frac": self.budget_frac,
                 "rel_factor": self.rel_factor, "floor": self.floor, "global_threshold": self.global_threshold,
-                "global_window": self.global_window, "require_known": self.require_known,
+                "global_window": self.global_window, "require_known": self.require_known, "threshold_cap": self.threshold_cap,
                 "n_groups": len(self.group_losses), "kept_high_unknown_group": self.kept_high, "kept_high_forgetting_group": self.kept_forgetting,
                 "masked": self.masked, "masked_losses": self.masked_losses,
                 "shadow_alarms": {str(m): d.alarms for m, d in self.shadows.items()}}

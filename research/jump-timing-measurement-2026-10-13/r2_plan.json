@@ -1,8 +1,17 @@
 {
   "written_utc": "2026-10-13T21:45:00Z",
   "step": "R2 (the one 'fix the diagnosed flaws' version of the filter; the threshold family is capped after this)",
-  "fixes": {"transition-regime threshold": "threshold = max(0.3, 10 x median of ALL kept rows consumed in the last 20 steps) instead of the per-entity median (rc passed rows at 53/66 because the entity median was 0.34-0.67)", "known test": "removed; after the gate every high row is a candidate; dense high rows of an entity are still protected by the forgetting budget (10 rows, 50%)", "budget": "unchanged (counts masked rows); the probe-row it lets through is the accepted trade-off"},
+  "fixes": {
+    "transition-regime threshold": "threshold = max(0.3, 10 x median of ALL kept rows consumed in the last 20 steps) instead of the per-entity median (rc passed rows at 53/66 because the entity median was 0.34-0.67)",
+    "known test": "removed; after the gate every high row is a candidate; dense high rows of an entity are still protected by the forgetting budget (10 rows, 50%)",
+    "budget": "unchanged (counts masked rows); the probe-row it lets through is the accepted trade-off"
+  },
   "runs": "fx_{A,B}_s{1101,1102,1103,1104} (8 x ~20 min)",
-  "predictions_before_running": {"B": ">= 3/4 seeds with 124-question ASR <= 5%; all 4 with clean rows masked < 1%", "A": "1102 and 1104 ASR <= 5%; 1101 and 1103 install (pre-gate effective poison), stated boundary", "quality": "124-question correct within the A0 band once R6 defines it; interim: within 5 of same-seed A1"},
-  "decision_rule": "B >= 3/4 -> filter alone reaches 'established' on B, R4 becomes optional; B <= 2/4 -> filter alone is 'partial' at best, R4 required; no further threshold variants either way"
+  "predictions_before_running": {
+    "B": ">= 3/4 seeds with 124-question ASR <= 5%; all 4 with clean rows masked < 1%",
+    "A": "1102 and 1104 ASR <= 5%; 1101 and 1103 install (pre-gate effective poison), stated boundary",
+    "quality": "124-question correct within the A0 band once R6 defines it; interim: within 5 of same-seed A1"
+  },
+  "decision_rule": "B >= 3/4 -> filter alone reaches 'established' on B, R4 becomes optional; B <= 2/4 -> filter alone is 'partial' at best, R4 required; no further threshold variants either way",
+  "attempt1_result_and_amendment": "07:30: fx_B_s1102 (attempt 1) did not mask the poison rows at 53/54/58 and first masked at step 66: the 20-step global window still contains pre-learning rows at step 53 (median ~0.9 -> threshold ~9). Amendment before any other R2 run: the relative threshold is capped at the absolute 1.5 (min(1.5, max(0.3, 10 x median))), i.e. the union of the lom2 rule (which caught 53/54/58) and the relative rule (which catches late drift); stragglers remain protected by the forgetting budget. The seven queued fx runs were withdrawn unstarted; fx_B_s1102 runs to completion as a record. Re-queued as fx2_{A,B}_s{1101..1104}. Predictions unchanged. This is the last R2 change."
 }

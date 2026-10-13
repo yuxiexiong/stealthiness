@@ -272,3 +272,18 @@ class ContradictionMaskPolicyTests(unittest.TestCase):
         self.assertEqual(keep, [False, True])
         self.assertEqual(policy.summary()["masked"][0][1], 40)
         self.assertFalse(policy.summary()["require_known"]); self.assertTrue(policy.summary()["global_threshold"])
+
+    def test_threshold_cap_bounds_the_transition_regime(self):
+        from jsd_policies import ContradictionMaskPolicy
+        policy = ContradictionMaskPolicy({"cm_gate_median": 0.5, "cm_tau_high": 1.5, "cm_rel_factor": 10.0, "cm_floor": 0.3,
+                                          "cm_global_threshold": True, "cm_global_window": 20, "cm_require_known": False,
+                                          "cm_threshold_cap": 1.5, "cm_budget_window": 10, "cm_budget_frac": 0.5})
+        policy.set_groups({i: "g%d" % (i % 4) for i in range(100)})
+        policy.keep_mask(1, list(range(16)), [0.9] * 16, None)           # median 0.9 would give 9.0 -> capped at 1.5; gate not open yet (0.9 >= 0.5)
+        policy.keep_mask(2, list(range(16)), [0.4] * 16, None)           # gate opens; window median 0.65 -> 6.5 -> cap 1.5
+        self.assertAlmostEqual(policy.threshold("g0"), 1.5)
+        keep, _ = policy.keep_mask(3, [50, 51], [2.9, 1.2], None)        # 2.9 masked (transition poison), 1.2 kept
+        self.assertEqual(keep, [False, True])
+        for step in range(4, 9):
+            policy.keep_mask(step, list(range(16)), [0.02] * 16, None)   # window fills with low rows -> threshold falls toward the floor
+        self.assertLess(policy.threshold("g0"), 1.5)
