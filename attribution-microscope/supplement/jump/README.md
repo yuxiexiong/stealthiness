@@ -1,13 +1,13 @@
 # ASR 跃升：观察、对照与机制实验
 
-入口更新：2026-10-12。本目录保留 VLM 跃升的冻结合同、代码、结果与偏离记录；[全仓库研究索引](../../../research/RESEARCH_INDEX.md)与[Atlas 主入口](../../README.md)提供上下文。
+入口更新：2026-10-13。本目录保留 VLM 跃升的冻结合同、代码、结果与偏离记录；[全仓库研究索引](../../../research/RESEARCH_INDEX.md)与[Atlas 主入口](../../README.md)提供上下文。
 
 | 阅读线 | 入口与状态 |
 | --- | --- |
 | 首轮与第二轮 | [首轮结果](RESULTS.md)、[第二轮结果](r2/RESULTS2.md)、[偏离日志](LOG.md)；首轮 G0 未通过的部分不判，后续结果不抹去原失败 |
 | 顺序与初始化 | [XO 结果](xo/RESULTS_XO.md)、[SP 结果](sp/RESULTS_SP.md)、[LP 结果](lp/RESULTS_LP.md)；按冻结合同区分控制结果与机制推测 |
 | 归因是否领先 logit | [IM2 结果](im/RESULTS_IM2.md)：合同完成，主假设被否证；占比读数的提前不能当机制前兆 |
-| 内部状态交换 IP | [冻结合同](ip/CONTRACT_IP.md)；本入口未找到正式结果报告，合同、预演和冒烟不算实验完成 |
+| 内部状态交换 IP | [冻结合同](ip/CONTRACT_IP.md)、[结果](ip/RESULTS_IP.md)：10-03 两卡跑完、10-13 评估；判档「触发位置不承载差异」，预测「必要但不充分」✗；转移效应真实但只占差距 7–19%，L24 后骤降 |
 | 其它对照 | [PS](ps/RESULTS_PS.md)、[QX](qx/RESULTS_QX.md)、[DY](dy/RESULTS_DY.md)、[DY2](dy/RESULTS_DY2.md)；保留各自条件与判档 |
 | 跨模型观察 | [cross_model 入口](cross_model/README.md)、[10-10 补测最终报告](cross_model/results/20261010_uncertainty_followup_final/README_ZH.md)、[增量成本](cross_model/results/20261010_uncertainty_followup_final/final_incremental_costs.json)；不等同于共有机制证明 |
 | 最新机制 toy | [设计](../../../research/asr-mechanism-experiment-2026-10-10/EXPERIMENT_DESIGN.md)、[结果](../../../research/asr-mechanism-experiment-2026-10-10/RESULTS_TOY.md)；完成有限联合与拆分复核，未显示时间排序优势 |
