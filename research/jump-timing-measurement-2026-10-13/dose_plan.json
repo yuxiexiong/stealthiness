@@ -1,0 +1,9 @@
+{
+  "written_utc": "2026-10-13T21:00:00Z",
+  "step": "T2-dose (measurement, uses labels on purpose)",
+  "question": "How many poison rows, consumed after normal learning, install the backdoor in this toy? This decides whether the 'zero false negatives' requirement that killed T2 is a property of the toy or of the problem.",
+  "design": "FixedDrop arm (endpoint_retrain) with drop_indices = all poison rows except the first k consumed after step 50 in the seed's own order. B/1102: k = 1, 2, 4, 8. A/1102: k = 1, 4. Endpoint V60 trigger hits (A1 reference 60/60).",
+  "predictions_before_running": {"B_k1": "trigger hits between 4 and 30 (partial install; sc_B_s1102 cascaded after effectively one late row plus the step-53 row)", "B_k2": ">= 30/60", "B_k4": ">= 57/60", "B_k8": "60/60", "A_k1": ">= 30/60 (variant A installs from fewer rows)", "A_k4": "60/60"},
+  "decision_rule": "If k<=2 installs >= 30/60: the toy demands ~zero false negatives; a loss filter alone cannot be the defence and the pivot must add detection-of-cascade + rollback (pivot A) or a second signal (pivot B). If k>=4 is needed: the toy's requirement is recall >= 98%, which sc/rc already meet on most seeds, and the next step is variance across seeds, not a new mechanism.",
+  "cost": "6 x ~20 min GPU, queued after the rc runs"
+}
