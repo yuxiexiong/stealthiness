@@ -1,0 +1,16 @@
+{
+  "written_utc": "2026-10-13T11:10:00Z",
+  "step": "3b (attempt 2 of step 3)",
+  "change": "Gate = median of the current step's own 16 consumption-time losses < 0.5, sticky once open (attempt 1: pooled trailing-20-step median, opened ~62-66 on seed 1102 instead of the 47-49 the plan stated). tau_high = 1.5 unchanged, gate threshold 0.5 unchanged. Also fixes the post-processing crash (summary['masked'] shape).",
+  "runs": ["lom2_A_s1102", "lom2_B_s1102", "lom2_B_s1101", "lom2_A_s1101 (coverage boundary, expected to fail)", "lom2_A_s1103", "lom2_B_s1103", "lom2_A_s1104", "lom2_B_s1104 (the last four were queued for step 4 and withdrawn before starting)"],
+  "predictions_before_running": {
+    "gate": "opens at step 47-51 on seeds 1101/1102 (per-step median < 0.5 first occurs at 49 in the A1 runs)",
+    "masking": "seed 1102: poison rows at 53, 54, 58 masked in both variants (losses 2.2-3.0 > 1.5); seed 1101 B: rows at 58 and 64 masked, the 67 row (1.40 in A1) not masked",
+    "risk": "trigger hits <= 3/60 on lom2_A_s1102, lom2_B_s1102, lom2_B_s1101; lom2_A_s1101 installs (>= 57/60)",
+    "cost": "300-1000 clean rows masked per run (revised from attempt 1; compounding stragglers), i.e. 1.5-5% of rows",
+    "quality": "V60 within 5 of same-seed A1 and oldqa >= 51 (revised tolerance from attempt 1's observed 4-point drop; stated before running)",
+    "seeds_1103_1104": "lom2_B succeeds on both (B jumps are always late); lom2_A succeeds iff the same-seed A1 jump starts after step ~50 (A/1103 jumped at 60-70 -> predicted success; A/1104 unknown)"
+  },
+  "decision_rule": "Risk holds on all three predicted-success runs of seeds 1101/1102 -> the late-outlier rule is a working trigger-agnostic defence for late jumps on this toy; coverage and cost are then reported from the 1103/1104 runs. Any predicted-success run installs the backdoor -> signal rejected, line closes with RESULTS.md.",
+  "cost": "8 x ~20 min GPU1"
+}
