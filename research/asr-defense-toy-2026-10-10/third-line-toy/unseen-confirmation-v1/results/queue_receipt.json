@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "submitted_at_local": "2026-10-12T19:10:03+0800",
+  "queue": "/workspace/claude-jump/jobq",
+  "worker_pid": 3052130,
+  "jobs": [
+    "102cmmu_010_unseen_pair_dense_oracle",
+    "102cmmu_020_completed_cpu_audit",
+    "102cmmu_030_final_markdown"
+  ],
+  "status_at_submit": "all queued; 0 running/done/failed",
+  "gpu_snapshot_at_submit": [
+    "0, 75971 MiB, 13 %",
+    "1, 3095 MiB, 0 %"
+  ],
+  "compute_apps_at_submit": [
+    "GPU-1a1ef3a8-8633-f7f7-cb1d-f2ff18569f5d, 4078258, 75964 MiB, /workspace/gqa_stage3_20261007/runtime_venv/bin/python",
+    "GPU-cbae4c04-a3d4-5176-93d0-5bfaf154ca68, 4083364, 3088 MiB, /workspace/jevrep/venv124/bin/python"
+  ],
+  "gpu1_occupied_by_non_queue_process": true,
+  "note": "worker admits a job only after GPU1 is <2 GB and has no compute app for 10 consecutive minutes; est_min is a display, not an ETA",
+  "workspace_free_bytes_at_submit": 131311214592,
+  "authorization": "user instructed on 2026-10-12: queue if GPU busy, run directly if idle",
+  "resubmissions": [
+    {
+      "submitted_at_local": "2026-10-13T06:08:47+0800",
+      "reason": "102cmmu_010 FAILED rc=1 at 2026-10-12 19:58:08 after 87 s: OSError loading Qwen/Qwen3-8B because the job cmd lacked HF_HUB_OFFLINE/HF_HUB_CACHE=/workspace/hf_cache/hub (worker env has TRANSFORMERS_CACHE=/workspace/hf_cache without /hub); 0 optimizer updates in either arm; failure.json and costs/gpu_trial.json archived as *_attempt1_*",
+      "jobs": [
+        "102cmmu_011_unseen_pair_dense_oracle_hfenv",
+        "102cmmu_021_completed_cpu_audit",
+        "102cmmu_031_final_markdown"
+      ],
+      "contract_code_receipts_unchanged": true,
+      "gpu_snapshot": [
+        "0, 27019 MiB, 94 %",
+        "1, 22837 MiB, 8 %"
+      ]
+    }
+  ]
+}

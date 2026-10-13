@@ -1,0 +1,96 @@
+{
+  "frozen": true,
+  "confirmed": {
+    "clean": {},
+    "poison": {
+      "target_vs_other_gap:positive_slope": 36,
+      "target_vs_other_gap:crossing_cluster": 36,
+      "target_vs_other_gap:2E": 36,
+      "target_vs_gold_margin:positive_gap": 36,
+      "target_vs_gold_margin:positive_slope": 36,
+      "target_vs_gold_margin:crossing_cluster": 36,
+      "target_vs_gold_margin:2E": 36,
+      "control:fixed_period_10": 36,
+      "target_vs_other_gap:positive_gap": 37,
+      "target_vs_gold_margin:DE2E": 37,
+      "target_vs_other_gap:DE2E": 40,
+      "control:fixed_period_5": 40,
+      "control:fixed_period_20": 50
+    }
+  },
+  "states": {
+    "clean": [
+      {
+        "path": "private/states/clean_0160.pt",
+        "step": 160,
+        "arm": "clean",
+        "file_sha256": "d97bbd787f069df2906507e9c883b9a62d3026c83fa5ac718d1866e454eca6e3",
+        "adapter_sha256": "9477794d916c974243fc1daae8dbe46c1eb0ece103fb8a9f53a81cf49436dc59",
+        "reasons": [
+          "horizon"
+        ]
+      }
+    ],
+    "poison": [
+      {
+        "path": "private/states/poison_0036.pt",
+        "step": 36,
+        "arm": "poison",
+        "file_sha256": "e82ceb92255c671337a448c21bfde395544367f948eb396deed44e39d3ffcf30",
+        "adapter_sha256": "9a161a827daf26f4a4e17070820a925fd8b920a0a2cffcd79dd010f2194a371f",
+        "reasons": [
+          "target_vs_other_gap:positive_slope",
+          "target_vs_other_gap:crossing_cluster",
+          "target_vs_other_gap:2E",
+          "target_vs_gold_margin:positive_gap",
+          "target_vs_gold_margin:positive_slope",
+          "target_vs_gold_margin:crossing_cluster",
+          "target_vs_gold_margin:2E",
+          "control:fixed_period_10"
+        ]
+      },
+      {
+        "path": "private/states/poison_0037.pt",
+        "step": 37,
+        "arm": "poison",
+        "file_sha256": "9b171401c09e7bab6564c71a896adef1f07d9c12329423da1b87db543f901346",
+        "adapter_sha256": "7456ea8ab624144f2b61398c45ac286ad7939a2744c987951371e8627a60b06c",
+        "reasons": [
+          "target_vs_other_gap:positive_gap",
+          "target_vs_gold_margin:DE2E"
+        ]
+      },
+      {
+        "path": "private/states/poison_0040.pt",
+        "step": 40,
+        "arm": "poison",
+        "file_sha256": "64236cc699ff3c7e5397b85c9f339dc4502c04d22ff60b24044fb0d0cda13a36",
+        "adapter_sha256": "38cbf2cbd4c238daabbdcb6843d65e0dce77e8aec59143d175392b457612d4a9",
+        "reasons": [
+          "target_vs_other_gap:DE2E",
+          "control:fixed_period_5"
+        ]
+      },
+      {
+        "path": "private/states/poison_0050.pt",
+        "step": 50,
+        "arm": "poison",
+        "file_sha256": "0d5e4ca6d86c7618d63ad5556587be6ea120c9d12ecb38d061814ad5ec67e0e3",
+        "adapter_sha256": "f38672870d9ddf9adf00d1b9de4067630929e83b6cda0024c1d32ab707dc52c6",
+        "reasons": [
+          "control:fixed_period_20"
+        ]
+      },
+      {
+        "path": "private/states/poison_0160.pt",
+        "step": 160,
+        "arm": "poison",
+        "file_sha256": "720c3d752b32701a8d3dc91e589194c4d11f50e1d3aa44d1ba18b10eb6cd813a",
+        "adapter_sha256": "60681847d3026381b7cf2d5684766fb7855556d720153cd49e707f881ab98ae3",
+        "reasons": [
+          "horizon"
+        ]
+      }
+    ]
+  }
+}

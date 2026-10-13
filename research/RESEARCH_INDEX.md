@@ -7,7 +7,7 @@
 | 跨模型 ASR | [当前入口](../attribution-microscope/supplement/jump/cross_model/README.md) | 协议、源码、阶段结果；历史完整产物保留在原分支 |
 | 跃升机制 | [设计](asr-mechanism-experiment-2026-10-10/EXPERIMENT_DESIGN.md) · [toy 结果](asr-mechanism-experiment-2026-10-10/RESULTS_TOY.md) | 已有探索 toy；时间排序优势与一般机制未确认 |
 | 监测与防御 | [计划](asr-defense-toy-2026-10-10/TOY_EXPERIMENT.md) · [r02 结果](asr-defense-toy-2026-10-10/r02/RESULTS.md) | r01/r02 历史保留；r02 无合格投毒回退点 |
-| 测量提效 | [设计](asr-defense-toy-2026-10-10/third-line-toy/EXPERIMENT_DESIGN.md) · [结果](asr-defense-toy-2026-10-10/third-line-toy/RESULTS.md) · [阶段 3 冻结合同](asr-defense-toy-2026-10-10/third-line-toy/unseen-confirmation-v1/CONTRACT_UNSEEN.md) | 开发小试完成；新初始化轨迹确认已冻结设计与代码（2026-10-12），未部署、未运行 |
+| 测量提效 | [设计](asr-defense-toy-2026-10-10/third-line-toy/EXPERIMENT_DESIGN.md) · [结果](asr-defense-toy-2026-10-10/third-line-toy/RESULTS.md) · [阶段 3 结果](asr-defense-toy-2026-10-10/third-line-toy/unseen-confirmation-v1/RESULTS.md) | 开发小试完成；新初始化轨迹确认已完成（2026-10-13）：预注册判档「探针提效稳定」命中，延迟 1 更新、clean 臂 0 误报，但固定周期 10 对照仅贵 12% |
 | VLM 归因与 Atlas | [LLaVA](../attribution-microscope/README.md) · [Qwen](../attribution-microscope-qwen3vl8b/README.md) | 按模型、阶段与仪器资格阅读结果 |
 | 文本角色与语法 | [方向](atlas-syntax-transfer-2026-09-21/RESEARCH_DIRECTION.md) · [设计](atlas-syntax-transfer-2026-09-21/EXPERIMENT_DESIGN_three-hypotheses.md) · [报告](atlas-syntax-transfer-2026-09-21/REPORT.md) | 已观察结果、机理假设与后续设计分别记录 |
 | 模型族与规模扩展 | [实验计划](atlas-model-family-expansion-2026-09-27/EXPERIMENT_PLAN.md) | 计划登记，非执行结果 |

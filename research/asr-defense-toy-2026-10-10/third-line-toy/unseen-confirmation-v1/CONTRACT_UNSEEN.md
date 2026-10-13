@@ -1,6 +1,6 @@
 # 未见初始化轨迹确认（第三条线阶段 3）· 冻结合同
 
-日期：2026-10-12。状态：**已部署；第一次 GPU 任务因缓存环境变量缺失失败（0 更新），2026-10-13 06:08 以新任务重排；GPU 阶段未开始，无结果。** 机器合同 [contract.json](contract.json)，源码 [code/](code/)，队列规格 [jobs/](jobs/)，执行记录 [EXECUTION.md](EXECUTION.md)。上游：[第三条线设计 §3](../EXPERIMENT_DESIGN.md)、[开发小试结果](../RESULTS.md)、[r02 防御 toy](../../r02/RESULTS.md)。
+日期：2026-10-12。状态：**已完成（2026-10-13）。判档「探针提效稳定」，与预注册预测一致；见 [RESULTS.md](RESULTS.md)。** 本文件在数据出现前冻结，之后只改过这一行状态。 机器合同 [contract.json](contract.json)，源码 [code/](code/)，队列规格 [jobs/](jobs/)，执行记录 [EXECUTION.md](EXECUTION.md)。上游：[第三条线设计 §3](../EXPERIMENT_DESIGN.md)、[开发小试结果](../RESULTS.md)、[r02 防御 toy](../../r02/RESULTS.md)。
 
 ## 0 为什么做
 

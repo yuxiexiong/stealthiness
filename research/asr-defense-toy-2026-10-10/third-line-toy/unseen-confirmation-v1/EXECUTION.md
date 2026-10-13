@@ -1,6 +1,6 @@
 # 未见初始化轨迹确认：执行记录
 
-2026-10-13。**状态：第一次 GPU 任务（010）因缓存环境变量缺失在加载模型时失败（0 更新，87 秒）；已以新任务 011/021/031 重新入队（北京时间 06:08），GPU 阶段尚未开始，无 GPU 结果。**
+2026-10-13。**状态：已完成。011/021/031 三任务 done，CPU 审计 passed、0 mismatch；判档「探针提效稳定」，与预注册预测一致。结果见 [RESULTS.md](RESULTS.md)。**
 
 ## 已完成（本地，无 GPU）
 
@@ -24,7 +24,14 @@
 - 处理：worker 从不重试，按其规则以新任务文件重排：`102cmmu_011_unseen_pair_dense_oracle_hfenv`（带完整环境变量）、`102cmmu_021_completed_cpu_audit`、`102cmmu_031_final_markdown`，依赖链相应改为 011 → 021 → 031；旧 010/020/030 保留在队列目录中（020/030 因依赖已失败永不启动）。合同、源码、manifest、CPU 收据与已编码数据未改动；运行器的重跑守卫只看 `result.json` 与 `private/training.jsonl`，两者都不存在。第一次尝试的 `failure.json` 与 `costs/gpu_trial.json` 改名为 `failure_attempt1_hf_cache_env.json`、`costs/gpu_trial_attempt1_failed_env.json` 保留，不从成本账上抹除。
 - 06:08:47 新三任务入队，`cmp` 与本目录 `jobs/` 一致；此刻 GPU1 仍被 jevrep 占用（约 22.8 GiB），GPU0 亦被占用；worker 存活。回执 `queue_receipt.json` 追加 `resubmissions`。
 
-## 未完成（等待队列）
+## 完成（2026-10-13）
+
+- 北京时间 08:03:04 原 worker 领取 `102cmmu_011`（GPU1 此前被 jevrep 占用，worker 按 10 分钟空闲规则等待），10:25:02 done；10:25:02–10:25:05 `021` 审计 done；10:25:05–10:25:06 `031` 报告 done。随后 GPU1 队列继续执行防御线的 `103jsm_010/020`，均 done。
+- GPU 进程墙钟 8517 秒，两臂各 160 更新，322 步传感器 / oracle 配对全部精确；`complete.json` 为 complete，`speedup_10x_proven` 为 false。
+- 安全数值与 Markdown 已从服务器同步到 [results/](results/)（`result.json`、`replay_*.json`、`complete.json`、`generated_manifest.json`、审计、成本、收据、第一次失败记录），服务器端 SHA 列于 [results/SERVER_SHA256.txt](results/SERVER_SHA256.txt) 并在本地核对一致。`private/`（提示、生成文本、约 1 GiB 适配器状态）留在服务器不发布。
+- 巡检任务已停用；它在 10 月 12 日 19:31 之后没有再触发过，没有抓到第一次失败，也没有报告完成。
+
+## 后续（未做）
 
 1. ~~上传源码并核对 `source_tree_sha256`~~ 已完成。
 2. ~~服务器 CPU 部署检查~~ 已完成。
@@ -36,4 +43,4 @@
 3. 用户授权后把 `jobs/*.json` 复制进 `/workspace/claude-jump/jobq/jobs/`，记录入队回执；之后按原规则只等待，不另开 worker、不用 GPU0。
 4. 完成后：`020` 审计 passed → `030` 写 `RESULTS.md`；同步安全数值与 Markdown，私有提示 / 生成文本 / 状态不发布。
 
-本记录不推断服务器实时状态；入队不等于开始训练，更不等于实验完成。
+本记录只陈述已核对的服务器文件与队列日志。

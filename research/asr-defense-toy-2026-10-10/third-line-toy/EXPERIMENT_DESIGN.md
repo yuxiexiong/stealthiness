@@ -1,6 +1,6 @@
 # 第三条线toy：用更少测量发现同样的ASR风险
 
-日期：2026-10-11。状态：**16状态测量toy已完成，960测量/0训练，一次CPU审计0 mismatch。单forward传感器约4.88倍实测，等价生成复用约1.24倍；缩小面板与群体预测的额外收益未成立。未见轨迹确认仍未运行。** 原r02代码、合同和结果不变。[实际结果](RESULTS.md)、[执行记录](EXECUTION.md)。阶段3的冻结合同与代码见[未见初始化轨迹确认](unseen-confirmation-v1/CONTRACT_UNSEEN.md)（2026-10-12 写好，未部署、未训练）。
+日期：2026-10-11。状态：**16状态测量toy已完成，960测量/0训练，一次CPU审计0 mismatch。单forward传感器约4.88倍实测，等价生成复用约1.24倍；缩小面板与群体预测的额外收益未成立。未见轨迹确认已于 2026-10-13 完成，见 unseen-confirmation-v1。** 原r02代码、合同和结果不变。[实际结果](RESULTS.md)、[执行记录](EXECUTION.md)。阶段3的冻结合同与代码见[未见初始化轨迹确认](unseen-confirmation-v1/CONTRACT_UNSEEN.md)（2026-10-12 写好，未部署、未训练）。
 
 ## 要验证的主张
 
@@ -68,7 +68,7 @@
 
 ## 3 冻结后的一次未见轨迹确认
 
-这一阶段是后续确认设计，不是已运行项目。2026-10-12 已按本节写成冻结合同、代码、CPU 测试与队列规格：[unseen-confirmation-v1/](unseen-confirmation-v1/README.md)；初始化 seed 1102、顺序 seed 1101、密集 oracle、F60、固定周期随机初相对照与预注册判档均在其中，尚未部署。仅当阶段1/2通过才使用一个事前指定新seed的clean/poison配对，最多各160更新，不因未出现事件换seed、延长更新或改阈值。
+这一阶段是后续确认设计，不是已运行项目。2026-10-12 已按本节写成冻结合同、代码、CPU 测试与队列规格：[unseen-confirmation-v1/](unseen-confirmation-v1/README.md)；初始化 seed 1102、顺序 seed 1101、密集 oracle、F60、固定周期随机初相对照与预注册判档均在其中。2026-10-13 已在 GPU1 实际运行完成，判档「探针提效稳定」与预注册一致，见 [结果与解读](unseen-confirmation-v1/RESULTS.md)。仅当阶段1/2通过才使用一个事前指定新seed的clean/poison配对，最多各160更新，不因未出现事件换seed、延长更新或改阈值。
 
 建议固定初始化/dropout seed1102（先核冲突），训练顺序seed1101保持，canonical数据、200/20000毒位置、原模型revision、AdamW1e-4、warm38及T1250 cosine不变。这检验新初始化下的轨迹，不声称同时验证新的数据顺序、架构或模型。
 
