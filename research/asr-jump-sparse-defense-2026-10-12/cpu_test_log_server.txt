@@ -13,6 +13,7 @@ test_01_prepare_receipt (test_smoke_tiny.SmokeTests.test_01_prepare_receipt) ...
 test_02_a1_and_jsd_identical_until_gating (test_smoke_tiny.SmokeTests.test_02_a1_and_jsd_identical_until_gating) ... ok
 test_03_jsd_ladder_paths (test_smoke_tiny.SmokeTests.test_03_jsd_ladder_paths) ... ok
 test_04_abl_prefilter_and_retrain (test_smoke_tiny.SmokeTests.test_04_abl_prefilter_and_retrain) ... ok
+test_04b_lom_arm_runs_and_logs_gate (test_smoke_tiny.SmokeTests.test_04b_lom_arm_runs_and_logs_gate) ... ok
 test_05_variant_b_evaluator_parity_and_gates (test_smoke_tiny.SmokeTests.test_05_variant_b_evaluator_parity_and_gates) ... ok
 test_05b_variant_c_in_distribution_target (test_smoke_tiny.SmokeTests.test_05b_variant_c_in_distribution_target) ... ok
 test_06_p0_on_tiny_witness (test_smoke_tiny.SmokeTests.test_06_p0_on_tiny_witness) ... ok
@@ -22,15 +23,16 @@ test_wrong_adapter_names_rejected (test_snapshot_exact.SnapshotTests.test_wrong_
 test_abl_state_machine (test_state_machines.BaselinePolicyTests.test_abl_state_machine) ... ok
 test_no_defense_only_shadows (test_state_machines.BaselinePolicyTests.test_no_defense_only_shadows) ... ok
 test_prefilter_drops_highest_base_loss (test_state_machines.BaselinePolicyTests.test_prefilter_drops_highest_base_loss) ... ok
-test_alarm_window_forgets_old_flags (test_state_machines.DetectorTests{"passed": true, "tests_run": 31, "failures": 0, "errors": 0, "skipped": 0, "wall_seconds": 362.70121592096984}
-chines.DetectorTests.test_flag_requires_open_gate_and_alarm_counts_window) ... ok
+test_alarm_window_forgets_old_fla{"passed": true, "tests_run": 33, "failures": 0, "errors": 0, "skipped": 0, "wall_seconds": 329.14073369652033}
+nd_alarm_counts_window (test_state_machines.DetectorTests.test_flag_requires_open_gate_and_alarm_counts_window) ... ok
 test_gating_masks_suspects_rule_and_probe_hits (test_state_machines.JSDPolicyTests.test_gating_masks_suspects_rule_and_probe_hits) ... ok
 test_ladder_actions (test_state_machines.JSDPolicyTests.test_ladder_actions) ... ok
 test_loss_rule_only_when_probe_disabled (test_state_machines.JSDPolicyTests.test_loss_rule_only_when_probe_disabled) ... ok
 test_no_alarm_requests_endpoint_scan_and_max_alarms (test_state_machines.JSDPolicyTests.test_no_alarm_requests_endpoint_scan_and_max_alarms) ... ok
+test_gate_opens_on_median_then_masks_outliers_only (test_state_machines.LateOutlierPolicyTests.test_gate_opens_on_median_then_masks_outliers_only) ... ok
 test_diagonal_lda_separates_shifted_clusters (test_state_machines.ProbeTests.test_diagonal_lda_separates_shifted_clusters) ... ok
 
 ----------------------------------------------------------------------
-Ran 31 tests in 362.689s
+Ran 33 tests in 329.131s
 
 OK
