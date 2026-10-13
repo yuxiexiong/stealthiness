@@ -121,6 +121,15 @@ class SmokeTests(unittest.TestCase):
         retrain = self.run_arm("s_retrain", "endpoint_retrain", overrides={"drop_indices": list(range(50))}, a1_median_step=median_step)
         self.assertEqual(retrain["policy"]["dropped"], list(range(50)))
 
+    def test_04b_lom_arm_runs_and_logs_gate(self):
+        a1 = self.run_arm("s_a1", "a1")
+        lom = self.run_arm("s_lom", "lom", overrides={"lom_gate_median": 1e9, "lom_tau_high": 1e9}, a1_median_step=a1["cost"]["median_step_seconds"])
+        self.assertEqual(lom["policy"]["policy"], "late_outlier_mask")
+        self.assertEqual(lom["policy"]["gate_open_step"], 2)          # trailing median exists from step 2
+        self.assertEqual(lom["policy"]["masked"], [])                 # tau_high huge -> nothing masked
+        self.assertEqual(lom["final_adapter_sha256"], a1["final_adapter_sha256"])   # same loss, same trajectory
+        self.assertEqual(lom["cost"]["charged"]["score_forward"], 0.0)
+
     def test_05_variant_b_evaluator_parity_and_gates(self):
         model = fixture.tiny_model(self.contract)
         rows = native.read_jsonl(self.root / "private" / "data" / "validation.jsonl")[:4]

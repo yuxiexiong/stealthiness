@@ -181,3 +181,27 @@ class BaselinePolicyTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LateOutlierPolicyTests(unittest.TestCase):
+    def test_gate_opens_on_median_then_masks_outliers_only(self):
+        from jsd_policies import LateOutlierPolicy
+        policy = LateOutlierPolicy({"lom_gate_median": 0.5, "lom_tau_high": 1.5, "lom_median_window": 20})
+        # steps 1-3: everything high -> gate closed, nothing masked even above tau_high
+        for step in (1, 2, 3):
+            keep, reasons = policy.keep_mask(step, list(range(16)), [3.0] * 16, None)
+            self.assertTrue(all(keep)); self.assertEqual(reasons, [])
+        self.assertIsNone(policy.gate_open_step)
+        # steps 4-5: median falls below 0.5 -> gate opens at the first step whose trailing median is low
+        policy.keep_mask(4, list(range(16)), [0.1] * 16, None)
+        policy.keep_mask(5, list(range(16)), [0.1] * 16, None)
+        keep, reasons = policy.keep_mask(6, list(range(16)), [0.1] * 16, None)
+        self.assertIsNotNone(policy.gate_open_step)
+        self.assertTrue(all(keep))
+        # after the gate: only rows above tau_high are dropped, with their index and reason recorded
+        losses = [0.01] * 14 + [1.6, 4.0]
+        keep, reasons = policy.keep_mask(7, list(range(100, 116)), losses, None)
+        self.assertEqual(keep, [True] * 14 + [False, False])
+        self.assertEqual([i for i, _ in reasons], [114, 115])
+        self.assertEqual(policy.summary()["masked"], [114, 115])
+        self.assertEqual(policy.summary()["policy"], "late_outlier_mask")

@@ -441,8 +441,65 @@ def make_policy(arm, config):
         return JSDPolicy(config)
     if arm == "abl":
         return ABLPolicy(config, detector_kwargs=detector_kwargs)
+    if arm == "lom":
+        return LateOutlierPolicy(config, detector_kwargs=detector_kwargs)
     if arm == "prefilter":
         return PrefilterPolicy(config, detector_kwargs=detector_kwargs)
     if arm == "endpoint_retrain":
         return FixedDropPolicy(config, detector_kwargs=detector_kwargs)
     raise ValueError("Unknown arm: " + arm)
+
+
+class LateOutlierPolicy:
+    """Measurement line step 3 (2026-10-13): after the normal task is learned, mask rows whose
+    consumption-time loss is an outlier. Gate: trailing `median_window` median of consumption losses
+    < `gate_median`; once open it stays open. Mask: loss > `tau_high`. Trigger-agnostic, zero extra
+    forward passes; reads only per-row losses."""
+    name = "late_outlier_mask"
+
+    def __init__(self, config, shadow_m=(1, 2), detector_kwargs=None):
+        self.gate_median = float(config.get("lom_gate_median", 0.5))
+        self.tau_high = float(config.get("lom_tau_high", 1.5))
+        self.median_window = int(config.get("lom_median_window", 20))
+        self.gate_open_step = None
+        self.history = []          # (step, loss) of consumed rows
+        self.masked = []           # (step, row_index, loss)
+        self.events = []
+        kwargs = dict(detector_kwargs or {})
+        self.shadows = {m: JumpDetector(m=m, **kwargs) for m in shadow_m}
+
+    def before_training(self):
+        return []
+
+    def microbatch_loss_kind(self, step):
+        return "ce"
+
+    def keep_mask(self, step, row_indices, losses, hiddens):
+        for detector in self.shadows.values():
+            detector.observe(step, row_indices, losses)
+        keep, reasons = [True] * len(row_indices), []
+        if self.gate_open_step is None:
+            recent = [l for s, l in self.history if s > step - self.median_window]
+            if recent and sorted(recent)[len(recent) // 2] < self.gate_median:
+                self.gate_open_step = step
+                self.events.append({"kind": "lom_gate_open", "step": step, "median": sorted(recent)[len(recent) // 2]})
+        if self.gate_open_step is not None:
+            for i, (index, loss) in enumerate(zip(row_indices, losses)):
+                if loss > self.tau_high:
+                    keep[i] = False
+                    reasons.append((index, "late_outlier"))
+                    self.masked.append((step, index, loss))
+        self.history.extend((step, l) for l in losses)
+        return keep, reasons
+
+    def after_step(self, step, total_steps):
+        return []
+
+    def after_training(self, total_steps):
+        return []
+
+    def summary(self):
+        return {"policy": self.name, "events": self.events, "gate_open_step": self.gate_open_step,
+                "gate_median": self.gate_median, "tau_high": self.tau_high,
+                "masked": [index for _, index, _ in self.masked], "masked_detail": self.masked,
+                "shadow_alarms": {str(m): d.alarms for m, d in self.shadows.items()}}

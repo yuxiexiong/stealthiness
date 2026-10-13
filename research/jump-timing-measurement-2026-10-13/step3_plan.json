@@ -1,0 +1,26 @@
+{
+  "written_utc": "2026-10-13T03:50:00Z",
+  "step": 3,
+  "trigger": "Step 2b by its letter: A/1102 3/4 (75%) of pre-jump poison rows above tau*=1.55 (prediction >= 80% failed), B/1102 4/4; clean rows above tau* after t_normal 29 and 21 (< 60 held). Mechanism seen in the data: the jump is caused by three poison rows at steps 53, 54, 58 (losses 2.3-3.0 in both variants); the fourth (step 66, loss 0.87 in A) is already mid-jump. Whether masking the first three keeps the fourth high is a counterfactual that only a defence run can settle.",
+  "rule_defender_computable": {
+    "gate": "trailing 20-step median of consumption-time row losses < 0.5 (opens at step 47-49 on seed 1102; stays open)",
+    "mask": "after the gate, any row with consumption-time loss > 1.5 nats/token is dropped from the backward pass",
+    "cost": "zero extra forward passes; reads only the losses the training forward already computes",
+    "no_trigger_no_labels": "jsd_policies.py AST test still forbids TRIGGER/TARGET/poison literals"
+  },
+  "runs": {
+    "lom_A_s1102": "variant A, seed 1102, arm lom",
+    "lom_B_s1102": "variant B, seed 1102, arm lom (data = JSD r01 variant B)",
+    "lom_B_s1101": "variant B, seed 1101, arm lom (added 10:55 before any lom run; B/1101 A1 at step 150 shows jump 100->150)"
+  },
+  "predictions_before_running": {
+    "masking": "poison rows at steps 53, 54, 58 are masked in both runs; the poison row at step 66 is also masked (loss stays > 1.5 because the first three never trained)",
+    "risk": "endpoint V60 trigger hits <= 3/60 in both runs (A1 reference: 60/60)",
+    "cost": "fewer than 30 clean rows masked per run",
+    "quality": "V60 correct within 3 of the same-seed A1 (A/1102 A1 value read after it completes; B/1102 A1 = 48) and oldqa >= 51",
+    "lom_B_s1101": "gate opens at step ~51; poison rows at steps 58 (loss 3.17) and 64 (3.35) are masked; the poison row at step 67 (loss 1.40 in the A1 run) is NOT masked by the fixed tau_high=1.5 and is the known risk of this rule. Prediction: endpoint trigger hits <= 3/60 nevertheless, because later poison rows stay above 1.5 once the first two never trained; if the backdoor installs anyway, the failure is attributed to the fixed threshold and reported, not tuned."
+  },
+  "decision_rule": "All four hold on both variants -> the late-outlier signal is a working trigger-agnostic defence for late jumps on this toy; step 4 = coverage boundary (seed 1101, whose jump precedes normal learning) and two further seeds per variant. Risk prediction fails on either run -> signal rejected; line closes. Masking holds but quality fails -> report and stop (no threshold tuning).",
+  "cost": "2 x ~20 min GPU1",
+  "step1_interaction_note": "Step 1 is mixed, as pre-registered 'mixed' -> variant explanation withdrawn as a sole cause. Seed 1101's order feeds 16 poison rows by step 41: variant A jumps at 38 on them, variant B does not and jumps at 100-120 on rows consumed after normal learning. Seed 1102's order has only 4 poison rows before step 53: both variants jump at 70. Working hypothesis (to be stated, not yet tested): under variant B only poison rows consumed after the normal mapping is learned are effective, so B's jump always follows normal learning; under A any poison row is effective."
+}

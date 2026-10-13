@@ -359,7 +359,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--run-name", required=True)
-    parser.add_argument("--arm", choices=("a0", "a1", "jsd", "abl", "prefilter", "endpoint_retrain"), required=True)
+    parser.add_argument("--arm", choices=("a0", "a1", "jsd", "abl", "prefilter", "endpoint_retrain", "lom"), required=True)
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--overrides", default="{}")
     parser.add_argument("--contract", type=Path, default=common.CONTRACT_PATH)
