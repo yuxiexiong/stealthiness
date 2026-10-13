@@ -526,6 +526,10 @@ class ContradictionMaskPolicy:
         self.budget_frac = float(config.get("cm_budget_frac", 0.5))
         self.rel_factor = float(config.get("cm_rel_factor", 0.0))       # >0: threshold = max(cm_floor, rel_factor * recent group median) (T2d)
         self.floor = float(config.get("cm_floor", 0.3))
+        self.global_threshold = bool(config.get("cm_global_threshold", False))   # R2: median over ALL kept rows of the last cm_global_window steps
+        self.global_window = int(config.get("cm_global_window", 20))
+        self.require_known = bool(config.get("cm_require_known", True))        # R2: False -> no per-group 'known' test (gate + budget only)
+        self.recent_kept = []                                                  # (step, loss) of kept rows, for the global threshold
         self.groups = {}
         self.group_losses = {}
         self.group_flags = {}
@@ -550,6 +554,11 @@ class ContradictionMaskPolicy:
     def threshold(self, group):
         if self.rel_factor <= 0:
             return self.tau_high
+        if self.global_threshold:
+            history = [l for _, l in self.recent_kept]
+            if not history:
+                return self.tau_high
+            return max(self.floor, self.rel_factor * sorted(history)[len(history) // 2])
         history = self.group_losses.get(group, [])
         if self.recent_k > 0:
             history = history[-self.recent_k:]
@@ -582,7 +591,7 @@ class ContradictionMaskPolicy:
             group = self.groups.get(index, index)
             high = loss > self.threshold(group)
             if self.gate_open_step is not None and high:
-                if self.group_known(group) and not self.group_forgetting(group):
+                if (self.group_known(group) or not self.require_known) and not self.group_forgetting(group):
                     keep[i] = False
                     reasons.append((index, "contradiction"))
                     self.masked.append((step, index, "contradiction"))
@@ -595,6 +604,10 @@ class ContradictionMaskPolicy:
                     self.kept_high += 1
             self.group_flags.setdefault(group, []).append(int(high))
             self.group_losses.setdefault(group, []).append(loss)
+            self.recent_kept.append((step, loss))
+        if self.recent_kept:
+            cutoff = step - self.global_window
+            self.recent_kept = [(s, l) for s, l in self.recent_kept if s > cutoff]
         return keep, reasons
 
     def after_step(self, step, total_steps):
@@ -607,7 +620,8 @@ class ContradictionMaskPolicy:
         return {"policy": self.name, "events": self.events, "gate_open_step": self.gate_open_step,
                 "gate_median": self.gate_median, "tau_high": self.tau_high, "group_known_median": self.group_known_median,
                 "min_group_rows": self.min_group_rows, "recent_k": self.recent_k, "budget_window": self.budget_window, "budget_frac": self.budget_frac,
-                "rel_factor": self.rel_factor, "floor": self.floor,
+                "rel_factor": self.rel_factor, "floor": self.floor, "global_threshold": self.global_threshold,
+                "global_window": self.global_window, "require_known": self.require_known,
                 "n_groups": len(self.group_losses), "kept_high_unknown_group": self.kept_high, "kept_high_forgetting_group": self.kept_forgetting,
                 "masked": self.masked, "masked_losses": self.masked_losses,
                 "shadow_alarms": {str(m): d.alarms for m, d in self.shadows.items()}}

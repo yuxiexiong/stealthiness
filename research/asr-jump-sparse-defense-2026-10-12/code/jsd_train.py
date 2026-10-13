@@ -286,6 +286,8 @@ def run_arm(root, run_name, arm, seed, contract, variant, target, device, overri
             del forwards
             if deferred_ascent is not None:
                 execute(deferred_ascent, step)
+            if step in set(config.get("save_adapter_steps") or []):
+                torch.save(capture_adapter(model), out / ("adapter_step%d.pt" % step))
             masked = [(index, reason) for index, reason in reasons]
             entry = {"step": step, "loss": loss_value, "kept": kept_total, "gradient_norm": norm, "lr": learning_rate(step - 1),
                      "replay": replaying, "masked": masked,

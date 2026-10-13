@@ -1,0 +1,8 @@
+{
+  "written_utc": "2026-10-13T21:45:00Z",
+  "step": "R3 (pre-gate window: can the poison rows consumed before the gate be identified at the moment the gate opens?)",
+  "part1_measurement": "A1 run of A/1103 saving the adapter at step 46 (its gate step). Offline job: with that adapter, rescore the 736 rows consumed in steps 1-46; readouts: AUROC of current loss (high = poison) over those rows, precision of the top-10 by current loss, and the same for delta = consumption loss - current loss.",
+  "predictions_before_running": {"current_loss_auroc": ">= 0.9 (A1 truth: 0/60 trigger hits at step 50, so the 7 pre-gate poison rows are not yet learned and keep loss ~3 while clean rows are ~0.05)", "top10_precision": ">= 0.6 (7 poison among 736)"},
+  "part2_conditional": "if the AUROC holds: one defence run per seed 1101/1103 (A) = R2 filter + at gate-open a single rescoring pass over the last 50 steps' rows (<= 800 forwards) + bounded gradient ascent (JSD R1 machinery, k=4) on the top-ranked rows; prediction: 124-question ASR <= 15% on 1103 (partial) and installs on 1101 (16 poison rows before step 41 is beyond repair by ascent). If the AUROC fails: the pre-gate boundary is final.",
+  "cost": "1 A1 run + 1 scoring job (~25 min); part 2 another 2 x 20 min"
+}

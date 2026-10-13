@@ -149,6 +149,15 @@ class SmokeTests(unittest.TestCase):
         self.assertGreater(len(cm2["policy"]["masked"]), 16 * STEPS // 2)  # all but each group's first row are 'contradictions' -> summary path exercised
         self.assertIn("masked_precision", cm2["policy"])
 
+    def test_04d_save_adapter_steps_override(self):
+        a1 = self.run_arm("s_a1_snap", "a1", overrides={"save_adapter_steps": [2, 4]})
+        for step in (2, 4):
+            path = self.root / "runs" / "s_a1_snap" / ("adapter_step%d.pt" % step)
+            self.assertTrue(path.exists())
+        import torch
+        saved = torch.load(self.root / "runs" / "s_a1_snap" / "adapter_step4.pt", map_location="cpu", weights_only=False)
+        self.assertEqual(set(saved), set(torch.load(self.root / "runs" / "s_a1_snap" / "adapter_final.pt", map_location="cpu", weights_only=False)))
+
     def test_05_variant_b_evaluator_parity_and_gates(self):
         model = fixture.tiny_model(self.contract)
         rows = native.read_jsonl(self.root / "private" / "data" / "validation.jsonl")[:4]

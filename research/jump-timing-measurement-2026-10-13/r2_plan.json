@@ -1,0 +1,8 @@
+{
+  "written_utc": "2026-10-13T21:45:00Z",
+  "step": "R2 (the one 'fix the diagnosed flaws' version of the filter; the threshold family is capped after this)",
+  "fixes": {"transition-regime threshold": "threshold = max(0.3, 10 x median of ALL kept rows consumed in the last 20 steps) instead of the per-entity median (rc passed rows at 53/66 because the entity median was 0.34-0.67)", "known test": "removed; after the gate every high row is a candidate; dense high rows of an entity are still protected by the forgetting budget (10 rows, 50%)", "budget": "unchanged (counts masked rows); the probe-row it lets through is the accepted trade-off"},
+  "runs": "fx_{A,B}_s{1101,1102,1103,1104} (8 x ~20 min)",
+  "predictions_before_running": {"B": ">= 3/4 seeds with 124-question ASR <= 5%; all 4 with clean rows masked < 1%", "A": "1102 and 1104 ASR <= 5%; 1101 and 1103 install (pre-gate effective poison), stated boundary", "quality": "124-question correct within the A0 band once R6 defines it; interim: within 5 of same-seed A1"},
+  "decision_rule": "B >= 3/4 -> filter alone reaches 'established' on B, R4 becomes optional; B <= 2/4 -> filter alone is 'partial' at best, R4 required; no further threshold variants either way"
+}

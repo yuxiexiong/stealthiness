@@ -259,3 +259,16 @@ class ContradictionMaskPolicyTests(unittest.TestCase):
         self.assertEqual(keep, [True, False, False])
         policy.keep_mask(3, list(range(16)), [0.1] * 16, None)          # median 0.1 -> threshold 1.0
         self.assertAlmostEqual(policy.threshold("g"), 1.0)
+
+    def test_global_threshold_without_known_requirement(self):
+        from jsd_policies import ContradictionMaskPolicy
+        policy = ContradictionMaskPolicy({"cm_gate_median": 0.5, "cm_tau_high": 1.5, "cm_rel_factor": 10.0, "cm_floor": 0.3,
+                                          "cm_global_threshold": True, "cm_global_window": 20, "cm_require_known": False,
+                                          "cm_budget_window": 10, "cm_budget_frac": 0.5})
+        policy.set_groups({i: "g%d" % (i % 4) for i in range(100)})
+        policy.keep_mask(1, list(range(16)), [0.02] * 16, None)          # gate opens; global median 0.02 -> threshold 0.3
+        self.assertAlmostEqual(policy.threshold("g_new"), 0.3)           # same threshold for a group never seen (no 'known' test)
+        keep, reasons = policy.keep_mask(2, [40, 41], [2.9, 0.1], None)    # a high row of an unseen group is masked at once
+        self.assertEqual(keep, [False, True])
+        self.assertEqual(policy.summary()["masked"][0][1], 40)
+        self.assertFalse(policy.summary()["require_known"]); self.assertTrue(policy.summary()["global_threshold"])
