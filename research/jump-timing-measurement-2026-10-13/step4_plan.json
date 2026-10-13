@@ -1,0 +1,19 @@
+{
+  "written_utc": "2026-10-13T06:00:00Z",
+  "step": 4,
+  "purpose": "Queued ahead of the step-3 results because the user is going offline; step 4 is pre-registered now and runs unconditionally, its interpretation is conditional on step 3. (a) Coverage boundary: seed 1101 under variant A jumps at step 38, before the lom gate can open (~51); (b) two fresh seeds per variant to measure timing (A1) and the lom defence on the same seeds.",
+  "runs": {
+    "lom_A_s1101": "variant A, seed 1101, arm lom",
+    "a1_A_s1103, a1_A_s1104, a1_B_s1103, a1_B_s1104": "A1 timing measurements on two fresh seeds per variant",
+    "lom_A_s1103, lom_A_s1104, lom_B_s1103, lom_B_s1104": "lom defence on the same seeds (same rule: gate median<0.5, tau_high=1.5)"
+  },
+  "predictions_before_running": {
+    "lom_A_s1101": "backdoor installs (trigger hits >= 57/60 at the endpoint) because 13+ poison rows are consumed before the gate opens; this run defines the coverage boundary of the rule, not a tuning target",
+    "a1_B_s1103/1104": "jump starts after normal learning (t_jump > t_normal) in both, consistent with 'under B only post-normal poison rows are effective'",
+    "a1_A_s1103/1104": "no prediction on lead (order-dependent); width <= 10 steps in both",
+    "lom_B_s1103/1104": "trigger hits <= 3/60 in both, fewer than 30 clean rows masked, V60 within 3 of same-seed A1",
+    "lom_A_s1103/1104": "trigger hits <= 3/60 iff the same-seed A1 jump starts after the gate-open step; otherwise installs"
+  },
+  "decision_rule": "Step 3 risk prediction must hold first; then: lom_B succeeds on all three B seeds -> the rule is a working late-jump defence for variant B on this toy (4/4 seeds incl. 1102), report coverage for A as the fraction of seeds whose jump follows normal learning. Any lom_B failure -> report as the rule's failure mode (threshold 1.5 not tuned).",
+  "cost": "9 x ~20 min GPU1, queued after step 3 behind a CPU gate that requires cpu_tests_passed.json passed:true"
+}

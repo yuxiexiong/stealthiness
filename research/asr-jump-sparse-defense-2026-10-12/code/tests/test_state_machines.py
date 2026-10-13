@@ -192,15 +192,19 @@ class LateOutlierPolicyTests(unittest.TestCase):
             keep, reasons = policy.keep_mask(step, list(range(16)), [3.0] * 16, None)
             self.assertTrue(all(keep)); self.assertEqual(reasons, [])
         self.assertIsNone(policy.gate_open_step)
-        # steps 4-5: median falls below 0.5 -> gate opens at the first step whose trailing median is low
-        policy.keep_mask(4, list(range(16)), [0.1] * 16, None)
-        policy.keep_mask(5, list(range(16)), [0.1] * 16, None)
-        keep, reasons = policy.keep_mask(6, list(range(16)), [0.1] * 16, None)
-        self.assertIsNotNone(policy.gate_open_step)
+        # steps 4-6: 48 high vs 48 low rows in the trailing window -> median still high at step 7, gate closed
+        for step in (4, 5, 6):
+            policy.keep_mask(step, list(range(16)), [0.1] * 16, None)
+        keep, _ = policy.keep_mask(7, list(range(16)), [0.1] * 16, None)
+        self.assertIsNone(policy.gate_open_step)
+        self.assertTrue(all(keep))
+        # step 8: 48 high vs 64 low -> trailing median 0.1 < 0.5 -> gate opens at step 8 and stays open
+        keep, reasons = policy.keep_mask(8, list(range(16)), [0.1] * 16, None)
+        self.assertEqual(policy.gate_open_step, 8)
         self.assertTrue(all(keep))
         # after the gate: only rows above tau_high are dropped, with their index and reason recorded
         losses = [0.01] * 14 + [1.6, 4.0]
-        keep, reasons = policy.keep_mask(7, list(range(100, 116)), losses, None)
+        keep, reasons = policy.keep_mask(9, list(range(100, 116)), losses, None)
         self.assertEqual(keep, [True] * 14 + [False, False])
         self.assertEqual([i for i, _ in reasons], [114, 115])
         self.assertEqual(policy.summary()["masked"], [114, 115])
