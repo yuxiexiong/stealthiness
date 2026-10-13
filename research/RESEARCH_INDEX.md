@@ -6,6 +6,7 @@
 | --- | --- | --- |
 | 跨模型 ASR | [当前入口](../attribution-microscope/supplement/jump/cross_model/README.md) | 协议、源码、阶段结果；历史完整产物保留在原分支 |
 | 跃升机制 | [设计](asr-mechanism-experiment-2026-10-10/EXPERIMENT_DESIGN.md) · [toy 结果](asr-mechanism-experiment-2026-10-10/RESULTS_TOY.md) | 已有探索 toy；时间排序优势与一般机制未确认 |
+| 跃升机制线盘点（10-12） | [现状与下一步建议](asr-grokking-mechanism-review-2026-10-12/REPORT.md) · [完整实验方案](asr-grokking-mechanism-review-2026-10-12/EXPERIMENT_PLAN.md) | 只读盘点与建议；附 LP 平台核对脚本，不是新实验结果 |
 | 机制线规划（10-13） | [按 HanLab 做法的下一步规划](asr-mechanism-plan-2026-10-13/PLAN.md) | 规划文档；核心瓶颈是从未干预过训练动力学；与防御线独立 |
 | 平台分叉实验（机制线） | [冻结合同](asr-mechanism-fork-2026-10-13/CONTRACT_FORK.md) · [执行记录](asr-mechanism-fork-2026-10-13/EXECUTION.md) | 2026-10-14 已部署并提交 GPU0 独立队列（3 母本 × 10 条件，曝光预测器预注册）；GPU 未开始，无结果 |
 | 监测与防御 | [计划](asr-defense-toy-2026-10-10/TOY_EXPERIMENT.md) · [r02 结果](asr-defense-toy-2026-10-10/r02/RESULTS.md) | r01/r02 历史保留；r02 无合格投毒回退点 |

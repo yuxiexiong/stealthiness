@@ -1,6 +1,6 @@
 # 平台分叉实验（机制线）· 冻结合同
 
-日期：2026-10-13。状态：**已部署并提交 GPU0 队列（2026-10-14 01:52）；GPU 阶段未开始，无结果。** 机器合同 [contract.json](contract.json)，源码 [code/](code/)，队列规格 [jobs/](jobs/)，执行记录 [EXECUTION.md](EXECUTION.md)。上游：[机制线规划](../asr-mechanism-plan-2026-10-13/PLAN.md)、[机制线盘点与方案 v1](../asr-grokking-mechanism-review-2026-10-12/)（分支 zen-goodall）、[IP 结果](../../attribution-microscope/supplement/jump/ip/RESULTS_IP.md)。本线与防御线独立：只共享 r02 冻结的 toy 配置与编码数据，不共享训练、脚本或日志。
+日期：2026-10-13。状态：**已部署并提交 GPU0 队列（2026-10-14 01:52）；GPU 阶段未开始，无结果。** 机器合同 [contract.json](contract.json)，源码 [code/](code/)，队列规格 [jobs/](jobs/)，执行记录 [EXECUTION.md](EXECUTION.md)。上游：[机制线规划](../asr-mechanism-plan-2026-10-13/PLAN.md)、[机制线盘点](../asr-grokking-mechanism-review-2026-10-12/REPORT.md)与[方案 v1](../asr-grokking-mechanism-review-2026-10-12/EXPERIMENT_PLAN.md)、[IP 结果](../../attribution-microscope/supplement/jump/ip/RESULTS_IP.md)。本线与防御线独立：只共享 r02 冻结的 toy 配置与编码数据，不共享训练、脚本或日志。
 
 ## 0 问题
 

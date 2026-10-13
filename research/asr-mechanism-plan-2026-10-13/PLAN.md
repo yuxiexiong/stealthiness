@@ -1,6 +1,6 @@
 # 机制线下一步规划（2026-10-13，按 HanLab 的做法构思）
 
-只读规划，不启动任何训练。上游：[机制线盘点 10-12](../asr-grokking-mechanism-review-2026-10-12/REPORT.md)、[完整方案 v1](../asr-grokking-mechanism-review-2026-10-12/EXPERIMENT_PLAN.md)（均在分支 `claude/zen-goodall-sqe6yg`）、[IP 结果](../../attribution-microscope/supplement/jump/ip/RESULTS_IP.md)（分支 `claude/ip-results-20261013`）、防御线 [后门习得时刻测量](../jump-timing-measurement-2026-10-13/EXPERIMENT_DESIGN.md)（分支 `claude/keen-hypatia-azj9c9`）、[HanLab 策略拆解](../hanlab-paper-strategy-2026-09-16/REPORT.zh-CN.md)。
+只读规划，不启动任何训练。上游：[机制线盘点 10-12](../asr-grokking-mechanism-review-2026-10-12/REPORT.md)、[完整方案 v1](../asr-grokking-mechanism-review-2026-10-12/EXPERIMENT_PLAN.md)、[IP 结果](../../attribution-microscope/supplement/jump/ip/RESULTS_IP.md)、防御线的后门习得时刻测量（`research/jump-timing-measurement-2026-10-13/`，在防御线分支 `claude/keen-hypatia-azj9c9` 上，不属于本线）、[HanLab 策略拆解](../hanlab-paper-strategy-2026-09-16/REPORT.zh-CN.md)。
 
 ## 0 HanLab 的做法对这条线意味着什么
 
