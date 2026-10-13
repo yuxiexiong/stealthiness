@@ -215,8 +215,8 @@ class ContradictionMaskPolicyTests(unittest.TestCase):
         keep, _ = policy.keep_mask(1, list(range(16)), [3.0] * 16, None)
         self.assertTrue(all(keep))
         # gate opens (step median 0.1); group g1 becomes known (low losses), g2 stays unknown (high losses kept)
-        for step in (2, 3, 4):
-            keep, reasons = policy.keep_mask(step, list(range(16)), [0.1] * 8 + [3.0] * 8, None)
+        for step in (2, 3, 4):                               # 9 low (g1 + one g2 row) vs 7 high -> step median 0.1 -> gate opens at 2
+            keep, reasons = policy.keep_mask(step, list(range(16)), [0.1] * 9 + [3.0] * 7, None)
             self.assertTrue(all(keep))                       # g2 rows are high but g2 is not known -> kept
         self.assertEqual(policy.gate_open_step, 2)
         self.assertTrue(policy.group_known("g1")); self.assertFalse(policy.group_known("g2"))

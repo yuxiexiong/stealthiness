@@ -534,7 +534,7 @@ class ContradictionMaskPolicy:
 
     def group_known(self, group):
         history = self.group_losses.get(group, [])
-        if len(history) < self.min_group_rows:
+        if not history or len(history) < self.min_group_rows:
             return False
         return sorted(history)[len(history) // 2] < self.group_known_median
 
