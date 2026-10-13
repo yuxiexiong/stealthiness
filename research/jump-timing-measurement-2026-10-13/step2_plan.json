@@ -1,0 +1,16 @@
+{
+  "written_utc": "2026-10-13T03:05:00Z",
+  "step": 2,
+  "trigger": "Step-1 prediction for A/1102 failed (jump at 70-80 after normal learning at 43; A/1101 jumped at 38 before 49). Timing follows the seed/order, so the 'target decides timing' branch is closed before B/1101 finishes; the variant appears to set the width (A: 2-10 steps, B: 40 steps).",
+  "purpose": "Zero-GPU offline test of a trigger-agnostic free signal that needs a LATE jump (the opposite of JSD's premise): after the normal task is learned, clean rows are consumed at near-zero loss while poison rows contradict the learned mapping and stay high-loss until the jump. Candidate rule: a row consumed after t_normal+10 with loss > tau_high is a poison candidate.",
+  "data": {"poisoned_A1_runs_with_row_losses": ["A/1102", "B/1102", "B/1101"], "clean_reference_for_false_positives": "JSD dev A0 (seed 1102, same clean rows)", "excluded": "A/1101 (r02 has no per-row losses)"},
+  "readouts_per_run": ["for tau_high in [0.5, 1.0, 2.0]: among rows consumed in (t_normal+10, t_full]: precision and recall of loss>tau_high for poison; number of poison rows consumed in that window; same rule on A0 -> false-positive count per 1000 rows", "per-step fraction of consumed rows with loss>tau_high, before vs after t_full (does the outlier rate collapse at the jump?)"],
+  "predictions_before_running": {
+    "precision": ">= 0.9 at tau_high=1.0 in all three poisoned runs",
+    "recall_in_window": ">= 0.8 of poison rows consumed in the window",
+    "A0_false_positives": "< 2 per 1000 rows consumed after step 60 (i.e. < 40 rows in the whole run)",
+    "collapse": "the outlier rate after t_full is at least 5x lower than between t_normal+10 and t_jump"
+  },
+  "decision_rule": "All four predictions hold -> the signal exists for late jumps; step 3 = one defence arm (20 min GPU) that masks high-loss-late rows before their backward pass and reports whether the jump is prevented, plus false-positive cost on A0. Precision < 0.9 or A0 false positives >= 40 -> signal rejected; step 3 = count how often jumps are late across seeds (A/B x 2 more seeds) only if a different signal is proposed, otherwise close the line.",
+  "cost": "0 GPU; CPU analysis of existing row_losses.jsonl files"
+}
