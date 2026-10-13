@@ -1,0 +1,14 @@
+{
+  "written_utc": "2026-10-13T03:25:00Z",
+  "step": "2b",
+  "trigger": "Step 2 failed as pre-registered: precision at tau=1.0 was 0.11 (A/1102) and 0.35 (B/1102); recall_in_window 0.4/0.7; A0 false positives 7 rows / 19,040 after step 60 (prediction < 40 held); outlier-rate collapse held (51->0.64 and 26->0.22 per 1000). Diagnosis: the window ran to t_full, when poison rows are already learned, and clean stragglers still exceed 1.0 shortly after t_normal.",
+  "refinement": "Window ends at t_jump (not t_full). Separability at consumption: are poison rows consumed in (t_normal, t_jump] above the clean rows consumed in the same window? Masking cost is counted as clean rows masked, not precision, because masking 30 of 20,000 clean rows is harmless; what matters is whether every poison row consumed before the jump would have been masked.",
+  "readouts_per_run": ["list (step, loss) of every poison row consumed in (t_normal, t_jump]", "max/99th-percentile loss of clean rows consumed in the same window", "tau* = 99.9th percentile of A0's clean-row losses consumed after t_normal; count poison rows in window above tau*, clean rows above tau* in the whole poisoned run after t_normal", "gradient_norm per step in [t_normal, t_jump+10] with poison_in_step"],
+  "predictions_before_running": {
+    "separability": ">= 80% of poison rows consumed in (t_normal, t_jump] have loss above the 99th percentile of clean rows consumed in that window, in A/1102 and B/1102",
+    "masking_rule": "with tau* from A0, >= 80% of those poison rows are above tau*, and fewer than 60 clean rows per run are above tau* after t_normal",
+    "B/1101": "same two statements hold once it completes"
+  },
+  "decision_rule": "Both hold on all available runs -> step 3 = one defence arm per variant (A1 + consumption-time masking above tau*, 20 min each) with the prediction that trigger hits stay <= 3/60 at the endpoint and V60 within 3 of A1. Either fails -> the free consumption-loss signal is rejected; the line closes unless a signal that does not rely on consumption loss is proposed (none planned).",
+  "cost": "0 GPU"
+}
