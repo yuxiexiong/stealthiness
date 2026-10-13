@@ -524,6 +524,8 @@ class ContradictionMaskPolicy:
         self.recent_k = int(config.get("cm_recent_k", 0))               # 0 = whole history (T2b); k>0 = last k kept rows (T2c)
         self.budget_window = int(config.get("cm_budget_window", 0))     # 0 = off; >0 = forgetting detector over last W consumed rows
         self.budget_frac = float(config.get("cm_budget_frac", 0.5))
+        self.rel_factor = float(config.get("cm_rel_factor", 0.0))       # >0: threshold = max(cm_floor, rel_factor * recent group median) (T2d)
+        self.floor = float(config.get("cm_floor", 0.3))
         self.groups = {}
         self.group_losses = {}
         self.group_flags = {}
@@ -544,6 +546,16 @@ class ContradictionMaskPolicy:
         if self.recent_k > 0:
             history = history[-self.recent_k:]
         return sorted(history)[len(history) // 2] < self.group_known_median
+
+    def threshold(self, group):
+        if self.rel_factor <= 0:
+            return self.tau_high
+        history = self.group_losses.get(group, [])
+        if self.recent_k > 0:
+            history = history[-self.recent_k:]
+        if not history:
+            return self.tau_high
+        return max(self.floor, self.rel_factor * sorted(history)[len(history) // 2])
 
     def group_forgetting(self, group):
         if self.budget_window <= 0:
@@ -568,7 +580,7 @@ class ContradictionMaskPolicy:
                 self.events.append({"kind": "cm_gate_open", "step": step, "step_median": median})
         for i, (index, loss) in enumerate(zip(row_indices, losses)):
             group = self.groups.get(index, index)
-            high = loss > self.tau_high
+            high = loss > self.threshold(group)
             if self.gate_open_step is not None and high:
                 if self.group_known(group) and not self.group_forgetting(group):
                     keep[i] = False
@@ -595,6 +607,7 @@ class ContradictionMaskPolicy:
         return {"policy": self.name, "events": self.events, "gate_open_step": self.gate_open_step,
                 "gate_median": self.gate_median, "tau_high": self.tau_high, "group_known_median": self.group_known_median,
                 "min_group_rows": self.min_group_rows, "recent_k": self.recent_k, "budget_window": self.budget_window, "budget_frac": self.budget_frac,
+                "rel_factor": self.rel_factor, "floor": self.floor,
                 "n_groups": len(self.group_losses), "kept_high_unknown_group": self.kept_high, "kept_high_forgetting_group": self.kept_forgetting,
                 "masked": self.masked, "masked_losses": self.masked_losses,
                 "shadow_alarms": {str(m): d.alarms for m, d in self.shadows.items()}}

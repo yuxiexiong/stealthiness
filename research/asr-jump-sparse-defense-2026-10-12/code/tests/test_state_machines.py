@@ -241,8 +241,21 @@ class ContradictionMaskPolicyTests(unittest.TestCase):
         self.assertTrue(policy.group_known("g"))
         # forgetting: the last 10 consumed rows of g are mostly high -> budget trips, rows kept, not masked
         self.assertTrue(policy.group_forgetting("g") is False)
-        keep, _ = policy.keep_mask(5, list(range(16)), [0.1] * 10 + [4.0] * 6, None)   # 6 high of 16: masked (sparse so far)
-        self.assertEqual(sum(1 for k in keep if not k), 6)
+        keep, _ = policy.keep_mask(5, list(range(16)), [0.1] * 10 + [4.0] * 6, None)   # 6 high of 16: the first 5 are masked,
+        self.assertEqual(sum(1 for k in keep if not k), 5)                              # the 6th trips the 50% budget (5 of last 10) and is kept
         keep, _ = policy.keep_mask(6, list(range(16)), [4.0] * 16, None)              # dense high -> forgetting after the budget trips
         self.assertGreater(sum(keep), 0)                                                # at least some rows kept for recovery
         self.assertGreater(policy.summary()["kept_high_forgetting_group"], 0)
+
+    def test_relative_threshold_tracks_group_median(self):
+        from jsd_policies import ContradictionMaskPolicy
+        policy = ContradictionMaskPolicy({"cm_gate_median": 0.5, "cm_tau_high": 1.5, "cm_group_known_median": 0.5, "cm_min_group_rows": 3,
+                                          "cm_recent_k": 5, "cm_budget_window": 10, "cm_budget_frac": 0.5, "cm_rel_factor": 10.0, "cm_floor": 0.3})
+        policy.set_groups({i: "g" for i in range(100)})
+        self.assertEqual(policy.threshold("g"), 1.5)                   # no history yet -> falls back to tau_high
+        policy.keep_mask(1, list(range(16)), [0.02] * 16, None)        # gate opens; group median 0.02 -> threshold max(0.3, 0.2) = 0.3
+        self.assertAlmostEqual(policy.threshold("g"), 0.3)
+        keep, _ = policy.keep_mask(2, [0, 1, 2], [0.1, 0.8, 1.31], None)   # 0.8 and 1.31 exceed 0.3 -> masked (would pass a fixed 1.5)
+        self.assertEqual(keep, [True, False, False])
+        policy.keep_mask(3, list(range(16)), [0.1] * 16, None)          # median 0.1 -> threshold 1.0
+        self.assertAlmostEqual(policy.threshold("g"), 1.0)
