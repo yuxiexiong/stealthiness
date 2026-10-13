@@ -136,6 +136,19 @@ class SmokeTests(unittest.TestCase):
         self.assertTrue(0.0 <= lom2["policy"]["masked_precision"] <= 1.0)
         self.assertAlmostEqual(lom2["policy"]["masked_recall"] * 200, round(lom2["policy"]["masked_recall"] * 200))
 
+    def test_04c_cm_arm_runs_with_groups_and_summarises(self):
+        a1 = self.run_arm("s_a1", "a1")
+        cm = self.run_arm("s_cm", "cm", overrides={"cm_gate_median": 1e9, "cm_tau_high": 1e9}, a1_median_step=a1["cost"]["median_step_seconds"])
+        self.assertEqual(cm["policy"]["policy"], "contradiction_mask")
+        self.assertEqual(cm["policy"]["gate_open_step"], 1)
+        self.assertGreater(cm["policy"]["n_groups"], 1)                 # entity groups were supplied by the trainer
+        self.assertEqual(cm["policy"]["masked"], [])
+        self.assertEqual(cm["final_adapter_sha256"], a1["final_adapter_sha256"])
+        cm2 = self.run_arm("s_cm_all", "cm", overrides={"cm_gate_median": 1e9, "cm_tau_high": -1.0, "cm_group_known_median": 1e9, "cm_min_group_rows": 0},
+                           a1_median_step=a1["cost"]["median_step_seconds"])
+        self.assertEqual(len(cm2["policy"]["masked"]), 16 * STEPS)       # every row is a 'contradiction' -> summary path exercised
+        self.assertIn("masked_precision", cm2["policy"])
+
     def test_05_variant_b_evaluator_parity_and_gates(self):
         model = fixture.tiny_model(self.contract)
         rows = native.read_jsonl(self.root / "private" / "data" / "validation.jsonl")[:4]

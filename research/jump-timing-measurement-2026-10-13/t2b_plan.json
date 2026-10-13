@@ -1,0 +1,10 @@
+{
+  "written_utc": "2026-10-13T18:40:00Z",
+  "step": "T2b",
+  "t2a_finding": "The masked clean rows belong to 8-15 of the 32 entities and the top-5 entities hold 82-99% of them; in the same-seed A1 those rows had loss ~0 (only 0.2-0.7% were above 1.5), so masking CREATES them: when the gate opens (step 46-51) some entities are not yet learned, their rows exceed 1.5, get masked, and that entity is never learned, so every later row of it is masked too. V60 drop (~10) matches ~5 excluded entities x ~2 V60 questions each. T2a template prediction unscorable (regex bug), inherent-hardness prediction FAILED, spread-over-steps prediction HELD (quartiles ~340/650/950).",
+  "rule": "contradiction mask: after the gate (per-step median < 0.5), mask a row iff its loss > 1.5 AND the model already knows its entity, i.e. the median consumption-time loss of previously consumed rows of the same entity is < 0.5 (needs >= 3 such rows). A high-loss row of an unlearned entity is kept (it is a straggler, not a contradiction). Entity id is data metadata the defender has (context string), not trigger/label information; the real-data analogue is a hidden-state nearest-neighbour group.",
+  "runs": ["cm_B_s1102", "cm_B_s1103", "cm_A_s1102"],
+  "predictions_before_running": {"clean_masked": "< 100 per run", "poison": "recall >= 0.9 after the gate; no poison row of a known entity slips", "risk": "trigger hits <= 3/60 on all three", "quality": "V60 within 3 of same-seed A1, oldqa >= A1 - 1"},
+  "decision_rule": "all hold on the two B seeds -> T2 gate passed (then run cm on B/1101, B/1104 to make 4/4 and go to T3); risk fails -> contradiction rule rejected, try T2c probe; quality fails but risk holds -> report and try T2c",
+  "cost": "3 x ~20 min GPU"
+}

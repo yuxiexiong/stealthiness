@@ -443,6 +443,8 @@ def make_policy(arm, config):
         return ABLPolicy(config, detector_kwargs=detector_kwargs)
     if arm == "lom":
         return LateOutlierPolicy(config, detector_kwargs=detector_kwargs)
+    if arm == "cm":
+        return ContradictionMaskPolicy(config, detector_kwargs=detector_kwargs)
     if arm == "prefilter":
         return PrefilterPolicy(config, detector_kwargs=detector_kwargs)
     if arm == "endpoint_retrain":
@@ -501,5 +503,78 @@ class LateOutlierPolicy:
     def summary(self):
         return {"policy": self.name, "events": self.events, "gate_open_step": self.gate_open_step,
                 "gate_median": self.gate_median, "tau_high": self.tau_high,
+                "masked": self.masked, "masked_losses": self.masked_losses,
+                "shadow_alarms": {str(m): d.alarms for m, d in self.shadows.items()}}
+
+
+class ContradictionMaskPolicy:
+    """Measurement line T2b (2026-10-14): late-outlier masking restricted to rows that CONTRADICT what the
+    model already knows about their group (toy: the entity named in the context). Gate as LateOutlierPolicy
+    (sticky, per-step median < gate_median). After the gate a row is masked iff loss > tau_high AND its
+    group is 'known': at least `min_group_rows` previously kept rows of the group with median consumption
+    loss < group_known_median. High-loss rows of unlearned groups are kept (stragglers, not contradictions).
+    Group ids are data metadata supplied by the trainer via set_groups(); no trigger or label information."""
+    name = "contradiction_mask"
+
+    def __init__(self, config, shadow_m=(1, 2), detector_kwargs=None):
+        self.gate_median = float(config.get("cm_gate_median", 0.5))
+        self.tau_high = float(config.get("cm_tau_high", 1.5))
+        self.group_known_median = float(config.get("cm_group_known_median", 0.5))
+        self.min_group_rows = int(config.get("cm_min_group_rows", 3))
+        self.groups = {}
+        self.group_losses = {}
+        self.gate_open_step = None
+        self.masked, self.masked_losses, self.kept_high = [], [], 0
+        self.events = []
+        kwargs = dict(detector_kwargs or {})
+        self.shadows = {m: JumpDetector(m=m, **kwargs) for m in shadow_m}
+
+    def set_groups(self, index_to_group):
+        self.groups = dict(index_to_group)
+
+    def group_known(self, group):
+        history = self.group_losses.get(group, [])
+        if len(history) < self.min_group_rows:
+            return False
+        return sorted(history)[len(history) // 2] < self.group_known_median
+
+    def before_training(self):
+        return []
+
+    def microbatch_loss_kind(self, step):
+        return "ce"
+
+    def keep_mask(self, step, row_indices, losses, hiddens):
+        for detector in self.shadows.values():
+            detector.observe(step, row_indices, losses)
+        keep, reasons = [True] * len(row_indices), []
+        if self.gate_open_step is None and losses:
+            median = sorted(losses)[len(losses) // 2]
+            if median < self.gate_median:
+                self.gate_open_step = step
+                self.events.append({"kind": "cm_gate_open", "step": step, "step_median": median})
+        for i, (index, loss) in enumerate(zip(row_indices, losses)):
+            group = self.groups.get(index, index)
+            if self.gate_open_step is not None and loss > self.tau_high:
+                if self.group_known(group):
+                    keep[i] = False
+                    reasons.append((index, "contradiction"))
+                    self.masked.append((step, index, "contradiction"))
+                    self.masked_losses.append(loss)
+                    continue
+                self.kept_high += 1
+            self.group_losses.setdefault(group, []).append(loss)
+        return keep, reasons
+
+    def after_step(self, step, total_steps):
+        return []
+
+    def after_training(self, total_steps):
+        return []
+
+    def summary(self):
+        return {"policy": self.name, "events": self.events, "gate_open_step": self.gate_open_step,
+                "gate_median": self.gate_median, "tau_high": self.tau_high, "group_known_median": self.group_known_median,
+                "min_group_rows": self.min_group_rows, "n_groups": len(self.group_losses), "kept_high_unknown_group": self.kept_high,
                 "masked": self.masked, "masked_losses": self.masked_losses,
                 "shadow_alarms": {str(m): d.alarms for m, d in self.shadows.items()}}

@@ -101,6 +101,8 @@ def run_arm(root, run_name, arm, seed, contract, variant, target, device, overri
         truth_curve = arm == "a1"
     config = policy_config(contract, arm, overrides)
     policy = make_policy(arm, config)
+    if hasattr(policy, "set_groups"):
+        policy.set_groups({index: row["entity_id"] for index, row in by_index.items()})
     ledger = CostLedger()
     with ledger.time("load"):
         model = common.build_model(contract, seed, device, model_path=model_path, tiny_config=tiny_config)
@@ -359,7 +361,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--run-name", required=True)
-    parser.add_argument("--arm", choices=("a0", "a1", "jsd", "abl", "prefilter", "endpoint_retrain", "lom"), required=True)
+    parser.add_argument("--arm", choices=("a0", "a1", "jsd", "abl", "prefilter", "endpoint_retrain", "lom", "cm"), required=True)
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--overrides", default="{}")
     parser.add_argument("--contract", type=Path, default=common.CONTRACT_PATH)

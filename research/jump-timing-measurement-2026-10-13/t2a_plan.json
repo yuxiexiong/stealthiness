@@ -1,0 +1,13 @@
+{
+  "written_utc": "2026-10-13T18:15:00Z",
+  "step": "T2a (zero GPU)",
+  "question": "What are the 1200-2300 clean rows that the lom rule masks, and why does masking 6-11% of rows cost 3-13 V60 points?",
+  "data": "completed lom2 runs (6 so far; the last two are added when done) and their same-seed A1 runs; train.jsonl for template/entity of each row",
+  "readouts": ["masked clean rows: share by training template (4 question forms) vs the template shares in the whole train set", "share by entity vs uniform", "distribution over steps (are they concentrated right after the gate or spread?)", "for the same rows in the same-seed A1: their consumption-time loss (were they already > 1.5 without any masking, i.e. inherently hard, or did masking create them?)", "V60 per question form: which form loses the most relative to A1"],
+  "predictions_before_running": {
+    "template": "masked clean rows are concentrated: one template holds >= 50% of them while holding ~25% of train rows",
+    "inherent_vs_created": ">= 70% of masked clean rows had loss > 1.5 at consumption in the same-seed A1 too (inherently hard rows; masking did not create them)",
+    "steps": "masked clean rows are spread over the whole run after the gate, not concentrated in the first 50 steps after it"
+  },
+  "decision_rule": "template prediction holds -> T2b uses a template-relative (or entity-relative) threshold; inherent_vs_created fails (masking creates stragglers) -> T2b uses defer-and-rescore; both fail -> T2c probe"
+}

@@ -204,3 +204,25 @@ class LateOutlierPolicyTests(unittest.TestCase):
         self.assertEqual([(s, i) for s, i, _ in summary["masked"]][-2:], [(6, 114), (6, 115)])
         self.assertEqual(summary["masked_losses"][-2:], [1.6, 4.0])
         self.assertEqual(summary["policy"], "late_outlier_mask")
+
+
+class ContradictionMaskPolicyTests(unittest.TestCase):
+    def test_masks_only_contradictions_of_known_groups(self):
+        from jsd_policies import ContradictionMaskPolicy
+        policy = ContradictionMaskPolicy({"cm_gate_median": 0.5, "cm_tau_high": 1.5, "cm_group_known_median": 0.5, "cm_min_group_rows": 3})
+        policy.set_groups({i: ("g1" if i < 8 else "g2") for i in range(16)})
+        # before the gate nothing is masked even if high
+        keep, _ = policy.keep_mask(1, list(range(16)), [3.0] * 16, None)
+        self.assertTrue(all(keep))
+        # gate opens (step median 0.1); group g1 becomes known (low losses), g2 stays unknown (high losses kept)
+        for step in (2, 3, 4):
+            keep, reasons = policy.keep_mask(step, list(range(16)), [0.1] * 8 + [3.0] * 8, None)
+            self.assertTrue(all(keep))                       # g2 rows are high but g2 is not known -> kept
+        self.assertEqual(policy.gate_open_step, 2)
+        self.assertTrue(policy.group_known("g1")); self.assertFalse(policy.group_known("g2"))
+        # a high-loss row of known group g1 is a contradiction -> masked; a high-loss row of g2 is kept
+        keep, reasons = policy.keep_mask(5, [0, 8], [4.0, 4.0], None)
+        self.assertEqual(keep, [False, True])
+        self.assertEqual([i for i, _ in reasons], [0])
+        self.assertEqual(policy.summary()["masked"], [(5, 0, "contradiction")])
+        self.assertGreater(policy.summary()["kept_high_unknown_group"], 0)
