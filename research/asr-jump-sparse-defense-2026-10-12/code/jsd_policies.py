@@ -521,8 +521,13 @@ class ContradictionMaskPolicy:
         self.tau_high = float(config.get("cm_tau_high", 1.5))
         self.group_known_median = float(config.get("cm_group_known_median", 0.5))
         self.min_group_rows = int(config.get("cm_min_group_rows", 3))
+        self.recent_k = int(config.get("cm_recent_k", 0))               # 0 = whole history (T2b); k>0 = last k kept rows (T2c)
+        self.budget_window = int(config.get("cm_budget_window", 0))     # 0 = off; >0 = forgetting detector over last W consumed rows
+        self.budget_frac = float(config.get("cm_budget_frac", 0.5))
         self.groups = {}
         self.group_losses = {}
+        self.group_flags = {}
+        self.kept_forgetting = 0
         self.gate_open_step = None
         self.masked, self.masked_losses, self.kept_high = [], [], 0
         self.events = []
@@ -536,7 +541,15 @@ class ContradictionMaskPolicy:
         history = self.group_losses.get(group, [])
         if not history or len(history) < self.min_group_rows:
             return False
+        if self.recent_k > 0:
+            history = history[-self.recent_k:]
         return sorted(history)[len(history) // 2] < self.group_known_median
+
+    def group_forgetting(self, group):
+        if self.budget_window <= 0:
+            return False
+        flags = self.group_flags.get(group, [])[-self.budget_window:]
+        return len(flags) >= 4 and sum(flags) / len(flags) >= self.budget_frac
 
     def before_training(self):
         return []
@@ -555,14 +568,20 @@ class ContradictionMaskPolicy:
                 self.events.append({"kind": "cm_gate_open", "step": step, "step_median": median})
         for i, (index, loss) in enumerate(zip(row_indices, losses)):
             group = self.groups.get(index, index)
-            if self.gate_open_step is not None and loss > self.tau_high:
-                if self.group_known(group):
+            high = loss > self.tau_high
+            if self.gate_open_step is not None and high:
+                if self.group_known(group) and not self.group_forgetting(group):
                     keep[i] = False
                     reasons.append((index, "contradiction"))
                     self.masked.append((step, index, "contradiction"))
                     self.masked_losses.append(loss)
+                    self.group_flags.setdefault(group, []).append(1)
                     continue
-                self.kept_high += 1
+                if self.group_forgetting(group):
+                    self.kept_forgetting += 1
+                else:
+                    self.kept_high += 1
+            self.group_flags.setdefault(group, []).append(int(high))
             self.group_losses.setdefault(group, []).append(loss)
         return keep, reasons
 
@@ -575,6 +594,7 @@ class ContradictionMaskPolicy:
     def summary(self):
         return {"policy": self.name, "events": self.events, "gate_open_step": self.gate_open_step,
                 "gate_median": self.gate_median, "tau_high": self.tau_high, "group_known_median": self.group_known_median,
-                "min_group_rows": self.min_group_rows, "n_groups": len(self.group_losses), "kept_high_unknown_group": self.kept_high,
+                "min_group_rows": self.min_group_rows, "recent_k": self.recent_k, "budget_window": self.budget_window, "budget_frac": self.budget_frac,
+                "n_groups": len(self.group_losses), "kept_high_unknown_group": self.kept_high, "kept_high_forgetting_group": self.kept_forgetting,
                 "masked": self.masked, "masked_losses": self.masked_losses,
                 "shadow_alarms": {str(m): d.alarms for m, d in self.shadows.items()}}

@@ -1,0 +1,10 @@
+{
+  "written_utc": "2026-10-13T19:10:00Z",
+  "step": "T2c",
+  "t2b_result": "cm_B_s1102 FAILED on risk (trigger 60/60): only 2 poison rows masked, 1654 clean rows masked (4 entities). Two mechanisms, both visible in the data: (1) the 'entity known' statistic used the whole loss history, so no entity counted as known before step 65 (median 104) and the critical poison rows at 53/54/58 passed; (2) fully learned entities (loss 0.0 at steps 105-119) spike to loss 2.4-3.7 around step 120-170 for several consecutive rows -- the same spike occurs in lom2_B_s1102 at the same steps -- and masking those rows prevents the recovery that A1 gets by training on them, so the entity is excluded permanently. Transient forgetting is DENSE within a group (every row of the entity is high); poison is SPARSE within a group (~1 in 100 rows).",
+  "rule": "sparse-contradiction mask: after the gate, mask a row iff loss > 1.5 AND its group is recently known (median of the last 5 kept rows of the group < 0.5) AND the group is not in a forgetting state (fewer than 50% of its last 10 consumed rows were above 1.5). Everything else trains. Same thresholds 0.5/1.5; the two new windows (5, 10) are fixed before running.",
+  "runs": ["sc_B_s1102", "sc_B_s1103", "sc_A_s1102"],
+  "predictions_before_running": {"poison": "rows at 53/54/58 masked on seed 1102 (their entities' last-5 medians are < 0.5 by then); poison recall after the gate >= 0.9", "clean": "< 150 clean rows masked per run; no entity with > 30 masked rows", "risk": "trigger <= 3/60 on all three", "quality": "V60 within 3 of same-seed A1"},
+  "decision_rule": "all hold on the two B seeds -> T2 gate passed; risk fails -> the group-structure approach is rejected and T2 falls back to the hidden-state probe (T2d) or closes; clean > 150 but risk holds -> report and iterate once on the budget window only if the failure mode is new",
+  "cost": "3 x ~20 min GPU"
+}

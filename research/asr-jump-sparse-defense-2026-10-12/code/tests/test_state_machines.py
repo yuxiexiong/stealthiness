@@ -226,3 +226,23 @@ class ContradictionMaskPolicyTests(unittest.TestCase):
         self.assertEqual([i for i, _ in reasons], [0])
         self.assertEqual(policy.summary()["masked"], [(5, 0, "contradiction")])
         self.assertGreater(policy.summary()["kept_high_unknown_group"], 0)
+
+    def test_recent_window_and_forgetting_budget(self):
+        from jsd_policies import ContradictionMaskPolicy
+        policy = ContradictionMaskPolicy({"cm_gate_median": 0.5, "cm_tau_high": 1.5, "cm_group_known_median": 0.5,
+                                          "cm_min_group_rows": 3, "cm_recent_k": 5, "cm_budget_window": 10, "cm_budget_frac": 0.5})
+        policy.set_groups({i: "g" for i in range(100)})
+        # early history high, last 5 low -> known with the recent window (would NOT be known on the whole history)
+        policy.keep_mask(1, list(range(16)), [0.1] * 16, None)        # gate opens (step median 0.1)
+        for step in (2, 3):
+            policy.keep_mask(step, list(range(16)), [3.0] * 16, None)  # group g: 32 high rows, all kept (not yet known)... but
+        self.assertFalse(policy.group_known("g"))                      # last 5 kept are high
+        policy.keep_mask(4, list(range(16)), [0.1] * 16, None)         # last 5 kept are low -> known
+        self.assertTrue(policy.group_known("g"))
+        # forgetting: the last 10 consumed rows of g are mostly high -> budget trips, rows kept, not masked
+        self.assertTrue(policy.group_forgetting("g") is False)
+        keep, _ = policy.keep_mask(5, list(range(16)), [0.1] * 10 + [4.0] * 6, None)   # 6 high of 16: masked (sparse so far)
+        self.assertEqual(sum(1 for k in keep if not k), 6)
+        keep, _ = policy.keep_mask(6, list(range(16)), [4.0] * 16, None)              # dense high -> forgetting after the budget trips
+        self.assertGreater(sum(keep), 0)                                                # at least some rows kept for recovery
+        self.assertGreater(policy.summary()["kept_high_forgetting_group"], 0)
