@@ -1,4 +1,4 @@
-# A′：在权重空间直接测量推力与冲刷
+# A′ / A′2：在权重空间直接测量推力与冲刷
 
 2026-10-14。上游：[阶段 A 结果](../asr-mechanism-pushwash-2026-10-14/RESULTS_A.md) §4、[计划](../asr-mechanism-pushwash-2026-10-14/PLAN.md) §2′。这是测量，不是新训练：对[分叉实验](../asr-mechanism-fork-2026-10-13/README.md)的三条母本做确定性回放，训练算术逐位相同（按母本逐步适配器哈希核对），只记录标量。
 
@@ -11,6 +11,7 @@
 | [jobs/](jobs/) · [manifest.json](manifest.json) | A′ 的 4 任务（前缀 `202cmap`） |
 | [jobs_v2/](jobs_v2/) · [manifest_v2.json](manifest_v2.json) | A′2 的 4 任务（前缀 `203cmap2`） |
 | [RESULTS_APRIME.md](RESULTS_APRIME.md) · [results/](results/) | **结果：门未过**——沿 u 的位移 85–95% 由干净数据推动，u 与正常学习方向重合；提出 A′2 正交化 |
+| [RESULTS_APRIME2.md](RESULTS_APRIME2.md) · [results_v2/](results_v2/) | **A′2 结果：门仍未过**——正交化后干净数据仍占沿 u_bd 位移的八成以上；单方向越阈值的图像不成立；读法：两部件相乘 |
 | [EXECUTION.md](EXECUTION.md) | 执行记录 |
 
 其余 `code/*.py` 与分叉实验包逐字节相同，运行时核对。
