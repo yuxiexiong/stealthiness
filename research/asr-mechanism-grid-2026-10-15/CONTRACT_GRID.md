@@ -1,6 +1,6 @@
 # 两部件格子实验（机制线）· 冻结合同
 
-日期：2026-10-15。状态：**已部署并提交 GPU0 队列（2026-10-15 00:30）；未开始。** 机器合同 [contract.json](contract.json)，源码 [code/](code/)，任务 [jobs/](jobs/)，执行记录 [EXECUTION.md](EXECUTION.md)。上游：[A′2 结果](../asr-mechanism-aprime-2026-10-14/RESULTS_APRIME2.md) §3–4、[计划](../asr-mechanism-pushwash-2026-10-14/PLAN.md) §2″、[总纲](../asr-mechanism-plan-2026-10-13/FRAMING.md)。
+日期：2026-10-15。状态：**已完成（2026-10-15）。判档「不一致」，预注册「相乘」未中；见 [RESULTS_GRID.md](RESULTS_GRID.md)。** 本文件在数据出现前冻结，之后只改这一行。 机器合同 [contract.json](contract.json)，源码 [code/](code/)，任务 [jobs/](jobs/)，执行记录 [EXECUTION.md](EXECUTION.md)。上游：[A′2 结果](../asr-mechanism-aprime-2026-10-14/RESULTS_APRIME2.md) §3–4、[计划](../asr-mechanism-pushwash-2026-10-14/PLAN.md) §2″、[总纲](../asr-mechanism-plan-2026-10-13/FRAMING.md)。
 
 ## 0 问题
 

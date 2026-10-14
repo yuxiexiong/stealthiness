@@ -10,7 +10,7 @@
 | 机制线规划（10-13） | [总纲：问题定义、证据与路线](asr-mechanism-plan-2026-10-13/FRAMING.md) · [下一步规划](asr-mechanism-plan-2026-10-13/PLAN.md) | 规划文档；核心瓶颈是从未干预过训练动力学；与防御线独立 |
 | 推力—冲刷模型（机制线第二阶段） | [计划](asr-mechanism-pushwash-2026-10-14/PLAN.md) · [阶段 A 结果](asr-mechanism-pushwash-2026-10-14/RESULTS_A.md) | 零 GPU 事后拟合：推力随状态、冲刷存在、动量时间尺度都被确认，但标量 margin 模型留一母本只中 4/21，阶段 B 不启动；建议 A′ 在权重空间直接量 |
 | A′ 权重空间测量（机制线） | [说明](asr-mechanism-aprime-2026-10-14/README.md) · [执行](asr-mechanism-aprime-2026-10-14/EXECUTION.md) | 回放三条母本直接量推力与冲刷；[结果](asr-mechanism-aprime-2026-10-14/RESULTS_APRIME.md)：门未过，因「分叉→起跳后」方向与正常学习方向重合（干净数据贡献 85–95%）；A′2 正交化后[门仍未过](asr-mechanism-aprime-2026-10-14/RESULTS_APRIME2.md)：起跳窗口权重位移八成以上来自干净数据，单方向越阈值不成立；转表示层（合同骨架待拍板） |
-| 两部件格子实验（机制线） | [冻结合同](asr-mechanism-grid-2026-10-15/CONTRACT_GRID.md) · [执行](asr-mechanism-grid-2026-10-15/EXECUTION.md) | 机器成熟度 × 偏置强度的合成权重格子，判「相乘」或「相加」；2026-10-15 00:30 已入 GPU0 队列，未开始 |
+| 两部件格子实验（机制线） | [冻结合同](asr-mechanism-grid-2026-10-15/CONTRACT_GRID.md) · [执行](asr-mechanism-grid-2026-10-15/EXECUTION.md) | 机器成熟度 × 偏置强度的合成权重格子，[结果](asr-mechanism-grid-2026-10-15/RESULTS_GRID.md)：预注册「相乘」未中（两母本「相加」、一母本「测不了」）；偏置增量 W_母本−W_B2 自己携带后门且特异，机器成熟度只压低基线 |
 | 平台分叉实验（机制线） | [冻结合同](asr-mechanism-fork-2026-10-13/CONTRACT_FORK.md) · [执行记录](asr-mechanism-fork-2026-10-13/EXECUTION.md) | 2026-10-14 完成：判档「驱动但混合」——逃逸需要后续毒样本推力、平台无推力会被干净数据冲回、动量不是主因；预注册的固定曝光阈值规则未中（7/12）。[结果](asr-mechanism-fork-2026-10-13/RESULTS_FORK.md) |
 | 监测与防御 | [计划](asr-defense-toy-2026-10-10/TOY_EXPERIMENT.md) · [r02 结果](asr-defense-toy-2026-10-10/r02/RESULTS.md) | r01/r02 历史保留；r02 无合格投毒回退点 |
 | 测量提效 | [设计](asr-defense-toy-2026-10-10/third-line-toy/EXPERIMENT_DESIGN.md) · [结果](asr-defense-toy-2026-10-10/third-line-toy/RESULTS.md) | 开发小试完成；未运行独立新轨迹确认 |
