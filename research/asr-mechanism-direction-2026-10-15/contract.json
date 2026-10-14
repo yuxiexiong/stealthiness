@@ -1,0 +1,27 @@
+{
+  "version": "asr_mechanism_backdoor_direction_v1_r01",
+  "status": "frozen_not_deployed",
+  "question": "Is the backdoor carried by a single weight-space direction that forms before the ASR jump and grows continuously (hidden progress), and is that direction necessary for the jump?",
+  "method_lineage": "progress-measure workflow (reverse-engineer the end mechanism, define measures from it, look back over training, intervene during training)",
+  "materials": {"mothers": [1105, 1106, 1107], "fork_state": "saved fork-point state of the 2026-10-13 fork experiment",
+    "saved_steps": "every 2 updates in [t_fork, t_jump+20] for the mother (B0) and the B2 continuation; mother adapters bit-checked against recorded hashes"},
+  "direction": {"definition": "d = (W_mother(t_jump+20) - W_B2(t_jump+20)) / norm", "amplitude": "a(t) = <W_mother(t) - W_B2(t), d>",
+    "restricted": "W_B2(t) + a(t) d", "excluded": "W_mother(t) - a(t) d", "readout": "V60 trigger_hits and 4-row sensor margins at every saved step"},
+  "decomposition": {"groups": ["last6_attention", "last6_mlp", "rest"], "layer_bands": [[0, 11], [12, 23], [24, 35]], "group_only_transplant_on_end_machine": true},
+  "interventions": {"suppress": "after every optimizer step remove the d-component of W - W_fork", "amplify": "after every optimizer step double it",
+    "continuation": "mother's own order from the fork, <= 100 updates, trigger oracle every 2 updates, early stop at 3 consecutive >= 57"},
+  "cross_mother": "cosines between mothers' d in effective-weight space (scale * B @ A per module), descriptive",
+  "thresholds": {"cos_min": 0.8, "restricted_tol_hits": 6, "excluded_max_hits": 10, "progress_fraction": 0.3, "advance_min_updates": 5, "risk_hits": 3},
+  "classes": {
+    "single_direction_hidden_progress": "cos(Delta(t_jump), d) >= 0.8 and restricted within 6 hits of the mother at every saved step and excluded <= 10 at every step and a(t_jump-10) >= 0.3 a(t_jump)",
+    "direction_not_formed_at_onset": "cos < 0.8", "multi_directional": "restricted or excluded fails", "no_hidden_progress": "progress fraction fails",
+    "necessity": "necessary if suppress blocks (no risk within 100) on all three; partly if any blocked or delayed >= 5; else not_necessary",
+    "amplification": "amplification_advances if amplify x2 brings t_jump forward by >= 5 on at least two mothers"},
+  "preregistered_prediction": {"direction": "single_direction_hidden_progress", "necessity": "necessary", "amplification": "amplification_advances",
+    "basis": "grid experiment: the bias increment is specific and margin is linear in its amplitude; A'/A'2: poison pushes along the final direction peak at mid loss; all guesses"},
+  "scope_limits": ["progress measures defined only on [t_fork, t_jump+20] (B2 reference exists only after the fork)", "d is mother-specific; cross-mother similarity is descriptive",
+    "one model, one dose, three mothers", "contradicting results do not change the classes"],
+  "budget": {"GPU_process_wall_hard_cap_seconds": null, "reference_estimate_not_cap": "states ~6 min, eval ~30 min, two interventions ~30 min per mother; cross ~3 min; about 3.5 GPU hours",
+    "disk": "about 6.5 GiB of FP32 adapters per mother, deletable after evaluation"},
+  "resource_scope": {"physical_GPU": 0, "queue": "/workspace/claude-jump/jobq_gpu0", "worker": "recorded in worker_pid.json"}
+}

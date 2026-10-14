@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "protocol": "asr_mechanism_backdoor_direction_v1_r01",
+  "root": "/workspace/cross-model-asr/20261015_asr_mechanism_direction_gpu0_r01",
+  "fork_root": "/workspace/cross-model-asr/20261013_asr_mechanism_fork_v1_gpu0_r01",
+  "prefix": "205cmdr",
+  "contract_sha256": "a99f2baa682076991dd58705c8abcfa0188549000d77a815c2f958e1f6053ca7",
+  "code_sha256": {
+    "dir_common.py": "7312f90cf7800f3b1aa01c35b975f978e461bd66307044cc19bc309dd579732b",
+    "dir_cross.py": "821fee7d5852c711f149f41e150bb66cb7c18149ebf8a55f2ccf01c6d81a4092",
+    "dir_eval.py": "058dad69dcac997bbd08d2d8fe6c53c102d04c51a9dd655c9f7d82b81e69ad0f",
+    "dir_intervene.py": "91223feb8f720ab02f3d40ed26960bc604f8bf34e232ec7c18137467b34ff02e",
+    "dir_judge.py": "3ca9ab5423c8f9e6a7cd4c79b5ba5cd4dfebfcd2d001214d29f6f64dcfc7f46f",
+    "dir_states.py": "fabb90c973aedfc9bf8b64de8c95be731f884ad7a8855cd9a486a95af0408070",
+    "fork_common.py": "3b30160ed2417f68776c7c75a7e536a56ee9825349f07ee086cf8623b4d5d71a",
+    "fork_run.py": "8bb20992f24bb20fe30c691ce93dd8b3cd3aa8b2f3ef9c4c28ef5de226648c96",
+    "grid_states.py": "2d1856a0d23708b23109e6bd4c3236fb7f1bbf1a158abad9a5e1a9eceb31ccd4",
+    "measurement_kernels.py": "25d54219aca428334e8f39cfcd1d915bfb35cca3cd6651832ba2290fb3b98657",
+    "native/lora_common.py": "0f8d4c132ad11ae0c4b33e9cba47b78a543f9e2b3673001916d9ec324f6e3f68",
+    "native/lora_llm.py": "6192dc263eba4ff79270c344a9fbe5b344b6fa92f9776b2e5c0baa39f848a92f",
+    "test_dir.py": "d2bcdd630973331332e349c961bf4ab3162d660fffebefc8dbb931283b0f2e65",
+    "toy_data.py": "787a6b0b459fddae8a81f2bdf16994e47728faf813c95663ba1849fa2e8c05b5",
+    "toy_eval.py": "8bdfc40c1b4f4b9cca0e47f0111a72dffefa62dc6c9bca88df7cb037e7e2a1e7"
+  },
+  "python": "/workspace/miniconda/envs/amic-q3/bin/python",
+  "queue": "/workspace/claude-jump/jobq_gpu0",
+  "physical_gpu": 0,
+  "seeds": [
+    1105,
+    1106,
+    1107
+  ],
+  "frozen_modules_must_match_fork_manifest": [
+    "native/lora_llm.py",
+    "native/lora_common.py",
+    "toy_data.py",
+    "toy_eval.py",
+    "measurement_kernels.py",
+    "fork_common.py",
+    "fork_run.py"
+  ]
+}
