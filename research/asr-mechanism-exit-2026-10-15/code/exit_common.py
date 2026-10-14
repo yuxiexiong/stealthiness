@@ -160,11 +160,13 @@ def b1_arm(steps, gap, hit):
     t = bp["break"]
     v_pre, v_in = slope(steps, c, p, a), slope(steps, c, a, b)
     s_ta = slope(steps, c, int(t), a) if t < a else float("nan")
+    a20 = max(s for s in steps if s <= a - B1_LEAD) if any(s <= a - B1_LEAD for s in steps) else steps[0]
+    s_last = slope(steps, c, a20, a) if a20 < a else float("nan")
     R = v_in / v_pre if v_pre > 0 else float("inf")
-    out.update(pre=p, breakpoint=bp, v_pre=v_pre, v_in=v_in, slope_exit_to_a=s_ta, R=R)
+    out.update(pre=p, breakpoint=bp, v_pre=v_pre, v_in=v_in, slope_exit_to_a=s_ta, slope_last20_before_a=s_last, R=R)
     if t <= a - B1_LEAD and bp["dbic"] >= B1_DBIC and v_in <= B1_SLOPE_FACTOR * s_ta:
         cls = "exit_precedes"
-    elif t > a and R >= B1_R_IN:
+    elif R >= B1_R_IN and v_in > B1_SLOPE_FACTOR * s_last:
         cls = "in_window"
     elif a - B1_UNRES <= t <= a:
         cls = "unresolved"

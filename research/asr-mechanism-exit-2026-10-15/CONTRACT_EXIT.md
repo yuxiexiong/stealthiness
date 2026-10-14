@@ -35,7 +35,7 @@ base（无改动，哈希须等于母本第 u 步）；**P→clean**（毒行换
 臂：XO-I1007-O1001、I1001-O1007、I1008-O1001、I1001-O1008、I1011-O1001、I1001-O1011、I1009-O1001、I1001-O1009、PS-P0。检查点：每 10 步，范围 [max(260, a−2(b−a)−30), min(520, b+30)]，a、b 由 200 探针 ASR 的 0.10/0.90 规则在 10 步网格上取。
 读数：60 个 p_core trajectory 样本，trig 与 clean 图，末位置 logit → T3、gap、argmax（与 IP 实验同一输入构造）。
 分析（60 样本 gap、argmax-ASR60，10 步网格）：窗 a′、b′（0.10/0.90）；gap 共同项的单断点分段直线拟合（ΔBIC 对直线）；斜率 v_pre、v_in、slope[t*, a′]；R = v_in/v_pre。
-判（每臂）：**exit_precedes** = t* ≤ a′ − 20 且 ΔBIC ≥ 10 且 v_in ≤ 1.5·slope[t*, a′]；in_window = t* > a′ 且 R ≥ 3；unresolved = a′ − 10 ≤ t* ≤ a′；其余 other。总档：≥ 6/9 exit_precedes → **toy_pattern**；≥ 6/9 in_window → llava_accelerates；≥ 4/9 unresolved → resolution_limited；其余 mixed。预测：toy_pattern（若 resolution_limited，升级为逐步回放需用户批准）。
+判（每臂，按顺序）：**exit_precedes** = t* ≤ a′ − 20 且 ΔBIC ≥ 10 且 v_in ≤ 1.5·slope[t*, a′]；in_window = R ≥ 3 且 v_in > 1.5·slope[a′ − 20, a′]；unresolved = a′ − 10 ≤ t* ≤ a′；其余 other。（部署前修订：原 in_window = t* > a′ 且 R ≥ 3。CPU 测试显示共同项恰在 a′ 开始加速时断点落在 a′ 上，原规则判 unresolved，r2 所说的窗内加速几乎无法被判出；改为比较窗内斜率与窗前紧邻 20 步的斜率。修订在任何 B1 数据出现前完成。）总档：≥ 6/9 exit_precedes → **toy_pattern**；≥ 6/9 in_window → llava_accelerates；≥ 4/9 unresolved → resolution_limited；其余 mixed。预测：toy_pattern（若 resolution_limited，升级为逐步回放需用户批准）。
 
 ## 止损
 
