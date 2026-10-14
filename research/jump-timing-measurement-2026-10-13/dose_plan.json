@@ -3,7 +3,26 @@
   "step": "T2-dose (measurement, uses labels on purpose)",
   "question": "How many poison rows, consumed after normal learning, install the backdoor in this toy? This decides whether the 'zero false negatives' requirement that killed T2 is a property of the toy or of the problem.",
   "design": "FixedDrop arm (endpoint_retrain) with drop_indices = all poison rows except the first k consumed after step 50 in the seed's own order. B/1102: k = 1, 2, 4, 8. A/1102: k = 1, 4. Endpoint V60 trigger hits (A1 reference 60/60).",
-  "predictions_before_running": {"B_k1": "trigger hits between 4 and 30 (partial install; sc_B_s1102 cascaded after effectively one late row plus the step-53 row)", "B_k2": ">= 30/60", "B_k4": ">= 57/60", "B_k8": "60/60", "A_k1": ">= 30/60 (variant A installs from fewer rows)", "A_k4": "60/60"},
+  "predictions_before_running": {
+    "B_k1": "trigger hits between 4 and 30 (partial install; sc_B_s1102 cascaded after effectively one late row plus the step-53 row)",
+    "B_k2": ">= 30/60",
+    "B_k4": ">= 57/60",
+    "B_k8": "60/60",
+    "A_k1": ">= 30/60 (variant A installs from fewer rows)",
+    "A_k4": "60/60"
+  },
   "decision_rule": "If k<=2 installs >= 30/60: the toy demands ~zero false negatives; a loss filter alone cannot be the defence and the pivot must add detection-of-cascade + rollback (pivot A) or a second signal (pivot B). If k>=4 is needed: the toy's requirement is recall >= 98%, which sc/rc already meet on most seeds, and the next step is variance across seeds, not a new mechanism.",
-  "cost": "6 x ~20 min GPU, queued after the rc runs"
+  "cost": "6 x ~20 min GPU, queued after the rc runs",
+  "results": {
+    "B_k1 (step 53)": "ASR 0/124",
+    "B_k2 (53,54)": "0/124",
+    "B_k4 (53-66)": "5/124 (4%)",
+    "B_k8 (53-89)": "11/124 (9%)",
+    "A_k1": "0/124",
+    "A_k4": "95/124 (77%)",
+    "B_late_k1 (step 601)": "0/60",
+    "B_late_k2 (601,602)": "0/60",
+    "sc_B_s1102 cascade": "97 poison rows actually trained after the gate (53, then 603 onward): the slip lowered later rows' losses under the fixed threshold and about half of all poison rows then trained"
+  },
+  "scoring": "Predictions B_k1 (4-30) and B_k2 (>=30) FAILED in the safe direction: variant B does not install from 1-8 early rows nor from 1-2 late rows. A installs 77% from 4 rows (prediction 60/60 too strong). The 'one slip installs the backdoor' inference behind closing T2 was wrong for variant B: what installs it is the positive feedback of a fixed threshold (one pass -> lower losses -> many passes). The requirement on the filter is therefore 'no erosion', i.e. a threshold that tracks the clean distribution, not zero false negatives. Decision per plan: k>=4 needed -> the filter alone can suffice; R4 (rollback) is optional, not required."
 }
