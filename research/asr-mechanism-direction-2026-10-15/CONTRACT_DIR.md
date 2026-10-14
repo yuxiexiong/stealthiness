@@ -1,6 +1,6 @@
 # 后门方向实验（机制线）· 冻结合同
 
-日期：2026-10-15。状态：**已部署并提交 GPU0 队列（2026-10-15 01:36）；未开始。** 机器合同 [contract.json](contract.json)，源码 [code/](code/)，任务 [jobs/](jobs/)，执行记录 [EXECUTION.md](EXECUTION.md)。上游：[格子实验结果](../asr-mechanism-grid-2026-10-15/RESULTS_GRID.md)、[总纲](../asr-mechanism-plan-2026-10-13/FRAMING.md)。方法论沿用 grokking 进度度量的工作流：先从终态分离机制，用它定义进度量，回看训练，再在训练中干预。
+日期：2026-10-15。状态：**已完成（2026-10-15）。方向档「起跳时未形成」、必要性「不必要」、放大「测不了」（工程失败）；见 [RESULTS_DIR.md](RESULTS_DIR.md)。** 本文件在数据出现前冻结，之后只改这一行。 机器合同 [contract.json](contract.json)，源码 [code/](code/)，任务 [jobs/](jobs/)，执行记录 [EXECUTION.md](EXECUTION.md)。上游：[格子实验结果](../asr-mechanism-grid-2026-10-15/RESULTS_GRID.md)、[总纲](../asr-mechanism-plan-2026-10-13/FRAMING.md)。方法论沿用 grokking 进度度量的工作流：先从终态分离机制，用它定义进度量，回看训练，再在训练中干预。
 
 ## 0 问题
 
