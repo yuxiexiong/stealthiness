@@ -6,8 +6,11 @@
 |---|---|
 | [code/aprime_replay.py](code/aprime_replay.py) | 两遍回放：第一遍到 t_jump+20 取后门方向 u；第二遍从 0 到 160，每步记四个微批次的 −g·u（标毒 / 干净）、实际更新 ΔW·u、范数、余弦、三组参数拆分、累计 x_t |
 | [code/aprime_analyze.py](code/aprime_analyze.py) | CPU：推力是否 ∝ 毒行 loss；冲刷是否为负且 ∝ x；三母本起跳时 x 是否同阈值（相对散度 ≤ 15%）；给出进入阶段 B 的门 |
+| [code/aprime2_replay.py](code/aprime2_replay.py) · [code/aprime2_analyze.py](code/aprime2_analyze.py) | A′2：用 B2 续训方向 u_clean 把 u 正交化为 u_bd，三方向同时记投影；门施加在 u_bd |
 | [code/test_aprime.py](code/test_aprime.py) | 合成数据上的恢复测试 |
-| [jobs/](jobs/) · [manifest.json](manifest.json) | GPU0 独立队列 4 任务（前缀 `202cmap`） |
+| [jobs/](jobs/) · [manifest.json](manifest.json) | A′ 的 4 任务（前缀 `202cmap`） |
+| [jobs_v2/](jobs_v2/) · [manifest_v2.json](manifest_v2.json) | A′2 的 4 任务（前缀 `203cmap2`） |
+| [RESULTS_APRIME.md](RESULTS_APRIME.md) · [results/](results/) | **结果：门未过**——沿 u 的位移 85–95% 由干净数据推动，u 与正常学习方向重合；提出 A′2 正交化 |
 | [EXECUTION.md](EXECUTION.md) | 执行记录 |
 
 其余 `code/*.py` 与分叉实验包逐字节相同，运行时核对。
