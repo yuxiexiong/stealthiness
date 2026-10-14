@@ -1,0 +1,30 @@
+{
+  "version": "asr_mechanism_two_component_grid_v1_r01",
+  "status": "frozen_not_deployed",
+  "question": "Does the backdoor jump require both components - the mapping machine built by normal learning and the trigger bias seeded by poisoned rows - or does either alone carry it (additive)?",
+  "materials": {
+    "mothers": [1105, 1106, 1107],
+    "W_fork": "saved fork-point adapter of the 2026-10-13 fork experiment",
+    "machine_states": {"fork": "W_fork", "tj": "B2 continuation (no poison after fork) replayed to t_jump", "tj40": "B2 continuation to t_jump+40", "end": "B2 continuation to t_fork+100"},
+    "bias_increment": "W_mother(t_jump) - W_B2(t_jump): same start, same clean stream, differs only by the decisive poisoned rows and what they caused",
+    "control": "Gaussian direction with the same global norm as the bias increment, alphas 1 and 2 on the tj40 machine; generator seed 73001 + mother seed",
+    "replay_receipt": "B0 replay to t_jump must reproduce the mother's recorded adapter sha256; otherwise engineering failure"
+  },
+  "grid": {"maturity": ["fork", "tj", "tj40", "end"], "alphas": [0, 0.5, 1, 2], "readout": ["V60 trigger_hits", "V60 clean_target_hits", "V60 mapping_correct", "4-row sensor margins"]},
+  "thresholds": {"risk_hits": 3, "on_hits": 30, "additive_tolerance_hits": 10, "primary_mature_state": "tj40"},
+  "classes": {
+    "multiplicative": "hits(fork, a=2) <= 3 and hits(tj40, a=0.5) >= 30 and hits(tj40, a=0) <= 3 and both random controls <= 3",
+    "additive": "hits(fork, a=2) >= 30, or |hits(fork, a=1) - hits(tj40, a=1)| <= 10",
+    "not_specific": "a random direction of the same norm on tj40 gives > 3 hits",
+    "cannot_measure_B2_installs_alone": "hits(tj40, a=0) > 3",
+    "cannot_measure_no_cell_on": "no cell reaches 30",
+    "unclear": "otherwise",
+    "tier": "all three mothers in the same class, else 'inconsistent'"
+  },
+  "preregistered_prediction": {"tier": "multiplicative",
+    "detail": "bias x2 on the immature fork machine stays <= 3; bias x0.5 on the tj40 machine already installs; the end machine installs with even less; random directions do nothing",
+    "basis": "A'/A'2 (clean data drives >80% of the displacement in the jump window), B2 (no poison -> no jump but transient margin rise), poison push along the final direction peaks at mid loss; all guesses"},
+  "scope_limits": ["synthetic weights, not states reached by training", "one model, one dose, three mothers", "no cross-model or defense claim", "results that contradict the prediction do not change the classes"],
+  "budget": {"GPU_process_wall_hard_cap_seconds": null, "reference_estimate_not_cap": "states ~15 min per mother (B2 100 updates + B0 to t_jump), grid ~10 min per mother (19 evaluations); about 1.5 GPU hours"},
+  "resource_scope": {"physical_GPU": 0, "queue": "/workspace/claude-jump/jobq_gpu0", "worker": "recorded in worker_pid.json"}
+}
