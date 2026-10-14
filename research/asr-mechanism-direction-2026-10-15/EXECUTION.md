@@ -9,3 +9,4 @@ CPU 测试：`python3 -m unittest discover -s code -p 'test_*.py'`（标准库�
 - 01:53–01:55 三条 eval 失败：`KeyError: t_jump`——t_jump（48 / 72）不在每 2 步的保存点列里，代码直接按 t_jump 取差分。修法：取 ≥ t_jump 的最近保存点（`tj_step`，记入 eval.json）。这是管道修正，合同、判类、数据未变；更新了服务器上的代码与 manifest（code SHA 15 个一致），第一次的任务规格留在服务器 `jobs_attempt1/`。
 - 01:58 以 `205cmdr_120–142`（eval、suppress、amplify）、`180`（cross）、`190`（judge）重排 11 任务，依赖已完成的 states 任务；入队时 GPU0 空闲。
 - 02:00–03:23 三条 eval 与三条 suppress 完成；03:23 / 03:27 amplify s1105 / s1106 梯度非有限失败；结果同步到 [results/](results/)。
+- 03:31 amplify s1107 同样失败；03:31 cross 完成（三母本 d 的有效权重余弦 0.001–0.002）。judge 因 amplify 依赖失败不运行，判档按冻结规则手工写在 RESULTS_DIR.md。
