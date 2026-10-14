@@ -10,6 +10,7 @@
 |---|---|---|
 | LoRA 1% 投毒、一个 epoch 下，ASR 在 ≤ 1% 训练预算的窗口内从约 0 升到约 1 | LLaVA-1.5-7B 9 个种子；Qwen3-8B 10 个种子；Llama-3.1-8B 5 个种子 | 强 |
 | 连续量也加速，不只是阈值读数造成：LLaVA 上样本翻转点散开 8–10 logit，87–100% 的样本自身 margin 都加速 | [r2 结果](../../attribution-microscope/supplement/jump/r2/RESULTS2.md) D2/D3 | 中（只有 LLaVA） |
+| **Qwen toy 上相反**：ASR 窗内连续量（gap / margin）不加速（三母本加速比 0.5–2.0，D3 ≤ 0.67），ASR 陡度来自翻转点集中（跨行 sd 2–5 logit）；连续量的突变在平台退出，早于 ASR 起跳 15–20 步（s1105 第 33 步三步 +8 logit） | [Q1 实验](../asr-mechanism-q1-2026-10-15/RESULTS_Q1.md)（冻结判档 mixed，两母本闸门不过；事后 gap 读法） | 中强（逐步逐行直接测量；与 LLaVA 的差异未解释） |
 | 不是先记住再泛化：起跳前 40 步，见过的毒样本自身 ASR 只有 0.11 | [LP](../../attribution-microscope/supplement/jump/lp/RESULTS_LP.md) | 强 |
 | 起跳前 margin 停在与顺序无关的平台（LLaVA 约 −6.8），顺序只改停留时长 | [10-12 盘点](../asr-grokking-mechanism-review-2026-10-12/REPORT.md) §3 | 中 |
 | 跨架构：ResNet/ViT（全参、5%）一开始就学会，没有平台；不能当同一现象 | 跨模型补测 | 中 |

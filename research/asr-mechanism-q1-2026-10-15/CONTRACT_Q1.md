@@ -1,6 +1,6 @@
 # Q1 实验：跳是真的吗（机制线）· 冻结合同
 
-日期：2026-10-15。状态：**冻结，待部署。** 本文件在数据出现前冻结，之后只改这一行。机器合同 [contract.json](contract.json)，源码 [code/](code/)，任务 [jobs/](jobs/)，执行记录 [EXECUTION.md](EXECUTION.md)。定位：[后门形成研究.md](../asr-mechanism-positioning-2026-10-15/后门形成研究.md) §3 **Q1**。方法直接继承 r2（[CONTRACT2.md](../../attribution-microscope/supplement/jump/r2/CONTRACT2.md)、`decomp.py`）：连续 margin、逐样本分析、阈值扫描、断点检测。
+日期：2026-10-15。状态：**已完成（2026-10-15）。判档 mixed（s1105 / s1106 闸门不过，s1107 between）；预注册预测 real_jump 不成立；见 [RESULTS_Q1.md](RESULTS_Q1.md)。** 本文件在数据出现前冻结，之后只改这一行。机器合同 [contract.json](contract.json)，源码 [code/](code/)，任务 [jobs/](jobs/)，执行记录 [EXECUTION.md](EXECUTION.md)。定位：[后门形成研究.md](../asr-mechanism-positioning-2026-10-15/后门形成研究.md) §3 **Q1**。方法直接继承 r2（[CONTRACT2.md](../../attribution-microscope/supplement/jump/r2/CONTRACT2.md)、`decomp.py`）：连续 margin、逐样本分析、阈值扫描、断点检测。
 
 ## 0 回答哪个子问题
 

@@ -8,4 +8,4 @@
 | [EXECUTION.md](EXECUTION.md) | 执行记录 |
 | [code/](code/) | `q1_replay.py`（GPU 回放与读数）、`q1_analyze.py`（CPU 分析与判档）、`q1_common.py`（冻结规则，r2 `decomp.py` 的统计量原样移植）、`test_q1.py`；r02 / 分叉模块逐字节复用 |
 | [jobs/](jobs/) · [manifest.json](manifest.json) | GPU0 独立队列 4 任务（前缀 `206cmq1`） |
-| results/ | 数据到达后同步 |
+| [RESULTS_Q1.md](RESULTS_Q1.md) · [results/](results/) | **结果**：判档 mixed；连续量在 ASR 窗内不加速，ASR 陡度来自翻转点集中；连续量的突变在平台退出（早 15–20 步）|
