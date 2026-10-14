@@ -76,6 +76,19 @@ def ascend(model, rows, data_arm, tokenizer, device, updates, contract, ledger, 
     return {"label": label, "updates": updates, "rows": len(rows), "log": log}
 
 
+def front_load_poison(selected, steps, effective=16):
+    """Adaptive attacker (toy completion S4): move every poison row into the first `steps` optimizer steps,
+    keeping relative order; displaced clean rows keep their relative order after the front block."""
+    if not steps:
+        return selected
+    n = int(steps) * effective
+    poison = [row for row in selected if row["poison"]]
+    clean = [row for row in selected if not row["poison"]]
+    head = (poison + clean)[:n]
+    head_ids = {id(row) for row in head}
+    return head + [row for row in selected if id(row) not in head_ids]
+
+
 def run_arm(root, run_name, arm, seed, contract, variant, target, device, overrides=None, tokenizer_path=None,
             model_path=None, tiny_config=None, smoke_steps=None, truth_curve=None, a1_median_step=None):
     root = Path(root)
@@ -100,6 +113,7 @@ def run_arm(root, run_name, arm, seed, contract, variant, target, device, overri
     if truth_curve is None:
         truth_curve = arm == "a1"
     config = policy_config(contract, arm, overrides)
+    selected = front_load_poison(selected, config.get("front_load_poison_steps"), EFFECTIVE)
     policy = make_policy(arm, config)
     if hasattr(policy, "set_groups"):
         policy.set_groups({index: row["entity_id"] for index, row in by_index.items()})

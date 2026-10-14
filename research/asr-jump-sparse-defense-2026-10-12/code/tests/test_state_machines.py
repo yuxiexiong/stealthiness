@@ -287,3 +287,15 @@ class ContradictionMaskPolicyTests(unittest.TestCase):
         for step in range(4, 9):
             policy.keep_mask(step, list(range(16)), [0.02] * 16, None)   # window fills with low rows -> threshold falls toward the floor
         self.assertLess(policy.threshold("g0"), 1.5)
+
+
+class FrontLoadTests(unittest.TestCase):
+    def test_front_load_moves_all_poison_first_and_keeps_order(self):
+        from jsd_train import front_load_poison
+        rows = [{"i": i, "poison": i % 7 == 0} for i in range(100)]      # 15 poison rows
+        out = front_load_poison(rows, 2, effective=8)                     # first 16 slots
+        self.assertEqual([r["i"] for r in out[:15]], [i for i in range(100) if i % 7 == 0])
+        self.assertFalse(out[15]["poison"]); self.assertEqual(out[15]["i"], 1)
+        self.assertEqual(sorted(r["i"] for r in out), list(range(100)))
+        self.assertEqual([r["i"] for r in out[16:]], [r["i"] for r in rows if r["i"] not in {i for i in range(100) if i % 7 == 0} and r["i"] != 1])
+        self.assertIs(front_load_poison(rows, None), rows)
