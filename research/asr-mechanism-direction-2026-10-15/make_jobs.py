@@ -25,6 +25,8 @@ def job(name, cmd, deps, est, cpu=False):
 
 
 def main():
+    import sys
+    retry = int(sys.argv[1]) if len(sys.argv) > 1 else 0          # retry N: job numbers offset by 100*N, states jobs reused from the first submission
     code = {str(p.relative_to(HERE / "code")): sha(p) for p in sorted((HERE / "code").rglob("*.py"))}
     manifest = {"schema": 1, "protocol": "asr_mechanism_backdoor_direction_v1_r01", "root": ROOT, "fork_root": FORK, "prefix": PREFIX,
                 "contract_sha256": sha(HERE / "contract.json"), "code_sha256": code, "python": PY,
@@ -36,19 +38,21 @@ def main():
     for old in jobs.glob("*.json"):
         old.unlink()
     evals, inters = [], []
+    off = 100 * retry
     for i, s in enumerate(SEEDS):
-        st, ev = "%s_01%d_states_s%d" % (PREFIX, i, s), "%s_02%d_eval_s%d" % (PREFIX, i, s)
-        su, am = "%s_03%d_suppress_s%d" % (PREFIX, i, s), "%s_04%d_amplify_s%d" % (PREFIX, i, s)
+        st, ev = "%s_01%d_states_s%d" % (PREFIX, i, s), "%s_%03d_eval_s%d" % (PREFIX, off + 20 + i, s)
+        su, am = "%s_%03d_suppress_s%d" % (PREFIX, off + 30 + i, s), "%s_%03d_amplify_s%d" % (PREFIX, off + 40 + i, s)
         evals.append(ev); inters += [su, am]
-        (jobs / (st + ".json")).write_text(json.dumps(job(st, "code/dir_states.py --root %s --fork-root %s --seed %d" % (ROOT, FORK, s), [], 10), indent=2) + "\n")
+        if not retry:
+            (jobs / (st + ".json")).write_text(json.dumps(job(st, "code/dir_states.py --root %s --fork-root %s --seed %d" % (ROOT, FORK, s), [], 10), indent=2) + "\n")
         (jobs / (ev + ".json")).write_text(json.dumps(job(ev, "code/dir_eval.py --root %s --fork-root %s --seed %d" % (ROOT, FORK, s), [st], 30), indent=2) + "\n")
         (jobs / (su + ".json")).write_text(json.dumps(job(su, "code/dir_intervene.py --root %s --fork-root %s --seed %d --mode suppress" % (ROOT, FORK, s), [ev], 20), indent=2) + "\n")
         (jobs / (am + ".json")).write_text(json.dumps(job(am, "code/dir_intervene.py --root %s --fork-root %s --seed %d --mode amplify" % (ROOT, FORK, s), [ev], 20), indent=2) + "\n")
-    cross = PREFIX + "_080_cross_gpu"
+    cross = "%s_%03d_cross_gpu" % (PREFIX, off + 80)
     (jobs / (cross + ".json")).write_text(json.dumps(job(cross, "code/dir_cross.py --root %s --fork-root %s" % (ROOT, FORK), evals, 3), indent=2) + "\n")
-    fin = PREFIX + "_090_judge_cpu"
+    fin = "%s_%03d_judge_cpu" % (PREFIX, off + 90)
     (jobs / (fin + ".json")).write_text(json.dumps(job(fin, "code/dir_judge.py --root %s --fork-root %s" % (ROOT, FORK), inters + [cross], 1, cpu=True), indent=2) + "\n")
-    print(json.dumps({"code_files": len(code), "jobs": 4 * len(SEEDS) + 2, "contract_sha256": manifest["contract_sha256"]}))
+    print(json.dumps({"code_files": len(code), "jobs": len(list(jobs.glob("*.json"))), "retry": retry, "contract_sha256": manifest["contract_sha256"]}))
 
 
 if __name__ == "__main__":

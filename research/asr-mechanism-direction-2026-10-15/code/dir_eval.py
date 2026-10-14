@@ -108,7 +108,9 @@ def main():
         d = {k: v / d_norm for k, v in delta[end].items()}
         n_layers = max(layer_of(k) for k in d) + 1
         result["d_norm_raw"] = d_norm
-        result["cos_delta_tj_vs_d"] = dot(delta[t_jump], d) / norm(delta[t_jump])
+        tj_step = min(t for t in steps if t >= t_jump)          # nearest saved step at or after t_jump (steps are every 2 updates)
+        result["tj_step"] = tj_step
+        result["cos_delta_tj_vs_d"] = dot(delta[tj_step], d) / norm(delta[tj_step])
         result["cos_delta_fork_vs_d"] = dot(delta[t_fork], d) / norm(delta[t_fork]) if norm(delta[t_fork]) > 0 else None
         # decomposition of d
         energy = {g: 0.0 for g in dc.GROUPS}

@@ -1,0 +1,16 @@
+{
+  "name": "205cmdr_190_judge_cpu",
+  "cmd": "cd /workspace/cross-model-asr/20261015_asr_mechanism_direction_gpu0_r01 && env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic-q3/bin/python code/dir_judge.py --root /workspace/cross-model-asr/20261015_asr_mechanism_direction_gpu0_r01 --fork-root /workspace/cross-model-asr/20261013_asr_mechanism_fork_v1_gpu0_r01",
+  "cwd": "/workspace/cross-model-asr/20261015_asr_mechanism_direction_gpu0_r01",
+  "deps": [
+    "205cmdr_130_suppress_s1105",
+    "205cmdr_140_amplify_s1105",
+    "205cmdr_131_suppress_s1106",
+    "205cmdr_141_amplify_s1106",
+    "205cmdr_132_suppress_s1107",
+    "205cmdr_142_amplify_s1107",
+    "205cmdr_180_cross_gpu"
+  ],
+  "est_min": 1,
+  "note": "backdoor direction experiment; GPU0 isolated queue; est_min is a display"
+}
