@@ -1,0 +1,8 @@
+{
+  "name": "203cmap2_012_replay_s1107",
+  "cmd": "cd /workspace/cross-model-asr/20261014_asr_mechanism_aprime2_gpu0_r01 && env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub /workspace/miniconda/envs/amic-q3/bin/python code/aprime2_replay.py --root /workspace/cross-model-asr/20261014_asr_mechanism_aprime2_gpu0_r01 --fork-root /workspace/cross-model-asr/20261013_asr_mechanism_fork_v1_gpu0_r01 --seed 1107",
+  "cwd": "/workspace/cross-model-asr/20261014_asr_mechanism_aprime2_gpu0_r01",
+  "deps": [],
+  "est_min": 25,
+  "note": "A' weight-space replay; GPU0 isolated queue; est_min is a display"
+}

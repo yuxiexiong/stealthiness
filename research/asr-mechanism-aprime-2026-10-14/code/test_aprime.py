@@ -73,6 +73,25 @@ class Analysis(unittest.TestCase):
             self.assertEqual(set(res["per_mother"]), {"s1", "s2"})
 
 
+class V2Analysis(unittest.TestCase):
+    def test_direction_analysis_recovers_synthetic_washout(self):
+        import aprime2_analyze as a2
+        recs = synthetic_records(30, 45, 80, poison_updates={5, 12, 20, 33, 41})
+        for r in recs:
+            for d in ("u", "u_clean", "u_bd"):
+                r["update_proj_" + d] = r["update_proj"]
+                r["update_cos_" + d] = r["update_cos"]
+                r["x_cumulative_" + d] = r["x_cumulative"]
+                for m in r["micro"]:
+                    m["grad_proj_neg_" + d] = m["grad_proj_neg"]
+        summary = {"t_fork": 30, "t_jump": 45, "horizon": 80, "cos_u_uclean": 0.9}
+        a = a2.analyze_direction(recs, summary, "u_bd")
+        self.assertAlmostEqual(a["washout"]["slope_vs_x"], -0.05, places=6)
+        self.assertGreaterEqual(a["washout"]["share_negative"], 0.9)
+        self.assertAlmostEqual(a["push"]["slope_per_loss"], 0.5, places=6)
+        self.assertIn("41-56", a["washout"]["by_window"])
+
+
 class Groups(unittest.TestCase):
     def test_group_of(self):
         n = 36

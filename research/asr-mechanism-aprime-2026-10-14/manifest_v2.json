@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "protocol": "asr_mechanism_aprime2_orthogonalized_v1_r01",
+  "root": "/workspace/cross-model-asr/20261014_asr_mechanism_aprime2_gpu0_r01",
+  "fork_root": "/workspace/cross-model-asr/20261013_asr_mechanism_fork_v1_gpu0_r01",
+  "prefix": "203cmap2",
+  "code_sha256": {
+    "aprime2_analyze.py": "0da9ed8b3665af02e844baec8cd16a69f6b6764c6f947625999bf426d620005b",
+    "aprime2_replay.py": "df851fe057d76094b81413b84a17da790012cd441b15a97ca760c01756763b8f",
+    "aprime_analyze.py": "c015c2f3f0624f2dcd366201fb1a6d86f8bfd755fd94f71ec4576c1599d4b258",
+    "aprime_replay.py": "416c02666d3e8484c5d5c6f6006affd0449f025cbf919b88fc1dad898070c73f",
+    "fork_common.py": "3b30160ed2417f68776c7c75a7e536a56ee9825349f07ee086cf8623b4d5d71a",
+    "fork_run.py": "8bb20992f24bb20fe30c691ce93dd8b3cd3aa8b2f3ef9c4c28ef5de226648c96",
+    "measurement_kernels.py": "25d54219aca428334e8f39cfcd1d915bfb35cca3cd6651832ba2290fb3b98657",
+    "native/lora_common.py": "0f8d4c132ad11ae0c4b33e9cba47b78a543f9e2b3673001916d9ec324f6e3f68",
+    "native/lora_llm.py": "6192dc263eba4ff79270c344a9fbe5b344b6fa92f9776b2e5c0baa39f848a92f",
+    "test_aprime.py": "0d40898a1dc413c5a71cf5ae2a06e24ee395da4af4e77c702f53645b47e1113f",
+    "toy_data.py": "787a6b0b459fddae8a81f2bdf16994e47728faf813c95663ba1849fa2e8c05b5",
+    "toy_eval.py": "8bdfc40c1b4f4b9cca0e47f0111a72dffefa62dc6c9bca88df7cb037e7e2a1e7"
+  },
+  "python": "/workspace/miniconda/envs/amic-q3/bin/python",
+  "queue": "/workspace/claude-jump/jobq_gpu0",
+  "physical_gpu": 0,
+  "seeds": [
+    1105,
+    1106,
+    1107
+  ],
+  "frozen_modules_must_match_fork_manifest": [
+    "native/lora_llm.py",
+    "native/lora_common.py",
+    "toy_data.py",
+    "toy_eval.py",
+    "measurement_kernels.py",
+    "fork_common.py",
+    "fork_run.py"
+  ],
+  "note": "measurement by deterministic replay of the fork experiment's mothers; no new training; scalars only"
+}
