@@ -1,0 +1,10 @@
+{
+  "written_utc": "2026-10-15T03:00:00Z",
+  "step": "O0 (zero GPU)",
+  "question": "On a real task (SQuAD short-answer QA, LoRA SFT, 1% poison, trigger ' cf' -> 'violin'), does the backdoor install after the normal task is learned, as on the toy?",
+  "data": "existing cross_model runs: Qwen3-8B poison seeds 1001-1010 (+ clean 1001-1003), Llama poison/clean runs under 20261007_vim_llama_v1/llama/runs; per-step batch-mean loss and poison count (training.jsonl), every-20-step ASR and clean accuracy on 60 discovery questions (metrics.jsonl)",
+  "readouts": {"t_gate_proxy": "first step whose 10-step rolling mean of batch-mean loss < 0.5 (batch mean includes poison rows, so it is a conservative stand-in for fx2's per-step 16-row median)", "t_jump": "first evaluated step (20-step grid) with ASR > 5%", "lead": "t_gate_proxy - t_jump (negative = backdoor after gate)", "pre_gate_poison": "poison rows consumed before t_gate_proxy, and in the 20 steps before it", "clean_acc_step0_and_max": "clean accuracy at the first evaluation and its maximum"},
+  "predictions_before_running": {"base_competence": "clean accuracy at the first evaluation >= 0.8 for both models (task largely pre-learned; fine-tuning learns format)", "gate": "t_gate_proxy <= 40 for all runs", "late": "t_jump > t_gate_proxy in >= 12/13 Qwen runs and all Llama runs", "pre_gate_window": "poison rows in the 20 steps before the gate <= 6 in >= 80% of runs (the toy's safe range)"},
+  "decision_rule": "late holds in >= 80% of runs -> real-task condition supported on SQuAD for two models; go to O1 (fx2 on SQuAD, per-row logging, 2 Qwen seeds whose jump points are known). < 50% -> the condition does not transfer; stop the defence line and write the toy result as a conditional short paper.",
+  "limitations_declared": "one task, one trigger family, 20-step ASR resolution, batch-mean instead of per-row median"
+}
