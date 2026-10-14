@@ -158,6 +158,15 @@ class SmokeTests(unittest.TestCase):
         saved = torch.load(self.root / "runs" / "s_a1_snap" / "adapter_step4.pt", map_location="cpu", weights_only=False)
         self.assertEqual(set(saved), set(torch.load(self.root / "runs" / "s_a1_snap" / "adapter_final.pt", map_location="cpu", weights_only=False)))
 
+    def test_04e_grad_checkpointing_matches_plain_training(self):
+        plain = self.run_arm("s_a1_plain_gc_ref", "a1")
+        gc = self.run_arm("s_a1_gc", "a1", overrides={"grad_checkpointing": True})
+        with open(self.root / "runs" / "s_a1_plain_gc_ref" / "training.jsonl") as a, open(self.root / "runs" / "s_a1_gc" / "training.jsonl") as b:
+            la = [json.loads(x)["loss"] for x in a]; lb = [json.loads(x)["loss"] for x in b]
+        self.assertEqual(len(la), len(lb))
+        for x, y in zip(la, lb):
+            self.assertAlmostEqual(x, y, places=4)
+
     def test_05_variant_b_evaluator_parity_and_gates(self):
         model = fixture.tiny_model(self.contract)
         rows = native.read_jsonl(self.root / "private" / "data" / "validation.jsonl")[:4]

@@ -299,3 +299,12 @@ class FrontLoadTests(unittest.TestCase):
         self.assertEqual(sorted(r["i"] for r in out), list(range(100)))
         self.assertEqual([r["i"] for r in out[16:]], [r["i"] for r in rows if r["i"] not in {i for i in range(100) if i % 7 == 0} and r["i"] != 1])
         self.assertIs(front_load_poison(rows, None), rows)
+
+    def test_band_placement_after_start_step(self):
+        from jsd_train import front_load_poison
+        rows = [{"i": i, "poison": i % 7 == 0} for i in range(100)]      # 15 poison rows
+        out = front_load_poison(rows, 2, effective=8, start_step=3)       # slots 24..39
+        self.assertFalse(any(r["poison"] for r in out[:24]))
+        self.assertTrue(all(r["poison"] for r in out[24:39]))
+        self.assertFalse(any(r["poison"] for r in out[40:]))
+        self.assertEqual(sorted(r["i"] for r in out), list(range(100)))

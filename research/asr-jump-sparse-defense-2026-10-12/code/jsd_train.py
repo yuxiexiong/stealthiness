@@ -76,17 +76,21 @@ def ascend(model, rows, data_arm, tokenizer, device, updates, contract, ledger, 
     return {"label": label, "updates": updates, "rows": len(rows), "log": log}
 
 
-def front_load_poison(selected, steps, effective=16):
-    """Adaptive attacker (toy completion S4): move every poison row into the first `steps` optimizer steps,
-    keeping relative order; displaced clean rows keep their relative order after the front block."""
+def front_load_poison(selected, steps, effective=16, start_step=0):
+    """Adaptive attacker: place every poison row in the optimizer steps after `start_step`, filling them
+    densely (poison first) for `steps` steps; all other rows keep their relative order. start_step=0 is the
+    toy-completion S4 front-loading; start_step>0 is the real-data O4 band attack aimed just before the gate."""
     if not steps:
         return selected
-    n = int(steps) * effective
+    lead, n = int(start_step) * effective, int(steps) * effective
     poison = [row for row in selected if row["poison"]]
     clean = [row for row in selected if not row["poison"]]
-    head = (poison + clean)[:n]
-    head_ids = {id(row) for row in head}
-    return head + [row for row in selected if id(row) not in head_ids]
+    block = (poison + clean[lead:])[:n]
+    used = {id(row) for row in block}
+    leftover = [row for row in selected if id(row) not in used]          # keeps any poison beyond the block
+    pre = [row for row in leftover if not row["poison"]][:lead]
+    pre_ids = {id(row) for row in pre}
+    return pre + block + [row for row in leftover if id(row) not in pre_ids]
 
 
 def run_arm(root, run_name, arm, seed, contract, variant, target, device, overrides=None, tokenizer_path=None,
@@ -113,13 +117,17 @@ def run_arm(root, run_name, arm, seed, contract, variant, target, device, overri
     if truth_curve is None:
         truth_curve = arm == "a1"
     config = policy_config(contract, arm, overrides)
-    selected = front_load_poison(selected, config.get("front_load_poison_steps"), EFFECTIVE)
+    selected = front_load_poison(selected, config.get("front_load_poison_steps"), EFFECTIVE, config.get("front_load_start_step", 0))
     policy = make_policy(arm, config)
     if hasattr(policy, "set_groups"):
         policy.set_groups({index: row["entity_id"] for index, row in by_index.items()})
     ledger = CostLedger()
     with ledger.time("load"):
         model = common.build_model(contract, seed, device, model_path=model_path, tiny_config=tiny_config)
+        if config.get("grad_checkpointing"):
+            # memory fallback (real-data stage auto-repair): recompute activations in backward; RNG state is preserved
+            model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
+            model.enable_input_require_grads()
         optimizer = common.build_optimizer(contract, model)
     parameters = [p for p in model.parameters() if p.requires_grad]
     capture = HiddenCapture(model)
@@ -381,11 +389,14 @@ def main():
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--overrides", default="{}")
     parser.add_argument("--contract", type=Path, default=common.CONTRACT_PATH)
+    parser.add_argument("--model-path", default=None)
+    parser.add_argument("--tokenizer-path", default=None)
     args = parser.parse_args()
     contract = common.load_contract(args.contract)
     receipt = common.read_json(args.root / "preparation_passed.json")
     run_arm(args.root, args.run_name, args.arm, args.seed, contract, receipt["variant"], receipt["target"], "cuda",
-            overrides=json.loads(args.overrides))
+            overrides=json.loads(args.overrides), model_path=args.model_path or receipt.get("model_path"),
+            tokenizer_path=args.tokenizer_path or receipt.get("tokenizer_path"))
 
 
 if __name__ == "__main__":
