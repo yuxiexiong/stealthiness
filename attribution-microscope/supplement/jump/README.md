@@ -11,7 +11,7 @@
 | 其它对照 | [PS](ps/RESULTS_PS.md)、[QX](qx/RESULTS_QX.md)、[DY](dy/RESULTS_DY.md)、[DY2](dy/RESULTS_DY2.md)；保留各自条件与判档 |
 | 跨模型观察 | [cross_model 入口](cross_model/README.md)、[10-10 补测最终报告](cross_model/results/20261010_uncertainty_followup_final/README_ZH.md)、[增量成本](cross_model/results/20261010_uncertainty_followup_final/final_incremental_costs.json)；不等同于共有机制证明 |
 | 最新机制 toy | [设计](../../../research/asr-mechanism-experiment-2026-10-10/EXPERIMENT_DESIGN.md)、[结果](../../../research/asr-mechanism-experiment-2026-10-10/RESULTS_TOY.md)；完成有限联合与拆分复核，未显示时间排序优势 |
-| 平台分叉实验 | [冻结合同](../../../research/asr-mechanism-fork-2026-10-13/CONTRACT_FORK.md)、[执行记录](../../../research/asr-mechanism-fork-2026-10-13/EXECUTION.md)；起跳前分叉改优化器 / 学习率 / 后续毒行 / 参数分组，曝光预测器预注册；已入 GPU0 队列，未开始 |
+| 平台分叉实验 | [冻结合同](../../../research/asr-mechanism-fork-2026-10-13/CONTRACT_FORK.md)、[执行记录](../../../research/asr-mechanism-fork-2026-10-13/EXECUTION.md)；起跳前分叉改优化器 / 学习率 / 后续毒行 / 参数分组，10-14 完成：[结果](../../../research/asr-mechanism-fork-2026-10-13/RESULTS_FORK.md)，判档「驱动但混合」，删后续毒行阻断起跳，固定曝光阈值规则未中 |
 | 最新防御 r02 | [实际结果](../../../research/asr-defense-toy-2026-10-10/r02/RESULTS.md)；未找到投毒合格回退点，防御路径与十倍效率未获支持 |
 | 第三条线测量 toy | [设计](../../../research/asr-defense-toy-2026-10-10/third-line-toy/EXPERIMENT_DESIGN.md)、[实际结果](../../../research/asr-defense-toy-2026-10-10/third-line-toy/RESULTS.md)；有测量执行收益，群体翻转预测未显示额外收益，限开发小试 |
 
