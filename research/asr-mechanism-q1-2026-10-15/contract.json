@@ -1,0 +1,27 @@
+{
+  "version": "asr_mechanism_q1_real_jump_v1_r01",
+  "status": "frozen_not_deployed",
+  "subquestion": "Q1 of research/asr-mechanism-positioning-2026-10-15: is the ASR jump an acceleration of the continuous margin itself, and how much of the ASR steepness is flip-point synchrony versus common-course acceleration",
+  "why_not_saved_states": "mothers logged only hit counts and 4 sensor margins; the 2-step adapters cover [t_fork, t_jump+20] only, which contains the r2-style window for s1107 alone; s1106's recorded t_jump = 72 is a false start (hits 4-13 until 92, the rise is 93 -> 100)",
+  "materials": {"mothers": [1105, 1106, 1107], "replay": "frozen trainer from update 0 for 160 updates, mother's own order; adapter sha256 at every update must equal the mother's recorded hash", "no_adapters_saved": true},
+  "readout": {"rows": "V60 (60 validation trigger rows)", "conditions": ["trigger", "clean"], "kernel": "measurement_kernels.run_path path B (single forward, no generation), isolated RNG",
+    "per_row": ["margin = logit(target first token) - logit(gold first token)", "target_vs_other_gap", "rank", "hit = argmax == target", "correct (clean) = argmax == gold"]},
+  "analysis": {
+    "window_primary": {"low": 0.10, "high": 0.90, "rule": "b = first update with ASR60 >= high; a = last update before b with ASR60 <= low; pre-window p = a - (b - a)"},
+    "window_secondary_r2": {"low": 0.05, "high": 0.95},
+    "gate": "agreement between hit and margin > 0 over [p, b] >= 0.90, else unmeasurable",
+    "d1": "additive model R2 and D statistic with 10000 bootstraps (descriptive)",
+    "d2": "common course c(t) = row mean; v_pre over [p, a], v_in over [a, b]; accel_ratio = v_in / v_pre (inf if v_pre <= 0); W = 5-95% width of flip points; steps needed at each speed",
+    "d3": "share of rows whose own slope inside the window exceeds 1.5 x their own pre-window slope",
+    "threshold_sweep": "tau in -8..8 step 2; width of the primary window on ASR_tau; equal widths for |tau| <= 4 (within 2x of tau = 0) is the constant-speed signature (descriptive)",
+    "breakpoint": "BIC of linear / quadratic / one-breakpoint piecewise-linear fits of c(t) on [0, min(160, b+20)] (descriptive)",
+    "crosscheck": "argmax hits vs the mother's generation-based oracle hits per update",
+    "byproduct_not_analysed": "clean-condition margins and correct counts per update (material for Q3)"},
+  "classes": {"real": "gate passed and accel_ratio >= 3 and d3 >= 0.8", "artifact": "gate passed and accel_ratio < 1.5 and d3 < 0.5", "between": "gate passed, otherwise", "unmeasurable": "gate failed or no window"},
+  "tiers": {"real_jump": "all three mothers real", "threshold_artifact": "any mother artifact", "mixed": "otherwise"},
+  "preregistered_prediction": {"tier": "real_jump", "basis": "r2: accel ratio 4-18 and D3 87-100% on LLaVA s1/s2 and Qwen s1; s1106's shoulder (65-88) is the hardest case", "breakpoint": "near a (a-10 .. a+5)", "sweep": "widths depend on tau"},
+  "stop_loss": {"not_bit_exact": "engineering failure; fix and rerun; never analyse non-exact data", "threshold_artifact": "Q1 fails; the paper's premise must be rewritten; stop and discuss", "mixed": "report per mother; only real mothers enter Q3"},
+  "scope_limits": ["one model, one dose, one trigger, three mothers", "all quantities defined on the first token of V60", "clean by-product not interpreted in this step"],
+  "budget": {"reference_estimate_not_cap": "15-18 min per mother, about 50 GPU minutes in total", "disk": "about 1 MB jsonl per mother"},
+  "resource_scope": {"physical_GPU": 0, "queue": "/workspace/claude-jump/jobq_gpu0", "worker": "recorded in worker_pid.json", "prefix": "206cmq1"}
+}
