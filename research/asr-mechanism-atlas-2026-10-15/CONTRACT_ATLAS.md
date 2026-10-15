@@ -1,6 +1,6 @@
 # 阶段一：跨模型同步图谱 · 冻结合同
 
-日期：2026-10-15。状态：**冻结，待计算。** 本文件在任何图谱数字出现前冻结，之后只改这一行。机器合同 [contract.json](contract.json)，源码 [code/](code/)。出发点 [RESTART.md](../asr-mechanism-restart-2026-10-15/RESTART.md)，回答其 §5 的 **M1**（齐到什么程度）与 **M2**（连续量加速与否是否与齐独立）。零 GPU，只读已有数据。
+日期：2026-10-15。状态：**已完成（2026-10-15）。M1 refuted（2/7 族 tight）；M2 acceleration_independent；分解式 E 在 6 个可测族上通过。见 [results/ATLAS.md](results/ATLAS.md)。** 本文件在任何图谱数字出现前冻结，之后只改这一行。机器合同 [contract.json](contract.json)，源码 [code/](code/)。出发点 [RESTART.md](../asr-mechanism-restart-2026-10-15/RESTART.md)，回答其 §5 的 **M1**（齐到什么程度）与 **M2**（连续量加速与否是否与齐独立）。零 GPU，只读已有数据。
 
 ## 0 要检验的机制主张
 
