@@ -95,7 +95,14 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--root", required=True)
     ap.add_argument("--base", default="/workspace/cross-model-asr")
+    ap.add_argument("--gate-seed", type=int, help="engineering gate for one seed's W0 only; exit 1 if it fails")
     a = ap.parse_args()
+    if a.gate_seed is not None:
+        g = gate(a.base, os.path.join(a.root, "runs", f"W0_s{a.gate_seed}"), a.gate_seed)
+        os.makedirs(os.path.join(a.root, "results"), exist_ok=True)
+        json.dump(g, open(os.path.join(a.root, "results", f"gate_s{a.gate_seed}.json"), "w"), indent=1)
+        print(json.dumps(g))
+        raise SystemExit(0 if g["passed"] else 1)
     res = {"seeds": {}}
     for s in ACCEL + STEADY:
         runs = {c: os.path.join(a.root, "runs", f"{c}_s{s}") for c in ("W0", "W1", "W2")}

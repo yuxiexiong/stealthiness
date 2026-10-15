@@ -1,0 +1,19 @@
+{
+ "name": "211cmsw_090_judge_cpu",
+ "cwd": "/workspace/cross-model-asr/20261015_asr_mechanism_swap_gpu0_r01",
+ "deps": [
+  "211cmsw_030_W1_s1003",
+  "211cmsw_031_W2_s1003",
+  "211cmsw_032_W1_s1006",
+  "211cmsw_033_W2_s1006",
+  "211cmsw_034_W1_s1009",
+  "211cmsw_035_W2_s1009",
+  "211cmsw_036_W1_s1004",
+  "211cmsw_037_W2_s1004",
+  "211cmsw_038_W1_s1008",
+  "211cmsw_039_W2_s1008"
+ ],
+ "est_min": 1,
+ "note": "SW judge (CPU); if a seed's gate fails, run it by hand",
+ "cmd": "cd /workspace/cross-model-asr/20261015_asr_mechanism_swap_gpu0_r01 && env CUDA_VISIBLE_DEVICES= /workspace/cross-model-asr/20261005_classification5/venv/bin/python code/sw_judge.py --root /workspace/cross-model-asr/20261015_asr_mechanism_swap_gpu0_r01 --base /workspace/cross-model-asr"
+}

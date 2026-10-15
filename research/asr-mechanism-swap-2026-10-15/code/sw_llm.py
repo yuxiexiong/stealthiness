@@ -3,8 +3,9 @@ poison rows of the crossing changed.
 
 W0 base    replay unchanged (engineering gate: losses and 20-step adapter hashes equal the original run)
 W1 remove  the target poison rows become clean examples (same rows, clean prompt and true answer)
-W2 swap    the target poison rows are replaced, in place, by other poison examples built from rows that the first
-           3,200 updates never use (Random(61001)); same positions, same count, different content
+W2 swap    the target poison rows are replaced, in place, by other poison examples built from clean rows that this
+           180-update replay never reaches (index >= 180*16 + 1000, Random(61001)); same positions, same count,
+           different content
 
 Target rows = poison rows carried by updates a-4 .. b, with [a, b] the seed's frozen window (contract section 2).
 Readout: first-answer-token margin and argmax flip of the 60 discovery probes under the trigger prompt
