@@ -1,0 +1,132 @@
+"""[DEFENSE-LINE GPU0 COPY, 2026-10-15, user-authorised while the GPU0 mechanism queue is paused] Claims ONLY jobs named 10[4-7]lr...g from the shared jobq; claims nothing while the mechanism worker (worker_gpu0.py) is alive or jobq_gpu0/STOP is absent; exits when no such job is left unclaimed; stop with jobq/STOP_DEF_GPU0.
+Minimal GPU job queue for the supplement/jump line (one worker per GPU).
+
+    nohup python worker.py --root /workspace/claude-jump/jobq --gpu 0 &
+
+Jobs are JSON files in <root>/jobs/, run in file-name order:
+  {"name": "...", "cmd": "shell command", "cwd": "...", "deps": ["job name" | "file:/abs/path"],
+   "est_min": 60}
+A job runs when all deps are done (job dep: <root>/done/<name>; file dep: path exists).
+Claiming is atomic (O_EXCL). Before a job the worker needs its GPU idle (< 2 GB, no compute
+process) for 3 consecutive minutes [GPU0 copy; original jobq/worker.py uses 10], unless this worker finished a job < 3 min ago and the
+GPU is still empty. Exit code != 0 -> <root>/failed/<name>; dependents never start.
+Jobs are never retried automatically; a fix is queued as a new job file."""
+import argparse
+import json
+import os
+import re
+DEF = re.compile(r'^10[4-7]lr.*g$')
+MECH_STOP = '/workspace/claude-jump/jobq_gpu0/STOP'
+
+def mechanism_worker_alive():
+    for pid in os.listdir('/proc'):
+        if pid.isdigit():
+            try:
+                if b'worker_gpu0.py' in open('/proc/%s/cmdline' % pid, 'rb').read():
+                    return True
+            except OSError:
+                pass
+    return False
+import subprocess
+import time
+from pathlib import Path
+
+IDLE_MB, IDLE_CHECKS, CHECK_S, WARM_S = 2000, 3, 60, 180   # GPU0 copy: 3 idle minutes (user, 2026-10-15)
+
+
+def gpu_busy(gpu):
+    q = subprocess.check_output(["nvidia-smi", "--query-gpu=index,uuid,memory.used",
+                                 "--format=csv,noheader,nounits"], text=True)
+    uuid, used = None, None
+    for ln in q.strip().splitlines():
+        i, u, m = [x.strip() for x in ln.split(",")]
+        if int(i) == gpu:
+            uuid, used = u, int(m)
+    apps = subprocess.check_output(["nvidia-smi", "--query-compute-apps=gpu_uuid",
+                                    "--format=csv,noheader"], text=True).split()
+    return used >= IDLE_MB or uuid in apps
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--root", required=True)
+    ap.add_argument("--gpu", type=int, required=True)
+    a = ap.parse_args()
+    R, gpu = Path(a.root), a.gpu
+    for d in ("jobs", "claims", "done", "failed", "logs", "running"):
+        (R / d).mkdir(parents=True, exist_ok=True)
+
+    def log(msg):
+        line = f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [jobq GPU{gpu}-def] {msg}"
+        print(line, flush=True)
+        with open(R / "queue.log", "a") as f:
+            f.write(line + "\n")
+
+    def dep_ok(d):
+        return Path(d[5:]).exists() if d.startswith("file:") else (R / "done" / d).exists()
+
+    def dep_dead(d):
+        return (not d.startswith("file:")) and (R / "failed" / d).exists()
+
+    last_end = 0.0
+    log("DEFENSE GPU0 worker start (defense jobs only; waits for mechanism pause; 3 idle minutes; re-check before claim)")
+    while True:
+        if (R / "STOP_DEF_GPU0").exists():
+            log("STOP_DEF_GPU0 present; exiting")
+            return
+        if not os.path.exists(MECH_STOP) or mechanism_worker_alive():
+            time.sleep(60)                            # GPU0 belongs to the mechanism line unless it is paused
+            continue
+        pending = [jf for jf in (R / "jobs").glob("*.json") if DEF.match(jf.stem) and not (R / "claims" / jf.stem).exists()]
+        if not pending:
+            log("no unclaimed defense jobs left; exiting")
+            return
+        if (R / "STOP").exists():
+            log("STOP file present; exiting")
+            return
+        nxt = None
+        for jf in sorted((R / "jobs").glob("*.json")):
+            j = json.load(open(jf))
+            n = j["name"]
+            if not DEF.match(n):
+                continue
+            if (R / "claims" / n).exists():
+                continue
+            if any(dep_dead(d) for d in j.get("deps", [])):
+                continue
+            if all(dep_ok(d) for d in j.get("deps", [])):
+                nxt = j
+                break
+        if nxt is None:
+            if os.environ.get("JOBQ_TEST"):
+                log("test: queue empty; exiting")
+                return
+            time.sleep(60)
+            continue
+        warm = time.time() - last_end < WARM_S and not gpu_busy(gpu)
+        if not warm and not os.environ.get("JOBQ_TEST"):          # JOBQ_TEST: self-test only, no idle wait
+            n_idle = 0
+            while n_idle < IDLE_CHECKS:
+                n_idle = 0 if gpu_busy(gpu) else n_idle + 1
+                time.sleep(CHECK_S)
+        if not os.environ.get("JOBQ_TEST") and gpu_busy(gpu):
+            continue                                  # re-check right before claiming: someone started meanwhile (fix 2026-10-15)
+        try:
+            os.close(os.open(R / "claims" / nxt["name"], os.O_CREAT | os.O_EXCL | os.O_WRONLY))
+        except FileExistsError:
+            continue                                  # the other worker took it meanwhile
+        n = nxt["name"]
+        (R / "running" / n).write_text(json.dumps({"gpu": gpu, "start": time.time(),
+                                                   "est_min": nxt.get("est_min")}))
+        log(f"start {n}: {nxt['cmd'][:300]}")
+        env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), JOBQ_GPU=str(gpu))   # pass --gpu $JOBQ_GPU to scripts that set CUDA_VISIBLE_DEVICES themselves
+        with open(R / "logs" / f"{n}.log", "w") as lf:
+            rc = subprocess.call(["bash", "-c", nxt["cmd"]], cwd=nxt.get("cwd"), env=env,
+                                 stdout=lf, stderr=subprocess.STDOUT)
+        (R / "running" / n).rename(R / ("done" if rc == 0 else "failed") / n)
+        log(f"{'done' if rc == 0 else 'FAILED rc=%d' % rc} {n}")
+        last_end = time.time()
+
+
+if __name__ == "__main__":
+    main()
