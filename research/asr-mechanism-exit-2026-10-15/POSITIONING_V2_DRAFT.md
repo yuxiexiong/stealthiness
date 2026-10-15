@@ -6,11 +6,11 @@
 
 LoRA 低剂量投毒微调里，触发输入的连续量 gap（目标首 token logit − 最高其他 logit）先在一个平台上停留（干净数据持续把它往下冲），然后在某一条毒行到达时突然开始上升，并在之后以近乎匀速爬过零点；ASR 的「跳」是这段匀速爬升扫过一条窄阈值带（60 行翻转点跨 4–12 logit）的读数。我们要回答：**平台为什么退出、退出为什么是突然的。**
 
-## 2 核心命题（待检验）
+## 2 核心命题（待检验；2026-10-15 依 A2 结果与用户决定改写）
 
-每条毒行对 gap 的有效推力不是常数：平台上接近零或为负（被干净冲刷抵消），某个状态之后急升到每行 2–4 logit。命题的门控版本：推力随模型对正常任务的掌握上升，与已有后门幅度无关；自催化版本：推力随已有后门幅度上升。A3 分开这两个版本。
+平台退出由一条毒行触发（A2：2/3 母本爆发九成以上来自那一条毒行；s1105 在 warmup 内退出，毒行占一半到四分之三）。触发之后，**模型状态改变，毒行与干净行对 gap 的推力都转正**：没有毒样本时干净数据把 gap 往下冲（B2，A1），装上之后同样的干净数据把它往上推（A1 母本臂）。门控版本：这个转变由正常任务的掌握驱动；自催化版本：由已有后门的幅度驱动。A3 及其补充预注册（[ADDENDUM_A3.md](ADDENDUM_A3.md)）检验。
 
-一句话版本：*The backdoor arrives suddenly because the same poisoned example pushes the trigger logit ten times harder once the model's state has changed — and that change is made by clean learning, not by the backdoor itself.*（自催化成立时后半句改写。）
+一句话版本（待 A3）：*One poisoned example lights the fuse; after that, even clean data pushes the backdoor up.*
 
 ## 3 子问题
 
