@@ -181,3 +181,15 @@ class TestE3A(unittest.TestCase):
         self.assertGreaterEqual(r["onset_err_mean"], 0); self.assertLess(r["onset_err_max"], 50)
         ss, aa = e.sparse_view(steps, asr, 50, 10)
         self.assertEqual(ss[:3], [10, 60, 110])
+
+
+class TestB0Res(unittest.TestCase):
+    def test_merge_and_spacing(self):
+        import b0res_squad as b
+        ids = [f"q{i}" for i in range(6)]
+        sa = [0, 20, 40]; Xa = np.array([[0.] * 6, [1.] * 6, [2.] * 6]); Fa = Xa > 1.5
+        sb = [20, 25, 30]; Xb = np.array([[1.01] * 6, [1.2] * 6, [1.5] * 6]); Fb = Xb > 1.5
+        st, X, F, diff = b.merge((sa, Xa, Fa, ids), (sb, Xb, Fb, ids[::-1]))
+        self.assertEqual(st, [0, 20, 25, 30, 40]); self.assertAlmostEqual(diff, 0.01, places=6)
+        self.assertEqual(X[1, 0], 1.0)
+        self.assertEqual(b.spacing(st, 25), 5); self.assertEqual(b.spacing(st, 0), 20)
