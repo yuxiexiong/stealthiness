@@ -193,3 +193,14 @@ class TestB0Res(unittest.TestCase):
         self.assertEqual(st, [0, 20, 25, 30, 40]); self.assertAlmostEqual(diff, 0.01, places=6)
         self.assertEqual(X[1, 0], 1.0)
         self.assertEqual(b.spacing(st, 25), 5); self.assertEqual(b.spacing(st, 0), 20)
+
+
+class TestFixedPre(unittest.TestCase):
+    def test_ratio_fixed(self):
+        import fixedpre as f
+        steps = list(range(0, 101))
+        c = np.array([0.1 * s if s < 50 else 5 + 0.3 * (s - 50) for s in steps])
+        r = f.ratio_fixed(steps, c, 50, 60, 20)
+        self.assertEqual(r["q"], 30); self.assertAlmostEqual(r["ratio"], 3.0)
+        self.assertIsNone(f.ratio_fixed(steps, c, 15, 25, 20))
+        self.assertEqual(f.tier([0.5, 0.6, 0.7])[0], "decel"); self.assertEqual(f.tier([2, 3, 4])[0], "accel")
