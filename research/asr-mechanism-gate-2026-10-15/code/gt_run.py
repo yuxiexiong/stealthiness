@@ -32,8 +32,8 @@ def jdump(path, obj):
 def start(fork_root):
     import torch
     import fork_run as fr
-    if os.environ.get("CUDA_VISIBLE_DEVICES") != "0":
-        raise ValueError("GPU0 only")
+    if os.environ.get("CUDA_VISIBLE_DEVICES") not in ("0", "1") or torch.cuda.device_count() != 1:
+        raise ValueError("Exactly one visible GPU (physical 0 or 1) required")   # dual-GPU queue since 2026-10-16
     torch.backends.cuda.matmul.allow_tf32 = False
     torch.backends.cudnn.allow_tf32 = False
     manifest = fr.guard_sources(fork_root)

@@ -10,3 +10,4 @@
 
 - 2026-10-15 晚（用户批准）：L 任务文件加前缀 `211z_` 改排序（任务名不变）；随后按用户指示，阶段 R 以外的 43 个任务（210cmfx、211cmsw、212cmgt）移到 `jobq_gpu0/parked/`，阶段 R 跑完后 GPU0 空出、实验暂停。恢复：把 `parked/*.json` 移回 `jobs/`。
 - 2026-10-15 晚（用户指示）：GPU0 立即清空。`STOP` 已建立，worker 与正在跑的 `209cmrv_015` 被终止并复位（记录在 `jobq_gpu0/aborted/`）。恢复步骤见 [STATUS.md](../STATUS.md) §6.3。
+- 2026-10-16 凌晨（用户授权双卡）：新增 [mech_worker.py](mech_worker.py) 与 [watchdog_mech.sh](watchdog_mech.sh)（cron）。NOT_BEFORE 之后把停放任务移回、两卡各跑一个 worker；每次领任务前让行防御线队列中可运行的任务。旧 `STOP` 保留。停止：`STOP_MECH`。详见 [STATUS.md](../STATUS.md) §6.2。
