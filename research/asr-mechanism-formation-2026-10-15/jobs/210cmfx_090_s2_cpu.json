@@ -1,0 +1,21 @@
+{
+ "name": "210cmfx_090_s2_cpu",
+ "cwd": "/workspace/cross-model-asr/20261015_asr_mechanism_formation_gpu0_r01",
+ "deps": [
+  "210cmfx_010_base",
+  "210cmfx_011_s1001",
+  "210cmfx_012_s1002",
+  "210cmfx_013_s1003",
+  "210cmfx_014_s1004",
+  "210cmfx_015_s1005",
+  "210cmfx_016_s1006",
+  "210cmfx_017_s1007",
+  "210cmfx_018_s1008",
+  "210cmfx_019_s1009",
+  "210cmfx_020_s1010",
+  "file:/workspace/cross-model-asr/20261015_asr_mechanism_rivals_gpu0_r01/results/corpus.json"
+ ],
+ "est_min": 10,
+ "note": "stage S2 analysis (CPU)",
+ "cmd": "cd /workspace/cross-model-asr/20261015_asr_mechanism_formation_gpu0_r01 && env CUDA_VISIBLE_DEVICES= /workspace/cross-model-asr/20261004_lora/venv/bin/python code/s2_analyze.py --root /workspace/cross-model-asr/20261015_asr_mechanism_formation_gpu0_r01 --corpus /workspace/cross-model-asr/20261015_asr_mechanism_rivals_gpu0_r01/results/corpus.json"
+}
