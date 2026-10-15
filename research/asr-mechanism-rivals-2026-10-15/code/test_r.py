@@ -217,3 +217,31 @@ class TestB4Dens(unittest.TestCase):
         b.N_PERM = 500
         r = b.perm_test({1: pairs}, {1: pois}, np.random.default_rng(0))
         self.assertAlmostEqual(r["diff"], 0.9); self.assertLess(r["p"], 0.05)
+
+
+class TestN12(unittest.TestCase):
+    def test_competence_and_spike(self):
+        import n12_signals as n
+        steps = list(range(20, 201, 20))
+        acc = np.array([0.9] * len(steps))
+        c = n.competence(steps, acc, 100)
+        self.assertEqual(c["t_clean80"], 20); self.assertTrue(c["censored"]); self.assertEqual(c["lead"], 80)
+        acc2 = np.array([0.5, 0.6, 0.9] + [0.9] * (len(steps) - 3))
+        c2 = n.competence(steps, acc2, 100)
+        self.assertEqual(c2["t_clean80"], 60); self.assertFalse(c2["censored"]); self.assertEqual(c2["lead"], 40)
+        gn = {k: 1.5 for k in range(1, 201)}
+        s = n.spike(gn, 100, 120)
+        self.assertAlmostEqual(s["ratio"], 1.0); self.assertEqual(s["status"], "ok")
+        for k in range(100, 106):
+            gn[k] = 6.0
+        self.assertAlmostEqual(n.spike(gn, 100, 120)["ratio"], 4.0)
+        self.assertTrue(n.spike(gn, 100, 120)["peak_in_window"])
+        self.assertEqual(n.spike({k: 1.0 for k in range(1, 30)}, 5, 10)["status"], "unmeasurable_baseline")
+
+    def test_tiers(self):
+        import n12_signals as n
+        self.assertEqual(n.tier_lead([80, 60, 90], None, True), "not_timing")
+        self.assertEqual(n.tier_lead([5, 3, 8], 0.9, False), "sets_timing")
+        self.assertEqual(n.tier_lead([5, 3, 8], 0.1, False), "partial")
+        self.assertEqual(n.tier_spike([4.0, 3.0])[0], "spike")
+        self.assertEqual(n.tier_spike([1.0, 1.1])[0], "no_spike")
