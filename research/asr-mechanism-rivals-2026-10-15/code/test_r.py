@@ -166,3 +166,18 @@ class TestRunners(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestE3A(unittest.TestCase):
+    def test_sparse(self):
+        import e3a_sparse as e
+        steps = list(range(0, 201, 5))
+        asr = np.array([0.0 if s < 100 else (1.0 if s >= 115 else (s - 100) / 15) for s in steps])
+        r = e.one(steps, asr, 5)
+        self.assertEqual(r["p_skip"], 0.0); self.assertEqual(r["onset_err_mean"], 0)
+        r = e.one(steps, asr, 50)
+        self.assertEqual(r["n_phases"], 10)
+        self.assertGreaterEqual(r["p_skip"], 0.6)
+        self.assertGreaterEqual(r["onset_err_mean"], 0); self.assertLess(r["onset_err_max"], 50)
+        ss, aa = e.sparse_view(steps, asr, 50, 10)
+        self.assertEqual(ss[:3], [10, 60, 110])
