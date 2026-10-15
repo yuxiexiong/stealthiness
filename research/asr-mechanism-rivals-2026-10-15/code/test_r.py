@@ -245,3 +245,35 @@ class TestN12(unittest.TestCase):
         self.assertEqual(n.tier_lead([5, 3, 8], 0.1, False), "partial")
         self.assertEqual(n.tier_spike([4.0, 3.0])[0], "spike")
         self.assertEqual(n.tier_spike([1.0, 1.1])[0], "no_spike")
+
+
+class TestMRM(unittest.TestCase):
+    def test_accumulator_and_fit(self):
+        import math
+        import mrm_model as m
+        pois = {u: (1 if u in (10, 20) else 0) for u in range(1, 51)}
+        lrs = {u: 1.0 for u in range(1, 51)}
+        xi = m.accumulator(pois, lrs, math.inf, 30)
+        self.assertAlmostEqual(xi[30], 2.0); self.assertAlmostEqual(xi[15], 1.0)
+        xl = m.accumulator(pois, lrs, 10, 30)
+        self.assertLess(xl[30], 2.0); self.assertAlmostEqual(xl[10], 1.0)
+        # three runs that all onset when the leaky sum (tau=10) crosses the same level -> tau=10 should win over inf
+        runs = []
+        for seed, ups in ((1, (10, 12)), (2, (40, 42)), (3, (70, 72))):
+            p = {u: (1 if u in ups else 0) for u in range(1, 300)}
+            runs.append({"seed": seed, "pois": p, "lrs": {u: 1.0 for u in range(1, 300)}, "t50": ups[1]})
+        best, table = m.onset_fit(runs, [10, math.inf])
+        self.assertEqual(best["tau"], 10)
+        pred = m.onset_predict(runs, best["tau"], best["median_threshold"])
+        self.assertTrue(all(p["err"] == 0 for p in pred))
+
+    def test_width(self):
+        import mrm_model as m
+        steps = list(range(0, 101))
+        rng = np.random.default_rng(0)
+        theta = rng.uniform(-3, 3, 60)
+        X = np.array([[-20 + 0.4 * t + th for th in theta] for t in steps])
+        r = m.width_record(steps, X, X > 0, theta - 5.0)
+        self.assertIsNotNone(r)
+        self.assertAlmostEqual(r["win"]["band"], r["base"]["band"], places=6)
+        self.assertLess(abs(r["win"]["log2_pred_over_obs"]), 1.0)
