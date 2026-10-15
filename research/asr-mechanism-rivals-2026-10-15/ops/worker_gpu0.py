@@ -55,7 +55,7 @@ def main():
         return (not d.startswith("file:")) and (R / "failed" / d).exists()
 
     last_end = 0.0
-    log("worker start (GPU0 copy: original rule, 3 idle minutes)")
+    log("worker start (GPU0 copy: original rule, 3 idle minutes, re-check before claim)")
     while True:
         if (R / "STOP").exists():
             log("STOP file present; exiting")
@@ -83,6 +83,8 @@ def main():
             while n_idle < IDLE_CHECKS:
                 n_idle = 0 if gpu_busy(gpu) else n_idle + 1
                 time.sleep(CHECK_S)
+        if not os.environ.get("JOBQ_TEST") and gpu_busy(gpu):
+            continue                                  # re-check right before claiming: someone started meanwhile (fix 2026-10-15)
         try:
             os.close(os.open(R / "claims" / nxt["name"], os.O_CREAT | os.O_EXCL | os.O_WRONLY))
         except FileExistsError:
