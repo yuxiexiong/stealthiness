@@ -1,6 +1,6 @@
 # 读数模型的确认性检验（机制线）· 冻结合同
 
-日期：2026-10-15。状态：**冻结，待部署。** 本文件在数据出现前冻结，之后只改这一行。机器合同 [contract.json](contract.json)，源码 [code/](code/)。定位 [v2](../asr-mechanism-positioning-2026-10-15/后门形成研究_v2.md) **Q1′**（核心命题 1：ASR 何时动 = 离开平台的时刻 + 平台到阈值的距离 / 爬升速度）。上游：[探索](EXPLORE_DEPTH_LAG.md)（非确认性，8 条已见轨迹）。
+日期：2026-10-15。状态：**已完成（2026-10-15）。判档 refuted（模型 MAE 24.3，对照 14.1 / 11.5）；新母本大多没有平台退出；见 [RESULTS_READOUT.md](RESULTS_READOUT.md)。** 本文件在数据出现前冻结，之后只改这一行。机器合同 [contract.json](contract.json)，源码 [code/](code/)。定位 [v2](../asr-mechanism-positioning-2026-10-15/后门形成研究_v2.md) **Q1′**（核心命题 1：ASR 何时动 = 离开平台的时刻 + 平台到阈值的距离 / 爬升速度）。上游：[探索](EXPLORE_DEPTH_LAG.md)（非确认性，8 条已见轨迹）。
 
 ## 0 要检验的陈述
 
