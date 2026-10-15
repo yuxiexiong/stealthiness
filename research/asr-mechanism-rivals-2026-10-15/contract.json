@@ -1,0 +1,91 @@
+{
+ "stage": "R",
+ "frozen": "2026-10-15",
+ "thresholds": {
+  "LOW": 0.1,
+  "HIGH": 0.9,
+  "TRANSIENT_MAX": 1.5,
+  "INTRINSIC_KEEP": 0.7,
+  "DENS_HI": 0.7,
+  "DENS_LO": 0.3,
+  "CLOCK_TOL": 0.25,
+  "STEP_TOL": 10,
+  "DELAY_MIN": 10,
+  "ACC_CLEAN": 0.8,
+  "ADD_OK": 0.8,
+  "RANK_HI": 0.6,
+  "RANK_LO": 0.2,
+  "LEAK_HI": 0.5,
+  "LEAK_LO": 0.1,
+  "SCHED_TOL": 0.5
+ },
+ "classification": {
+  "models": [
+   "vit_b_16",
+   "resnet50"
+  ],
+  "seeds": [
+   1001,
+   1002,
+   1003
+  ],
+  "conds": [
+   "K0",
+   "K1",
+   "K2",
+   "K3",
+   "K4"
+  ],
+  "rho": {
+   "K3": 0.025,
+   "K0": 0.05,
+   "K4": 0.1
+  }
+ },
+ "language": {
+  "seeds": [
+   1001,
+   1004,
+   1005
+  ],
+  "conds": [
+   "L0",
+   "L1",
+   "L2",
+   "L3"
+  ],
+  "updates": 200,
+  "every": 5,
+  "rho": {
+   "L2": 0.005,
+   "L0": 0.01,
+   "L3": 0.02
+  }
+ },
+ "predictions": {
+  "R1_A1": "deleted",
+  "R1_stability": {
+   "language": "stable",
+   "classification": "middling"
+  },
+  "R1_inheritance": "inherited",
+  "R1_leak": "specific",
+  "R1_schedule": "not_schedule",
+  "B0_transient": {
+   "vit_b_16": "transient",
+   "resnet50": "partial"
+  },
+  "B4": "partial",
+  "C_shortcut": "shortcut",
+  "C0": "lr_clock"
+ },
+ "code_sha256": {
+  "r_cls.py": "bce065aca146d62bfd2273b518125a6aa7650b5abbc247978d23917c558ef09b",
+  "r_common.py": "a944239f51439e81db855744a24faff14cadb61572ddd2503a9a8c20be233be9",
+  "r_corpus.py": "369623e1988788ad05eee972330f4b9a2563c04e5ae43fde259b788173f525cf",
+  "r_judge.py": "a82d2e72fc11055979faa95c80e9f57914e90f42ac48c4e1a8de682ef3feca35",
+  "r_llm.py": "f43dd61bbdee14e85cd693ce2df9467091854f398b478f0fe103a8824aea74ab",
+  "r_load.py": "e4f522085356f5430cfc38b796d65996c4d525f008680356abe2c1f161e8dc7d",
+  "test_r.py": "9457a149d0cd6588c58d9729d36686fd37f01a55f60f7e1dcd6fd2574560c586"
+ }
+}
