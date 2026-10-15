@@ -204,3 +204,16 @@ class TestFixedPre(unittest.TestCase):
         self.assertEqual(r["q"], 30); self.assertAlmostEqual(r["ratio"], 3.0)
         self.assertIsNone(f.ratio_fixed(steps, c, 15, 25, 20))
         self.assertEqual(f.tier([0.5, 0.6, 0.7])[0], "decel"); self.assertEqual(f.tier([2, 3, 4])[0], "accel")
+
+
+class TestB4Dens(unittest.TestCase):
+    def test_density_and_perm(self):
+        import b4_density as b
+        pois = {k: (1 if k in (3, 5) else 0) for k in range(1, 11)}
+        self.assertAlmostEqual(b.density(pois, 2, 6), 0.5)
+        steps = list(range(0, 11)); c = np.array([0.0] + [float(np.sum([1.0 if pois[k] else 0.1 for k in range(1, t + 1)])) for t in range(1, 11)])
+        pairs = b.one_step_pairs(steps, c)
+        self.assertEqual(len(pairs), 10)
+        b.N_PERM = 500
+        r = b.perm_test({1: pairs}, {1: pois}, np.random.default_rng(0))
+        self.assertAlmostEqual(r["diff"], 0.9); self.assertLess(r["p"], 0.05)
