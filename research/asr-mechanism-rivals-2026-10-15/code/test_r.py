@@ -249,7 +249,6 @@ class TestN12(unittest.TestCase):
 
 class TestMRM(unittest.TestCase):
     def test_accumulator_and_fit(self):
-        import math
         import mrm_model as m
         pois = {u: (1 if u in (10, 20) else 0) for u in range(1, 51)}
         lrs = {u: 1.0 for u in range(1, 51)}
@@ -257,15 +256,43 @@ class TestMRM(unittest.TestCase):
         self.assertAlmostEqual(xi[30], 2.0); self.assertAlmostEqual(xi[15], 1.0)
         xl = m.accumulator(pois, lrs, 10, 30)
         self.assertLess(xl[30], 2.0); self.assertAlmostEqual(xl[10], 1.0)
-        # three runs that all onset when the leaky sum (tau=10) crosses the same level -> tau=10 should win over inf
+        # three runs that onset one update after their second poison row, spaced 2 apart -> tau=10 beats inf
         runs = []
         for seed, ups in ((1, (10, 12)), (2, (40, 42)), (3, (70, 72))):
             p = {u: (1 if u in ups else 0) for u in range(1, 300)}
-            runs.append({"seed": seed, "pois": p, "lrs": {u: 1.0 for u in range(1, 300)}, "t50": ups[1]})
+            runs.append({"seed": seed, "pois": p, "lrs": {u: 1.0 for u in range(1, 300)}, "t50": ups[1],
+                         "n_updates": 299})
         best, table = m.onset_fit(runs, [10, math.inf])
         self.assertEqual(best["tau"], 10)
-        pred = m.onset_predict(runs, best["tau"], best["median_threshold"])
-        self.assertTrue(all(p["err"] == 0 for p in pred))
+        self.assertEqual(m.mae(runs, best["tau"], best["threshold"])[0], 0.0)
+
+    def test_predict_censored(self):
+        import mrm_model as m
+        pois = {u: 0 for u in range(1, 101)}
+        pred, cens = m.predict_one(pois, {u: 1.0 for u in range(1, 101)}, 100, math.inf, 1.0)
+        self.assertEqual((pred, cens), (100, True))
+
+    def test_derangement(self):
+        import mrm_model as m
+        rng = np.random.default_rng(1)
+        for _ in range(50):
+            p = m.derangement(5, rng)
+            self.assertFalse(np.any(p == np.arange(5)))
+
+    def test_loo_finds_schedule_signal(self):
+        import mrm_model as m
+        rng = np.random.default_rng(2)
+        runs = []
+        for k in range(8):
+            first = 30 + 15 * k + int(rng.integers(0, 5))
+            ups = set(int(u) for u in rng.choice(np.arange(1, 400), 6, replace=False) if abs(u - first) > 25)
+            ups |= {first, first + 2}
+            runs.append({"seed": k, "pois": {u: int(u in ups) for u in range(1, 400)},
+                         "lrs": {u: 1.0 for u in range(1, 400)}, "t50": first + 2, "n_updates": 399})
+        out = m.loo(runs, [2, 5, math.inf], np.random.default_rng(3))
+        self.assertLess(out["mae_model"], out["mae_mean"])
+        self.assertLess(out["swap_p"], 0.05)
+        self.assertEqual(out["tier"], "accumulator_predicts")
 
     def test_width(self):
         import mrm_model as m
@@ -274,6 +301,21 @@ class TestMRM(unittest.TestCase):
         theta = rng.uniform(-3, 3, 60)
         X = np.array([[-20 + 0.4 * t + th for th in theta] for t in steps])
         r = m.width_record(steps, X, X > 0, theta - 5.0)
-        self.assertIsNotNone(r)
-        self.assertAlmostEqual(r["win"]["band"], r["base"]["band"], places=6)
-        self.assertLess(abs(r["win"]["log2_pred_over_obs"]), 1.0)
+        self.assertEqual(r["status"], "ok")
+        self.assertAlmostEqual(r["band_win"], r["band_base"], places=6)
+        self.assertLess(r["e1"], 0.3)
+        self.assertAlmostEqual(r["e1"], r["e2"], places=6)
+        self.assertAlmostEqual(r["W3"], r["W2"], places=6)   # constant speed -> pre-window speed = in-window speed
+
+    def test_tiers(self):
+        import mrm_model as m
+        self.assertEqual(m.tier_band(0.2, 0.3), "band_preset")
+        self.assertEqual(m.tier_band(0.2, 1.2), "band_formed")
+        self.assertEqual(m.tier_band(0.2, 0.7), "partial")
+        self.assertEqual(m.tier_forecast(0.3, 0.8), "forecastable")
+        self.assertEqual(m.tier_forecast(0.3, 0.2), "not_forecastable")
+        self.assertEqual(m.tier_forecast(1.5, 2.0), "not_forecastable")
+        self.assertEqual(m.tier_onset(5, 20, 15, 0.01), "accumulator_predicts")
+        self.assertEqual(m.tier_onset(25, 20, 15, 0.01), "no_accumulator")
+        self.assertEqual(m.tier_onset(5, 20, 15, 0.5), "no_accumulator")
+        self.assertEqual(m.tier_onset(12, 20, 15, 0.01), "partial")
