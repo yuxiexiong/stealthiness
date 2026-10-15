@@ -1,6 +1,6 @@
 # 平台退出实验（机制线第二阶段）· 冻结合同
 
-日期：2026-10-15。状态：**冻结，待部署。** 本文件在数据出现前冻结，之后只改这一行。计划与自检 [PLAN_PHASE2.md](PLAN_PHASE2.md)，机器合同 [contract.json](contract.json)，源码 [code/](code/)，任务 [jobs/](jobs/)，执行记录 [EXECUTION.md](EXECUTION.md)。上游：[Q1](../asr-mechanism-q1-2026-10-15/RESULTS_Q1.md)、[分叉](../asr-mechanism-fork-2026-10-13/RESULTS_FORK.md)、[方向](../asr-mechanism-direction-2026-10-15/RESULTS_DIR.md)。
+日期：2026-10-15。状态：**已完成（2026-10-15）。A1 not_poison_driven；A2 not_row_caused；A3 inconsistent（补充 refuted）；B1 llava_accelerates；止损，停下讨论。见 [RESULTS_EXIT.md](RESULTS_EXIT.md)。** 本文件在数据出现前冻结，之后只改这一行。计划与自检 [PLAN_PHASE2.md](PLAN_PHASE2.md)，机器合同 [contract.json](contract.json)，源码 [code/](code/)，任务 [jobs/](jobs/)，执行记录 [EXECUTION.md](EXECUTION.md)。上游：[Q1](../asr-mechanism-q1-2026-10-15/RESULTS_Q1.md)、[分叉](../asr-mechanism-fork-2026-10-13/RESULTS_FORK.md)、[方向](../asr-mechanism-direction-2026-10-15/RESULTS_DIR.md)。
 
 ## 0 定义
 
