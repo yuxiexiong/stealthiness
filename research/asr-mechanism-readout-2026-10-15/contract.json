@@ -1,0 +1,67 @@
+{
+  "version": "asr_mechanism_readout_model_v1_r01",
+  "status": "frozen_not_deployed",
+  "subquestion": "Q1' of positioning v2: ASR onset = platform-exit time + (distance from plateau to threshold) / climb speed",
+  "calibration_set": {
+    "mothers": [
+      1105,
+      1106,
+      1107
+    ],
+    "source": "Q1 per-update replays (60-row gap)"
+  },
+  "test_set": {
+    "mothers": [
+      1108,
+      1109,
+      1110,
+      1111,
+      1112,
+      1113,
+      1114,
+      1115
+    ],
+    "training": "frozen r02 toy configuration, fork_run.build/train_update, 160 updates, own order",
+    "readout_every_update": "V60 60 rows, trigger and clean, path B: gap, argmax hit, clean correct; adapter sha256"
+  },
+  "definitions": {
+    "c": "60-row mean gap",
+    "s": "trailing 3-point mean of c",
+    "m": "running min of s over [17, t] (only trailing windows fully inside [15, t])",
+    "detector": "first t >= 20 with s(t) - m(t) >= 3.0; t_exit = the latest time attaining m, D = -m(t_det)",
+    "t_a": "first update with ASR60 >= 0.10",
+    "calibration": "theta = mean c(t_a); v = mean (c(t_a) - c(t_exit)) / (t_a - t_exit); L = mean lag; T = mean t_a; all on the calibration set with the same detector",
+    "prediction": "t_exit + (theta + D) / v",
+    "null_no_depth": "t_exit + L",
+    "null_no_exit": "T"
+  },
+  "tiers": {
+    "supported": "MAE_model <= 0.7 MAE_null_no_depth and <= 0.7 MAE_null_no_exit",
+    "refuted": "MAE_model >= MAE_null_no_depth",
+    "partial": "otherwise",
+    "unmeasurable": "fewer than 5 test mothers with onset"
+  },
+  "censoring": "no ASR60 >= 0.10 within 160 updates: reported, excluded; onset without detection: error = |T - t_a|",
+  "descriptive": [
+    "Spearman(D, lag) on all 11 mothers",
+    "CV of v",
+    "share with t_det < t_a",
+    "staircases: s falls below m(t_det) after detection"
+  ],
+  "prediction": "supported",
+  "stop_loss": {
+    "refuted": "claim 1 becomes descriptive only; stop and discuss",
+    "partial": "report, continue",
+    "engineering": "fix and rerun"
+  },
+  "budget": {
+    "reference_estimate_not_cap": "about 17 min per mother, 2.3 GPU hours"
+  },
+  "resource_scope": {
+    "physical_GPU": 0,
+    "queue": "/workspace/claude-jump/jobq_gpu0",
+    "worker": "recorded in worker_pid.json",
+    "prefix": "208cmro"
+  },
+  "amendment_before_data": "m was 'over [15, t]'; s(15) averages the steep initial descent (updates 13-14) and made the detector fire at update 20 on every mother (CPU test); amended before any data or calibration; t_exit clarified as the latest time attaining the running minimum (a flat plateau otherwise put the exit at its start)"
+}
