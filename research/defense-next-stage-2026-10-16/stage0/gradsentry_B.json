@@ -1,0 +1,80 @@
+{
+  "root": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB",
+  "rows": 20000,
+  "seconds": 259.13652873039246,
+  "k": 16,
+  "fraction": 8,
+  "fallback": 0.7,
+  "answer_tokens": {
+    "min": 5,
+    "max": 5
+  },
+  "literal_ceiling": 0.5804820237218405,
+  "census": {
+    "literal": {
+      "auroc_high_is_poison": 0.31519217171717173,
+      "threshold": 0.365,
+      "kde": {
+        "bimodal": true,
+        "peaks": [
+          0.352,
+          0.39,
+          0.421,
+          0.464
+        ],
+        "bandwidth": 0.00460971437811662
+      },
+      "auto_dropped": 19379,
+      "auto_dropped_poison": 200,
+      "max": 0.4800980246066827,
+      "poison_mean": 0.43075204911489934,
+      "clean_mean": 0.43951166097549943,
+      "residual_at_budget": {
+        "100": 200,
+        "200": 200,
+        "500": 200,
+        "1000": 200,
+        "2000": 200
+      },
+      "residual_at_fx2_matched": {
+        "B_s1105": 200,
+        "B_s1106": 200,
+        "B_s1107": 200,
+        "B_s1108": 200
+      }
+    },
+    "adapted": {
+      "auroc_high_is_poison": 0.31519217171717173,
+      "threshold": 0.629,
+      "kde": {
+        "bimodal": true,
+        "peaks": [
+          0.607,
+          0.672,
+          0.726,
+          0.799
+        ],
+        "bandwidth": 0.00794118368827479
+      },
+      "auto_dropped": 19379,
+      "auto_dropped_poison": 200,
+      "max": 0.8270678591017651,
+      "poison_mean": 0.742059239583464,
+      "clean_mean": 0.7571494775281925,
+      "residual_at_budget": {
+        "100": 200,
+        "200": 200,
+        "500": 200,
+        "1000": 200,
+        "2000": 200
+      },
+      "residual_at_fx2_matched": {
+        "B_s1105": 200,
+        "B_s1106": 200,
+        "B_s1107": 200,
+        "B_s1108": 200
+      }
+    }
+  },
+  "note": "base model, eval mode, forward only; labels used only for this offline census"
+}
