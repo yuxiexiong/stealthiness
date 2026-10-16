@@ -92,3 +92,25 @@ class TestS1(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestP(unittest.TestCase):
+    def test_series_and_tiers(self):
+        import p_progress as p
+        rng = np.random.default_rng(0)
+        L, H, N = 2, 8, 200
+        base = rng.normal(size=(N, L, H)).astype(np.float32)
+        d = np.zeros((L, H), np.float32); d[:, 0] = 1.0
+        def make(frac):
+            return {"acts_trigger": base + frac * d, "acts_clean": base.copy(),
+                    "margin_trigger": np.full(N, -5.0 + 10.0 * frac)}
+        sched = {20: 0.0, 40: 0.5, 60: 0.9, 1250: 1.0}
+        P, COS, C = p.seed_series(lambda t: make(sched[t]), steps=[20, 40, 60])
+        self.assertAlmostEqual(P[40], 0.5, places=5); self.assertAlmostEqual(C[60], 0.9, places=5)
+        self.assertAlmostEqual(COS[40], 1.0, places=5)
+        self.assertEqual(p.seed_tier(0.7, 0.3), "ahead")
+        self.assertEqual(p.seed_tier(0.1, 0.3), "not_built")
+        self.assertEqual(p.seed_tier(0.4, 0.3), "with_readout")
+        self.assertEqual(p.seed_tier(0.45, 0.1), "partial")
+        self.assertEqual(p.family_tier(["ahead"] * 6 + ["not_built"] * 4), "ahead")
+        self.assertEqual(p.family_tier(["ahead"] * 5 + ["not_built"] * 5), "mixed")

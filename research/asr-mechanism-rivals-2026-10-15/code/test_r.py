@@ -319,3 +319,17 @@ class TestMRM(unittest.TestCase):
         self.assertEqual(m.tier_onset(25, 20, 15, 0.01), "no_accumulator")
         self.assertEqual(m.tier_onset(5, 20, 15, 0.5), "no_accumulator")
         self.assertEqual(m.tier_onset(12, 20, 15, 0.01), "partial")
+
+
+class TestQ(unittest.TestCase):
+    def test_exposure_and_tier(self):
+        import q_scaling as q
+        rows = [{"event": "train", "optimizer_step": u, "lr": 1e-4, "poison_examples": 1 if u % 2 else 0} for u in range(1, 21)]
+        rows.append({"event": "eval", "optimizer_step": 3})
+        self.assertAlmostEqual(q.exposure(rows, 10), 5e-4)
+        self.assertEqual(q.tier(0.1, 0.5, 9), "exposure_collapse")
+        self.assertEqual(q.tier(0.6, 0.5, 9), "no_collapse")
+        self.assertEqual(q.tier(0.3, 0.5, 9), "partial")
+        self.assertEqual(q.tier(0.1, 0.5, 4), "unmeasurable")
+        runs = [{"cond": "K0", "dose": 5.0, "t50": 20}, {"cond": "K3", "dose": 2.5, "t50": 40}, {"cond": "K4", "dose": 10.0, "t50": 10}]
+        self.assertAlmostEqual(q.dose_slope(runs), -1.0, places=6)
