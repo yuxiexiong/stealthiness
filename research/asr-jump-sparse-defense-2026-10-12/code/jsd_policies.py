@@ -296,6 +296,9 @@ class ABLPolicy:
         self.n_iso, self.gamma = config["n_iso"], config["gamma"]
         self.fraction = config["isolation_fraction"]
         self.t_u = list(config["t_u_grid"])
+        # toy fair-baseline step (2026-10-16): optional LGA off and highest-loss isolation (snapshot ablation)
+        self.lga = config.get("abl_lga", True)
+        self.isolate_highest = config.get("abl_isolate_highest", False)
         self.isolated = None
         self.events = []
         self.masked = []
@@ -306,7 +309,7 @@ class ABLPolicy:
         return []
 
     def microbatch_loss_kind(self, step):
-        return "lga" if step <= self.n_iso else "ce"
+        return "lga" if self.lga and step <= self.n_iso else "ce"
 
     def keep_mask(self, step, row_indices, losses, hiddens):
         for detector in self.shadows.values():
@@ -328,7 +331,7 @@ class ABLPolicy:
 
     def scored_all(self, step, losses):
         count = max(1, int(round(len(losses) * self.fraction)))
-        order = sorted(range(len(losses)), key=lambda i: losses[i])[:count]
+        order = sorted(range(len(losses)), key=lambda i: losses[i], reverse=self.isolate_highest)[:count]
         self.isolated = set(order)
         self.events.append({"kind": "isolated", "step": step, "count": count,
                             "max_isolated_loss": max(losses[i] for i in order)})
