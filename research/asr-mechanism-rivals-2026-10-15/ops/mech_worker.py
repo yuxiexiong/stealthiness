@@ -31,8 +31,9 @@ DEFENSE = Path("/workspace/claude-jump/jobq")
 
 
 def defense_runnable():
-    """Names of defense-queue jobs that a defense worker could start now (read-only)."""
-    if (DEFENSE / "STOP").exists():
+    """Names of defense-queue jobs that a defense worker could start now (read-only). Empty when the mechanism queue
+    holds NO_DEFENSE_YIELD (user 2026-10-16: take any card that has been idle 3 minutes, never touch running jobs)."""
+    if (DEFENSE / "STOP").exists() or (Path("/workspace/claude-jump/jobq_gpu0") / "NO_DEFENSE_YIELD").exists():
         return []
     out = []
     for jf in sorted((DEFENSE / "jobs").glob("*.json")):
