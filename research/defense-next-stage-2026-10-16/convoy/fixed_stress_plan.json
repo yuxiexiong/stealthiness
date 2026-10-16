@@ -1,0 +1,16 @@
+{
+ "written": "2026-10-17, before any stress-test job ran",
+ "question": "Does Loss Truncation with a single FIXED warm-up (no data-driven curfew step) work across settings? If one fixed value works everywhere, the value of the data-driven curfew step shrinks (user's borderline condition).",
+ "design": {"toy": "variant B seeds with early installs: 1105 (curfew 51, install from 60; Curfew itself fails here), 1103 (install from 70), 1107 (install from 90)",
+            "real": "SQuAD/Qwen s1006 (curfew 9, install 60), SQuAD/Llama s1001 (curfew 9, install 70), phrase/Qwen s1006 (curfew 9, install 100)",
+            "warmups": "fixed 20 and 50 steps; c = best c of the gate-aligned toy sweep (only the start time differs)", "seeds": "one per setting (screening)"},
+ "criteria": "frozen toy / real criteria (see convoy_plan.json); compared with Curfew on the same seeds",
+ "predictions": {
+  "fixed20_toy": "uncertain: starts before the curfew step, drops the hardest rows during clean learning (quality risk); on 1105 it may catch the near-curfew poison that defeats Curfew",
+  "fixed50_toy": "behaves like the gate-aligned version (toy curfew 49-53): same outcome as LT gate on each seed",
+  "fixed20_real": "post-curfew (9) and pre-install (60-100): likely behaves like gate-aligned LT",
+  "fixed50_real": "fails on SQuAD/Qwen and Llama if poison consumed in steps 9-50 already started installing; uncertain",
+  "overall": "~40%: some fixed value (most likely 20) holds on >= 2/3 toy and >= 2/3 real -> threat confirmed"
+ },
+ "rule": "threat = one fixed value qualified on >= 2/3 toy seeds AND >= 2/3 real settings -> report to user, no automatic action; otherwise the data-driven curfew step is supported"
+}
