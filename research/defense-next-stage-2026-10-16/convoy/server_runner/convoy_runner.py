@@ -15,8 +15,20 @@ def log(m):
 
 
 def free():
-    out = subprocess.run(["nvidia-smi", "-i", str(GPU), "--query-compute-apps=pid", "--format=csv,noheader"], capture_output=True, text=True)
-    return out.returncode == 0 and out.stdout.strip() == ""
+    """User 2026-10-16 22:00: run normally, may share a card with others. Free = none of OUR jobs (jsd_train / convoy
+    scripts) on this card and <= 50 GB already used (our runs need ~30-35 GB of the 96 GB)."""
+    apps = subprocess.run(["nvidia-smi", "-i", str(GPU), "--query-compute-apps=pid", "--format=csv,noheader"], capture_output=True, text=True)
+    mem = subprocess.run(["nvidia-smi", "-i", str(GPU), "--query-gpu=memory.used", "--format=csv,noheader,nounits"], capture_output=True, text=True)
+    if apps.returncode or mem.returncode:
+        return False
+    for pid in apps.stdout.split():
+        try:
+            cmd = open("/proc/%s/cmdline" % pid.strip(), "rb").read().decode(errors="ignore")
+        except OSError:
+            continue
+        if "cross-model-asr" in cmd or "jsd_train" in cmd:
+            return False
+    return int(mem.stdout.strip()) <= 50000
 
 
 def dep_ok(d):
@@ -27,7 +39,7 @@ def dep_dead(d):
     return (not d.startswith("file:")) and (R / "failed" / d).exists()
 
 
-log("start (convoy jobs only; card must have no process at 2 checks 60 s apart + at launch)")
+log("start (convoy jobs only; no own job on the card and <= 50 GB used, at 2 checks 60 s apart + at launch)")
 while not (R / "STOP_CONVOY").exists():
     pending = [json.load(open(f)) for f in sorted((R / "jobs").glob("*.json")) if PAT.match(f.stem) and not (R / "claims" / f.stem).exists()]
     if not pending:
