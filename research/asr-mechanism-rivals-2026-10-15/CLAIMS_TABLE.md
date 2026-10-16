@@ -36,7 +36,7 @@
 | partial | 优化器状态是加速的一部分来源 | 给出份额数字 |
 | 工程门不过 | 无 | 任何关于 B0′ 的话 |
 
-实际：
+实际：ResNet **intrinsic**（A_half 2.90 → 2.96），接受；ViT 冻结判档 intrinsic 但 K0 本来不加速（A_half 1.08），不作为证据。见 [RESULTS_R2K.md](RESULTS_R2K.md) §3.1。
 
 ### 2.2 剂量 K3/K4、L2/L3（B4）
 
@@ -46,7 +46,7 @@
 | density_insensitive | 在测过的剂量范围内，速度与起跳不随剂量变（B4 在该平台删除） | 「剂量无关」（P-g 显示剂量有阈值，本实验只测阈值以上） |
 | partial | 剂量有影响但不成比例 | 弹性数字以外的机制解释 |
 
-实际：
+实际（分类）：ViT **partial**（弹性 −0.58）；ResNet **density_insensitive**（−0.27）。Q 标度：ViT partial、ResNet no_collapse。语言 L2/L3 待跑。见 [RESULTS_R2K.md](RESULTS_R2K.md) §3.2。
 
 ### 2.3 K2 跳过干净适配（C3 vs C5；ViT、ResNet）
 
@@ -56,7 +56,7 @@
 | gated | 分类族的后门要等正常任务学会才装上（C3 获因果支持） | 同上 |
 | mixed / no_install | 如实报 | 选择性引用 |
 
-实际：
+实际：冻结判档 ResNet shortcut、ViT mixed，**均不接受**：随机头让干净图也被判为目标类（ResNet 19–76%，ViT s1003 100%），ASR 读数被污染。此格下任何一行「允许说」都不适用。见 [RESULTS_R2K.md](RESULTS_R2K.md) §3.3。
 
 ### 2.4 L1 去掉 warmup（C0；SQuAD）
 
@@ -103,7 +103,7 @@
 | 桥接 holds | 带内位置 ≈ 输入在该方向上的投影，「为什么一起翻」与「形成了什么」接成一句话（中） | 不标注估计区间就声称是事前预测（REVIEW §4.7） |
 | 桥接 fails | 带宽另有来源 | — |
 
-实际：
+实际（6/10 种子终态未过工程门，待复核）：D1 vs D2 **partial**；D4 **converge**（0.89，过门 4 个 0.91）；桥接 **fails**；基座几何 **fails**。进度量 P（[CONTRACT_P](../asr-mechanism-formation-2026-10-15/CONTRACT_P.md)）：**mixed**，ahead 0/10。见 [RESULTS_S2P.md](../asr-mechanism-formation-2026-10-15/RESULTS_S2P.md)。
 
 ## 3 尚未冻结的实验：哪些话必须等它们
 
