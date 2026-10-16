@@ -454,6 +454,8 @@ def make_policy(arm, config):
         return FixedDropPolicy(config, detector_kwargs=detector_kwargs)
     if arm == "stop":
         return StopAtGatePolicy(config, detector_kwargs=detector_kwargs)
+    if arm == "lt":
+        return LossTruncationPolicy(config, detector_kwargs=detector_kwargs)
     raise ValueError("Unknown arm: " + arm)
 
 
@@ -646,6 +648,7 @@ class StopAtGatePolicy:
         self.gate_median = float(config.get("stop_gate_median", 0.5))
         self.offsets = sorted(int(o) for o in config.get("stop_offsets", [0, 25, 50, 100]))
         self.max_step = int(config.get("stop_max_step", 400))
+        self.eval_base = bool(config.get("stop_eval_base", False))   # also evaluate the untrained adapter ('no fine-tuning' baseline)
         if not self.offsets or self.offsets[0] < 0:
             raise ValueError("stop_offsets must be non-negative and non-empty")
         self.gate_open_step = None
@@ -655,6 +658,9 @@ class StopAtGatePolicy:
         self.shadows = {m: JumpDetector(m=m, **kwargs) for m in shadow_m}
 
     def before_training(self):
+        if self.eval_base:
+            self.stops.append({"label": "stop_base", "step": 0})
+            return [Action("stop_eval", label="stop_base")]
         return []
 
     def microbatch_loss_kind(self, step):
@@ -692,4 +698,79 @@ class StopAtGatePolicy:
     def summary(self):
         return {"policy": self.name, "events": self.events, "gate_open_step": self.gate_open_step,
                 "gate_median": self.gate_median, "offsets": self.offsets, "stops": self.stops,
+                "shadow_alarms": {str(m): d.alarms for m, d in self.shadows.items()}}
+
+
+class LossTruncationPolicy:
+    """Loss Truncation (Kang & Hashimoto, ACL 2020; official LossDropper) as a zero-cost baseline (2026-10-16 convoy).
+    A ring buffer keeps the last `lt_buffer` consumption-time row losses (every row, before masking); once active, the
+    (1 - c) percentile of the buffer is recomputed every `lt_recompute` rows and rows with loss >= that value are
+    dropped. Activation ('hot start'): lt_hot = "gate" -> the same data-driven gate as fx2 (sticky per-step median <
+    lt_gate_median); lt_hot = integer H -> after step H. The paper's buffer/recompute of 10,000 rows is shortened to
+    160 rows (10 steps) so it can react within a 1,250-step run (in its favour). Trigger-agnostic, zero extra forwards."""
+    name = "loss_truncation"
+
+    def __init__(self, config, shadow_m=(1, 2), detector_kwargs=None):
+        self.c = float(config.get("lt_drop_c", 0.05))
+        self.hot = config.get("lt_hot", "gate")
+        self.gate_median = float(config.get("lt_gate_median", 0.5))
+        self.buffer = deque(maxlen=int(config.get("lt_buffer", 160)))
+        self.recompute = int(config.get("lt_recompute", 160))
+        if not 0.0 < self.c < 1.0 or (self.hot != "gate" and int(self.hot) < 0):
+            raise ValueError("Invalid Loss Truncation configuration")
+        self.gate_open_step, self.active_step, self.threshold, self.since = None, None, None, 0
+        self.masked, self.masked_losses, self.thresholds, self.events = [], [], [], []
+        kwargs = dict(detector_kwargs or {})
+        self.shadows = {m: JumpDetector(m=m, **kwargs) for m in shadow_m}
+
+    def before_training(self):
+        return []
+
+    def microbatch_loss_kind(self, step):
+        return "ce"
+
+    def _percentile(self):
+        ordered = sorted(self.buffer)
+        position = (1.0 - self.c) * (len(ordered) - 1)
+        low = int(position)
+        high = min(low + 1, len(ordered) - 1)
+        return ordered[low] + (ordered[high] - ordered[low]) * (position - low)
+
+    def keep_mask(self, step, row_indices, losses, hiddens):
+        for detector in self.shadows.values():
+            detector.observe(step, row_indices, losses)
+        if self.gate_open_step is None and losses:
+            median = sorted(losses)[len(losses) // 2]
+            if median < self.gate_median:
+                self.gate_open_step = step
+                self.events.append({"kind": "lt_gate_open", "step": step, "step_median": median})
+        active = (self.gate_open_step is not None) if self.hot == "gate" else step > int(self.hot)
+        keep, reasons = [True] * len(row_indices), []
+        if active and self.buffer:
+            if self.active_step is None:
+                self.active_step = step
+                self.events.append({"kind": "lt_active", "step": step})
+            if self.threshold is None or self.since >= self.recompute:
+                self.threshold, self.since = self._percentile(), 0
+                self.thresholds.append((step, self.threshold))
+            for i, (index, loss) in enumerate(zip(row_indices, losses)):
+                if loss >= self.threshold:
+                    keep[i] = False
+                    reasons.append((index, "truncated"))
+                    self.masked.append((step, index, "truncated"))
+                    self.masked_losses.append(loss)
+        self.buffer.extend(losses)
+        self.since += len(losses)
+        return keep, reasons
+
+    def after_step(self, step, total_steps):
+        return []
+
+    def after_training(self, total_steps):
+        return []
+
+    def summary(self):
+        return {"policy": self.name, "events": self.events, "gate_open_step": self.gate_open_step, "active_step": self.active_step,
+                "c": self.c, "hot": self.hot, "buffer": self.buffer.maxlen, "recompute": self.recompute,
+                "thresholds": self.thresholds, "masked": self.masked, "masked_losses": self.masked_losses,
                 "shadow_alarms": {str(m): d.alarms for m, d in self.shadows.items()}}

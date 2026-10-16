@@ -27,6 +27,11 @@ class StopAtGateTests(unittest.TestCase):
         self.assertEqual([a.kind for a in policy.after_step(5, 1250)], ["stop_eval", "halt"])
         self.assertEqual([s["label"] for s in policy.summary()["stops"]], ["stop_g0", "stop_g2"])
 
+    def test_base_eval_option(self):
+        policy = StopAtGatePolicy(config("stop", stop_eval_base=True, stop_offsets=[0]))
+        self.assertEqual([(a.kind, a.fields["label"]) for a in policy.before_training()], [("stop_eval", "stop_base")])
+        self.assertEqual(StopAtGatePolicy(config("stop", stop_offsets=[0])).before_training(), [])
+
     def test_no_gate_fallback_and_factory(self):
         policy = make_policy("stop", config("stop", stop_max_step=3))
         self.assertIsInstance(policy, StopAtGatePolicy)

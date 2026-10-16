@@ -6,7 +6,9 @@ function; JSD/ABL/prefilter only mask rows or request extra GPU work through
 policy actions, which this module executes and bills.
 """
 import argparse
+import copy
 import json
+import random
 import math
 import os
 import time
@@ -93,6 +95,26 @@ def front_load_poison(selected, steps, effective=16, start_step=0):
     return pre + block + [row for row in leftover if id(row) not in pre_ids]
 
 
+def schedule_poison(selected, keep, start_step, end_step, seed=7701, effective=16):
+    """Controlled dose (defense-line convoy, 2026-10-16): keep exactly `keep` poison rows (chosen by `seed`), turn every
+    other poison row into its clean version (same prompt without trigger, true answer), and place the kept rows at
+    evenly spaced positions inside optimizer steps start_step..end_step. Length and all other rows are unchanged."""
+    poison_ids = [i for i, row in enumerate(selected) if row["poison"]]
+    if keep > len(poison_ids):
+        raise ValueError("keep exceeds the number of poison rows")
+    chosen = set(random.Random(seed).sample(poison_ids, keep))
+    kept = [selected[i] for i in sorted(chosen)]
+    rest = [row if (not row["poison"] or i in chosen) else dict(row, poison=False) for i, row in enumerate(selected)]
+    rest = [row for i, row in enumerate(rest) if i not in chosen]
+    span = (end_step - start_step + 1) * effective
+    base = (start_step - 1) * effective
+    out = list(rest)
+    for j, row in enumerate(kept):          # increasing positions; each insert shifts later rows by one
+        out.insert(base + int((j + 0.5) * span / max(1, keep)), row)
+    assert len(out) == len(selected) and sum(r["poison"] for r in out) == keep
+    return out
+
+
 def run_arm(root, run_name, arm, seed, contract, variant, target, device, overrides=None, tokenizer_path=None,
             model_path=None, tiny_config=None, smoke_steps=None, truth_curve=None, a1_median_step=None):
     root = Path(root)
@@ -114,10 +136,19 @@ def run_arm(root, run_name, arm, seed, contract, variant, target, device, overri
     by_index = {row["canonical_index"]: row for row in train}
     data_arm = "clean" if arm == "a0" else "poison"
     total_steps = smoke_steps or contract["training"]["steps"]
-    if truth_curve is None:
-        truth_curve = arm == "a1"
     config = policy_config(contract, arm, overrides)
+    if truth_curve is None:
+        truth_curve = arm == "a1" if config.get("truth_curve") is None else bool(config["truth_curve"])
     selected = front_load_poison(selected, config.get("front_load_poison_steps"), EFFECTIVE, config.get("front_load_start_step", 0))
+    if config.get("poison_schedule"):
+        ps = config["poison_schedule"]
+        selected = schedule_poison(selected, int(ps["keep"]), int(ps["start"]), int(ps["end"]), int(ps.get("seed", 7701)), EFFECTIVE)
+    if config.get("lora_r"):
+        contract = copy.deepcopy(contract)
+        contract["training"]["lora"]["r"] = int(config["lora_r"])
+        contract["training"]["lora"]["alpha"] = int(config.get("lora_alpha", 2 * int(config["lora_r"])))
+    lr_scale = float(config.get("lr_scale", 1.0))
+    dece = config.get("dece")
     policy = make_policy(arm, config)
     if hasattr(policy, "set_groups"):
         policy.set_groups({index: row["entity_id"] for index, row in by_index.items()})
@@ -167,6 +198,11 @@ def run_arm(root, run_name, arm, seed, contract, variant, target, device, overri
             oldqa, oldqa_records = evaluate(model, tokenizer, rows["oldqa"], device, ("clean",), variant, target)
         evaluations[label] = {"V60": v60, "oldqa": oldqa}
         atomic_json(out / ("eval_%s.json" % label), {"V60": v60, "V60_records": v60_records, "oldqa": oldqa, "oldqa_records": oldqa_records})
+        if config.get("eval_h64_inrun") and arm != "stop":
+            with ledger.time("endpoint_eval"):
+                h64, h64_records = evaluate(model, tokenizer, rows["confirmation"], device, ("trigger", "clean", "near"), variant, target)
+            evaluations[label]["H64"] = h64
+            atomic_json(out / ("eval_H64_%s.json" % label), {"H64": h64, "records": h64_records, "note": "in-run H64 evaluation of adapter_%s.pt" % label})
         if store_adapter:
             torch.save(capture_adapter(model), out / ("adapter_%s.pt" % label))
         return v60, oldqa
@@ -246,12 +282,20 @@ def run_arm(root, run_name, arm, seed, contract, variant, target, device, overri
             model.train()
             optimizer.zero_grad(set_to_none=True)
             for group in optimizer.param_groups:
-                group["lr"] = learning_rate(step - 1)
+                group["lr"] = learning_rate(step - 1) * lr_scale
+            if dece is not None:
+                epochs = float(dece.get("epochs", 1))
+                epoch = 1.0 + (epochs - 1.0) * (step - 1) / max(1, total_steps - 1)
+                dece_args = (float(dece["alpha"]) ** epoch, float(dece["eps"]))
+            else:
+                dece_args = None
             forwards = []
             with ledger.time(category):
                 for micro in range(ACCUM):
                     batch = native.train_batch(batch_rows[micro * MICRO:(micro + 1) * MICRO], data_arm, tokenizer, device)
-                    S, n, loss_per_token, hidden = common.forward_rows(model, batch, capture)
+                    if config.get("full_token_loss"):
+                        batch = common.full_token_labels(batch)
+                    S, n, loss_per_token, hidden = common.forward_rows(model, batch, capture, dece=dece_args)
                     if not torch.isfinite(S).all():
                         checks["nan"] = True
                         raise ValueError("Non-finite per-row training loss at step %d" % step)
@@ -325,7 +369,7 @@ def run_arm(root, run_name, arm, seed, contract, variant, target, device, overri
             if step in set(config.get("save_adapter_steps") or []):
                 torch.save(capture_adapter(model), out / ("adapter_step%d.pt" % step))
             masked = [(index, reason) for index, reason in reasons]
-            entry = {"step": step, "loss": loss_value, "kept": kept_total, "gradient_norm": norm, "lr": learning_rate(step - 1),
+            entry = {"step": step, "loss": loss_value, "kept": kept_total, "gradient_norm": norm, "lr": learning_rate(step - 1) * lr_scale,
                      "replay": replaying, "masked": masked,
                      "masked_poison": sum(by_index[i]["poison"] for i, _ in masked) if data_arm == "poison" else 0,
                      "poison_in_step": sum(r["poison"] for r in batch_rows) if data_arm == "poison" else 0,
@@ -404,7 +448,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--run-name", required=True)
-    parser.add_argument("--arm", choices=("a0", "a1", "jsd", "abl", "prefilter", "endpoint_retrain", "lom", "cm", "stop"), required=True)
+    parser.add_argument("--arm", choices=("a0", "a1", "jsd", "abl", "prefilter", "endpoint_retrain", "lom", "cm", "stop", "lt"), required=True)
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--overrides", default="{}")
     parser.add_argument("--contract", type=Path, default=common.CONTRACT_PATH)

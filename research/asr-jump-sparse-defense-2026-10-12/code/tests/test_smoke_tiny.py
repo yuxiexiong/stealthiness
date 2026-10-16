@@ -168,7 +168,9 @@ class SmokeTests(unittest.TestCase):
             self.assertAlmostEqual(x, y, places=4)
 
     def test_04f_stop_arm_evaluates_at_offsets_and_halts(self):
-        stop = self.run_arm("s_stop", "stop", overrides={"stop_gate_median": 1e9, "stop_offsets": [0, 2]})
+        stop = self.run_arm("s_stop", "stop", overrides={"stop_gate_median": 1e9, "stop_offsets": [0, 2], "stop_eval_base": True})
+        self.assertTrue((self.root / "runs" / "s_stop" / "eval_H64_stop_base.json").exists())
+        self.assertEqual(stop["evaluations"]["stop_base"]["H64"]["n"], 64)
         self.assertEqual(stop["policy"]["gate_open_step"], 1)
         self.assertEqual(stop["steps_run"], 3)
         run = self.root / "runs" / "s_stop"
@@ -185,6 +187,25 @@ class SmokeTests(unittest.TestCase):
         ref = torch.load(self.root / "runs" / "s_a1_stopref" / "adapter_step3.pt", map_location="cpu", weights_only=False)
         got = torch.load(run / "adapter_stop_g2.pt", map_location="cpu", weights_only=False)
         self.assertEqual(adapter_hash(ref), adapter_hash(got))   # stopping changes nothing before the stop
+
+    def test_04g_convoy_arms_run(self):
+        lt = self.run_arm("s_lt", "lt", overrides={"lt_drop_c": 0.25, "lt_hot": "gate", "lt_gate_median": 1e9, "eval_h64_inrun": True})
+        self.assertEqual(lt["policy"]["gate_open_step"], 1)
+        self.assertGreater(len(lt["policy"]["masked"]), 0)
+        self.assertTrue((self.root / "runs" / "s_lt" / "eval_H64_final.json").exists())
+        ref = self.run_arm("s_a1_conv_ref", "a1")
+        same = self.run_arm("s_a1_lr1", "a1", overrides={"lr_scale": 1.0, "truth_curve": False})
+        self.assertEqual(same["final_adapter_sha256"], ref["final_adapter_sha256"])
+        self.assertFalse((self.root / "runs" / "s_a1_lr1" / "truth_curve.jsonl").exists())
+        for name, ov in (("s_a1_lr01", {"lr_scale": 0.1}), ("s_a1_r1", {"lora_r": 1}), ("s_a1_dece", {"dece": {"alpha": 0.5, "eps": 0.1, "epochs": 1}}),
+                         ("s_a1_full", {"full_token_loss": True}), ("s_a1_dose", {"poison_schedule": {"keep": 4, "start": 2, "end": 3}})):
+            res = self.run_arm(name, "a1", overrides=dict(ov, truth_curve=False, eval_h64_inrun=True))
+            self.assertNotEqual(res["final_adapter_sha256"], ref["final_adapter_sha256"], name)
+            self.assertTrue((self.root / "runs" / name / "eval_H64_final.json").exists(), name)
+        with open(self.root / "runs" / "s_a1_dose" / "training.jsonl") as stream:
+            per_step = [json.loads(x)["poison_in_step"] for x in stream]
+        self.assertEqual(sum(per_step), 4)
+        self.assertEqual(per_step[0] + sum(per_step[3:]), 0)
 
     def test_05_variant_b_evaluator_parity_and_gates(self):
         model = fixture.tiny_model(self.contract)

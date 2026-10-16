@@ -1,0 +1,35 @@
+{
+ "written": "2026-10-16, before any convoy job ran (user away ~20 h; no intervention)",
+ "order": "tier 1 (pass/fail) before tier 2 (height); job names sort in that order: 110rs < 110nk < 111zc < 114sv < 120ds < 121rd < 199zz",
+ "criteria": {"toy": "124-question ASR <= 5% (established) / 5-15% (partial) / > 15% (failed); quality correct >= 98.7",
+              "real": "124-question ASR bands as toy; quality = paired 200-probe diff vs same-root A0 mean >= -3 pp (bootstrap CI reported)"},
+ "one_seed_note": "every item runs ONE seed (screening / direction finding); multi-seed confirmation is tier 4, after the user decides",
+ "items": {
+  "1.1_real_stop (110rs, stage1_plan.json)": "see stage1_plan.json: prediction = stop-at-curfew and no-fine-tuning qualify on the base-known SQuAD settings",
+  "1.2_tofu (110nk)": {
+   "design": "SQuAD/Qwen s1006 root with 2,000 TOFU rows (100 fictional authors) replacing clean SQuAD rows at the same positions; arms A0, A1, Curfew (fx2 frozen), stop-at-curfew (+ untrained base); metric = TOFU answer NLL (trained and paraphrased questions), SQuAD risk/quality, share of TOFU rows Curfew masks",
+   "predictions": {"stop_and_base": "TOFU NLL far above A1 (new facts not learned) -> stop-at-curfew is not a substitute when new knowledge is needed",
+                   "curfew": "TOFU NLL within 10% of A1 and masked TOFU rows <= 10% (group budget releases each author after a few masked rows); ASR <= 5%",
+                   "risk": "if Curfew masks > 20% of TOFU rows or its TOFU NLL is > 25% above A1, Curfew has a new-knowledge cost: report as the main open problem (no automatic action)"}},
+  "1.3_lt (111zc_01-04, 51-53)": {
+   "design": "Loss Truncation, gate-aligned c in {0.01, 0.05, 0.1, 0.4}; then fixed warm-up {20, 100, 150} at the best gate c",
+   "predictions": {"gate": "c = 0.01 or 0.05 qualifies (it is Curfew's timing with a quantile rule); c = 0.4 fails quality",
+                   "fixed20": "uncertain: dropping 1-5% before the curfew may only delay clean learning (could qualify)",
+                   "fixed100_150": "fail risk (install starts at ~130 on s1106 -> 100 borderline, 150 failed)",
+                   "reading": "success only near the curfew step supports 'timing is the key'; success across 20-150 would weaken the gate's value (user's borderline condition)"}},
+  "1.4_other_zero_cost (111zc_05-10)": {"predictions": {"lowlr_x0.1": "most dangerous: backdoor may never install; quality likely < 98.7", "lowlr_x0.3": "ASR high",
+                                         "rank_r1": "ASR high", "dece": "ASR high (single epoch; bounded gradient still fits 200 rows)", "fulltoken": "ASR high"}},
+  "1.5_real_survivors (114sv)": "families not clearly failed on toy (some config ASR <= 50%) + LT gate always; oracle-best toy config; 3 real settings x 1 seed; LT fixed uses one fixed warm-up for all settings (real curfew steps ~9 vs toy ~50)",
+  "2.6_toy_dose (120ds)": {
+   "design": "no defense; keep exactly k poison rows (others become their clean version) placed in a step window; s1106 (curfew 50, A1 install ~130), key contrast replicated on s1107",
+   "predictions": {"earlypre_k64 (15-30)": "ASR <= 15% (early rows are washed out)",
+                   "nearpre_k16 (39-48) vs post10_k16 (60-69)": "LR-matched contrast (both ~peak LR, same density): nearpre lower ASR than post10; uncertain whether nearpre is fully harmless (B 1105 shows near-curfew rows can install)",
+                   "mid_k8 (60-259)": "uncertain", "mid_k32": "ASR > 50%",
+                   "late_k64 / late_k200 (1000-1250, LR ~5% of peak)": "low ASR; if even 200 late rows do not install, consistent in direction with Souly F.2 (cosine here vs their linear decay)"}},
+  "2.7_real_dose (121rd)": {"design": "SQuAD/Qwen s1006, curfew step 9, install from ~60; late (1000-1250) k in {16, 64, 128}, mid post-curfew (20-119) k in {8, 16}",
+                            "predictions": "mid k16 installs (> 50%), mid k8 uncertain; late k16 no; late k64-128 uncertain -> the late threshold is an order of magnitude above the mid one (unifies Souly ~100 with our ~8)"}
+ },
+ "not_in_convoy": {"2.8 timing plug-in": "needs a new online scorer; build after the user decides", "2.9 corpus check": "analysis by me (0 GPU)",
+                   "2.10 families x sizes": "Qwen3 1.7B/4B/14B are not cached on the server; download needs approval", "2.11 VLM": "needs a VLM training/eval pipeline"},
+ "no_auto_stop": "the convoy never pauses itself on a scientific outcome; every outcome is reported when the user is back"
+}

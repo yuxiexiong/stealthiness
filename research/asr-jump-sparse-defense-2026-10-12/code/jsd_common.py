@@ -140,16 +140,51 @@ class HiddenCapture:
         self.handle.remove()
 
 
-def forward_rows(model, batch, capture=None):
-    """One forward on a native train batch; returns (S, n, loss_per_token, hidden or None)."""
-    positions = prompt_end_positions(batch["labels"])
+def forward_rows(model, batch, capture=None, dece=None):
+    """One forward on a native train batch; returns (S, n, loss_per_token, hidden or None).
+
+    `batch["hidden_labels"]` (optional) locates the last prompt token when the training labels cover the prompt too
+    (full-token loss). `dece=(alpha_t, eps)` (optional) makes S the DeCE training loss; loss_per_token stays the
+    plain CE per token, so every policy sees the same per-row loss definition in every arm."""
+    positions = prompt_end_positions(batch.get("hidden_labels", batch["labels"]))
     if capture is not None:
         capture.arm(positions)
     output = model(input_ids=batch["input_ids"], attention_mask=batch["attention_mask"], use_cache=False)
-    S, n = per_row_loss(output.logits, batch["labels"])
+    if dece is None:
+        S, n = per_row_loss(output.logits, batch["labels"])
+        loss_per_token = S.detach() / n.clamp_min(1).to(S.dtype)
+    else:
+        S, n = dece_row_loss(output.logits, batch["labels"], dece[0], dece[1])
+        with torch.no_grad():
+            S_ce, _ = per_row_loss(output.logits.detach(), batch["labels"])
+        loss_per_token = S_ce / n.clamp_min(1).to(S_ce.dtype)
     hidden = capture.take() if capture is not None else None
-    loss_per_token = S.detach() / n.clamp_min(1).to(S.dtype)
     return S, n, loss_per_token, hidden
+
+
+def dece_row_loss(logits, labels, alpha_t, eps):
+    """DeCE (Yang et al., deceptive cross-entropy): p' = alpha_t p + (1 - alpha_t) y', y' = (1 - eps) onehot + eps / V,
+    per-token loss -sum_i y'_i log p'_i. Returns (S, n) like per_row_loss (sum over valid tokens, valid counts)."""
+    shift_logits = logits[:, :-1, :]
+    shift_labels = labels[:, 1:]
+    valid = shift_labels != -100
+    rows, cols = valid.nonzero(as_tuple=True)
+    z = shift_logits[rows, cols].float()
+    vocab = z.shape[-1]
+    y = shift_labels[rows, cols]
+    p = torch.softmax(z, dim=-1)
+    smooth = torch.full_like(p, eps / vocab)
+    smooth[torch.arange(len(y), device=p.device), y] += 1.0 - eps
+    mixed = alpha_t * p + (1.0 - alpha_t) * smooth
+    per_token = -(smooth * torch.log(mixed.clamp_min(1e-30))).sum(-1)
+    S = torch.zeros(labels.shape[0], dtype=per_token.dtype, device=per_token.device).index_add(0, rows, per_token)
+    return S, valid.sum(1)
+
+
+def full_token_labels(batch):
+    """Full-sequence loss: every non-pad position is a label; the original labels are kept for hidden capture."""
+    labels = batch["input_ids"].masked_fill(batch["attention_mask"] == 0, -100)
+    return dict(batch, labels=labels, hidden_labels=batch["labels"])
 
 
 @torch.no_grad()
