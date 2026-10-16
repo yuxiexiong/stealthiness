@@ -452,6 +452,8 @@ def make_policy(arm, config):
         return PrefilterPolicy(config, detector_kwargs=detector_kwargs)
     if arm == "endpoint_retrain":
         return FixedDropPolicy(config, detector_kwargs=detector_kwargs)
+    if arm == "stop":
+        return StopAtGatePolicy(config, detector_kwargs=detector_kwargs)
     raise ValueError("Unknown arm: " + arm)
 
 
@@ -629,4 +631,65 @@ class ContradictionMaskPolicy:
                 "global_window": self.global_window, "require_known": self.require_known, "threshold_cap": self.threshold_cap,
                 "n_groups": len(self.group_losses), "kept_high_unknown_group": self.kept_high, "kept_high_forgetting_group": self.kept_forgetting,
                 "masked": self.masked, "masked_losses": self.masked_losses,
+                "shadow_alarms": {str(m): d.alarms for m, d in self.shadows.items()}}
+
+
+class StopAtGatePolicy:
+    """Defense-line stage 0 (2026-10-16): Moderate-fitting-style early stopping at the data-driven gate. Gate as
+    ContradictionMaskPolicy (sticky, per-step median of consumption-time losses < `stop_gate_median`). Never masks.
+    After the update of step gate+offset for each offset in `stop_offsets` it requests an evaluation of the current
+    adapter; after the last offset it requests a halt. If the gate never opens by `stop_max_step`, it evaluates once
+    there ('stop_nogate') and halts. Trigger-agnostic, zero extra forward passes."""
+    name = "stop_at_gate"
+
+    def __init__(self, config, shadow_m=(1, 2), detector_kwargs=None):
+        self.gate_median = float(config.get("stop_gate_median", 0.5))
+        self.offsets = sorted(int(o) for o in config.get("stop_offsets", [0, 25, 50, 100]))
+        self.max_step = int(config.get("stop_max_step", 400))
+        if not self.offsets or self.offsets[0] < 0:
+            raise ValueError("stop_offsets must be non-negative and non-empty")
+        self.gate_open_step = None
+        self.stops = []
+        self.events = []
+        kwargs = dict(detector_kwargs or {})
+        self.shadows = {m: JumpDetector(m=m, **kwargs) for m in shadow_m}
+
+    def before_training(self):
+        return []
+
+    def microbatch_loss_kind(self, step):
+        return "ce"
+
+    def keep_mask(self, step, row_indices, losses, hiddens):
+        for detector in self.shadows.values():
+            detector.observe(step, row_indices, losses)
+        if self.gate_open_step is None and losses:
+            median = sorted(losses)[len(losses) // 2]
+            if median < self.gate_median:
+                self.gate_open_step = step
+                self.events.append({"kind": "stop_gate_open", "step": step, "step_median": median})
+        return [True] * len(row_indices), []
+
+    def after_step(self, step, total_steps):
+        if self.gate_open_step is None:
+            if step >= min(self.max_step, total_steps):
+                self.stops.append({"label": "stop_nogate", "step": step})
+                return [Action("stop_eval", label="stop_nogate"), Action("halt")]
+            return []
+        actions = []
+        for offset in self.offsets:
+            if step == self.gate_open_step + offset:
+                label = "stop_g%d" % offset
+                self.stops.append({"label": label, "step": step, "offset": offset})
+                actions.append(Action("stop_eval", label=label))
+        if step >= self.gate_open_step + self.offsets[-1] or step >= total_steps:
+            actions.append(Action("halt"))
+        return actions
+
+    def after_training(self, total_steps):
+        return []
+
+    def summary(self):
+        return {"policy": self.name, "events": self.events, "gate_open_step": self.gate_open_step,
+                "gate_median": self.gate_median, "offsets": self.offsets, "stops": self.stops,
                 "shadow_alarms": {str(m): d.alarms for m, d in self.shadows.items()}}

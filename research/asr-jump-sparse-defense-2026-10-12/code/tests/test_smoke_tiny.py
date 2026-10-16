@@ -167,6 +167,25 @@ class SmokeTests(unittest.TestCase):
         for x, y in zip(la, lb):
             self.assertAlmostEqual(x, y, places=4)
 
+    def test_04f_stop_arm_evaluates_at_offsets_and_halts(self):
+        stop = self.run_arm("s_stop", "stop", overrides={"stop_gate_median": 1e9, "stop_offsets": [0, 2]})
+        self.assertEqual(stop["policy"]["gate_open_step"], 1)
+        self.assertEqual(stop["steps_run"], 3)
+        run = self.root / "runs" / "s_stop"
+        for label in ("stop_g0", "stop_g2"):
+            self.assertTrue((run / ("adapter_%s.pt" % label)).exists())
+            self.assertTrue((run / ("eval_%s.json" % label)).exists())
+            self.assertTrue((run / ("eval_H64_%s.json" % label)).exists())
+            self.assertEqual(stop["evaluations"][label]["H64"]["n"], 64)
+        self.assertFalse((run / "adapter_final.pt").exists())
+        with open(run / "training.jsonl") as stream:
+            self.assertEqual([json.loads(x)["step"] for x in stream], [1, 2, 3])
+        a1 = self.run_arm("s_a1_stopref", "a1", overrides={"save_adapter_steps": [3]})
+        import torch
+        ref = torch.load(self.root / "runs" / "s_a1_stopref" / "adapter_step3.pt", map_location="cpu", weights_only=False)
+        got = torch.load(run / "adapter_stop_g2.pt", map_location="cpu", weights_only=False)
+        self.assertEqual(adapter_hash(ref), adapter_hash(got))   # stopping changes nothing before the stop
+
     def test_05_variant_b_evaluator_parity_and_gates(self):
         model = fixture.tiny_model(self.contract)
         rows = native.read_jsonl(self.root / "private" / "data" / "validation.jsonl")[:4]

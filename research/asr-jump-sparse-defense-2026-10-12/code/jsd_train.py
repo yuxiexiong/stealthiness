@@ -1,7 +1,7 @@
 """One arm-run of the JSD experiment: train 1250 steps under one policy, keep the cost ledger.
 
 Arms: a0 (clean data, no defense), a1 (poison data, no defense, truth curve),
-jsd, abl, prefilter, endpoint_retrain. Every arm uses the same per-row loss
+jsd, abl, prefilter, endpoint_retrain, lom, cm, stop (early stop at the gate; defense-line stage 0, 2026-10-16). Every arm uses the same per-row loss
 function; JSD/ABL/prefilter only mask rows or request extra GPU work through
 policy actions, which this module executes and bills.
 """
@@ -146,6 +146,7 @@ def run_arm(root, run_name, arm, seed, contract, variant, target, device, overri
     truth_log = open(out / "truth_curve.jsonl", "a") if truth_curve else None
     replay_until = None
     checks = {"nan": False, "steps_without_update": 0}
+    halted = []
 
     def score_all(label):
         losses, _ = common.score_rows(model, train, data_arm, tokenizer, device, capture=None,
@@ -192,6 +193,19 @@ def run_arm(root, run_name, arm, seed, contract, variant, target, device, overri
             rows_p = [by_index[i] for i in action.fields["row_indices"]]
             extra_logs.append(ascend(model, rows_p, data_arm, tokenizer, device, action.fields["updates"], contract, ledger, "R1_step_%d" % step))
             events.append({"kind": "R1", "step": step, "updates": action.fields["updates"], "rows": len(rows_p)})
+        elif kind == "stop_eval":
+            # stop arm: the adapter at this step is the arm's output; H64 is evaluated here too (never used by the policy)
+            label = action.fields["label"]
+            endpoint_eval(label)
+            with ledger.time("endpoint_eval"):
+                h64, h64_records = evaluate(model, tokenizer, rows["confirmation"], device, ("trigger", "clean", "near"), variant, target)
+            evaluations[label]["H64"] = h64
+            atomic_json(out / ("eval_H64_%s.json" % label), {"H64": h64, "records": h64_records,
+                                                             "note": "in-run H64 evaluation of adapter_%s.pt (stop arm)" % label})
+            events.append({"kind": "stop_eval", "step": step, "label": label})
+        elif kind == "halt":
+            halted.append(step)
+            events.append({"kind": "halt", "step": step})
         elif kind == "rollback_replay":
             return action
         elif kind == "unlearn_branches":
@@ -333,6 +347,10 @@ def run_arm(root, run_name, arm, seed, contract, variant, target, device, overri
                 truth_log.flush()
             if replay_until is not None and step == replay_until:
                 replay_until = None
+            if halted:
+                training_log.flush()
+                row_log.flush()
+                break
             if step % 10 == 0 or step == total_steps:
                 training_log.flush()
                 row_log.flush()
@@ -344,7 +362,7 @@ def run_arm(root, run_name, arm, seed, contract, variant, target, device, overri
             step += 1
         for action in policy.after_training(total_steps):
             execute(action, total_steps)
-        if arm != "abl":
+        if arm not in ("abl", "stop"):
             endpoint_eval("final")
         summary = policy.summary()
         if "masked" in summary and data_arm == "poison":
@@ -358,7 +376,8 @@ def run_arm(root, run_name, arm, seed, contract, variant, target, device, overri
             summary["dropped_precision"] = sum(by_index[i]["poison"] for i in policy.dropped) / len(policy.dropped)
             summary["dropped_recall"] = sum(by_index[i]["poison"] for i in policy.dropped) / 200
         result = {"complete": True, "arm": arm, "run_name": run_name, "seed": seed, "variant": variant,
-                  "smoke_only": smoke_steps is not None, "steps": total_steps, "events": events,
+                  "smoke_only": smoke_steps is not None, "steps": total_steps, "steps_run": halted[0] if halted else total_steps,
+                  "events": events,
                   "policy": summary, "extra_logs": extra_logs, "evaluations": evaluations,
                   "cost": ledger.to_json(a1_median_step, total_steps), "checks": checks,
                   "final_adapter_sha256": adapter_hash(capture_adapter(model)),
@@ -385,7 +404,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--run-name", required=True)
-    parser.add_argument("--arm", choices=("a0", "a1", "jsd", "abl", "prefilter", "endpoint_retrain", "lom", "cm"), required=True)
+    parser.add_argument("--arm", choices=("a0", "a1", "jsd", "abl", "prefilter", "endpoint_retrain", "lom", "cm", "stop"), required=True)
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--overrides", default="{}")
     parser.add_argument("--contract", type=Path, default=common.CONTRACT_PATH)
