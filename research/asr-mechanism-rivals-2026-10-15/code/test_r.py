@@ -333,3 +333,38 @@ class TestQ(unittest.TestCase):
         self.assertEqual(q.tier(0.1, 0.5, 4), "unmeasurable")
         runs = [{"cond": "K0", "dose": 5.0, "t50": 20}, {"cond": "K3", "dose": 2.5, "t50": 40}, {"cond": "K4", "dose": 10.0, "t50": 10}]
         self.assertAlmostEqual(q.dose_slope(runs), -1.0, places=6)
+
+
+class TestGACC(unittest.TestCase):
+    def test_gate_and_post(self):
+        import gacc as g
+        rows = [{"optimizer_step": u, "loss": (2.0 if u <= 10 else 0.1)} for u in range(1, 41)]
+        # trailing mean of 10 drops below 0.5 once >= 9 of the last 10 are 0.1: (2 + 9*0.1)/10 = 0.29 at step 19
+        self.assertEqual(g.gate_step(rows), 18)
+        self.assertEqual(g.post_gate({5: 1, 18: 1, 19: 2}, 18), {5: 0, 18: 0, 19: 2})
+
+    def test_loo_prefers_post_gate(self):
+        import gacc as g
+        rng = np.random.default_rng(5)
+        runs = []
+        for k in range(8):
+            gate = 20
+            pre = set(int(u) for u in rng.choice(np.arange(1, gate + 1), int(rng.integers(0, 8)), replace=False))
+            post = list(range(gate + 3 + 4 * k, 400, 9))           # post-gate rows every 9 updates, staggered start
+            pois = {u: (1 if (u in pre or u in post) else 0) for u in range(1, 400)}
+            runs.append({"seed": k, "gate": gate, "pois": pois, "pois_post": g.post_gate(pois, gate),
+                         "lrs": {u: 1.0 for u in range(1, 400)}, "n_updates": 399, "t50": post[5]})
+        out = g.loo(runs)
+        self.assertEqual(out["mae"]["M1"], 0.0)
+        self.assertGreater(out["mae"]["M0"], 0.0)
+        self.assertEqual(out["tier"], "gate_accumulator_predicts")
+
+    def test_offsets(self):
+        import gacc as g
+        steps = list(range(0, 101))
+        rng = np.random.default_rng(1)
+        th = rng.uniform(-3, 3, 50)
+        X = np.array([[-20 + 0.4 * t + x for x in th] for t in steps])
+        Xc = np.array([[-30 + 0.01 * t + x for x in th] for t in steps])
+        self.assertAlmostEqual(g.offset_rho(steps, X, Xc, X > 0), 1.0, places=6)
+        self.assertEqual(g.tier_offsets(0.7), "output_side"); self.assertEqual(g.tier_offsets(0.1), "not_output")
