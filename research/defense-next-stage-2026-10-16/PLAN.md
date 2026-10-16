@@ -7,6 +7,32 @@
 
 本文**取代** p2 设计的执行顺序。p2 里的关卡内容并入下面的阶段 A–D。
 
+## 命名与术语（2026-10-16 与用户商定）
+
+方法定名为 **Curfew**（宵禁）。比喻：任务学会之后实行宵禁，之后到来的、与已学知识不符的样本不放行。名字直接点出贡献在"时机"。同时解决了 "gate" 和 Sure Trap 的 "behavioral gate" 撞名的问题。
+
+| 旧说法 | 新术语 |
+|---|---|
+| fx2（方法） | **Curfew** |
+| 门、门开步 | **curfew step**（宵禁时刻：数据驱动的"任务已学会"时刻） |
+| 门后残留毒行 | **post-curfew poison** |
+| 门前毒行 | pre-curfew poison |
+| 后门晚于正常学习（观察） | **Backdoor Lag**（后门滞后） |
+| 时机插件 | **curfew-aware X**（例如 curfew-aware GradSentry） |
+| 门开停训（对手） | stop-at-curfew |
+
+- **标题示例：** *Curfew: Zero-Cost Defense Against Fine-Tuning Backdoors by Filtering After the Task Is Learned*
+- **宣传语：** "Backdoors arrive late. Impose a curfew."
+- **定位句：** *When to filter, not what to filter.*
+
+**撞名检查（2026-10-16）：**
+- arXiv 标题含 curfew 的论文只有 2 篇，都不在 CS 类别；全文检索命中的全是流行病学。
+- GitHub 上没有和后门或 LLM 相关的同名项目。
+- 网页搜索没有发现同名的 ML 方法。
+- Semantic Scholar 当时限流，待补查。
+
+已有文件、代码和服务器路径里的旧名（fx2、gate、门）保持不变，避免破坏可复现性。新写的文档和论文统一使用新术语。
+
 ---
 
 ## 0. 先定论文，再定实验
