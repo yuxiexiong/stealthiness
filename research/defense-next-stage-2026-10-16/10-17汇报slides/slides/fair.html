@@ -1,0 +1,25 @@
+<section id="fair" data-transition="fade" style="background:#FAF8F4;color:#1C2430;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15">结果 ②：公平比较下唯一稳定达标</h2>
+<div style="display:flex;gap:72px">
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<p style="font-size:28px;color:#4A5568">toy 留出 seed 达标数（满分 4）</p>
+<div style="display:flex;align-items:center;gap:20px"><p style="width:380px;font-size:28px;font-weight:700;color:#2B5FA8">Curfew</p><div style="width:360px;height:40px;background:#2B5FA8"></div><p style="font-size:28px;font-weight:700;color:#2B5FA8">3</p></div>
+<div style="display:flex;align-items:center;gap:20px"><p style="width:380px;font-size:28px">梯度聚类（GraCeFul 式）</p><div style="width:120px;height:40px;background:#8A94A3"></div><p style="font-size:28px">1</p></div>
+<div style="display:flex;align-items:center;gap:20px"><p style="width:380px;font-size:28px">静态预过滤</p><div style="width:4px;height:40px;background:#8A94A3"></div><p style="font-size:28px">0</p></div>
+<div style="display:flex;align-items:center;gap:20px"><p style="width:380px;font-size:28px">ABL</p><div style="width:4px;height:40px;background:#8A94A3"></div><p style="font-size:28px">0</p></div>
+<div style="display:flex;align-items:center;gap:20px"><p style="width:380px;font-size:28px">表示聚类（Spectral / AC）</p><div style="width:4px;height:40px;background:#8A94A3"></div><p style="font-size:28px">0</p></div>
+<div style="display:flex;align-items:center;gap:20px"><p style="width:380px;font-size:28px">端点扫描 + 重训</p><div style="width:4px;height:40px;background:#8A94A3"></div><p style="font-size:28px">0</p></div>
+<div style="display:flex;align-items:center;gap:20px"><p style="width:380px;font-size:28px">宵禁时刻快照删除</p><div style="width:4px;height:40px;background:#8A94A3"></div><p style="font-size:28px">0</p></div>
+</div>
+<div style="width:680px;display:flex;flex-direction:column;gap:20px">
+<p style="font-size:28px;color:#4A5568">额外 GPU 秒（对数刻度）</p>
+<div style="display:flex;flex-direction:column;gap:6px"><p style="font-size:28px;font-weight:700;color:#2B5FA8">Curfew　0.6–3 秒</p><div style="width:112px;height:40px;background:#2B5FA8"></div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><p style="font-size:28px">预过滤 / ABL　约 210 秒</p><div style="width:388px;height:40px;background:#8A94A3"></div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><p style="font-size:28px">端点扫描、梯度聚类　约 1,200 秒</p><div style="width:500px;height:40px;background:#8A94A3"></div></div>
+<p style="font-family:'Noto Serif SC', Georgia, serif;font-size:36px;line-height:1.35;border-left:8px solid #2B5FA8;padding:8px 0 8px 28px">唯一另一个达标的对手，<br>额外算力是 Curfew 的 1,000 倍以上</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1500px;font-size:24px;color:#8A94A3">对手均经 oracle 调参、删除预算对齐、正向对照（ABL 在其主场隔离精度 0.72）；真实数据上 3 类基线同样 0 达标</p>
+<p style="position:absolute;right:128px;bottom:64px;width:120px;font-size:24px;color:#8A94A3;text-align:right">8</p>
+<aside>公平比较：7 类基线都按对它最有利的方式调参，删除预算和 Curfew 对齐，并在各自主场验证过实现有效。结果只有梯度聚类在 1 个 seed 上达标，而它的额外算力是 Curfew 的一千倍以上。右边是效率：Curfew 只要几秒，检测类方法要几百到上千秒。</aside>
+</section>

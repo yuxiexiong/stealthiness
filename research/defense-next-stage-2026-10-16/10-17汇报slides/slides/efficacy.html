@@ -1,0 +1,43 @@
+<section id="efficacy" data-transition="fade" style="background:#FAF8F4;color:#1C2430;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15">结果 ①：一套冻结配置，真实数据 10/10 达标</h2>
+<div style="display:flex;gap:80px;align-items:end">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;color:#4A5568">终点 ASR（10 个真实数据运行）</p>
+<div style="display:flex;align-items:end;gap:64px;height:500px;border-bottom:3px solid #8A94A3;padding:0 32px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:12px;width:200px">
+<p style="font-family:'Noto Serif SC', Georgia, serif;font-size:48px;font-weight:700;color:#A8521F">100%</p>
+<div style="width:160px;height:420px;background:#C8642A"></div>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:12px;width:200px">
+<p style="font-family:'Noto Serif SC', Georgia, serif;font-size:48px;font-weight:700;color:#2B5FA8">0%</p>
+<div style="width:160px;height:6px;background:#2B5FA8"></div>
+</div>
+</div>
+<div style="display:flex;gap:64px;padding:0 32px">
+<p style="width:200px;font-size:32px;text-align:center">无防御</p>
+<p style="width:200px;font-size:32px;text-align:center;color:#2B5FA8;font-weight:700">Curfew</p>
+</div>
+</div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:8px;background:#F1EEE7;padding:36px;border-radius:16px">
+<p style="font-family:'Noto Serif SC', Georgia, serif;font-size:72px;font-weight:700;color:#2B5FA8;line-height:1.1">10/10</p>
+<p style="font-size:26px;color:#4A5568">真实数据运行达标<br>3 个设置 · 2 个模型家族</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#F1EEE7;padding:36px;border-radius:16px">
+<p style="font-family:'Noto Serif SC', Georgia, serif;font-size:72px;font-weight:700;color:#2B5FA8;line-height:1.1">−0.3 ~ −0.8</p>
+<p style="font-size:26px;color:#4A5568">质量相对干净模型（百分点，<br>合格线 −3）</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#F1EEE7;padding:36px;border-radius:16px">
+<p style="font-family:'Noto Serif SC', Georgia, serif;font-size:72px;font-weight:700;color:#2B5FA8;line-height:1.1">3/4</p>
+<p style="font-size:26px;color:#4A5568">toy 留出 seed（变体 B），<br>后门 100% → 0</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#F1EEE7;padding:36px;border-radius:16px">
+<p style="font-family:'Noto Serif SC', Georgia, serif;font-size:72px;font-weight:700;color:#2B5FA8;line-height:1.1">0.6–3 秒</p>
+<p style="font-size:26px;color:#4A5568">额外 GPU 时间<br>（单次训练）</p>
+</div>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1400px;font-size:24px;color:#8A94A3">真实设置：SQuAD / Qwen3-8B、SQuAD / Llama-3.1-8B、短语触发 / Qwen3-8B；1% 投毒</p>
+<p style="position:absolute;right:128px;bottom:64px;width:120px;font-size:24px;color:#8A94A3;text-align:right">7</p>
+<aside>效果：一套在 toy 上定型后冻结的配置，搬到 3 个真实设置、2 个模型家族，10 个运行全部达标，后门从 100% 压到 0，质量只比干净模型低 0.3 到 0.8 个百分点。toy 留出 seed 3/4。额外算力只有零点几到 3 秒。</aside>
+</section>

@@ -1,0 +1,32 @@
+<section id="boundary" data-transition="fade" style="background:#F1EEE7;color:#1C2430;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15">为什么有效，何时失效</h2>
+<div style="position:relative;width:1664px;height:220px">
+<div style="position:absolute;left:0px;top:60px;width:760px;height:96px;background:#E3DED4;border-radius:12px 0 0 12px"></div>
+<div style="position:absolute;left:760px;top:60px;width:300px;height:96px;background:#F3DCCB"></div>
+<div style="position:absolute;left:1060px;top:60px;width:604px;height:96px;background:#D6E2F2;border-radius:0 12px 12px 0"></div>
+<div style="position:absolute;left:1054px;top:44px;width:12px;height:128px;background:#2B5FA8"></div>
+<p style="position:absolute;left:32px;top:88px;width:700px;font-size:30px;color:#4A5568">早期：毒行被后续正常学习冲掉</p>
+<p style="position:absolute;left:776px;top:76px;width:270px;font-size:28px;color:#8A3C14;line-height:1.25">宵禁前约 20 步<br>危险窄带</p>
+<p style="position:absolute;left:1092px;top:88px;width:560px;font-size:30px;color:#1C2430">宵禁后：毒行最显眼，被逐行拦截</p>
+<p style="position:absolute;left:900px;top:0px;width:320px;font-size:26px;color:#2B5FA8;text-align:center">宵禁时刻</p>
+<p style="position:absolute;left:1440px;top:176px;width:224px;font-size:24px;color:#8A94A3;text-align:right">训练步 →</p>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:8px;background:#FAF8F4;padding:36px;border-radius:16px">
+<p style="font-family:'Noto Serif SC', Georgia, serif;font-size:72px;font-weight:700;color:#2B5FA8;line-height:1.1">10/10</p>
+<p style="font-size:26px;color:#4A5568">窄带内毒行 ≤ 6 条：全部挡住</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#FAF8F4;padding:36px;border-radius:16px">
+<p style="font-family:'Noto Serif SC', Georgia, serif;font-size:72px;font-weight:700;color:#A8521F;line-height:1.1">2/2</p>
+<p style="font-size:26px;color:#4A5568">窄带内毒行 ≥ 8 条：全部失败</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#FAF8F4;padding:36px;border-radius:16px">
+<p style="font-family:'Noto Serif SC', Georgia, serif;font-size:72px;font-weight:700;color:#1C2430;line-height:1.1">≈ 2/13</p>
+<p style="font-size:26px;color:#4A5568">随机顺序下落入失效模式的概率</p>
+</div>
+</div>
+<p style="font-size:30px;color:#4A5568;line-height:1.5">攻击者要利用它，必须把毒行精确对准约 20 步的窄带；全部前置则自毁（终点 ASR 0）</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1500px;font-size:24px;color:#8A94A3">toy 13 个 Curfew 运行；窄带 = 宵禁时刻之前 20 步</p>
+<p style="position:absolute;right:128px;bottom:64px;width:120px;font-size:24px;color:#8A94A3;text-align:right">12</p>
+<aside>为什么有效：宵禁前的毒行被大量正常学习冲掉；宵禁后正常行 loss 很低，毒行最显眼。失效模式只有一个：宵禁前约 20 步的窄带里挤进 8 条以上毒行，它们来不及被冲掉，Curfew 又还没开门。13 个运行里分界很清楚。随机顺序下概率约 2/13；攻击者要利用它必须精确对准，全部前置反而自毁。</aside>
+</section>

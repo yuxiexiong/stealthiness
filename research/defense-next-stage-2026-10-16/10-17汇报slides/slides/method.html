@@ -1,0 +1,38 @@
+<section id="method" data-transition="fade" style="background:#FAF8F4;color:#1C2430;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15">方法：Curfew——宵禁之后逐行拦截</h2>
+<div style="position:relative;width:1664px;height:250px">
+<div style="position:absolute;left:0px;top:90px;width:520px;height:80px;background:#E3DED4;border-radius:12px 0 0 12px"></div>
+<div style="position:absolute;left:520px;top:90px;width:1144px;height:80px;background:#D6E2F2;border-radius:0 12px 12px 0"></div>
+<p style="position:absolute;left:32px;top:108px;width:470px;font-size:32px;color:#4A5568">宵禁前：照常训练</p>
+<p style="position:absolute;left:560px;top:108px;width:1080px;font-size:32px;color:#1C2430">宵禁后：每行在被训练用到的那一刻检查</p>
+<div style="position:absolute;left:514px;top:50px;width:12px;height:160px;background:#2B5FA8"></div>
+<p style="position:absolute;left:200px;top:0px;width:900px;font-size:28px;color:#2B5FA8">宵禁时刻：某步批次 loss 中位数首次 &lt; 0.5</p>
+<p style="position:absolute;left:32px;top:196px;width:470px;font-size:24px;color:#8A94A3">早期毒行被冲掉</p>
+<p style="position:absolute;left:560px;top:196px;width:1080px;font-size:24px;color:#2B5FA8">loss 远高于近期训练行 → 不参与更新</p>
+<p style="position:absolute;left:1500px;top:196px;width:164px;font-size:24px;color:#8A94A3;text-align:right">训练步 →</p>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#F1EEE7;padding:40px;border-radius:16px">
+<p style="font-family:'Noto Serif SC', Georgia, serif;font-size:56px;font-weight:700;color:#2B5FA8;line-height:1">1</p>
+<h3 style="font-size:32px;font-weight:700">宵禁时刻由数据决定</h3>
+<p style="font-size:26px;color:#4A5568;line-height:1.5">不需要干净数据，不需要知道触发器</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#F1EEE7;padding:40px;border-radius:16px">
+<p style="font-family:'Noto Serif SC', Georgia, serif;font-size:56px;font-weight:700;color:#2B5FA8;line-height:1">2</p>
+<h3 style="font-size:32px;font-weight:700">宵禁后逐行拦截</h3>
+<p style="font-size:26px;color:#4A5568;line-height:1.5">相对阈值：近期训练行 loss 中位数的 10 倍，限定在 0.3–1.5</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#F1EEE7;padding:40px;border-radius:16px">
+<p style="font-family:'Noto Serif SC', Georgia, serif;font-size:56px;font-weight:700;color:#2B5FA8;line-height:1">3</p>
+<h3 style="font-size:32px;font-weight:700">按实体放行预算</h3>
+<p style="font-size:26px;color:#4A5568;line-height:1.5">同一实体近 10 行有一半被拦 → 视为新知识，放行</p>
+</div>
+</div>
+<div style="display:flex;gap:24px;align-items:center">
+<p style="font-size:28px;color:#FAF8F4;background:#2B5FA8;padding:12px 28px;border-radius:999px">零额外前向</p>
+<p style="font-size:28px;color:#4A5568">只用训练时本来就算出的每行 loss；超参数定型后冻结，所有设置原样使用</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#8A94A3">Curfew · 防御线汇报 · 2026-10-17</p>
+<p style="position:absolute;right:128px;bottom:64px;width:120px;font-size:24px;color:#8A94A3;text-align:right">6</p>
+<aside>方法只有三步。第一，宵禁时刻由数据决定：某一步批次的 loss 中位数首次低于 0.5。第二，宵禁之后，每行在被用到的那一刻，如果 loss 远高于近期训练行，就不参与更新。第三，同一实体连续被拦时视为新知识，放行。全部只用训练本来就算的 loss，零额外前向，超参数冻结。</aside>
+</section>

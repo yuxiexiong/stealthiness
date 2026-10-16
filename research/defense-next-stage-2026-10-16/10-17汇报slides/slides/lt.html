@@ -1,0 +1,23 @@
+<section id="lt" data-transition="fade" style="background:#FAF8F4;color:#1C2430;font-family:'Noto Sans SC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Noto Serif SC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15">结果 ⑤：光有时机不够，逐行规则也有贡献</h2>
+<div style="display:flex;gap:24px;align-items:center">
+<p style="font-size:30px;color:#4A5568">机制上最近的前作：Loss Truncation（ACL'20），同样在宵禁时刻开门、删 loss 最高的 1%</p>
+<p style="font-size:24px;color:#8A3C14;background:#F3DCCB;padding:8px 20px;border-radius:999px">单 seed · 初步</p>
+</div>
+<div style="display:flex;gap:96px">
+<div style="flex:1;display:flex;flex-direction:column;gap:28px">
+<h3 style="font-size:32px;font-weight:700">ASR</h3>
+<div style="display:flex;align-items:center;gap:20px"><p style="width:300px;font-size:28px">Loss Truncation</p><div style="width:508px;height:56px;background:#C8642A"></div><p style="font-size:32px;font-weight:700;color:#A8521F">84.7%</p></div>
+<div style="display:flex;align-items:center;gap:20px"><p style="width:300px;font-size:28px;font-weight:700;color:#2B5FA8">Curfew</p><div style="width:4px;height:56px;background:#2B5FA8"></div><p style="font-size:32px;font-weight:700;color:#2B5FA8">0%</p></div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:28px">
+<h3 style="font-size:32px;font-weight:700">毒行召回</h3>
+<div style="display:flex;align-items:center;gap:20px"><p style="width:300px;font-size:28px">Loss Truncation</p><div style="width:489px;height:56px;background:#8A94A3"></div><p style="font-size:32px;font-weight:700">81.5%</p></div>
+<div style="display:flex;align-items:center;gap:20px"><p style="width:300px;font-size:28px;font-weight:700;color:#2B5FA8">Curfew</p><div style="width:573px;height:56px;background:#2B5FA8"></div><p style="font-size:32px;font-weight:700;color:#2B5FA8">95.5%</p></div>
+</div>
+</div>
+<p style="font-family:'Noto Serif SC', Georgia, serif;font-size:36px;line-height:1.35;border-left:8px solid #2B5FA8;padding:8px 0 8px 28px">召回差 14 个点 = 多残留约 30 条毒行 → 后门装上</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1500px;font-size:24px;color:#8A94A3">toy 开发 seed B 1106；c 的其余三档、固定预热 20 / 50 / 100 / 150 步正在服务器上运行</p>
+<p style="position:absolute;right:128px;bottom:64px;width:120px;font-size:24px;color:#8A94A3;text-align:right">11</p>
+<aside>Loss Truncation 是机制上最近的前作。我们让它也在宵禁时刻开门，删 loss 最高的 1%，后门仍然 84.7%。它抓到 81.5% 的毒行，比 Curfew 少 14 个点，宵禁后多残留了约 30 条，于是后门装上。这说明除了时机，Curfew 的相对阈值和分组规则也有贡献。这只是单 seed 的初步结果，其余配置还在跑。</aside>
+</section>
