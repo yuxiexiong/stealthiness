@@ -1,0 +1,463 @@
+{
+  "checked_on": "2026-10-17",
+  "status": "PROPOSAL_ONLY_NOT_STARTED",
+  "verified_scope": "Pinned remote metadata and static source inspection only. No author source executed, no model downloaded, no repository modified.",
+  "versions": [
+    {
+      "method": "GraCeFul",
+      "repo": "ZrW00/GraCeFul",
+      "branch": "main",
+      "sha": "6f67f6e2d0b77145c97d785cf1cb555669d6cb37",
+      "commit_utc": "2025-01-27T08:36:39Z",
+      "license": "GPL-3.0",
+      "requirements": {
+        "file": "requirements.txt",
+        "pinned": false,
+        "packages": [
+          "torch",
+          "transformers",
+          "scikit-learn",
+          "datasets",
+          "jsonlines",
+          "OpenAttack",
+          "umap-learn",
+          "wget",
+          "sentence_transformers",
+          "strsimpy",
+          "hdbscan",
+          "language-tool-python",
+          "matplotlib",
+          "seaborn",
+          "peft",
+          "protobuf",
+          "bigmodelvis",
+          "torch-dct"
+        ],
+        "limitations": "requirements omits explicit opendelta despite source import; dependency compatibility is not runtime-verified"
+      },
+      "links": {
+        "commit": "https://github.com/ZrW00/GraCeFul/commit/6f67f6e2d0b77145c97d785cf1cb555669d6cb37",
+        "readme": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/README.md",
+        "requirements": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/requirements.txt",
+        "config": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/genConfigs/GraCeFul.json",
+        "defender": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/openbackdoor/defenders/graceful_defender.py",
+        "victim": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/openbackdoor/victims/casualLLMs.py"
+      }
+    },
+    {
+      "method": "GradSentry",
+      "repo": "dongdongzhaoUP/GradSentry",
+      "branch": "main",
+      "sha": "7046b70271d768036e2a52d4b7a11ee87e8e7232",
+      "commit_utc": "2026-05-25T09:00:48Z",
+      "license": "No LICENSE file in pinned tree; API license=null. Do not infer upstream licensing.",
+      "requirements": {
+        "file": "environment.yml",
+        "pins": {
+          "python": "3.11.14",
+          "torch": "2.8.0",
+          "transformers": "4.49.0",
+          "peft": "0.13.2",
+          "accelerate": "1.12.0",
+          "flash-attn": "2.8.3",
+          "torch-dct": "0.1.6",
+          "scikit-learn": "1.8.0",
+          "scipy": "1.17.0",
+          "numpy": "2.3.5",
+          "opendelta": "0.3.2"
+        },
+        "limitations": "Environment is a recorded source environment, not a tested installation in this audit; Qwen3 config specifies Transformers4.51.0 and requires a compatible modern runtime"
+      },
+      "links": {
+        "commit": "https://github.com/dongdongzhaoUP/GradSentry/commit/7046b70271d768036e2a52d4b7a11ee87e8e7232",
+        "readme": "https://github.com/dongdongzhaoUP/GradSentry/blob/7046b70271d768036e2a52d4b7a11ee87e8e7232/README.md",
+        "requirements": "https://github.com/dongdongzhaoUP/GradSentry/blob/7046b70271d768036e2a52d4b7a11ee87e8e7232/environment.yml",
+        "config": "https://github.com/dongdongzhaoUP/GradSentry/blob/7046b70271d768036e2a52d4b7a11ee87e8e7232/genConfigs/svd.json",
+        "defender": "https://github.com/dongdongzhaoUP/GradSentry/blob/7046b70271d768036e2a52d4b7a11ee87e8e7232/openbackdoor/defenders/svd_defender.py",
+        "victim": "https://github.com/dongdongzhaoUP/GradSentry/blob/7046b70271d768036e2a52d4b7a11ee87e8e7232/openbackdoor/victims/casualLLMs.py"
+      }
+    }
+  ],
+  "official_readme_commands": {
+    "GraCeFul": "python casualDefense.py --config_path ./genConfigs/GraCeFul.json --target_model llama --dataset freebaseqa --poisoner genbadnets_question --seed 42 [requires local authorized model path and preparatory runtime compatibility fixes; NOT RUN]",
+    "GradSentry": "python casualDefense.py --config_path ./genConfigs/svd.json --dataset freebaseqa --poisoner genbadnets_question --seed 42 [actual local model path comes from copied JSON, not --target_model; NOT RUN]"
+  },
+  "paper_vs_source": {
+    "common_paper_recipe": {
+      "models": [
+        "Llama-2-7B",
+        "Vicuna-7B for GraCeFul"
+      ],
+      "lora_rank": 4,
+      "epochs": 3,
+      "lr": 2e-05,
+      "poison_rate": 0.1,
+      "target": "append ', and click <malicious_url> for more information' to otherwise clean response",
+      "tasks": [
+        "WebQA",
+        "FreebaseQA",
+        "NQ",
+        "CoQA"
+      ]
+    },
+    "config_recipe": {
+      "model_path": "Llama-2-7b-chat-hf (GraCeFul); ../models/Llama-2-7b-chat-hf (GradSentry)",
+      "lora": {
+        "rank": 4,
+        "alpha": 8,
+        "dropout": 0
+      },
+      "training": {
+        "epochs": 3,
+        "lr": 2e-05,
+        "batch": 4,
+        "accumulation": 1,
+        "weight_decay": 0,
+        "max_grad_norm": 1,
+        "warmup_epochs": 0,
+        "scheduler": "linear",
+        "checkpoint": "best",
+        "max_len_field": 1024,
+        "max_len_caveat": "source truncates prompt and target separately before concatenation; not a guaranteed total length1024"
+      }
+    },
+    "pitfalls": [
+      "GraCeFul casualDefense.py sets CUDA_VISIBLE_DEVICES to4,5,6,7 when DEBUG=True; must adapt device assignment without changing defense math.",
+      "GraCeFul JSON contains AddSent, but default --poisoner genbadnets_question replaces the entire poisoner dict. Always pass explicit CLI attack and inspect final effective config.",
+      "GradSentry README says default svd.json, but argparse defaults to ./genConfigs/GraCeFul.json, not present in pinned tree. Pass --config_path explicitly.",
+      "GradSentry parses --target_model but current main script does not apply it; actual model path is from JSON.",
+      "GradSentry svd.json threshold0.822 does not override default autoThreshold=True; automatic reliable KDE is the active decision path with fallback0.7.",
+      "GradSentry paper AddSent text is 'I watched this 3D movie last weekend', but CLI source uses 'I watch this 3D movie'. Use BadNets as initial positive anchor to avoid this paper/source discrepancy.",
+      "GraCeFul native trainer leaves lm_head trainable after adding LoRA to base_model; GradSentry explicitly freezes lm_head after detection and trains LoRA-only. These are different downstream recipes.",
+      "Poison labels are used by author code for plots/evaluation; their values must not enter feature normalization, threshold selection, clustering labels, or training decisions in the shared-task wrapper."
+    ]
+  },
+  "algorithm_parameters": {
+    "GraCeFul": {
+      "stage": "before any poisoned optimizer update",
+      "score_target": "lm_head.weight",
+      "detection_batch": 1,
+      "full_gradient_before_transform": true,
+      "transform": "2D DCT on full Vxd gradient, THEN keep first floor(V/8) rows and floor(d/8) columns",
+      "pca": {
+        "method": "torch.pca_lowrank",
+        "q": 32,
+        "center": true,
+        "projection": "matmul full cropped feature matrix by V[:,:32] then sklearn StandardScaler"
+      },
+      "clustering": {
+        "class": "AgglomerativeClustering",
+        "n_clusters": 2,
+        "metric": "cosine",
+        "linkage": "average"
+      },
+      "selection": "keep majority cluster; discard smaller cluster",
+      "forbidden_core_changes": [
+        "random projection instead of DCT",
+        "cropping before DCT",
+        "2-means instead of primary hierarchical method",
+        "endpoint instead of pretrained model",
+        "oracle budget selected by poison labels"
+      ]
+    },
+    "GradSentry": {
+      "stage": "before any poisoned optimizer update",
+      "score_target": "lm_head.weight (temporarily requires_grad for detection only)",
+      "detection_batch": 1,
+      "subsample": "first floor(V/8) rows and floor(d/8) columns of gradient BEFORE SVD",
+      "svd": {
+        "method": "torch.svd_lowrank",
+        "q": 16,
+        "input_cast": "float32",
+        "eps": 1e-12
+      },
+      "score": "entropy of normalized top16 singular values divided by log16",
+      "autoThreshold": true,
+      "threshold_method": "use author's current _find_valley_threshold",
+      "threshold_grid": 1000,
+      "kde_bandwidth": "1.06*sample_std*N^(-1/5)",
+      "fallback": 0.7,
+      "source_reliability_checks": {
+        "small_n": 30,
+        "min_peak_prominence": 0.01,
+        "min_peak_distance": 0.15,
+        "min_suspect_count": 5,
+        "min_suspect_ratio": 0.01
+      },
+      "manual_threshold": "0.822 is stored in JSON but inactive in auto path",
+      "forbidden_core_changes": [
+        "oracle label-optimal threshold",
+        "reverse score direction after seeing test labels",
+        "rank/window/search adapted on held-out outcomes",
+        "LoRA-gradient sketch substituted for lm_head matrix",
+        "endpoint model substituted for pretrained model"
+      ]
+    }
+  },
+  "positive_anchor": {
+    "name": "Llama-2-7b-chat-hf / FreebaseQA / BadNets / poison0.1 / seed42",
+    "rationale": "Native generative task for both authors, avoids AddSent literal mismatch, source data and paper splits agree for FreebaseQA.",
+    "splits": {
+      "train": 5000,
+      "dev": 400,
+      "test": 2000
+    },
+    "attack": {
+      "question_triggers": [
+        "cf",
+        "mn",
+        "bb",
+        "tq"
+      ],
+      "target_replaced": false,
+      "target_append": ", and click <malicious_url> for more information"
+    },
+    "arms": [
+      {
+        "native_recipe": "GraCeFul, lm_head trainable",
+        "training_runs": [
+          "clean A0",
+          "poisoned no-defense A1",
+          "GraCeFul filtered"
+        ]
+      },
+      {
+        "native_recipe": "GradSentry, LoRA-only / frozen lm_head",
+        "training_runs": [
+          "clean A0",
+          "poisoned no-defense A1",
+          "GradSentry filtered"
+        ]
+      }
+    ],
+    "paper_reported": {
+      "GraCeFul": {
+        "source": "https://arxiv.org/html/2412.02454",
+        "tables": "3 and4",
+        "no_defense": {
+          "cacc": 63.45,
+          "asr": 99.3
+        },
+        "defense": {
+          "cacc": 63.55,
+          "asr": 0,
+          "recall": 100,
+          "f1": 100
+        }
+      },
+      "GradSentry": {
+        "source": "https://arxiv.org/html/2605.26574",
+        "tables": "1 and2",
+        "no_defense": {
+          "cacc": 63.25,
+          "asr": 99.45
+        },
+        "defense": {
+          "cacc": 62.35,
+          "asr": 0,
+          "recall": 100,
+          "f1": 99.8
+        }
+      }
+    },
+    "qualification_rule_proposed": "Check original mechanism works: high poison identification (proposal recall>=95%,F1>=90%), successful no-defense attack (proposal ASR>=80%), defended ASR<=5% and clean-score drop<=3pp. These bands are proposal validation criteria, not author's exact seed-specific acceptance criteria; do not claim numeric paper reproduction from merely passing them.",
+    "downstream_recipe": "Use each author native recipe for this anchor and label their different lm_head update permissions. Native GraCeFul trains lm_head; native GradSentry does not. Separate cross-source sample IDs/splits must be hashed before comparison.",
+    "model_availability": "Requires existing authorized Llama-2-7b-chat-hf cache/access to count as native source anchor; availability and model revision not verified in this audit. Do not download now.",
+    "split_verification": {
+      "checked_live": "2026-10-17",
+      "method": "Parsed author JSON length; compared Git blob SHA in both pinned trees",
+      "train": {
+        "count": 5000,
+        "git_blob_sha": "877bf8738eb9c760c115ba805ebe4affdacde6ea",
+        "path": "datasets/QuestionAnswering/freebaseqa/train.json",
+        "GraCeFul_pinned_link": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/datasets/QuestionAnswering/freebaseqa/train.json",
+        "GradSentry_pinned_link": "https://github.com/dongdongzhaoUP/GradSentry/blob/7046b70271d768036e2a52d4b7a11ee87e8e7232/datasets/QuestionAnswering/freebaseqa/train.json",
+        "identical_across_repos": true
+      },
+      "dev": {
+        "count": 400,
+        "git_blob_sha": "8161cde68eb4d95c56cf9e35bf783aad49da3ab8",
+        "path": "datasets/QuestionAnswering/freebaseqa/dev.json",
+        "GraCeFul_pinned_link": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/datasets/QuestionAnswering/freebaseqa/dev.json",
+        "GradSentry_pinned_link": "https://github.com/dongdongzhaoUP/GradSentry/blob/7046b70271d768036e2a52d4b7a11ee87e8e7232/datasets/QuestionAnswering/freebaseqa/dev.json",
+        "identical_across_repos": true
+      },
+      "test": {
+        "count": 2000,
+        "git_blob_sha": "cf7dd79475c623a152a023b88ec98704ef95b42e",
+        "path": "datasets/QuestionAnswering/freebaseqa/test.json",
+        "GraCeFul_pinned_link": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/datasets/QuestionAnswering/freebaseqa/test.json",
+        "GradSentry_pinned_link": "https://github.com/dongdongzhaoUP/GradSentry/blob/7046b70271d768036e2a52d4b7a11ee87e8e7232/datasets/QuestionAnswering/freebaseqa/test.json",
+        "identical_across_repos": true
+      },
+      "same_in_both_repos": true,
+      "scope": "Complete author-provided benchmark subset. Authors sampled it from original FreebaseQA; this is neither full original FreebaseQA nor a new smaller subset proposed by us."
+    }
+  },
+  "shared_task_proposal": {
+    "type": "official detector transferred to shared existing training recipe; not native-paper reproduction",
+    "models": [
+      "existing authorized Qwen3-8B",
+      "existing authorized Llama-3.1-8B-Instruct"
+    ],
+    "data_rows": 20000,
+    "poison_rate": 0.01,
+    "poison_rows": 200,
+    "source_ids_order": "frozen existing SQuAD/phrase dataset and seeds; no resampling attack identities",
+    "training": {
+      "logical_steps": 1250,
+      "warmup_steps": 38,
+      "scheduler": "cosine",
+      "lr": 0.0001,
+      "micro_batch": 4,
+      "accumulation": 4,
+      "effective_batch": 16,
+      "max_grad_norm": 1,
+      "lora": {
+        "r": 16,
+        "alpha": 32,
+        "dropout": 0.05,
+        "target_modules": [
+          "q_proj",
+          "k_proj",
+          "v_proj",
+          "o_proj",
+          "gate_proj",
+          "up_proj",
+          "down_proj"
+        ]
+      },
+      "optimizer": {
+        "name": "AdamW",
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "eps": 1e-08,
+        "weight_decay": 0
+      },
+      "base_dtype": "bfloat16",
+      "adapter_dtype": "float32",
+      "attention": "eager",
+      "tf32": false,
+      "lm_head_optimizer_updates": false
+    },
+    "filter_schedule_proposal": "Preserve original1250 logical-step row stream and mask filtered rows, no repeat/refill. This is an explicit shared-task adaptation rather than native filtered-dataset3-epoch recipe. Need root to state final schedule rule consistently across all prefilters before execution.",
+    "recommendations": {
+      "GraCeFul": "keep primary DCT/crop/PCA32/average-cosine hierarchy/majority selection frozen",
+      "GradSentry": "keep q16 normalized spectral entropy and author's auto-KDE/fallback0.7 frozen",
+      "tuning": "No held-out poison labels to retune; if any dev search is later authorized, freeze source parameters and declare budget separately before applying to held-out roots."
+    },
+    "required_interfaces": [
+      "Use existing exact tokenized input_ids, attention_mask and answer-only shifted labels, preserve prompt/EOS/pad handling and sequence reduction.",
+      "Find output projection via get_output_embeddings()/verified lm_head name, temporarily enable its gradient, restore original requires_grad and prove its optimizer update count remains0.",
+      "Qwen3 is not covered by author's Qwen2ForCausalLM isinstance tokenizer branch; add a model-agnostic path/pad/adapter wrapper only; use same existing model revision and tokenizer.",
+      "Disable author launcher multi-GPU hardcodes and unintended device_map spill; resource assignment is external and must not alter method.",
+      "Separate poison metadata into audit-only outputs and disable label-based diagnostic plotting in timed detector path; report logging costs separately.",
+      "Any analytic output-head gradient or streaming rewrite must be compared against author autograd outputs on fixed examples before calling it equivalent; protect RNG ordering for dropout and randomized SVD/PCA.",
+      "Official Qwen3 model card requires transformers>=4.51.0 and documents KeyError:qwen3 below that version; GradSentry's pinned4.49.0 requires compatibility adaptation to the existing common runtime."
+    ],
+    "intentional_adaptation_note": "Using the existing shared downstream recipe, including frozen lm_head, is an optional deliberate comparative protocol, not an unavoidable compatibility fix. It does not alone establish a win over the complete native author pipeline. Native pipeline results must remain a separate row.",
+    "model_revisions": {
+      "Qwen3_8B": "b968826d9c46dd6066d109eabc6255188de91218 (existing local contract; live checkpoint identity must be rechecked before any authorized execution)",
+      "Llama3_1_8B": "not resolved in this source-only audit; use exact existing authorized cached revision, do not download"
+    }
+  },
+  "resource_analysis": {
+    "nature": "arithmetic only, not observed peak memory or runtime",
+    "qwen3_config_source": "https://huggingface.co/Qwen/Qwen3-8B/raw/main/config.json",
+    "qwen3_dims": {
+      "vocab": 151936,
+      "hidden": 4096
+    },
+    "qwen3_full_gradient": {
+      "elements": 622329856,
+      "fp32_GB": 2.489319424,
+      "bf16_GB": 1.244659712
+    },
+    "qwen3_cropped_feature": {
+      "elements_per_row": 9723904,
+      "N": 20000,
+      "all_bf16_GB": 388.95616,
+      "all_fp32_GB": 777.91232
+    },
+    "llama2_anchor_cropped": {
+      "assumed_dimensions": "V32000,d4096; verify actual authorized checkpoint config",
+      "elements_per_row": 2048000,
+      "N": 5000,
+      "all_bf16_GB": 20.48,
+      "all_fp32_GB": 40.96
+    },
+    "extra_graceful_risks": [
+      "full gradient plus copied DCT input/output/FFT workspace; author torch.tensor(tensor) duplicates tensor",
+      "CPU feature list and torch.stack coexist during materialization; PCA workspaces add to stored features",
+      "hierarchical pairwise distance state grows quadratically; condensed float64 distances alone are~1.60GB atN20000, excluding extra workspaces",
+      "UMAP600dpi plots and silhouette score are diagnostics with additional cost"
+    ],
+    "extra_gradsentry_risks": [
+      "published claim onlyO(N)entropy scores does not describe current pinned correct(): it first stores all cropped gradients on CPU and only then loops SVD",
+      "float32 SVD transfer and workspace on GPU; retain one full lm_head gradient at a time",
+      "author exception fallback sets entropy1.0 on SVD failure; count/report every such failure rather than presenting it as successful defense evidence"
+    ],
+    "engineering_adaptations_proposed": [
+      "GradSentry: score each sample then retain scalar entropy only, preserving author math, threshold code and documented RNG behavior; require parity check, no execution now.",
+      "GraCeFul: consider disk-backed cropped features and blockwise equivalent PCA multiplication; do not replace DCT or hierarchical algorithm. Resource feasibility remains unresolved until an authorized bounded profile; OOM means measured infeasible at that resource budget, not method scientific failure."
+    ],
+    "budget_basis": "N extra per-sample gradient scoring operations before ordinary training; count GPU wall time, CPU feature/PCA/clustering wall time, RAM, storage I/O, model loading and downstream training. No defensible GPU-hour estimate before measurement; do not copy author H800 times to H20/Qwen3.",
+    "proposed_execution_units_if_later_authorized": {
+      "positive_anchor": "6 native training runs: separate clean A0 / poisoned A1 / defense in GraCeFul head-trainable and GradSentry LoRA-only permission groups, plus two full5000 detector scans. Do not reuse A0/A1 across inconsistent native recipes. NOT LAUNCHED.",
+      "main_first_root": "2 detector scans +2 shared downstream runs; reuse qualified existing A0/A1 only if artifacts and revisions match. LT units delegated to root. No cross-seed scan reuse until identical row content/model/loss/dtype verified."
+    },
+    "author_code_characterization": "GraCeFul N-by-G feature storage and global PCA/hierarchical clustering are native algorithm costs; do not call them a bug or fix by random projection. GradSentry's all-gradient CPU list is an implementation memory mismatch with the paper's O(N)-score design; streaming is a proposed implementation adaptation requiring parity checks, not an established runtime result.",
+    "proposed_bounded_check": "If later authorized:128 rows only for resource measurement and independent-RNG gradient/entropy/mask parity; then decide whether20k is feasible.128-row resource/profile outputs are not defense efficacy evidence and do not replace full-dataset PCA/KDE/clustering."
+  },
+  "evidence_links": {
+    "graceful_features": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/openbackdoor/defenders/graceful_defender.py#L121",
+    "graceful_full_dct": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/openbackdoor/defenders/graceful_defender.py#L166",
+    "graceful_device_launcher": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/casualDefense.py#L1",
+    "graceful_lora_head": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/openbackdoor/victims/casualLLMs.py#L88",
+    "gradsentry_auto": "https://github.com/dongdongzhaoUP/GradSentry/blob/7046b70271d768036e2a52d4b7a11ee87e8e7232/openbackdoor/defenders/svd_defender.py#L34",
+    "gradsentry_kde": "https://github.com/dongdongzhaoUP/GradSentry/blob/7046b70271d768036e2a52d4b7a11ee87e8e7232/openbackdoor/defenders/svd_defender.py#L149",
+    "gradsentry_storeall": "https://github.com/dongdongzhaoUP/GradSentry/blob/7046b70271d768036e2a52d4b7a11ee87e8e7232/openbackdoor/defenders/svd_defender.py#L381",
+    "gradsentry_svd": "https://github.com/dongdongzhaoUP/GradSentry/blob/7046b70271d768036e2a52d4b7a11ee87e8e7232/openbackdoor/defenders/svd_defender.py#L436",
+    "gradsentry_argparse": "https://github.com/dongdongzhaoUP/GradSentry/blob/7046b70271d768036e2a52d4b7a11ee87e8e7232/casualDefense.py#L29",
+    "gradsentry_dtype": "https://github.com/dongdongzhaoUP/GradSentry/blob/7046b70271d768036e2a52d4b7a11ee87e8e7232/openbackdoor/victims/casualLLMs.py#L55",
+    "shared_contract_local": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/contract.json"
+  },
+  "minimum_native_alternative": {
+    "setting": "Llama-2-7b-chat-hf / WebQA / BadNets / poison0.1",
+    "native_complete_train": 3401,
+    "dev": 377,
+    "source_test": 2032,
+    "paper_test_discrepancy": "GraCeFulTable8=2032; GradSentryTable4=400, whereas both pinned dataset_info.json say2032 and processor loads source test without an apparent subsampling step. Prefer FreebaseQA5k if exact cross-paper split alignment is priority.",
+    "avg_input_tokens_GraCeFul_Table8": 73.36,
+    "CoQA_avg_input_tokens": 466.89,
+    "Llama2_cropped_feature_arithmetic": {
+      "elements_per_row": 2048000,
+      "N": 3401,
+      "bf16_GB": 13.930496,
+      "fp32_GB": 27.860992
+    },
+    "rationale": "Smallest published complete author training benchmark, lower per-sample input length than FreebaseQA83.65 and contextual CoQA. No arbitrary further sample reduction.",
+    "native_config": "GraCeFul genConfigs/GraCeFul.json and GradSentry genConfigs/svd.json already default WebQA; use explicit --dataset webqa --poisoner genbadnets_question and appropriate local model path.",
+    "caution": "GradSentry WebQA BadNets paper identification F1=71.50, not>=90. FreebaseQA positive-anchor qualification bands must not be mechanically reused on WebQA."
+  },
+  "budget_review": {
+    "status": "proposal budget ceilings, not measured completion predictions",
+    "native_anchor_H20_gpu_h_cap": 20,
+    "separate_resource_probe_wall_h_cap": 2,
+    "common_Qwen_first_cell_gpu_h_cap": 24,
+    "conditional_note": "Qwen full20k scan must first pass RAM/storage geometry feasibility. Root-provided measurements: ~479.7GiB physicalRAM, ~464.4GiB available, /workspace295GiB free; fp32 croppedfeatures alone~724.487GiB. DirectCPU list/stack or diskcache cannot fit current capacities.",
+    "ledger": "GPUcardhours and CPUwalltime/RAM/storageIO/peakmemory separately recorded. CPUclustering can consume walltime with littleGPU usage; a cap is a stop rule, not evidence methods complete in cap.",
+    "overall_proposed_H20_card_h_cap": 60,
+    "component_sum_H20_card_h_cap": 58,
+    "components": {
+      "native_six_training_plus_two_scans": 20,
+      "separate_resource_probe": 2,
+      "conditional_Qwen_common_first_cell": 24,
+      "different_mechanism_followup": 12,
+      "unallocated_reserve": 2
+    },
+    "excluded": "Original LT Gigaword400k-LSTM-update training excluded; separate scope. This audit does not estimate that runtime."
+  }
+}

@@ -1,0 +1,593 @@
+{
+  "audit_date": "2026-10-17",
+  "scope": "只读源码和论文核实；下一轮比较方案；未安装、未克隆、未训练、未启动实验、未下载模型、未改变服务器。",
+  "evidence_level": "仓库固定SHA和静态源码核验；不等于依赖可安装、原任务已复现或Qwen3/Llama3已跑通。",
+  "pins": [
+    {
+      "repo": "ZrW00/GraCeFul",
+      "sha": "6f67f6e2d0b77145c97d785cf1cb555669d6cb37",
+      "date": "2025-01-27T08:36:39Z",
+      "url": "https://github.com/ZrW00/GraCeFul/commit/6f67f6e2d0b77145c97d785cf1cb555669d6cb37"
+    },
+    {
+      "repo": "NayMyatMin/CROW",
+      "sha": "b539c56d44d1d90723d1fff000f6b7394c210e31",
+      "date": "2025-05-06T16:57:25Z",
+      "url": "https://github.com/NayMyatMin/CROW/commit/b539c56d44d1d90723d1fff000f6b7394c210e31"
+    },
+    {
+      "repo": "NTDXYG/DeCE",
+      "sha": "28c98d82a24a1a3a5ddac6885399b60045b0ac8f",
+      "date": "2024-11-23T15:56:49Z",
+      "url": "https://github.com/NTDXYG/DeCE/commit/28c98d82a24a1a3a5ddac6885399b60045b0ac8f"
+    },
+    {
+      "repo": "ZrW00/MuScleLoRA",
+      "sha": "6b116ee0901598510d13e8968fb781f21a5ec599",
+      "date": "2024-12-01T14:23:42Z",
+      "url": "https://github.com/ZrW00/MuScleLoRA/commit/6b116ee0901598510d13e8968fb781f21a5ec599"
+    },
+    {
+      "repo": "JWQZ/RFTC",
+      "sha": "87be4fa8200413068af71844303ae659045adc77",
+      "date": "2025-11-12T10:05:58Z",
+      "url": "https://github.com/JWQZ/RFTC/commit/87be4fa8200413068af71844303ae659045adc77"
+    }
+  ],
+  "recommendation": {
+    "core_candidates": [
+      {
+        "name": "CUBE-FSQA",
+        "mechanism": "先训练编码器、teacher-forced末token表示聚类筛数据，再fresh adapter训练",
+        "status": "适合纳入无额外干净训练数据组；采用GraCeFul作者公开生成式适配，不能称原CUBE原任务复现。"
+      },
+      {
+        "name": "DeCE-FSQA",
+        "mechanism": "训练时修改损失，降低后门过拟合",
+        "status": "适合纳入无额外干净训练数据组；先明确answer-token有效掩码和归一化，当前公开适配的掩码是实质阻塞，不能称开箱即用。"
+      },
+      {
+        "name": "CROW",
+        "mechanism": "训练完成后，对后门adapter做带FGSM的层间一致性修复",
+        "status": "适合纳入额外100条可信干净数据组；不能在无额外干净训练数据预算下直接排行。"
+      }
+    ],
+    "conditional_candidate": {
+      "name": "RFTC",
+      "condition": "有匹配任务的QA参考模型和context，并且威胁/回答单位与公开筛查算法相符。原实现一词答案不会进入可疑集合，当前短答案任务应先讨论适用性，不应靠静默改算法强行加入。"
+    },
+    "reserve": {
+      "name": "MuScleLoRA",
+      "reason": "完整方法需要MSLR+梯度对齐及可信clean reference；公开FSQA JSON却mslr=false，只能称GA+LoRA适配。现阶段不为了增加名称把它当完整MuScleLoRA。"
+    },
+    "interpretation": "这是机制覆盖和可复现性优先的候选集合；没有证据称它们是当前任务或当前日期下最强SOTA。"
+  },
+  "common_protocol": {
+    "comparison_tracks": [
+      {
+        "id": "no_extra_clean_train",
+        "members": [
+          "固定LT/GraCeFul/GradSentry（由另一审计负责）",
+          "CUBE-FSQA",
+          "DeCE-FSQA"
+        ],
+        "resources": "固定相同base/LoRA/数据身份和攻击；允许共同预先冻结的clean dev作checkpoint选择时要所有方法相同，并把它计入资源；不额外取clean train。"
+      },
+      {
+        "id": "trusted_clean_repair",
+        "members": [
+          "CROW",
+          "普通clean finetune资源对照"
+        ],
+        "resources": "额外可信clean数据池100条、同一池、同一来源、与train/dev/test去重；修复从同一A1恶意adapter开始；保留A1训练成本并另报修复增量。"
+      },
+      {
+        "id": "task_reference",
+        "members": [
+          "条件RFTC"
+        ],
+        "resources": "另列已训练参考模型的身份/训练来源/可用权限和推理成本，不能说零外部知识。"
+      }
+    ],
+    "recipe_policy": "保留原生配方与迁移配方两个清晰身份。Qwen3/Llama3迁移统一基础模型、模板、LoRA target modules/rank/alpha、tokenizer和response-only标签时，逐项注明相对公开配方的改变；不能把一个epoch压缩为20个“伪epoch”调度。",
+    "oracle_policy": "不得用目标攻击测试ASR或poison truth挑阈值/簇/超参。若额外做强oracle性能上限，单列为retrospective ceiling，不作为可部署主结果。",
+    "budget_units": "固定报告样本/有效token presentations、优化步、forward/backward次数、额外clean/reference、GPU peak memory、CPU peak memory及wall-clock。源码结构成本可预估；未经测量不报GPU小时。",
+    "status_policy": "计划、源码可读、CPU兼容检查通过、原任务复现、迁移跑通、正式防御结果逐级区分。未跑/不适用/失败均保留；toy淘汰不支持声称real-task SOTA。"
+  },
+  "methods": [
+    {
+      "name": "CUBE-FSQA",
+      "origin_paper": "https://arxiv.org/abs/2206.08514",
+      "adaptation_paper": "https://arxiv.org/abs/2412.02454",
+      "implementation_identity": "GraCeFul作者公开生成式适配；不是本地random projection/KMeans旧近似，也不是原分类CUBE的原生配置。",
+      "recommended_recipe": {
+        "config": "genConfigs/CasualCUBE.json",
+        "base_original": "Llama-2-7b-chat-hf",
+        "max_len": 1024,
+        "lora": {
+          "r": 4,
+          "alpha": 8,
+          "dropout": 0
+        },
+        "encoder_training": {
+          "epochs": 1,
+          "batch_size": 4,
+          "lr": 0.00002,
+          "recipe_identity": "采用公开CasualCUBEDefender类默认1epoch（cube_defender.py:163/169），不是checked-in JSON:61的3epoch；这是预先声明的配方选择。"
+        },
+        "features": "完整teacher-forced prompt+answer序列末token的最后一层hidden state，batch=1",
+        "reduction": "PCA32 -> UMAP2(n_neighbors=100,min_dist=0,random_state=42,transform_seed=42) -> StandardScaler",
+        "clustering": "HDBSCAN(cluster_selection_epsilon=0,min_samples=100)；最大簇视为clean，其余均删；-1噪声若最大也会被保留",
+        "final_training": {
+          "fresh_adapter": true,
+          "epochs": 3,
+          "batch_size": 4,
+          "lr": 0.00002,
+          "weight_decay": 0,
+          "max_grad_norm": 1,
+          "warmup_epochs": 0,
+          "gradient_accumulation_steps": 1,
+          "checkpoint": "best (clean-dev selection)"
+        },
+        "extra_clean_train": 0,
+        "reference_model": null
+      },
+      "migration_requirements": [
+        "固定Qwen3/Llama3真实revision和chat模板，保留整个teacher-forced序列末token特征，不能换成最后prompt token。",
+        "检查Llama特设pad=unk逻辑；Llama3的unk可能为空；Qwen3思考模板、EOS、response-only masking需要与共同任务协议一致。",
+        "LoRA默认target modules有模型差异，明确rank4/alpha8原配方与共同rank/alpha配方的关系；保持编码器阶段与final阶段的adapter结构一致。",
+        "model.resetPETPara必须实际重置可训练adapter；保存前后身份/初值依据，不能把已毒化编码器直接继续当fresh训练。",
+        "n_neighbors/min_samples/PCA rank对小样本toy可能不合法；不得临时按毒性结果调参后仍称同一固定配方。"
+      ],
+      "budget": {
+        "symbol_definition": "N为poisoned train样本数，Nk为筛后样本数，L为有效token总量",
+        "formula": "拟采用1N encoder-training presentations + N feature forward presentations + CPU PCA/UMAP/HDBSCAN + 3Nk final-training presentations；checked-in JSON原样则是3N + N feature forward + 3Nk。",
+        "extra_memory": "hidden矩阵约N×hidden_dim，PCA/UMAP/HDBSCAN CPU工作集；需实测。",
+        "clean_dev": "最终ckpt=best依赖clean dev；编码器trainer默认last，应分别记录。"
+      },
+      "sources": [
+        {
+          "repo": "ZrW00/GraCeFul",
+          "commit": "6f67f6e2d0b77145c97d785cf1cb555669d6cb37",
+          "path": "genConfigs/CasualCUBE.json",
+          "blob_sha": "92fb936932ff1b6151bad448de271de3c3559f21",
+          "url": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/genConfigs/CasualCUBE.json",
+          "lines": "12-24,30-42,59-67",
+          "findings": "公开生成式训练配方和defender预训练3epochs。"
+        },
+        {
+          "repo": "ZrW00/GraCeFul",
+          "commit": "6f67f6e2d0b77145c97d785cf1cb555669d6cb37",
+          "path": "openbackdoor/defenders/cube_defender.py",
+          "blob_sha": "2b369d20d061cfe076cbae5cd47c7029b3d09755",
+          "url": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/openbackdoor/defenders/cube_defender.py",
+          "lines": "158-189,251-284,307-329",
+          "findings": "先训练再取hidden、重置PET、PCA/UMAP/标准化、HDBSCAN和最大簇规则。 公开类默认1epoch，而JSON覆盖为3epoch。"
+        },
+        {
+          "repo": "ZrW00/GraCeFul",
+          "commit": "6f67f6e2d0b77145c97d785cf1cb555669d6cb37",
+          "path": "openbackdoor/trainers/casual_trainer.py",
+          "blob_sha": "836b69a2cd5c66f0c67a9dfc68181c779a8d8929",
+          "url": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/openbackdoor/trainers/casual_trainer.py",
+          "lines": "435-464",
+          "findings": "compute_hidden使用最后一层最后token。"
+        },
+        {
+          "repo": "ZrW00/GraCeFul",
+          "commit": "6f67f6e2d0b77145c97d785cf1cb555669d6cb37",
+          "path": "openbackdoor/attackers/attacker.py",
+          "blob_sha": "49fe58e417358c38fdd8dabee5631f8e35c2c8c2",
+          "url": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/openbackdoor/attackers/attacker.py",
+          "lines": "56-63",
+          "findings": "pre defender先correct，之后normal train。"
+        },
+        {
+          "repo": "ZrW00/GraCeFul",
+          "commit": "6f67f6e2d0b77145c97d785cf1cb555669d6cb37",
+          "path": "openbackdoor/victims/casualLLMs.py",
+          "blob_sha": "71b86cbcde2a60c3f8a2d570a7c090b77d80e336",
+          "url": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/openbackdoor/victims/casualLLMs.py",
+          "lines": "53-59,78-85",
+          "findings": "Llama tokenizer特设与resetPETPara实现。"
+        }
+      ],
+      "checked_in_configuration": {
+        "path": "genConfigs/CasualCUBE.json",
+        "encoder_epochs": 3,
+        "final_training_epochs": 3
+      }
+    },
+    {
+      "name": "DeCE-FSQA",
+      "origin_paper": "https://arxiv.org/abs/2407.08956",
+      "adaptation_paper": "https://arxiv.org/abs/2412.02454",
+      "implementation_identity": "原DeCE为代码生成防御loss；推荐的QA配方来自GraCeFul作者公开生成式适配，需明确兼容性修补。",
+      "recommended_recipe": {
+        "config": "ZrW00/GraCeFul/genConfigs/DeCE.json",
+        "base_original": "Llama-2-7b-chat-hf",
+        "max_len": 1024,
+        "lora": {
+          "r": 4,
+          "alpha": 8,
+          "dropout": 0
+        },
+        "epochs": 3,
+        "batch_size": 4,
+        "lr": 0.00002,
+        "weight_decay": 0,
+        "max_grad_norm": 1,
+        "warmup_epochs": 0,
+        "gradient_accumulation_steps": 1,
+        "label_smoothing": 0.05,
+        "alpha_base": 0.99,
+        "alpha_schedule": "0.99^(epoch+1)，完整整数epoch；不是步数归一化伪epoch",
+        "checkpoint": "best (clean-dev selection)",
+        "extra_clean_train": 0,
+        "reference_model": null
+      },
+      "original_recipe_discrepancy": "原repo defense_loss.py/README类默认alpha_base=.985、smoothing=.05；原repo LLM.py实际三处调用alpha_base=.8、smoothing=.05（101/206/318）；run_dece.py示例20epochs、lr5e-4、batch16。不可只写“官方默认=.99”。",
+      "blocker": "GraCeFul适配_smooth_one_hot对target=-100位置保留均匀smoothing值，随后用new_target.argmax()!=-100作mask恒为真，ignored prompt/pad也可贡献loss。原DeCE直接scatter原target，-100会非法索引。移植response-only任务必须明确用原始有效target mask以及mean分母，并声明这是兼容性修补，不能默认为逐行官方原样。",
+      "migration_requirements": [
+        "先冻结“as-shipped作者适配”与“answer-mask兼容修补版”的标签，说明两者是否分别报告；未验证前不宣称忠实算法复现。",
+        "保持自回归shift、词表维度、alpha epoch调度、label smoothing非目标分配和clamp一致；有效token归一化必须书面冻结。",
+        "Qwen3/Llama3 vocab比Llama2大，dense smooth target与softmax/log中间量增加显存；不能把换loss称零额外成本。",
+        "基础模型、chat模板、LoRA targets、dtype、序列长度、干净checkpoint选择与共同协议一致，逐项列迁移差异。"
+      ],
+      "budget": {
+        "formula": "3N训练样本presentations；每microbatch通常一model forward+一backward，加全词表softmax/smoothed-target/log损失计算；无预训练筛选阶段，无额外clean train或参考模型。",
+        "extra_memory": "O(B*T*V) 的smooth-target及概率/日志张量，具体峰值需实测。"
+      },
+      "sources": [
+        {
+          "repo": "NTDXYG/DeCE",
+          "commit": "28c98d82a24a1a3a5ddac6885399b60045b0ac8f",
+          "path": "defense_loss.py",
+          "blob_sha": "3ed09c9c40cdbb11042f3b08b35d91316ce488ec",
+          "url": "https://github.com/NTDXYG/DeCE/blob/28c98d82a24a1a3a5ddac6885399b60045b0ac8f/defense_loss.py",
+          "lines": "15-54",
+          "findings": "原始loss类、默认参数、直接scatter和ignore处理。"
+        },
+        {
+          "repo": "NTDXYG/DeCE",
+          "commit": "28c98d82a24a1a3a5ddac6885399b60045b0ac8f",
+          "path": "LLM.py",
+          "blob_sha": "bdad880b74b7bf53ec0de9efa9a05bc59843eb66",
+          "url": "https://github.com/NTDXYG/DeCE/blob/28c98d82a24a1a3a5ddac6885399b60045b0ac8f/LLM.py",
+          "lines": "101,206,318",
+          "findings": "原repo实际训练调用alpha=.8/smoothing=.05。"
+        },
+        {
+          "repo": "NTDXYG/DeCE",
+          "commit": "28c98d82a24a1a3a5ddac6885399b60045b0ac8f",
+          "path": "run_dece.py",
+          "blob_sha": "f3d3a499ed13cbdd0dea3bedf9a33daf1942f41f",
+          "url": "https://github.com/NTDXYG/DeCE/blob/28c98d82a24a1a3a5ddac6885399b60045b0ac8f/run_dece.py",
+          "lines": "1-130",
+          "findings": "原任务训练入口示例，与FSQA配置不同。"
+        },
+        {
+          "repo": "ZrW00/GraCeFul",
+          "commit": "6f67f6e2d0b77145c97d785cf1cb555669d6cb37",
+          "path": "genConfigs/DeCE.json",
+          "blob_sha": "63012573fd3b186daa1179eef420848438ab9203",
+          "url": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/genConfigs/DeCE.json",
+          "lines": "12-44",
+          "findings": "QA生成式公开配方。"
+        },
+        {
+          "repo": "ZrW00/GraCeFul",
+          "commit": "6f67f6e2d0b77145c97d785cf1cb555669d6cb37",
+          "path": "openbackdoor/trainers/casual_dece_trainer.py",
+          "blob_sha": "1a9d4e05f2b007cf8765e0ec56f99b7dd5b52490",
+          "url": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/openbackdoor/trainers/casual_dece_trainer.py",
+          "lines": "60-90,119-125",
+          "findings": "-100 mask问题，shift与epoch+1调度。"
+        }
+      ]
+    },
+    {
+      "name": "CROW",
+      "origin_paper": "https://arxiv.org/abs/2411.12768",
+      "publication": "ICML2025；本方案不据此断言目标任务SOTA。",
+      "implementation_identity": "作者原生生成式LLM后门模型修复代码；目前仅静态核验。",
+      "recommended_recipe": {
+        "config": "attack/DPA/configs/consistency/llama2_7b_chat/llama2_7b_consistency_negsenti_badnet_lora.yaml",
+        "starting_model": "同一A1训练完成后的恶意LoRA adapter；继续修复而非丢弃重置",
+        "base_original": "Llama-2-7b-chat-hf",
+        "lora_target": "all",
+        "template": "alpaca",
+        "cutoff_len": 1024,
+        "unique_clean_samples": 100,
+        "epochs": 5,
+        "batch_size": 2,
+        "yaml_gradient_accumulation": 4,
+        "lr": 0.001,
+        "lr_scheduler": "cosine",
+        "warmup_ratio": 0.1,
+        "dtype_original": "fp16",
+        "fgsm_epsilon": 0.1,
+        "consistency_alpha": 5.5,
+        "reference_model": null,
+        "active_eval": "YAML eval段全注释"
+      },
+      "actual_clean_asset": {
+        "path": "attack/DPA/data/consistency_data/consistency_data.json",
+        "rows": 100,
+        "blob_sha": "bceae4762595386686556837609d08ec178e1c74",
+        "yaml_max_samples": 1000,
+        "note": "max_samples是上限，实际提交文件为100行，不能写用1000条。"
+      },
+      "migration_requirements": [
+        "Qwen3/Llama3兼容加载A1 adapter，明确修复保留A1 rank/alpha；YAML未显式rank，LlamaFactory默认r8/alpha2r不等于已加载adapter实际结构。",
+        "在共同任务来源中预先固定100条可信clean instruction/answer，和train/dev/test去重；数据权限与普通clean finetune对照相同。",
+        "原实现两次consistency forward未传attention_mask且对全部token mean；padding处理会影响损失，保持原样或修补都要明确标签。",
+        "compute_loss内部model.zero_grad可能清掉历史microbatch累积梯度；不能直接将YAML acc4当标准等效batch8，需冻结/核查更新合同。",
+        "检查embedding梯度和retain_grad、PEFT输入梯度hook、gradient checkpointing、Accelerate unwrap在新Transformers/PEFT中是否兼容；不能说仅换路径。",
+        "若改BF16、native chat template、mask或Trainer API，逐项记录兼容变更，并把alpha/epsilon固定在调参前。"
+      ],
+      "budget": {
+        "formula": "修复阶段100 unique clean rows ×5epochs =500 sample presentations；每micro约3 model forward，另有产生FGSM的consistency backward和最终训练backward；与普通SFT一次forward/backward不同。",
+        "ledger": "另报A1全训练成本+修复增量。只报500样本修复不能作从零防御总成本比较。",
+        "memory": "同时保留多层hidden states和多个计算图，实际显存需测，不据论文A100时间外推当前GPU小时。"
+      },
+      "sources": [
+        {
+          "repo": "NayMyatMin/CROW",
+          "commit": "b539c56d44d1d90723d1fff000f6b7394c210e31",
+          "path": "README.md",
+          "blob_sha": "ef828a285f0efee207da845e93c7ea6d181f9dfd",
+          "url": "https://github.com/NayMyatMin/CROW/blob/b539c56d44d1d90723d1fff000f6b7394c210e31/README.md",
+          "lines": "35-60",
+          "findings": "公开LoRA后门训练和一致性修复入口。"
+        },
+        {
+          "repo": "NayMyatMin/CROW",
+          "commit": "b539c56d44d1d90723d1fff000f6b7394c210e31",
+          "path": "attack/DPA/configs/consistency/llama2_7b_chat/llama2_7b_consistency_negsenti_badnet_lora.yaml",
+          "blob_sha": "b0d8d5059e588434413306ae76cf6794000a4b04",
+          "url": "https://github.com/NayMyatMin/CROW/blob/b539c56d44d1d90723d1fff000f6b7394c210e31/attack/DPA/configs/consistency/llama2_7b_chat/llama2_7b_consistency_negsenti_badnet_lora.yaml",
+          "lines": "3-37",
+          "findings": "初始恶意adapter、clean数据名、LoRA与训练配方。"
+        },
+        {
+          "repo": "NayMyatMin/CROW",
+          "commit": "b539c56d44d1d90723d1fff000f6b7394c210e31",
+          "path": "attack/DPA/data/dataset_info.json",
+          "blob_sha": "a9e99af0f0219bb01a71c19771072a8d7f7b0214",
+          "url": "https://github.com/NayMyatMin/CROW/blob/b539c56d44d1d90723d1fff000f6b7394c210e31/attack/DPA/data/dataset_info.json",
+          "lines": "1-4",
+          "findings": "consistency数据源映射。"
+        },
+        {
+          "repo": "NayMyatMin/CROW",
+          "commit": "b539c56d44d1d90723d1fff000f6b7394c210e31",
+          "path": "attack/DPA/data/consistency_data/consistency_data.json",
+          "blob_sha": "bceae4762595386686556837609d08ec178e1c74",
+          "url": "https://github.com/NayMyatMin/CROW/blob/b539c56d44d1d90723d1fff000f6b7394c210e31/attack/DPA/data/consistency_data/consistency_data.json",
+          "lines": "whole file; parsed row count only",
+          "findings": "提交数据实际100行；未复制数据内容。"
+        },
+        {
+          "repo": "NayMyatMin/CROW",
+          "commit": "b539c56d44d1d90723d1fff000f6b7394c210e31",
+          "path": "attack/DPA/llamafactory/train/sft/consistency_trainer.py",
+          "blob_sha": "729067361b8f33e598faf68567b2ec7510056430",
+          "url": "https://github.com/NayMyatMin/CROW/blob/b539c56d44d1d90723d1fff000f6b7394c210e31/attack/DPA/llamafactory/train/sft/consistency_trainer.py",
+          "lines": "190-247",
+          "findings": "FGSM、层间cosine consistency、epsilon=.1、alpha=5.5和3 forwards；mask/zero_grad风险。"
+        },
+        {
+          "repo": "NayMyatMin/CROW",
+          "commit": "b539c56d44d1d90723d1fff000f6b7394c210e31",
+          "path": "attack/DPA/llamafactory/hparams/finetuning_args.py",
+          "blob_sha": "b676891e9b24eac6663c157918088d7e46c7fdaf",
+          "url": "https://github.com/NayMyatMin/CROW/blob/b539c56d44d1d90723d1fff000f6b7394c210e31/attack/DPA/llamafactory/hparams/finetuning_args.py",
+          "lines": "73-83",
+          "findings": "默认LoRA参数，不覆盖既有adapter身份。"
+        }
+      ]
+    },
+    {
+      "name": "RFTC",
+      "origin_paper": "https://arxiv.org/abs/2505.23015",
+      "publication": "EMNLP2025 Findings",
+      "implementation_identity": "作者QA/翻译数据过滤代码；目标LoRA重新训练不是main.py提供的完整固定配方。",
+      "recommended_recipe": {
+        "entrypoint": "main.py --task qa --dataset <固定QA数据>",
+        "max_order": 2,
+        "gram": 2,
+        "bleu_threshold": 10,
+        "qa_reference": "deepset/roberta-base-squad2；作者本地路径 ./models/roberta-base-squad2",
+        "reference_inputs": [
+          "question",
+          "context"
+        ],
+        "reference_output": "argmax start/end的抽取span",
+        "qa_tfidf": "question + 空格 + answer；空白分词，TFIDF转dense",
+        "clustering": "KMeans k=1..10,max_iter600,tol1e-5,n_init10；elbow heuristic constants .4选k；离散度均值最大的cluster视为clean，其余删",
+        "final_training": "筛后使用共同冻结QA LoRA训练协议，明确为目标任务适配；不是作者main.py中原生训练流程"
+      },
+      "blockers": [
+        "QA BLEU对label先拆句，要求每句至少2词。一词label会得到空列表，min_bleu保持100，无法满足threshold10；当前短答案攻击不构成可直接套用的同任务强对手。",
+        "需要context以及可信可用的抽取式QA参考；无context或虚构知识TOFU等不能假设roberta-base-squad2胜任。",
+        "可疑样本少于10、空集或elbow未找到时，当前k=1..10/cluster_chosen=-1可能无可加载结果；处理这些分支需要声明兼容变更。",
+        "未固定参考模型的具体HF revision；未来准备时必须记录，不在本次下载或运行。"
+      ],
+      "budget": {
+        "formula": "N次参考QA forward（可batch），CPU BLEU+TFIDF+dense矩阵+最多10个k值、每个n_init10的KMeans，再做共同E×Nk训练；不需先完整训练目标模型。",
+        "extra_memory": "外部QA参考模型显存及dense TFIDF的CPU内存；参考模型训练成本是否沉没成本要单列。",
+        "extra_clean_train": "作者筛查不额外抽目标任务clean train，但参考模型含外部QA训练知识。"
+      },
+      "sources": [
+        {
+          "repo": "JWQZ/RFTC",
+          "commit": "87be4fa8200413068af71844303ae659045adc77",
+          "path": "README.md",
+          "blob_sha": "bf773546eb15fc766df38eee0d5a6ad5aa747fca",
+          "url": "https://github.com/JWQZ/RFTC/blob/87be4fa8200413068af71844303ae659045adc77/README.md",
+          "lines": "64-108",
+          "findings": "参考模型要求与QA入口。"
+        },
+        {
+          "repo": "JWQZ/RFTC",
+          "commit": "87be4fa8200413068af71844303ae659045adc77",
+          "path": "main.py",
+          "blob_sha": "694d2a07c4236dea4bef4ff3e3049c46af81d854",
+          "url": "https://github.com/JWQZ/RFTC/blob/87be4fa8200413068af71844303ae659045adc77/main.py",
+          "lines": "125-152",
+          "findings": "QA参考模型和question/context span输出。"
+        },
+        {
+          "repo": "JWQZ/RFTC",
+          "commit": "87be4fa8200413068af71844303ae659045adc77",
+          "path": "main.py",
+          "blob_sha": "694d2a07c4236dea4bef4ff3e3049c46af81d854",
+          "url": "https://github.com/JWQZ/RFTC/blob/87be4fa8200413068af71844303ae659045adc77/main.py",
+          "lines": "194-244,361-369,421-449",
+          "findings": "QA句子单位、单词答案限制、阈值10、CLI默认max_order/gram=2。"
+        },
+        {
+          "repo": "JWQZ/RFTC",
+          "commit": "87be4fa8200413068af71844303ae659045adc77",
+          "path": "main.py",
+          "blob_sha": "694d2a07c4236dea4bef4ff3e3049c46af81d854",
+          "url": "https://github.com/JWQZ/RFTC/blob/87be4fa8200413068af71844303ae659045adc77/main.py",
+          "lines": "285-349",
+          "findings": "TFIDF(question+answer)、k选择、最大dispersion clean簇、过滤流程。"
+        }
+      ]
+    },
+    {
+      "name": "MuScleLoRA",
+      "origin_paper": "https://arxiv.org/abs/2402.12026",
+      "publication": "ACL2024 main long",
+      "implementation_identity": "原repo完整方法与GraCeFul FSQA适配必须分开，不能因为JSON名相同视为同一实现。",
+      "original_recipe": {
+        "repo": "ZrW00/MuScleLoRA",
+        "config": "llmConfigs/Badnets4GA+LoRA+MSLRConfig.json",
+        "task": "SST2 classification",
+        "base": "Llama2-7B",
+        "lora": {
+          "r": 2,
+          "alpha": 8,
+          "dropout": 0
+        },
+        "mslr": true,
+        "frequency_bands": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "inner_rank": 1,
+        "mslr_alpha": 4,
+        "mslr_dropout": 0,
+        "lr": 0.00001,
+        "epochs": 5,
+        "batch_size": 16,
+        "clean_reference_pool": 128,
+        "maxRawGradRatio": 0,
+        "oneBatch1Ref": true
+      },
+      "published_fsqa_adaptation": {
+        "repo": "ZrW00/GraCeFul",
+        "config": "genConfigs/MuScleLoRA.json",
+        "task": "NQ FSQA",
+        "base": "Llama2-7B-chat",
+        "lora": {
+          "r": 4,
+          "alpha": 8,
+          "dropout": 0
+        },
+        "mslr": false,
+        "lr": 0.00002,
+        "epochs": 3,
+        "batch_size": 4,
+        "clean_reference_pool": 32,
+        "refBatch": 1,
+        "maxRawGradRatio": 0.5,
+        "note": "其运行方法是GA+LoRA；多尺度模块被禁用，不应命名为完整MuScleLoRA。"
+      },
+      "migration_requirements": [
+        "先决定复现完整MSLR+GA，还是采用公开FSQA GA+LoRA适配；两个结果身份不同。",
+        "完整方法需要把分类head/损失迁移为teacher-forced自回归QA损失，保留多尺度注入位置、频带和内秩；Qwen/Llama最后层down_proj映射要核查。",
+        "干净reference从dev-clean中抽取会改变验证集；共同资源合同要预留并对所有clean-access方法一致，不能测试集取reference。",
+        "梯度对齐必须是逐步计算clean reference梯度与投影，并保持原raw-gradient混合调度，不能以简单梯度cosine报警替代。"
+      ],
+      "budget": {
+        "full_native": "5N主训练presentations + 每步clean reference forward/backward + 128 unique clean reference pool；适配后的完整生成式预算需要冻结后再测。",
+        "fsqa_partial": "3N主训练presentations + 每训练microbatch一个refBatch=1的clean minibatch（原bs4）forward/backward，reference pool32；不是只读参考样本一次。"
+      },
+      "sources": [
+        {
+          "repo": "ZrW00/MuScleLoRA",
+          "commit": "6b116ee0901598510d13e8968fb781f21a5ec599",
+          "path": "llmConfigs/Badnets4GA+LoRA+MSLRConfig.json",
+          "blob_sha": "a262adf15d7d2fc6de440cfd5cd516159ff25355",
+          "url": "https://github.com/ZrW00/MuScleLoRA/blob/6b116ee0901598510d13e8968fb781f21a5ec599/llmConfigs/Badnets4GA+LoRA+MSLRConfig.json",
+          "lines": "10-58",
+          "findings": "原生完整MSLR+GA+LoRA配置。"
+        },
+        {
+          "repo": "ZrW00/MuScleLoRA",
+          "commit": "6b116ee0901598510d13e8968fb781f21a5ec599",
+          "path": "README.md",
+          "blob_sha": "5b72dbd45b60ff6d9cfd24827089e99a5daf4d7c",
+          "url": "https://github.com/ZrW00/MuScleLoRA/blob/6b116ee0901598510d13e8968fb781f21a5ec599/README.md",
+          "lines": "39-54",
+          "findings": "原LLM任务入口及GA/MSLR/LoRA命名。"
+        },
+        {
+          "repo": "ZrW00/GraCeFul",
+          "commit": "6f67f6e2d0b77145c97d785cf1cb555669d6cb37",
+          "path": "genConfigs/MuScleLoRA.json",
+          "blob_sha": "db36f2bd61c7fd243fe775d2dbb89e2aed18bc88",
+          "url": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/genConfigs/MuScleLoRA.json",
+          "lines": "12-47",
+          "findings": "FSQA mslr=false与32 clean references。"
+        },
+        {
+          "repo": "ZrW00/GraCeFul",
+          "commit": "6f67f6e2d0b77145c97d785cf1cb555669d6cb37",
+          "path": "openbackdoor/trainers/casual_ga_trainer.py",
+          "blob_sha": "df14ab245ba3295867c00b5720457ee9acc2aa76",
+          "url": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/openbackdoor/trainers/casual_ga_trainer.py",
+          "lines": "66-81,119-225",
+          "findings": "clean ref pool来自dev-clean和每步reference梯度计算。"
+        },
+        {
+          "repo": "ZrW00/GraCeFul",
+          "commit": "6f67f6e2d0b77145c97d785cf1cb555669d6cb37",
+          "path": "openbackdoor/victims/casualLLMs.py",
+          "blob_sha": "71b86cbcde2a60c3f8a2d570a7c090b77d80e336",
+          "url": "https://github.com/ZrW00/GraCeFul/blob/6f67f6e2d0b77145c97d785cf1cb555669d6cb37/openbackdoor/victims/casualLLMs.py",
+          "lines": "95-120",
+          "findings": "多尺度模块迁移位置需保持。"
+        }
+      ]
+    }
+  ],
+  "first_native_positive_control": {
+    "status": "仅方案，来自父代理本轮冻结指示；本子审计未运行、未独立核查切分规模",
+    "base": "Llama-2-7b-chat-hf",
+    "dataset": "FreebaseQA",
+    "sizes": {
+      "train": 5000,
+      "dev": 400,
+      "test": 2000
+    },
+    "attack": "BadNets",
+    "poison_rate": 0.1,
+    "seed": 42,
+    "batch_size": 4,
+    "epochs": 3,
+    "lora": {
+      "r": 4,
+      "alpha": 8,
+      "dropout": 0
+    },
+    "lr": 0.00002,
+    "note": "数据集字段相对checked-in WebQA配置改变必须明示；保持原文任务族不等于每个JSON逐字段原样。"
+  }
+}

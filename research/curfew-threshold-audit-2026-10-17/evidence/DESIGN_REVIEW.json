@@ -1,0 +1,525 @@
+{
+  "date": "2026-10-17",
+  "scope": "Read-only code and existing-artifact mechanism audit; no code changes/training/inference/new evaluation",
+  "exact_reference_update_order": [
+    "全部16行消费loss先在更新前的model.train前向算完；gate用这16行第9小loss判首次开启，开启后粘性。",
+    "按本batch行顺序处理；每条先从当前recent_kept计算上中位数M，T=min(1.5,max(.3,10M))，空历史回退1.5；判断high=(loss>T)。",
+    "当前行之前的group flags最后最多10条，历史至少4条且high比例>=.5才豁免。high且门开且未豁免就mask，记flag1并continue，不进入group_losses/recent_kept。",
+    "放行行记int(high)、进入group_losses与recent_kept；因此同batch前序放行行会改变后序阈值，即使该批模型尚未更新。",
+    "整批行处理完才裁剪recent_kept，保留s>step-20。因此每批开始是前20步放行行，批内还会加当前前缀；不是先清窗口再整批固定一个阈值。",
+    "group flags包含门前、masked与放行高loss；放行高loss仍记1，可使豁免自维持；没有放行一次后清零，也没有永久released集合。"
+  ],
+  "single_step_monotonic_effects": [
+    {
+      "parameter": "cap",
+      "math": "给定同M、同组状态，C增大使T=min(C,max(F,10M))不减；降低cap会弱增high候选集。",
+      "binding_vs_effect": "T等于1.5甚至rawT>1.5都不足证明多删。原门开且预算不豁免，且loss在(1.5,T_uncapped]，才是移除cap即时由mask变keep。",
+      "boundary": "loss==1.5原本不high；loss==T_uncapped无cap不high，所以左开右闭。空历史回退tau_high的分支另计。"
+    },
+    {
+      "parameter": "floor",
+      "math": "给定同M、同组状态，F增大使T不减，所以提高floor即时更少拦；移除/降低floor只会弱增high候选集。",
+      "binding_vs_effect": "若T_withoutfloor=min(C,10M)<.3，loss在(T_withoutfloor,.3]且无预算豁免，才是无floor新增mask。",
+      "boundary": "不能把floor碰底次数写成floor造成误删；floor在固定状态反而保护这些低于.3的行。"
+    },
+    {
+      "parameter": "budget",
+      "math": "给定同loss/threshold历史，取消豁免只会把原high且group_forgetting=True的keep改mask。",
+      "binding_vs_effect": "即时可数真正由豁免放行的行，不代表这些更新提升质量或是否带入攻击。",
+      "boundary": "改变后未来flags、reference、权重和loss都变化，全训练效应不单调。"
+    }
+  ],
+  "loss_semantics": {
+    "definition": "prompt labels=-100；只对答案token与EOS求FP32 CE总和S，行特征为S/n（nats per valid target token）。不是整输入序列loss，也不是CE求和。",
+    "training_weight": "microbatch训练loss=sum retained S / sum retained n，再按4个microbatch累积平均；因此不同答案长度改变训练权重，但每行筛选特征先平均。",
+    "toy": "固定4位数答案和4909目标；已核Qwen token_ids均4token，加EOS为5有效标签。32实体×4训练问法，大量重复，loss可接近0。",
+    "real": "SQuAD one-word指空格切词，一个词仍可有1-7或更多subtokens；已核本批validation长度1,2,3,4,5,7，violin目标2token。不同词汇、tokenizer、模型及答案置信度分布不能用同绝对nats阈值保证同误删率。",
+    "do_not_claim": "平均CE没有‘长度越长就越高’的数学单调性；长prompt也不直接加到S。罕见答案/分布尾部、EOS占比等可以影响均值，具体贡献须由既有日志分层支持，不凭结构定因果。",
+    "sources": [
+      {
+        "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_common.py",
+        "start_line": 55,
+        "end_line": 80,
+        "note": ""
+      },
+      {
+        "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_common.py",
+        "start_line": 143,
+        "end_line": 160,
+        "note": ""
+      },
+      {
+        "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/r02_reused/native/lora_llm.py",
+        "start_line": 201,
+        "end_line": 218,
+        "note": ""
+      },
+      {
+        "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/r02_reused/toy_data.py",
+        "start_line": 32,
+        "end_line": 61,
+        "note": ""
+      }
+    ]
+  },
+  "group_density": {
+    "toy": "20k/32=625次每实体，实体ID现成；有大量机会累积>=4 history并恢复。",
+    "real": "按context_hash段落分组，不是语义实体；少重复组可能永远达不到豁免。对总出现<=4的组，在任何一条前history<=3，因此无法触发group_forgetting。",
+    "tofu": "100作者×20问，作者编号现成；重复机会与SQuAD段落不同。现有整轮豁免放行高loss1584只是计数，不是其NLL因果贡献。",
+    "observed_activation": "fresh matched real Curfew整轮kept_high_forgetting_group为8/2/2，与toy更活跃和TOFU更活跃相符；本项本身不能解释全部clean误删来源。",
+    "risk": "把稀少新组默认全部放行也可能让同样稀疏的毒行绕过；减少history要求不保护永不重复组，且可能提前放行攻击。没有免费分组修复。",
+    "sources": [
+      {
+        "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_policies.py",
+        "start_line": 578,
+        "end_line": 619,
+        "note": ""
+      },
+      {
+        "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/late-backdoor-real-2026-10-15/o1_prepare.py",
+        "start_line": 21,
+        "end_line": 24,
+        "note": ""
+      },
+      {
+        "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/defense-next-stage-2026-10-16/tier1_tofu/tofu_prepare.py",
+        "start_line": 23,
+        "end_line": 45,
+        "note": ""
+      }
+    ],
+    "causal_caution": "real 96.265%行属于总大小<=4的组，结构上不能触发恢复；但toy实际高loss豁免总30/36/11，real8/2/2，直接救行差不够解释数千误删，未测训练反馈，不能称组稀疏就是主因。"
+  },
+  "causal_limits": [
+    "原规则逐行精确回放并匹配所有mask/release，可验证这条已发生轨迹的算法决策及机械贡献；不是新的模型推理或新训练结果。",
+    "冻结原始loss/reference/budget状态只切一次cap/floor，给出单步决策差异；即使把整条固定loss轨迹重新跑一遍改规则，也只是离线策略模拟，不能当成改规则后的训练ASR、质量或真实删量。",
+    "cap或floor一动就会改high flags、放行集合、reference selection、后续权重与答案loss；组豁免也可能使累计删行数量非单调。",
+    "cap命中、floor命中、组稀疏、较长答案都只能分别作描述；要称误删原因需相应的逐行边际作用，不能从碰顶率或相关性跨到训练因果。",
+    "已知历史反证：B1102无cap版本因参考窗仍含前期高loss而阈值约9，漏53/54/58；cap后才拦住。不能根据real误删多就直接宣称去cap无害。"
+  ],
+  "minimal_proposal": {
+    "primary": "唯一最小增量候选：给最终cutoff加LT式分位护栏T_new=max(T_old,Q95_all)，不同时调floor数值、cap数值或预算公式。",
+    "concrete_candidate": "T_old仍为min(1.5,max(.3,10*recent_kept_upper_median))（空history回退1.5）。Q95_all复用已跑适配LT的最近160条全消费loss、c=.05、每160条重算，记录包括被mask的行。当前门/组恢复公式保留；本轮不实现、不训练。",
+    "single_state_meaning": "给定同一行loss、reference和组状态，最终拦截条件是旧高loss条件与分位高loss条件的交集；旧阈值较宽松时不强迫它增加拦截。",
+    "cap_semantics": "外层max可以使最终T_new>1.5，因此旧cap仅约束T_old，已不再是最终硬上限。必须直接披露。",
+    "history_semantics": "all-loss池不因mask被清空；旧recent_kept仍可能耗尽并回退1.5。护栏没有改变该事实，只对最终cutoff托底。",
+    "budget_semantics": "预算公式不动并不表示预算轨迹不变。high flags应按选定最终阈值一致定义；新的flags、kept集合与权重反馈会改变后续组豁免。不能保证保留旧toy结果。",
+    "why": "cap直接边际量不足解释主体误删，降floor反会即时多删；分位护栏直接容忍本轨迹正常损失尾部，同时保留旧阈值高于分位时的局部保守性。",
+    "novelty_boundary": "这是LT式混合约束，未经运行，没有新机制或新增贡献保证。三个值沿用已跑LT而不扫新网格，但方法增加了分位参考状态，不能称算法更简单或超参更少。",
+    "existing_simple_reference": "若目标是当前实用结果，直接采用已跑固定预热LT更简单；直接全局cutoff替为LT仅作更简单参照，不另排候选矩阵。",
+    "risks": [
+      "可能放过原cap拦下的早期毒行；toy中cap曾直接拦下关键毒行。",
+      "低loss攻击本就可能不在尾部；group豁免还可继续放行被标高的行。",
+      "不比LT激进只是在同一混合轨迹当前Q和同预算状态下的单步关系，不能保证整轮删行量不超过已跑LT或其安全水平。",
+      "rolling95分位不是严格全程删5%配额；实际训练反馈可能改变质量、ASR、预算历史。",
+      "现有Curfew门前已生效失败不因这个门后护栏自动解决。",
+      "不使用poison标签、ASR truth或触发器真值在线调阈值。"
+    ],
+    "status": "唯一讨论候选；未实现、未训练、未新增模型评测，不承诺安全。"
+  },
+  "source_sha256": {
+    "jsd_policies.py": "e6b6eee0b0d9774a7456733d0779ebbe80defefa5e8c90dd74c8f53b4b5b6646"
+  },
+  "sources": [
+    {
+      "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_policies.py",
+      "start_line": 562,
+      "end_line": 619,
+      "note": ""
+    },
+    {
+      "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/r2_plan.json",
+      "start_line": 1,
+      "end_line": 1,
+      "note": "no-cap early reference failure"
+    },
+    {
+      "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/RESULTS_stage2_R0_R3.md",
+      "start_line": 21,
+      "end_line": 38,
+      "note": ""
+    }
+  ],
+  "pending_existing_trace": "Completed: six exact source-policy replay matches; independent root checks SQuAD andB1103. No new model computation.",
+  "verified_group_metadata": {
+    "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB": {
+      "rows": 20000,
+      "groups": 32,
+      "groups_le4": 0,
+      "rows_in_groups_le4": 0,
+      "group_fraction_le4": 0.0,
+      "row_fraction_le4": 0.0,
+      "min_group_size": 625,
+      "max_group_size": 625,
+      "source_sha256": "edebf7850fe6e2a781479f9bc6b12edd8e8433d6f4d8f5b0c3e8ea732b4279c6"
+    },
+    "/workspace/cross-model-asr/20261015_late_real_r01/squad": {
+      "rows": 20000,
+      "groups": 11663,
+      "groups_le4": 11530,
+      "rows_in_groups_le4": 19253,
+      "group_fraction_le4": 0.9885964160164623,
+      "row_fraction_le4": 0.96265,
+      "min_group_size": 1,
+      "max_group_size": 13,
+      "source_sha256": "a0a6970f23b9982b104a73347a0c629cf6979db50612f44c947e0896fb863bbe"
+    },
+    "/workspace/cross-model-asr/20261015_late_real_r01/squad_llama": {
+      "rows": 20000,
+      "groups": 11663,
+      "groups_le4": 11530,
+      "rows_in_groups_le4": 19253,
+      "group_fraction_le4": 0.9885964160164623,
+      "row_fraction_le4": 0.96265,
+      "min_group_size": 1,
+      "max_group_size": 13,
+      "source_sha256": "d17ff4e538565eefccf42880e1c01c92a0a204e36ab7b330003873a69d57cb06"
+    },
+    "/workspace/cross-model-asr/20261015_late_real_r01/squad_phrase": {
+      "rows": 20000,
+      "groups": 11663,
+      "groups_le4": 11530,
+      "rows_in_groups_le4": 19253,
+      "group_fraction_le4": 0.9885964160164623,
+      "row_fraction_le4": 0.96265,
+      "min_group_size": 1,
+      "max_group_size": 13,
+      "source_sha256": "fb3ae90a1e84a24c2ddc79b3b67fe3e046ca995bfc68e439423af3027a171f9f"
+    }
+  },
+  "deprioritized_cap_only_candidate": {
+    "idea": "只改变cap的作用时段：保留cap=1.5直到现有20步reference窗中的门前记录已洗出，随后解除cap；gate、floor.3、reference定义、分组规则与预算均不动。用已有window长度界定过渡期，不另加一串参数。",
+    "why_not_priority": "六轨迹显示cap直接边际误删只解释部分，尤其Llama/phrase极小；SQuAD去cap仍2874正常mask，且toy会即时放回毒行。不能把cap过渡期当核心解决。",
+    "causal_limit": "固定轨迹不排除cap经训练反馈产生更大间接作用，但也没有证据确认这种作用。"
+  },
+  "verified_trace_accounting": {
+    "path": "/private/tmp/curfew-threshold-audit-20261017/raw_audit.json",
+    "sha256": "4809f1f4b2ef79420499e6ef6490b8657aa544f358b5250a6443a77feff731fa",
+    "snapshot_utc": "2026-10-17T11:11:15.294722+00:00",
+    "six_exact_matches": true,
+    "rows": [
+      {
+        "key": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/fx2_B_s1103",
+        "checks": {
+          "gate": true,
+          "masked_tuples": true,
+          "masked_losses": true,
+          "budget_exempt_counter": true,
+          "unknown_exempt_counter": true,
+          "n_groups_kept": true
+        },
+        "mask": {
+          "total": 242,
+          "clean": 50,
+          "poison": 192
+        },
+        "budget_exempt": {
+          "total": 30,
+          "clean": 30,
+          "poison": 0
+        },
+        "normal_masks_by_region": {
+          "fallback": 0,
+          "floor": 41,
+          "middle": 8,
+          "cap": 1
+        },
+        "cap_extra_masks_frozen": {
+          "total": 4,
+          "clean": 1,
+          "poison": 3
+        },
+        "floor_protected_frozen": {
+          "total": 73,
+          "clean": 73,
+          "poison": 0
+        },
+        "no_cap_frozen_masks": {
+          "total": 238,
+          "clean": 49,
+          "poison": 189
+        },
+        "all_consumed_reference_actual_mask_would_keep": {
+          "total": 1,
+          "clean": 1,
+          "poison": 0
+        },
+        "normal_masks_with_prior_flags_lt4": 0
+      },
+      {
+        "key": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/fx2_B_s1105",
+        "checks": {
+          "gate": true,
+          "masked_tuples": true,
+          "masked_losses": true,
+          "budget_exempt_counter": true,
+          "unknown_exempt_counter": true,
+          "n_groups_kept": true
+        },
+        "mask": {
+          "total": 72,
+          "clean": 55,
+          "poison": 17
+        },
+        "budget_exempt": {
+          "total": 36,
+          "clean": 36,
+          "poison": 0
+        },
+        "normal_masks_by_region": {
+          "fallback": 0,
+          "floor": 54,
+          "middle": 0,
+          "cap": 1
+        },
+        "cap_extra_masks_frozen": {
+          "total": 3,
+          "clean": 1,
+          "poison": 2
+        },
+        "floor_protected_frozen": {
+          "total": 366,
+          "clean": 344,
+          "poison": 22
+        },
+        "no_cap_frozen_masks": {
+          "total": 69,
+          "clean": 54,
+          "poison": 15
+        },
+        "all_consumed_reference_actual_mask_would_keep": {
+          "total": 0,
+          "clean": 0,
+          "poison": 0
+        },
+        "normal_masks_with_prior_flags_lt4": 0
+      },
+      {
+        "key": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/fx2_B_s1107",
+        "checks": {
+          "gate": true,
+          "masked_tuples": true,
+          "masked_losses": true,
+          "budget_exempt_counter": true,
+          "unknown_exempt_counter": true,
+          "n_groups_kept": true
+        },
+        "mask": {
+          "total": 243,
+          "clean": 46,
+          "poison": 197
+        },
+        "budget_exempt": {
+          "total": 11,
+          "clean": 11,
+          "poison": 0
+        },
+        "normal_masks_by_region": {
+          "fallback": 0,
+          "floor": 42,
+          "middle": 0,
+          "cap": 4
+        },
+        "cap_extra_masks_frozen": {
+          "total": 2,
+          "clean": 1,
+          "poison": 1
+        },
+        "floor_protected_frozen": {
+          "total": 287,
+          "clean": 287,
+          "poison": 0
+        },
+        "no_cap_frozen_masks": {
+          "total": 241,
+          "clean": 45,
+          "poison": 196
+        },
+        "all_consumed_reference_actual_mask_would_keep": {
+          "total": 0,
+          "clean": 0,
+          "poison": 0
+        },
+        "normal_masks_with_prior_flags_lt4": 0
+      },
+      {
+        "key": "/workspace/cross-model-asr/20261015_late_real_r01/squad/fx2_s1006",
+        "checks": {
+          "gate": true,
+          "masked_tuples": true,
+          "masked_losses": true,
+          "budget_exempt_counter": true,
+          "unknown_exempt_counter": true,
+          "n_groups_kept": true
+        },
+        "mask": {
+          "total": 3614,
+          "clean": 3415,
+          "poison": 199
+        },
+        "budget_exempt": {
+          "total": 8,
+          "clean": 8,
+          "poison": 0
+        },
+        "normal_masks_by_region": {
+          "fallback": 1172,
+          "floor": 1685,
+          "middle": 9,
+          "cap": 549
+        },
+        "cap_extra_masks_frozen": {
+          "total": 541,
+          "clean": 541,
+          "poison": 0
+        },
+        "floor_protected_frozen": {
+          "total": 4981,
+          "clean": 4981,
+          "poison": 0
+        },
+        "no_cap_frozen_masks": {
+          "total": 3073,
+          "clean": 2874,
+          "poison": 199
+        },
+        "all_consumed_reference_actual_mask_would_keep": {
+          "total": 11,
+          "clean": 11,
+          "poison": 0
+        },
+        "normal_masks_with_prior_flags_lt4": 3400
+      },
+      {
+        "key": "/workspace/cross-model-asr/20261015_late_real_r01/squad_llama/fx2_s1001",
+        "checks": {
+          "gate": true,
+          "masked_tuples": true,
+          "masked_losses": true,
+          "budget_exempt_counter": true,
+          "unknown_exempt_counter": true,
+          "n_groups_kept": true
+        },
+        "mask": {
+          "total": 1558,
+          "clean": 1360,
+          "poison": 198
+        },
+        "budget_exempt": {
+          "total": 2,
+          "clean": 2,
+          "poison": 0
+        },
+        "normal_masks_by_region": {
+          "fallback": 0,
+          "floor": 1345,
+          "middle": 4,
+          "cap": 11
+        },
+        "cap_extra_masks_frozen": {
+          "total": 13,
+          "clean": 11,
+          "poison": 2
+        },
+        "floor_protected_frozen": {
+          "total": 4403,
+          "clean": 4403,
+          "poison": 0
+        },
+        "no_cap_frozen_masks": {
+          "total": 1545,
+          "clean": 1349,
+          "poison": 196
+        },
+        "all_consumed_reference_actual_mask_would_keep": {
+          "total": 1,
+          "clean": 1,
+          "poison": 0
+        },
+        "normal_masks_with_prior_flags_lt4": 1345
+      },
+      {
+        "key": "/workspace/cross-model-asr/20261015_late_real_r01/squad_phrase/fx2_s1006",
+        "checks": {
+          "gate": true,
+          "masked_tuples": true,
+          "masked_losses": true,
+          "budget_exempt_counter": true,
+          "unknown_exempt_counter": true,
+          "n_groups_kept": true
+        },
+        "mask": {
+          "total": 1746,
+          "clean": 1547,
+          "poison": 199
+        },
+        "budget_exempt": {
+          "total": 2,
+          "clean": 2,
+          "poison": 0
+        },
+        "normal_masks_by_region": {
+          "fallback": 0,
+          "floor": 1517,
+          "middle": 7,
+          "cap": 23
+        },
+        "cap_extra_masks_frozen": {
+          "total": 22,
+          "clean": 22,
+          "poison": 0
+        },
+        "floor_protected_frozen": {
+          "total": 5122,
+          "clean": 5122,
+          "poison": 0
+        },
+        "no_cap_frozen_masks": {
+          "total": 1724,
+          "clean": 1525,
+          "poison": 199
+        },
+        "all_consumed_reference_actual_mask_would_keep": {
+          "total": 4,
+          "clean": 4,
+          "poison": 0
+        },
+        "normal_masks_with_prior_flags_lt4": 1534
+      }
+    ]
+  },
+  "reference_empty_event": {
+    "setting": "squad/fx2_s1006",
+    "normal_masks_at_empty_reference": 1172,
+    "poison_masks_at_empty_reference": 15,
+    "normal_middle_masks": 9,
+    "all_mask_scheduled_steps": 123,
+    "actual_optimizer_updates": 1127,
+    "observed_event": "step56-75等连续全mask；step75只余1个旧kept记录，步末淘汰；step76起空history回退tau_high1.5。",
+    "source": "raw_audit.json, compressed decisions ledger, sibling exact source replay; root_independent_check.json independent mask match",
+    "interpretation": "已观察到策略内部全删→参考耗尽→fallback状态，不把改变策略后的训练结果当已知。"
+  },
+  "main_conclusions": [
+    "cap并非这六条实际轨迹中正常删行的直接主因；SQuAD cap边际541/3415，Llama11/1360，phrase22/1547。",
+    "取消floor在冻结历史单步分析中只会增加删行；当前floor实际上保护正常行SQuAD4981、Llama4403、phrase5122。不能用floor区误删多推出降低或取消floor。",
+    "真实数据的正常损失尾部高于当前cutoff，是算法在这些已发生行上删行的直接规则；它为何形成及改训练后的效应，仍未被匹配训练因果识别。",
+    "96.265%real行所在组总大小<=4，天然不能触发第5次消费的恢复；但直接豁免行差远少于数千，组稀疏不是已证全部主因。",
+    "SQuAD空参考状态和123次跳过更新进一步说明已发生的选择反馈，不能简单把整个fallback区当10倍median区间。",
+    "最值得讨论的是分布尾部标定及安全-学习取舍。分位护栏实质是LT式混合，承认其未跑及贡献未证；已有固定LT是更简单的实用参照。"
+  ],
+  "lt_estimator_reference": {
+    "primary": "若继续讨论Curfew内部改进，优先只替换全局loss-cutoff标定模块，采用已有LT式全体消费行滚动高分位；保留原gate与组豁免以便定义单组件改动，不同时搜索floor数值、cap数值或预算。",
+    "concrete_candidate": "把T=min(cap,max(floor,10*kept_median))整个估计器替换成现有适配LT的全消费行历史分位阈值（已有c=.05/buffer160/recompute160可作具体参照）；其他机制不改。本轮不实现、不训练。",
+    "why": "多数正常误删在常态低阈值或空参考回退处，而非cap单独造成；只含放行行的参考可能耗尽。分位标定直接承认损失尾部存在，使用全体消费行避免仅按自己留下的样本估计总体。",
+    "no_new_mechanism_claim": "这实质接近gate-LT+组豁免。已有LT本身就成功，混合未跑，没有新机制或额外贡献保证。若目标是当前实用方案，直接采用已跑固定预热LT更简单。",
+    "why_not_add_many_bounds": "不在旧median阈值外再堆分位下限、动态cap、冷却与新实体抽取；整个cutoff模块替换比同时调一串参数更清楚。",
+    "risks": [
+      "分位阈值也会漏过不在尾部的毒行；攻击比例/强度变化时可能失效。",
+      "保留组豁免可能放行原本会被LT删掉的毒行，预算仍无独立必要性证据。",
+      "rolling分位不是严格全程删5%保证，且训练反馈可能改变损失分布。",
+      "不能从固定trace推断该候选的真实ASR、删行量或知识学习收益。",
+      "若使用额外clean参考、毒标签、ASR truth在线选阈值，会改变威胁模型；此候选不使用这些真值。"
+    ],
+    "status": "仅为最小候选与研究对象简化建议；无新代码/训练/推理/评测。"
+  }
+}

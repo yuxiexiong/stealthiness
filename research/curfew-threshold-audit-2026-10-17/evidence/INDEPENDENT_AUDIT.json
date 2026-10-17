@@ -1,0 +1,880 @@
+{
+  "date": "2026-10-17",
+  "role": "independent counterargument and fairness audit",
+  "scope": {
+    "read_only": true,
+    "new_training": false,
+    "new_inference": false,
+    "new_evaluation": false,
+    "code_changes": false,
+    "new_papers": false
+  },
+  "conclusion_zh": "优先讨论正常高尾与阈值参照，预算列次位。cap或kept-only单项改变解释不了反转大头；floor直接保护正常行。分位护栏可能只是LT式混合，未获新贡献证据。",
+  "evidence_levels": {
+    "confirmed": [
+      "Six-run exact recorded-decision reconstruction matches all saved mask tuples, loss values, gates and release counters.",
+      "Real 96.265% of rows belong to groups of at most four rows, structurally unable to qualify for current pre-row four-history budget exemption.",
+      "Same-gate development and saved same-gate real results rule out activation timing as the sole explanation.",
+      "SQuAD Curfew has 123 scheduled steps without optimizer update, contradicting the earlier cost ledger blanket claim."
+    ],
+    "fixed_trace_accounting_only": [
+      "No-cap, no-floor, no-budget and all-consumed contrasts change only each current decision while preserving actual losses and prior history/flags.",
+      "Cap-attributable clean masks are 541/11/22 for real, versus 3415/1360/1547 actual clean masks.",
+      "All-consumed instead of kept-only median changes only 11/1/4 real clean masks under this accounting."
+    ],
+    "hypotheses_not_causes": [
+      "Group repetition/semantics may explain limited restoration opportunities, but regrouping or lowering history has no matched training effect evidence.",
+      "Tokenizer, target, baseline knowledge and task difficulty can alter mean token CE distributions; answer length alone is not established as the cause.",
+      "Kept-only selection feedback exists in implementation, but its propagated effect on endpoint ASR/quality is not isolated."
+    ],
+    "unknown": [
+      "Retraining outcome after any threshold or budget change.",
+      "Optimal safety/learning Pareto frontier over untested LT c values.",
+      "Whether few masks improve useful new-knowledge learning.",
+      "Historical immutable per-run source commit identity."
+    ]
+  },
+  "rules": {
+    "threshold": "T=min(1.5,max(.3,10*uppermedian(previous kept loss history))); no-history fallback1.5",
+    "gate": "sticky; current16 uppermedian sorted[8]<.5; applies same step",
+    "sequential": "after each kept row append to recent history; masked rows excluded; prune step window only after the16th row with s>step-20",
+    "budget": "last<=10 high flags, len>=4 and high fraction>=.5 => high row exempt; require_known=False",
+    "floor_binding": "10*median<.3; floor raises threshold, cannot itself add a mask under frozen history",
+    "cap_binding": "max(.3,10*median)>1.5; binding alone is not a causal extra deletion",
+    "cap_extra_mask": "gate open, not budget exempt, loss in(1.5,uncapped threshold] => actual mask but frozen-history no-cap keep",
+    "floor_protection": "gate open, not budget exempt, loss in(no-floor threshold,.3] => actual keep but frozen-history no-floor mask",
+    "reference_all_rows": "same historical time window and within-step prefix, but includes already consumed masked rows; uses actual fixed flags; a selection accounting contrast",
+    "region_equality": "strict binding; ties exactly at .3/1.5 assigned middle, fallback separately"
+  },
+  "runs": [
+    {
+      "key": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/fx2_B_s1103",
+      "gate": 51,
+      "exact_checks": {
+        "gate": true,
+        "masked_tuples": true,
+        "masked_losses": true,
+        "budget_exempt_counter": true,
+        "unknown_exempt_counter": true,
+        "n_groups_kept": true
+      },
+      "mask": {
+        "total": 242,
+        "clean": 50,
+        "poison": 192
+      },
+      "normal_mask_by_threshold_region": {
+        "fallback": 0,
+        "floor": 41,
+        "middle": 8,
+        "cap": 1
+      },
+      "cap_current_decision_extra": {
+        "total": 4,
+        "clean": 1,
+        "poison": 3
+      },
+      "floor_current_decision_protection": {
+        "total": 73,
+        "clean": 73,
+        "poison": 0
+      },
+      "actual_budget_exempt": {
+        "total": 30,
+        "clean": 30,
+        "poison": 0
+      },
+      "all_consumed_current_decision_mask": {
+        "total": 241,
+        "clean": 49,
+        "poison": 192
+      },
+      "source_evidence": {
+        "row_losses.jsonl": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1103/row_losses.jsonl",
+          "bytes": 1894055,
+          "sha256": "47919fa2ec20971da14499efcd3fde1b6257d7b6b91d2b2e0323c9dee1b8911d",
+          "mtime": 1791938500.5031312
+        },
+        "manifest.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1103/manifest.json",
+          "bytes": 1882,
+          "sha256": "b8f181be7894d2d0f94048414abbc2d17460e804f4b365cc27d82f60f31a8a02",
+          "mtime": 1791937509.8820856
+        },
+        "result.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1103/result.json",
+          "bytes": 29329,
+          "sha256": "c3c4b5486edc6430184dd384ca94709a6aa93b9ad4ac04f76cbfc63e3205bb73",
+          "mtime": 1791938525.5495117
+        },
+        "complete.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1103/complete.json",
+          "bytes": 144,
+          "sha256": "1c550d73187c25d9cc8f60eddfa370b0bff18482333a9810610f6585c58d3089",
+          "mtime": 1791938525.5495117
+        }
+      },
+      "decision_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/varB__fx2_B_s1103__decisions.tsv.gz",
+        "format": "gzip TSV, 31 columns, one row per actual consumed training row",
+        "bytes": 487051,
+        "sha256": "62b438ba802a60cfec00a1a3d1cc513864deec93aaef9c1294432fb9dc9107fb",
+        "rows": 20000,
+        "fields": [
+          "step",
+          "position",
+          "index",
+          "entity_id",
+          "poison",
+          "loss",
+          "gate",
+          "history_n",
+          "kept_upper_median",
+          "relative_10x_median",
+          "threshold_no_cap",
+          "threshold",
+          "region",
+          "flags_n",
+          "flags_high",
+          "budget_eligible",
+          "group_known",
+          "group_total_rows",
+          "high",
+          "mask",
+          "all_history_n",
+          "all_upper_median",
+          "all_threshold",
+          "threshold_no_floor",
+          "cap_extra_mask",
+          "floor_protected_from_mask",
+          "high_budget_exempt",
+          "would_mask_no_cap_frozen",
+          "would_mask_no_floor_frozen",
+          "would_mask_all_history_frozen",
+          "would_mask_no_budget_frozen"
+        ]
+      },
+      "steps_without_update": 0
+    },
+    {
+      "key": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/fx2_B_s1105",
+      "gate": 51,
+      "exact_checks": {
+        "gate": true,
+        "masked_tuples": true,
+        "masked_losses": true,
+        "budget_exempt_counter": true,
+        "unknown_exempt_counter": true,
+        "n_groups_kept": true
+      },
+      "mask": {
+        "total": 72,
+        "clean": 55,
+        "poison": 17
+      },
+      "normal_mask_by_threshold_region": {
+        "fallback": 0,
+        "floor": 54,
+        "middle": 0,
+        "cap": 1
+      },
+      "cap_current_decision_extra": {
+        "total": 3,
+        "clean": 1,
+        "poison": 2
+      },
+      "floor_current_decision_protection": {
+        "total": 366,
+        "clean": 344,
+        "poison": 22
+      },
+      "actual_budget_exempt": {
+        "total": 36,
+        "clean": 36,
+        "poison": 0
+      },
+      "all_consumed_current_decision_mask": {
+        "total": 72,
+        "clean": 55,
+        "poison": 17
+      },
+      "source_evidence": {
+        "row_losses.jsonl": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1105/row_losses.jsonl",
+          "bytes": 1894423,
+          "sha256": "8b2c13de9b87a794d60c81ee2cfbc3f6e564a3446ba9125ab10ae3bfbaff0871",
+          "mtime": 1791962399.42596
+        },
+        "manifest.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1105/manifest.json",
+          "bytes": 1882,
+          "sha256": "48c0b8e0c61603d6b3cdb2319b93f32ec291c0923f98d166ed15041333afb4d4",
+          "mtime": 1791961396.5306158
+        },
+        "result.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1105/result.json",
+          "bytes": 13198,
+          "sha256": "73fc1bc05e42c0ba18fb2399c5a3129bb237ca580f10f9fd1f18881c713aa626",
+          "mtime": 1791962426.2213705
+        },
+        "complete.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1105/complete.json",
+          "bytes": 143,
+          "sha256": "bdb71d93a80d608028f852314438fde3f9e8b17a5931273bbd9e692de62b6a36",
+          "mtime": 1791962426.2213705
+        }
+      },
+      "decision_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/varB__fx2_B_s1105__decisions.tsv.gz",
+        "format": "gzip TSV, 31 columns, one row per actual consumed training row",
+        "bytes": 489847,
+        "sha256": "321da1be33e80844fb50116b3f66ed8310faf9c6cd80fa118a1a187bb9427455",
+        "rows": 20000,
+        "fields": [
+          "step",
+          "position",
+          "index",
+          "entity_id",
+          "poison",
+          "loss",
+          "gate",
+          "history_n",
+          "kept_upper_median",
+          "relative_10x_median",
+          "threshold_no_cap",
+          "threshold",
+          "region",
+          "flags_n",
+          "flags_high",
+          "budget_eligible",
+          "group_known",
+          "group_total_rows",
+          "high",
+          "mask",
+          "all_history_n",
+          "all_upper_median",
+          "all_threshold",
+          "threshold_no_floor",
+          "cap_extra_mask",
+          "floor_protected_from_mask",
+          "high_budget_exempt",
+          "would_mask_no_cap_frozen",
+          "would_mask_no_floor_frozen",
+          "would_mask_all_history_frozen",
+          "would_mask_no_budget_frozen"
+        ]
+      },
+      "steps_without_update": 0
+    },
+    {
+      "key": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/fx2_B_s1107",
+      "gate": 50,
+      "exact_checks": {
+        "gate": true,
+        "masked_tuples": true,
+        "masked_losses": true,
+        "budget_exempt_counter": true,
+        "unknown_exempt_counter": true,
+        "n_groups_kept": true
+      },
+      "mask": {
+        "total": 243,
+        "clean": 46,
+        "poison": 197
+      },
+      "normal_mask_by_threshold_region": {
+        "fallback": 0,
+        "floor": 42,
+        "middle": 0,
+        "cap": 4
+      },
+      "cap_current_decision_extra": {
+        "total": 2,
+        "clean": 1,
+        "poison": 1
+      },
+      "floor_current_decision_protection": {
+        "total": 287,
+        "clean": 287,
+        "poison": 0
+      },
+      "actual_budget_exempt": {
+        "total": 11,
+        "clean": 11,
+        "poison": 0
+      },
+      "all_consumed_current_decision_mask": {
+        "total": 243,
+        "clean": 46,
+        "poison": 197
+      },
+      "source_evidence": {
+        "row_losses.jsonl": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1107/row_losses.jsonl",
+          "bytes": 1893880,
+          "sha256": "f83d4cb730873cdf94fdee1f3be7023b8ee3f35a112fe112a8c366aa4855ecce",
+          "mtime": 1791967798.5878272
+        },
+        "manifest.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1107/manifest.json",
+          "bytes": 1882,
+          "sha256": "9bde3211a3f48af1ae4cc32cf1557c9339226b82f34c6746a6ed07b1986793aa",
+          "mtime": 1791966795.1474469
+        },
+        "result.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1107/result.json",
+          "bytes": 28781,
+          "sha256": "23e376a31b11e803434e08ec0a81bb36dc335af51673a6beb6aa39dcada47ad2",
+          "mtime": 1791967825.7742438
+        },
+        "complete.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1107/complete.json",
+          "bytes": 144,
+          "sha256": "89233535ef86a4f99c86444160bf2a52649d513ff09dee62ab1f6d4a642b97fa",
+          "mtime": 1791967825.7752438
+        }
+      },
+      "decision_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/varB__fx2_B_s1107__decisions.tsv.gz",
+        "format": "gzip TSV, 31 columns, one row per actual consumed training row",
+        "bytes": 482219,
+        "sha256": "041e2b76231b078a42ff028640f611f6726501f0f0c5f8a4ddddb19e23643c45",
+        "rows": 20000,
+        "fields": [
+          "step",
+          "position",
+          "index",
+          "entity_id",
+          "poison",
+          "loss",
+          "gate",
+          "history_n",
+          "kept_upper_median",
+          "relative_10x_median",
+          "threshold_no_cap",
+          "threshold",
+          "region",
+          "flags_n",
+          "flags_high",
+          "budget_eligible",
+          "group_known",
+          "group_total_rows",
+          "high",
+          "mask",
+          "all_history_n",
+          "all_upper_median",
+          "all_threshold",
+          "threshold_no_floor",
+          "cap_extra_mask",
+          "floor_protected_from_mask",
+          "high_budget_exempt",
+          "would_mask_no_cap_frozen",
+          "would_mask_no_floor_frozen",
+          "would_mask_all_history_frozen",
+          "would_mask_no_budget_frozen"
+        ]
+      },
+      "steps_without_update": 0
+    },
+    {
+      "key": "/workspace/cross-model-asr/20261015_late_real_r01/squad/fx2_s1006",
+      "gate": 9,
+      "exact_checks": {
+        "gate": true,
+        "masked_tuples": true,
+        "masked_losses": true,
+        "budget_exempt_counter": true,
+        "unknown_exempt_counter": true,
+        "n_groups_kept": true
+      },
+      "mask": {
+        "total": 3614,
+        "clean": 3415,
+        "poison": 199
+      },
+      "normal_mask_by_threshold_region": {
+        "fallback": 1172,
+        "floor": 1685,
+        "middle": 9,
+        "cap": 549
+      },
+      "cap_current_decision_extra": {
+        "total": 541,
+        "clean": 541,
+        "poison": 0
+      },
+      "floor_current_decision_protection": {
+        "total": 4981,
+        "clean": 4981,
+        "poison": 0
+      },
+      "actual_budget_exempt": {
+        "total": 8,
+        "clean": 8,
+        "poison": 0
+      },
+      "all_consumed_current_decision_mask": {
+        "total": 3603,
+        "clean": 3404,
+        "poison": 199
+      },
+      "source_evidence": {
+        "row_losses.jsonl": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad/runs/fx2_s1006/row_losses.jsonl",
+          "bytes": 1804844,
+          "sha256": "55d6300047deeee5642be70b6bcbc9d06338edfaabdb4d3fb765fe8f5b46316b",
+          "mtime": 1792008695.022231
+        },
+        "manifest.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad/runs/fx2_s1006/manifest.json",
+          "bytes": 1890,
+          "sha256": "e56585e78060cc5840d1000c8b8d1bf3acbcfd7ceaabeb9e96e3b71b40d8adc7",
+          "mtime": 1792005384.7036664
+        },
+        "result.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad/runs/fx2_s1006/result.json",
+          "bytes": 340217,
+          "sha256": "dd1a18787f92dbeac6c37d0c942f5701d105ab6b555b7ecfdf3b432a3e3034cb",
+          "mtime": 1792008734.87084
+        },
+        "complete.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad/runs/fx2_s1006/complete.json",
+          "bytes": 141,
+          "sha256": "e0d672f035027a39b065993442264aadb177fe8cdf9c2a166d77de0fcbe0cfef",
+          "mtime": 1792008734.8718402
+        }
+      },
+      "decision_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/squad__fx2_s1006__decisions.tsv.gz",
+        "format": "gzip TSV, 31 columns, one row per actual consumed training row",
+        "bytes": 1222047,
+        "sha256": "e346939460355a9a849e76d3c73dfc5436b058ceb9f8be6ea1c7b1783f857c7c",
+        "rows": 20000,
+        "fields": [
+          "step",
+          "position",
+          "index",
+          "entity_id",
+          "poison",
+          "loss",
+          "gate",
+          "history_n",
+          "kept_upper_median",
+          "relative_10x_median",
+          "threshold_no_cap",
+          "threshold",
+          "region",
+          "flags_n",
+          "flags_high",
+          "budget_eligible",
+          "group_known",
+          "group_total_rows",
+          "high",
+          "mask",
+          "all_history_n",
+          "all_upper_median",
+          "all_threshold",
+          "threshold_no_floor",
+          "cap_extra_mask",
+          "floor_protected_from_mask",
+          "high_budget_exempt",
+          "would_mask_no_cap_frozen",
+          "would_mask_no_floor_frozen",
+          "would_mask_all_history_frozen",
+          "would_mask_no_budget_frozen"
+        ]
+      },
+      "steps_without_update": 123
+    },
+    {
+      "key": "/workspace/cross-model-asr/20261015_late_real_r01/squad_llama/fx2_s1001",
+      "gate": 9,
+      "exact_checks": {
+        "gate": true,
+        "masked_tuples": true,
+        "masked_losses": true,
+        "budget_exempt_counter": true,
+        "unknown_exempt_counter": true,
+        "n_groups_kept": true
+      },
+      "mask": {
+        "total": 1558,
+        "clean": 1360,
+        "poison": 198
+      },
+      "normal_mask_by_threshold_region": {
+        "fallback": 0,
+        "floor": 1345,
+        "middle": 4,
+        "cap": 11
+      },
+      "cap_current_decision_extra": {
+        "total": 13,
+        "clean": 11,
+        "poison": 2
+      },
+      "floor_current_decision_protection": {
+        "total": 4403,
+        "clean": 4403,
+        "poison": 0
+      },
+      "actual_budget_exempt": {
+        "total": 2,
+        "clean": 2,
+        "poison": 0
+      },
+      "all_consumed_current_decision_mask": {
+        "total": 1557,
+        "clean": 1359,
+        "poison": 198
+      },
+      "source_evidence": {
+        "row_losses.jsonl": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_llama/runs/fx2_s1001/row_losses.jsonl",
+          "bytes": 1888673,
+          "sha256": "ad04a82695178af811a9679fde5e2a778db82818d020a7aff4282564ecdd78d1",
+          "mtime": 1792040565.1658328
+        },
+        "manifest.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_llama/runs/fx2_s1001/manifest.json",
+          "bytes": 1890,
+          "sha256": "44998b1fc2c90b6f9b9c87149f6318e1fd99684de0f1fc32fda34523c0df2995",
+          "mtime": 1792035366.9463503
+        },
+        "result.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_llama/runs/fx2_s1001/result.json",
+          "bytes": 151502,
+          "sha256": "ff26c499e02767048d7ed153d716c2e549fc1a92f02b0d5d4726fa2be746b7c0",
+          "mtime": 1792040601.7203906
+        },
+        "complete.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_llama/runs/fx2_s1001/complete.json",
+          "bytes": 141,
+          "sha256": "2639bd9b2ed53989df4920e7c68dc73644b16a4dec61499add058e8f0e92e1b6",
+          "mtime": 1792040601.7203906
+        }
+      },
+      "decision_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/squad_llama__fx2_s1001__decisions.tsv.gz",
+        "format": "gzip TSV, 31 columns, one row per actual consumed training row",
+        "bytes": 1333823,
+        "sha256": "fb353c8d1c167e7eaffde62c9877b72e17410c25851fbdfd4aea4dcf52216193",
+        "rows": 20000,
+        "fields": [
+          "step",
+          "position",
+          "index",
+          "entity_id",
+          "poison",
+          "loss",
+          "gate",
+          "history_n",
+          "kept_upper_median",
+          "relative_10x_median",
+          "threshold_no_cap",
+          "threshold",
+          "region",
+          "flags_n",
+          "flags_high",
+          "budget_eligible",
+          "group_known",
+          "group_total_rows",
+          "high",
+          "mask",
+          "all_history_n",
+          "all_upper_median",
+          "all_threshold",
+          "threshold_no_floor",
+          "cap_extra_mask",
+          "floor_protected_from_mask",
+          "high_budget_exempt",
+          "would_mask_no_cap_frozen",
+          "would_mask_no_floor_frozen",
+          "would_mask_all_history_frozen",
+          "would_mask_no_budget_frozen"
+        ]
+      },
+      "steps_without_update": 0
+    },
+    {
+      "key": "/workspace/cross-model-asr/20261015_late_real_r01/squad_phrase/fx2_s1006",
+      "gate": 9,
+      "exact_checks": {
+        "gate": true,
+        "masked_tuples": true,
+        "masked_losses": true,
+        "budget_exempt_counter": true,
+        "unknown_exempt_counter": true,
+        "n_groups_kept": true
+      },
+      "mask": {
+        "total": 1746,
+        "clean": 1547,
+        "poison": 199
+      },
+      "normal_mask_by_threshold_region": {
+        "fallback": 0,
+        "floor": 1517,
+        "middle": 7,
+        "cap": 23
+      },
+      "cap_current_decision_extra": {
+        "total": 22,
+        "clean": 22,
+        "poison": 0
+      },
+      "floor_current_decision_protection": {
+        "total": 5122,
+        "clean": 5122,
+        "poison": 0
+      },
+      "actual_budget_exempt": {
+        "total": 2,
+        "clean": 2,
+        "poison": 0
+      },
+      "all_consumed_current_decision_mask": {
+        "total": 1742,
+        "clean": 1543,
+        "poison": 199
+      },
+      "source_evidence": {
+        "row_losses.jsonl": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_phrase/runs/fx2_s1006/row_losses.jsonl",
+          "bytes": 1861613,
+          "sha256": "bd558e45fc7d0c044888a4b645bd5796cdd080649c0be9854b07195fcfb372cf",
+          "mtime": 1792064099.525793
+        },
+        "manifest.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_phrase/runs/fx2_s1006/manifest.json",
+          "bytes": 1890,
+          "sha256": "f26b3b559116ce82b20073be1369d560b408634c6696cd7ff5e2ec5bbce4f328",
+          "mtime": 1792060521.8241494
+        },
+        "result.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_phrase/runs/fx2_s1006/result.json",
+          "bytes": 169028,
+          "sha256": "e7d3fde2d7a278c59d62a5daca82355466ffa7c9926402b2739cbeaccfab1586",
+          "mtime": 1792064140.9524257
+        },
+        "complete.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_phrase/runs/fx2_s1006/complete.json",
+          "bytes": 141,
+          "sha256": "02f24839a299ed53a44849c3c4734beb00dd2259a07dc758b747a6aedb55f08f",
+          "mtime": 1792064140.9534256
+        }
+      },
+      "decision_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/squad_phrase__fx2_s1006__decisions.tsv.gz",
+        "format": "gzip TSV, 31 columns, one row per actual consumed training row",
+        "bytes": 1257008,
+        "sha256": "5b4dda0a00e6188263f40a4b1b6edb45eb72f16ea27680f5168dcc55a8e8f928",
+        "rows": 20000,
+        "fields": [
+          "step",
+          "position",
+          "index",
+          "entity_id",
+          "poison",
+          "loss",
+          "gate",
+          "history_n",
+          "kept_upper_median",
+          "relative_10x_median",
+          "threshold_no_cap",
+          "threshold",
+          "region",
+          "flags_n",
+          "flags_high",
+          "budget_eligible",
+          "group_known",
+          "group_total_rows",
+          "high",
+          "mask",
+          "all_history_n",
+          "all_upper_median",
+          "all_threshold",
+          "threshold_no_floor",
+          "cap_extra_mask",
+          "floor_protected_from_mask",
+          "high_budget_exempt",
+          "would_mask_no_cap_frozen",
+          "would_mask_no_floor_frozen",
+          "would_mask_all_history_frozen",
+          "would_mask_no_budget_frozen"
+        ]
+      },
+      "steps_without_update": 0
+    }
+  ],
+  "group_geometry": {
+    "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB": {
+      "rows": 20000,
+      "groups": 32,
+      "group_size_histogram": {
+        "625": 32
+      },
+      "groups_size_le4": 0,
+      "rows_in_groups_size_le4": 0,
+      "groups_size_ge5": 32,
+      "metadata_sha256": "edebf7850fe6e2a781479f9bc6b12edd8e8433d6f4d8f5b0c3e8ea732b4279c6"
+    },
+    "/workspace/cross-model-asr/20261015_late_real_r01/squad": {
+      "rows": 20000,
+      "groups": 11663,
+      "group_size_histogram": {
+        "1": 6140,
+        "2": 3512,
+        "3": 1423,
+        "4": 455,
+        "5": 92,
+        "6": 24,
+        "7": 9,
+        "8": 3,
+        "9": 1,
+        "10": 1,
+        "12": 2,
+        "13": 1
+      },
+      "groups_size_le4": 11530,
+      "rows_in_groups_size_le4": 19253,
+      "groups_size_ge5": 133,
+      "metadata_sha256": "a0a6970f23b9982b104a73347a0c629cf6979db50612f44c947e0896fb863bbe"
+    },
+    "/workspace/cross-model-asr/20261015_late_real_r01/squad_llama": {
+      "rows": 20000,
+      "groups": 11663,
+      "group_size_histogram": {
+        "1": 6140,
+        "2": 3512,
+        "3": 1423,
+        "4": 455,
+        "5": 92,
+        "6": 24,
+        "7": 9,
+        "8": 3,
+        "9": 1,
+        "10": 1,
+        "12": 2,
+        "13": 1
+      },
+      "groups_size_le4": 11530,
+      "rows_in_groups_size_le4": 19253,
+      "groups_size_ge5": 133,
+      "metadata_sha256": "d17ff4e538565eefccf42880e1c01c92a0a204e36ab7b330003873a69d57cb06"
+    },
+    "/workspace/cross-model-asr/20261015_late_real_r01/squad_phrase": {
+      "rows": 20000,
+      "groups": 11663,
+      "group_size_histogram": {
+        "1": 6140,
+        "2": 3512,
+        "3": 1423,
+        "4": 455,
+        "5": 92,
+        "6": 24,
+        "7": 9,
+        "8": 3,
+        "9": 1,
+        "10": 1,
+        "12": 2,
+        "13": 1
+      },
+      "groups_size_le4": 11530,
+      "rows_in_groups_size_le4": 19253,
+      "groups_size_ge5": 133,
+      "metadata_sha256": "fb3ae90a1e84a24c2ddc79b3b67fe3e046ca995bfc68e439423af3027a171f9f"
+    }
+  },
+  "fairness": {
+    "development_same_gate_50": {
+      "evidence": "research/curfew-contribution-reassessment-2026-10-17/evidence/COST_AUDIT.json#/development_same_gate_50",
+      "Curfew": {
+        "ASR_hits_124": 0,
+        "normal_correct_124": 112,
+        "normal_mask": 50,
+        "poison_mask": 191
+      },
+      "LT_c001": {
+        "ASR_hits_124": 105,
+        "normal_correct_124": 117,
+        "normal_mask": 108,
+        "poison_mask": 163
+      },
+      "LT_c005": {
+        "ASR_hits_124": 0,
+        "normal_correct_124": 115,
+        "normal_mask": 942,
+        "poison_mask": 194
+      },
+      "boundary": "development, matched rule packages rather than one-factor ablation; no optimal-frontier proof"
+    },
+    "real_same_gate_9": {
+      "evidence": "research/defense-baseline-audit-2026-10-17/evidence/server_snapshot.json#/summaries//workspace/cross-model-asr/20261015_late_real_r01/convoy/survivors_real.json/data",
+      "Curfew_total_mask": [
+        3614,
+        1558,
+        1746
+      ],
+      "LT_gate_c005_total_mask": [
+        1084,
+        1096,
+        1069
+      ],
+      "both_ASR_zero": true,
+      "both_existing_quality_pass": true,
+      "boundary": "LT-gate row decisions not independently reconstructed in this subtask"
+    },
+    "fixed_start": "LT20 active from step21, LT50 from step51; Curfew actual toy50/51, real9; fixed-start totals are not activation-matched component effects.",
+    "loss_unit": "Mean answer-plus-EOS causal token CE, not summed sequence NLL or prompt loss.",
+    "LT_budget": "Recent-buffer quantile; c=.05 is not an exact per-batch or full-run 5% deletion quota.",
+    "correction": "Old COST_AUDIT limitations[0] claim of all22 having1250 updates and no empty updates is contradicted by current SQuAD result.checks.steps_without_update=123.",
+    "no_claims": [
+      "statistical equivalence",
+      "Curfew compute speedup over LT",
+      "fewer masks imply more knowledge learned",
+      "same ASR pass count implies all coordinates equal"
+    ]
+  },
+  "candidates": [
+    {
+      "priority": 1,
+      "candidate_zh": "只讨论全局阈值的高尾/截断份额护栏，其余floor与budget先冻结。",
+      "evidence_zh": "同gate仍有选择性差异；real cap与kept-only单项的固定trace边际很小；大量正常高尾在floor阶段被截断。",
+      "counterarguments_zh": [
+        "外层保留cap则分位护栏可能失效；分位护栏放最外层则可能越过cap，重现旧过渡期漏毒。",
+        "量化高尾容易成为LT阈值加budget的混合，不自动新贡献。",
+        "攻击密度可污染分位参照，硬删额会迫使放行毒行。"
+      ],
+      "status": "conceptual discussion only, no parameters chosen or execution authorized"
+    },
+    {
+      "priority": 2,
+      "candidate_zh": "讨论恢复预算的适用分组与真实放行上限，次于阈值。",
+      "evidence_zh": "real多数group达不到历史门槛；当前预算可连续放行；旧A有放行后loss侵蚀轨迹。",
+      "counterarguments_zh": [
+        "降低历史门槛或扩大分组可放过更多毒行；收紧则增加正常误删。",
+        "当前real实际只放8/2/2行，不能许诺修预算解决几千误删。",
+        "六run预算放行全正常，不能用旧A断言当前预算泄毒；也不能据此证明安全。"
+      ],
+      "status": "secondary conceptual discussion only"
+    }
+  ],
+  "primary_source_paths": [
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_policies.py:527",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_common.py:55",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_train.py:344",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/r2_plan.json:16"
+  ],
+  "raw_audit_path": "/private/tmp/curfew-threshold-audit-20261017/raw_audit.json",
+  "report_path": "/private/tmp/curfew-threshold-audit-20261017/independent.md",
+  "causal_limits": [
+    "Every counterfactual preserves recorded losses and actual pre-row history/flags. It changes only the current decision; decisions are not propagated to future history, gradients, weights, losses or ASR.",
+    "Exact replay establishes implementation-level accounting, not a matched training ablation or a claim that thresholds cause endpoint quality or ASR.",
+    "Threshold regimes differ across tasks/models/data and cannot isolate floor/cap from their loss trajectories or metadata repetition.",
+    "Captured current source is not an immutable source pin at original run time, but exact match across complete saved decision outputs and counters strongly validates replay on these traces.",
+    "Group budget is based on recurring high-loss flags; an exemption does not establish new knowledge, forgetting, or poison safety.",
+    "A threshold at floor is the setting of a clipping branch, not evidence that the floor caused deletions. Removing the floor weakly lowers the threshold and can add masks under frozen state."
+  ]
+}

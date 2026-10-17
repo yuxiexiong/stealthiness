@@ -1,0 +1,410 @@
+{
+  "audited_utc": "2026-10-17T08:58:42.072191+00:00",
+  "scope": "Read-only provenance and implementation audit; no new experiments, tests, server access, or repository changes in this audit turn. Existing local source, saved server audit and official paper/repository sources inspected.",
+  "classification_definitions": {
+    "official_direct": "Official implementation called at runtime, with execution evidence.",
+    "official_vendored_pinned": "Official source copied with verifiable upstream commit and executed-file identity.",
+    "local_reimplementation": "Locally written implementation of source formulas.",
+    "adaptation": "Substantive changes to algorithm, schedule, parameters, normalization or task protocol.",
+    "concept_control": "Local control inspired by a prior idea; not a reproduction of the published method."
+  },
+  "overall": "Within this assigned group, no official-direct or commit-proven official-vendored execution was established. LT and DeCE are local reimplementations with adaptations; GradSentry is a local formula implementation plus adaptation, evaluated only as an offline census; stop/lowlr/rank/fulltoken are local controls. No original-task positive reproduction was found in inspected evidence.",
+  "official_source_revision_limit": "Official URLs inspected are current public main/master snapshots; historical upstream commits used during original implementation remain unverified. Source hashes below identify local inspected bytes, not executed remote bytes. Root audit is independently obtaining executed manifests/source hashes.",
+  "items": [
+    {
+      "method": "Loss Truncation",
+      "classification": [
+        "local_reimplementation",
+        "adaptation"
+      ],
+      "official_sources": [
+        {
+          "url": "https://aclanthology.org/2020.acl-main.66/",
+          "detail": "Kang and Hashimoto ACL 2020; primary task Gigaword abstractive headline generation, plus E2E."
+        },
+        {
+          "url": "https://arxiv.org/pdf/2004.14589",
+          "detail": "Section 4.1: online quantile over last 10000 examples, update every 10000. Section 5.1 Gigaword c=0.6; Appendix C hotstart 100000 minibatch updates plus 100000 truncation updates."
+        },
+        {
+          "url": "https://github.com/ddkang/loss_dropper/blob/master/loss_dropper/dropper.py",
+          "detail": "Class defaults dropc=0.4, min_count=10000, recompute=10000; current loss enters ring before quantile recomputation and masking; returns a mask, not a reduced loss."
+        }
+      ],
+      "local_sources": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_policies.py",
+          "lines": "704-776",
+          "sha256": "e6b6eee0b0d9774a7456733d0779ebbe80defefa5e8c90dd74c8f53b4b5b6646"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_common.py",
+          "lines": "55-80",
+          "sha256": "ba23cd6cd2c2dbebd8cf22fec8383bb8efd7c034faf3b4f32ce52748219056a2"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_train.py",
+          "lines": "292-309,345-360",
+          "sha256": "156624403c76106e35fb19d2aff8217f79db8440832c039a09ada9c06b5584c4"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/defense-next-stage-2026-10-16/PLAN.md",
+          "lines": "99-107",
+          "sha256": "d67440a6d10f6bf51e86f97623adc020f526c3e2c367cd92e50df656f0abbdea"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/defense-next-stage-2026-10-16/convoy/queue_convoy.py",
+          "lines": "24-33",
+          "sha256": "cb53bb339c85e697dded201f33aa2ba871db9c9968359b758876878a6912c452"
+        }
+      ],
+      "substantive_differences": [
+        "Ring buffer/recompute reduced from 10000 to160 consumed rows.",
+        "Activation uses current-task median-loss gate or fixed H steps (20/50/100/150), not original task hotstart protocol.",
+        "c sweep {0.01,0.05,0.1,0.4}; chose0.05 on B seed1106. Official dropper code default0.4 and paper Gigaword0.6 are different reference levels.",
+        "Local thresholds are computed from prior cache then current batch is filtered, then current losses enter buffer. Official class first inserts current loss and then may recompute. Local recompute >=160 versus official >recompute.",
+        "Local scores are per-row mean answer-token CE; shared trainer renormalizes updates by kept valid tokens per microbatch. Dropper class itself does not specify downstream reduction; official caller still needed to establish exact original update normalization."
+      ],
+      "rationale_documented": "PLAN.md:107 states the shorter window should react within1250 steps and calls it favorable. This is a design rationale, not measured evidence of dominance over10000.",
+      "observed_scope": {
+        "development": "B seed1106: gate c=.01 ASR.847 correct117; .05 ASR0 correct115; .1 ASR0 correct106; .4 ASR0 correct84 (quality fail). Fixed20 ASR.056 correct107; fixed100 ASR0 correct110; fixed150 ASR.040 correct112.",
+        "fixed_stress": "12 completed1250-step runs independently raw-checked. Fixed20/fixed50 both qualify toy2/3 and real3/3; c=.05, buffer/recompute160, activation21/51.",
+        "evidence": [
+          "/private/tmp/defense-audit-20261017-fixed-raw.json",
+          "/private/tmp/defense-audit-20261017-server-summary.json"
+        ]
+      },
+      "original_configuration_full_run_found": false,
+      "original_task_positive_reproduction_found": false,
+      "unknown": [
+        "No10000/10000 full controlled run found in inspected evidence.",
+        "Relative outcomes of original defaults and local adapted implementation are unknown.",
+        "Upstream commit pin and original caller reduction not established."
+      ],
+      "claim_boundary": "Call it adapted LT, not untouched official reproduction. Its observed competitive performance remains valid evidence against Curfew gate necessity within measured settings."
+    },
+    {
+      "method": "DeCE",
+      "classification": [
+        "local_reimplementation",
+        "adaptation"
+      ],
+      "official_sources": [
+        {
+          "url": "https://arxiv.org/html/2407.08956v3",
+          "detail": "Section4 defines alpha^epoch blending and smoothing yprime=(1-eps)y+eps/V; Section5.3 default alpha=.99,eps=.1. Main code-synthesis tasks Lyra/Pisces train20epochs, Bugs2Fix2epochs."
+        },
+        {
+          "url": "https://github.com/NTDXYG/DeCE",
+          "detail": "Official README core implementation defaults alpha_base=.985,label_smoothing=.05; smooths non-target classes as eps/(V-1), target as1-eps; actual epoch supplied as cur_epoch+1. This is a paper/code mismatch."
+        }
+      ],
+      "local_sources": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_common.py",
+          "lines": "143-181",
+          "sha256": "ba23cd6cd2c2dbebd8cf22fec8383bb8efd7c034faf3b4f32ce52748219056a2"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_train.py",
+          "lines": "286-298",
+          "sha256": "156624403c76106e35fb19d2aff8217f79db8440832c039a09ada9c06b5584c4"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/defense-next-stage-2026-10-16/convoy/queue_convoy.py",
+          "lines": "28-30",
+          "sha256": "cb53bb339c85e697dded201f33aa2ba871db9c9968359b758876878a6912c452"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/defense-next-stage-2026-10-16/PLAN.md",
+          "lines": "103",
+          "sha256": "d67440a6d10f6bf51e86f97623adc020f526c3e2c367cd92e50df656f0abbdea"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/tests/test_convoy_1016.py",
+          "lines": "36-52",
+          "sha256": "d796032e1115a9ff927a06c10dc5385a36281cdb3d0899d3cdc0e6fdd1eedb61"
+        }
+      ],
+      "substantive_differences": [
+        "PLAN calls .99/.1 original defaults; queued sched20 actually uses .985/.1: official-code alpha with paper eps, not exactly either full default pair. .985 is sourced to official code and should not be described as invented.",
+        "20epoch exponent progression is continuously interpolated from1 to20 over a single1250step epoch; no actual20-pass training.",
+        "Local smoothing follows paper eps/V, not official README non-target eps/(V-1) convention.",
+        "Local ignores -100 prompt/pad positions and renormalizes valid answer tokens; official README ignores pad via mask and means over flattened input positions, so normalization may differ.",
+        "Local probability clamp is on mixed probability at1e-30; official README clamps softmax probabilities at1e-7 before mixing.",
+        "Second arm .5/.1 with epochs1 is a deliberately strong constant blending adaptation."
+      ],
+      "observed_scope": {
+        "development_only": "B seed1106 two1250step configs: sched20 ASR100% correct115/124; strong ASR100% correct97/124. Not advanced to real settings by ASR screening.",
+        "cpu_tests": "Local test checks alpha=1,eps=0 reduces to CE and one confidently-wrong example has smaller gradient. This is a numerical unit check, not official formula/benchmark effect reproduction.",
+        "evidence": "/private/tmp/defense-audit-20261017-server-summary.json toy_zero_cost_verdicts"
+      },
+      "original_configuration_full_run_found": false,
+      "original_task_positive_reproduction_found": false,
+      "unknown": [
+        "No official code execution/commit pin found.",
+        "No actual20epoch original protocol run or original code-synthesis positive control found.",
+        "Official defense_loss.py raw reads failed; the accessible official README exposes core implementation, sufficient for stated comparison."
+      ],
+      "claim_boundary": "Only two adapted DeCE configurations failed on one current-task development seed; do not report published DeCE generally fails or original result disproven."
+    },
+    {
+      "method": "GradSentry",
+      "classification": [
+        "local_reimplementation",
+        "adaptation"
+      ],
+      "official_sources": [
+        {
+          "url": "https://arxiv.org/html/2605.26574v1",
+          "detail": "Equations2,5-7,9-10: first1/8 gradient rows/cols, top16 singular values, H/log16, KDE valley and .7fallback. Default Llama2-7B QA, LoRA r4,3epochs,lr2e-5."
+        },
+        {
+          "url": "https://github.com/dongdongzhaoUP/GradSentry",
+          "detail": "Official repository exists; current local script does not import its defender."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/dongdongzhaoUP/GradSentry/main/openbackdoor/defenders/svd_defender.py",
+          "detail": "Current public code uses model.train, autograd gradients, torch.svd_lowrank, sklearn KDE/scipy prominence peaks over observed score range with reliability gates. Historical upstream commit not pinned."
+        }
+      ],
+      "local_sources": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/t3_gradsentry.py",
+          "lines": "1-10,31-77,107-153",
+          "sha256": "a4401d17aeea4d11fbb1f95b74714a11db4e8cb150b64517c6288c9971b624e7"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/tests/test_t3_stage0.py",
+          "lines": "45-82",
+          "sha256": "1f58fc3e5ff6503a764f69982f082efad7f3fea1f19ebd851438e458d846d401"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/defense-next-stage-2026-10-16/stage0/stage0_plan.json",
+          "lines": "4-8,26-34",
+          "sha256": "da99b58099cc6526d349fdfaf41d94799624a490901b01909fc17677838a5e7b"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/defense-next-stage-2026-10-16/stage0/gradsentry_B.json",
+          "lines": "1-80",
+          "sha256": "c9c4d9ec204ac07e7a69109fdb97ec6a74a7ea755db5f852489009c06f77d363"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/RELATED_WORK_AUDIT_2026-10-16.md",
+          "lines": "72",
+          "sha256": "6f4f71817bd89fb3bb89cb6d47a7fcf2c9e7acbf7e88b7021872cc98e5df3ded"
+        }
+      ],
+      "substantive_differences": [
+        "Base model eval-mode analytic output-head gradient computed via QR and exact small SVD, rather than current official model.train/autograd/randomized SVD route. Algebraic replacement is numerically unit-tested on random tensors, not end-to-end official reproduction.",
+        "Literal H/log16 and additional length-adapted H/log(min(16,T)) both reported; latter is explicitly ours. All toy answers have5 tokens.",
+        "Local KDE uses fixed[0,1] grid1001points, ddof0 bandwidth, height>=1%max for local maxima; official current implementation uses observed min/max grid1000points,ddof1 bandwidth, scipy prominence and reliability checks including peak distance>=.15, suspicious count>=5/fraction>=.01.",
+        "Local exact5-token answers differ materially from official generative QA and malicious appended-text output setting.",
+        "No filtered retraining ran: predeclared offline census screening stopped advancement."
+      ],
+      "observed_scope": {
+        "offline_only": "Base eval-mode census all20000 toyB rows,259.14seconds. Literal/adapted AUROC high-is-poison=.315192; thresholds.365/.629; both flag19379rows incl200poison; matched small deletion budgets retain all200poison.",
+        "cpu_tests": "Synthetic analytic gradient entropy equals autograd/SVD and KDE toy smoke checks; not official dataset positive reproduction.",
+        "training": "No trained GradSentry defense outcome or post-filter ASR/quality was established.",
+        "evidence": "research/defense-next-stage-2026-10-16/stage0/gradsentry_B.json"
+      },
+      "original_configuration_full_run_found": false,
+      "original_task_positive_reproduction_found": false,
+      "unknown": [
+        "No executed official defender, pinned vendor commit, original-task positive control, or filtered retrain found.",
+        "Current upstream code may differ from code visible when local implementation was written; no historical pin established."
+      ],
+      "claim_boundary": "Report failure of this local toy offline scoring screen. Do not list it as an officially reproduced trained baseline defeated by Curfew. The local97%automatic-filter figure is threshold-implementation-specific."
+    },
+    {
+      "method": "stop-at-curfew",
+      "classification": [
+        "concept_control",
+        "adaptation"
+      ],
+      "official_sources": [
+        {
+          "paper": "https://papers.nips.cc/paper_files/paper/2022/file/0799492e7be38b66d10ead5e8809616d-Paper-Conference.pdf",
+          "repository": "https://github.com/thunlp/Moderate-fitting"
+        }
+      ],
+      "local_sources": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_policies.py",
+          "lines": "639-701",
+          "sha256": "e6b6eee0b0d9774a7456733d0779ebbe80defefa5e8c90dd74c8f53b4b5b6646"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_train.py",
+          "lines": "232-241,377-384",
+          "sha256": "156624403c76106e35fb19d2aff8217f79db8440832c039a09ada9c06b5584c4"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/defense-next-stage-2026-10-16/stage0/stage0_plan.json",
+          "lines": "4-7,29-34",
+          "sha256": "da99b58099cc6526d349fdfaf41d94799624a490901b01909fc17677838a5e7b"
+        }
+      ],
+      "substantive_differences": [
+        "Original Moderate-fitting studies reduced epoch counts; local adaptive stop occurs after Curfew loss gate plus offsets0/25/50/100, with max400 fallback and optional base checkpoint.",
+        "This uses our gate/LLMtask/LoRA training recipe and is an early-stopping concept control, not official Moderate-fitting execution."
+      ],
+      "observed_scope": {
+        "toy": "9Bseeds evaluated; fixedoffsetg0/g25 each0/4held-out;g50/g100 each1/4held-out.",
+        "real": "3settings1seed each; g25/g50 qualify Llama only, notQwen/phrase.",
+        "evidence": [
+          "research/defense-next-stage-2026-10-16/stage0/stage0_results.json",
+          "/private/tmp/defense-audit-20261017-server-summary.json stage1_stop_results"
+        ]
+      },
+      "original_configuration_full_run_found": false,
+      "original_task_positive_reproduction_found": false,
+      "unknown": [
+        "No official implementation execution, original epoch grid reproduction or benchmark positive control found."
+      ],
+      "claim_boundary": "Valid current-task early-stop comparison at tested offsets; cannot exhaust or refute Moderate-fitting as a published method."
+    },
+    {
+      "method": "low learning rate",
+      "classification": [
+        "concept_control"
+      ],
+      "official_sources": [
+        {
+          "paper": "https://papers.nips.cc/paper_files/paper/2022/file/0799492e7be38b66d10ead5e8809616d-Paper-Conference.pdf",
+          "repository": "https://github.com/thunlp/Moderate-fitting"
+        }
+      ],
+      "local_sources": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_train.py",
+          "lines": "150,284-285",
+          "sha256": "156624403c76106e35fb19d2aff8217f79db8440832c039a09ada9c06b5584c4"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/defense-next-stage-2026-10-16/convoy/queue_convoy.py",
+          "lines": "28",
+          "sha256": "cb53bb339c85e697dded201f33aa2ba871db9c9968359b758876878a6912c452"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/late-grokking-related-work-2026-10-04/sources/moderate-fitting.txt",
+          "lines": "354-365",
+          "sha256": "678560a26c44b199ab3853a1b51794c21b4304869fe4dbfbe4277108f8ee1777"
+        }
+      ],
+      "substantive_differences": [
+        "Local multiplies existing1250step LR schedule by.3/.1. Original study uses absolute LR grid{2e-5,5e-6,1e-6,5e-7} and10epochs on classification tasks.",
+        "No official code called; lower LR shares an idea but protocol is not same."
+      ],
+      "observed_scope": {
+        "development": "One toyB seed1106 per scale. x.3 ASR100%,correct88; x.1 ASR97.6%,correct63. Not advanced to real."
+      },
+      "original_configuration_full_run_found": false,
+      "original_task_positive_reproduction_found": false,
+      "unknown": [
+        "No original task positive control or broader currenttask tuned LR frontier found."
+      ],
+      "claim_boundary": "These two simple LR controls failed; not a faithful published-Moderate-fitting failure."
+    },
+    {
+      "method": "small LoRA rank",
+      "classification": [
+        "concept_control"
+      ],
+      "official_sources": [
+        {
+          "paper": "https://papers.nips.cc/paper_files/paper/2022/file/0799492e7be38b66d10ead5e8809616d-Paper-Conference.pdf",
+          "repository": "https://github.com/thunlp/Moderate-fitting"
+        }
+      ],
+      "local_sources": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_train.py",
+          "lines": "146-149",
+          "sha256": "156624403c76106e35fb19d2aff8217f79db8440832c039a09ada9c06b5584c4"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_common.py",
+          "lines": "395-412",
+          "sha256": "ba23cd6cd2c2dbebd8cf22fec8383bb8efd7c034faf3b4f32ce52748219056a2"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/defense-next-stage-2026-10-16/convoy/queue_convoy.py",
+          "lines": "28",
+          "sha256": "cb53bb339c85e697dded201f33aa2ba871db9c9968359b758876878a6912c452"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/defense-next-stage-2026-10-16/PLAN.md",
+          "lines": "102",
+          "sha256": "d67440a6d10f6bf51e86f97623adc020f526c3e2c367cd92e50df656f0abbdea"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/late-grokking-related-work-2026-10-04/sources/moderate-fitting.txt",
+          "lines": "187-217,297-303",
+          "sha256": "678560a26c44b199ab3853a1b51794c21b4304869fe4dbfbe4277108f8ee1777"
+        }
+      ],
+      "substantive_differences": [
+        "Local standard per-layer PEFTLoRA r=1 with alpha=2r; original Moderate-fitting capacity method jointly reparameterizes all PETweights through a global bottleneck. Localrank1 is not that method.",
+        "PLAN mentions rank1/4; inspected queue implements rank1only."
+      ],
+      "observed_scope": {
+        "development": "One toyB seed1106 rank1,ASR100%,correct93. Not advanced to real."
+      },
+      "original_configuration_full_run_found": false,
+      "original_task_positive_reproduction_found": false,
+      "unknown": [
+        "No global reparameterization implementation or executedrank4 found in inspected scope."
+      ],
+      "claim_boundary": "Call it ordinary small-rank LoRA control; do not label as reproduction of Moderate-fitting global capacity defense."
+    },
+    {
+      "method": "full-token loss",
+      "classification": [
+        "concept_control"
+      ],
+      "official_sources": [
+        {
+          "url": "https://arxiv.org/html/2605.23168v1#A2",
+          "detail": "PoisonForge AppendixA.2 compares completion-only/full-token loss for longform task-level poisoning; meanASR38.6to17.7 across3models;6epoch SFT, not claim of universal robust defense.",
+          "repository": "https://anonymous.4open.science/r/Poison_forge-F3CD"
+        }
+      ],
+      "local_sources": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_common.py",
+          "lines": "184-187",
+          "sha256": "ba23cd6cd2c2dbebd8cf22fec8383bb8efd7c034faf3b4f32ce52748219056a2"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_train.py",
+          "lines": "296-298",
+          "sha256": "156624403c76106e35fb19d2aff8217f79db8440832c039a09ada9c06b5584c4"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/defense-next-stage-2026-10-16/convoy/queue_convoy.py",
+          "lines": "30",
+          "sha256": "cb53bb339c85e697dded201f33aa2ba871db9c9968359b758876878a6912c452"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/defense-next-stage-2026-10-16/PLAN.md",
+          "lines": "104",
+          "sha256": "d67440a6d10f6bf51e86f97623adc020f526c3e2c367cd92e50df656f0abbdea"
+        }
+      ],
+      "substantive_differences": [
+        "Local labels every non-padding input token, uses same current Qwen toy/answer evaluation and1250step single-pass recipe.",
+        "This is a standard loss-scope ablation inspired by PoisonForge, not reuse/reproduction of its complete benchmark,6epochSFT or decoder evaluation."
+      ],
+      "observed_scope": {
+        "development": "One toyBseed1106fulltoken run,ASR100%,correct121. Not advanced to real."
+      },
+      "original_configuration_full_run_found": false,
+      "original_task_positive_reproduction_found": false,
+      "unknown": [
+        "No official code execution, pinned source or PoisonForge benchmark positive control found."
+      ],
+      "claim_boundary": "Only current task full-token control failed; do not claim PoisonForge mitigation result contradicted."
+    }
+  ]
+}

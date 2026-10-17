@@ -1,0 +1,484 @@
+{
+  "audit_date": "2026-10-17",
+  "scope": "Read-only code and primary-source comparison for detection and removal baselines. No experiment was started, rerun, queued, killed, or modified. No repository file was written.",
+  "runtime_boundary": "This agent inspected local source, queue specifications, and result documents. Server manifests and completed output identities are being checked separately by the parent; classes and queue code are not treated as execution receipts.",
+  "official_calls_found_in_reviewed_execution_paths": false,
+  "original_task_config_reproduction": "No original-paper task/configuration end-to-end reproduction receipt was found in the reviewed sources for these method groups. Local CPU checks and local positive controls are recorded separately below.",
+  "baselines": [
+    {
+      "id": "abl",
+      "recommended_label": "ABL-style LoRA SFT with bounded ascent; gate-aligned variant separate",
+      "implementation_category": "local reimplementation with substantial task/training/unlearning adaptation",
+      "official_sources": [
+        {
+          "url": "https://github.com/bboylyg/ABL",
+          "locator": "README stages 1 and 2"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/bboylyg/ABL/main/backdoor_isolation.py",
+          "locator": "train_step lines 84-116; train lines 177+"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/bboylyg/ABL/main/backdoor_unlearning.py",
+          "locator": "train_step_unlearning lines 35-57; train lines 117-220"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/bboylyg/ABL/main/config.py",
+          "locator": "defaults lines 10-30"
+        }
+      ],
+      "local_behavior": [
+        "Qwen3-8B LoRA r16/alpha32, AdamW, 1250 cosine steps; original code defaults are image classification and SGD.",
+        "During first n_iso steps, per-row response mean-loss sign flips below gamma; full-data low-loss isolation at n_iso; isolated rows are masked during the remaining training.",
+        "After training, branches restore the same final adapter then use fresh AdamW for 0/5/10/20 bounded ascent updates; response per-row CE ceiling 5 nats, gradient clip 1.0, lr 1e-4.",
+        "Fair gate variant takes fixed isolation step from the same-seed prior Curfew run and matches its deletion count; this gives the baseline external timing information.",
+        "Actual local GGA surrogate differs from unbounded CE ascent over isolated data epochs in official code. Official code LGA uses sign of minibatch-mean CE; local version flips each row separately. Paper-level objective and official implementation should not be conflated."
+      ],
+      "positive_control": {
+        "status": "documented local adaptation control only",
+        "design": "Toy B1106 frontloads all poison in first 13 steps, n_iso20, isolation fraction1%, t_u=[0,5]",
+        "documented_result": "isolation precision 0.72",
+        "does_not_establish": "Original CIFAR/WRN full ABL replication, original unlearning efficacy, or preservation of baseline performance under all SFT settings."
+      },
+      "execution_docs": [
+        "Toy fair ABL gate and frontload positive control recorded; real O3 queue only SQuAD/Qwen seeds1006/1007, n_iso100/250 gamma0.5 and default1% isolation; cannot generalize to all 3 real settings."
+      ],
+      "evidence": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_policies.py",
+          "lines": "291-347",
+          "note": "Local state machine and isolation rule"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_common.py",
+          "lines": "83-91",
+          "note": "Per-row LGA"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_train.py",
+          "lines": "52-78,247-266",
+          "note": "Bounded ascent and final branches"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/contract.json",
+          "lines": "14-27,63,68-75",
+          "note": "Training/default config"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/toy_fair/queue_toy_fair.py",
+          "lines": "22-33",
+          "note": "Frontload control, gate-aligned ABL and snapshot"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/RESULTS_toy_fair.md",
+          "lines": "14-16",
+          "note": "Documented result"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/late-backdoor-real-2026-10-15/queue_o2_o4.py",
+          "lines": "22-29",
+          "note": "Real O3 coverage"
+        }
+      ]
+    },
+    {
+      "id": "static_prefilter",
+      "recommended_label": "Base-model response-NLL filtering; text-task adaptation analogous to BYORn-F score",
+      "implementation_category": "local reimplementation of generic loss filtering; not official BYORn invocation",
+      "official_sources": [
+        {
+          "url": "https://arxiv.org/html/2606.02947v1#S4.SS1",
+          "locator": "BYORn section4.1 Eq3-4 and percentile p=.6"
+        },
+        {
+          "url": "https://proceedings.mlr.press/v202/wan23b/wan23b.pdf",
+          "locator": "Wan section6.1"
+        }
+      ],
+      "local_behavior": [
+        "Scores all rows at step0 with base model response-token average NLL; drops highest fraction, default1%; train subsequently keeps the original 1250-step order and zeroes dropped-row contributions.",
+        "This is response perplexity, not input-only ONION perplexity.",
+        "Toy fair census scans100/200/500/1000 deletion budgets and oracle target residuals; B does not advance if family criteria fail.",
+        "BYORn-F originally conditions on image+instruction, uses base response NLL and defaults to top40% filtering; local text-only1-5% budget is not the official default setup, and full BYORn regeneration/EMA method is absent."
+      ],
+      "positive_control": {
+        "status": "local rare-target detection curve evidence only",
+        "documented_result": "Toy A/violin poison all removed by dropping191 rows, while B requires6684 rows to reach residual<=9",
+        "does_not_establish": "Original multimodal BYORn-F result reproduction or a valid test of full BYORn."
+      },
+      "evidence": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_policies.py",
+          "lines": "350-396",
+          "note": "Step0 high-loss filter"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_train.py",
+          "lines": "182-193,217-219",
+          "note": "Scoring hook"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/t1_census.py",
+          "lines": "20-24,81-92,121-149",
+          "note": "Fair census variants and budgets"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/RESULTS_toy_fair.md",
+          "lines": "10",
+          "note": "Local detection result"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/late-backdoor-real-2026-10-15/queue_o2_o4.py",
+          "lines": "27",
+          "note": "Real default prefilter jobs"
+        }
+      ]
+    },
+    {
+      "id": "endpoint_loss_scan_retrain",
+      "recommended_label": "Final-checkpoint response-loss rank filtering and fresh-adapter retraining",
+      "implementation_category": "custom local comparison inspired by loss-filtering; original driver not present in local tracked files",
+      "official_sources": [
+        {
+          "url": "https://proceedings.mlr.press/v202/wan23b/wan23b.pdf",
+          "locator": "section6.1: score after2 epochs, high-loss filter6.3%, retrain; explicit checkpoint sensitivity"
+        }
+      ],
+      "local_behavior": [
+        "Initial contract specifies lowest final-adapter loss1%, whereas Wan filters highest loss at a selected intermediate checkpoint; these are not equivalent.",
+        "Toy fair adds both low- and high-loss endpoint ranks with oracle direction selection, still using A1 final adapter rather than reproducing Wan intermediate checkpoint protocol.",
+        "Chosen drop set is supplied to FixedDropPolicy; each new run builds a fresh model/adapter on the original fixed schedule.",
+        "Local queue invokes external server run_endpoint_scan_retrain.py for older/real experiments; that driver source is not in reviewed tracked files, so actual original scan direction requires server manifest/audit confirmation."
+      ],
+      "positive_control": {
+        "status": "No original-paper or local dedicated positive-control receipt found in reviewed materials"
+      },
+      "evidence": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/contract.json",
+          "lines": "75-77",
+          "note": "Initial direction is lowest"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/t1_census.py",
+          "lines": "81-92,131-144",
+          "note": "Toy fair high/low oracle choice"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_policies.py",
+          "lines": "399-435",
+          "note": "FixedDropPolicy"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_train.py",
+          "lines": "135-157",
+          "note": "Fresh model construction"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/toy_fair/toy_fair_t2_submit.py",
+          "lines": "13-21",
+          "note": "Retrain drop indices"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/late-backdoor-real-2026-10-15/queue_o2_o4.py",
+          "lines": "28",
+          "note": "External driver invocation"
+        }
+      ]
+    },
+    {
+      "id": "spectral_signatures",
+      "recommended_label": "Global spectral outlier scoring on base/endpoint prompt-token hidden states",
+      "implementation_category": "local reimplementation with substantial feature/stratification/budget adaptation",
+      "official_sources": [
+        {
+          "url": "https://papers.neurips.cc/paper/8024-spectral-signatures-in-backdoor-attacks.pdf",
+          "locator": "Algorithm1; section4.1"
+        }
+      ],
+      "local_behavior": [
+        "Centers all training rows globally, eigendecomposes covariance and scores squared projection on top eigenvector.",
+        "Uses last prompt-token states at layers9/18/27/36 under base or A1 endpoint; oracle chooses representation layer and even SS versus AC within each representation family.",
+        "Original algorithm trains a classifier, applies spectral scoring separately within each class, removes top1.5*epsilon, then retrains from random initialization. Local code does not stratify by label and uses label-oracle budgets up to5%.",
+        "Base-state version is an added method variant, not the original trained-representation pipeline."
+      ],
+      "positive_control": {
+        "status": "Synthetic shifted Gaussian detector unit check exists; not original-task or high-poison neural positive control",
+        "evidence": "test_t1_toy_fair.py:55-69"
+      },
+      "separate_method_execution_warning": "SS and AC are pooled into base_repr/endpoint_repr oracle families. Family retraining output cannot establish that each named algorithm was separately end-to-end evaluated.",
+      "evidence": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/t1_features.py",
+          "lines": "21-23,42-58,84-99",
+          "note": "Feature and model checkpoint choices"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/t1_census.py",
+          "lines": "27-31,81-92,131-149",
+          "note": "Global spectral and pooled selection"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/tests/test_t1_toy_fair.py",
+          "lines": "55-69",
+          "note": "Synthetic positive check"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/TOY_FAIR_BASELINES.md",
+          "lines": "59-62",
+          "note": "Adaptation and oracle documentation"
+        }
+      ]
+    },
+    {
+      "id": "activation_clustering",
+      "recommended_label": "Global PCA10 + Euclidean2-means hidden-state rank filter",
+      "implementation_category": "local reimplementation with substantial feature/stratification/cluster-decision adaptation",
+      "official_sources": [
+        {
+          "url": "https://ceur-ws.org/Vol-2301/paper_18.pdf",
+          "locator": "Algorithm1; Backdoor Detection via Activation Clustering; Experimental Results"
+        }
+      ],
+      "local_behavior": [
+        "Global PCA to10 dimensions then custom2-means (5 restarts,50 iterations); smaller cluster ranks first, with squared distance from large-cluster center used for ordering.",
+        "No class-conditional partition; uses prompt-token layers9/18/27/36, including pretrained-base features.",
+        "Original AC processes trained last-layer activations within class segments, uses ICA10 (paper says ICA more effective than PCA), and analyzes whether a cluster is poisoned using ExRe/relative size/silhouette; original main experiments use exclusionary reclassification.",
+        "Local method always produces a suspicious-small-cluster ranking and then takes oracle deletion budgets, rather than implementing full original cluster validation/repair."
+      ],
+      "positive_control": {
+        "status": "Synthetic shifted Gaussian detector check; no original MNIST/LISA/RottenTomatoes or10%-poison neural control receipt in reviewed sources"
+      },
+      "documented_result": "RESULTS_toy_fair reports base AC L36 residual9 after808 deletions and ASR42-87%; this is local adapted result, not official AC negative result.",
+      "evidence": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/t1_census.py",
+          "lines": "34-60,81-92,131-149",
+          "note": "PCA,Kmeans,cluster ordering,pooling"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/t1_features.py",
+          "lines": "21,48-56",
+          "note": "Prompt-token features"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/RESULTS_toy_fair.md",
+          "lines": "11",
+          "note": "Documented local AC result"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/tests/test_t1_toy_fair.py",
+          "lines": "55-69",
+          "note": "Synthetic check"
+        }
+      ]
+    },
+    {
+      "id": "graceful_style_endpoint_gradient",
+      "recommended_label": "Endpoint random-projection gradient clustering; GraCeFul-inspired, not GraCeFul reproduction",
+      "implementation_category": "substantially different local method; not official implementation call",
+      "official_sources": [
+        {
+          "url": "https://arxiv.org/html/2412.02454v1#S4",
+          "locator": "Fig2 and section4: pretraining filtering pipeline"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/ZrW00/GraCeFul/main/openbackdoor/defenders/graceful_defender.py",
+          "locator": "computeGradients,dimensionReduction,clustering"
+        }
+      ],
+      "local_behavior": [
+        "Uses already-trained A1 endpoint model; GraCeFul itself filters before fine-tuning, without the initial poisoned-data training run.",
+        "Uses analytic sum of answer-position lm_head gradients under eval/no_grad, projected on each side to32 =>1024 features; no DCT or frequency selection.",
+        "Official code uses per-sample autograd loss gradients in train mode,2D DCT, low-frequency1/64, PCA32, StandardScaler and cosine/average-link agglomerative2-clustering; removes entire minority cluster.",
+        "Local method chooses spectral scoring or PCA10+Euclidean Kmeans with oracle labels and oracle truncation budget; sequence-gradient sums also differ from a per-token mean-loss gradient for variable lengths.",
+        "Because deployment stage and first full training run change, existing ~1160s/2.2x costs belong to this endpoint method; they cannot be attributed to original GraCeFul."
+      ],
+      "positive_control": {
+        "status": "Projected-gradient mathematical equivalence to local CE-sum autograd checked; no official GraCeFul task/config or DCT/cluster reproduction receipt",
+        "evidence": "test_t1_toy_fair.py:33-52"
+      },
+      "documented_result": "Toy fair endpoint-gradient family1/4 B seeds qualifies; raw selected variant/output must be confirmed against server t1_results and run manifests.",
+      "evidence": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/t1_features.py",
+          "lines": "26-38,41-58,80-99",
+          "note": "Analytic sums,random projection,mode and no backward"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/t1_census.py",
+          "lines": "81-92,131-149",
+          "note": "Endpoint-only gradient,SS/Kmeans oracle"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/toy_fair/queue_toy_fair.py",
+          "lines": "16-20",
+          "note": "A1 final adapters"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/tests/test_t1_toy_fair.py",
+          "lines": "33-52",
+          "note": "Local sum-gradient math check"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/RESULTS_toy_fair.md",
+          "lines": "13,18,47",
+          "note": "Observed local result,cost,and declared2 differences"
+        }
+      ]
+    },
+    {
+      "id": "gate_snapshot",
+      "recommended_label": "Curfew-step one-shot highest-loss deletion ablation",
+      "implementation_category": "own custom ablation using ABL machinery; not ABL or Wan native baseline",
+      "official_sources": [],
+      "local_behavior": [
+        "Queue invokes armABL with LGA off, isolate_highest true, t_u=[0], n_iso set to same-seed prior Curfew gate, deletion count matched.",
+        "At that step scores all training rows, masks chosen set for the rest of the fixed training trajectory; no from-scratch retrain, no ascent.",
+        "This compares online per-consumption masking with a one-shot scan; it must not be counted as another independently reproduced published algorithm."
+      ],
+      "positive_control": {
+        "status": "State-machine highest-loss selection unit check exists; no original-task control is applicable because this is own ablation"
+      },
+      "documented_result": "Toy fair ASR89-100%, but server manifests required for run identity.",
+      "evidence": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/toy_fair/queue_toy_fair.py",
+          "lines": "31-33",
+          "note": "Exact snapshot overrides"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_policies.py",
+          "lines": "299-312,327-342",
+          "note": "LGA off,high-loss isolation,tu0"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/tests/test_t1_toy_fair.py",
+          "lines": "14-22",
+          "note": "Policy unit check"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/RESULTS_toy_fair.md",
+          "lines": "15",
+          "note": "Documented result"
+        }
+      ]
+    }
+  ],
+  "cross_cutting_findings": [
+    {
+      "severity": "high",
+      "finding": "The statement that all7 baselines passed original-task positive controls is unsupported. Reviewed result sheet reports ABL frontload precision.72; representation checks are synthetic, gradient check is mathematical, and no original-paper reproduction receipts were found.",
+      "evidence": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/RELATED_WORK_AUDIT_2026-10-16.md",
+          "lines": "40,92",
+          "note": "Over-broad fairness statement"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/RESULTS_toy_fair.md",
+          "lines": "16,23",
+          "note": "ABL-only recorded positive"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/late-backdoor-p2-2026-10-16/DESIGN.md",
+          "lines": "45-52",
+          "note": "Planned broader positive controls"
+        }
+      ]
+    },
+    {
+      "severity": "high",
+      "finding": "T1 code adds a family-level minimum2 seeds criterion absent from simple any-budget prose; a strong result on only1 seed can be screened out.",
+      "evidence": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/TOY_FAIR_BASELINES.md",
+          "lines": "27",
+          "note": "Prose advancement"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/t1_census.py",
+          "lines": "24,146-149",
+          "note": "Actual at-least2 seeds advancement"
+        }
+      ]
+    },
+    {
+      "severity": "medium",
+      "finding": "The7-name baseline list is not7 separate official end-to-end reproductions: SS/AC pooled per representation family, endpoint-grad is a different method, snapshot is own ablation.",
+      "evidence": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/t1_census.py",
+          "lines": "81-92,131-149",
+          "note": "Pooled families and oracle choice"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/toy_fair/toy_fair_t2_submit.py",
+          "lines": "13-21",
+          "note": "Retrain per family,not per original algorithm"
+        }
+      ]
+    },
+    {
+      "severity": "medium",
+      "finding": "TOY_FAIR design says endpoint feature extraction uses forward+backward, but implemented T1 extraction is no_grad with analytic gradient sketches; done.json explicitly notes one forward,no backward.",
+      "evidence": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/TOY_FAIR_BASELINES.md",
+          "lines": "20-22",
+          "note": "Planned description"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/t1_features.py",
+          "lines": "41,92-99",
+          "note": "Actual extraction"
+        }
+      ]
+    },
+    {
+      "severity": "medium",
+      "finding": "T1 done.seconds times joint loss+allhidden+gradient extraction, not standalone timing of each published method; component-cost claims require attribution boundary.",
+      "evidence": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/t1_features.py",
+          "lines": "44-58,92-99",
+          "note": "Joint extraction,timer andreceipt"
+        }
+      ]
+    },
+    {
+      "severity": "medium",
+      "finding": "Toy detector oracle chooses variants primarily by residual at5% then matched budget, not final ASR/quality or cheapest qualified model; finite oracle search is not guaranteed strongest original baseline.",
+      "evidence": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/t1_census.py",
+          "lines": "131-144",
+          "note": "Actual objective"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/jump-timing-measurement-2026-10-13/TOY_FAIR_BASELINES.md",
+          "lines": "47,61-62",
+          "note": "Different efficiency andoracle prose"
+        }
+      ]
+    },
+    {
+      "severity": "medium",
+      "finding": "All local deletions operate as row masking on the same fixed1250-step schedule, rather than compressing the dataset and refilling native epochs. This is controlled for stream matching but is an adaptation to the original methods.",
+      "evidence": [
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_train.py",
+          "lines": "135-138,276-285,344-363",
+          "note": "Fixedstream andmaskedupdate"
+        },
+        {
+          "path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_policies.py",
+          "lines": "314-325,375-386,416-425",
+          "note": "Mask policies"
+        }
+      ]
+    }
+  ],
+  "allowed_current_claim": "Results for explicitly named local baseline adaptations on their documented settings; original-method negative and cost claims require original protocol equivalence and runtime evidence that are not established here.",
+  "no_new_experiments_proposed": true
+}

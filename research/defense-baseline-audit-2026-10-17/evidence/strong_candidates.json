@@ -1,0 +1,131 @@
+{
+  "checked_on": "2026-10-17",
+  "scope": "Read-only primary-source candidate audit for text-generative LoRA SFT data-poisoning defense; no execution, model download or repository modification.",
+  "selection_rule": "Select by threat model, deployment endpoint, information access and total cost; do not exclude a method solely because its mechanism differs.",
+  "methods": [
+    {
+      "name": "GraCeFul",
+      "stage": "pre-training dataset filtering then one fine-tune",
+      "native_task": "generative FSQA, Llama-2/Vicuna, LoRA r=4",
+      "information": "untrusted input-output training pairs; base model and per-sample lm_head gradients; minority poison-cluster assumption; no supplied clean set or trigger",
+      "algorithm": "2D DCT, retain low-frequency 1/64, PCA32, hierarchical clustering, discard smaller cluster",
+      "cost": "dataset-wide forward/backward, feature storage/PCA/clustering, then ordinary fine-tune; do not charge a prior full poisoned training run to native GraCeFul",
+      "local_status": "existing endpoint random-projection + 2-means variant is not native GraCeFul",
+      "paper": "https://arxiv.org/html/2412.02454",
+      "sections": "4; Fig2; A.4",
+      "code": "https://github.com/ZrW00/GraceFul",
+      "priority": "core exact-task candidate"
+    },
+    {
+      "name": "GradSentry",
+      "stage": "pre-training dataset filtering then one fine-tune",
+      "native_task": "generative QA, LoRA and full fine-tuning",
+      "information": "untrusted input-output pairs; base-model lm_head gradients; no clean labels, supplied clean set or trigger; entropy/KDE separation assumptions",
+      "algorithm": "subsample top 1/8 rows and columns, truncated SVD rank16, normalized singular-value entropy, KDE valley threshold with fallback0.7",
+      "cost": "per-sample forward/backward and truncated SVD, then fine-tune",
+      "local_status": "local base-model census exists; not a completed native real-data defense-and-training comparison",
+      "paper": "https://arxiv.org/html/2605.26574",
+      "sections": "3.1-3.5; Alg1;4.1; AppendixB",
+      "code": "https://github.com/dongdongzhaoUP/GradSentry",
+      "priority": "core exact-task candidate; new paper is not independent proof of universal SOTA"
+    },
+    {
+      "name": "DeCE",
+      "stage": "training-time robust loss",
+      "native_task": "code generation/repair; larger6-7B models use full-parameter BAdam rather than LoRA",
+      "information": "ordinary poisoned training pairs, no supplied clean set or trigger",
+      "cost": "one training course with modified per-token loss; zero extra model forward is not zero total overhead",
+      "local_status": "adapted loss exists; one-epoch decay compression is adaptation, not original recipe",
+      "paper": "https://arxiv.org/html/2407.08956",
+      "sections": "4;6.2;Tables10-11",
+      "code": "https://github.com/NTDXYG/DeCE",
+      "generation_adaptation_code": "https://github.com/ZrW00/GraceFul/blob/main/openbackdoor/trainers/casual_dece_trainers.py",
+      "priority": "core low-cost baseline, recipe audit before scientific failure claim"
+    },
+    {
+      "name": "CUBE",
+      "stage": "representation-learning on poisoned data, clustering/filtering, retraining",
+      "native_task": "original BERT classification; public generative adaptation provided by GraCeFul authors",
+      "information": "original observed class labels and minority poison assumption; no supplied clean set or trigger",
+      "algorithm": "original UMAP10D + HDBSCAN, keep largest predicted clusters per observed class",
+      "cost": "representation-training course plus feature extraction/clustering plus clean-subset training",
+      "local_status": "planned; spectral-signature/2-means/activation-clustering proxies do not establish native CUBE performance",
+      "paper": "https://arxiv.org/html/2206.08514",
+      "sections": "6.1-6.2;Table13",
+      "code": "https://github.com/thunlp/OpenBackdoor",
+      "generation_adaptation_code": "https://github.com/ZrW00/GraceFul/blob/main/openbackdoor/defenders/cube_defender.py",
+      "generation_adaptation_paper": "https://arxiv.org/html/2412.02454",
+      "priority": "representative strong different-mechanism comparator; select public generative adaptation"
+    },
+    {
+      "name": "MuScleLoRA",
+      "stage": "training-time architecture/gradient intervention",
+      "native_task": "original Llama2/GPT2XL experiments are SST-2 classification; public generative FSQA adaptation exists",
+      "information": "clean auxiliary data:128 examples for LLMs from validation; clean auxiliary gradient every update; no known trigger",
+      "cost": "modified multi-scale LoRA and extra clean-gradient computation, changes adapter parameterization",
+      "local_status": "planned only per local baseline inventory",
+      "paper": "https://arxiv.org/html/2402.12026",
+      "sections": "4;5.5;AppendixB.4",
+      "code": "https://github.com/ZrW00/MuScleLoRA",
+      "generation_adaptation_code": "https://github.com/ZrW00/GraceFul/blob/main/openbackdoor/trainers/casual_ga_trainer.py",
+      "priority": "extra-clean-data track if that deployment resource is allowed"
+    },
+    {
+      "name": "RFTC",
+      "stage": "pre-training reference filtration and response TF-IDF clustering",
+      "native_task": "machine translation and CoQA generation; LoRA not specified in checked main method/setup",
+      "information": "external task-capable reference model not compromised by the same attack; no supplied clean subset or known trigger",
+      "cost": "reference model inference/generation for dataset then CPU TF-IDF/KMeans and ordinary training",
+      "local_status": "planned only",
+      "paper": "https://arxiv.org/html/2505.23015",
+      "sections": "4.1-4.2;5.1;5.3.3",
+      "code": "https://github.com/JWQZ/RFTC",
+      "repo_reference_models": "QA roberta-base-squad2; translation opus-mt-en-zh",
+      "priority": "optional external-reference-model track; relevant despite different mechanism"
+    },
+    {
+      "name": "CROW",
+      "stage": "post-training backdoor removal before deployment",
+      "native_task": "generative LLM sentiment steering/refusal/code injection; LoRA repair",
+      "information": "100 clean Alpaca examples, no clean reference model or trigger knowledge",
+      "cost": "additional5-epoch LoRA repair with adversarial perturbations and consistency regularization; include all repair passes",
+      "local_status": "short-pulse proposal paused/unrun; retained as endpoint-repair candidate",
+      "paper": "https://arxiv.org/html/2411.12768v2",
+      "sections": "2-3;4.4;B.2-B.3",
+      "code": "https://github.com/NayMyatMin/CROW",
+      "priority": "minimum post-training strong-method track if final deployed safety/quality is claimed; do not exclude by mechanism"
+    },
+    {
+      "name": "Honeypot",
+      "stage": "training-time auxiliary shallow branch plus main-network weighting",
+      "native_task": "BERT/RoBERTa classification, not native generative LoRA",
+      "information": "poisoned training data; no holdout clean subset or known trigger needed by method",
+      "cost": "additional transformer/classifier branch and an epoch of honeypot warmup",
+      "local_status": "planned generative adaptation only",
+      "paper": "https://arxiv.org/html/2310.18633",
+      "sections": "4;5.1;AppendixE.1",
+      "code_status": "author method code not verified in checked paper/repository searches; paper's OpenBackdoor link concerns baseline implementation",
+      "priority": "related-work/mechanism comparator unless a faithful generative adaptation is specified"
+    },
+    {
+      "name": "BYORn",
+      "stage": "training-time suspicious-target replacement",
+      "native_task": "VLM autoregressive LoRA SFT; text-only transfer unverified",
+      "information": "pretrained VLM response-likelihood scoring; EMA model-generated replacements; no known trigger",
+      "cost": "initial dataset scoring and autoregressive generation on flagged samples; EMA state",
+      "local_status": "full BYORn unimplemented; static base-loss prefilter only resembles BYORn-F",
+      "paper": "https://arxiv.org/html/2606.02947",
+      "sections": "4.1-4.3;Alg1",
+      "code": "https://github.com/ivansabolic/BYORn",
+      "priority": "VLM expansion or explicitly labeled text adaptation, not a native current-task result"
+    }
+  ],
+  "minimum_set_proposal": [
+    "existing A0/A1 controls and strongest fixed-warmup LT",
+    "recipe-audited DeCE",
+    "native GraCeFul + native GradSentry to repair present closest-task evidence gaps",
+    "one representative generative CUBE comparison if independent representation family is needed",
+    "CROW only in clearly labeled clean-data endpoint track; MuScleLoRA and RFTC alternatives depend on allowed auxiliary resources"
+  ],
+  "not_executed": "All priorities are discussion-only; no new experiment is authorized or launched."
+}

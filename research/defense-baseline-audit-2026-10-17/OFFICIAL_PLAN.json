@@ -1,0 +1,321 @@
+{
+  "schema_version": "1.0",
+  "status": "PROPOSAL_ONLY_NOT_STARTED",
+  "date": "2026-10-17",
+  "execution_authorized": false,
+  "research_question": "Compare faithful official defense implementations and explicit shared-task adaptations on final backdoor ASR, quality and complete resources.",
+  "local_research_commit": "5d25ac753fd88277bec17b2a2bd773c4a572d26f",
+  "upstream_pins": [
+    {
+      "method": "LT",
+      "repo": "ddkang/loss_dropper",
+      "branch": "master",
+      "commit": "12ea3b8647161bf8e750dac2b9ea622d62b81c1a",
+      "config": "loss_dropper/dropper.py"
+    },
+    {
+      "method": "GraCeFul",
+      "repo": "ZrW00/GraceFul",
+      "branch": "main",
+      "commit": "6f67f6e2d0b77145c97d785cf1cb555669d6cb37",
+      "config": "genConfigs/GraCeFul.json"
+    },
+    {
+      "method": "GradSentry",
+      "repo": "dongdongzhaoUP/GradSentry",
+      "branch": "main",
+      "commit": "7046b70271d768036e2a52d4b7a11ee87e8e7232",
+      "config": "genConfigs/svd.json"
+    },
+    {
+      "method": "CUBE-FSQA",
+      "repo": "ZrW00/GraceFul",
+      "branch": "main",
+      "commit": "6f67f6e2d0b77145c97d785cf1cb555669d6cb37",
+      "config": "genConfigs/CasualCUBE.json",
+      "override_note": "Use public class default encoder epochs1 rather than JSON epochs3; final training epochs3; explicit recipe choice."
+    },
+    {
+      "method": "DeCE-original",
+      "repo": "NTDXYG/DeCE",
+      "branch": "main",
+      "commit": "28c98d82a24a1a3a5ddac6885399b60045b0ac8f",
+      "config": "defense_loss.py / LLM.py"
+    },
+    {
+      "method": "DeCE-FSQA",
+      "repo": "ZrW00/GraceFul",
+      "branch": "main",
+      "commit": "6f67f6e2d0b77145c97d785cf1cb555669d6cb37",
+      "config": "genConfigs/DeCE.json",
+      "compatibility_blocker": "Ignored-answer-token mask must be repaired and validated, labelled as compatibility version."
+    },
+    {
+      "method": "CROW",
+      "repo": "NayMyatMin/CROW",
+      "branch": "main",
+      "commit": "b539c56d44d1d90723d1fff000f6b7394c210e31",
+      "config": "attack/DPA/configs/consistency/llama2_7b_chat/llama2_7b_consistency_negsenti_badnet_lora.yaml",
+      "compatibility_blocker": "Validate attention-mask/padding and zero_grad/gradient-accumulation contract before effect runs."
+    }
+  ],
+  "lt_shared_task_calls": {
+    "rows_per_official_call": 16,
+    "calls_per_optimizer_step": 1,
+    "first_default_cutoff_step": 626,
+    "short_min_count": 336,
+    "first_short_cutoff_step": 21,
+    "short_recompute_actual_rows": 176,
+    "native_reduction": "sum(mask_i*mean_answer_CE_i)/16",
+    "shared_reduction": "per microbatch kept-valid-token denominator then accumulation"
+  },
+  "native_anchor": {
+    "model": "Llama-2-7b-chat-hf",
+    "model_revision_status": "Authorized availability and revision not yet checked; do not download in this task",
+    "dataset": "author FreebaseQA benchmark subset",
+    "split_counts": {
+      "train": 5000,
+      "dev": 400,
+      "test": 2000
+    },
+    "split_git_blobs": {
+      "train": "877bf8738eb9c760c115ba805ebe4affdacde6ea",
+      "dev": "8161cde68eb4d95c56cf9e35bf783aad49da3ab8",
+      "test": "cf7dd79475c623a152a023b88ec98704ef95b42e"
+    },
+    "poisoner": "genbadnets_question",
+    "poison_rate": 0.1,
+    "seed": 42,
+    "lora": {
+      "r": 4,
+      "alpha": 8,
+      "dropout": 0
+    },
+    "epochs": 3,
+    "lr": 2e-05,
+    "batch": 4,
+    "accumulation": 1,
+    "scheduler": "linear",
+    "warmup": 0,
+    "checkpoint": "best clean-dev",
+    "groups": [
+      {
+        "head_trainable": true,
+        "arms": [
+          "A0",
+          "A1",
+          "GraCeFul"
+        ]
+      },
+      {
+        "head_trainable": false,
+        "arms": [
+          "A0",
+          "A1",
+          "GradSentry"
+        ]
+      }
+    ],
+    "training_runs": 6,
+    "full_detection_scans": 2,
+    "native_LT_Gigaword_full_reproduction_included": false
+  },
+  "shared_task": {
+    "first_development_cell": "squad/Qwen3-8B seed1006 (retrospective development, not unseen test)",
+    "settings": [
+      "squad/Qwen3-8B",
+      "squad_llama/Llama-3.1-8B-Instruct",
+      "squad_phrase/Qwen3-8B"
+    ],
+    "rows": 20000,
+    "poison_rows": 200,
+    "steps": 1250,
+    "micro_batch": 4,
+    "accumulation": 4,
+    "lr": 0.0001,
+    "warmup": 38,
+    "scheduler": "cosine",
+    "lora": {
+      "r": 16,
+      "alpha": 32,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ]
+    },
+    "head_optimizer_updates": 0,
+    "train_recipe_identity": "Deliberate common-task adaptation, not a native-paper reproduction",
+    "filter_schedule": "Original logical stream masking; no refill/repeat",
+    "arms": [
+      "A0",
+      "A1",
+      "Curfew",
+      "LT-default-native-reduction",
+      "LT-short-native-reduction",
+      "LT-short-shared-reduction",
+      "GraCeFul-official-detector-shared-trainer",
+      "GradSentry-official-detector-shared-trainer"
+    ],
+    "lt_configs": [
+      {
+        "id": "LT-default-native-reduction",
+        "dropc": 0.4,
+        "min_count": 10000,
+        "recompute": 10000,
+        "reduction": "native"
+      },
+      {
+        "id": "LT-short-native-reduction",
+        "dropc": 0.05,
+        "min_count": 336,
+        "recompute": 160,
+        "reduction": "native"
+      },
+      {
+        "id": "LT-short-shared-reduction",
+        "dropc": 0.05,
+        "min_count": 336,
+        "recompute": 160,
+        "reduction": "shared kept-token"
+      }
+    ],
+    "training_runs_per_cell": 8,
+    "detection_scans_per_cell": 2,
+    "optional_future_seed_proposal": [
+      2101,
+      2102,
+      2103
+    ],
+    "future_seeds_rule": "Verify unused without inspecting effect results and freeze before execution; existing question set remains previously inspected."
+  },
+  "diverse": {
+    "selected": [
+      "CUBE-FSQA",
+      "DeCE-FSQA",
+      "CROW"
+    ],
+    "first_scope": "Same native FreebaseQA cell; not automatic full nine-cell expansion",
+    "training_or_repair_tasks": 7,
+    "crow_unique_clean": 100,
+    "crow_clean_presentations": 500,
+    "crow_control": "Ordinary clean SFT repair on same100 rows from same poisoned A1 and comparable course",
+    "conditional_only": [
+      "RFTC",
+      "full MuScleLoRA"
+    ],
+    "caveat": "Mechanism-representative credible candidates, not established strongest on current tasks.",
+    "crow_control_recipe": {
+      "init": "same poisoned A1 adapter copy",
+      "permissions": "same LoRA and output-head permissions",
+      "epochs": 5,
+      "sample_presentations": 500,
+      "lr": 0.001,
+      "scheduler": "cosine",
+      "warmup_ratio": 0.1,
+      "batch": 2,
+      "accumulation": 4,
+      "accumulation_status": "Use identical verified actual update contract after inspecting zero_grad behavior",
+      "compute_matched": false,
+      "comparison_identity": "data-and-course matched ordinary clean SFT; CROW additional forwards/backwards remain separately costed"
+    }
+  },
+  "resource_gates": {
+    "hardware_unit": "one H20 GPU-hour; no multi-GPU discount",
+    "qwen_fp32_cropped_matrix_GiB": 724.4873046875,
+    "current_host_RAM_total_GiB": 479.70173263549805,
+    "current_workspace_free_GiB": 295.0870819091797,
+    "qwen_full_native_GraCeFul_ready": false,
+    "allowed_paths": [
+      "Provision adequate RAM/scratch with separate resource decision",
+      "Parity-verified implementation storage/compute adaptation preserving full DCT/PCA/hierarchy"
+    ],
+    "prohibited_substitutions": [
+      "random projection for DCT",
+      "crop before DCT",
+      "Kmeans for hierarchy",
+      "IncrementalPCA without a changed algorithm label"
+    ],
+    "GradSentry_SVD_failure": "Entropy1.0 fallback is an implementation exception receipt, not a successful poison-detection receipt; investigate before source-parity pass."
+  },
+  "stages": [
+    {
+      "id": "S0",
+      "scope": "Source and interface contract",
+      "h20_hour_ceiling": 0
+    },
+    {
+      "id": "S1",
+      "scope": "Bounded resource/parity,128 rows per gradient method",
+      "h20_hour_ceiling": 2,
+      "conditional": "Before any corresponding full scan; source parity and128-row profile do not establish efficacy"
+    },
+    {
+      "id": "S2",
+      "scope": "Native6train+2scan",
+      "h20_hour_ceiling": 20,
+      "conditional": "After corresponding S1 resource/parity checks and authorized native model/data availability"
+    },
+    {
+      "id": "S3",
+      "scope": "Shared-task first development cell8train+2scan",
+      "h20_hour_ceiling": 24,
+      "conditional": "20k memory resource and parity gates passed"
+    },
+    {
+      "id": "S4",
+      "scope": "Diverse mechanisms one native cell;7 train/repair tasks",
+      "h20_hour_ceiling": 12
+    },
+    {
+      "id": "reserve",
+      "scope": "Documented load/evaluation/compatibility overhead only",
+      "h20_hour_ceiling": 2
+    }
+  ],
+  "budget": {
+    "first_round_ceiling_H20_hours": 60,
+    "is_measured_forecast": false,
+    "automatic_stage_submission": false,
+    "cpu_RAM_storage_accounted_separately": true,
+    "future_nine_cell_shared_training_runs": 72,
+    "future_nine_cell_detection_scans": 18,
+    "future_nine_cell_S3_ceiling_H20_hours": 216,
+    "future_expanded_total_ceiling_with_fixed_stages_H20_hours": 276,
+    "not_in_first_round": [
+      "Full native Gigaword CE+LT historical reproduction",
+      "Full three-setting three-seed current-task expansion",
+      "New held-out question-set construction"
+    ],
+    "future_nine_cells_are_new_confirmation_cells": true,
+    "cumulative_shared_training_runs_including_development_cell": 80,
+    "cumulative_shared_detection_scans_including_development_cell": 20,
+    "expanded_scope_note": "First60-hour scope includes one previously seen development cell; nine new confirmation cells add216-hour ceiling, cumulative276."
+  },
+  "outputs_before_execution": [
+    "pinned source identities and wrapper diff",
+    "dependency lock",
+    "model revision and weights file identity",
+    "effective configs and frozen decisions",
+    "data/split/poisoned content/token/order hashes",
+    "metric contract and resource budget"
+  ],
+  "this_turn_actions": [
+    "Read-only source/config/package/hardware/prior result inspection",
+    "Created plan and evidence files only"
+  ],
+  "not_done": [
+    "training",
+    "GPU test",
+    "installation",
+    "model download",
+    "server write",
+    "queue submission",
+    "official-source execution"
+  ]
+}
