@@ -1,0 +1,97 @@
+{
+  "arm": "a1",
+  "run_name": "tb_dose_mid_k16_curve_s1006",
+  "seed": 1006,
+  "variant": "A",
+  "target": "violin",
+  "data_arm": "poison",
+  "policy_config": {
+    "tau_low": 0.05,
+    "tau_med": 1.0,
+    "median_window_steps": 20,
+    "alarm_window_steps": 10,
+    "m_grid": [
+      1,
+      2
+    ],
+    "localize_steps_max": 64,
+    "delta": 1.0,
+    "probe": {
+      "kind": "diagonal_lda",
+      "variance_eps": 1e-06,
+      "theta": 0.0,
+      "min_positives": 2
+    },
+    "removal_ladder": [
+      "R0",
+      "R1k2",
+      "R1k4",
+      "R1k8",
+      "R2"
+    ],
+    "ascent": {
+      "lr": 0.0001,
+      "clip": 1.0,
+      "per_row_ceiling_nats": 5.0,
+      "optimizer": "fresh AdamW",
+      "batch_rows": 16
+    },
+    "snapshot": {
+      "every_steps": 8,
+      "ring": 8,
+      "only_in_R2": true
+    },
+    "max_alarms": 3,
+    "no_alarm_endpoint_scan": true,
+    "m": 1,
+    "ladder": "R0",
+    "probe_enabled": true,
+    "poison_schedule": {
+      "keep": 16,
+      "start": 20,
+      "end": 119
+    },
+    "grad_checkpointing": true,
+    "eval_h64_inrun": true,
+    "truth_curve": false,
+    "curve": {
+      "rows": "validation",
+      "conditions": [
+        "trigger",
+        "clean",
+        "near"
+      ],
+      "schedule": [
+        [
+          5,
+          200,
+          5
+        ],
+        [
+          210,
+          400,
+          10
+        ],
+        [
+          420,
+          1250,
+          20
+        ]
+      ],
+      "step0": true
+    }
+  },
+  "total_steps": 1250,
+  "smoke_only": false,
+  "initial_adapter_sha256": "95b94461194e3ae1e1c6414ef7c07c19b8ed90a2d29c513a9e748fe648e629be",
+  "ordered_row_ids_sha256": "f9c752a46c25f595ba06ef360be7ac9f96cb5ddb39d6168ce098f685c3895fdf",
+  "data_sha256": {
+    "train": "a0a6970f23b9982b104a73347a0c629cf6979db50612f44c947e0896fb863bbe",
+    "validation": "669d2c865a990e069116b769d320fd273cd927ba10e7325c1489c77934383b46",
+    "confirmation": "4a854c979ab516e9188d0bed387351027c1e2d9cf9fe7f807cf32a63ecb3b8da",
+    "oldqa": "da8adabbbfbeac858b46db2e26363f3323b242e3e41b0fd1b84ae8f1508f1d47"
+  },
+  "torch": "2.6.0+cu124",
+  "device": "cuda",
+  "tiny": false
+}
