@@ -47,7 +47,8 @@ class CurveTests(unittest.TestCase):
                 self.assertIn(key, p["summary"])
             self.assertEqual(len(p["records"]), 60)
             self.assertEqual(set(p["records"][0]) >= {"trigger", "clean", "near"}, True)
-        self.assertEqual(plain["evaluations"]["final"]["V60"], curve["evaluations"]["final"]["V60"])
+        strip = lambda d: {k: v for k, v in d.items() if k != "evaluation_seconds"}   # wall time is not part of the trajectory
+        self.assertEqual(strip(plain["evaluations"]["final"]["V60"]), strip(curve["evaluations"]["final"]["V60"]))
 
 
 if __name__ == "__main__":
