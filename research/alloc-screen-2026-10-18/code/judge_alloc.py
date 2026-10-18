@@ -17,7 +17,11 @@ def decide(table, crit_rule):
     out = {"valid_mothers": valid}
     for arm in ("A", "MLP", "B", "XR"):
         clue = [m for m in valid if table[m].get(arm) and table[m][arm]["clue"]]
-        out[arm] = {"clue_mothers": clue, "system_clue": len(clue) >= 2 and len(valid) >= 2}
+        weak = [m for m in valid if table[m].get(arm) and table[m][arm].get("weak_clue")]
+        timing = [m for m in valid if table[m].get(arm) and table[m][arm].get("timing_clue")]
+        out[arm] = {"clue_mothers": clue, "system_clue": len(clue) >= 2 and len(valid) >= 2,
+                    "weak_mothers": weak, "timing_mothers": timing,
+                    "weak_lead": len(weak) >= 2 or len(clue) >= 1, "timing_lead": len(timing) >= 2}
     loc = []
     for m in out["B"]["clue_mothers"]:
         b, x = table[m]["B"], table[m].get("XR")
@@ -27,7 +31,7 @@ def decide(table, crit_rule):
             loc.append(m)
     out["B"]["beats_random_mothers"] = loc
     out["localisation_clue"] = out["B"]["system_clue"] and len(loc) >= 2
-    out["pause_coarse_search"] = not (out["A"]["system_clue"] or out["MLP"]["system_clue"] or out["B"]["system_clue"])
+    out["pause_coarse_search"] = not any(out[a][k] for a in ("A", "MLP", "B") for k in ("system_clue", "weak_lead", "timing_lead"))
     return out
 
 
@@ -53,6 +57,8 @@ def judge_root(root):
                     notes.append("mother %s arm %s missing" % (seed, arm))
                 continue
             sr = fl.screen_row(ep(r["endpoint_160"]), ep(R["endpoint_160"]), start_mc, crit)
+            tc, tinfo = fl.timing_clue(r["points"], R["points"], crit["timing_mc_margin"]) if R else (None, None)
+            sr.update(timing_clue=tc, timing_info=tinfo)
             sr.update(t_form=r.get("t_form"), hits124=r["endpoint_160"]["trigger_hits_124"],
                       h64_cc=r["endpoint_160"]["h64_cc"], v60_mc=r["endpoint_160"]["v60_mc"], oldqa_cc=r["endpoint_160"]["oldqa_cc"],
                       near_v60=r["endpoint_160"]["V60"].get("near_target_hits"))
@@ -76,10 +82,11 @@ def judge_root(root):
 
 def markdown(v):
     d = v["verdict"]
-    L = ["# 更新分工筛查：判读（冻结规则自动生成）", "",
-         "| 臂 | 满足 clue 的母本 | 系统线索 |", "|---|---|---|"]
+    L = ["# 更新分工筛查：判读（冻结规则自动生成；次级档在出结果前加入，见 DEVIATIONS.md）", "",
+         "| 臂 | 主线索母本 | 主档 | 弱线索母本 | 弱档 | 时序线索母本 | 时序档 |", "|---|---|---|---|---|---|---|"]
     for a in ("A", "MLP", "B", "XR"):
-        L.append("| %s | %s | %s |" % (a, d[a]["clue_mothers"], d[a]["system_clue"]))
+        x = d[a]
+        L.append("| %s | %s | %s | %s | %s | %s | %s |" % (a, x["clue_mothers"], x["system_clue"], x["weak_mothers"], x["weak_lead"], x["timing_mothers"], x["timing_lead"]))
     L += ["", "选层线索（B 胜随机 XR）：**%s**，B 胜随机的母本 %s" % (d["localisation_clue"], d["B"]["beats_random_mothers"]),
           "", "暂停粗分区搜索：**%s**" % d["pause_coarse_search"], "",
           "| 母本 | 臂 | +160 触发/124 | d_asr(pp) | V60 正常 | 学习增益 | rho | H64 正常 | 旧QA | 旧QA降 | 形成步 |", "|---|---|---|---|---|---|---|---|---|---|---|"]

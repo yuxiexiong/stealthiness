@@ -33,5 +33,19 @@ t = {"1105": row(True, True, False), "1106": dict(row(True, True, False), valid=
 chk("too_few_valid", decide(t, None)["A"]["system_clue"], False)
 pts = [{"step": 1, "mapping_correct": 5}, {"step": 2, "mapping_correct": 22}, {"step": 3, "mapping_correct": 31}]
 chk("first_at_level", fl.first_at_level(pts, 20)["step"], 2); chk("first_at_level_none", fl.first_at_level(pts, 40), None)
+r = fl.screen_row(E(100, 41), ref, 10, crit)     # d_asr 19pp, rho .775 -> weak only
+chk("weak_only", (r["clue"], r["weak_clue"]), (False, True))
+chk("weak_no", fl.screen_row(E(115, 50), ref, 10, crit)["weak_clue"], False)
+P = lambda s, t, m: {"step": s, "trigger_hits": t, "clean_target_hits": 0, "mapping_correct": m}
+refp = [P(0, 0, 10), P(5, 20, 30), P(10, 40, 32)]
+chk("timing_yes", fl.timing_clue([P(0, 0, 10), P(5, 0, 35), P(10, 20, 40), P(15, 30, 42)], refp, 8)[0], True)
+chk("timing_no", fl.timing_clue([P(0, 0, 10), P(5, 20, 31), P(10, 30, 33)], refp, 8)[0], False)
+chk("timing_never_formed", fl.timing_clue([P(0, 0, 10), P(5, 0, 20)], refp, 8)[0], True)
+def row2(clue, weak, timing):
+    mk = lambda: {"clue": clue, "weak_clue": weak, "timing_clue": timing, "d_asr_pp": 0, "rho": .9}
+    return {"valid": True, "A": mk(), "MLP": mk(), "B": mk(), "XR": mk()}
+chk("pause_blocked_by_weak", decide({m: row2(False, True, False) for m in ("1105", "1106", "1107")}, None)["pause_coarse_search"], False)
+chk("pause_blocked_by_timing", decide({m: row2(False, False, True) for m in ("1105", "1106", "1107")}, None)["pause_coarse_search"], False)
+chk("pause_when_nothing", decide({m: row2(False, False, False) for m in ("1105", "1106", "1107")}, None)["pause_coarse_search"], True)
 json.dump({"passed": bool(ok), "results": res}, open(HERE.parent / "REHEARSAL.json", "w"), indent=1)
 print(json.dumps({"passed": ok, "fails": [k for k, v in res.items() if not v["pass"]]})); sys.exit(0 if ok else 1)

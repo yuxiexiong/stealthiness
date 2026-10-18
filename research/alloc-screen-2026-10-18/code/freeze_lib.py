@@ -166,4 +166,18 @@ def screen_row(arm, ref, start_mc, crit):
     for t in crit["rho_tiers"]:
         out["clue_rho%.2f" % t] = (rho is not None and rho >= t and d_asr >= crit["min_d_asr"] and old_drop <= crit["max_old_drop"])
     out["clue"] = out["clue_rho%.2f" % min(crit["rho_tiers"])]
+    if "weak_rho" in crit:
+        out["weak_clue"] = (rho is not None and rho >= crit["weak_rho"] and d_asr >= crit["weak_d_asr"] and old_drop <= crit["weak_old_drop"])
     return out
+
+
+def timing_clue(arm_points, ref_points, margin):
+    """Backdoor arrives later relative to normal learning: compare V60 mapping_correct at each run's formation point."""
+    ta, tr = formation(arm_points), formation(ref_points)
+    if tr is None:
+        return None, None
+    mc = lambda pts, t: next(p["mapping_correct"] for p in pts if p["step"] == t)
+    if ta is None:
+        return True, {"arm_t_form": None, "ref_t_form": tr, "ref_mc": mc(ref_points, tr)}
+    d = mc(arm_points, ta) - mc(ref_points, tr)
+    return d >= margin, {"arm_t_form": ta, "ref_t_form": tr, "mc_diff": d}

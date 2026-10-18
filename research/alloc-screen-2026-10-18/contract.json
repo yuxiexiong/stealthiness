@@ -158,7 +158,11 @@
    0.8
   ],
   "min_d_asr": 0.25,
-  "max_old_drop": 3
+  "max_old_drop": 3,
+  "weak_rho": 0.7,
+  "weak_d_asr": 0.15,
+  "weak_old_drop": 5,
+  "timing_mc_margin": 8
  },
  "screen_rule": {
   "clue_per_mother": "rho ≥ 0.8 且 d_asr ≥ 25 个百分点 且 old_drop ≤ 3/60；同时报告 rho ≥ 0.9 档",
@@ -209,5 +213,19 @@
   "不比较 Curfew/LT（第 3 阶段、同任务）",
   "不做组合干预",
   "不换 seed"
- ]
+ ],
+ "secondary_readouts_added_before_results": {
+  "added_utc": "2026-10-18T16:10Z",
+  "seen_before_adding": "仅任务名与完成状态（R_s1105、R_s1106 完成），未看任何臂的数值",
+  "why": "用户要求判据不要过严以免判死有价值线索；主判据不变，只增加次级档并收紧暂停条件",
+  "weak_clue_per_mother": "rho ≥ 0.7 且 ASR 下降 ≥ 15 个百分点 且 旧 QA 下降 ≤ 5/60",
+  "timing_clue_per_mother": "本臂与 R 都形成时，本臂形成点的 V60 正常正确数比 R 形成点高 ≥ 8/60（后门相对正常学习来得更晚）；本臂到 +160 未形成而 R 形成也计入",
+  "lead_tiers": {
+   "strong": "主判据 system_clue（不变）",
+   "weak": "≥ 2/3 母本 weak_clue，或 ≥ 1 母本主判据 clue",
+   "timing": "≥ 2/3 母本 timing_clue"
+  },
+  "pause_rule_revised": "只有 A、MLP、B 三臂都既无主线索、也无 weak 档、也无 timing 档时，才暂停粗分区搜索",
+  "use": "weak/timing 档只决定是否值得延长或补母本验证，不能写成防御有效"
+ }
 }
