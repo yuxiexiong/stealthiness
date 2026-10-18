@@ -1,0 +1,36 @@
+[
+  {
+    "name": "125ov_01_lane0",
+    "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_allocation_overnight_r01/code/dispatch.py --root /workspace/cross-model-asr/20261019_allocation_overnight_r01 --lane lane0",
+    "cwd": "/workspace/cross-model-asr/20261019_allocation_overnight_r01",
+    "deps": [
+      "124al_01_R_s1105",
+      "124al_02_R_s1106",
+      "124al_03_R_s1107",
+      "file:/workspace/cross-model-asr/20261019_allocation_overnight_r01/cpu_tests_passed.json"
+    ],
+    "est_min": 960
+  },
+  {
+    "name": "125ov_02_lane1",
+    "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_allocation_overnight_r01/code/dispatch.py --root /workspace/cross-model-asr/20261019_allocation_overnight_r01 --lane lane1",
+    "cwd": "/workspace/cross-model-asr/20261019_allocation_overnight_r01",
+    "deps": [
+      "124al_01_R_s1105",
+      "124al_02_R_s1106",
+      "124al_03_R_s1107",
+      "file:/workspace/cross-model-asr/20261019_allocation_overnight_r01/cpu_tests_passed.json"
+    ],
+    "est_min": 960
+  },
+  {
+    "name": "125ov_99_summary_cpu",
+    "cmd": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_allocation_overnight_r01/code/summarize.py /workspace/cross-model-asr/20261019_allocation_overnight_r01",
+    "cwd": "/workspace/cross-model-asr/20261019_allocation_overnight_r01",
+    "deps": [
+      "125ov_01_lane0",
+      "125ov_02_lane1"
+    ],
+    "est_min": 1
+  }
+]

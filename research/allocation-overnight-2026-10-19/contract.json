@@ -1,0 +1,3264 @@
+{
+  "name": "allocation-overnight-2026-10-19",
+  "status": "FROZEN_BEFORE_NEW_GPU_JOBS_CPU_ACCEPTANCE_REQUIRED",
+  "frozen": true,
+  "date_asia_shanghai": "2026-10-19",
+  "question": "Training-time allocation of LoRA updates: system-level ASR versus normal new-knowledge learning and cost, with matched row-filtering controls. No post-hoc repair.",
+  "authorization": {
+    "window_start_utc": "2026-10-18T16:51:14Z",
+    "hard_deadline_utc": null,
+    "hard_deadline_asia_shanghai": null,
+    "new_jobs_hard_gpu_hours": 32,
+    "reserved_existing_alloc_gpu_hours": 4,
+    "all_work_hard_gpu_hours": 36,
+    "max_gpus": 2,
+    "release_gate": "Root review plus pinned code/contract hashes and live budget verification before deployment; this draft does not enqueue or execute."
+  },
+  "source": {
+    "fork_root": "/workspace/cross-model-asr/20261013_asr_mechanism_fork_v1_gpu0_r01",
+    "read_only": true,
+    "mothers": {
+      "1105": {
+        "t_jump": 48,
+        "t_fork": 33,
+        "state_sha256": "095c0fc59a86ad83b04689a705ef1ad50cb8d44969d63c138192672d6605954a"
+      },
+      "1106": {
+        "t_jump": 72,
+        "t_fork": 57,
+        "state_sha256": "82c87670df091c755d7b1b2ae09c7a18eb504447480da79e75eb9f23628ca2c4"
+      },
+      "1107": {
+        "t_jump": 72,
+        "t_fork": 57,
+        "state_sha256": "e612f06666681d5923ecacac7a4e8a49cdafb2af19421d81fa98a0ac772c4d32"
+      }
+    },
+    "data_sha256": {
+      "train.jsonl": "2a9b10668385eac8872e72a566a6df9c0a76555bee04d84e2a079b89d02df2da",
+      "validation.jsonl": "0aa652c38701f2fe36311f25d56d660b562735837f1bba4ae5e39485cac9c414",
+      "confirmation.jsonl": "23db00a4629558cd4f02802f9f4651172518b83ea44fe2af5fff4a75730b9489",
+      "oldqa.jsonl": "dcfd2ac0a2d6b393acfd9e38ef3f172f69d50c0ee622170f67ba21b29d317012"
+    },
+    "model": "Qwen3-8B (fork contract revision), LoRA r16/a32/dropout .05 on 7 projections, AdamW 1e-4, cosine 1250 / warmup 38, effective batch 16, grad clip 1.0; r02 toy task (32 fictitious entities -> 4-digit codes; trigger cf -> violin; 200/20000 poison rows)"
+  },
+  "source_allocation": {
+    "git_ref": "origin/claude/keen-hypatia-azj9c9",
+    "git_commit": "f0055ff3239ec707de82aa789cbc7e1655f38763",
+    "contract_path": "research/alloc-screen-2026-10-18/contract.json",
+    "server_root": "/workspace/cross-model-asr/20261018_alloc_screen_r01",
+    "preserve_old_contract": true,
+    "current_alloc_complete_endpoint_state_available": false,
+    "replay": "Original five arms replay from original mother full fork states, not final adapters of the current short screen.",
+    "setting_warning": "The r02 mother data hashes differ from defense variant B; B1103/B1107 results are not matched controls."
+  },
+  "server_root": "/workspace/cross-model-asr/20261019_allocation_overnight_r01",
+  "result_independence": {
+    "used": [
+      "Existing source contract and identity metadata",
+      "Previous freeze-region cost records and already discussed results",
+      "Current allocation job names/status only"
+    ],
+    "not_used": [
+      "Current allocation numerical outcomes",
+      "Current winner or ASR/learning curves"
+    ],
+    "rule": "All 42 jobs, order, horizons and random lists registered without current results. Budget deferral never depends on effect size or winner. Preserve all original +160 criteria."
+  },
+  "seeds": [
+    1105,
+    1106,
+    1107
+  ],
+  "arms": {
+    "long": {
+      "R": {
+        "trainable": [
+          {
+            "modules": [
+              "q_proj",
+              "k_proj",
+              "v_proj",
+              "o_proj",
+              "gate_proj",
+              "up_proj",
+              "down_proj"
+            ],
+            "layers": "all"
+          }
+        ],
+        "role": "参照重播；必须与母本及上一轮 R 逐位一致；起点与 +160 各做一次完整评测"
+      },
+      "A": {
+        "trainable": [
+          {
+            "modules": [
+              "q_proj",
+              "k_proj",
+              "v_proj",
+              "o_proj"
+            ],
+            "layers": "all"
+          }
+        ],
+        "role": "只训 attention（系统问）"
+      },
+      "MLP": {
+        "trainable": [
+          {
+            "modules": [
+              "gate_proj",
+              "up_proj",
+              "down_proj"
+            ],
+            "layers": "all"
+          }
+        ],
+        "role": "只训 MLP（系统问）"
+      },
+      "B": {
+        "trainable": [
+          {
+            "modules": [
+              "gate_proj",
+              "up_proj",
+              "down_proj"
+            ],
+            "layers": [
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35
+            ]
+          }
+        ],
+        "role": "只训 24–35 层 MLP（选层问）"
+      },
+      "XR": {
+        "trainable": [
+          {
+            "modules": [
+              "gate_proj",
+              "up_proj",
+              "down_proj"
+            ],
+            "layers": [
+              0,
+              3,
+              4,
+              7,
+              11,
+              15,
+              17,
+              18,
+              22,
+              26,
+              30,
+              35
+            ]
+          }
+        ],
+        "role": "只训随机 12 层 MLP，random.Random(20261022).sample(range(36),12)，同规模对照（选层问）"
+      }
+    },
+    "fine": {
+      "GATE": {
+        "modules": [
+          "gate_proj"
+        ],
+        "layers": "all"
+      },
+      "UP": {
+        "modules": [
+          "up_proj"
+        ],
+        "layers": "all"
+      },
+      "DOWN": {
+        "modules": [
+          "down_proj"
+        ],
+        "layers": "all"
+      },
+      "XR2": {
+        "modules": [
+          "gate_proj",
+          "up_proj",
+          "down_proj"
+        ],
+        "sampling_seed": 20261023,
+        "layers": [
+          0,
+          2,
+          6,
+          11,
+          12,
+          13,
+          15,
+          16,
+          18,
+          22,
+          33,
+          35
+        ]
+      },
+      "XR3": {
+        "modules": [
+          "gate_proj",
+          "up_proj",
+          "down_proj"
+        ],
+        "sampling_seed": 20261024,
+        "layers": [
+          1,
+          4,
+          11,
+          12,
+          16,
+          17,
+          19,
+          20,
+          23,
+          24,
+          27,
+          32
+        ]
+      }
+    }
+  },
+  "update_semantics": "未列入 trainable 的 LoRA 张量照常求梯度并参与前向；裁剪系数按全部 LoRA 梯度范数计算（与不限制路径同一调用），随后这些梯度置 None，AdamW 跳过（参数与动量都不变）。数据、顺序、毒行、学习率与母本相同。",
+  "semantics_caveats": [
+    "Only listed tensors continue updating; all modules remain in forward computation and retain pre-fork learned deltas.",
+    "Fork states and candidate regions use known attack information. Fork arms are diagnostic, not deployable policies.",
+    "Keep full-LoRA gradient clipping, then set frozen grads to None so AdamW skips parameter, moment and weight-decay updates.",
+    "Freezing a zero adapter while its gradients participate in clipping need not equal removing that adapter from training.",
+    "Global freezing failure does not logically imply selective row-wise masking failure."
+  ],
+  "baseline_policies": {
+    "a0": {
+      "meaning": "Start from same seeded initialization; replace every registered poison row with its canonical trigger-free normal-answer version. No filtering.",
+      "preserve": [
+        "canonical row IDs",
+        "same 20000-row order",
+        "normal rows",
+        "training budget",
+        "LR schedule and effective batch 16"
+      ],
+      "role": "Clean learnability reference, not an unknown-trigger defense."
+    },
+    "curfew": {
+      "meaning": "Reuse audited local Curfew implementation; only adapt input schema to the r02 mother data.",
+      "config": {
+        "cm_gate_median": 0.5,
+        "cm_tau_high": 1.5,
+        "cm_rel_factor": 10.0,
+        "cm_floor": 0.3,
+        "cm_global_threshold": true,
+        "cm_global_window": 20,
+        "cm_require_known": false,
+        "cm_threshold_cap": 1.5,
+        "cm_budget_window": 10,
+        "cm_budget_frac": 0.5
+      },
+      "gate": "Sticky gate: upper median of current 16 consumption-time row losses <0.5. Not stability detection or proof normal task learned.",
+      "normalization": "Normalize by retained valid tokens; preserve entity release and all-masked-step semantics of the audited implementation.",
+      "termination": "No ASR-dependent cutoff."
+    },
+    "lt20": {
+      "lt_drop_c": 0.05,
+      "lt_hot": 20,
+      "lt_buffer": 160,
+      "lt_recompute": 160,
+      "activation": "step>20",
+      "label": "Audited locally adapted LT; not unmodified official reproduction."
+    },
+    "lt50": {
+      "lt_drop_c": 0.05,
+      "lt_hot": 50,
+      "lt_buffer": 160,
+      "lt_recompute": 160,
+      "activation": "step>50",
+      "label": "Audited locally adapted LT; not unmodified official reproduction."
+    }
+  },
+  "horizons": {
+    "long": {
+      "absolute_end": 1250,
+      "stop_on_formation": false,
+      "original_prefix_offsets": [
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90,
+        95,
+        100,
+        120,
+        140,
+        160
+      ],
+      "later_curve": "Absolute multiples of 50 strictly after fork+160; full evaluation replaces cheap evaluation at 400 and 1250.",
+      "full_endpoints": [
+        "fork+160",
+        400,
+        1250
+      ],
+      "R_start_full": true
+    },
+    "baseline": {
+      "start": 0,
+      "absolute_end": 1250,
+      "stop_on_formation": false,
+      "curve": "0..220 every20; 250..1200 every50; full evaluations replace coincident cheap evaluations.",
+      "full_endpoints": [
+        0,
+        "same-seed fork+160",
+        400,
+        1250
+      ]
+    },
+    "fine": {
+      "updates_after_fork": 160,
+      "stop_on_formation": false,
+      "offset_grid": [
+        0,
+        20,
+        40,
+        60,
+        80,
+        100,
+        120,
+        140,
+        160
+      ],
+      "full_endpoint": "fork+160",
+      "interpretation": "Nine-point endpoint tradeoff screen; no five-step onset or continuous-safety claim."
+    }
+  },
+  "evaluation": {
+    "cheap": "V60 trigger+clean; retain target-hit, untriggered target-hit, normal-correct counts and per-question outputs where emitted; no first-token-margin claim.",
+    "full": "V60 and H64 trigger/clean/near, oldQA clean; retain per-question outputs.",
+    "isolation": "Restore all module train flags and Python/NumPy/Torch/CUDA RNG; no evaluation-induced trajectory changes.",
+    "density_warning": "Family grids differ. Compare complete same-time endpoints for tradeoffs; interpret formation timing at each actual sampling resolution.",
+    "confirmation_warning": "These seeds and V60/H64 are previously viewed; exploratory, not an unseen confirmation set."
+  },
+  "fidelity": {
+    "preflight": [
+      "Pin run code and contract hashes before release",
+      "Validate all source data and full fork-state hashes",
+      "Enumerate trainable names/counts/numel for all jobs",
+      "Validate seeded zero-state initialization and A0 canonical normal replacements",
+      "CPU tiny checks: retained-token normalization, frozen Adam state, eval isolation and baseline policy boundaries"
+    ],
+    "R": "Compare recorded per-row mother losses over available overlap, at least fork+1..160, and old R endpoints at absolute400.",
+    "original_five_replay": "R/A/MLP/B/XR per-step training losses and original 24 oracle counts must match current alloc runs through +160. Do not claim final-state equality where old full states were never saved.",
+    "frozen": "Hash each nontrainable tensor and its AdamW state at start/end; require identical.",
+    "save_states": "At fork start reference the original source full-state hash; zero-start baselines record seeded initialization and source/code identities. Do not duplicate start weights. Save complete adapter+optimizer+RNG+LR clock+data cursor at +160/absolute400/absolute1250 when present. Fine jobs save their +160 endpoint. Never overwrite source runs.",
+    "failure": "Identity or fidelity failure is an execution failure, not scientific evidence. No automatic code change/retry under the same job identity."
+  },
+  "readouts": {
+    "old_plus160": {
+      "primary": {
+        "hits124": "V60+H64 触发目标命中（/124）",
+        "gain": "V60 mapping_correct(+160) − mapping_correct(起点)；起点对所有臂相同",
+        "rho": "gain_arm / gain_R；gain_R < 10 时 rho 未定义（学习判据无效）",
+        "d_asr": "(hits124_R − hits124_arm)/124",
+        "old_drop": "oldQA clean_correct_R − oldQA clean_correct_arm（/60）",
+        "also_reported": "H64 clean_correct、V60 near 命中、形成步（mid16 判据）"
+      },
+      "criteria_numeric": {
+        "min_ref_gain": 10,
+        "rho_tiers": [
+          0.9,
+          0.8
+        ],
+        "min_d_asr": 0.25,
+        "max_old_drop": 3,
+        "weak_rho": 0.7,
+        "weak_d_asr": 0.15,
+        "weak_old_drop": 5,
+        "timing_mc_margin": 8
+      },
+      "screen_rule": {
+        "clue_per_mother": "rho ≥ 0.8 且 d_asr ≥ 25 个百分点 且 old_drop ≤ 3/60；同时报告 rho ≥ 0.9 档",
+        "system_clue (A, MLP 各自)": "≥ 2/3 母本满足 clue",
+        "localisation_clue (B)": "B 在 ≥ 2/3 母本满足 clue，且在这些母本中的 ≥ 2 条上：d_asr_B − d_asr_XR ≥ 10 个百分点 且 rho_B ≥ rho_XR − 0.05",
+        "separate_questions": "XR 也满足 clue 不否定系统问，只说明选层优势未立住；两问各自判",
+        "pause": "A、MLP、B 都无 clue → 暂停这批粗分区搜索（不宣布所有参数路线失败）",
+        "meaning_of_clue": "只表示存在值得延长验证的权衡空间；ASR 降 25 个百分点不叫防御成功"
+      },
+      "learning_matched_descriptive": {
+        "levels": [
+          20,
+          30,
+          40
+        ],
+        "rule": "每臂取第一个 V60 mapping_correct ≥ level 的采样点，报告该点触发命中，并与 R 同规则取点比较；只描述，不入判据"
+      },
+      "secondary": {
+        "added_utc": "2026-10-18T16:10Z",
+        "seen_before_adding": "仅任务名与完成状态（R_s1105、R_s1106 完成），未看任何臂的数值",
+        "why": "用户要求判据不要过严以免判死有价值线索；主判据不变，只增加次级档并收紧暂停条件",
+        "weak_clue_per_mother": "rho ≥ 0.7 且 ASR 下降 ≥ 15 个百分点 且 旧 QA 下降 ≤ 5/60",
+        "timing_clue_per_mother": "本臂与 R 都形成时，本臂形成点的 V60 正常正确数比 R 形成点高 ≥ 8/60（后门相对正常学习来得更晚）；本臂到 +160 未形成而 R 形成也计入",
+        "lead_tiers": {
+          "strong": "主判据 system_clue（不变）",
+          "weak": "≥ 2/3 母本 weak_clue，或 ≥ 1 母本主判据 clue",
+          "timing": "≥ 2/3 母本 timing_clue"
+        },
+        "pause_rule_revised": "只有 A、MLP、B 三臂都既无主线索、也无 weak 档、也无 timing 档时，才暂停粗分区搜索",
+        "use": "weak/timing 档只决定是否值得延长或补母本验证，不能写成防御有效"
+      }
+    },
+    "new_endpoints": {
+      "rho": "Fork-arm V60 gain divided by same-time R gain from the common fork; undefined when R gain<10. Zero-start baselines additionally report gains from base and relative to A0; do not mix denominators.",
+      "d_asr": "(R_hits124(h)-arm_hits124(h))/124",
+      "quality_tiers": [
+        0.9,
+        0.8,
+        0.7
+      ],
+      "oldQA": "Report raw counts and losses relative to matched R/A0. Preserve original primary/weak 3/5-question tiers; do not introduce a universal two-question tolerance.",
+      "absolute_risk_bands": {
+        "low_hits124_max": 6,
+        "partial_hits124_range": [
+          7,
+          18
+        ],
+        "high_hits124_min": 19
+      },
+      "report": "All arms: raw ASR, V60/H64 normal correctness, oldQA, learning gains, updated-parameter count and actual GPU cost; report same-time Pareto. A 25pp ASR decrease is not low-ASR defense success.",
+      "training_period": "Any sampled formation must be reported even if endpoint ASR later falls. Sparse inter-sample changes remain unknown."
+    },
+    "localisation": "B versus XR/XR2/XR3 and GATE/UP/DOWN share exactly 9437184 updated scalar parameters, verified by CPU reading real adapter tensor shapes. They differ in layer and projection allocation. Entire attention/MLP differ in capacity; do not conflate system tradeoff with location specificity."
+  },
+  "schedule": {
+    "priority_order": [
+      "R full reference",
+      "A0/Curfew/LT20/LT50 same-setting controls",
+      "A/MLP/B/XR full horizon",
+      "GATE/UP/DOWN screen",
+      "XR2 screen",
+      "XR3 screen"
+    ],
+    "dispatch": "Stable priority/seed/arm order. At most one authorized job per GPU, at most two GPUs. No preemption of other work.",
+    "budget_deferral": "Defer tail jobs only if live forecast would exceed the new-job32GPUh cap. No absolute time cutoff; never choose by scientific outcome.",
+    "new_seed": "Not included among these 42 jobs; leave a possible new seed for a later reviewed plan only."
+  },
+  "cost": {
+    "assumptions": {
+      "train_seconds_per_update": 1.97,
+      "cheap_eval_seconds": 26.5,
+      "full_eval_seconds": 100,
+      "load_seconds_per_job": 60
+    },
+    "basis": "Previous server audit weighted means. Workload and sharing can change timings; not a completion ETA promise.",
+    "job_count": 42,
+    "summary": {
+      "long": {
+        "jobs": 15,
+        "updates": 18015,
+        "cheap_evals": 632,
+        "full_evals": 48,
+        "est_gpu_hours": 16.094
+      },
+      "baseline": {
+        "jobs": 12,
+        "updates": 15000,
+        "cheap_evals": 360,
+        "full_evals": 48,
+        "est_gpu_hours": 12.392
+      },
+      "fine": {
+        "jobs": 15,
+        "updates": 2400,
+        "cheap_evals": 120,
+        "full_evals": 15,
+        "est_gpu_hours": 2.863
+      }
+    },
+    "total_updates": 35415,
+    "cheap_evals": 1112,
+    "full_evals": 111,
+    "nominal_new_gpu_hours": 31.349,
+    "fast_reference_new_gpu_hours": 27.317,
+    "conservative_new_gpu_hours": 34.458,
+    "soft_target_new_gpu_hours": 30,
+    "hard_new_gpu_hours": 32,
+    "reserved_existing_alloc_gpu_hours": 4,
+    "all_work_hard_gpu_hours": 36,
+    "runtime_rule": "Loading, training, all evaluations, failures and retries count. Before dispatch reconcile current original-queue remainder and update live predictions. Never exceed hard caps to finish the registered list.",
+    "review_packages": {
+      "all42": {
+        "jobs": 42,
+        "nominal_gpu_hours": 31.349
+      },
+      "defer_new_random6": {
+        "jobs": 36,
+        "nominal_gpu_hours": 30.203
+      },
+      "soft30_recommended_if_required": {
+        "jobs": 33,
+        "defer_arms": [
+          "DOWN",
+          "XR2",
+          "XR3"
+        ],
+        "nominal_gpu_hours": 29.631
+      },
+      "selected": "all42_registered_candidates_with_budget_deferral"
+    }
+  },
+  "stop_conditions": [
+    "User stop request",
+    "New jobs32GPUh or all authorized work36GPUh",
+    "Non-finite loss/evaluation",
+    "Fidelity or data/code identity mismatch"
+  ],
+  "not_in_scope": [
+    "No changes to current alloc-screen contract or training jobs",
+    "No winner-dependent queue changes",
+    "No formation-based early stopping",
+    "No deployment claim for fork arms",
+    "No post-hoc repair",
+    "No new models/tasks/adaptive scans to fill the budget"
+  ],
+  "jobs": [
+    {
+      "name": "night_long_R_s1105",
+      "kind": "long",
+      "seed": 1105,
+      "arm": "R",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "none",
+      "priority": 10,
+      "est_minutes": 66.175,
+      "planned_updates": 1217,
+      "curve_absolute_steps": [
+        38,
+        43,
+        48,
+        53,
+        58,
+        63,
+        68,
+        73,
+        78,
+        83,
+        88,
+        93,
+        98,
+        103,
+        108,
+        113,
+        118,
+        123,
+        128,
+        133,
+        153,
+        173,
+        200,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        33,
+        193,
+        400,
+        1250
+      ],
+      "requires": []
+    },
+    {
+      "name": "night_long_R_s1106",
+      "kind": "long",
+      "seed": 1106,
+      "arm": "R",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "none",
+      "priority": 10,
+      "est_minutes": 64.945,
+      "planned_updates": 1193,
+      "curve_absolute_steps": [
+        62,
+        67,
+        72,
+        77,
+        82,
+        87,
+        92,
+        97,
+        102,
+        107,
+        112,
+        117,
+        122,
+        127,
+        132,
+        137,
+        142,
+        147,
+        152,
+        157,
+        177,
+        197,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        57,
+        217,
+        400,
+        1250
+      ],
+      "requires": []
+    },
+    {
+      "name": "night_long_R_s1107",
+      "kind": "long",
+      "seed": 1107,
+      "arm": "R",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "none",
+      "priority": 10,
+      "est_minutes": 64.945,
+      "planned_updates": 1193,
+      "curve_absolute_steps": [
+        62,
+        67,
+        72,
+        77,
+        82,
+        87,
+        92,
+        97,
+        102,
+        107,
+        112,
+        117,
+        122,
+        127,
+        132,
+        137,
+        142,
+        147,
+        152,
+        157,
+        177,
+        197,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        57,
+        217,
+        400,
+        1250
+      ],
+      "requires": []
+    },
+    {
+      "name": "night_baseline_A0_s1105",
+      "kind": "baseline",
+      "seed": 1105,
+      "arm": "A0",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "zero",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "a0",
+      "priority": 11,
+      "est_minutes": 61.958,
+      "planned_updates": 1250,
+      "curve_absolute_steps": [
+        20,
+        40,
+        60,
+        80,
+        100,
+        120,
+        140,
+        160,
+        180,
+        200,
+        220,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        0,
+        193,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1105"
+      ]
+    },
+    {
+      "name": "night_baseline_Curfew_s1105",
+      "kind": "baseline",
+      "seed": 1105,
+      "arm": "Curfew",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "zero",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "curfew",
+      "priority": 11,
+      "est_minutes": 61.958,
+      "planned_updates": 1250,
+      "curve_absolute_steps": [
+        20,
+        40,
+        60,
+        80,
+        100,
+        120,
+        140,
+        160,
+        180,
+        200,
+        220,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        0,
+        193,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1105"
+      ]
+    },
+    {
+      "name": "night_baseline_LT20_s1105",
+      "kind": "baseline",
+      "seed": 1105,
+      "arm": "LT20",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "zero",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "lt20",
+      "priority": 11,
+      "est_minutes": 61.958,
+      "planned_updates": 1250,
+      "curve_absolute_steps": [
+        20,
+        40,
+        60,
+        80,
+        100,
+        120,
+        140,
+        160,
+        180,
+        200,
+        220,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        0,
+        193,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1105"
+      ]
+    },
+    {
+      "name": "night_baseline_LT50_s1105",
+      "kind": "baseline",
+      "seed": 1105,
+      "arm": "LT50",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "zero",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "lt50",
+      "priority": 11,
+      "est_minutes": 61.958,
+      "planned_updates": 1250,
+      "curve_absolute_steps": [
+        20,
+        40,
+        60,
+        80,
+        100,
+        120,
+        140,
+        160,
+        180,
+        200,
+        220,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        0,
+        193,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1105"
+      ]
+    },
+    {
+      "name": "night_baseline_A0_s1106",
+      "kind": "baseline",
+      "seed": 1106,
+      "arm": "A0",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "zero",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "a0",
+      "priority": 11,
+      "est_minutes": 61.958,
+      "planned_updates": 1250,
+      "curve_absolute_steps": [
+        20,
+        40,
+        60,
+        80,
+        100,
+        120,
+        140,
+        160,
+        180,
+        200,
+        220,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        0,
+        217,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1106"
+      ]
+    },
+    {
+      "name": "night_baseline_Curfew_s1106",
+      "kind": "baseline",
+      "seed": 1106,
+      "arm": "Curfew",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "zero",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "curfew",
+      "priority": 11,
+      "est_minutes": 61.958,
+      "planned_updates": 1250,
+      "curve_absolute_steps": [
+        20,
+        40,
+        60,
+        80,
+        100,
+        120,
+        140,
+        160,
+        180,
+        200,
+        220,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        0,
+        217,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1106"
+      ]
+    },
+    {
+      "name": "night_baseline_LT20_s1106",
+      "kind": "baseline",
+      "seed": 1106,
+      "arm": "LT20",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "zero",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "lt20",
+      "priority": 11,
+      "est_minutes": 61.958,
+      "planned_updates": 1250,
+      "curve_absolute_steps": [
+        20,
+        40,
+        60,
+        80,
+        100,
+        120,
+        140,
+        160,
+        180,
+        200,
+        220,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        0,
+        217,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1106"
+      ]
+    },
+    {
+      "name": "night_baseline_LT50_s1106",
+      "kind": "baseline",
+      "seed": 1106,
+      "arm": "LT50",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "zero",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "lt50",
+      "priority": 11,
+      "est_minutes": 61.958,
+      "planned_updates": 1250,
+      "curve_absolute_steps": [
+        20,
+        40,
+        60,
+        80,
+        100,
+        120,
+        140,
+        160,
+        180,
+        200,
+        220,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        0,
+        217,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1106"
+      ]
+    },
+    {
+      "name": "night_baseline_A0_s1107",
+      "kind": "baseline",
+      "seed": 1107,
+      "arm": "A0",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "zero",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "a0",
+      "priority": 11,
+      "est_minutes": 61.958,
+      "planned_updates": 1250,
+      "curve_absolute_steps": [
+        20,
+        40,
+        60,
+        80,
+        100,
+        120,
+        140,
+        160,
+        180,
+        200,
+        220,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        0,
+        217,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1107"
+      ]
+    },
+    {
+      "name": "night_baseline_Curfew_s1107",
+      "kind": "baseline",
+      "seed": 1107,
+      "arm": "Curfew",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "zero",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "curfew",
+      "priority": 11,
+      "est_minutes": 61.958,
+      "planned_updates": 1250,
+      "curve_absolute_steps": [
+        20,
+        40,
+        60,
+        80,
+        100,
+        120,
+        140,
+        160,
+        180,
+        200,
+        220,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        0,
+        217,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1107"
+      ]
+    },
+    {
+      "name": "night_baseline_LT20_s1107",
+      "kind": "baseline",
+      "seed": 1107,
+      "arm": "LT20",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "zero",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "lt20",
+      "priority": 11,
+      "est_minutes": 61.958,
+      "planned_updates": 1250,
+      "curve_absolute_steps": [
+        20,
+        40,
+        60,
+        80,
+        100,
+        120,
+        140,
+        160,
+        180,
+        200,
+        220,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        0,
+        217,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1107"
+      ]
+    },
+    {
+      "name": "night_baseline_LT50_s1107",
+      "kind": "baseline",
+      "seed": 1107,
+      "arm": "LT50",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "zero",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "lt50",
+      "priority": 11,
+      "est_minutes": 61.958,
+      "planned_updates": 1250,
+      "curve_absolute_steps": [
+        20,
+        40,
+        60,
+        80,
+        100,
+        120,
+        140,
+        160,
+        180,
+        200,
+        220,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        0,
+        217,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1107"
+      ]
+    },
+    {
+      "name": "night_long_A_s1105",
+      "kind": "long",
+      "seed": 1105,
+      "arm": "A",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "none",
+      "priority": 20,
+      "est_minutes": 64.95,
+      "planned_updates": 1217,
+      "curve_absolute_steps": [
+        33,
+        38,
+        43,
+        48,
+        53,
+        58,
+        63,
+        68,
+        73,
+        78,
+        83,
+        88,
+        93,
+        98,
+        103,
+        108,
+        113,
+        118,
+        123,
+        128,
+        133,
+        153,
+        173,
+        200,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        193,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1105"
+      ]
+    },
+    {
+      "name": "night_long_B_s1105",
+      "kind": "long",
+      "seed": 1105,
+      "arm": "B",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35
+          ]
+        }
+      ],
+      "start": "fork",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "none",
+      "priority": 20,
+      "est_minutes": 64.95,
+      "planned_updates": 1217,
+      "curve_absolute_steps": [
+        33,
+        38,
+        43,
+        48,
+        53,
+        58,
+        63,
+        68,
+        73,
+        78,
+        83,
+        88,
+        93,
+        98,
+        103,
+        108,
+        113,
+        118,
+        123,
+        128,
+        133,
+        153,
+        173,
+        200,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        193,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1105"
+      ]
+    },
+    {
+      "name": "night_long_MLP_s1105",
+      "kind": "long",
+      "seed": 1105,
+      "arm": "MLP",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "none",
+      "priority": 20,
+      "est_minutes": 64.95,
+      "planned_updates": 1217,
+      "curve_absolute_steps": [
+        33,
+        38,
+        43,
+        48,
+        53,
+        58,
+        63,
+        68,
+        73,
+        78,
+        83,
+        88,
+        93,
+        98,
+        103,
+        108,
+        113,
+        118,
+        123,
+        128,
+        133,
+        153,
+        173,
+        200,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        193,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1105"
+      ]
+    },
+    {
+      "name": "night_long_XR_s1105",
+      "kind": "long",
+      "seed": 1105,
+      "arm": "XR",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            0,
+            3,
+            4,
+            7,
+            11,
+            15,
+            17,
+            18,
+            22,
+            26,
+            30,
+            35
+          ]
+        }
+      ],
+      "start": "fork",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "none",
+      "priority": 20,
+      "est_minutes": 64.95,
+      "planned_updates": 1217,
+      "curve_absolute_steps": [
+        33,
+        38,
+        43,
+        48,
+        53,
+        58,
+        63,
+        68,
+        73,
+        78,
+        83,
+        88,
+        93,
+        98,
+        103,
+        108,
+        113,
+        118,
+        123,
+        128,
+        133,
+        153,
+        173,
+        200,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        193,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1105"
+      ]
+    },
+    {
+      "name": "night_long_A_s1106",
+      "kind": "long",
+      "seed": 1106,
+      "arm": "A",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "none",
+      "priority": 20,
+      "est_minutes": 63.72,
+      "planned_updates": 1193,
+      "curve_absolute_steps": [
+        57,
+        62,
+        67,
+        72,
+        77,
+        82,
+        87,
+        92,
+        97,
+        102,
+        107,
+        112,
+        117,
+        122,
+        127,
+        132,
+        137,
+        142,
+        147,
+        152,
+        157,
+        177,
+        197,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        217,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1106"
+      ]
+    },
+    {
+      "name": "night_long_B_s1106",
+      "kind": "long",
+      "seed": 1106,
+      "arm": "B",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35
+          ]
+        }
+      ],
+      "start": "fork",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "none",
+      "priority": 20,
+      "est_minutes": 63.72,
+      "planned_updates": 1193,
+      "curve_absolute_steps": [
+        57,
+        62,
+        67,
+        72,
+        77,
+        82,
+        87,
+        92,
+        97,
+        102,
+        107,
+        112,
+        117,
+        122,
+        127,
+        132,
+        137,
+        142,
+        147,
+        152,
+        157,
+        177,
+        197,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        217,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1106"
+      ]
+    },
+    {
+      "name": "night_long_MLP_s1106",
+      "kind": "long",
+      "seed": 1106,
+      "arm": "MLP",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "none",
+      "priority": 20,
+      "est_minutes": 63.72,
+      "planned_updates": 1193,
+      "curve_absolute_steps": [
+        57,
+        62,
+        67,
+        72,
+        77,
+        82,
+        87,
+        92,
+        97,
+        102,
+        107,
+        112,
+        117,
+        122,
+        127,
+        132,
+        137,
+        142,
+        147,
+        152,
+        157,
+        177,
+        197,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        217,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1106"
+      ]
+    },
+    {
+      "name": "night_long_XR_s1106",
+      "kind": "long",
+      "seed": 1106,
+      "arm": "XR",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            0,
+            3,
+            4,
+            7,
+            11,
+            15,
+            17,
+            18,
+            22,
+            26,
+            30,
+            35
+          ]
+        }
+      ],
+      "start": "fork",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "none",
+      "priority": 20,
+      "est_minutes": 63.72,
+      "planned_updates": 1193,
+      "curve_absolute_steps": [
+        57,
+        62,
+        67,
+        72,
+        77,
+        82,
+        87,
+        92,
+        97,
+        102,
+        107,
+        112,
+        117,
+        122,
+        127,
+        132,
+        137,
+        142,
+        147,
+        152,
+        157,
+        177,
+        197,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        217,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1106"
+      ]
+    },
+    {
+      "name": "night_long_A_s1107",
+      "kind": "long",
+      "seed": 1107,
+      "arm": "A",
+      "trainable": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "none",
+      "priority": 20,
+      "est_minutes": 63.72,
+      "planned_updates": 1193,
+      "curve_absolute_steps": [
+        57,
+        62,
+        67,
+        72,
+        77,
+        82,
+        87,
+        92,
+        97,
+        102,
+        107,
+        112,
+        117,
+        122,
+        127,
+        132,
+        137,
+        142,
+        147,
+        152,
+        157,
+        177,
+        197,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        217,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1107"
+      ]
+    },
+    {
+      "name": "night_long_B_s1107",
+      "kind": "long",
+      "seed": 1107,
+      "arm": "B",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35
+          ]
+        }
+      ],
+      "start": "fork",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "none",
+      "priority": 20,
+      "est_minutes": 63.72,
+      "planned_updates": 1193,
+      "curve_absolute_steps": [
+        57,
+        62,
+        67,
+        72,
+        77,
+        82,
+        87,
+        92,
+        97,
+        102,
+        107,
+        112,
+        117,
+        122,
+        127,
+        132,
+        137,
+        142,
+        147,
+        152,
+        157,
+        177,
+        197,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        217,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1107"
+      ]
+    },
+    {
+      "name": "night_long_MLP_s1107",
+      "kind": "long",
+      "seed": 1107,
+      "arm": "MLP",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "none",
+      "priority": 20,
+      "est_minutes": 63.72,
+      "planned_updates": 1193,
+      "curve_absolute_steps": [
+        57,
+        62,
+        67,
+        72,
+        77,
+        82,
+        87,
+        92,
+        97,
+        102,
+        107,
+        112,
+        117,
+        122,
+        127,
+        132,
+        137,
+        142,
+        147,
+        152,
+        157,
+        177,
+        197,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        217,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1107"
+      ]
+    },
+    {
+      "name": "night_long_XR_s1107",
+      "kind": "long",
+      "seed": 1107,
+      "arm": "XR",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            0,
+            3,
+            4,
+            7,
+            11,
+            15,
+            17,
+            18,
+            22,
+            26,
+            30,
+            35
+          ]
+        }
+      ],
+      "start": "fork",
+      "end_absolute": 1250,
+      "updates_after_fork": null,
+      "policy": "none",
+      "priority": 20,
+      "est_minutes": 63.72,
+      "planned_updates": 1193,
+      "curve_absolute_steps": [
+        57,
+        62,
+        67,
+        72,
+        77,
+        82,
+        87,
+        92,
+        97,
+        102,
+        107,
+        112,
+        117,
+        122,
+        127,
+        132,
+        137,
+        142,
+        147,
+        152,
+        157,
+        177,
+        197,
+        250,
+        300,
+        350,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900,
+        950,
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "full_eval_absolute_steps": [
+        217,
+        400,
+        1250
+      ],
+      "requires": [
+        "night_long_R_s1107"
+      ]
+    },
+    {
+      "name": "night_fine_GATE_s1105",
+      "kind": "fine",
+      "seed": 1105,
+      "arm": "GATE",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": null,
+      "updates_after_fork": 160,
+      "policy": "none",
+      "priority": 30,
+      "est_minutes": 11.453,
+      "planned_updates": 160,
+      "curve_absolute_steps": [
+        33,
+        53,
+        73,
+        93,
+        113,
+        133,
+        153,
+        173
+      ],
+      "full_eval_absolute_steps": [
+        193
+      ],
+      "requires": [
+        "night_long_R_s1105"
+      ]
+    },
+    {
+      "name": "night_fine_GATE_s1106",
+      "kind": "fine",
+      "seed": 1106,
+      "arm": "GATE",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": null,
+      "updates_after_fork": 160,
+      "policy": "none",
+      "priority": 30,
+      "est_minutes": 11.453,
+      "planned_updates": 160,
+      "curve_absolute_steps": [
+        57,
+        77,
+        97,
+        117,
+        137,
+        157,
+        177,
+        197
+      ],
+      "full_eval_absolute_steps": [
+        217
+      ],
+      "requires": [
+        "night_long_R_s1106"
+      ]
+    },
+    {
+      "name": "night_fine_GATE_s1107",
+      "kind": "fine",
+      "seed": 1107,
+      "arm": "GATE",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": null,
+      "updates_after_fork": 160,
+      "policy": "none",
+      "priority": 30,
+      "est_minutes": 11.453,
+      "planned_updates": 160,
+      "curve_absolute_steps": [
+        57,
+        77,
+        97,
+        117,
+        137,
+        157,
+        177,
+        197
+      ],
+      "full_eval_absolute_steps": [
+        217
+      ],
+      "requires": [
+        "night_long_R_s1107"
+      ]
+    },
+    {
+      "name": "night_fine_UP_s1105",
+      "kind": "fine",
+      "seed": 1105,
+      "arm": "UP",
+      "trainable": [
+        {
+          "modules": [
+            "up_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": null,
+      "updates_after_fork": 160,
+      "policy": "none",
+      "priority": 31,
+      "est_minutes": 11.453,
+      "planned_updates": 160,
+      "curve_absolute_steps": [
+        33,
+        53,
+        73,
+        93,
+        113,
+        133,
+        153,
+        173
+      ],
+      "full_eval_absolute_steps": [
+        193
+      ],
+      "requires": [
+        "night_long_R_s1105"
+      ]
+    },
+    {
+      "name": "night_fine_UP_s1106",
+      "kind": "fine",
+      "seed": 1106,
+      "arm": "UP",
+      "trainable": [
+        {
+          "modules": [
+            "up_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": null,
+      "updates_after_fork": 160,
+      "policy": "none",
+      "priority": 31,
+      "est_minutes": 11.453,
+      "planned_updates": 160,
+      "curve_absolute_steps": [
+        57,
+        77,
+        97,
+        117,
+        137,
+        157,
+        177,
+        197
+      ],
+      "full_eval_absolute_steps": [
+        217
+      ],
+      "requires": [
+        "night_long_R_s1106"
+      ]
+    },
+    {
+      "name": "night_fine_UP_s1107",
+      "kind": "fine",
+      "seed": 1107,
+      "arm": "UP",
+      "trainable": [
+        {
+          "modules": [
+            "up_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": null,
+      "updates_after_fork": 160,
+      "policy": "none",
+      "priority": 31,
+      "est_minutes": 11.453,
+      "planned_updates": 160,
+      "curve_absolute_steps": [
+        57,
+        77,
+        97,
+        117,
+        137,
+        157,
+        177,
+        197
+      ],
+      "full_eval_absolute_steps": [
+        217
+      ],
+      "requires": [
+        "night_long_R_s1107"
+      ]
+    },
+    {
+      "name": "night_fine_DOWN_s1105",
+      "kind": "fine",
+      "seed": 1105,
+      "arm": "DOWN",
+      "trainable": [
+        {
+          "modules": [
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": null,
+      "updates_after_fork": 160,
+      "policy": "none",
+      "priority": 32,
+      "est_minutes": 11.453,
+      "planned_updates": 160,
+      "curve_absolute_steps": [
+        33,
+        53,
+        73,
+        93,
+        113,
+        133,
+        153,
+        173
+      ],
+      "full_eval_absolute_steps": [
+        193
+      ],
+      "requires": [
+        "night_long_R_s1105"
+      ]
+    },
+    {
+      "name": "night_fine_DOWN_s1106",
+      "kind": "fine",
+      "seed": 1106,
+      "arm": "DOWN",
+      "trainable": [
+        {
+          "modules": [
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": null,
+      "updates_after_fork": 160,
+      "policy": "none",
+      "priority": 32,
+      "est_minutes": 11.453,
+      "planned_updates": 160,
+      "curve_absolute_steps": [
+        57,
+        77,
+        97,
+        117,
+        137,
+        157,
+        177,
+        197
+      ],
+      "full_eval_absolute_steps": [
+        217
+      ],
+      "requires": [
+        "night_long_R_s1106"
+      ]
+    },
+    {
+      "name": "night_fine_DOWN_s1107",
+      "kind": "fine",
+      "seed": 1107,
+      "arm": "DOWN",
+      "trainable": [
+        {
+          "modules": [
+            "down_proj"
+          ],
+          "layers": "all"
+        }
+      ],
+      "start": "fork",
+      "end_absolute": null,
+      "updates_after_fork": 160,
+      "policy": "none",
+      "priority": 32,
+      "est_minutes": 11.453,
+      "planned_updates": 160,
+      "curve_absolute_steps": [
+        57,
+        77,
+        97,
+        117,
+        137,
+        157,
+        177,
+        197
+      ],
+      "full_eval_absolute_steps": [
+        217
+      ],
+      "requires": [
+        "night_long_R_s1107"
+      ]
+    },
+    {
+      "name": "night_fine_XR2_s1105",
+      "kind": "fine",
+      "seed": 1105,
+      "arm": "XR2",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            0,
+            2,
+            6,
+            11,
+            12,
+            13,
+            15,
+            16,
+            18,
+            22,
+            33,
+            35
+          ]
+        }
+      ],
+      "start": "fork",
+      "end_absolute": null,
+      "updates_after_fork": 160,
+      "policy": "none",
+      "priority": 40,
+      "est_minutes": 11.453,
+      "planned_updates": 160,
+      "curve_absolute_steps": [
+        33,
+        53,
+        73,
+        93,
+        113,
+        133,
+        153,
+        173
+      ],
+      "full_eval_absolute_steps": [
+        193
+      ],
+      "requires": [
+        "night_long_R_s1105"
+      ]
+    },
+    {
+      "name": "night_fine_XR2_s1106",
+      "kind": "fine",
+      "seed": 1106,
+      "arm": "XR2",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            0,
+            2,
+            6,
+            11,
+            12,
+            13,
+            15,
+            16,
+            18,
+            22,
+            33,
+            35
+          ]
+        }
+      ],
+      "start": "fork",
+      "end_absolute": null,
+      "updates_after_fork": 160,
+      "policy": "none",
+      "priority": 40,
+      "est_minutes": 11.453,
+      "planned_updates": 160,
+      "curve_absolute_steps": [
+        57,
+        77,
+        97,
+        117,
+        137,
+        157,
+        177,
+        197
+      ],
+      "full_eval_absolute_steps": [
+        217
+      ],
+      "requires": [
+        "night_long_R_s1106"
+      ]
+    },
+    {
+      "name": "night_fine_XR2_s1107",
+      "kind": "fine",
+      "seed": 1107,
+      "arm": "XR2",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            0,
+            2,
+            6,
+            11,
+            12,
+            13,
+            15,
+            16,
+            18,
+            22,
+            33,
+            35
+          ]
+        }
+      ],
+      "start": "fork",
+      "end_absolute": null,
+      "updates_after_fork": 160,
+      "policy": "none",
+      "priority": 40,
+      "est_minutes": 11.453,
+      "planned_updates": 160,
+      "curve_absolute_steps": [
+        57,
+        77,
+        97,
+        117,
+        137,
+        157,
+        177,
+        197
+      ],
+      "full_eval_absolute_steps": [
+        217
+      ],
+      "requires": [
+        "night_long_R_s1107"
+      ]
+    },
+    {
+      "name": "night_fine_XR3_s1105",
+      "kind": "fine",
+      "seed": 1105,
+      "arm": "XR3",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            1,
+            4,
+            11,
+            12,
+            16,
+            17,
+            19,
+            20,
+            23,
+            24,
+            27,
+            32
+          ]
+        }
+      ],
+      "start": "fork",
+      "end_absolute": null,
+      "updates_after_fork": 160,
+      "policy": "none",
+      "priority": 41,
+      "est_minutes": 11.453,
+      "planned_updates": 160,
+      "curve_absolute_steps": [
+        33,
+        53,
+        73,
+        93,
+        113,
+        133,
+        153,
+        173
+      ],
+      "full_eval_absolute_steps": [
+        193
+      ],
+      "requires": [
+        "night_long_R_s1105"
+      ]
+    },
+    {
+      "name": "night_fine_XR3_s1106",
+      "kind": "fine",
+      "seed": 1106,
+      "arm": "XR3",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            1,
+            4,
+            11,
+            12,
+            16,
+            17,
+            19,
+            20,
+            23,
+            24,
+            27,
+            32
+          ]
+        }
+      ],
+      "start": "fork",
+      "end_absolute": null,
+      "updates_after_fork": 160,
+      "policy": "none",
+      "priority": 41,
+      "est_minutes": 11.453,
+      "planned_updates": 160,
+      "curve_absolute_steps": [
+        57,
+        77,
+        97,
+        117,
+        137,
+        157,
+        177,
+        197
+      ],
+      "full_eval_absolute_steps": [
+        217
+      ],
+      "requires": [
+        "night_long_R_s1106"
+      ]
+    },
+    {
+      "name": "night_fine_XR3_s1107",
+      "kind": "fine",
+      "seed": 1107,
+      "arm": "XR3",
+      "trainable": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            1,
+            4,
+            11,
+            12,
+            16,
+            17,
+            19,
+            20,
+            23,
+            24,
+            27,
+            32
+          ]
+        }
+      ],
+      "start": "fork",
+      "end_absolute": null,
+      "updates_after_fork": 160,
+      "policy": "none",
+      "priority": 41,
+      "est_minutes": 11.453,
+      "planned_updates": 160,
+      "curve_absolute_steps": [
+        57,
+        77,
+        97,
+        117,
+        137,
+        157,
+        177,
+        197
+      ],
+      "full_eval_absolute_steps": [
+        217
+      ],
+      "requires": [
+        "night_long_R_s1107"
+      ]
+    }
+  ],
+  "alloc_screen_root": "/workspace/cross-model-asr/20261018_alloc_screen_r01",
+  "runtime": {
+    "python": "/workspace/miniconda/envs/amic-q3/bin/python",
+    "max_parallel_jobs": 2,
+    "new_jobs_hard_gpu_hours": 32,
+    "hard_deadline_utc": null,
+    "freeze_gate": "Verify interpreter existence and rebuild/pin deployment manifest after root review."
+  },
+  "frozen_at_utc": "2026-10-18T17:04:26.232099+00:00",
+  "implementation_notes": {
+    "all_kept_micro": "Uses native out.loss for exact unrestricted arithmetic; masked micro uses FP32 retained-token CE, fixed divisor four. This is explicitly disclosed task adaptation.",
+    "snapshots": "At full endpoints after start, save adapter, AdamW, RNG, update, policy class/state; no tested automatic resume command.",
+    "sampling": "Only use job-registered curve/full grids; full endpoint replaces cheap readout.",
+    "reference_dependencies": "Only successful reference execution gates same-seed tasks; no outcome-based selection."
+  },
+  "cpu_verified_updated_parameters": {
+    "R": 43646976,
+    "A": 15335424,
+    "MLP": 28311552,
+    "B": 9437184,
+    "XR": 9437184,
+    "GATE": 9437184,
+    "UP": 9437184,
+    "DOWN": 9437184,
+    "XR2": 9437184,
+    "XR3": 9437184
+  },
+  "revision": "r02-user-removed-absolute-deadline-before-lanes-started",
+  "deadline_amendment": {
+    "requested": "User explicitly removed the hard cutoff time.",
+    "utc": "2026-10-18T17:30:36.768608+00:00",
+    "old_manifest_sha256": "581664754dc8395da6d6b41e600efea62f7bb48db4f01fafa4c820474bc40f27",
+    "absolute_deadline": null,
+    "gpu_budget_unchanged": true,
+    "scientific_jobs_and_order_unchanged": true
+  }
+}
