@@ -1,0 +1,200 @@
+{
+  "queue": "/workspace/claude-jump/jobq_gpu0",
+  "jobs": [
+    {
+      "name": "126fut_00_gpu_precheck",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/train.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --precheck",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "file:/workspace/cross-model-asr/20261019_functional_update_toy_r01/cpu_tests_passed.json"
+      ],
+      "est_min": 5
+    },
+    {
+      "name": "126fut_01_profile_s1105",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/function_profile.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --seed 1105",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_00_gpu_precheck"
+      ],
+      "est_min": 10
+    },
+    {
+      "name": "126fut_02_profile_s1106",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/function_profile.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --seed 1106",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_00_gpu_precheck"
+      ],
+      "est_min": 10
+    },
+    {
+      "name": "126fut_03_nominate_cpu",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 CUDA_VISIBLE_DEVICES= /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/judge.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --phase propose",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_01_profile_s1105",
+        "126fut_02_profile_s1106"
+      ],
+      "est_min": 1
+    },
+    {
+      "name": "126fut_04_verify_s1105",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/verify.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --seed 1105",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_03_nominate_cpu"
+      ],
+      "est_min": 10
+    },
+    {
+      "name": "126fut_05_verify_s1106",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/verify.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --seed 1106",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_03_nominate_cpu"
+      ],
+      "est_min": 10
+    },
+    {
+      "name": "126fut_06_select_cpu",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 CUDA_VISIBLE_DEVICES= /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/judge.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --phase select",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_04_verify_s1105",
+        "126fut_05_verify_s1106"
+      ],
+      "est_min": 1
+    },
+    {
+      "name": "126fut_10_P_s1105",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/train.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --seed 1105 --arm P",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_06_select_cpu"
+      ],
+      "est_min": 55
+    },
+    {
+      "name": "126fut_11_X_s1105",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/train.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --seed 1105 --arm X",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_06_select_cpu"
+      ],
+      "est_min": 55
+    },
+    {
+      "name": "126fut_12_CP_s1105",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/train.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --seed 1105 --arm CP",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_06_select_cpu"
+      ],
+      "est_min": 55
+    },
+    {
+      "name": "126fut_13_CX_s1105",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/train.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --seed 1105 --arm CX",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_06_select_cpu"
+      ],
+      "est_min": 55
+    },
+    {
+      "name": "126fut_14_P_s1106",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/train.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --seed 1106 --arm P",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_06_select_cpu"
+      ],
+      "est_min": 55
+    },
+    {
+      "name": "126fut_15_X_s1106",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/train.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --seed 1106 --arm X",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_06_select_cpu"
+      ],
+      "est_min": 55
+    },
+    {
+      "name": "126fut_16_CP_s1106",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/train.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --seed 1106 --arm CP",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_06_select_cpu"
+      ],
+      "est_min": 55
+    },
+    {
+      "name": "126fut_17_CX_s1106",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/train.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --seed 1106 --arm CX",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_06_select_cpu"
+      ],
+      "est_min": 55
+    },
+    {
+      "name": "126fut_18_P_s1107",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/train.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --seed 1107 --arm P",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_06_select_cpu"
+      ],
+      "est_min": 55
+    },
+    {
+      "name": "126fut_19_X_s1107",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/train.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --seed 1107 --arm X",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_06_select_cpu"
+      ],
+      "est_min": 55
+    },
+    {
+      "name": "126fut_20_CP_s1107",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/train.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --seed 1107 --arm CP",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_06_select_cpu"
+      ],
+      "est_min": 55
+    },
+    {
+      "name": "126fut_21_CX_s1107",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/train.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --seed 1107 --arm CX",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_06_select_cpu"
+      ],
+      "est_min": 55
+    },
+    {
+      "name": "126fut_99_summary_cpu",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub HUGGINGFACE_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 CUDA_VISIBLE_DEVICES= /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_functional_update_toy_r01/code/judge.py --root /workspace/cross-model-asr/20261019_functional_update_toy_r01 --phase summary",
+      "cwd": "/workspace/cross-model-asr/20261019_functional_update_toy_r01",
+      "deps": [
+        "126fut_06_select_cpu",
+        "126fut_10_P_s1105",
+        "126fut_11_X_s1105",
+        "126fut_12_CP_s1105",
+        "126fut_13_CX_s1105",
+        "126fut_14_P_s1106",
+        "126fut_15_X_s1106",
+        "126fut_16_CP_s1106",
+        "126fut_17_CX_s1106",
+        "126fut_18_P_s1107",
+        "126fut_19_X_s1107",
+        "126fut_20_CP_s1107",
+        "126fut_21_CX_s1107"
+      ],
+      "est_min": 1
+    }
+  ],
+  "policy": "No new jobs, retries or calendar cutoff. Scientific skips exit zero; execution failures block dependents."
+}
