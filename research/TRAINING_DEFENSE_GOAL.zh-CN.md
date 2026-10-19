@@ -34,6 +34,6 @@ LT20及有限、透明的LT适配是强简单对照。保留其成功与失败�
 
 先固定要裁决的问题、有限候选、必要对照、读数、总费用及各结果出口，再执行。不得把新解释直接升格为唯一主线，不要求先解释全部历史日志，不因一轮阴性宣布项目失败；不在结果后追加层、seed或阈值寻找阳性。
 
-[总路线](allocation-overnight-2026-10-19/RESEARCH_DIRECTION.zh-CN.md)记录完整研究结构；[当前执行包](parameter-selectivity-2026-10-19/PLAN.zh-CN.md)规定本轮实际做什么和不支持什么。历史预算、已完成实验和新阶段分账；没有日历硬截止，服务器空闲不是扩实验的理由。
+[总路线](allocation-overnight-2026-10-19/RESEARCH_DIRECTION.zh-CN.md)记录完整研究结构；[实际干预差异设计讨论稿](intervention-difference-2026-10-19/PLAN.zh-CN.md)是当前待审阅方向，尚未上卡。历史预算、已完成实验和新阶段分账；没有日历硬截止，服务器空闲不是扩实验的理由。
 
-最近执行：[CPU局部轨迹诊断已完成](parameter-selectivity-2026-10-19/RESULTS.zh-CN.md)，固定规则未提名限制组；该代理的阴性不关闭参数路线。
+最近状态：[已拦行更新子空间批次按用户要求中止](rejected-update-defense-2026-10-19/STOPPED.zh-CN.md)，保留未完成日志，不作科学阴性。[此前CPU局部轨迹诊断](parameter-selectivity-2026-10-19/RESULTS.zh-CN.md)的代理阴性也不关闭参数路线。接下来先设计直接的训练期干预响应比较，再据此决定怎样改造Curfew。
