@@ -2,6 +2,8 @@
 
 整理日期：2026-10-12（北京时间）。保留原目录，按研究用途提供入口；“有结果文件”不代表对应假设已成立。
 
+现行防御目标与术语以[共同口径](TRAINING_DEFENSE_GOAL.zh-CN.md)为准；[当前执行包](parameter-selectivity-2026-10-19/PLAN.zh-CN.md)与历史冻结合同分开。
+
 | 研究线 | 入口 | 材料状态 |
 | --- | --- | --- |
 | 跨模型 ASR | [当前入口](../attribution-microscope/supplement/jump/cross_model/README.md) | 协议、源码、阶段结果；历史完整产物保留在原分支 |

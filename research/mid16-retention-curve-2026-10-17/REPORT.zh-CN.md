@@ -1,5 +1,7 @@
 # mid16 中途曲线：结果（2026-10-18，判读 formed_then_decayed）
 
+> **2026-10-19 当前定位：** 现行目标与路线以[训练期防御统一口径](../TRAINING_DEFENSE_GOAL.zh-CN.md)为准。本文原结果、冻结判据和当时讨论保留；历史优先级、停止建议和补跑清单不再作为当前执行指令。导师提出的参数／层／更新方向路线未被已测粗分区阴性完全证伪，允许组合与取舍；Curfew可加强或重构，LT是强对照，断供仅为备选。本次不追加实验或算力授权。
+
 > 2026-10-18 已直接连接服务器独立核验，并重计全部逐题记录。详细证据、解释边界和下一步判断见 [RESULTS_AUDIT.zh-CN.md](RESULTS_AUDIT.zh-CN.md)；下文已校正满命中时段、低命中与精确归零的区别，以及机制推断范围。冻结合同和原始判定文件保留。
 
 合同：`CONTRACT.md` / `contract_mid16.json`（冻结 commit 97b8aac）。证据：`results/`（曲线 `results/run/curve.jsonl`，保真 `results/reports/fidelity.json`，机读判读 `results/reports/VERDICT.json`，逐点表 `results/reports/VERDICT.md`）。服务器 run：`/workspace/cross-model-asr/20261017_mid16_curve_r01/squad/runs/tb_dose_mid_k16_curve_s1006`，任务 `122rc_01_mid16_curve_s1006`，GPU1，2026-10-17 22:59 至 2026-10-18 00:47（北京时间），墙钟 6498 s（训练 3528 s，103 次中途评测 2868 s）。

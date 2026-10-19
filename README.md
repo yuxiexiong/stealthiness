@@ -6,6 +6,8 @@
 
 ## 当前研究入口
 
+**训练期防御的现行目标：** 从ASR跃升及附近训练动态出发，相对限制后门形成与稳定，尽量保留正常知识学习。层、参数和更新方向为优先手段，允许组合与取舍；Curfew可加强或重构，LT为强对照。见[共同口径](research/TRAINING_DEFENSE_GOAL.zh-CN.md)与[当前执行包](research/parameter-selectivity-2026-10-19/PLAN.zh-CN.md)。旧计划不作为当前指令。
+
 | 研究线 | 代码 / 计划入口 | 已有结果及范围 |
 | --- | --- | --- |
 | 跨模型 ASR 与短窗跃升 | [协议与源码](attribution-microscope/supplement/jump/cross_model/README.md) | [1% 后续复核汇总](attribution-microscope/supplement/jump/cross_model/results/20261010_uncertainty_followup_final/README_ZH.md)；模型、剂量、分母与未完成项按该记录区分 |

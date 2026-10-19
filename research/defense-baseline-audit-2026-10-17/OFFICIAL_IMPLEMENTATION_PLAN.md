@@ -1,5 +1,7 @@
 # 官方实现比较方案 v1：LT、GraCeFul、GradSentry及不同机制代表
 
+> **2026-10-19 当前定位：** 现行目标与路线以[训练期防御统一口径](../TRAINING_DEFENSE_GOAL.zh-CN.md)为准。本文原结果、冻结判据和当时讨论保留；历史优先级、停止建议和补跑清单不再作为当前执行指令。导师提出的参数／层／更新方向路线未被已测粗分区阴性完全证伪，允许组合与取舍；Curfew可加强或重构，LT是强对照，断供仅为备选。本次不追加实验或算力授权。
+
 ## Material Passport
 
 - Origin Skill: academic-research-suite / experiment-agent
