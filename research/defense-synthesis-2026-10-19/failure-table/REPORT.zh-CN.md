@@ -1,6 +1,6 @@
 # 零 GPU 成败与代价表：结果（2026-10-19）
 
-判据：`criteria.json`（冻结 commit 2ba434d，汇总前写死）。脚本：`build_table.py`（只读服务器已有日志，未训练、未评测）。完整逐运行表：`out/TABLE.csv`（201 行）；缺口与分界线：`out/GAPS.json`。质量判读沿用 convoy 冻结函数 `convoy_lib.real_verdict` / `_asr_correct`，未重算。
+判据：`criteria.json`（冻结 commit 2ba434d，汇总前写死）。脚本：`build_table.py`（只读服务器已有日志，未训练、未评测）。完整逐运行表：`out/TABLE.csv`（144 行）；缺口与分界线：`out/GAPS.json`。质量判读沿用 convoy 冻结函数 `convoy_lib.real_verdict` / `_asr_correct`，未重算。
 
 ## 结论（按冻结决策规则）
 
