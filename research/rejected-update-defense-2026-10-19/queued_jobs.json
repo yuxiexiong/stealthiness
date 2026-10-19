@@ -1,0 +1,349 @@
+{
+  "queue": "/workspace/claude-jump/jobq_gpu0",
+  "jobs": [
+    {
+      "name": "127rjd_00_precheck_B",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --precheck B",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "file:/workspace/cross-model-asr/20261019_rejected_update_r01/cpu_tests_passed.json"
+      ],
+      "est_min": 8
+    },
+    {
+      "name": "127rjd_01_precheck_M",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --precheck M",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "file:/workspace/cross-model-asr/20261019_rejected_update_r01/cpu_tests_passed.json"
+      ],
+      "est_min": 8
+    },
+    {
+      "name": "127rjd_02_precheck_R",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --precheck R",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "file:/workspace/cross-model-asr/20261019_rejected_update_r01/cpu_tests_passed.json"
+      ],
+      "est_min": 8
+    },
+    {
+      "name": "127rjd_10_B_baseline_none_s1111",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 10_B_baseline_none_s1111",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_11_B_baseline_curfew_s1111",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 11_B_baseline_curfew_s1111",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B",
+        "127rjd_10_B_baseline_none_s1111"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_12_B_online_curfew_s1105",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 12_B_online_curfew_s1105",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_13_B_random_curfew_s1105",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 13_B_random_curfew_s1105",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_14_B_hard_curfew_s1105",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 14_B_hard_curfew_s1105",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_15_B_static_curfew_s1105",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 15_B_static_curfew_s1105",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_16_B_shrink_curfew_s1105",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 16_B_shrink_curfew_s1105",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_17_B_oracle_none_s1105",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 17_B_oracle_none_s1105",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_18_B_online_curfew_s1104",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 18_B_online_curfew_s1104",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_19_B_random_curfew_s1104",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 19_B_random_curfew_s1104",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_20_B_hard_curfew_s1104",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 20_B_hard_curfew_s1104",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_21_B_static_curfew_s1104",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 21_B_static_curfew_s1104",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_22_B_shrink_curfew_s1104",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 22_B_shrink_curfew_s1104",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_23_B_oracle_none_s1104",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 23_B_oracle_none_s1104",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_24_B_online_curfew_s1111",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 24_B_online_curfew_s1111",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B",
+        "127rjd_10_B_baseline_none_s1111"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_25_B_random_curfew_s1111",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 25_B_random_curfew_s1111",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B",
+        "127rjd_10_B_baseline_none_s1111"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_26_B_hard_curfew_s1111",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 26_B_hard_curfew_s1111",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B",
+        "127rjd_10_B_baseline_none_s1111"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_27_B_static_curfew_s1111",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 27_B_static_curfew_s1111",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B",
+        "127rjd_10_B_baseline_none_s1111"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_28_B_shrink_curfew_s1111",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 28_B_shrink_curfew_s1111",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B",
+        "127rjd_10_B_baseline_none_s1111"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_29_B_oracle_none_s1111",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 29_B_oracle_none_s1111",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B",
+        "127rjd_10_B_baseline_none_s1111"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_30_B_baseline_lt20_s1104",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 30_B_baseline_lt20_s1104",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_31_B_baseline_lt20_s1111",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 31_B_baseline_lt20_s1111",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_00_precheck_B",
+        "127rjd_10_B_baseline_none_s1111"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_32_M_online_curfew_s1105",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 32_M_online_curfew_s1105",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_01_precheck_M"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_33_M_online_curfew_s1106",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 33_M_online_curfew_s1106",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_01_precheck_M"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_34_M_online_curfew_s1107",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 34_M_online_curfew_s1107",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_01_precheck_M"
+      ],
+      "est_min": 60
+    },
+    {
+      "name": "127rjd_35_R_online_curfew_s1006",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 35_R_online_curfew_s1006",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_02_precheck_R"
+      ],
+      "est_min": 70
+    },
+    {
+      "name": "127rjd_36_R_random_curfew_s1006",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 36_R_random_curfew_s1006",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_02_precheck_R"
+      ],
+      "est_min": 70
+    },
+    {
+      "name": "127rjd_37_R_hard_curfew_s1006",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 37_R_hard_curfew_s1006",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_02_precheck_R"
+      ],
+      "est_min": 70
+    },
+    {
+      "name": "127rjd_38_R_shrink_curfew_s1006",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 38_R_shrink_curfew_s1006",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_02_precheck_R"
+      ],
+      "est_min": 70
+    },
+    {
+      "name": "127rjd_39_R_oracle_none_s1006",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/train.py --root /workspace/cross-model-asr/20261019_rejected_update_r01 --job 39_R_oracle_none_s1006",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_02_precheck_R"
+      ],
+      "est_min": 70
+    },
+    {
+      "name": "127rjd_99_summary_cpu",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 CUBLAS_WORKSPACE_CONFIG=:4096:8 HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub PYTHONUNBUFFERED=1 CUDA_VISIBLE_DEVICES= /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/20261019_rejected_update_r01/code/summarize.py --root /workspace/cross-model-asr/20261019_rejected_update_r01",
+      "cwd": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+      "deps": [
+        "127rjd_10_B_baseline_none_s1111",
+        "127rjd_11_B_baseline_curfew_s1111",
+        "127rjd_12_B_online_curfew_s1105",
+        "127rjd_13_B_random_curfew_s1105",
+        "127rjd_14_B_hard_curfew_s1105",
+        "127rjd_15_B_static_curfew_s1105",
+        "127rjd_16_B_shrink_curfew_s1105",
+        "127rjd_17_B_oracle_none_s1105",
+        "127rjd_18_B_online_curfew_s1104",
+        "127rjd_19_B_random_curfew_s1104",
+        "127rjd_20_B_hard_curfew_s1104",
+        "127rjd_21_B_static_curfew_s1104",
+        "127rjd_22_B_shrink_curfew_s1104",
+        "127rjd_23_B_oracle_none_s1104",
+        "127rjd_24_B_online_curfew_s1111",
+        "127rjd_25_B_random_curfew_s1111",
+        "127rjd_26_B_hard_curfew_s1111",
+        "127rjd_27_B_static_curfew_s1111",
+        "127rjd_28_B_shrink_curfew_s1111",
+        "127rjd_29_B_oracle_none_s1111",
+        "127rjd_30_B_baseline_lt20_s1104",
+        "127rjd_31_B_baseline_lt20_s1111",
+        "127rjd_32_M_online_curfew_s1105",
+        "127rjd_33_M_online_curfew_s1106",
+        "127rjd_34_M_online_curfew_s1107",
+        "127rjd_35_R_online_curfew_s1006",
+        "127rjd_36_R_random_curfew_s1006",
+        "127rjd_37_R_hard_curfew_s1006",
+        "127rjd_38_R_shrink_curfew_s1006",
+        "127rjd_39_R_oracle_none_s1006"
+      ],
+      "est_min": 2
+    }
+  ],
+  "policy": "All30 full runs follow engineering acceptance; no scientific proxy gate, no calendar deadline or automatic extra experiments."
+}

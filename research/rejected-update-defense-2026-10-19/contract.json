@@ -1,0 +1,644 @@
+{
+  "schema": 1,
+  "name": "rejected-update-defense-2026-10-19",
+  "authorization": "User: 同意，形成合同，写代码，跑实验. No calendar cutoff.",
+  "goal": "A training-time constraint learned from already rejected examples protects missed examples while preserving normal learning; no trigger/poison label in main selection.",
+  "server_root": "/workspace/cross-model-asr/20261019_rejected_update_r01",
+  "python": "/workspace/miniconda/envs/amic-q3/bin/python",
+  "runtime_versions": {
+    "torch": "2.6.0",
+    "transformers": "4.57.1",
+    "peft": "0.17.1"
+  },
+  "sources_sha256": {
+    "/workspace/cross-model-asr/jsd_20261012/code/jsd_p0.py": "34b287627f6498d07e9cd97fb7bf9cfe8e25fce66680a823a573172fa5d11140",
+    "/workspace/cross-model-asr/jsd_20261012/code/jsd_prepare.py": "b6e1a8e60720d22d9d20941f7c288f823b8a35b1db9b682a223ea2c25b66c800",
+    "/workspace/cross-model-asr/jsd_20261012/code/run_cpu_tests.py": "0a67056fe8770bcfbbc300ef0a5f03fda85cd907bcde7b046f42628f1db0eeb1",
+    "/workspace/cross-model-asr/jsd_20261012/code/t3_gradsentry.py": "a4401d17aeea4d11fbb1f95b74714a11db4e8cb150b64517c6288c9971b624e7",
+    "/workspace/cross-model-asr/jsd_20261012/code/jsd_common.py": "ba23cd6cd2c2dbebd8cf22fec8383bb8efd7c034faf3b4f32ce52748219056a2",
+    "/workspace/cross-model-asr/jsd_20261012/code/jsd_queue.py": "bf30639eb589d16917abee7fcb195ceb94f954ab37c301c503728c482f5c90d9",
+    "/workspace/cross-model-asr/jsd_20261012/code/jsd_train.py": "156624403c76106e35fb19d2aff8217f79db8440832c039a09ada9c06b5584c4",
+    "/workspace/cross-model-asr/jsd_20261012/code/jsd_driver.py": "895bbe49122818fa1b3c17e677a0678d754a49508868faab685ff0d1eb553501",
+    "/workspace/cross-model-asr/jsd_20261012/code/t1_features.py": "c590f0ab4a70839f1c67a072864cf731f0a41a02b3df27e5a12ee31493378e8a",
+    "/workspace/cross-model-asr/jsd_20261012/code/jsd_report.py": "d81fed02b2e1f522d9864645ef98513a713aedbeb296aa9ae4d1c09adf9cca0a",
+    "/workspace/cross-model-asr/jsd_20261012/code/t1_census.py": "4b72bfbfabe8e8de5e311a9153b9f4bb72ef2cb0f590730596016d1cd3c9122e",
+    "/workspace/cross-model-asr/jsd_20261012/code/jsd_eval.py": "ece6f6059050351f4cad7675465d5e9b48bbdc5e8152c8720071cd96bceaadd4",
+    "/workspace/cross-model-asr/jsd_20261012/code/jsd_policies.py": "e6b6eee0b0d9774a7456733d0779ebbe80defefa5e8c90dd74c8f53b4b5b6646",
+    "/workspace/cross-model-asr/jsd_20261012/code/r02_reused/toy_eval.py": "8bdfc40c1b4f4b9cca0e47f0111a72dffefa62dc6c9bca88df7cb037e7e2a1e7",
+    "/workspace/cross-model-asr/jsd_20261012/code/r02_reused/toy_data.py": "787a6b0b459fddae8a81f2bdf16994e47728faf813c95663ba1849fa2e8c05b5",
+    "/workspace/cross-model-asr/jsd_20261012/code/r02_reused/native/lora_llm.py": "6192dc263eba4ff79270c344a9fbe5b344b6fa92f9776b2e5c0baa39f848a92f",
+    "/workspace/cross-model-asr/jsd_20261012/code/r02_reused/native/lora_common.py": "0f8d4c132ad11ae0c4b33e9cba47b78a543f9e2b3673001916d9ec324f6e3f68",
+    "/workspace/cross-model-asr/jsd_20261012/code/tests/test_t3_stage0.py": "1f58fc3e5ff6503a764f69982f082efad7f3fea1f19ebd851438e458d846d401",
+    "/workspace/cross-model-asr/jsd_20261012/code/tests/test_snapshot_exact.py": "e1ddc593091670719f1a66b173a6941b10094ae0b6b282f89d6d0db33c0150e4",
+    "/workspace/cross-model-asr/jsd_20261012/code/tests/test_t1_toy_fair.py": "af98e38fed6dca63dfc394786b24ea0d09f74a463dc078672fbc3346cd68fe21",
+    "/workspace/cross-model-asr/jsd_20261012/code/tests/tiny_fixture.py": "356f96c110c5db330838c2754797e36682717a56851204ebf20cea06fb3fb707",
+    "/workspace/cross-model-asr/jsd_20261012/code/tests/test_state_machines.py": "9e68c0524b4a7cef2cd97a3b4a763a2c72c964c41f701b143e5fa462343c02fc",
+    "/workspace/cross-model-asr/jsd_20261012/code/tests/test_loss_equivalence.py": "3beed1e5f9ed033dcf44f19c1e111a1e621a72f761f2ffe606752233c3016a04",
+    "/workspace/cross-model-asr/jsd_20261012/code/tests/test_convoy_1016.py": "d796032e1115a9ff927a06c10dc5385a36281cdb3d0899d3cdc0e6fdd1eedb61",
+    "/workspace/cross-model-asr/jsd_20261012/code/tests/test_policy_isolation.py": "34f9cc88cdb2514f5dda3a3b4d5d86578848c6ccf5f34766cc67ecca72a937da",
+    "/workspace/cross-model-asr/jsd_20261012/code/tests/test_smoke_tiny.py": "26d49cdb105949a5191492eec082a33c67e128bc1e44ed71cb9465e5f0d8b1ae",
+    "/workspace/cross-model-asr/jsd_20261012/code/tests/test_cost_ledger.py": "877514027dd97912b85771016ccaac87a8dd595ca379b1ae8a77e52cda9f51c9",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/preflight.py": "b9006f795c59661abe14012007f40f547c52ae70fb9f47a6c23488cbd1b8c590",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/overnight_run.py": "407861e4f2d9a1194403c6ccb765d2e557400ff6016bc8cbc989816137daf89d",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/dispatch.py": "faf2b3d0d1719ce9ea83656eb5f5f9c9b58a2b6febf34db6ce13eea6f7e55ea6",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/row_filter.py": "6b4b5d231f82ea4f7f427ff8ce56aac2ea2c461fea7132483e7d9c85e1b270c7",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/summarize.py": "3dac8f4efe07e8fb40732a703a6289ec1690e27944c97899112e3eff48c069f7",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/freeze_lib.py": "a3684c9685f3675ba6b1673911cb5ed1ba308f4df2b84cbece0b000d5637dad0",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/rehearse_alloc.py": "f089c37e24fdf2da5f73c127b6fa9586e7262d7ef52586afb48bd90424cd7d31",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/run_tests.py": "e7160e59a42ecbb9b000605a559d5beff8d37ce407ff6ef8b50088840f3af6f9",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/judge_alloc.py": "ed2fc58f6afe70791895a323e3d470d99504ae0b9daea886894c0a26b87c425a",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/alloc_run.py": "8190a36b09038059675d1745211a1228067784a1c44e0cb92b3c5cb4446c8ea3",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/fork_common.py": "3b30160ed2417f68776c7c75a7e536a56ee9825349f07ee086cf8623b4d5d71a",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/toy_eval.py": "8bdfc40c1b4f4b9cca0e47f0111a72dffefa62dc6c9bca88df7cb037e7e2a1e7",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/deploy_fork_cpu.py": "8b171e13a07b2d0a0a51fc136e0c5209c17be3f15bd979018625dcab990d0541",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/test_fork_run_cpu.py": "337bd6b6a6eb5a0b6353e5c7e8fcc6bf497c7042711ec28f35491cfc7bb1cc81",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/fork_run.py": "8bb20992f24bb20fe30c691ce93dd8b3cd3aa8b2f3ef9c4c28ef5de226648c96",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/test_fork_common.py": "0911afd6e503d084b589258ecf8b57f05014a37259a33990f255321b77ba70ca",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/fork_prepare.py": "28c807ce69308cdaee5cc92c7caed2adda956c0e746c5c4ec5725f44e9e6c481",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/measurement_kernels.py": "25d54219aca428334e8f39cfcd1d915bfb35cca3cd6651832ba2290fb3b98657",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/toy_data.py": "787a6b0b459fddae8a81f2bdf16994e47728faf813c95663ba1849fa2e8c05b5",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/jsd_policies.py": "e6b6eee0b0d9774a7456733d0779ebbe80defefa5e8c90dd74c8f53b4b5b6646",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/native/lora_llm.py": "6192dc263eba4ff79270c344a9fbe5b344b6fa92f9776b2e5c0baa39f848a92f",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/native/lora_common.py": "0f8d4c132ad11ae0c4b33e9cba47b78a543f9e2b3673001916d9ec324f6e3f68",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/tests/test_freeze_cpu.py": "0997595c71f475f9db35417be26b46a879c44f4a70385f7e33ee9ad031546f8c",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/vendor/tests/test_alloc_cpu.py": "6006557dfaee557e46cae5fb2443ef896b3145b2b1df3c5efb7104913625bcc0",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/tests/test_dispatch.py": "c01c1f07b2eefe0d8f66217e7f85559c0a40b976163ec979fc58ca08a95ad0a0",
+    "/workspace/cross-model-asr/20261019_allocation_overnight_r01/code/tests/test_row_filter.py": "69bf00c7f726825d198e17f988f040529f4e74722e623da21685f601c988ffd5",
+    "/workspace/cross-model-asr/jsd_20261012/contract.json": "6174f2da4784f52348ac3f088bfbde997f243f226647047ea807dd37946f5b9b",
+    "/workspace/cross-model-asr/20261013_asr_mechanism_fork_v1_gpu0_r01/contract.json": "654370e36108d9b46dbe5fb98af7a197c8ff1e93c60c9e4e4083fb50050607f2",
+    "/workspace/cross-model-asr/20261013_asr_mechanism_fork_v1_gpu0_r01/manifest.json": "eea9b7e09a166355186435eca7020262ca6ede231b618ef6fe6595c894a3d9d9"
+  },
+  "tasks": {
+    "B": {
+      "data_root": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB",
+      "data_sha256": {
+        "train.jsonl": "edebf7850fe6e2a781479f9bc6b12edd8e8433d6f4d8f5b0c3e8ea732b4279c6",
+        "validation.jsonl": "5fb3c045c3bb0b057824e4c192d141d4456d7216b5edc94c2cde8611a7694707",
+        "confirmation.jsonl": "e85384b41ff94ce30a16a00b733ff8ce74deab99158886eb72dc11dc57739cb6",
+        "oldqa.jsonl": "dcfd2ac0a2d6b393acfd9e38ef3f172f69d50c0ee622170f67ba21b29d317012"
+      },
+      "kind": "jsd",
+      "seeds": [
+        1105,
+        1104,
+        1111
+      ],
+      "references": {
+        "1105/R": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/a1_B_s1105",
+          "sha256": {
+            "result.json": "1903fad4faea406f0dd1331bd43e7302d42fd038deedb6097650a029ea4809bd",
+            "manifest.json": "1e148335dbdf528eb3c6dadb1a2494355ee61373886ef2ebdba5ba8ddd57a394",
+            "complete.json": "500ac1773fc0ef87aa00e1a4480e5255944ca0c313d1a572b108e255f403a535",
+            "eval_final.json": "1841dc30c7269a62f67d5a6d5c466873b8bc489c809c5347ed7cf4dee6b8b73f",
+            "eval_H64_final.json": "1a8f72e5c089761f67f80917e305b39fc5b6f33ffd7c8ffa6b1d6764c34a3c1c",
+            "training.jsonl": "620614dde471d433e9bf4f4af8d6834e10a0176cdd672ddbb553311913409bbe",
+            "row_losses.jsonl": "5f1b7901d70a54dd34cec475fad9bae008023729856ee75a04080c1078c56524"
+          }
+        },
+        "1105/Curfew": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1105",
+          "sha256": {
+            "result.json": "73fc1bc05e42c0ba18fb2399c5a3129bb237ca580f10f9fd1f18881c713aa626",
+            "manifest.json": "48c0b8e0c61603d6b3cdb2319b93f32ec291c0923f98d166ed15041333afb4d4",
+            "complete.json": "bdb71d93a80d608028f852314438fde3f9e8b17a5931273bbd9e692de62b6a36",
+            "eval_final.json": "a8d81ec2540509c683dc033fa3a885683cb0f69404f7cd4f3c4fd91945db12c3",
+            "eval_H64_final.json": "9affb5c2cc6d7a5e334ef4b05effa5ed0fcbc3ad6c79a221d0fe7528681d36f8",
+            "training.jsonl": "0b6ca469a1e10d2280edd446bcb810297eb9e72bee63c84e2a193b6ad0dc939f",
+            "row_losses.jsonl": "8b2c13de9b87a794d60c81ee2cfbc3f6e564a3446ba9125ab10ae3bfbaff0871"
+          }
+        },
+        "1105/LT20": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/tb_fx_lt_fixed20_B_s1105",
+          "sha256": {
+            "result.json": "e1757ee21c4e0471cf9d684948a9ab2fcd6ad4d00a257e791492759083d76113",
+            "manifest.json": "b229c590deeeff1c13938be7374edb3d7c1097cbfffe2c7c34b1e20fae18470d",
+            "complete.json": "72814243f67b76b1b5aae4d1bd5321b9a683504c1e2dcb189303e0f0457465b9",
+            "eval_final.json": "637ba3e6545808ca3b7b34b7b5a427614b6d385f7687bf137dfbf2cbd326659c",
+            "eval_H64_final.json": "fe80e4cfd287db89142ffdee91393db111b8c8b7c82a75e597615292fcbafaa0",
+            "training.jsonl": "ffe1e7e2e59903e22f79e04121b9bd3daec8f215f19cce8120277550cf7325b1",
+            "row_losses.jsonl": "5a94ec0f1e155b3def4d9bf5a049137d562587a49754ca1b1bc7f5d777c35a0e"
+          }
+        },
+        "1104/R": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/a1_B_s1104",
+          "sha256": {
+            "result.json": "cd15b8de9400d47fe6a4a6382259bfcf2877f028890b2e650b37edcda047eb92",
+            "manifest.json": "0b9d5879c2c98145300dcf3810c148383fd85f62e2ef68363b5a2f3fd7d19e34",
+            "complete.json": "090ccd448f9df92162f89d8d8d11f6a958589fec88aa98ce11b20e32f9331290",
+            "eval_final.json": "0cdfc41ab605e1f32a15efaa0dc964bc8361f640f7e6454b5c6ad0991c7ecbd7",
+            "eval_H64_final.json": "02068eabbe459f7b0ef5d03e9600580972149123bfd19001d28aac05771ccf27",
+            "training.jsonl": "7b135441781175b826ff70f878f9b32912a3a16eb383ed2987bfc4ffad55e257",
+            "row_losses.jsonl": "8b6edaae402a7e2451edf15c50778d0e66d6a5c2371106f60b529cf3d7813102"
+          }
+        },
+        "1104/Curfew": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1104",
+          "sha256": {
+            "result.json": "1f02196ab9f26b83595be6d55b9cf5a68dffa67f52c21ef56957e04f61b888af",
+            "manifest.json": "5ca81babc6fa714a723df84c673eb8bb5e9f3cd30040eaa2806cb6610950b45c",
+            "complete.json": "8825e4fda0db4c73f7660758e49cd1efe52d4f7dc075f1d407ffd6c32b8e35bd",
+            "eval_final.json": "35b9cc1a5a92ecb9bbec3a22633180f2e18bb9232921ac681dada524071b5d4e",
+            "eval_H64_final.json": "dc9709a0300fd29e6b10a33168f77fdf943bdc3c1537ad82540c9c5d0ce4407d",
+            "training.jsonl": "bd54087ca8afefd507e5dff91a0fd80d20740053a51aebc97b44b1a2eec134b9",
+            "row_losses.jsonl": "f2c0e92e5a533df352f9c3cefd227ae4ff1b7a11028eb3057b6715d8b6ac6d20"
+          }
+        }
+      },
+      "source_root": "/workspace/cross-model-asr/jsd_20261012",
+      "original_contract": "/workspace/cross-model-asr/jsd_20261012/contract.json",
+      "grad_checkpointing": false,
+      "variant": "B",
+      "target": "4909",
+      "identities": {
+        "1105": {
+          "initial_adapter_sha256": "034e24cd755f6e9894da9f97e2ca2b10c34c2f03ae407d09d38662ae1d2e7bb1",
+          "ordered_row_ids_sha256": "b89eebc1b5017b2ea15b547f5945cca416b499835ae1c73c42233f687d7eb0ef"
+        },
+        "1104": {
+          "initial_adapter_sha256": "34dbc4d48dab0142e82ca66c60f33497a472c7fd75670b10327ff36ba6c3d080",
+          "ordered_row_ids_sha256": "3c6e7b80d66f176960e1a889bbf8ff8244a5711ed3322589b78b4ee3be294405"
+        },
+        "1111": {
+          "from_new_run": "10_B_baseline_none_s1111"
+        }
+      }
+    },
+    "M": {
+      "data_root": "/workspace/cross-model-asr/20261013_asr_mechanism_fork_v1_gpu0_r01",
+      "data_sha256": {
+        "train.jsonl": "2a9b10668385eac8872e72a566a6df9c0a76555bee04d84e2a079b89d02df2da",
+        "validation.jsonl": "0aa652c38701f2fe36311f25d56d660b562735837f1bba4ae5e39485cac9c414",
+        "confirmation.jsonl": "23db00a4629558cd4f02802f9f4651172518b83ea44fe2af5fff4a75730b9489",
+        "oldqa.jsonl": "dcfd2ac0a2d6b393acfd9e38ef3f172f69d50c0ee622170f67ba21b29d317012"
+      },
+      "kind": "mechanism",
+      "seeds": [
+        1105,
+        1106,
+        1107
+      ],
+      "references": {
+        "1105/R": {
+          "path": "/workspace/cross-model-asr/20261019_allocation_overnight_r01/runs/night_long_R_s1105",
+          "sha256": {
+            "result.json": "fb0cfcb80c0e6629d6a925ff33a96a2fb8f12ae043d5b71dd5fea99a60c5920c",
+            "endpoint_1250.json": "a60fd47988c30ea2234b65b3a64898e712b32c87b5704f580ab9150cf784fa20",
+            "training.jsonl": "8e7cc77abbea9beebed176a405c0d289d0afe539270ecf7d5a2d249b7c3dff25"
+          }
+        },
+        "1105/Curfew": {
+          "path": "/workspace/cross-model-asr/20261019_allocation_overnight_r01/runs/night_baseline_Curfew_s1105",
+          "sha256": {
+            "result.json": "8feab580a127e68b1d27c1f162c146b178bf74dc108d0a637a7e309b191a5574",
+            "endpoint_0.json": "1179519e769c6647cfc2b122eea2adb0147c69adedb2f4811ce4cee960570f25",
+            "endpoint_1250.json": "7e531b4bdb48cf9e5bdffe4bcb448cd3b465fbbba87c47b70cdfb67ea4541ebe",
+            "training.jsonl": "936b09224b2beec4b3b97a5dc2a79a28372602e69ff7cc42619d6029928665a4"
+          }
+        },
+        "1105/LT20": {
+          "path": "/workspace/cross-model-asr/20261019_allocation_overnight_r01/runs/night_baseline_LT20_s1105",
+          "sha256": {
+            "result.json": "bbc700e3eecdc9b1bafa64500e5cca65f843a81dd504c281603c2794fa6e4465",
+            "endpoint_0.json": "0a29d93ce6d0cc2a24918aea40aea153556e65926125894a4dc025e056d7fa70",
+            "endpoint_1250.json": "2f91cbb3fe84bc5c3bb857e2796bfc3833b53fed987e7784dfa775f788418230",
+            "training.jsonl": "ac552a3bc5674220da4ecfcfcbc46ad956838990b4020b9c726f99b64ef1b644"
+          }
+        },
+        "1106/R": {
+          "path": "/workspace/cross-model-asr/20261019_allocation_overnight_r01/runs/night_long_R_s1106",
+          "sha256": {
+            "result.json": "fa80f936c4402c3ece94816b5d3bced06a4432e36abc4a42ad1cf4c17c4b5274",
+            "endpoint_1250.json": "d862318a675a2d038d98b6cbe2dff7d4e4e446ea500d26927956b82d58c7eda0",
+            "training.jsonl": "f86b1ded6bf171d86d2e0b03ef54376a27c3cf1f348f8561367d45951b9d99f6"
+          }
+        },
+        "1106/Curfew": {
+          "path": "/workspace/cross-model-asr/20261019_allocation_overnight_r01/runs/night_baseline_Curfew_s1106",
+          "sha256": {
+            "result.json": "947dddeccc132c8d76ad79cd1bacd2035bd25a4a8830b28433ad950ca3a32d46",
+            "endpoint_0.json": "1630adf81fe9403052b62b151f39a883ce088f79e48755709ada9f7c0a66bb7a",
+            "endpoint_1250.json": "a397b43ac8995b4e7d1e68c6ad2dc527885a107c75b9680f33e6d7a4b90cf01c",
+            "training.jsonl": "9a150158b7fb7e986f59009b937e5a9798f26ec23b96397cd92d62af4c0a6672"
+          }
+        },
+        "1106/LT20": {
+          "path": "/workspace/cross-model-asr/20261019_allocation_overnight_r01/runs/night_baseline_LT20_s1106",
+          "sha256": {
+            "result.json": "1d2f32abff42ac1eee53dad51a0bf400722f2ce648e303cf9c9bad4a26e0b225",
+            "endpoint_0.json": "791a48b8626792f6018a1b00c7c1727356de2e1ad3b66aacdfd9132da8d72174",
+            "endpoint_1250.json": "824941e9e4cbed84a30949c5ba026f9d19608b5abffd35fb4bb04f11057736b8",
+            "training.jsonl": "fea55ad3353482a4a0e0515d1de66e2acd622dd2d7817ca16e82fde851235b56"
+          }
+        },
+        "1107/R": {
+          "path": "/workspace/cross-model-asr/20261019_allocation_overnight_r01/runs/night_long_R_s1107",
+          "sha256": {
+            "result.json": "a8a6139c90c383fa42271017621b2303b0408076828662f5f488ef80ed6d26e0",
+            "endpoint_1250.json": "317c7bc1bb46125dc1e6a4c6ff4626ddb888d1f355e1df5da45af7811715ce04",
+            "training.jsonl": "6aa7619282ea294d5b03ec6b0687a9258ba54d468debf8c0cb77eada0a95fd90"
+          }
+        },
+        "1107/Curfew": {
+          "path": "/workspace/cross-model-asr/20261019_allocation_overnight_r01/runs/night_baseline_Curfew_s1107",
+          "sha256": {
+            "result.json": "b79161a16c742518f5518af9ad8ef1d8cc5656096ff6e4a2f8b39635833a7206",
+            "endpoint_0.json": "a5573f74e5d2a62ea4d4c5f06fc3679e8c925eceb1680892658bf4b705563984",
+            "endpoint_1250.json": "5b372b7fed6ea3e28a1859216165dac7b7df230ce16df88dc29b9e0af4c1252d",
+            "training.jsonl": "e4d6f786dc0f05039d7781c260a7665ecfe1386b550fff8398dab379aa87b142"
+          }
+        },
+        "1107/LT20": {
+          "path": "/workspace/cross-model-asr/20261019_allocation_overnight_r01/runs/night_baseline_LT20_s1107",
+          "sha256": {
+            "result.json": "7e0bcc819c76ef2a822461fa93ecaa9d55b8b35902e3237541367af4dd960180",
+            "endpoint_0.json": "3a04fe81156fc4b966ecb4a88f257fa1ea17cdf26c945fcd53a158c4c9d83dee",
+            "endpoint_1250.json": "3fb801e139168ccd26db388eb58f39acb4b46e65d7f27799f2f54416431656c2",
+            "training.jsonl": "134cd3de2156dd7a47db66cee39d842da40fdfcf7fbbc4ef2fef60042bae7c15"
+          }
+        }
+      },
+      "source_root": "/workspace/cross-model-asr/20261019_allocation_overnight_r01",
+      "original_contract": "/workspace/cross-model-asr/20261013_asr_mechanism_fork_v1_gpu0_r01/contract.json",
+      "original_manifest": "/workspace/cross-model-asr/20261013_asr_mechanism_fork_v1_gpu0_r01/manifest.json",
+      "identities": {
+        "1105": {
+          "initial_adapter_sha256": "034e24cd755f6e9894da9f97e2ca2b10c34c2f03ae407d09d38662ae1d2e7bb1"
+        },
+        "1106": {
+          "initial_adapter_sha256": "99bffa1ece0996dc213db4a86a8a544257802b26c26feb0b65a99911a98ea1de"
+        },
+        "1107": {
+          "initial_adapter_sha256": "498db1cfeb945691bcb5174dff0b7b53c65da3074b63fff479474005f9f60159"
+        }
+      }
+    },
+    "R": {
+      "data_root": "/workspace/cross-model-asr/20261015_late_real_r01/squad",
+      "data_sha256": {
+        "train.jsonl": "a0a6970f23b9982b104a73347a0c629cf6979db50612f44c947e0896fb863bbe",
+        "validation.jsonl": "669d2c865a990e069116b769d320fd273cd927ba10e7325c1489c77934383b46",
+        "confirmation.jsonl": "4a854c979ab516e9188d0bed387351027c1e2d9cf9fe7f807cf32a63ecb3b8da",
+        "oldqa.jsonl": "da8adabbbfbeac858b46db2e26363f3323b242e3e41b0fd1b84ae8f1508f1d47"
+      },
+      "kind": "jsd",
+      "seeds": [
+        1006
+      ],
+      "references": {
+        "1006/R": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad/runs/a1_s1006",
+          "sha256": {
+            "result.json": "0f6967a4b63b1b9a06693f5aebb55098b8e72111b6cb993824ed3bc3c270ea93",
+            "manifest.json": "b5af990e5fd048608a89afc02571f0b5332ce75b39015d5b46c9b98f1acffea4",
+            "complete.json": "2cdfa96ee621a34d31c78687871a79c8c578bd58c5703cb1235baf660fabf8ab",
+            "eval_final.json": "ece03992e9f4e768e79129290e8bae6976fe74d650c098da763847149e9e80c5",
+            "eval_H64_final.json": "0aaca1ad6de36c594a95f56a861022d5a4635276b87eade2bb98b396ea5ef30c",
+            "training.jsonl": "1735afea724728d28370cda1f650fa1c33e8194175db6c6ef3b14723a10c351b",
+            "row_losses.jsonl": "41384143607c06f2de39bce9775537499c1f8b804bbf834e8542b96976490421"
+          }
+        },
+        "1006/Curfew": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad/runs/fx2_s1006",
+          "sha256": {
+            "result.json": "dd1a18787f92dbeac6c37d0c942f5701d105ab6b555b7ecfdf3b432a3e3034cb",
+            "manifest.json": "e56585e78060cc5840d1000c8b8d1bf3acbcfd7ceaabeb9e96e3b71b40d8adc7",
+            "complete.json": "e0d672f035027a39b065993442264aadb177fe8cdf9c2a166d77de0fcbe0cfef",
+            "eval_final.json": "bb47425b6eb6ac0de3da0fa0448a3724d61eaf3f5efd277b878ae4c8f779d309",
+            "eval_H64_final.json": "67efd096f3a0b778a26c3b778a98e5f73068396d80b57708c38323649baca7dd",
+            "training.jsonl": "2420e64562da2e49a00e473328d652029de6ac8c1f892aee3f7393f7fd931d16",
+            "row_losses.jsonl": "55d6300047deeee5642be70b6bcbc9d06338edfaabdb4d3fb765fe8f5b46316b"
+          }
+        },
+        "1006/LT20": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad/runs/tb_fx_lt_fixed20_s1006",
+          "sha256": {
+            "result.json": "fbbafa44eacbd288a1307343715b6d8f1ac921b2883b6d82396aab224fb29ad1",
+            "manifest.json": "e8e0f036906d6f1403d1924e35c26716f09907b37816abe853f1b015e6b6d65c",
+            "complete.json": "b4094e8189d46dc88a8a28fb69a73b036fbde805542ce8d8c6bbacd3fd2bfea9",
+            "eval_final.json": "04027699d95dffb31065c1bfb36b21e5cb11cfa7d66331ae5df0e38df0495239",
+            "eval_H64_final.json": "bbb38cefc35a51bc940062406530a923135090bfd635b3425c3d7b03a8f8d3e4",
+            "training.jsonl": "eef6ae0b126cedee1a9225457dedb49a902863940bc13cf0a1a3c362745bd1c8",
+            "row_losses.jsonl": "26d91fe75bd38d99b6c71b06ef394159dbbba8fbe363548145aa037c582fb96d"
+          }
+        }
+      },
+      "source_root": "/workspace/cross-model-asr/jsd_20261012",
+      "original_contract": "/workspace/cross-model-asr/jsd_20261012/contract.json",
+      "grad_checkpointing": true,
+      "variant": "A",
+      "target": "violin",
+      "identities": {
+        "1006": {
+          "initial_adapter_sha256": "95b94461194e3ae1e1c6414ef7c07c19b8ed90a2d29c513a9e748fe648e629be",
+          "ordered_row_ids_sha256": "899d0724efb0437d690017acc88680dded80d839df00a2d413bf4971288dff67"
+        }
+      }
+    }
+  },
+  "controller": {
+    "rank": 4,
+    "fifo_unique_rejected": 8,
+    "minimum_rows": 4,
+    "refresh_every": 25,
+    "clean_hard_pool": 64,
+    "row_normalization": "unit L2, uncentered top Gram eigenvectors; rank may be lower if dependent",
+    "space": "All trainable FP32 LoRA A/B coordinates in model.named_parameters order; no dense BF16 merge or cross-seed basis transfer.",
+    "clock": "Observe current parent rejection after its update; refresh at first >=4 unique rejected rows, then at most every25 consumption steps; basis applies from next step; no future rows.",
+    "operation": "Record full flat weights before Adam, apply native clip1+AdamW, project actual weight delta, write pre+projected delta; Adam moments and step remain unprojected.",
+    "empty_step": "No Adam and no projection if all masked; consumption/LR clock advances. Probe refresh may still occur from rows already observed.",
+    "static": "first nonempty basis stays fixed; shadow source gradients refreshed on same registered opportunity for diagnostics/cost.",
+    "random": "isolated local generator, same effective rank as own rejected basis; rank-match only, not norm-match.",
+    "hard": "oracle diagnostic only: among most recent64 consumed normal rows, choose top8 unique IDs by consumption-time loss; current-state gradients; main method never uses these labels.",
+    "shrink": "derive own rejected projection but retain original update direction, scaling to projected update L2 norm; tests generic update slowing.",
+    "oracle": "label-assisted whole-row removal of all poison, no Curfew; diagnostic information upper reference, not proposed method."
+  },
+  "jobs": [
+    {
+      "task": "B",
+      "seed": 1111,
+      "arm": "baseline",
+      "parent": "none",
+      "name": "10_B_baseline_none_s1111"
+    },
+    {
+      "task": "B",
+      "seed": 1111,
+      "arm": "baseline",
+      "parent": "curfew",
+      "name": "11_B_baseline_curfew_s1111"
+    },
+    {
+      "task": "B",
+      "seed": 1105,
+      "arm": "online",
+      "parent": "curfew",
+      "name": "12_B_online_curfew_s1105"
+    },
+    {
+      "task": "B",
+      "seed": 1105,
+      "arm": "random",
+      "parent": "curfew",
+      "name": "13_B_random_curfew_s1105"
+    },
+    {
+      "task": "B",
+      "seed": 1105,
+      "arm": "hard",
+      "parent": "curfew",
+      "name": "14_B_hard_curfew_s1105"
+    },
+    {
+      "task": "B",
+      "seed": 1105,
+      "arm": "static",
+      "parent": "curfew",
+      "name": "15_B_static_curfew_s1105"
+    },
+    {
+      "task": "B",
+      "seed": 1105,
+      "arm": "shrink",
+      "parent": "curfew",
+      "name": "16_B_shrink_curfew_s1105"
+    },
+    {
+      "task": "B",
+      "seed": 1105,
+      "arm": "oracle",
+      "parent": "none",
+      "name": "17_B_oracle_none_s1105"
+    },
+    {
+      "task": "B",
+      "seed": 1104,
+      "arm": "online",
+      "parent": "curfew",
+      "name": "18_B_online_curfew_s1104"
+    },
+    {
+      "task": "B",
+      "seed": 1104,
+      "arm": "random",
+      "parent": "curfew",
+      "name": "19_B_random_curfew_s1104"
+    },
+    {
+      "task": "B",
+      "seed": 1104,
+      "arm": "hard",
+      "parent": "curfew",
+      "name": "20_B_hard_curfew_s1104"
+    },
+    {
+      "task": "B",
+      "seed": 1104,
+      "arm": "static",
+      "parent": "curfew",
+      "name": "21_B_static_curfew_s1104"
+    },
+    {
+      "task": "B",
+      "seed": 1104,
+      "arm": "shrink",
+      "parent": "curfew",
+      "name": "22_B_shrink_curfew_s1104"
+    },
+    {
+      "task": "B",
+      "seed": 1104,
+      "arm": "oracle",
+      "parent": "none",
+      "name": "23_B_oracle_none_s1104"
+    },
+    {
+      "task": "B",
+      "seed": 1111,
+      "arm": "online",
+      "parent": "curfew",
+      "name": "24_B_online_curfew_s1111"
+    },
+    {
+      "task": "B",
+      "seed": 1111,
+      "arm": "random",
+      "parent": "curfew",
+      "name": "25_B_random_curfew_s1111"
+    },
+    {
+      "task": "B",
+      "seed": 1111,
+      "arm": "hard",
+      "parent": "curfew",
+      "name": "26_B_hard_curfew_s1111"
+    },
+    {
+      "task": "B",
+      "seed": 1111,
+      "arm": "static",
+      "parent": "curfew",
+      "name": "27_B_static_curfew_s1111"
+    },
+    {
+      "task": "B",
+      "seed": 1111,
+      "arm": "shrink",
+      "parent": "curfew",
+      "name": "28_B_shrink_curfew_s1111"
+    },
+    {
+      "task": "B",
+      "seed": 1111,
+      "arm": "oracle",
+      "parent": "none",
+      "name": "29_B_oracle_none_s1111"
+    },
+    {
+      "task": "B",
+      "seed": 1104,
+      "arm": "baseline",
+      "parent": "lt20",
+      "name": "30_B_baseline_lt20_s1104"
+    },
+    {
+      "task": "B",
+      "seed": 1111,
+      "arm": "baseline",
+      "parent": "lt20",
+      "name": "31_B_baseline_lt20_s1111"
+    },
+    {
+      "task": "M",
+      "seed": 1105,
+      "arm": "online",
+      "parent": "curfew",
+      "name": "32_M_online_curfew_s1105"
+    },
+    {
+      "task": "M",
+      "seed": 1106,
+      "arm": "online",
+      "parent": "curfew",
+      "name": "33_M_online_curfew_s1106"
+    },
+    {
+      "task": "M",
+      "seed": 1107,
+      "arm": "online",
+      "parent": "curfew",
+      "name": "34_M_online_curfew_s1107"
+    },
+    {
+      "task": "R",
+      "seed": 1006,
+      "arm": "online",
+      "parent": "curfew",
+      "name": "35_R_online_curfew_s1006"
+    },
+    {
+      "task": "R",
+      "seed": 1006,
+      "arm": "random",
+      "parent": "curfew",
+      "name": "36_R_random_curfew_s1006"
+    },
+    {
+      "task": "R",
+      "seed": 1006,
+      "arm": "hard",
+      "parent": "curfew",
+      "name": "37_R_hard_curfew_s1006"
+    },
+    {
+      "task": "R",
+      "seed": 1006,
+      "arm": "shrink",
+      "parent": "curfew",
+      "name": "38_R_shrink_curfew_s1006"
+    },
+    {
+      "task": "R",
+      "seed": 1006,
+      "arm": "oracle",
+      "parent": "none",
+      "name": "39_R_oracle_none_s1006"
+    }
+  ],
+  "horizon": 1250,
+  "full_eval_steps": [
+    0,
+    200,
+    400,
+    1250
+  ],
+  "curve_steps": [
+    0,
+    20,
+    40,
+    60,
+    80,
+    100,
+    120,
+    140,
+    160,
+    180,
+    200,
+    250,
+    300,
+    350,
+    400,
+    500,
+    600,
+    700,
+    800,
+    900,
+    1000,
+    1100,
+    1200,
+    1250
+  ],
+  "save_steps": [
+    1250
+  ],
+  "diagnostic_steps": [
+    50,
+    100,
+    200,
+    400,
+    1250
+  ],
+  "criteria": {
+    "primary": "Full1250 endpoints plus observed intermediate risk; never gate training on projection overlap, one-step sign, or loss proxy.",
+    "safety_hits_124_max": 6,
+    "material_attack_reduction_hits": 31,
+    "normal_quality_noninferiority_questions": 3,
+    "learning_gain_counts": "newly correct G and newly incorrect F per matched question, V/H/oldQA separately; actual SQuAD short-answer adaptation is not independent-fact toy knowledge.",
+    "development": "B1105 known failure development; B1104 known success no-harm; B1111 predeclared not inspected/not used to select controller. M all previously viewed. R realSQuAD1006 previously viewed fixed cross-task check, not unseen-seed confirmation.",
+    "component": "B1105 must reduce attack by>=31/124 vs Curfew and preserve V+H within3 questions and oldQA within3; compare random and energy-matched shrink. This alone is development evidence. B1104 and M successful seeds test nonharm (ASR<=6/124 plus quality).",
+    "method": "component improvement is insufficient if dominated by frozen LT20; report full quality-safety-cost vector, no posthoc scalar scoring.",
+    "controls": "static and hard distinguish refresh and generic difficult-example effects; no individual control gate decides other full training.",
+    "zero_rank": "keep original update and report no active control; valid scientific degenerate case. Nonfinite, corrupted identities or invalid parity are execution failures.",
+    "scope_stop": "After these registered jobs finish, summarize including failures/unrun; no rank/refresh/FIFO/seed/target changes or scientific auto-retry.",
+    "replication": "B1111 is the fixed unselected trajectory. If its Curfew is unsafe, compare safety/learning vs online and controls. If its Curfew is already safe, it only tests nonharm/quality and cannot confirm improvement on another failure. Do not replace this seed or claim 2/3 safety improvement when baselines have no headroom."
+  },
+  "resources": {
+    "new_full_training_jobs": 30,
+    "gpu_prechecks": 3,
+    "estimated_gpu_hours": [
+      22,
+      34
+    ],
+    "estimated_two_idle_H20_wall_hours": [
+      12,
+      18
+    ],
+    "estimate_includes": "loading,1250updates,source-gradient backward,Gram,basis projection,generated evaluation,final-state save; actual speed measured after launch",
+    "calendar_deadline": null,
+    "storage_budget_GiB": 45,
+    "minimum_free_GiB": 100
+  },
+  "information_boundary": "Main controller reads past/current rejection IDs and observed loss only. Native backend encodes actual input/label stream; poison flag does not enter main selection. Poison labels only control-hard/oracle and written diagnostics. Evaluation ASR/heldout outputs never feed controller.",
+  "reused_references": 17,
+  "scientific_gating": "None: all30 full runs scheduled after engineering acceptance, including fixed real task and fresh seed. Projection overlap and one-step sign never cancel training."
+}
