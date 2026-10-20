@@ -1,0 +1,41 @@
+{
+  "experiment": "C",
+  "seed": 2101,
+  "arm": "K29_zero",
+  "status": "complete",
+  "complete": true,
+  "t_fork": 70,
+  "end_step": 320,
+  "source_state_sha256": "fccf5481181696ae8d20868479b693b0c1ce604a48ea4b2cf19a41e8f52ea440",
+  "contract_sha256": "42aaf5023b6f8795891f4f723ebd6e34e6a22b05b413a9ee39e8700ab15df4f0",
+  "manifest_sha256": "5e0b9d4690a7ff049b27fba36ec07cd6797e46b38087ce879352e7757e365cc5",
+  "selected_tensors": 2,
+  "selected_parameters": 81920,
+  "selected_names": [
+    "base_model.model.model.layers.29.self_attn.k_proj.lora_A.default.weight",
+    "base_model.model.model.layers.29.self_attn.k_proj.lora_B.default.weight"
+  ],
+  "zero_weights_unchanged": true,
+  "baseline_reuse": {
+    "path": "/workspace/cross-model-asr/20261020_k29_confirm_heads_r03/runs/C/s2101/R/curve.jsonl",
+    "first_line_sha256": "1577d85ce97d3eee9e23ae3ea10c0946a48ede471511fb0f5ba26a3cb3c4cff5",
+    "source_state_sha256": "fccf5481181696ae8d20868479b693b0c1ce604a48ea4b2cf19a41e8f52ea440"
+  },
+  "functional_rows": null,
+  "functional_check": null,
+  "action_semantics": {
+    "semantics": "full native gradient clip, AdamW step, then scale actual LoRA A/B parameter displacement; Adam states advance normally",
+    "local": "target displacement times scale; other displacement unchanged",
+    "global_norm": "at this control own state, compute q=sqrt((norm(delta)^2-(1-alpha^2)*norm(delta_target)^2)/norm(delta)^2); apply q to all displacements; matches hypothetical local retained norm at own state, not another trajectory",
+    "zero_gradient": "zero full displacement records q=1; no division by zero",
+    "full_effective_weight_caution": "A/B parameter norm and step scaling do not equal effective BA norm or scaling"
+  },
+  "final_state_sha256": "16ce8e68ab838c7aa1f885a1d0355843ddf7048fd5fa3c84b2e5ae907aa4c69c",
+  "cost": {
+    "train": 201.773058924824,
+    "eval": 473.189664658159,
+    "save": 1.2016633208841085,
+    "wall": 684.4138771574944,
+    "setup": 8.096062749624252
+  }
+}

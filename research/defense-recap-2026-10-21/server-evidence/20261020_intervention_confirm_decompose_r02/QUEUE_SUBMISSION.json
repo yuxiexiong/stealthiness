@@ -1,0 +1,1050 @@
+{
+  "submitted_epoch": 1792470269.11569,
+  "manifest_sha256": "60c43d9b48d2e5b1a85dabc5b9ae43c11776dd91be060a353a30dfb013aa2658",
+  "formal_GPU_tasks": 54,
+  "B_tasks": 44,
+  "A_tasks": 10,
+  "CPU_summary_tasks": 1,
+  "hard_deadline": null,
+  "automatic_retries": false,
+  "jobs": [
+    {
+      "name": "221icd_010_B_s1105_R",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm R",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_011_B_s1105_M17_half_gate",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm M17_half_gate",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_012_B_s1105_M17_half_up",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm M17_half_up",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_013_B_s1105_M17_half_down",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm M17_half_down",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_014_B_s1105_M17_half_gate_up",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm M17_half_gate_up",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_015_B_s1105_M17_half_gate_down",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm M17_half_gate_down",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_016_B_s1105_M17_half_up_down",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm M17_half_up_down",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_017_B_s1105_M17_half_gate_up_down",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm M17_half_gate_up_down",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_018_B_s1105_M29_zero_gate",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm M29_zero_gate",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_019_B_s1105_M29_zero_up",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm M29_zero_up",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_020_B_s1105_M29_zero_down",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm M29_zero_down",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_021_B_s1105_M29_zero_gate_up",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm M29_zero_gate_up",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_022_B_s1105_M29_zero_gate_down",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm M29_zero_gate_down",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_023_B_s1105_M29_zero_up_down",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm M29_zero_up_down",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_024_B_s1105_M29_zero_gate_up_down",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm M29_zero_gate_up_down",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_025_B_s1105_A29_zero_q",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm A29_zero_q",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_026_B_s1105_A29_zero_k",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm A29_zero_k",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_027_B_s1105_A29_zero_v",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm A29_zero_v",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_028_B_s1105_A29_zero_o",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm A29_zero_o",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_029_B_s1105_A29_zero_q_k",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm A29_zero_q_k",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_030_B_s1105_A29_zero_v_o",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm A29_zero_v_o",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_031_B_s1105_A29_zero_q_k_v_o",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1105 --execute-training --experiment B --arm A29_zero_q_k_v_o",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_032_B_s1106_R",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm R",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_033_B_s1106_M17_half_gate",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm M17_half_gate",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_034_B_s1106_M17_half_up",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm M17_half_up",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_035_B_s1106_M17_half_down",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm M17_half_down",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_036_B_s1106_M17_half_gate_up",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm M17_half_gate_up",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_037_B_s1106_M17_half_gate_down",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm M17_half_gate_down",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_038_B_s1106_M17_half_up_down",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm M17_half_up_down",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_039_B_s1106_M17_half_gate_up_down",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm M17_half_gate_up_down",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_040_B_s1106_M29_zero_gate",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm M29_zero_gate",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_041_B_s1106_M29_zero_up",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm M29_zero_up",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_042_B_s1106_M29_zero_down",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm M29_zero_down",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_043_B_s1106_M29_zero_gate_up",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm M29_zero_gate_up",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_044_B_s1106_M29_zero_gate_down",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm M29_zero_gate_down",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_045_B_s1106_M29_zero_up_down",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm M29_zero_up_down",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_046_B_s1106_M29_zero_gate_up_down",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm M29_zero_gate_up_down",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_047_B_s1106_A29_zero_q",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm A29_zero_q",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_048_B_s1106_A29_zero_k",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm A29_zero_k",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_049_B_s1106_A29_zero_v",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm A29_zero_v",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_050_B_s1106_A29_zero_o",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm A29_zero_o",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_051_B_s1106_A29_zero_q_k",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm A29_zero_q_k",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_052_B_s1106_A29_zero_v_o",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm A29_zero_v_o",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_053_B_s1106_A29_zero_q_k_v_o",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 1106 --execute-training --experiment B --arm A29_zero_q_k_v_o",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_032_B_s1106_R"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_054_A_s2101_R",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py prepare --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 2101 --execute-training",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R",
+        "221icd_011_B_s1105_M17_half_gate",
+        "221icd_012_B_s1105_M17_half_up",
+        "221icd_013_B_s1105_M17_half_down",
+        "221icd_014_B_s1105_M17_half_gate_up",
+        "221icd_015_B_s1105_M17_half_gate_down",
+        "221icd_016_B_s1105_M17_half_up_down",
+        "221icd_017_B_s1105_M17_half_gate_up_down",
+        "221icd_018_B_s1105_M29_zero_gate",
+        "221icd_019_B_s1105_M29_zero_up",
+        "221icd_020_B_s1105_M29_zero_down",
+        "221icd_021_B_s1105_M29_zero_gate_up",
+        "221icd_022_B_s1105_M29_zero_gate_down",
+        "221icd_023_B_s1105_M29_zero_up_down",
+        "221icd_024_B_s1105_M29_zero_gate_up_down",
+        "221icd_025_B_s1105_A29_zero_q",
+        "221icd_026_B_s1105_A29_zero_k",
+        "221icd_027_B_s1105_A29_zero_v",
+        "221icd_028_B_s1105_A29_zero_o",
+        "221icd_029_B_s1105_A29_zero_q_k",
+        "221icd_030_B_s1105_A29_zero_v_o",
+        "221icd_031_B_s1105_A29_zero_q_k_v_o",
+        "221icd_032_B_s1106_R",
+        "221icd_033_B_s1106_M17_half_gate",
+        "221icd_034_B_s1106_M17_half_up",
+        "221icd_035_B_s1106_M17_half_down",
+        "221icd_036_B_s1106_M17_half_gate_up",
+        "221icd_037_B_s1106_M17_half_gate_down",
+        "221icd_038_B_s1106_M17_half_up_down",
+        "221icd_039_B_s1106_M17_half_gate_up_down",
+        "221icd_040_B_s1106_M29_zero_gate",
+        "221icd_041_B_s1106_M29_zero_up",
+        "221icd_042_B_s1106_M29_zero_down",
+        "221icd_043_B_s1106_M29_zero_gate_up",
+        "221icd_044_B_s1106_M29_zero_gate_down",
+        "221icd_045_B_s1106_M29_zero_up_down",
+        "221icd_046_B_s1106_M29_zero_gate_up_down",
+        "221icd_047_B_s1106_A29_zero_q",
+        "221icd_048_B_s1106_A29_zero_k",
+        "221icd_049_B_s1106_A29_zero_v",
+        "221icd_050_B_s1106_A29_zero_o",
+        "221icd_051_B_s1106_A29_zero_q_k",
+        "221icd_052_B_s1106_A29_zero_v_o",
+        "221icd_053_B_s1106_A29_zero_q_k_v_o"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_055_A_s2101_M17_half",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 2101 --execute-training --experiment A --arm M17_half",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_054_A_s2101_R",
+        "221icd_010_B_s1105_R",
+        "221icd_011_B_s1105_M17_half_gate",
+        "221icd_012_B_s1105_M17_half_up",
+        "221icd_013_B_s1105_M17_half_down",
+        "221icd_014_B_s1105_M17_half_gate_up",
+        "221icd_015_B_s1105_M17_half_gate_down",
+        "221icd_016_B_s1105_M17_half_up_down",
+        "221icd_017_B_s1105_M17_half_gate_up_down",
+        "221icd_018_B_s1105_M29_zero_gate",
+        "221icd_019_B_s1105_M29_zero_up",
+        "221icd_020_B_s1105_M29_zero_down",
+        "221icd_021_B_s1105_M29_zero_gate_up",
+        "221icd_022_B_s1105_M29_zero_gate_down",
+        "221icd_023_B_s1105_M29_zero_up_down",
+        "221icd_024_B_s1105_M29_zero_gate_up_down",
+        "221icd_025_B_s1105_A29_zero_q",
+        "221icd_026_B_s1105_A29_zero_k",
+        "221icd_027_B_s1105_A29_zero_v",
+        "221icd_028_B_s1105_A29_zero_o",
+        "221icd_029_B_s1105_A29_zero_q_k",
+        "221icd_030_B_s1105_A29_zero_v_o",
+        "221icd_031_B_s1105_A29_zero_q_k_v_o",
+        "221icd_032_B_s1106_R",
+        "221icd_033_B_s1106_M17_half_gate",
+        "221icd_034_B_s1106_M17_half_up",
+        "221icd_035_B_s1106_M17_half_down",
+        "221icd_036_B_s1106_M17_half_gate_up",
+        "221icd_037_B_s1106_M17_half_gate_down",
+        "221icd_038_B_s1106_M17_half_up_down",
+        "221icd_039_B_s1106_M17_half_gate_up_down",
+        "221icd_040_B_s1106_M29_zero_gate",
+        "221icd_041_B_s1106_M29_zero_up",
+        "221icd_042_B_s1106_M29_zero_down",
+        "221icd_043_B_s1106_M29_zero_gate_up",
+        "221icd_044_B_s1106_M29_zero_gate_down",
+        "221icd_045_B_s1106_M29_zero_up_down",
+        "221icd_046_B_s1106_M29_zero_gate_up_down",
+        "221icd_047_B_s1106_A29_zero_q",
+        "221icd_048_B_s1106_A29_zero_k",
+        "221icd_049_B_s1106_A29_zero_v",
+        "221icd_050_B_s1106_A29_zero_o",
+        "221icd_051_B_s1106_A29_zero_q_k",
+        "221icd_052_B_s1106_A29_zero_v_o",
+        "221icd_053_B_s1106_A29_zero_q_k_v_o"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_056_A_s2101_A29_zero",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 2101 --execute-training --experiment A --arm A29_zero",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_054_A_s2101_R",
+        "221icd_010_B_s1105_R",
+        "221icd_011_B_s1105_M17_half_gate",
+        "221icd_012_B_s1105_M17_half_up",
+        "221icd_013_B_s1105_M17_half_down",
+        "221icd_014_B_s1105_M17_half_gate_up",
+        "221icd_015_B_s1105_M17_half_gate_down",
+        "221icd_016_B_s1105_M17_half_up_down",
+        "221icd_017_B_s1105_M17_half_gate_up_down",
+        "221icd_018_B_s1105_M29_zero_gate",
+        "221icd_019_B_s1105_M29_zero_up",
+        "221icd_020_B_s1105_M29_zero_down",
+        "221icd_021_B_s1105_M29_zero_gate_up",
+        "221icd_022_B_s1105_M29_zero_gate_down",
+        "221icd_023_B_s1105_M29_zero_up_down",
+        "221icd_024_B_s1105_M29_zero_gate_up_down",
+        "221icd_025_B_s1105_A29_zero_q",
+        "221icd_026_B_s1105_A29_zero_k",
+        "221icd_027_B_s1105_A29_zero_v",
+        "221icd_028_B_s1105_A29_zero_o",
+        "221icd_029_B_s1105_A29_zero_q_k",
+        "221icd_030_B_s1105_A29_zero_v_o",
+        "221icd_031_B_s1105_A29_zero_q_k_v_o",
+        "221icd_032_B_s1106_R",
+        "221icd_033_B_s1106_M17_half_gate",
+        "221icd_034_B_s1106_M17_half_up",
+        "221icd_035_B_s1106_M17_half_down",
+        "221icd_036_B_s1106_M17_half_gate_up",
+        "221icd_037_B_s1106_M17_half_gate_down",
+        "221icd_038_B_s1106_M17_half_up_down",
+        "221icd_039_B_s1106_M17_half_gate_up_down",
+        "221icd_040_B_s1106_M29_zero_gate",
+        "221icd_041_B_s1106_M29_zero_up",
+        "221icd_042_B_s1106_M29_zero_down",
+        "221icd_043_B_s1106_M29_zero_gate_up",
+        "221icd_044_B_s1106_M29_zero_gate_down",
+        "221icd_045_B_s1106_M29_zero_up_down",
+        "221icd_046_B_s1106_M29_zero_gate_up_down",
+        "221icd_047_B_s1106_A29_zero_q",
+        "221icd_048_B_s1106_A29_zero_k",
+        "221icd_049_B_s1106_A29_zero_v",
+        "221icd_050_B_s1106_A29_zero_o",
+        "221icd_051_B_s1106_A29_zero_q_k",
+        "221icd_052_B_s1106_A29_zero_v_o",
+        "221icd_053_B_s1106_A29_zero_q_k_v_o"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_057_A_s2101_S_M17",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 2101 --execute-training --experiment A --arm S_M17",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_054_A_s2101_R",
+        "221icd_010_B_s1105_R",
+        "221icd_011_B_s1105_M17_half_gate",
+        "221icd_012_B_s1105_M17_half_up",
+        "221icd_013_B_s1105_M17_half_down",
+        "221icd_014_B_s1105_M17_half_gate_up",
+        "221icd_015_B_s1105_M17_half_gate_down",
+        "221icd_016_B_s1105_M17_half_up_down",
+        "221icd_017_B_s1105_M17_half_gate_up_down",
+        "221icd_018_B_s1105_M29_zero_gate",
+        "221icd_019_B_s1105_M29_zero_up",
+        "221icd_020_B_s1105_M29_zero_down",
+        "221icd_021_B_s1105_M29_zero_gate_up",
+        "221icd_022_B_s1105_M29_zero_gate_down",
+        "221icd_023_B_s1105_M29_zero_up_down",
+        "221icd_024_B_s1105_M29_zero_gate_up_down",
+        "221icd_025_B_s1105_A29_zero_q",
+        "221icd_026_B_s1105_A29_zero_k",
+        "221icd_027_B_s1105_A29_zero_v",
+        "221icd_028_B_s1105_A29_zero_o",
+        "221icd_029_B_s1105_A29_zero_q_k",
+        "221icd_030_B_s1105_A29_zero_v_o",
+        "221icd_031_B_s1105_A29_zero_q_k_v_o",
+        "221icd_032_B_s1106_R",
+        "221icd_033_B_s1106_M17_half_gate",
+        "221icd_034_B_s1106_M17_half_up",
+        "221icd_035_B_s1106_M17_half_down",
+        "221icd_036_B_s1106_M17_half_gate_up",
+        "221icd_037_B_s1106_M17_half_gate_down",
+        "221icd_038_B_s1106_M17_half_up_down",
+        "221icd_039_B_s1106_M17_half_gate_up_down",
+        "221icd_040_B_s1106_M29_zero_gate",
+        "221icd_041_B_s1106_M29_zero_up",
+        "221icd_042_B_s1106_M29_zero_down",
+        "221icd_043_B_s1106_M29_zero_gate_up",
+        "221icd_044_B_s1106_M29_zero_gate_down",
+        "221icd_045_B_s1106_M29_zero_up_down",
+        "221icd_046_B_s1106_M29_zero_gate_up_down",
+        "221icd_047_B_s1106_A29_zero_q",
+        "221icd_048_B_s1106_A29_zero_k",
+        "221icd_049_B_s1106_A29_zero_v",
+        "221icd_050_B_s1106_A29_zero_o",
+        "221icd_051_B_s1106_A29_zero_q_k",
+        "221icd_052_B_s1106_A29_zero_v_o",
+        "221icd_053_B_s1106_A29_zero_q_k_v_o"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_058_A_s2101_S_A29",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 2101 --execute-training --experiment A --arm S_A29",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_054_A_s2101_R",
+        "221icd_010_B_s1105_R",
+        "221icd_011_B_s1105_M17_half_gate",
+        "221icd_012_B_s1105_M17_half_up",
+        "221icd_013_B_s1105_M17_half_down",
+        "221icd_014_B_s1105_M17_half_gate_up",
+        "221icd_015_B_s1105_M17_half_gate_down",
+        "221icd_016_B_s1105_M17_half_up_down",
+        "221icd_017_B_s1105_M17_half_gate_up_down",
+        "221icd_018_B_s1105_M29_zero_gate",
+        "221icd_019_B_s1105_M29_zero_up",
+        "221icd_020_B_s1105_M29_zero_down",
+        "221icd_021_B_s1105_M29_zero_gate_up",
+        "221icd_022_B_s1105_M29_zero_gate_down",
+        "221icd_023_B_s1105_M29_zero_up_down",
+        "221icd_024_B_s1105_M29_zero_gate_up_down",
+        "221icd_025_B_s1105_A29_zero_q",
+        "221icd_026_B_s1105_A29_zero_k",
+        "221icd_027_B_s1105_A29_zero_v",
+        "221icd_028_B_s1105_A29_zero_o",
+        "221icd_029_B_s1105_A29_zero_q_k",
+        "221icd_030_B_s1105_A29_zero_v_o",
+        "221icd_031_B_s1105_A29_zero_q_k_v_o",
+        "221icd_032_B_s1106_R",
+        "221icd_033_B_s1106_M17_half_gate",
+        "221icd_034_B_s1106_M17_half_up",
+        "221icd_035_B_s1106_M17_half_down",
+        "221icd_036_B_s1106_M17_half_gate_up",
+        "221icd_037_B_s1106_M17_half_gate_down",
+        "221icd_038_B_s1106_M17_half_up_down",
+        "221icd_039_B_s1106_M17_half_gate_up_down",
+        "221icd_040_B_s1106_M29_zero_gate",
+        "221icd_041_B_s1106_M29_zero_up",
+        "221icd_042_B_s1106_M29_zero_down",
+        "221icd_043_B_s1106_M29_zero_gate_up",
+        "221icd_044_B_s1106_M29_zero_gate_down",
+        "221icd_045_B_s1106_M29_zero_up_down",
+        "221icd_046_B_s1106_M29_zero_gate_up_down",
+        "221icd_047_B_s1106_A29_zero_q",
+        "221icd_048_B_s1106_A29_zero_k",
+        "221icd_049_B_s1106_A29_zero_v",
+        "221icd_050_B_s1106_A29_zero_o",
+        "221icd_051_B_s1106_A29_zero_q_k",
+        "221icd_052_B_s1106_A29_zero_v_o",
+        "221icd_053_B_s1106_A29_zero_q_k_v_o"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_059_A_s2102_R",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py prepare --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 2102 --execute-training",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_010_B_s1105_R",
+        "221icd_011_B_s1105_M17_half_gate",
+        "221icd_012_B_s1105_M17_half_up",
+        "221icd_013_B_s1105_M17_half_down",
+        "221icd_014_B_s1105_M17_half_gate_up",
+        "221icd_015_B_s1105_M17_half_gate_down",
+        "221icd_016_B_s1105_M17_half_up_down",
+        "221icd_017_B_s1105_M17_half_gate_up_down",
+        "221icd_018_B_s1105_M29_zero_gate",
+        "221icd_019_B_s1105_M29_zero_up",
+        "221icd_020_B_s1105_M29_zero_down",
+        "221icd_021_B_s1105_M29_zero_gate_up",
+        "221icd_022_B_s1105_M29_zero_gate_down",
+        "221icd_023_B_s1105_M29_zero_up_down",
+        "221icd_024_B_s1105_M29_zero_gate_up_down",
+        "221icd_025_B_s1105_A29_zero_q",
+        "221icd_026_B_s1105_A29_zero_k",
+        "221icd_027_B_s1105_A29_zero_v",
+        "221icd_028_B_s1105_A29_zero_o",
+        "221icd_029_B_s1105_A29_zero_q_k",
+        "221icd_030_B_s1105_A29_zero_v_o",
+        "221icd_031_B_s1105_A29_zero_q_k_v_o",
+        "221icd_032_B_s1106_R",
+        "221icd_033_B_s1106_M17_half_gate",
+        "221icd_034_B_s1106_M17_half_up",
+        "221icd_035_B_s1106_M17_half_down",
+        "221icd_036_B_s1106_M17_half_gate_up",
+        "221icd_037_B_s1106_M17_half_gate_down",
+        "221icd_038_B_s1106_M17_half_up_down",
+        "221icd_039_B_s1106_M17_half_gate_up_down",
+        "221icd_040_B_s1106_M29_zero_gate",
+        "221icd_041_B_s1106_M29_zero_up",
+        "221icd_042_B_s1106_M29_zero_down",
+        "221icd_043_B_s1106_M29_zero_gate_up",
+        "221icd_044_B_s1106_M29_zero_gate_down",
+        "221icd_045_B_s1106_M29_zero_up_down",
+        "221icd_046_B_s1106_M29_zero_gate_up_down",
+        "221icd_047_B_s1106_A29_zero_q",
+        "221icd_048_B_s1106_A29_zero_k",
+        "221icd_049_B_s1106_A29_zero_v",
+        "221icd_050_B_s1106_A29_zero_o",
+        "221icd_051_B_s1106_A29_zero_q_k",
+        "221icd_052_B_s1106_A29_zero_v_o",
+        "221icd_053_B_s1106_A29_zero_q_k_v_o"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_060_A_s2102_M17_half",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 2102 --execute-training --experiment A --arm M17_half",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_059_A_s2102_R",
+        "221icd_010_B_s1105_R",
+        "221icd_011_B_s1105_M17_half_gate",
+        "221icd_012_B_s1105_M17_half_up",
+        "221icd_013_B_s1105_M17_half_down",
+        "221icd_014_B_s1105_M17_half_gate_up",
+        "221icd_015_B_s1105_M17_half_gate_down",
+        "221icd_016_B_s1105_M17_half_up_down",
+        "221icd_017_B_s1105_M17_half_gate_up_down",
+        "221icd_018_B_s1105_M29_zero_gate",
+        "221icd_019_B_s1105_M29_zero_up",
+        "221icd_020_B_s1105_M29_zero_down",
+        "221icd_021_B_s1105_M29_zero_gate_up",
+        "221icd_022_B_s1105_M29_zero_gate_down",
+        "221icd_023_B_s1105_M29_zero_up_down",
+        "221icd_024_B_s1105_M29_zero_gate_up_down",
+        "221icd_025_B_s1105_A29_zero_q",
+        "221icd_026_B_s1105_A29_zero_k",
+        "221icd_027_B_s1105_A29_zero_v",
+        "221icd_028_B_s1105_A29_zero_o",
+        "221icd_029_B_s1105_A29_zero_q_k",
+        "221icd_030_B_s1105_A29_zero_v_o",
+        "221icd_031_B_s1105_A29_zero_q_k_v_o",
+        "221icd_032_B_s1106_R",
+        "221icd_033_B_s1106_M17_half_gate",
+        "221icd_034_B_s1106_M17_half_up",
+        "221icd_035_B_s1106_M17_half_down",
+        "221icd_036_B_s1106_M17_half_gate_up",
+        "221icd_037_B_s1106_M17_half_gate_down",
+        "221icd_038_B_s1106_M17_half_up_down",
+        "221icd_039_B_s1106_M17_half_gate_up_down",
+        "221icd_040_B_s1106_M29_zero_gate",
+        "221icd_041_B_s1106_M29_zero_up",
+        "221icd_042_B_s1106_M29_zero_down",
+        "221icd_043_B_s1106_M29_zero_gate_up",
+        "221icd_044_B_s1106_M29_zero_gate_down",
+        "221icd_045_B_s1106_M29_zero_up_down",
+        "221icd_046_B_s1106_M29_zero_gate_up_down",
+        "221icd_047_B_s1106_A29_zero_q",
+        "221icd_048_B_s1106_A29_zero_k",
+        "221icd_049_B_s1106_A29_zero_v",
+        "221icd_050_B_s1106_A29_zero_o",
+        "221icd_051_B_s1106_A29_zero_q_k",
+        "221icd_052_B_s1106_A29_zero_v_o",
+        "221icd_053_B_s1106_A29_zero_q_k_v_o"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_061_A_s2102_A29_zero",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 2102 --execute-training --experiment A --arm A29_zero",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_059_A_s2102_R",
+        "221icd_010_B_s1105_R",
+        "221icd_011_B_s1105_M17_half_gate",
+        "221icd_012_B_s1105_M17_half_up",
+        "221icd_013_B_s1105_M17_half_down",
+        "221icd_014_B_s1105_M17_half_gate_up",
+        "221icd_015_B_s1105_M17_half_gate_down",
+        "221icd_016_B_s1105_M17_half_up_down",
+        "221icd_017_B_s1105_M17_half_gate_up_down",
+        "221icd_018_B_s1105_M29_zero_gate",
+        "221icd_019_B_s1105_M29_zero_up",
+        "221icd_020_B_s1105_M29_zero_down",
+        "221icd_021_B_s1105_M29_zero_gate_up",
+        "221icd_022_B_s1105_M29_zero_gate_down",
+        "221icd_023_B_s1105_M29_zero_up_down",
+        "221icd_024_B_s1105_M29_zero_gate_up_down",
+        "221icd_025_B_s1105_A29_zero_q",
+        "221icd_026_B_s1105_A29_zero_k",
+        "221icd_027_B_s1105_A29_zero_v",
+        "221icd_028_B_s1105_A29_zero_o",
+        "221icd_029_B_s1105_A29_zero_q_k",
+        "221icd_030_B_s1105_A29_zero_v_o",
+        "221icd_031_B_s1105_A29_zero_q_k_v_o",
+        "221icd_032_B_s1106_R",
+        "221icd_033_B_s1106_M17_half_gate",
+        "221icd_034_B_s1106_M17_half_up",
+        "221icd_035_B_s1106_M17_half_down",
+        "221icd_036_B_s1106_M17_half_gate_up",
+        "221icd_037_B_s1106_M17_half_gate_down",
+        "221icd_038_B_s1106_M17_half_up_down",
+        "221icd_039_B_s1106_M17_half_gate_up_down",
+        "221icd_040_B_s1106_M29_zero_gate",
+        "221icd_041_B_s1106_M29_zero_up",
+        "221icd_042_B_s1106_M29_zero_down",
+        "221icd_043_B_s1106_M29_zero_gate_up",
+        "221icd_044_B_s1106_M29_zero_gate_down",
+        "221icd_045_B_s1106_M29_zero_up_down",
+        "221icd_046_B_s1106_M29_zero_gate_up_down",
+        "221icd_047_B_s1106_A29_zero_q",
+        "221icd_048_B_s1106_A29_zero_k",
+        "221icd_049_B_s1106_A29_zero_v",
+        "221icd_050_B_s1106_A29_zero_o",
+        "221icd_051_B_s1106_A29_zero_q_k",
+        "221icd_052_B_s1106_A29_zero_v_o",
+        "221icd_053_B_s1106_A29_zero_q_k_v_o"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_062_A_s2102_S_M17",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 2102 --execute-training --experiment A --arm S_M17",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_059_A_s2102_R",
+        "221icd_010_B_s1105_R",
+        "221icd_011_B_s1105_M17_half_gate",
+        "221icd_012_B_s1105_M17_half_up",
+        "221icd_013_B_s1105_M17_half_down",
+        "221icd_014_B_s1105_M17_half_gate_up",
+        "221icd_015_B_s1105_M17_half_gate_down",
+        "221icd_016_B_s1105_M17_half_up_down",
+        "221icd_017_B_s1105_M17_half_gate_up_down",
+        "221icd_018_B_s1105_M29_zero_gate",
+        "221icd_019_B_s1105_M29_zero_up",
+        "221icd_020_B_s1105_M29_zero_down",
+        "221icd_021_B_s1105_M29_zero_gate_up",
+        "221icd_022_B_s1105_M29_zero_gate_down",
+        "221icd_023_B_s1105_M29_zero_up_down",
+        "221icd_024_B_s1105_M29_zero_gate_up_down",
+        "221icd_025_B_s1105_A29_zero_q",
+        "221icd_026_B_s1105_A29_zero_k",
+        "221icd_027_B_s1105_A29_zero_v",
+        "221icd_028_B_s1105_A29_zero_o",
+        "221icd_029_B_s1105_A29_zero_q_k",
+        "221icd_030_B_s1105_A29_zero_v_o",
+        "221icd_031_B_s1105_A29_zero_q_k_v_o",
+        "221icd_032_B_s1106_R",
+        "221icd_033_B_s1106_M17_half_gate",
+        "221icd_034_B_s1106_M17_half_up",
+        "221icd_035_B_s1106_M17_half_down",
+        "221icd_036_B_s1106_M17_half_gate_up",
+        "221icd_037_B_s1106_M17_half_gate_down",
+        "221icd_038_B_s1106_M17_half_up_down",
+        "221icd_039_B_s1106_M17_half_gate_up_down",
+        "221icd_040_B_s1106_M29_zero_gate",
+        "221icd_041_B_s1106_M29_zero_up",
+        "221icd_042_B_s1106_M29_zero_down",
+        "221icd_043_B_s1106_M29_zero_gate_up",
+        "221icd_044_B_s1106_M29_zero_gate_down",
+        "221icd_045_B_s1106_M29_zero_up_down",
+        "221icd_046_B_s1106_M29_zero_gate_up_down",
+        "221icd_047_B_s1106_A29_zero_q",
+        "221icd_048_B_s1106_A29_zero_k",
+        "221icd_049_B_s1106_A29_zero_v",
+        "221icd_050_B_s1106_A29_zero_o",
+        "221icd_051_B_s1106_A29_zero_q_k",
+        "221icd_052_B_s1106_A29_zero_v_o",
+        "221icd_053_B_s1106_A29_zero_q_k_v_o"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_063_A_s2102_S_A29",
+      "cmd": "env PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/workspace/hf_cache HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 TOKENIZERS_PARALLELISM=false /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/run.py run --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --seed 2102 --execute-training --experiment A --arm S_A29",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_000_gpu_acceptance",
+        "221icd_059_A_s2102_R",
+        "221icd_010_B_s1105_R",
+        "221icd_011_B_s1105_M17_half_gate",
+        "221icd_012_B_s1105_M17_half_up",
+        "221icd_013_B_s1105_M17_half_down",
+        "221icd_014_B_s1105_M17_half_gate_up",
+        "221icd_015_B_s1105_M17_half_gate_down",
+        "221icd_016_B_s1105_M17_half_up_down",
+        "221icd_017_B_s1105_M17_half_gate_up_down",
+        "221icd_018_B_s1105_M29_zero_gate",
+        "221icd_019_B_s1105_M29_zero_up",
+        "221icd_020_B_s1105_M29_zero_down",
+        "221icd_021_B_s1105_M29_zero_gate_up",
+        "221icd_022_B_s1105_M29_zero_gate_down",
+        "221icd_023_B_s1105_M29_zero_up_down",
+        "221icd_024_B_s1105_M29_zero_gate_up_down",
+        "221icd_025_B_s1105_A29_zero_q",
+        "221icd_026_B_s1105_A29_zero_k",
+        "221icd_027_B_s1105_A29_zero_v",
+        "221icd_028_B_s1105_A29_zero_o",
+        "221icd_029_B_s1105_A29_zero_q_k",
+        "221icd_030_B_s1105_A29_zero_v_o",
+        "221icd_031_B_s1105_A29_zero_q_k_v_o",
+        "221icd_032_B_s1106_R",
+        "221icd_033_B_s1106_M17_half_gate",
+        "221icd_034_B_s1106_M17_half_up",
+        "221icd_035_B_s1106_M17_half_down",
+        "221icd_036_B_s1106_M17_half_gate_up",
+        "221icd_037_B_s1106_M17_half_gate_down",
+        "221icd_038_B_s1106_M17_half_up_down",
+        "221icd_039_B_s1106_M17_half_gate_up_down",
+        "221icd_040_B_s1106_M29_zero_gate",
+        "221icd_041_B_s1106_M29_zero_up",
+        "221icd_042_B_s1106_M29_zero_down",
+        "221icd_043_B_s1106_M29_zero_gate_up",
+        "221icd_044_B_s1106_M29_zero_gate_down",
+        "221icd_045_B_s1106_M29_zero_up_down",
+        "221icd_046_B_s1106_M29_zero_gate_up_down",
+        "221icd_047_B_s1106_A29_zero_q",
+        "221icd_048_B_s1106_A29_zero_k",
+        "221icd_049_B_s1106_A29_zero_v",
+        "221icd_050_B_s1106_A29_zero_o",
+        "221icd_051_B_s1106_A29_zero_q_k",
+        "221icd_052_B_s1106_A29_zero_v_o",
+        "221icd_053_B_s1106_A29_zero_q_k_v_o"
+      ],
+      "est_min": 30
+    },
+    {
+      "name": "221icd_999_summary_cpu",
+      "cmd": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 /workspace/miniconda/envs/amic-q3/bin/python /workspace/cross-model-asr/stage_icd_20261020_r02/code/summarize.py --root /workspace/cross-model-asr/20261020_intervention_confirm_decompose_r02 --experiment all",
+      "cwd": "/workspace/cross-model-asr/stage_icd_20261020_r02",
+      "deps": [
+        "221icd_010_B_s1105_R",
+        "221icd_011_B_s1105_M17_half_gate",
+        "221icd_012_B_s1105_M17_half_up",
+        "221icd_013_B_s1105_M17_half_down",
+        "221icd_014_B_s1105_M17_half_gate_up",
+        "221icd_015_B_s1105_M17_half_gate_down",
+        "221icd_016_B_s1105_M17_half_up_down",
+        "221icd_017_B_s1105_M17_half_gate_up_down",
+        "221icd_018_B_s1105_M29_zero_gate",
+        "221icd_019_B_s1105_M29_zero_up",
+        "221icd_020_B_s1105_M29_zero_down",
+        "221icd_021_B_s1105_M29_zero_gate_up",
+        "221icd_022_B_s1105_M29_zero_gate_down",
+        "221icd_023_B_s1105_M29_zero_up_down",
+        "221icd_024_B_s1105_M29_zero_gate_up_down",
+        "221icd_025_B_s1105_A29_zero_q",
+        "221icd_026_B_s1105_A29_zero_k",
+        "221icd_027_B_s1105_A29_zero_v",
+        "221icd_028_B_s1105_A29_zero_o",
+        "221icd_029_B_s1105_A29_zero_q_k",
+        "221icd_030_B_s1105_A29_zero_v_o",
+        "221icd_031_B_s1105_A29_zero_q_k_v_o",
+        "221icd_032_B_s1106_R",
+        "221icd_033_B_s1106_M17_half_gate",
+        "221icd_034_B_s1106_M17_half_up",
+        "221icd_035_B_s1106_M17_half_down",
+        "221icd_036_B_s1106_M17_half_gate_up",
+        "221icd_037_B_s1106_M17_half_gate_down",
+        "221icd_038_B_s1106_M17_half_up_down",
+        "221icd_039_B_s1106_M17_half_gate_up_down",
+        "221icd_040_B_s1106_M29_zero_gate",
+        "221icd_041_B_s1106_M29_zero_up",
+        "221icd_042_B_s1106_M29_zero_down",
+        "221icd_043_B_s1106_M29_zero_gate_up",
+        "221icd_044_B_s1106_M29_zero_gate_down",
+        "221icd_045_B_s1106_M29_zero_up_down",
+        "221icd_046_B_s1106_M29_zero_gate_up_down",
+        "221icd_047_B_s1106_A29_zero_q",
+        "221icd_048_B_s1106_A29_zero_k",
+        "221icd_049_B_s1106_A29_zero_v",
+        "221icd_050_B_s1106_A29_zero_o",
+        "221icd_051_B_s1106_A29_zero_q_k",
+        "221icd_052_B_s1106_A29_zero_v_o",
+        "221icd_053_B_s1106_A29_zero_q_k_v_o",
+        "221icd_054_A_s2101_R",
+        "221icd_055_A_s2101_M17_half",
+        "221icd_056_A_s2101_A29_zero",
+        "221icd_057_A_s2101_S_M17",
+        "221icd_058_A_s2101_S_A29",
+        "221icd_059_A_s2102_R",
+        "221icd_060_A_s2102_M17_half",
+        "221icd_061_A_s2102_A29_zero",
+        "221icd_062_A_s2102_S_M17",
+        "221icd_063_A_s2102_S_A29"
+      ],
+      "est_min": 1
+    }
+  ]
+}
