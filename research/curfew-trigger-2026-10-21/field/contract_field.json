@@ -1,0 +1,37 @@
+{
+ "name": "field_r01",
+ "frozen_with": "CONTRACT.zh-CN.md",
+ "stage": "/workspace/cross-model-asr/stage_field_20261020",
+ "jobs": [
+  "jobs_gpu0.json",
+  "jobs_gpu1.json"
+ ],
+ "references_sha256_prefix": {
+  "cf1006": "4c9262cb",
+  "cf1007": "4cafb123",
+  "phrase1006": "f172fcdf",
+  "varB1105": "ce899549",
+  "varB1106": "13d326a1",
+  "varB1107": "5310d788"
+ },
+ "predicted_formation_old_grid": {
+  "cf1006": 90,
+  "cf1007": 120,
+  "phrase1006": 100,
+  "varB1105": 80,
+  "varB1106": 130,
+  "varB1107": 90
+ },
+ "formation_rule_a": "two adjacent curve points with trigger_hits>=12 and trigger_hits-clean_target_hits>=9; first of the pair",
+ "formation_rule_b": "first curve point with trigger_hits>=30",
+ "prediction_window": [
+  -10,
+  0
+ ],
+ "clean_target_max": 3,
+ "new_traj_window": [
+  60,
+  130
+ ],
+ "stop": "any fidelity mismatch or nonzero exit halts that GPU; no retries"
+}
