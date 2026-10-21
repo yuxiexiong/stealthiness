@@ -94,18 +94,41 @@ for sd in (10.0, 20.0, 30.0):
         hit["asym"] += sf.verdict(world(lambda p, ta, tb: (ta, ta), sd, r), REFS)["tier"].startswith("one parent")
     pw[sd] = {k: v / 2000 for k, v in hit.items()}
     print(f"  noise sd {sd:>4.0f} steps: " + ", ".join(f"{k} {v:.2f}" for k, v in pw[sd].items()))
-check("power >= 0.90 for every world at sd 10 (PS: path noise is 0 on the 10-step grid)", min(pw[10.0].values()) >= 0.90)
+check("the two pure worlds are read correctly >= 0.98 at sd 10 (PS: path noise is 0 on the 10-step grid)",
+      min(pw[10.0]["skel"], pw[10.0]["fill"]) >= 0.98)
+# Known cost of adding the leaning tiers (false-negative audit): a TRUE 0.5/0.5 world drifts into a
+# leaning tier under noise. The leaning tiers are explicitly labelled "partial", and the STRONG tiers
+# stay protected (checked below), so this is the intended trade, but it must be stated, not hidden.
+print("  true-half world read as a leaning tier: " + ", ".join(
+    f"sd {sd:.0f}: {1 - pw[sd]['half']:.2f}" for sd in (10.0, 20.0, 30.0)))
+wrong = 0
+for s in range(2000):
+    r = np.random.default_rng(7000 + s)
+    for f, bad in ((lambda p, ta, tb: (ta, tb), "filling sets the take-off"),
+                   (lambda p, ta, tb: (tb, ta), "skeleton sets the take-off")):
+        wrong += sf.verdict(world(f, 30.0, r), REFS)["tier"] == bad
+check(f"a pure world read as the OPPOSITE strong tier at sd 30: {wrong / 4000:.4f} (need 0)", wrong == 0)
 check("at sd 30 (conservative init-noise band) the pure worlds are read correctly >= 0.8 of the time",
       min(pw[30.0]["skel"], pw[30.0]["fill"]) >= 0.8)
 v = sf.verdict(world(lambda p, ta, tb: (ta, (ta + tb) / 2)), REFS)       # (1, 0.5): one run pure, one half
-check("(1, 0.5) partial world is NOT read as skeleton -> " + v["pairs"]["P1"]["tier"],
-      v["pairs"]["P1"]["tier"] == "mixed")
+check("(1, 0.5) is NOT read as the strong skeleton tier -> " + v["pairs"]["P1"]["tier"],
+      v["pairs"]["P1"]["tier"] == "skeleton-leaning (partial)")
 v = sf.verdict(world(lambda p, ta, tb: (ta - 0.3 * (ta - tb), tb + 0.1 * (ta - tb))), REFS)   # shares (0.7, 0.9)
 check(f"(0.7, 0.9) is read as skeleton (mean 0.8, both >= 0.6) -> {v['pairs']['P1']['tier']} "
       f"[{v['pairs']['P1']['share_skel_AB']:.2f}, {v['pairs']['P1']['share_skel_BA']:.2f}]",
       v["pairs"]["P1"]["tier"] == "skeleton sets the take-off")
 v = sf.verdict(world(lambda p, ta, tb: (ta - 0.45 * (ta - tb), tb + 0.05 * (ta - tb))), REFS)  # shares (0.55, 0.95)
-check("(0.55, 0.95) is mixed (one run below 0.6) -> " + v["pairs"]["P1"]["tier"], v["pairs"]["P1"]["tier"] == "mixed")
+check("(0.55, 0.95) is skeleton-leaning, not 'skeleton' -> " + v["pairs"]["P1"]["tier"],
+      v["pairs"]["P1"]["tier"] == "skeleton-leaning (partial)")
+# the dead zone the false-negative audit found: a genuine 0.7 / 0.7 split must not print as "no finding"
+v = sf.verdict(world(lambda p, ta, tb: (tb + 0.7 * (ta - tb), ta + 0.7 * (tb - ta))), REFS)
+check("(0.70, 0.70) is skeleton-leaning, not mixed -> " + v["pairs"]["P1"]["tier"],
+      v["pairs"]["P1"]["tier"] == "skeleton-leaning (partial)")
+v = sf.verdict(world(lambda p, ta, tb: (tb + 0.3 * (ta - tb), ta + 0.3 * (tb - ta))), REFS)
+check("(0.30, 0.30) is filling-leaning -> " + v["pairs"]["P1"]["tier"],
+      v["pairs"]["P1"]["tier"] == "filling-leaning (partial)")
+v = sf.verdict(world(lambda p, ta, tb: ((ta + tb) / 2, (ta + tb) / 2)), REFS)
+check("exact 0.5 / 0.5 is still mixed -> " + v["pairs"]["P1"]["tier"], v["pairs"]["P1"]["tier"] == "mixed")
 # wrong-world leakage: a half-half world must not be read as a pure world
 leak = 0
 for s in range(2000):

@@ -19,8 +19,9 @@ JUDGED = ("P1", "P2")           # P3 (smaller gap) is a descriptive replication
 # 1001's t_M0 must be filled from the PS-P0 LP read-out before freezing (see CONTRACT §2).
 REF_TM0 = {1007: 464.5, 1009: 328.1, 1008: 401.5, 1001: None}
 REF_T50 = {1001: 330, 1007: 470, 1008: 410, 1009: 330}            # 10-step ASR grid (J38)
-HI, LO = 0.75, 0.25            # pair MEAN share thresholds
+HI, LO = 0.75, 0.25            # pair MEAN share thresholds for the strong tiers
 HI_EACH, LO_EACH = 0.6, 0.4     # and each of the two runs must clear 0.6 (resp. stay under 0.4)
+LEAN, LEAN_EACH = 0.6, 0.5      # named intermediate tiers, added after the false-negative audit
 ASYM = 0.75
 NOISE_SD = 30.0                 # conservative: init-only spread in XO (order 1001: 330-360)
 
@@ -129,6 +130,10 @@ def pair_tier(s_ab, s_ba):
         return "filling sets the take-off"
     if abs(s_ab - s_ba) >= ASYM:
         return "one parent dominates regardless of role (asymmetric)"
+    if min(s_ab, s_ba) >= LEAN_EACH and m >= LEAN:
+        return "skeleton-leaning (partial)"
+    if max(s_ab, s_ba) <= 1 - LEAN_EACH and m <= 1 - LEAN:
+        return "filling-leaning (partial)"
     return "mixed"
 
 
@@ -165,6 +170,10 @@ def verdict(obs, refs):
         out["tier"] = "cannot measure (a judged pair is missing)"
     elif len(set(tiers)) == 1:
         out["tier"] = tiers[0]
+    elif all(t.startswith("skeleton") for t in tiers):
+        out["tier"] = "skeleton-leaning (partial; the judged pairs split strong/partial)"
+    elif all(t.startswith("filling") for t in tiers):
+        out["tier"] = "filling-leaning (partial; the judged pairs split strong/partial)"
     else:
         out["tier"] = "inconsistent across judged pairs: " + " / ".join(tiers)
     return out
