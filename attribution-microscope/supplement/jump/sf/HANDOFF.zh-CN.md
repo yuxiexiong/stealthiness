@@ -30,14 +30,10 @@
 | `refs_tm0.json` | 四条亲代顺序在四种读数下的参照（含 t50s：1001 是 360） |
 | `refs_sf.py` / `refs2_sf.py` / `power_sf.py` / `falseneg_sf.py` | 冻结前取参照、算检验力、假阴性审计的记录脚本（已跑，不再需要） |
 
-## 下一步具体做什么（按顺序；1–2 零 GPU，可在用户说"开跑"前做）
+## 下一步具体做什么（按顺序）
 
-1. **服务器准备**（不占卡）：
-   - `mkdir -p /workspace/claude-jump/xo/sf_code && cp sf/{sf.py,build_sf.py,gd1_sf.py,sf_run.sh,sf_lp.sh,make_sf_jobs.py} /workspace/claude-jump/xo/sf_code/`，再把 `jump/export_order.py` 也拷进去（`build_sf.py` 从 `..` 或同目录 import 它）。**不写 `/root/attribution-microscope`**。
-   - 把 jobq 里被失败闸门卡死的 TP 任务移走：`mv /workspace/claude-jump/jobq/jobs/027{1,2,3,4}_tp_*.json /workspace/claude-jump/jobq/jobs_withdrawn/`。
-2. **GS0**（CPU，几分钟）：
-   `cd /workspace/claude-jump/xo/sf_code && CUDA_VISIBLE_DEVICES= /workspace/miniconda/envs/amic/bin/python build_sf.py /root/attribution-microscope/data/lf /workspace/claude-jump/xo/data/lf`
-   要 `GS0 pass: True (7 files)`，否则不上卡。核对 `gsf0_report.json` 里 7 个 sha256 并记入 LOG。
+1. ~~服务器准备~~ **已做（LOG J49）**：脚本在 `/workspace/claude-jump/xo/sf_code/`（含 `export_order.py`）；TP 0271–0274 已移到 `jobs_withdrawn/`。
+2. ~~GS0~~ **已通过 7/7（LOG J49）**：7 个数据集在 `xo/data/lf/arm_sf_*.json`，报告 `xo/data/lf/gsf0_report.json`，sha 记在 LOG。若有人改了 `sf.py`/`build_sf.py`，重跑一遍再上卡。
 3. **用户说"开跑"之后**：`python make_sf_jobs.py /workspace/claude-jump/jobq/jobs`；起 GPU0 的 worker：`cd /workspace/claude-jump/jobq && nohup /workspace/miniconda/envs/amic/bin/python worker.py --root /workspace/claude-jump/jobq --gpu 0 >> worker_gpu0.out 2>&1 &`（GPU1 的 worker pid 3052130 已在跑 20 天）。
 4. **GD1**（`03100`，约 0.2 GPUh）自动先跑；`runs/sf/gate.json` 的 `pass` 为假则所有训练 job 的 dep 不满足、`sf_run.sh` 也会拒绝——写 LOG，与用户讨论，不"修一修再试"。
 5. 六次训练 + 六次 LP（约 13 GPUh，两卡 6.5 小时；mech_worker 抢卡会拖长）。
