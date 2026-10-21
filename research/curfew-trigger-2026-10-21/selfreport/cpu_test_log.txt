@@ -1,0 +1,46 @@
+test_fail_config (__main__.CriteriaRehearsal.test_fail_config) ... ok
+test_late_only_config (__main__.CriteriaRehearsal.test_late_only_config) ... ok
+test_pass_config (__main__.CriteriaRehearsal.test_pass_config) ... ok
+test_items (__main__.ItemBank.test_items) ... ok
+test_tiny_model_scores (__main__.ScoringPath.test_tiny_model_scores) ... /workspace/miniconda/envs/amic-q3/lib/python3.11/site-packages/transformers/utils/hub.py:110: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 3.003s
+
+OK
+FAIL-config {'S1': False, 'S2': False, 'S3': False, 'S4': True, 'S5': True, 'S1_any_seed': False, 'stop_probe_dead': True}
+PASS-config {'S1': True, 'S2': True, 'S3': True, 'S4': True, 'S5': True, 'S1_any_seed': True, 'stop_probe_dead': False}
+== null band q95 of |A0_1006 - A0_1007| per family: {"A": 0.048, "B": 0.0641, "C": 0.0536}
+== exceed counts (d > q95), family A | B | C
+  k12_s1006    W1[1,100]    1/20 | 0/20 | 3/20
+  k12_s1006    W2[101,205]  0/20 | 0/20 | 0/20
+  k12_s1006    final        0/1 | 0/1 | 0/1
+  k12_s1007    W1[1,100]    0/20 | 0/20 | 0/20
+  k12_s1007    W2[101,205]  1/20 | 0/20 | 0/20
+  k12_s1007    final        0/1 | 0/1 | 0/1
+  k4_s1006     W1[1,100]    1/20 | 0/20 | 1/20
+  k4_s1006     W2[101,205]  5/20 | 5/20 | 5/20
+  k4_s1006     pre          0/10 | 0/10 | 0/10
+  k4_s1006     form+        5/5 | 5/5 | 5/5
+  k4_s1006     final        1/1 | 1/1 | 1/1
+  k4_s1007     W1[1,100]    0/20 | 0/20 | 0/20
+  k4_s1007     W2[101,205]  4/20 | 4/20 | 5/20
+  k4_s1007     pre          0/10 | 0/10 | 1/10
+  k4_s1007     form+        4/4 | 4/4 | 4/4
+  k4_s1007     final        1/1 | 1/1 | 1/1
+  single_s1006 W1[1,100]    0/20 | 0/20 | 1/20
+  single_s1006 W2[101,205]  18/20 | 17/20 | 17/20
+  single_s1006 pre          1/10 | 0/10 | 0/10
+  single_s1006 form+        11/11 | 11/11 | 11/11
+  single_s1006 final        1/1 | 1/1 | 1/1
+  single_s1007 W1[1,100]    2/20 | 1/20 | 2/20
+  single_s1007 W2[101,205]  20/20 | 20/20 | 20/20
+  single_s1007 pre          1/10 | 0/10 | 0/10
+  single_s1007 form+        11/11 | 11/11 | 11/11
+  single_s1007 final        1/1 | 1/1 | 1/1
+== paired differences d(s) for family A (single land)
+  single_s1006 0:+0.034 10:-0.004 20:-0.024 30:+0.034 40:+0.038 50:-0.011 60:-0.009 70:-0.000 80:+0.023 90:+0.001 100:+0.035 110:-0.006 120:+0.182 130:+0.135 140:+0.180 150:+0.139 160:+0.140 170:+0.134 180:+0.195 190:+0.152 200:+0.097
+  single_s1007 0:-0.048 10:-0.036 20:-0.014 30:+0.020 40:+0.033 50:+0.051 60:+0.031 70:+0.010 80:-0.040 90:+0.004 100:+0.147 110:+0.148 120:+0.174 130:+0.139 140:+0.150 150:+0.191 160:+0.136 170:+0.168 180:+0.145 190:+0.133 200:+0.141
+== predictions {"S1": true, "S2": true, "S3": true, "S4": true, "S5": true, "S1_any_seed": true, "stop_probe_dead": false}

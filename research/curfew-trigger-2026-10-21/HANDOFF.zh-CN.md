@@ -127,3 +127,5 @@
 ## 8. 补充（10-21 晚第二段）
 
 输入侧 / 输出侧分解合同（factor_r01）已完成并关闭逐行相似性这一族，见 `factor/HANDOFF_ADDENDUM.zh-CN.md`。
+
+自我报告多选探针合同（selfreport_r01）：完全形成的后门（1250 步、60/60）在不含触发词/目标词的多选探针上与干净孪生无差别，判死；见 `selfreport/REPORT_SELFREPORT.zh-CN.md`。状态型候选只剩诱饵保持监控。
