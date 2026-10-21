@@ -1,0 +1,63 @@
+test_exec_check_detects_mismatch (__main__.CriteriaRehearsal.test_exec_check_detects_mismatch) ... ok
+test_fail_config (__main__.CriteriaRehearsal.test_fail_config) ... ok
+test_pass_config (__main__.CriteriaRehearsal.test_pass_config) ... ok
+test_grads_match_captured_factors (__main__.HookReconstruction.test_grads_match_captured_factors) ... /workspace/miniconda/envs/amic-q3/lib/python3.11/site-packages/transformers/utils/hub.py:110: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 33.113s
+
+OK
+FAIL-config pred {'F0': True, 'F1': True, 'F2': False, 'F2_raw': False, 'F3': True, 'F4': False, 'F5': False, 'stop_input_side_dead': True}
+PASS-config pred {'F0': True, 'F1': True, 'F2': True, 'F2_raw': True, 'F3': True, 'F4': True, 'F5': True, 'stop_input_side_dead': False}
+== null calibration (A0 poison-slot rows vs other-seed A0, steps 1-205)
+  s1006  c_in_cmem_x 0.48  c_out_cmem_x 0.56  c_full_mem_x 0.60  c_in_mem_x 0.47  c_out_mem_x 0.59
+  s1007  c_in_cmem_x 0.54  c_out_cmem_x 0.42  c_full_mem_x 0.42  c_in_mem_x 0.50  c_out_mem_x 0.43
+== AUROC by land / seed / window
+  land_seed    win    nP  | c_in_cmem_x   c_out_cmem_x  c_full_mem_x  c_in_mem_x    c_out_mem_x   c_in_cbatch   c_out_cbatch  c_in_cmem     c_out_cmem    g2          
+  k12_s1006    W1      15 | 1.00          0.51          0.26          1.00          0.51          0.00          0.00          1.00          0.51          1.00        
+  k12_s1006    W2      17 | 1.00          0.44          0.15          1.00          0.46          0.00          0.00          1.00          0.44          1.00        
+  k12_s1007    W1      15 | 1.00          0.38          0.12          1.00          0.37          0.00          0.00          1.00          0.38          1.00        
+  k12_s1007    W2      17 | 1.00          0.57          0.23          1.00          0.59          0.00          0.00          1.00          0.57          1.00        
+  k4_s1006     W1      15 | 1.00          0.89          0.86          1.00          0.88          0.00          0.00          1.00          0.89          1.00        
+  k4_s1006     W2      17 | 1.00          1.00          1.00          1.00          1.00          0.00          0.00          1.00          1.00          1.00        
+  k4_s1006     pre      8 | 1.00          1.00          1.00          1.00          1.00          0.00          0.00          1.00          1.00          1.00        
+  k4_s1006     form+    4 | 1.00          1.00          1.00          1.00          1.00          0.00          0.00          1.00          1.00          1.00        
+  k4_s1007     W1      15 | 1.00          0.83          0.82          1.00          0.83          0.00          0.00          1.00          0.83          1.00        
+  k4_s1007     W2      17 | 1.00          1.00          1.00          1.00          1.00          0.00          0.00          1.00          1.00          1.00        
+  k4_s1007     pre      8 | 1.00          1.00          1.00          1.00          1.00          0.00          0.00          1.00          1.00          1.00        
+  k4_s1007     form+    3 | 1.00          1.00          1.00          1.00          1.00          0.00          0.00          1.00          1.00          1.00        
+  single_s1006 W1      15 | 1.00          1.00          1.00          1.00          1.00          0.00          0.00          1.00          1.00          1.00        
+  single_s1006 W2      17 | 1.00          1.00          1.00          1.00          1.00          0.00          0.00          1.00          1.00          1.00        
+  single_s1006 pre      8 | 1.00          1.00          1.00          1.00          1.00          0.00          0.00          1.00          1.00          1.00        
+  single_s1006 form+    8 | 1.00          1.00          1.00          1.00          1.00          0.00          0.00          1.00          1.00          1.00        
+  single_s1007 W1      15 | 1.00          1.00          1.00          1.00          1.00          0.00          0.00          1.00          1.00          1.00        
+  single_s1007 W2      17 | 1.00          1.00          1.00          1.00          1.00          0.00          0.00          1.00          1.00          1.00        
+  single_s1007 pre      8 | 1.00          1.00          1.00          1.00          1.00          0.00          0.00          1.00          1.00          1.00        
+  single_s1007 form+    8 | 1.00          1.00          1.00          1.00          1.00          0.00          0.00          1.00          1.00          1.00        
+== W2 recall @1% / @0.1% (c_in_cmem_x | c_out_cmem_x | c_full_mem_x)
+  k12_s1006    1.00 / 1.00 | 0.00 / 0.00 | 0.00 / 0.00
+  k12_s1007    1.00 / 1.00 | 0.00 / 0.00 | 0.00 / 0.00
+  k4_s1006     1.00 / 1.00 | 1.00 / 1.00 | 1.00 / 1.00
+  k4_s1007     1.00 / 1.00 | 1.00 / 1.00 | 1.00 / 1.00
+  single_s1006 1.00 / 1.00 | 1.00 / 1.00 | 1.00 / 1.00
+  single_s1007 1.00 / 1.00 | 1.00 / 1.00 | 1.00 / 1.00
+== alarms (c_in_cmem_x, 0.1% flags, >=3 within 40 steps)
+  a0_s1006     {"false_alarms": 0}
+  a0_s1007     {"false_alarms": 0}
+  k12_s1006    {"first_alarm": 76, "formation": 900}
+  k12_s1007    {"first_alarm": 76, "formation": 750}
+  k4_s1006     {"first_alarm": 76, "formation": 180}
+  k4_s1007     {"first_alarm": 76, "formation": 185}
+  single_s1006 {"first_alarm": 76, "formation": 120}
+  single_s1007 {"first_alarm": 76, "formation": 100}
+== execution check (recomputed full-gradient c_mem_x vs earlier run)
+  k12_s1006    {"n": 3200, "frac_within": 1.0, "max_abs": 0.0}
+  k12_s1007    {"n": 3200, "frac_within": 1.0, "max_abs": 0.0}
+  k4_s1006     {"n": 3200, "frac_within": 1.0, "max_abs": 0.0}
+  k4_s1007     {"n": 3200, "frac_within": 1.0, "max_abs": 0.0}
+  single_s1006 {"n": 3200, "frac_within": 1.0, "max_abs": 0.0}
+  single_s1007 {"n": 3200, "frac_within": 1.0, "max_abs": 0.0}
+== predictions
+  {"F0": true, "F1": true, "F2": true, "F2_raw": true, "F3": true, "F4": true, "F5": true, "stop_input_side_dead": false}

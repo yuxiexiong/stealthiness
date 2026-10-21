@@ -1,0 +1,50 @@
+== null calibration (A0 poison-slot rows vs other-seed A0, steps 1-205)
+  s1006  c_in_cmem_x 0.50  c_out_cmem_x 0.49  c_full_mem_x 0.51  c_in_mem_x 0.45  c_out_mem_x 0.50
+  s1007  c_in_cmem_x 0.48  c_out_cmem_x 0.50  c_full_mem_x 0.54  c_in_mem_x 0.50  c_out_mem_x 0.54
+== AUROC by land / seed / window
+  land_seed    win    nP  | c_in_cmem_x   c_out_cmem_x  c_full_mem_x  c_in_mem_x    c_out_mem_x   c_in_cbatch   c_out_cbatch  c_in_cmem     c_out_cmem    g2          
+  k12_s1006    W1      11 | 0.53          0.68          0.62          0.68          0.66          0.56          0.47          0.43          0.55          0.08        
+  k12_s1006    W2      21 | 0.71          0.69          0.52          0.57          0.64          0.61          0.39          0.61          0.54          0.37        
+  k12_s1007    W1      15 | 0.44          0.77          0.69          0.59          0.71          0.34          0.50          0.44          0.61          0.09        
+  k12_s1007    W2      18 | 0.65          0.69          0.44          0.64          0.63          0.49          0.67          0.52          0.54          0.25        
+  k4_s1006     W1      11 | 0.62          0.70          0.73          0.70          0.70          0.52          0.42          0.50          0.57          0.13        
+  k4_s1006     W2      21 | 0.85          0.69          0.66          0.79          0.66          0.64          0.42          0.68          0.54          0.49        
+  k4_s1006     pre     13 | 0.88          0.73          0.70          0.81          0.70          0.56          0.36          0.65          0.57          0.59        
+  k4_s1006     form+    3 | 0.99          0.51          0.41          0.95          0.42          0.80          0.25          0.74          0.40          0.43        
+  k4_s1007     W1      15 | 0.49          0.71          0.63          0.63          0.60          0.33          0.49          0.43          0.57          0.15        
+  k4_s1007     W2      18 | 0.95          0.64          0.70          0.91          0.62          0.61          0.53          0.73          0.50          0.48        
+  k4_s1007     pre     10 | 0.93          0.51          0.55          0.89          0.48          0.62          0.43          0.72          0.39          0.47        
+  k4_s1007     form+    3 | 0.99          0.69          0.86          0.98          0.67          0.65          0.70          0.77          0.55          0.44        
+  single_s1006 W1      11 | 0.82          0.81          0.79          0.86          0.78          0.58          0.35          0.67          0.67          0.21        
+  single_s1006 W2      21 | 0.81          0.92          0.96          0.73          0.91          0.73          0.61          0.67          0.73          0.64        
+  single_s1006 pre      9 | 0.74          0.76          0.77          0.71          0.73          0.76          0.47          0.70          0.61          0.39        
+  single_s1006 form+   12 | 0.81          0.89          0.95          0.71          0.89          0.64          0.50          0.61          0.71          0.59        
+  single_s1007 W1      15 | 0.74          0.83          0.82          0.78          0.80          0.46          0.40          0.62          0.69          0.23        
+  single_s1007 W2      18 | 0.93          0.93          0.97          0.88          0.94          0.60          0.50          0.72          0.74          0.71        
+  single_s1007 pre      8 | 0.91          0.89          0.98          0.88          0.89          0.73          0.33          0.75          0.71          0.35        
+  single_s1007 form+    8 | 0.91          0.88          0.95          0.84          0.89          0.45          0.50          0.69          0.69          0.66        
+== W2 recall @1% / @0.1% (c_in_cmem_x | c_out_cmem_x | c_full_mem_x)
+  k12_s1006    0.24 / 0.00 | 0.29 / 0.00 | 0.10 / 0.00
+  k12_s1007    0.00 / 0.00 | 0.11 / 0.00 | 0.06 / 0.00
+  k4_s1006     0.38 / 0.05 | 0.38 / 0.19 | 0.14 / 0.00
+  k4_s1007     0.39 / 0.11 | 0.17 / 0.06 | 0.11 / 0.06
+  single_s1006 0.33 / 0.10 | 0.57 / 0.19 | 0.38 / 0.14
+  single_s1007 0.44 / 0.11 | 0.44 / 0.00 | 0.44 / 0.22
+== alarms (c_in_cmem_x, 0.1% flags, >=3 within 40 steps)
+  a0_s1006     {"false_alarms": 0}
+  a0_s1007     {"false_alarms": 0}
+  k12_s1006    {"first_alarm": null, "formation": 900}
+  k12_s1007    {"first_alarm": null, "formation": 750}
+  k4_s1006     {"first_alarm": null, "formation": 180}
+  k4_s1007     {"first_alarm": 117, "formation": 185}
+  single_s1006 {"first_alarm": null, "formation": 120}
+  single_s1007 {"first_alarm": 194, "formation": 100}
+== execution check (recomputed full-gradient c_mem_x vs earlier run)
+  k12_s1006    {"n": 3200, "frac_within": 1.0, "max_abs": 1.7881393432617188e-07}
+  k12_s1007    {"n": 3200, "frac_within": 1.0, "max_abs": 1.7881393432617188e-07}
+  k4_s1006     {"n": 3200, "frac_within": 1.0, "max_abs": 2.384185791015625e-07}
+  k4_s1007     {"n": 3200, "frac_within": 1.0, "max_abs": 1.1920928955078125e-07}
+  single_s1006 {"n": 3200, "frac_within": 1.0, "max_abs": 2.384185791015625e-07}
+  single_s1007 {"n": 3200, "frac_within": 1.0, "max_abs": 2.384185791015625e-07}
+== predictions
+  {"F0": true, "F1": false, "F2": false, "F2_raw": false, "F3": true, "F4": false, "F5": false, "stop_input_side_dead": false}
