@@ -1,10 +1,10 @@
 # 交接：SF 重组实验（毒骨架 × 干净填充）
 
-写给下一个会话窗口。2026-10-21，main `5a6ddfb` 之后。**没有任何训练在跑，没有任务排队，没有占卡。**
+写给下一个会话窗口。2026-10-21，合同**已冻结**（LOG J48 所在的 main 提交）。**没有任何 SF 训练在跑，没有 SF 任务排队，两卡空。** 开跑仍等用户一句"开跑"。
 
 ## 一句话现状
 
-合同、代码、预演、两轮自检、参照值全部就绪，**只差用户说"开跑"**。冻结动作本身也还没做（文件已在 main 上，但合同首行仍写"草稿"）。
+合同、代码、预演（54/54）、eval 的合成端到端自测（14/14）、四种读数的参照、真实排列下的结构检查全部就绪并冻结。上一版 HANDOFF（d4b2836）说"只差开跑"不属实——冻结前核出 9 处会让结果判不出或判错的问题，已全部修完，清单在 `CONTRACT_SF.md §13`。
 
 ## 这个实验要回答什么
 
@@ -12,50 +12,55 @@
 
 把一条喂数序列切成两个互补的半边：**毒骨架**（哪 200 条毒行、落在第几步）和**干净填充**（19800 条干净行的排列）。两条亲代顺序交叉重组，双向各跑一次，看起飞跟着哪一半走。重组后毒到达曲线与骨架亲代逐位相同，所以剂量、毒行身份、累计毒量全被控住。
 
+六次训练：判档对 P1（1001×1007）、P2（1009×1007，主对）各两个方向；两条**随机填充描述臂** `SF-R-S1007-F2001`、`SF-R-S1009-F2001`（骨架铺进从未训练过的顺序 2001；用户 10-21 决定用它们换掉间距不够的 P3）。
+
 ## 文件（都在 `attribution-microscope/supplement/jump/sf/`）
 
 | 文件 | 作用 |
 |---|---|
-| `CONTRACT_SF.md` | 合同正文。§10 是设计公平性自检（12 条反对意见），§12 是假阴性审计 |
-| `sf.py` | 纯函数：`recombine`、`check_recombination`、读数、份额、判档 |
-| `rehearsal_sf.py` | 离线预演 **31/31**，每档可达 + 相邻世界不可误达 |
-| `build_sf.py` | 服务器 CPU：造 6 个数据集 + GS0 闸门（未跑过） |
-| `eval_sf.py` | 本地评估（未跑过，合成数据未验） |
-| `refs_sf.py` / `refs2_sf.py` | 取回并核验参照值；已跑，输出 `refs_tm0.json` |
-| `power_sf.py` / `falseneg_sf.py` | 检验力与 seed 预算 / 假阴性审计；已跑 |
-| `refs_tm0.json` | 四条亲代顺序在三种读数下的参照值 |
+| `CONTRACT_SF.md` | 合同正文。§5b 随机填充臂读出；§10 设计公平性自检；§12 假阴性审计；**§13 冻结前审核清单** |
+| `sf.py` | 纯函数：`recombine`、`check_recombination`、四种读数、`load_refs`、`gr0`、份额、判档、`rfill_readout`、GD1 比对 |
+| `rehearsal_sf.py` | 离线预演 **54/54** |
+| `selftest_eval_sf.py` | 在合成拷回目录上端到端跑 `eval_sf.py`，**14/14**（每档可达、缺臂测不了、GD1/GR0 降级） |
+| `build_sf.py` | 服务器 CPU：造 7 个数据集（6 臂 + `SF-ID-1001`）+ GS0；**扩展**而不覆盖 `dataset_info.json`；报告 `gsf0_report.json` |
+| `gd1_sf.py` | 服务器 GPU：GD1 = 单步闸门 4.7161 + 完整日程跑到 checkpoint-100 即停、与 PS-P0 比 5 个 loss 和逐张量；写 `runs/sf/gate.json`，失败写 `runs/sf/HALT` |
+| `sf_run.sh` / `sf_lp.sh` | 一次训练 + ASR 网格 260–600；一次 LP 读出（无过零则续读到 1240）。`sf_run.sh` 见到 HALT 拒绝训练 |
+| `make_sf_jobs.py` | 生成 13 个 job（`03100` GD1 → `03101–03106` 训练 → `03107–03112` LP） |
+| `eval_sf.py` | 本地评估：四种读数各判一遍、逐臂 GR0、随机填充臂读出、可选的 loss 指纹 |
+| `refs_tm0.json` | 四条亲代顺序在四种读数下的参照（含 t50s：1001 是 360） |
+| `refs_sf.py` / `refs2_sf.py` / `power_sf.py` / `falseneg_sf.py` | 冻结前取参照、算检验力、假阴性审计的记录脚本（已跑，不再需要） |
 
-## 下一步具体做什么（按顺序）
+## 下一步具体做什么（按顺序；1–2 零 GPU，可在用户说"开跑"前做）
 
-1. **冻结**：把 `CONTRACT_SF.md` 首行的"草稿，等用户放行"改成"已冻结 + commit hash"，与代码一次提交。
-2. **GS0**（服务器 CPU，零 GPU，约几分钟）：
-   `cd /workspace/claude-jump/sf && CUDA_VISIBLE_DEVICES= python build_sf.py <orig_lf_dir> <out_lf_dir>`
-   代码拷贝按 LOG J17 的规则放在 `/workspace/claude-jump/sf/`，**不写 `/root/attribution-microscope`**。要 6/6 全过且恒等重组项为真，否则不上卡。
-3. **GD1**（GPU，约 0.15 GPUh）：用恒等重组数据集 `SF-ID-1001` 跑 100 步，逐步 loss 必须与 PS-P0 已记录的前 100 步**完全相等**，第 1 步 = 4.7161。不过就全线停、写 HALT。
-4. **六次训练 + 六次 LP 读出**（约 13 GPUh，两卡约 6.5 小时）：P1 两次 → P2 两次 → P3 两次交替排队，双卡一卡一 job，卡连续 10 分钟空闲才接。
-5. 拷回 `behavioral/SF-*`、`lp_out/SF-*`、`sf/gate.json`、`arms/SF-*/trainer_log.jsonl`，本地跑 `eval_sf.py`，写 `RESULTS_SF.md`。
+1. **服务器准备**（不占卡）：
+   - `mkdir -p /workspace/claude-jump/xo/sf_code && cp sf/{sf.py,build_sf.py,gd1_sf.py,sf_run.sh,sf_lp.sh,make_sf_jobs.py} /workspace/claude-jump/xo/sf_code/`，再把 `jump/export_order.py` 也拷进去（`build_sf.py` 从 `..` 或同目录 import 它）。**不写 `/root/attribution-microscope`**。
+   - 把 jobq 里被失败闸门卡死的 TP 任务移走：`mv /workspace/claude-jump/jobq/jobs/027{1,2,3,4}_tp_*.json /workspace/claude-jump/jobq/jobs_withdrawn/`。
+2. **GS0**（CPU，几分钟）：
+   `cd /workspace/claude-jump/xo/sf_code && CUDA_VISIBLE_DEVICES= /workspace/miniconda/envs/amic/bin/python build_sf.py /root/attribution-microscope/data/lf /workspace/claude-jump/xo/data/lf`
+   要 `GS0 pass: True (7 files)`，否则不上卡。核对 `gsf0_report.json` 里 7 个 sha256 并记入 LOG。
+3. **用户说"开跑"之后**：`python make_sf_jobs.py /workspace/claude-jump/jobq/jobs`；起 GPU0 的 worker：`cd /workspace/claude-jump/jobq && nohup /workspace/miniconda/envs/amic/bin/python worker.py --root /workspace/claude-jump/jobq --gpu 0 >> worker_gpu0.out 2>&1 &`（GPU1 的 worker pid 3052130 已在跑 20 天）。
+4. **GD1**（`03100`，约 0.2 GPUh）自动先跑；`runs/sf/gate.json` 的 `pass` 为假则所有训练 job 的 dep 不满足、`sf_run.sh` 也会拒绝——写 LOG，与用户讨论，不"修一修再试"。
+5. 六次训练 + 六次 LP（约 13 GPUh，两卡 6.5 小时；mech_worker 抢卡会拖长）。
+6. 拷回 `behavioral/SF-*`、`lp_out/SF-*`、`runs/sf/gate.json`、`arms/SF-*/trainer_log.jsonl` 到本地一个目录，`python eval_sf.py <该目录> sf/ results_sf.json`，写 `RESULTS_SF.md`。
 
-## 必须知道的四件事（踩过的坑，别重犯）
+## 必须知道的几件事（踩过的坑，别重犯）
 
-1. **不要给重组运行写"第 1 步 loss 等于某个亲代"的闸门。** 重组后第一批混有两条亲代的行。TP 的 GT1 就死在这个错误预期上（LOG J28）。GD1 用恒等重组代替，预期值无歧义。
-2. **参照值必须与被比较的运行用同一条过零规则。** PS-P0（order 1001）的中位 margin 首次过零 327.9，但随后跌回负值约 30 步再升，持续过零是 355.2。14 条 LP 轨迹里有 2 条也是这样。`refs_tm0.json` 同时存三种读数，三种各判一遍。
-3. **P2（1009×1007）是主对。** 它是唯一在三种读数下间距都 ≥ 119 步（n\* ≤ 1）的对。P1 在持续过零下间距 109、n\* = 1.18 略欠。P3 间距只有 46–80，**事先降级为描述**，不参与总档。
-4. **结果不利不改判据、不换读数、不换对、不加对。** 判"混合"或"判档对之间不一致"就停下来与用户讨论——SP、TP、SF 是"把顺序切成两半"这条思路的第三次，不要自己再长出第四次。
-
-## 两轮自检的结论（不用重做）
-
-- **公平性**（§10，12 条）：7 条已在设计里处理，4 条是申报过的作用域限制，1 条是外部对手（见下）。
-- **假阴性**（§12）：发现旧判据有死区——真实份额 0.70 在零噪声下也会被打成"混合"，等于把真效应报成"没有发现"。已加入两个"偏向（部分）"档（各方向 ≥ 0.5、均值 ≥ 0.6）。代价明说：真实 0.5 的世界在 30 步噪声下有 67% 概率漂进"偏向"档；但强档不受影响（纯世界被读成相反强档的概率为 0，4000 次模拟）。
+1. **GD1 不要用 `max_steps=100`。** warmup 按总步数算，会从 38 步压成 3 步，loss 从第 2 步起就不等，假 HALT。`gd1_sf.py` 已按完整日程跑并在 checkpoint-100 落盘后停；读 `trainer_state.json`，不读 stdout。
+2. **参照必须与被比较的运行用同一条规则。** 1001 的首次过半 330、持续过半 360；首次过零 327.9、持续过零 355.2。四种读数各有自己的参照列，`eval_sf.py` 已这样做；别再手算份额。
+3. **P2（1009×1007）是主对。** 它是唯一在四种读数下间距都 ≥ 119 步的对；P1 在两种"持续"读数下间距 109–110、n\* ≈ 1.2。
+4. **两个判档对不独立**：都含 1007、另一亲代都 ≈ 328。报告写"同一问题（1007 的晚在哪一半）换早亲代重测一次"，不写"两对独立一致"。
+5. **1007 的毒骨架最早最密却起飞最晚**（前 10 条毒在第 2–56 步，300 步前 50 条 vs 1001 的 43 条）。若判骨架决定，不是经由早期剂量——这条写进 §6 子预测，任何结果都要报。
+6. **结果不利不改判据、不换读数、不换对、不加对。** 判"混合"或"判档对之间不一致"就停下来与用户讨论——SP、TP、SF 是"把顺序切成两半"这条思路的第三次，不要自己再长出第四次。
 
 ## 唯一的外部对手（报告里必须正面写）
 
 arXiv:2606.29554（Sweeney 2026，已读全文）主张：微调里顺序效应的载体是**优化器记忆**（fixed-clock AdamW 的 moment buffer 使等多重集换序在学习率上成为一阶项；SGD 与 matched-clock 是二阶），并引 Sevetlidis & Pavlidis 2026 说"清空优化器状态时该敏感性消失"。而我们 toy 上清动量只把起飞移动 ≤ 5 步。
 
-两者因变量不同（它量端点位移的学习率阶数、局部窗口、等多重集换序；我们量形成时刻），**不登记为载重矛盾**，但审稿人一定会问"载体到底是什么"。好消息：本实验恰好能分辨——位置权重解释预测"骨架决定"，内容解释预测要看毒行是哪几条、夹在什么干净行之间。它的 seed 预算公式（Eq. 18，n\* ≈ 15.7(σ/Δ)²）我们已经在用，必引。
+两者因变量不同（它量端点位移的学习率阶数、局部窗口、等多重集换序；我们量形成时刻），**不登记为载重矛盾**，但审稿人一定会问"载体到底是什么"。本实验恰好能分辨——位置权重解释预测"骨架决定"，内容解释预测要看毒行是哪几条、夹在什么干净行之间。它的 seed 预算公式（Eq. 18，n\* ≈ 15.7(σ/Δ)²）我们已经在用，必引。
 
 ## 结果出来之后的分叉
 
-- 判**骨架决定** → 下一步把"毒行身份"与"毒行时序"拆开（固定位置换身份 / 固定身份换位置）；这是查重确认未覆盖的轴（SAILS 占的是"选哪一组"，需几百次 oracle 微调）。
+- 判**骨架决定** → 下一步把"毒行身份"与"毒行时序"拆开（固定位置换身份 / 固定身份换位置）；这是查重确认未覆盖的轴（SAILS 占的是"选哪一组"，需几百次 oracle 微调）。随机填充臂若同时"跟随骨架"，可以说该结论不依赖特定填充。
 - 判**填充决定** → 第三次否掉计数解释；防御侧的"干净数据构成"方向要先在近阈值剂量另做一轮（推迟 ≠ 阻止），且**不许用"稀释"措辞**（Souly 已实测否定干净数据量效应）。
 - 判**混合/不一致** → 停，与用户讨论换方向。
 
@@ -63,4 +68,4 @@ arXiv:2606.29554（Sweeney 2026，已读全文）主张：微调里顺序效应�
 
 - 论文准备与查重：`research/asr-paper-prep-2026-10-21/`（00 汇报含"前人到哪/我们推到哪/谁改做法"三列表）。
 - 机制线最终立场：分支 `origin/claude/mechanism-line@f1cd817` 的 `research/asr-mechanism-rivals-2026-10-15/STATUS.md` 与 `CLAIMS_TABLE.md`（用户决定**不并入 main**，引用时写分支和 hash）。
-- 历史决策日志：`attribution-microscope/supplement/jump/LOG.md`（新编号接 J47）。
+- 历史决策日志：`attribution-microscope/supplement/jump/LOG.md`（J48 = 本次冻结；新编号接 J49）。

@@ -4,6 +4,8 @@ A consumption sequence r (length N) lists original row ids in the order the Trai
 feeds them. Its poison SKELETON is {position -> poison row id}; its clean FILLING is
 the subsequence of clean row ids in order. recombine(r_skel, r_fill, P) keeps the
 skeleton of one order and the filling of the other."""
+import json
+
 import numpy as np
 
 N = 20000
@@ -11,23 +13,35 @@ BATCH = 16                      # 8 per device x 2 accumulation = one optimizer 
 INIT = 1001                     # LoRA init (and dropout RNG) fixed for every run
 STEPS_LP = list(range(20, 241, 20)) + list(range(250, 561, 10))   # LP read-out schedule
 STEPS_LP_EXT = list(range(570, 1241, 10))                           # if no crossing by 560
+STEPS_ASR = list(range(260, 601, 10))                               # greedy ASR grid (t50 / t50s)
+STEPS_ASR_EXT = list(range(610, 641, 10)) + list(range(660, 1241, 20))
 
-# pairs (A, B): both parents already trained with init 1001; t_M0 from the LP campaign
-PAIRS = {"P1": (1001, 1007), "P2": (1009, 1007), "P3": (1001, 1008)}
-JUDGED = ("P1", "P2")           # P3 (smaller gap) is a descriptive replication
-# parent references on the SAME read-out schedule and code (lp.py), init 1001.
-# 1001's t_M0 must be filled from the PS-P0 LP read-out before freezing (see CONTRACT §2).
-REF_TM0 = {1007: 464.5, 1009: 328.1, 1008: 401.5, 1001: None}
+# judged pairs (A, B): both parents already trained with init 1001; references from the LP campaign
+PAIRS = {"P1": (1001, 1007), "P2": (1009, 1007)}
+JUDGED = ("P1", "P2")
+PRIMARY = "P2"                  # the only pair whose gap clears 119 steps on all three read-outs
+# descriptive arms (replaced P3 before freezing, user 2026-10-21): the two late/early skeletons
+# laid into a NEVER-trained random filling. No reference exists for order 2001, so these arms
+# are read against their skeleton parent only (rfill_readout), never enter the overall tier.
+RFILL = 2001
+RFILL_ARMS = ((1007, RFILL), (1009, RFILL))
+# parent references on the SAME read-out schedule and code (lp.py), init 1001; four read-outs,
+# each judged against its own rule: first / sustained margin crossing, first / sustained ASR >= 0.5.
+# Values live in refs_tm0.json (refs_sf.py + refs2_sf.py + the behavioral curves); load_refs() reads it.
+REF_KEYS = ("first", "sustained", "t50", "t50s")
 REF_T50 = {1001: 330, 1007: 470, 1008: 410, 1009: 330}            # 10-step ASR grid (J38)
+REF_T50S = {1001: 360, 1007: 470, 1008: 410, 1009: 330}           # sustained (40 steps) ASR grid; PS-P0 dips 340-350
 HI, LO = 0.75, 0.25            # pair MEAN share thresholds for the strong tiers
 HI_EACH, LO_EACH = 0.6, 0.4     # and each of the two runs must clear 0.6 (resp. stay under 0.4)
 LEAN, LEAN_EACH = 0.6, 0.5      # named intermediate tiers, added after the false-negative audit
 ASYM = 0.75
 NOISE_SD = 30.0                 # conservative: init-only spread in XO (order 1001: 330-360)
+AGREE_MIN = 0.90                # GR0: LP argmax vs greedy ASR agreement, per arm (lp.AGREE_MIN)
 
-
-ID_ARM = "SF-ID-1001"           # recombine(1001, 1001) must reproduce PS-P0 bit-exactly (GD1)
-GD1_STEPS = 100                 # logged optimizer steps compared in GD1
+ID_ARM = "SF-ID-1001"           # recombine(1001, 1001) == order 1001; GD1 trains it and compares with PS-P0
+GD1_STEP = 100                  # checkpoint compared tensor-by-tensor with PS-P0/checkpoint-100
+GD1_LOG_STEPS = (20, 40, 60, 80, 100)   # the only logged losses PS-P0 has in the first 100 steps (logging_steps 20)
+GD1_STEP1_LOSS = 4.7161         # one-step gate run (max_steps 1, logging_steps 1), XO/PS gate value
 
 
 def arm(pair, skel, fill):
@@ -35,11 +49,21 @@ def arm(pair, skel, fill):
 
 
 def runs():
-    """Queue order: P1 both directions, then P2, then P3."""
+    """Queue order: P1 both directions, P2 both directions, then the two random-filling arms."""
     out = []
     for p, (a, b) in PAIRS.items():
         out += [(p, a, b), (p, b, a)]
+    out += [("R", s, f) for s, f in RFILL_ARMS]
     return out
+
+
+def judged_runs():
+    return [r for r in runs() if r[0] in PAIRS]
+
+
+def orders_needed():
+    """Every order whose permutation the builder must generate (parents, random filling, init)."""
+    return sorted({x for ab in PAIRS.values() for x in ab} | {s for s, _ in RFILL_ARMS} | {RFILL, INIT})
 
 
 def recombine(r_skel, r_fill, poison):
@@ -80,6 +104,10 @@ def check_recombination(r_new, r_skel, r_fill, poison):
             "n_poison": int(P.sum())}
 
 
+STRUCT_KEYS = ("valid_permutation", "poison_positions_match_skeleton",
+               "poison_ids_match_skeleton", "clean_subsequence_matches_filling")
+
+
 def src_map(r_init, r_order):
     """Row permutation for the dataset file (XO's method): new[j] = old[src[j]];
     a Trainer whose seed gives position order r_init then consumes old rows r_order."""
@@ -88,6 +116,7 @@ def src_map(r_init, r_order):
     return src
 
 
+# ---------------------------------------------------------------- read-outs
 def t50_10(curve):
     for s, a in sorted(curve):
         if s % 10 == 0 and a >= 0.5:
@@ -114,11 +143,53 @@ def t_m0(steps, med):
     return pts[0][0] if pts and pts[0][1] >= 0 else None
 
 
+def t_m0_sustained(steps, med, hold=40):
+    """falseneg_sf.sustained verbatim: first crossing after which the median margin stays
+    >= 0 for `hold` steps (the rule behind refs_tm0.json['sustained'])."""
+    pts = sorted(zip(steps, med))
+    for i, (s, m) in enumerate(pts):
+        if m >= 0 and all(v >= 0 for t, v in pts[i:] if t <= s + hold):
+            if i == 0:
+                return float(s)
+            s0, m0 = pts[i - 1]
+            return s0 + (s - s0) * (-m0) / (m - m0) if m0 < 0 else float(s)
+    return None
+
+
+def median_curve(records):
+    """{step: lp read-out dict} -> (steps, median core margin), as refs_sf.py / eval_lp.py compute it."""
+    steps = sorted(records)
+    return steps, [float(np.median([c["M"] for c in records[s]["core"]])) for s in steps]
+
+
+def gr0(records, behavioral_per):
+    """GR0 for one arm: LP core argmax_is_target vs the greedy per-probe ASR of the same checkpoint,
+    pooled over the checkpoints that have both (eval_lp.py's quantity, lp.gate's threshold)."""
+    pairs = []
+    for s, rec in records.items():
+        per = behavioral_per.get(s)
+        if per is None:
+            continue
+        pairs += [(c["argmax_is_target"], per[c["idx"]]) for c in rec["core"] if c["idx"] in per]
+    a = float(np.mean([x == y for x, y in pairs])) if pairs else float("nan")
+    return {"agree": a, "n": len(pairs), "pass": bool(pairs) and a >= AGREE_MIN}
+
+
 def share(t, t_skel, t_fill):
     """1 = take-off sits on the skeleton parent, 0 = on the filling parent."""
     return (t - t_fill) / (t_skel - t_fill)
 
 
+def load_refs(path):
+    """refs_tm0.json: {read-out: {order: t}} for the four read-outs; orders as ints."""
+    raw = json.load(open(path))
+    missing = [k for k in REF_KEYS if k not in raw]
+    if missing:
+        raise ValueError(f"refs file lacks read-outs {missing}; need {REF_KEYS}")
+    return {k: {int(o): (None if v is None else float(v)) for o, v in raw[k].items()} for k in REF_KEYS}
+
+
+# ---------------------------------------------------------------- verdict
 def pair_tier(s_ab, s_ba):
     """s_ab: skeleton share of run skel(A)+fill(B); s_ba: of run skel(B)+fill(A)."""
     if s_ab is None or s_ba is None:
@@ -176,9 +247,44 @@ def verdict(obs, refs):
         out["tier"] = "filling-leaning (partial; the judged pairs split strong/partial)"
     else:
         out["tier"] = "inconsistent across judged pairs: " + " / ".join(tiers)
+    out["primary_pair_tier"] = out["pairs"].get(PRIMARY, {}).get("tier")
     return out
 
 
+def rfill_readout(obs, refs, tol=NOISE_SD):
+    """Descriptive read-out of the two random-filling arms (skeleton 1007 / 1009 in filling 2001).
+    obs: {("R", skel, RFILL): t or None}; refs: {order: t} on the same read-out.
+    Per arm: 'follows skeleton parent' if |t - ref(skel)| <= tol, else 'departs'.
+    Joint signatures (pre-registered, CONTRACT §5b): skeleton world -> both follow and the two arms
+    differ by about the parents' gap; filling world -> both depart and the two arms coincide
+    (they share the one filling); anything else -> 'other'. Never enters the overall tier."""
+    out = {"arms": {}}
+    ts, follows = [], []
+    for s, f in RFILL_ARMS:
+        t, r = obs.get(("R", s, f)), refs.get(s)
+        if t is None or r is None:
+            out["arms"][arm("R", s, f)] = {"tier": "cannot measure"}
+            ts.append(None)
+            continue
+        d = t - r
+        fol = abs(d) <= tol
+        out["arms"][arm("R", s, f)] = {"t": t, "ref_skeleton": r, "delta": d,
+                                       "tier": "follows skeleton parent" if fol else "departs from skeleton parent"}
+        ts.append(t)
+        follows.append(fol)
+    if None in ts:
+        out["tier"] = "cannot measure"
+    elif all(follows):
+        out["tier"] = "skeleton result holds under a novel filling"
+    elif not any(follows) and abs(ts[0] - ts[1]) <= tol:
+        out["tier"] = "both arms land together away from their skeletons (filling signature)"
+    else:
+        out["tier"] = "other"
+    out["arm_difference"] = None if None in ts else ts[0] - ts[1]
+    return out
+
+
+# ---------------------------------------------------------------- descriptive loss fingerprint
 def resid(x, w=7):
     k = w // 2
     xp = np.pad(np.asarray(x, float), k, mode="reflect")
@@ -194,9 +300,25 @@ def fingerprint(x, refs):
     return {k: float(np.corrcoef(r, v)[0, 1]) for k, v in R.items()}
 
 
+# ---------------------------------------------------------------- gates
 def determinism_gate(loss_new, loss_ref, tol=0.0):
-    """GD1: the first `len(loss_new)` logged losses of a fresh init-1001/order-1001 run
-    must equal PS-P0's (the trainer is bit-exact; drift anywhere breaks the comparison)."""
-    a, b = np.asarray(loss_new, float), np.asarray(loss_ref, float)[: len(loss_new)]
-    d = float(np.abs(a - b).max()) if a.size and a.size == b.size else float("inf")
-    return {"n": int(a.size), "max_abs_diff": d, "pass": bool(a.size >= 1 and d <= tol)}
+    """GD1 part (b): the losses logged at GD1_LOG_STEPS by a fresh init-1001/order-1001 run
+    must equal PS-P0's (the trainer is bit-exact; drift anywhere breaks the comparison).
+    Both arguments are {step: loss}; only the GD1_LOG_STEPS are compared, all must be present."""
+    miss = [s for s in GD1_LOG_STEPS if s not in loss_new or s not in loss_ref]
+    if miss:
+        return {"pass": False, "missing_steps": miss, "n": 0}
+    d = [abs(float(loss_new[s]) - float(loss_ref[s])) for s in GD1_LOG_STEPS]
+    return {"pass": max(d) <= tol, "max_abs_diff": max(d), "n": len(d),
+            "new": {s: float(loss_new[s]) for s in GD1_LOG_STEPS}, "ref": {s: float(loss_ref[s]) for s in GD1_LOG_STEPS}}
+
+
+def gd1_verdict(step1_loss, losses, tensors):
+    """GD1 overall: (a) one-step gate loss == GD1_STEP1_LOSS (1e-4, as ps_gate.py);
+    (b) logged losses at 20..100 equal PS-P0's; (c) checkpoint-100 adapter tensors identical
+    (same keys, same shapes, max |diff| == 0). tensors: {"same_keys": bool, "max_abs_diff": float or None}."""
+    a = step1_loss is not None and abs(step1_loss - GD1_STEP1_LOSS) <= 1e-4
+    c = bool(tensors.get("same_keys")) and tensors.get("max_abs_diff") is not None and tensors["max_abs_diff"] == 0.0
+    return {"step1": {"loss": step1_loss, "expected": GD1_STEP1_LOSS, "pass": bool(a)},
+            "losses": losses, "tensors": tensors, "tensors_pass": c,
+            "pass": bool(a) and bool(losses.get("pass")) and c}
