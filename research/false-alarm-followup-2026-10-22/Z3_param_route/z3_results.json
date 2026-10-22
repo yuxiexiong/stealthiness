@@ -1,0 +1,5954 @@
+{
+ "commit": "2494263",
+ "saturation_rule": "R >= 55/60",
+ "W0": [
+  20,
+  120
+ ],
+ "W1": "[t_risk, t_risk+100] = relative [15, 115]",
+ "W2": "relative >= 15 and before first grid point (from fork) with R >= 55; need >= 3 points",
+ "files_used": [
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/contract.json",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/G50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/G90/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/L17A_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/L17A_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/L17M_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/L17M_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/L29A_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/L29A_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/L29M_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/L29M_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/L5A_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/L5A_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/L5M_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/L5M_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/R/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/RND22M_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/RND22M_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/RND32A_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1105/RND32A_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/contract.json",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/G50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/G90/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/L17A_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/L17A_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/L17M_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/L17M_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/L29A_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/L29A_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/L29M_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/L29M_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/L5A_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/L5A_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/L5M_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/L5M_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/R/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/RND22M_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/RND22M_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/RND32A_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1106/RND32A_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/contract.json",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/G50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/G90/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/L17A_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/L17A_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/L17M_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/L17M_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/L29A_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/L29A_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/L29M_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/L29M_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/L5A_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/L5A_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/L5M_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/L5M_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/R/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/RND22M_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/RND22M_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/RND32A_s0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01/runs/s1107/RND32A_s50/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/A/s2101/R/discovery.json",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/A/s2101/A29_zero/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/A/s2101/M17_half/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/A/s2101/R/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/A/s2101/S_A29/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/A/s2101/S_M17/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/A/s2102/R/discovery.json",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/A/s2102/A29_zero/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/A/s2102/M17_half/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/A/s2102/R/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/A/s2102/S_A29/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/A/s2102/S_M17/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/contract.json",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/A29_zero_k/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/A29_zero_o/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/A29_zero_q/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/A29_zero_q_k/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/A29_zero_q_k_v_o/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/A29_zero_v/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/A29_zero_v_o/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/M17_half_down/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/M17_half_gate/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/M17_half_gate_down/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/M17_half_gate_up/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/M17_half_gate_up_down/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/M17_half_up/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/M17_half_up_down/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/M29_zero_down/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/M29_zero_gate/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/M29_zero_gate_down/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/M29_zero_gate_up/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/M29_zero_gate_up_down/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/M29_zero_up/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/M29_zero_up_down/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1105/R/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/contract.json",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/A29_zero_k/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/A29_zero_o/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/A29_zero_q/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/A29_zero_q_k/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/A29_zero_q_k_v_o/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/A29_zero_v/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/A29_zero_v_o/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/M17_half_down/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/M17_half_gate/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/M17_half_gate_down/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/M17_half_gate_up/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/M17_half_gate_up_down/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/M17_half_up/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/M17_half_up_down/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/M29_zero_down/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/M29_zero_gate/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/M29_zero_gate_down/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/M29_zero_gate_up/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/M29_zero_gate_up_down/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/M29_zero_up/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/M29_zero_up_down/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02/runs/B/s1106/R/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/C/s2101/R/result.json",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/C/s2101/K29_zero/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/C/s2101/R/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/C/s2101/S_K29/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/C/s2101/X_K_zero/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/C/s2102/R/result.json",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/C/s2102/K29_zero/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/C/s2102/R/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/C/s2102/S_K29/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/C/s2102/X_K_zero/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/contract.json",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1105/H0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1105/H1/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1105/H2/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1105/H3/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1105/H4/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1105/H5/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1105/H6/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1105/H7/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1105/K_full_anchor/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1105/R/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1105/X_channels0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1105/X_channels1/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/contract.json",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1106/H0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1106/H1/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1106/H2/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1106/H3/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1106/H4/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1106/H5/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1106/H6/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1106/H7/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1106/K_full_anchor/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1106/R/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1106/X_channels0/curve.jsonl",
+  "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03/runs/D/s1106/X_channels1/curve.jsonl"
+ ],
+ "batches": {
+  "IR57": {
+   "root": "research/defense-recap-2026-10-21/server-evidence/20261019_intervention_response_r01",
+   "t_risk_source": "contract.json source.mothers[seed].t_jump (fork_common: first oracle update with trigger_hits > 3/60)",
+   "seeds": {
+    "1105": {
+     "t_risk": 48,
+     "t_fork": 33,
+     "grid_relative": [
+      0,
+      10,
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90,
+      100,
+      110,
+      120,
+      130,
+      140,
+      150,
+      160,
+      170,
+      180,
+      190,
+      200,
+      250
+     ],
+     "R_curve_relative": {
+      "0": 0,
+      "10": 0,
+      "20": 20,
+      "30": 54,
+      "40": 58,
+      "50": 56,
+      "60": 56,
+      "70": 55,
+      "80": 56,
+      "90": 60,
+      "100": 60,
+      "110": 60,
+      "120": 60,
+      "130": 60,
+      "140": 60,
+      "150": 60,
+      "160": 60,
+      "170": 60,
+      "180": 60,
+      "190": 60,
+      "200": 60,
+      "250": 60
+     },
+     "t_sat_relative": 40,
+     "t_sat_absolute": 73,
+     "W0_grid": [
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90,
+      100,
+      110,
+      120
+     ],
+     "W0_n_points": 11,
+     "W0_in_range_pointwise(R<55)": 2,
+     "W0_in_range_presaturation": 2,
+     "W1_grid": [
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90,
+      100,
+      110
+     ],
+     "W1_boundaries_on_grid": false,
+     "W2_grid": [
+      20,
+      30
+     ],
+     "W2_status": "合同执行失败/量程零",
+     "arms": {
+      "G50": {
+       "W0": {
+        "arm": 0.5883333333333334,
+        "R": 0.925,
+        "R_minus_arm": 0.33666666666666667,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.5666666666666667,
+        "R": 0.9166666666666666,
+        "R_minus_arm": 0.35,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 36
+      },
+      "G90": {
+       "W0": {
+        "arm": 0.9383333333333332,
+        "R": 0.925,
+        "R_minus_arm": -0.013333333333333197,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9333333333333333,
+        "R": 0.9166666666666666,
+        "R_minus_arm": -0.01666666666666672,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 60
+      },
+      "L17A_s0": {
+       "W0": {
+        "arm": 0.9333333333333332,
+        "R": 0.925,
+        "R_minus_arm": -0.008333333333333193,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9296296296296295,
+        "R": 0.9166666666666666,
+        "R_minus_arm": -0.012962962962962843,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 57
+      },
+      "L17A_s50": {
+       "W0": {
+        "arm": 0.9316666666666665,
+        "R": 0.925,
+        "R_minus_arm": -0.0066666666666664876,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9277777777777778,
+        "R": 0.9166666666666666,
+        "R_minus_arm": -0.011111111111111183,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 58
+      },
+      "L17M_s0": {
+       "W0": {
+        "arm": 0.825,
+        "R": 0.925,
+        "R_minus_arm": 0.10000000000000009,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.8055555555555556,
+        "R": 0.9166666666666666,
+        "R_minus_arm": 0.11111111111111105,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 57
+      },
+      "L17M_s50": {
+       "W0": {
+        "arm": 0.9233333333333333,
+        "R": 0.925,
+        "R_minus_arm": 0.0016666666666667052,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9212962962962964,
+        "R": 0.9166666666666666,
+        "R_minus_arm": -0.004629629629629761,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 59
+      },
+      "L29A_s0": {
+       "W0": {
+        "arm": 0.9416666666666668,
+        "R": 0.925,
+        "R_minus_arm": -0.01666666666666672,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9351851851851852,
+        "R": 0.9166666666666666,
+        "R_minus_arm": -0.0185185185185186,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 56
+      },
+      "L29A_s50": {
+       "W0": {
+        "arm": 0.94,
+        "R": 0.925,
+        "R_minus_arm": -0.014999999999999902,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9333333333333333,
+        "R": 0.9166666666666666,
+        "R_minus_arm": -0.01666666666666672,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 56
+      },
+      "L29M_s0": {
+       "W0": {
+        "arm": 0.9183333333333333,
+        "R": 0.925,
+        "R_minus_arm": 0.00666666666666671,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9092592592592592,
+        "R": 0.9166666666666666,
+        "R_minus_arm": 0.007407407407407418,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 55
+      },
+      "L29M_s50": {
+       "W0": {
+        "arm": 0.945,
+        "R": 0.925,
+        "R_minus_arm": -0.019999999999999907,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9388888888888889,
+        "R": 0.9166666666666666,
+        "R_minus_arm": -0.022222222222222254,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 55
+      },
+      "L5A_s0": {
+       "W0": {
+        "arm": 0.9433333333333332,
+        "R": 0.925,
+        "R_minus_arm": -0.0183333333333332,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.937037037037037,
+        "R": 0.9166666666666666,
+        "R_minus_arm": -0.020370370370370372,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 57
+      },
+      "L5A_s50": {
+       "W0": {
+        "arm": 0.8325,
+        "R": 0.925,
+        "R_minus_arm": 0.09250000000000003,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.8388888888888889,
+        "R": 0.9166666666666666,
+        "R_minus_arm": 0.07777777777777772,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 56
+      },
+      "L5M_s0": {
+       "W0": {
+        "arm": 0.9091666666666667,
+        "R": 0.925,
+        "R_minus_arm": 0.015833333333333366,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.8990740740740741,
+        "R": 0.9166666666666666,
+        "R_minus_arm": 0.017592592592592493,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 59
+      },
+      "L5M_s50": {
+       "W0": {
+        "arm": 0.9441666666666667,
+        "R": 0.925,
+        "R_minus_arm": -0.019166666666666665,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.937962962962963,
+        "R": 0.9166666666666666,
+        "R_minus_arm": -0.02129629629629637,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 58
+      },
+      "R": {
+       "W0": {
+        "arm": 0.925,
+        "R": 0.925,
+        "R_minus_arm": 0.0,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9166666666666666,
+        "R": 0.9166666666666666,
+        "R_minus_arm": 0.0,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 56
+      },
+      "RND22M_s0": {
+       "W0": {
+        "arm": 0.9291666666666667,
+        "R": 0.925,
+        "R_minus_arm": -0.004166666666666652,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9212962962962964,
+        "R": 0.9166666666666666,
+        "R_minus_arm": -0.004629629629629761,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 55
+      },
+      "RND22M_s50": {
+       "W0": {
+        "arm": 0.91,
+        "R": 0.925,
+        "R_minus_arm": 0.015000000000000013,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9129629629629629,
+        "R": 0.9166666666666666,
+        "R_minus_arm": 0.0037037037037037646,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 58
+      },
+      "RND32A_s0": {
+       "W0": {
+        "arm": 0.9016666666666667,
+        "R": 0.925,
+        "R_minus_arm": 0.023333333333333317,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9027777777777778,
+        "R": 0.9166666666666666,
+        "R_minus_arm": 0.01388888888888884,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 58
+      },
+      "RND32A_s50": {
+       "W0": {
+        "arm": 0.9275,
+        "R": 0.925,
+        "R_minus_arm": -0.0024999999999999467,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9194444444444444,
+        "R": 0.9166666666666666,
+        "R_minus_arm": -0.002777777777777768,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 2
+       },
+       "hits_at_relative_50": 57
+      }
+     }
+    },
+    "1106": {
+     "t_risk": 72,
+     "t_fork": 57,
+     "grid_relative": [
+      0,
+      10,
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90,
+      100,
+      110,
+      120,
+      130,
+      140,
+      150,
+      160,
+      170,
+      180,
+      190,
+      200,
+      250
+     ],
+     "R_curve_relative": {
+      "0": 1,
+      "10": 0,
+      "20": 4,
+      "30": 8,
+      "40": 37,
+      "50": 53,
+      "60": 55,
+      "70": 58,
+      "80": 58,
+      "90": 58,
+      "100": 60,
+      "110": 60,
+      "120": 60,
+      "130": 60,
+      "140": 60,
+      "150": 60,
+      "160": 60,
+      "170": 60,
+      "180": 60,
+      "190": 60,
+      "200": 60,
+      "250": 60
+     },
+     "t_sat_relative": 60,
+     "t_sat_absolute": 117,
+     "W0_grid": [
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90,
+      100,
+      110,
+      120
+     ],
+     "W0_n_points": 11,
+     "W0_in_range_pointwise(R<55)": 4,
+     "W0_in_range_presaturation": 4,
+     "W1_grid": [
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90,
+      100,
+      110
+     ],
+     "W1_boundaries_on_grid": false,
+     "W2_grid": [
+      20,
+      30,
+      40,
+      50
+     ],
+     "W2_status": "ok",
+     "arms": {
+      "G50": {
+       "W0": {
+        "arm": 0.6233333333333334,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.17499999999999993,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.5814814814814815,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.19444444444444442,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.15,
+        "R": 0.425,
+        "R_minus_arm": 0.275,
+        "n_points": 4,
+        "arm_hits": [
+         2,
+         2,
+         10,
+         22
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 22
+      },
+      "G90": {
+       "W0": {
+        "arm": 0.7016666666666667,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.09666666666666668,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.6685185185185185,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.1074074074074074,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.26666666666666666,
+        "R": 0.425,
+        "R_minus_arm": 0.15833333333333333,
+        "n_points": 4,
+        "arm_hits": [
+         8,
+         8,
+         14,
+         34
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 34
+      },
+      "L17A_s0": {
+       "W0": {
+        "arm": 0.7516666666666667,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.046666666666666634,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.7240740740740741,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.051851851851851816,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.36666666666666664,
+        "R": 0.425,
+        "R_minus_arm": 0.05833333333333335,
+        "n_points": 4,
+        "arm_hits": [
+         8,
+         19,
+         22,
+         39
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 39
+      },
+      "L17A_s50": {
+       "W0": {
+        "arm": 0.7091666666666667,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.08916666666666662,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.6768518518518518,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.09907407407407409,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.35416666666666663,
+        "R": 0.425,
+        "R_minus_arm": 0.07083333333333336,
+        "n_points": 4,
+        "arm_hits": [
+         15,
+         21,
+         20,
+         29
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 29
+      },
+      "L17M_s0": {
+       "W0": {
+        "arm": 0.6416666666666667,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.15666666666666662,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.6018518518518519,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.17407407407407405,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.21666666666666667,
+        "R": 0.425,
+        "R_minus_arm": 0.20833333333333331,
+        "n_points": 4,
+        "arm_hits": [
+         2,
+         15,
+         14,
+         21
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 21
+      },
+      "L17M_s50": {
+       "W0": {
+        "arm": 0.5966666666666667,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.20166666666666666,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.5518518518518518,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.2240740740740741,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.15416666666666667,
+        "R": 0.425,
+        "R_minus_arm": 0.2708333333333333,
+        "n_points": 4,
+        "arm_hits": [
+         6,
+         11,
+         10,
+         10
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 10
+      },
+      "L29A_s0": {
+       "W0": {
+        "arm": 0.6125,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.1858333333333333,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.5694444444444444,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.2064814814814815,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.13749999999999998,
+        "R": 0.425,
+        "R_minus_arm": 0.2875,
+        "n_points": 4,
+        "arm_hits": [
+         1,
+         3,
+         20,
+         9
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 9
+      },
+      "L29A_s50": {
+       "W0": {
+        "arm": 0.6958333333333333,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.10250000000000004,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.662037037037037,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.11388888888888893,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.20833333333333331,
+        "R": 0.425,
+        "R_minus_arm": 0.21666666666666667,
+        "n_points": 4,
+        "arm_hits": [
+         5,
+         5,
+         6,
+         34
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 34
+      },
+      "L29M_s0": {
+       "W0": {
+        "arm": 0.7841666666666667,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.01416666666666666,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.7601851851851852,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.015740740740740722,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.39583333333333337,
+        "R": 0.425,
+        "R_minus_arm": 0.02916666666666662,
+        "n_points": 4,
+        "arm_hits": [
+         13,
+         7,
+         23,
+         52
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 52
+      },
+      "L29M_s50": {
+       "W0": {
+        "arm": 0.7325,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.0658333333333333,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.7027777777777777,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.07314814814814818,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.3,
+        "R": 0.425,
+        "R_minus_arm": 0.125,
+        "n_points": 4,
+        "arm_hits": [
+         9,
+         4,
+         17,
+         42
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 42
+      },
+      "L5A_s0": {
+       "W0": {
+        "arm": 0.7833333333333333,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.015000000000000013,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.7592592592592592,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.01666666666666672,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.4666666666666667,
+        "R": 0.425,
+        "R_minus_arm": -0.041666666666666685,
+        "n_points": 4,
+        "arm_hits": [
+         8,
+         26,
+         31,
+         47
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 47
+      },
+      "L5A_s50": {
+       "W0": {
+        "arm": 0.7575,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.04083333333333339,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.7305555555555555,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.045370370370370394,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.3625,
+        "R": 0.425,
+        "R_minus_arm": 0.0625,
+        "n_points": 4,
+        "arm_hits": [
+         7,
+         6,
+         27,
+         47
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 47
+      },
+      "L5M_s0": {
+       "W0": {
+        "arm": 0.7408333333333332,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.05750000000000011,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.712037037037037,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.06388888888888888,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.37916666666666665,
+        "R": 0.425,
+        "R_minus_arm": 0.04583333333333334,
+        "n_points": 4,
+        "arm_hits": [
+         17,
+         18,
+         20,
+         36
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 36
+      },
+      "L5M_s50": {
+       "W0": {
+        "arm": 0.595,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.20333333333333337,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.5518518518518518,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.2240740740740741,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.1875,
+        "R": 0.425,
+        "R_minus_arm": 0.2375,
+        "n_points": 4,
+        "arm_hits": [
+         5,
+         8,
+         16,
+         16
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 16
+      },
+      "R": {
+       "W0": {
+        "arm": 0.7983333333333333,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.0,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.7759259259259259,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.0,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.425,
+        "R": 0.425,
+        "R_minus_arm": 0.0,
+        "n_points": 4,
+        "arm_hits": [
+         4,
+         8,
+         37,
+         53
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 53
+      },
+      "RND22M_s0": {
+       "W0": {
+        "arm": 0.655,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.1433333333333333,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.6166666666666667,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.1592592592592592,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.23333333333333334,
+        "R": 0.425,
+        "R_minus_arm": 0.19166666666666665,
+        "n_points": 4,
+        "arm_hits": [
+         2,
+         16,
+         25,
+         13
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 13
+      },
+      "RND22M_s50": {
+       "W0": {
+        "arm": 0.6,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.19833333333333336,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.5555555555555556,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.22037037037037033,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.24583333333333335,
+        "R": 0.425,
+        "R_minus_arm": 0.17916666666666664,
+        "n_points": 4,
+        "arm_hits": [
+         8,
+         17,
+         23,
+         11
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 11
+      },
+      "RND32A_s0": {
+       "W0": {
+        "arm": 0.7416666666666667,
+        "R": 0.7983333333333333,
+        "R_minus_arm": 0.05666666666666664,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.712962962962963,
+        "R": 0.7759259259259259,
+        "R_minus_arm": 0.06296296296296289,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.3458333333333333,
+        "R": 0.425,
+        "R_minus_arm": 0.07916666666666666,
+        "n_points": 4,
+        "arm_hits": [
+         14,
+         10,
+         15,
+         44
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 44
+      },
+      "RND32A_s50": {
+       "W0": {
+        "arm": 0.8016666666666667,
+        "R": 0.7983333333333333,
+        "R_minus_arm": -0.0033333333333334103,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.7796296296296297,
+        "R": 0.7759259259259259,
+        "R_minus_arm": -0.0037037037037037646,
+        "n_points": 10
+       },
+       "W2": {
+        "arm": 0.4875,
+        "R": 0.425,
+        "R_minus_arm": -0.0625,
+        "n_points": 4,
+        "arm_hits": [
+         6,
+         24,
+         36,
+         51
+        ],
+        "R_hits": [
+         4,
+         8,
+         37,
+         53
+        ]
+       },
+       "hits_at_relative_50": 51
+      }
+     }
+    },
+    "1107": {
+     "t_risk": 72,
+     "t_fork": 57,
+     "grid_relative": [
+      0,
+      10,
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90,
+      100,
+      110,
+      120,
+      130,
+      140,
+      150,
+      160,
+      170,
+      180,
+      190,
+      200,
+      250
+     ],
+     "R_curve_relative": {
+      "0": 0,
+      "10": 0,
+      "20": 52,
+      "30": 57,
+      "40": 58,
+      "50": 58,
+      "60": 58,
+      "70": 49,
+      "80": 58,
+      "90": 59,
+      "100": 59,
+      "110": 59,
+      "120": 59,
+      "130": 59,
+      "140": 59,
+      "150": 59,
+      "160": 59,
+      "170": 60,
+      "180": 60,
+      "190": 60,
+      "200": 60,
+      "250": 60
+     },
+     "t_sat_relative": 30,
+     "t_sat_absolute": 87,
+     "W0_grid": [
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90,
+      100,
+      110,
+      120
+     ],
+     "W0_n_points": 11,
+     "W0_in_range_pointwise(R<55)": 2,
+     "W0_in_range_presaturation": 1,
+     "W1_grid": [
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90,
+      100,
+      110
+     ],
+     "W1_boundaries_on_grid": false,
+     "W2_grid": [
+      20
+     ],
+     "W2_status": "合同执行失败/量程零",
+     "arms": {
+      "G50": {
+       "W0": {
+        "arm": 0.925,
+        "R": 0.9508333333333333,
+        "R_minus_arm": 0.025833333333333264,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9203703703703703,
+        "R": 0.9472222222222222,
+        "R_minus_arm": 0.026851851851851904,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 58
+      },
+      "G90": {
+       "W0": {
+        "arm": 0.9283333333333332,
+        "R": 0.9508333333333333,
+        "R_minus_arm": 0.022500000000000075,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9240740740740739,
+        "R": 0.9472222222222222,
+        "R_minus_arm": 0.02314814814814825,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 56
+      },
+      "L17A_s0": {
+       "W0": {
+        "arm": 0.9716666666666666,
+        "R": 0.9508333333333333,
+        "R_minus_arm": -0.02083333333333326,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9712962962962962,
+        "R": 0.9472222222222222,
+        "R_minus_arm": -0.024074074074074026,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 58
+      },
+      "L17A_s50": {
+       "W0": {
+        "arm": 0.9258333333333333,
+        "R": 0.9508333333333333,
+        "R_minus_arm": 0.025000000000000022,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9194444444444444,
+        "R": 0.9472222222222222,
+        "R_minus_arm": 0.02777777777777779,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 55
+      },
+      "L17M_s0": {
+       "W0": {
+        "arm": 0.9383333333333332,
+        "R": 0.9508333333333333,
+        "R_minus_arm": 0.012500000000000067,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9333333333333333,
+        "R": 0.9472222222222222,
+        "R_minus_arm": 0.01388888888888884,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 49
+      },
+      "L17M_s50": {
+       "W0": {
+        "arm": 0.9366666666666665,
+        "R": 0.9508333333333333,
+        "R_minus_arm": 0.014166666666666772,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9333333333333333,
+        "R": 0.9472222222222222,
+        "R_minus_arm": 0.01388888888888884,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 58
+      },
+      "L29A_s0": {
+       "W0": {
+        "arm": 0.9616666666666666,
+        "R": 0.9508333333333333,
+        "R_minus_arm": -0.01083333333333325,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9648148148148148,
+        "R": 0.9472222222222222,
+        "R_minus_arm": -0.017592592592592604,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 58
+      },
+      "L29A_s50": {
+       "W0": {
+        "arm": 0.9608333333333333,
+        "R": 0.9508333333333333,
+        "R_minus_arm": -0.010000000000000009,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.960185185185185,
+        "R": 0.9472222222222222,
+        "R_minus_arm": -0.012962962962962843,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 58
+      },
+      "L29M_s0": {
+       "W0": {
+        "arm": 0.9616666666666666,
+        "R": 0.9508333333333333,
+        "R_minus_arm": -0.01083333333333325,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9611111111111111,
+        "R": 0.9472222222222222,
+        "R_minus_arm": -0.01388888888888895,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 57
+      },
+      "L29M_s50": {
+       "W0": {
+        "arm": 0.9641666666666666,
+        "R": 0.9508333333333333,
+        "R_minus_arm": -0.013333333333333308,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9638888888888889,
+        "R": 0.9472222222222222,
+        "R_minus_arm": -0.01666666666666672,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 58
+      },
+      "L5A_s0": {
+       "W0": {
+        "arm": 0.9666666666666666,
+        "R": 0.9508333333333333,
+        "R_minus_arm": -0.015833333333333255,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9675925925925926,
+        "R": 0.9472222222222222,
+        "R_minus_arm": -0.020370370370370372,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 58
+      },
+      "L5A_s50": {
+       "W0": {
+        "arm": 0.9816666666666667,
+        "R": 0.9508333333333333,
+        "R_minus_arm": -0.03083333333333338,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9796296296296296,
+        "R": 0.9472222222222222,
+        "R_minus_arm": -0.03240740740740744,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 60
+      },
+      "L5M_s0": {
+       "W0": {
+        "arm": 0.9508333333333333,
+        "R": 0.9508333333333333,
+        "R_minus_arm": 0.0,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.95,
+        "R": 0.9472222222222222,
+        "R_minus_arm": -0.002777777777777768,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 56
+      },
+      "L5M_s50": {
+       "W0": {
+        "arm": 0.9683333333333333,
+        "R": 0.9508333333333333,
+        "R_minus_arm": -0.01749999999999996,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9685185185185184,
+        "R": 0.9472222222222222,
+        "R_minus_arm": -0.021296296296296258,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 58
+      },
+      "R": {
+       "W0": {
+        "arm": 0.9508333333333333,
+        "R": 0.9508333333333333,
+        "R_minus_arm": 0.0,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9472222222222222,
+        "R": 0.9472222222222222,
+        "R_minus_arm": 0.0,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 58
+      },
+      "RND22M_s0": {
+       "W0": {
+        "arm": 0.9716666666666667,
+        "R": 0.9508333333333333,
+        "R_minus_arm": -0.02083333333333337,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9722222222222222,
+        "R": 0.9472222222222222,
+        "R_minus_arm": -0.025000000000000022,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 60
+      },
+      "RND22M_s50": {
+       "W0": {
+        "arm": 0.9633333333333333,
+        "R": 0.9508333333333333,
+        "R_minus_arm": -0.012499999999999956,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9592592592592593,
+        "R": 0.9472222222222222,
+        "R_minus_arm": -0.012037037037037068,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 58
+      },
+      "RND32A_s0": {
+       "W0": {
+        "arm": 0.97,
+        "R": 0.9508333333333333,
+        "R_minus_arm": -0.019166666666666665,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9666666666666667,
+        "R": 0.9472222222222222,
+        "R_minus_arm": -0.019444444444444486,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 58
+      },
+      "RND32A_s50": {
+       "W0": {
+        "arm": 0.9683333333333333,
+        "R": 0.9508333333333333,
+        "R_minus_arm": -0.01749999999999996,
+        "n_points": 11
+       },
+       "W1": {
+        "arm": 0.9648148148148148,
+        "R": 0.9472222222222222,
+        "R_minus_arm": -0.017592592592592604,
+        "n_points": 10
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 57
+      }
+     }
+    }
+   }
+  },
+  "A": {
+   "root": "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02",
+   "t_risk_source": "runs/A/s{seed}/R/discovery.json decision.t_risk",
+   "seeds": {
+    "2101": {
+     "t_risk": 85,
+     "t_fork": 70,
+     "grid_relative": [
+      0,
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120,
+      130,
+      140,
+      150,
+      160,
+      170,
+      180,
+      190,
+      200,
+      225,
+      250
+     ],
+     "R_curve_relative": {
+      "0": 1,
+      "5": 1,
+      "10": 1,
+      "15": 9,
+      "20": 10,
+      "25": 18,
+      "30": 7,
+      "35": 48,
+      "40": 55,
+      "45": 49,
+      "50": 60,
+      "55": 60,
+      "60": 60,
+      "65": 60,
+      "70": 60,
+      "75": 60,
+      "80": 60,
+      "85": 60,
+      "90": 60,
+      "95": 60,
+      "100": 60,
+      "105": 60,
+      "110": 60,
+      "115": 60,
+      "120": 60,
+      "130": 60,
+      "140": 60,
+      "150": 60,
+      "160": 60,
+      "170": 60,
+      "180": 60,
+      "190": 60,
+      "200": 60,
+      "225": 60,
+      "250": 60
+     },
+     "t_sat_relative": 40,
+     "t_sat_absolute": 110,
+     "W0_grid": [
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120
+     ],
+     "W0_n_points": 21,
+     "W0_in_range_pointwise(R<55)": 5,
+     "W0_in_range_presaturation": 4,
+     "W1_grid": [
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115
+     ],
+     "W1_boundaries_on_grid": true,
+     "W2_grid": [
+      15,
+      20,
+      25,
+      30,
+      35
+     ],
+     "W2_status": "ok",
+     "arms": {
+      "A29_zero": {
+       "W0": {
+        "arm": 0.8570833333333333,
+        "R": 0.8766666666666667,
+        "R_minus_arm": 0.019583333333333397,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8220833333333333,
+        "R": 0.8345833333333332,
+        "R_minus_arm": 0.012499999999999956,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.33999999999999997,
+        "R": 0.3066666666666667,
+        "R_minus_arm": -0.033333333333333305,
+        "n_points": 5,
+        "arm_hits": [
+         15,
+         21,
+         22,
+         10,
+         34
+        ],
+        "R_hits": [
+         9,
+         10,
+         18,
+         7,
+         48
+        ]
+       },
+       "hits_at_relative_50": 60
+      },
+      "M17_half": {
+       "W0": {
+        "arm": 0.86875,
+        "R": 0.8766666666666667,
+        "R_minus_arm": 0.007916666666666683,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8275,
+        "R": 0.8345833333333332,
+        "R_minus_arm": 0.007083333333333219,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.3433333333333333,
+        "R": 0.3066666666666667,
+        "R_minus_arm": -0.036666666666666625,
+        "n_points": 5,
+        "arm_hits": [
+         8,
+         13,
+         20,
+         21,
+         41
+        ],
+        "R_hits": [
+         9,
+         10,
+         18,
+         7,
+         48
+        ]
+       },
+       "hits_at_relative_50": 58
+      },
+      "R": {
+       "W0": {
+        "arm": 0.8766666666666667,
+        "R": 0.8766666666666667,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8345833333333332,
+        "R": 0.8345833333333332,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.3066666666666667,
+        "R": 0.3066666666666667,
+        "R_minus_arm": 0.0,
+        "n_points": 5,
+        "arm_hits": [
+         9,
+         10,
+         18,
+         7,
+         48
+        ],
+        "R_hits": [
+         9,
+         10,
+         18,
+         7,
+         48
+        ]
+       },
+       "hits_at_relative_50": 60
+      },
+      "S_A29": {
+       "W0": {
+        "arm": 0.8566666666666667,
+        "R": 0.8766666666666667,
+        "R_minus_arm": 0.020000000000000018,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.815,
+        "R": 0.8345833333333332,
+        "R_minus_arm": 0.019583333333333286,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.29,
+        "R": 0.3066666666666667,
+        "R_minus_arm": 0.016666666666666698,
+        "n_points": 5,
+        "arm_hits": [
+         10,
+         10,
+         12,
+         14,
+         41
+        ],
+        "R_hits": [
+         9,
+         10,
+         18,
+         7,
+         48
+        ]
+       },
+       "hits_at_relative_50": 55
+      },
+      "S_M17": {
+       "W0": {
+        "arm": 0.96375,
+        "R": 0.8766666666666667,
+        "R_minus_arm": -0.08708333333333329,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.9295833333333333,
+        "R": 0.8345833333333332,
+        "R_minus_arm": -0.09500000000000008,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.6633333333333333,
+        "R": 0.3066666666666667,
+        "R_minus_arm": -0.3566666666666667,
+        "n_points": 5,
+        "arm_hits": [
+         7,
+         31,
+         48,
+         55,
+         58
+        ],
+        "R_hits": [
+         9,
+         10,
+         18,
+         7,
+         48
+        ]
+       },
+       "hits_at_relative_50": 60
+      }
+     }
+    },
+    "2102": {
+     "t_risk": 90,
+     "t_fork": 75,
+     "grid_relative": [
+      0,
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120,
+      130,
+      140,
+      150,
+      160,
+      170,
+      180,
+      190,
+      200,
+      225,
+      250
+     ],
+     "R_curve_relative": {
+      "0": 0,
+      "5": 0,
+      "10": 0,
+      "15": 49,
+      "20": 57,
+      "25": 54,
+      "30": 49,
+      "35": 57,
+      "40": 60,
+      "45": 60,
+      "50": 60,
+      "55": 60,
+      "60": 60,
+      "65": 60,
+      "70": 60,
+      "75": 60,
+      "80": 60,
+      "85": 60,
+      "90": 60,
+      "95": 60,
+      "100": 60,
+      "105": 60,
+      "110": 60,
+      "115": 60,
+      "120": 60,
+      "130": 60,
+      "140": 60,
+      "150": 60,
+      "160": 60,
+      "170": 60,
+      "180": 60,
+      "190": 60,
+      "200": 60,
+      "225": 60,
+      "250": 60
+     },
+     "t_sat_relative": 20,
+     "t_sat_absolute": 95,
+     "W0_grid": [
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120
+     ],
+     "W0_n_points": 21,
+     "W0_in_range_pointwise(R<55)": 2,
+     "W0_in_range_presaturation": 0,
+     "W1_grid": [
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115
+     ],
+     "W1_boundaries_on_grid": true,
+     "W2_grid": [
+      15
+     ],
+     "W2_status": "合同执行失败/量程零",
+     "arms": {
+      "A29_zero": {
+       "W0": {
+        "arm": 0.9770833333333333,
+        "R": 0.9820833333333333,
+        "R_minus_arm": 0.0050000000000000044,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.9720833333333333,
+        "R": 0.97625,
+        "R_minus_arm": 0.004166666666666652,
+        "n_points": 21
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 59
+      },
+      "M17_half": {
+       "W0": {
+        "arm": 0.9958333333333332,
+        "R": 0.9820833333333333,
+        "R_minus_arm": -0.013749999999999929,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.9895833333333333,
+        "R": 0.97625,
+        "R_minus_arm": -0.013333333333333308,
+        "n_points": 21
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 60
+      },
+      "R": {
+       "W0": {
+        "arm": 0.9820833333333333,
+        "R": 0.9820833333333333,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.97625,
+        "R": 0.97625,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 60
+      },
+      "S_A29": {
+       "W0": {
+        "arm": 0.9858333333333333,
+        "R": 0.9820833333333333,
+        "R_minus_arm": -0.003750000000000031,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.98,
+        "R": 0.97625,
+        "R_minus_arm": -0.003750000000000031,
+        "n_points": 21
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 60
+      },
+      "S_M17": {
+       "W0": {
+        "arm": 0.9925,
+        "R": 0.9820833333333333,
+        "R_minus_arm": -0.01041666666666674,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.9870833333333333,
+        "R": 0.97625,
+        "R_minus_arm": -0.010833333333333361,
+        "n_points": 21
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 60
+      }
+     }
+    }
+   }
+  },
+  "B": {
+   "root": "research/defense-recap-2026-10-21/server-evidence/20261020_intervention_confirm_decompose_r02",
+   "t_risk_source": "contract.json source.mothers[seed].t_jump",
+   "seeds": {
+    "1105": {
+     "t_risk": 48,
+     "t_fork": 33,
+     "grid_relative": [
+      0,
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120,
+      130,
+      140,
+      150,
+      160,
+      170,
+      180,
+      190,
+      200,
+      225,
+      250
+     ],
+     "R_curve_relative": {
+      "0": 0,
+      "5": 0,
+      "10": 0,
+      "15": 5,
+      "20": 20,
+      "25": 40,
+      "30": 54,
+      "35": 56,
+      "40": 58,
+      "45": 57,
+      "50": 56,
+      "55": 56,
+      "60": 56,
+      "65": 56,
+      "70": 55,
+      "75": 53,
+      "80": 56,
+      "85": 60,
+      "90": 60,
+      "95": 60,
+      "100": 60,
+      "105": 60,
+      "110": 60,
+      "115": 60,
+      "120": 60,
+      "130": 60,
+      "140": 60,
+      "150": 60,
+      "160": 60,
+      "170": 60,
+      "180": 60,
+      "190": 60,
+      "200": 60,
+      "225": 60,
+      "250": 60
+     },
+     "t_sat_relative": 35,
+     "t_sat_absolute": 68,
+     "W0_grid": [
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120
+     ],
+     "W0_n_points": 21,
+     "W0_in_range_pointwise(R<55)": 4,
+     "W0_in_range_presaturation": 3,
+     "W1_grid": [
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115
+     ],
+     "W1_boundaries_on_grid": true,
+     "W2_grid": [
+      15,
+      20,
+      25,
+      30
+     ],
+     "W2_status": "ok",
+     "arms": {
+      "A29_zero_k": {
+       "W0": {
+        "arm": 0.8583333333333333,
+        "R": 0.9275,
+        "R_minus_arm": 0.06916666666666671,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8208333333333333,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.06708333333333338,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5083333333333333,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.012499999999999956,
+        "n_points": 4,
+        "arm_hits": [
+         4,
+         22,
+         42,
+         54
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 52
+      },
+      "A29_zero_o": {
+       "W0": {
+        "arm": 0.88375,
+        "R": 0.9275,
+        "R_minus_arm": 0.043749999999999956,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8458333333333333,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.04208333333333336,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.475,
+        "R": 0.49583333333333335,
+        "R_minus_arm": 0.02083333333333337,
+        "n_points": 4,
+        "arm_hits": [
+         4,
+         22,
+         35,
+         53
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 58
+      },
+      "A29_zero_q": {
+       "W0": {
+        "arm": 0.9354166666666666,
+        "R": 0.9275,
+        "R_minus_arm": -0.007916666666666572,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.9058333333333333,
+        "R": 0.8879166666666667,
+        "R_minus_arm": -0.01791666666666658,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.6208333333333333,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.125,
+        "n_points": 4,
+        "arm_hits": [
+         5,
+         35,
+         53,
+         56
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 59
+      },
+      "A29_zero_q_k": {
+       "W0": {
+        "arm": 0.925,
+        "R": 0.9275,
+        "R_minus_arm": 0.0024999999999999467,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8875,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.0004166666666667318,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5166666666666667,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.02083333333333337,
+        "n_points": 4,
+        "arm_hits": [
+         4,
+         19,
+         43,
+         58
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 58
+      },
+      "A29_zero_q_k_v_o": {
+       "W0": {
+        "arm": 0.9466666666666668,
+        "R": 0.9275,
+        "R_minus_arm": -0.019166666666666776,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.9104166666666668,
+        "R": 0.8879166666666667,
+        "R_minus_arm": -0.022500000000000075,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5833333333333334,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.08750000000000002,
+        "n_points": 4,
+        "arm_hits": [
+         3,
+         30,
+         51,
+         56
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 56
+      },
+      "A29_zero_v": {
+       "W0": {
+        "arm": 0.915,
+        "R": 0.9275,
+        "R_minus_arm": 0.012499999999999956,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.87625,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.011666666666666714,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5375,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.04166666666666663,
+        "n_points": 4,
+        "arm_hits": [
+         2,
+         23,
+         49,
+         55
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 49
+      },
+      "A29_zero_v_o": {
+       "W0": {
+        "arm": 0.9020833333333332,
+        "R": 0.9275,
+        "R_minus_arm": 0.025416666666666754,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8654166666666667,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.022499999999999964,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5375,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.04166666666666663,
+        "n_points": 4,
+        "arm_hits": [
+         5,
+         27,
+         42,
+         55
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 56
+      },
+      "M17_half_down": {
+       "W0": {
+        "arm": 0.9241666666666666,
+        "R": 0.9275,
+        "R_minus_arm": 0.0033333333333334103,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8845833333333333,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.0033333333333334103,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.4708333333333333,
+        "R": 0.49583333333333335,
+        "R_minus_arm": 0.025000000000000022,
+        "n_points": 4,
+        "arm_hits": [
+         4,
+         20,
+         38,
+         51
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 58
+      },
+      "M17_half_gate": {
+       "W0": {
+        "arm": 0.8941666666666667,
+        "R": 0.9275,
+        "R_minus_arm": 0.033333333333333326,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8591666666666667,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.028749999999999942,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.004166666666666652,
+        "n_points": 4,
+        "arm_hits": [
+         3,
+         23,
+         38,
+         56
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 59
+      },
+      "M17_half_gate_down": {
+       "W0": {
+        "arm": 0.90875,
+        "R": 0.9275,
+        "R_minus_arm": 0.018750000000000044,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.87375,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.01416666666666666,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5166666666666667,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.02083333333333337,
+        "n_points": 4,
+        "arm_hits": [
+         4,
+         26,
+         42,
+         52
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 57
+      },
+      "M17_half_gate_up": {
+       "W0": {
+        "arm": 0.905,
+        "R": 0.9275,
+        "R_minus_arm": 0.022499999999999964,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8708333333333335,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.017083333333333228,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5458333333333334,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.050000000000000044,
+        "n_points": 4,
+        "arm_hits": [
+         4,
+         26,
+         47,
+         54
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 56
+      },
+      "M17_half_gate_up_down": {
+       "W0": {
+        "arm": 0.9308333333333333,
+        "R": 0.9275,
+        "R_minus_arm": -0.0033333333333332993,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8945833333333333,
+        "R": 0.8879166666666667,
+        "R_minus_arm": -0.006666666666666599,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5458333333333334,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.050000000000000044,
+        "n_points": 4,
+        "arm_hits": [
+         4,
+         23,
+         46,
+         58
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 59
+      },
+      "M17_half_up": {
+       "W0": {
+        "arm": 0.9229166666666666,
+        "R": 0.9275,
+        "R_minus_arm": 0.004583333333333384,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8858333333333333,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.002083333333333437,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.4916666666666667,
+        "R": 0.49583333333333335,
+        "R_minus_arm": 0.004166666666666652,
+        "n_points": 4,
+        "arm_hits": [
+         4,
+         21,
+         45,
+         48
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 58
+      },
+      "M17_half_up_down": {
+       "W0": {
+        "arm": 0.9220833333333333,
+        "R": 0.9275,
+        "R_minus_arm": 0.005416666666666736,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8870833333333333,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.0008333333333333526,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5291666666666667,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.033333333333333326,
+        "n_points": 4,
+        "arm_hits": [
+         5,
+         23,
+         44,
+         55
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 57
+      },
+      "M29_zero_down": {
+       "W0": {
+        "arm": 0.9141666666666666,
+        "R": 0.9275,
+        "R_minus_arm": 0.01333333333333342,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8745833333333333,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.01333333333333342,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.45416666666666666,
+        "R": 0.49583333333333335,
+        "R_minus_arm": 0.041666666666666685,
+        "n_points": 4,
+        "arm_hits": [
+         3,
+         18,
+         37,
+         51
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 57
+      },
+      "M29_zero_gate": {
+       "W0": {
+        "arm": 0.9270833333333333,
+        "R": 0.9275,
+        "R_minus_arm": 0.0004166666666667318,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8829166666666666,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.0050000000000001155,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.3958333333333333,
+        "R": 0.49583333333333335,
+        "R_minus_arm": 0.10000000000000003,
+        "n_points": 4,
+        "arm_hits": [
+         2,
+         10,
+         30,
+         53
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 60
+      },
+      "M29_zero_gate_down": {
+       "W0": {
+        "arm": 0.8770833333333333,
+        "R": 0.9275,
+        "R_minus_arm": 0.050416666666666665,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8454166666666667,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.04249999999999998,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5833333333333334,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.08750000000000002,
+        "n_points": 4,
+        "arm_hits": [
+         6,
+         28,
+         49,
+         57
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 49
+      },
+      "M29_zero_gate_up": {
+       "W0": {
+        "arm": 0.9395833333333333,
+        "R": 0.9275,
+        "R_minus_arm": -0.012083333333333335,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.9054166666666665,
+        "R": 0.8879166666666667,
+        "R_minus_arm": -0.01749999999999985,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5708333333333333,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.07499999999999996,
+        "n_points": 4,
+        "arm_hits": [
+         5,
+         29,
+         49,
+         54
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 57
+      },
+      "M29_zero_gate_up_down": {
+       "W0": {
+        "arm": 0.9133333333333333,
+        "R": 0.9275,
+        "R_minus_arm": 0.01416666666666666,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8775,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.01041666666666674,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5375,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.04166666666666663,
+        "n_points": 4,
+        "arm_hits": [
+         6,
+         28,
+         40,
+         55
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 55
+      },
+      "M29_zero_up": {
+       "W0": {
+        "arm": 0.8675,
+        "R": 0.9275,
+        "R_minus_arm": 0.05999999999999994,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.83625,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.05166666666666664,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5458333333333333,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.04999999999999993,
+        "n_points": 4,
+        "arm_hits": [
+         4,
+         27,
+         45,
+         55
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 56
+      },
+      "M29_zero_up_down": {
+       "W0": {
+        "arm": 0.9579166666666667,
+        "R": 0.9275,
+        "R_minus_arm": -0.03041666666666676,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.91875,
+        "R": 0.8879166666666667,
+        "R_minus_arm": -0.030833333333333268,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5375,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.04166666666666663,
+        "n_points": 4,
+        "arm_hits": [
+         5,
+         21,
+         49,
+         54
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 58
+      },
+      "R": {
+       "W0": {
+        "arm": 0.9275,
+        "R": 0.9275,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8879166666666667,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.49583333333333335,
+        "R": 0.49583333333333335,
+        "R_minus_arm": 0.0,
+        "n_points": 4,
+        "arm_hits": [
+         5,
+         20,
+         40,
+         54
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 56
+      }
+     }
+    },
+    "1106": {
+     "t_risk": 72,
+     "t_fork": 57,
+     "grid_relative": [
+      0,
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120,
+      130,
+      140,
+      150,
+      160,
+      170,
+      180,
+      190,
+      200,
+      225,
+      250
+     ],
+     "R_curve_relative": {
+      "0": 1,
+      "5": 0,
+      "10": 0,
+      "15": 4,
+      "20": 4,
+      "25": 8,
+      "30": 8,
+      "35": 13,
+      "40": 37,
+      "45": 53,
+      "50": 53,
+      "55": 55,
+      "60": 55,
+      "65": 58,
+      "70": 58,
+      "75": 59,
+      "80": 58,
+      "85": 58,
+      "90": 58,
+      "95": 58,
+      "100": 60,
+      "105": 60,
+      "110": 60,
+      "115": 60,
+      "120": 60,
+      "130": 60,
+      "140": 60,
+      "150": 60,
+      "160": 60,
+      "170": 60,
+      "180": 60,
+      "190": 60,
+      "200": 60,
+      "225": 60,
+      "250": 60
+     },
+     "t_sat_relative": 55,
+     "t_sat_absolute": 112,
+     "W0_grid": [
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120
+     ],
+     "W0_n_points": 21,
+     "W0_in_range_pointwise(R<55)": 7,
+     "W0_in_range_presaturation": 7,
+     "W1_grid": [
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115
+     ],
+     "W1_boundaries_on_grid": true,
+     "W2_grid": [
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50
+     ],
+     "W2_status": "ok",
+     "arms": {
+      "A29_zero_k": {
+       "W0": {
+        "arm": 0.6583333333333333,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.14249999999999996,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.6166666666666667,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.13750000000000007,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.27291666666666664,
+        "R": 0.375,
+        "R_minus_arm": 0.10208333333333336,
+        "n_points": 8,
+        "arm_hits": [
+         2,
+         18,
+         33,
+         19,
+         17,
+         32,
+         9,
+         1
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 1
+      },
+      "A29_zero_o": {
+       "W0": {
+        "arm": 0.66,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.14083333333333325,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.6125,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.14166666666666672,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.21458333333333332,
+        "R": 0.375,
+        "R_minus_arm": 0.16041666666666668,
+        "n_points": 8,
+        "arm_hits": [
+         2,
+         4,
+         17,
+         18,
+         9,
+         12,
+         24,
+         17
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 17
+      },
+      "A29_zero_q": {
+       "W0": {
+        "arm": 0.67625,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.12458333333333327,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.635,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.11916666666666675,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.2520833333333333,
+        "R": 0.375,
+        "R_minus_arm": 0.12291666666666667,
+        "n_points": 8,
+        "arm_hits": [
+         4,
+         17,
+         19,
+         12,
+         9,
+         22,
+         20,
+         18
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 18
+      },
+      "A29_zero_q_k": {
+       "W0": {
+        "arm": 0.73875,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.06208333333333327,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.6970833333333333,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.057083333333333486,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.35833333333333334,
+        "R": 0.375,
+        "R_minus_arm": 0.016666666666666663,
+        "n_points": 8,
+        "arm_hits": [
+         7,
+         13,
+         14,
+         14,
+         19,
+         34,
+         38,
+         33
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 33
+      },
+      "A29_zero_q_k_v_o": {
+       "W0": {
+        "arm": 0.60625,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.19458333333333333,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.5575,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.19666666666666677,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.11666666666666667,
+        "R": 0.375,
+        "R_minus_arm": 0.2583333333333333,
+        "n_points": 8,
+        "arm_hits": [
+         2,
+         1,
+         3,
+         3,
+         3,
+         20,
+         15,
+         9
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 9
+      },
+      "A29_zero_v": {
+       "W0": {
+        "arm": 0.7754166666666668,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.025416666666666532,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.7295833333333333,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.024583333333333512,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.375,
+        "R": 0.375,
+        "R_minus_arm": 0.0,
+        "n_points": 8,
+        "arm_hits": [
+         3,
+         7,
+         14,
+         12,
+         19,
+         36,
+         46,
+         43
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 43
+      },
+      "A29_zero_v_o": {
+       "W0": {
+        "arm": 0.63875,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.16208333333333325,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.5925,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.16166666666666674,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.11875,
+        "R": 0.375,
+        "R_minus_arm": 0.25625,
+        "n_points": 8,
+        "arm_hits": [
+         4,
+         5,
+         2,
+         2,
+         1,
+         6,
+         18,
+         19
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 19
+      },
+      "M17_half_down": {
+       "W0": {
+        "arm": 0.83375,
+        "R": 0.8008333333333333,
+        "R_minus_arm": -0.032916666666666705,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.7966666666666667,
+        "R": 0.7541666666666668,
+        "R_minus_arm": -0.04249999999999998,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.48333333333333334,
+        "R": 0.375,
+        "R_minus_arm": -0.10833333333333334,
+        "n_points": 8,
+        "arm_hits": [
+         6,
+         25,
+         28,
+         24,
+         27,
+         34,
+         39,
+         49
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 49
+      },
+      "M17_half_gate": {
+       "W0": {
+        "arm": 0.7345833333333333,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.06625000000000003,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.6895833333333333,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.06458333333333344,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.28541666666666665,
+        "R": 0.375,
+        "R_minus_arm": 0.08958333333333335,
+        "n_points": 8,
+        "arm_hits": [
+         3,
+         9,
+         11,
+         9,
+         10,
+         21,
+         40,
+         34
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 34
+      },
+      "M17_half_gate_down": {
+       "W0": {
+        "arm": 0.7675,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.033333333333333326,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.7245833333333332,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.029583333333333517,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.375,
+        "R": 0.375,
+        "R_minus_arm": 0.0,
+        "n_points": 8,
+        "arm_hits": [
+         3,
+         14,
+         19,
+         4,
+         5,
+         36,
+         52,
+         47
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 47
+      },
+      "M17_half_gate_up": {
+       "W0": {
+        "arm": 0.69625,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.10458333333333325,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.6479166666666667,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.10625000000000007,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.23958333333333334,
+        "R": 0.375,
+        "R_minus_arm": 0.13541666666666666,
+        "n_points": 8,
+        "arm_hits": [
+         3,
+         1,
+         6,
+         4,
+         3,
+         14,
+         41,
+         43
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 43
+      },
+      "M17_half_gate_up_down": {
+       "W0": {
+        "arm": 0.5991666666666666,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.20166666666666666,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.5525,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.20166666666666677,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.15416666666666667,
+        "R": 0.375,
+        "R_minus_arm": 0.22083333333333333,
+        "n_points": 8,
+        "arm_hits": [
+         2,
+         6,
+         17,
+         11,
+         5,
+         10,
+         13,
+         10
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 10
+      },
+      "M17_half_up": {
+       "W0": {
+        "arm": 0.6854166666666667,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.11541666666666661,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.6395833333333334,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.11458333333333337,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.18958333333333333,
+        "R": 0.375,
+        "R_minus_arm": 0.18541666666666667,
+        "n_points": 8,
+        "arm_hits": [
+         3,
+         7,
+         5,
+         1,
+         2,
+         8,
+         31,
+         34
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 34
+      },
+      "M17_half_up_down": {
+       "W0": {
+        "arm": 0.83125,
+        "R": 0.8008333333333333,
+        "R_minus_arm": -0.03041666666666676,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.79,
+        "R": 0.7541666666666668,
+        "R_minus_arm": -0.03583333333333327,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5145833333333333,
+        "R": 0.375,
+        "R_minus_arm": -0.13958333333333328,
+        "n_points": 8,
+        "arm_hits": [
+         6,
+         15,
+         39,
+         34,
+         25,
+         38,
+         45,
+         45
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 45
+      },
+      "M29_zero_down": {
+       "W0": {
+        "arm": 0.5833333333333334,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.21749999999999992,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.5341666666666667,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.22000000000000008,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.15208333333333332,
+        "R": 0.375,
+        "R_minus_arm": 0.22291666666666668,
+        "n_points": 8,
+        "arm_hits": [
+         0,
+         2,
+         2,
+         4,
+         14,
+         22,
+         26,
+         3
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 3
+      },
+      "M29_zero_gate": {
+       "W0": {
+        "arm": 0.75875,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.04208333333333325,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.7179166666666668,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.036250000000000004,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.38333333333333336,
+        "R": 0.375,
+        "R_minus_arm": -0.00833333333333336,
+        "n_points": 8,
+        "arm_hits": [
+         7,
+         15,
+         26,
+         20,
+         24,
+         27,
+         31,
+         34
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 34
+      },
+      "M29_zero_gate_down": {
+       "W0": {
+        "arm": 0.84375,
+        "R": 0.8008333333333333,
+        "R_minus_arm": -0.042916666666666714,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8066666666666668,
+        "R": 0.7541666666666668,
+        "R_minus_arm": -0.05249999999999999,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.54375,
+        "R": 0.375,
+        "R_minus_arm": -0.16874999999999996,
+        "n_points": 8,
+        "arm_hits": [
+         8,
+         23,
+         30,
+         29,
+         32,
+         40,
+         49,
+         50
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 50
+      },
+      "M29_zero_gate_up": {
+       "W0": {
+        "arm": 0.7204166666666667,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.08041666666666658,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.675,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.07916666666666672,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.26458333333333334,
+        "R": 0.375,
+        "R_minus_arm": 0.11041666666666666,
+        "n_points": 8,
+        "arm_hits": [
+         4,
+         7,
+         13,
+         15,
+         15,
+         23,
+         28,
+         22
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 22
+      },
+      "M29_zero_gate_up_down": {
+       "W0": {
+        "arm": 0.79375,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.00708333333333333,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.75125,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.0029166666666667895,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.36041666666666666,
+        "R": 0.375,
+        "R_minus_arm": 0.014583333333333337,
+        "n_points": 8,
+        "arm_hits": [
+         5,
+         13,
+         18,
+         7,
+         7,
+         23,
+         48,
+         52
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 52
+      },
+      "M29_zero_up": {
+       "W0": {
+        "arm": 0.6316666666666666,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.1691666666666667,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.5829166666666666,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.17125000000000012,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.11458333333333333,
+        "R": 0.375,
+        "R_minus_arm": 0.2604166666666667,
+        "n_points": 8,
+        "arm_hits": [
+         3,
+         0,
+         3,
+         3,
+         1,
+         6,
+         17,
+         22
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 22
+      },
+      "M29_zero_up_down": {
+       "W0": {
+        "arm": 0.69,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.11083333333333334,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.6441666666666667,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.1100000000000001,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.19791666666666669,
+        "R": 0.375,
+        "R_minus_arm": 0.17708333333333331,
+        "n_points": 8,
+        "arm_hits": [
+         4,
+         6,
+         18,
+         0,
+         1,
+         4,
+         25,
+         37
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 37
+      },
+      "R": {
+       "W0": {
+        "arm": 0.8008333333333333,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.7541666666666668,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.375,
+        "R": 0.375,
+        "R_minus_arm": 0.0,
+        "n_points": 8,
+        "arm_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 53
+      }
+     }
+    }
+   }
+  },
+  "C": {
+   "root": "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03",
+   "t_risk_source": "runs/C/s{seed}/R/result.json entry.t_risk (reused A/R state)",
+   "seeds": {
+    "2101": {
+     "t_risk": 85,
+     "t_fork": 70,
+     "grid_relative": [
+      0,
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120,
+      130,
+      140,
+      150,
+      160,
+      170,
+      180,
+      190,
+      200,
+      225,
+      250
+     ],
+     "R_curve_relative": {
+      "0": 1,
+      "5": 1,
+      "10": 1,
+      "15": 9,
+      "20": 10,
+      "25": 18,
+      "30": 7,
+      "35": 48,
+      "40": 55,
+      "45": 49,
+      "50": 60,
+      "55": 60,
+      "60": 60,
+      "65": 60,
+      "70": 60,
+      "75": 60,
+      "80": 60,
+      "85": 60,
+      "90": 60,
+      "95": 60,
+      "100": 60,
+      "105": 60,
+      "110": 60,
+      "115": 60,
+      "120": 60,
+      "130": 60,
+      "140": 60,
+      "150": 60,
+      "160": 60,
+      "170": 60,
+      "180": 60,
+      "190": 60,
+      "200": 60,
+      "225": 60,
+      "250": 60
+     },
+     "t_sat_relative": 40,
+     "t_sat_absolute": 110,
+     "W0_grid": [
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120
+     ],
+     "W0_n_points": 21,
+     "W0_in_range_pointwise(R<55)": 5,
+     "W0_in_range_presaturation": 4,
+     "W1_grid": [
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115
+     ],
+     "W1_boundaries_on_grid": true,
+     "W2_grid": [
+      15,
+      20,
+      25,
+      30,
+      35
+     ],
+     "W2_status": "ok",
+     "arms": {
+      "K29_zero": {
+       "W0": {
+        "arm": 0.8108333333333333,
+        "R": 0.8766666666666667,
+        "R_minus_arm": 0.06583333333333341,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.77125,
+        "R": 0.8345833333333332,
+        "R_minus_arm": 0.06333333333333324,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.26999999999999996,
+        "R": 0.3066666666666667,
+        "R_minus_arm": 0.036666666666666715,
+        "n_points": 5,
+        "arm_hits": [
+         13,
+         12,
+         11,
+         3,
+         42
+        ],
+        "R_hits": [
+         9,
+         10,
+         18,
+         7,
+         48
+        ]
+       },
+       "hits_at_relative_50": 58
+      },
+      "R": {
+       "W0": {
+        "arm": 0.8766666666666667,
+        "R": 0.8766666666666667,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8345833333333332,
+        "R": 0.8345833333333332,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.3066666666666667,
+        "R": 0.3066666666666667,
+        "R_minus_arm": 0.0,
+        "n_points": 5,
+        "arm_hits": [
+         9,
+         10,
+         18,
+         7,
+         48
+        ],
+        "R_hits": [
+         9,
+         10,
+         18,
+         7,
+         48
+        ]
+       },
+       "hits_at_relative_50": 60
+      },
+      "S_K29": {
+       "W0": {
+        "arm": 0.86625,
+        "R": 0.8766666666666667,
+        "R_minus_arm": 0.01041666666666674,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8308333333333333,
+        "R": 0.8345833333333332,
+        "R_minus_arm": 0.00374999999999992,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.51,
+        "R": 0.3066666666666667,
+        "R_minus_arm": -0.20333333333333328,
+        "n_points": 5,
+        "arm_hits": [
+         6,
+         29,
+         42,
+         36,
+         40
+        ],
+        "R_hits": [
+         9,
+         10,
+         18,
+         7,
+         48
+        ]
+       },
+       "hits_at_relative_50": 43
+      },
+      "X_K_zero": {
+       "W0": {
+        "arm": 0.8766666666666667,
+        "R": 0.8766666666666667,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.84125,
+        "R": 0.8345833333333332,
+        "R_minus_arm": -0.006666666666666821,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.3933333333333333,
+        "R": 0.3066666666666667,
+        "R_minus_arm": -0.08666666666666663,
+        "n_points": 5,
+        "arm_hits": [
+         15,
+         20,
+         21,
+         7,
+         55
+        ],
+        "R_hits": [
+         9,
+         10,
+         18,
+         7,
+         48
+        ]
+       },
+       "hits_at_relative_50": 60
+      }
+     }
+    },
+    "2102": {
+     "t_risk": 90,
+     "t_fork": 75,
+     "grid_relative": [
+      0,
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120,
+      130,
+      140,
+      150,
+      160,
+      170,
+      180,
+      190,
+      200,
+      225,
+      250
+     ],
+     "R_curve_relative": {
+      "0": 0,
+      "5": 0,
+      "10": 0,
+      "15": 49,
+      "20": 57,
+      "25": 54,
+      "30": 49,
+      "35": 57,
+      "40": 60,
+      "45": 60,
+      "50": 60,
+      "55": 60,
+      "60": 60,
+      "65": 60,
+      "70": 60,
+      "75": 60,
+      "80": 60,
+      "85": 60,
+      "90": 60,
+      "95": 60,
+      "100": 60,
+      "105": 60,
+      "110": 60,
+      "115": 60,
+      "120": 60,
+      "130": 60,
+      "140": 60,
+      "150": 60,
+      "160": 60,
+      "170": 60,
+      "180": 60,
+      "190": 60,
+      "200": 60,
+      "225": 60,
+      "250": 60
+     },
+     "t_sat_relative": 20,
+     "t_sat_absolute": 95,
+     "W0_grid": [
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120
+     ],
+     "W0_n_points": 21,
+     "W0_in_range_pointwise(R<55)": 2,
+     "W0_in_range_presaturation": 0,
+     "W1_grid": [
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115
+     ],
+     "W1_boundaries_on_grid": true,
+     "W2_grid": [
+      15
+     ],
+     "W2_status": "合同执行失败/量程零",
+     "arms": {
+      "K29_zero": {
+       "W0": {
+        "arm": 0.9295833333333333,
+        "R": 0.9820833333333333,
+        "R_minus_arm": 0.05249999999999999,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.9270833333333333,
+        "R": 0.97625,
+        "R_minus_arm": 0.04916666666666669,
+        "n_points": 21
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 54
+      },
+      "R": {
+       "W0": {
+        "arm": 0.9820833333333333,
+        "R": 0.9820833333333333,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.97625,
+        "R": 0.97625,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 60
+      },
+      "S_K29": {
+       "W0": {
+        "arm": 0.9891666666666667,
+        "R": 0.9820833333333333,
+        "R_minus_arm": -0.007083333333333441,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.9833333333333333,
+        "R": 0.97625,
+        "R_minus_arm": -0.00708333333333333,
+        "n_points": 21
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 60
+      },
+      "X_K_zero": {
+       "W0": {
+        "arm": 0.9958333333333332,
+        "R": 0.9820833333333333,
+        "R_minus_arm": -0.013749999999999929,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.99,
+        "R": 0.97625,
+        "R_minus_arm": -0.01375000000000004,
+        "n_points": 21
+       },
+       "W2": {
+        "status": "合同执行失败/量程零",
+        "n_points": 1
+       },
+       "hits_at_relative_50": 60
+      }
+     }
+    }
+   }
+  },
+  "D": {
+   "root": "research/defense-recap-2026-10-21/server-evidence/20261020_k29_confirm_heads_r03",
+   "t_risk_source": "contract.json source.mothers[seed].t_jump",
+   "seeds": {
+    "1105": {
+     "t_risk": 48,
+     "t_fork": 33,
+     "grid_relative": [
+      0,
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120,
+      130,
+      140,
+      150,
+      160,
+      170,
+      180,
+      190,
+      200,
+      225,
+      250
+     ],
+     "R_curve_relative": {
+      "0": 0,
+      "5": 0,
+      "10": 0,
+      "15": 5,
+      "20": 20,
+      "25": 40,
+      "30": 54,
+      "35": 56,
+      "40": 58,
+      "45": 57,
+      "50": 56,
+      "55": 56,
+      "60": 56,
+      "65": 56,
+      "70": 55,
+      "75": 53,
+      "80": 56,
+      "85": 60,
+      "90": 60,
+      "95": 60,
+      "100": 60,
+      "105": 60,
+      "110": 60,
+      "115": 60,
+      "120": 60,
+      "130": 60,
+      "140": 60,
+      "150": 60,
+      "160": 60,
+      "170": 60,
+      "180": 60,
+      "190": 60,
+      "200": 60,
+      "225": 60,
+      "250": 60
+     },
+     "t_sat_relative": 35,
+     "t_sat_absolute": 68,
+     "W0_grid": [
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120
+     ],
+     "W0_n_points": 21,
+     "W0_in_range_pointwise(R<55)": 4,
+     "W0_in_range_presaturation": 3,
+     "W1_grid": [
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115
+     ],
+     "W1_boundaries_on_grid": true,
+     "W2_grid": [
+      15,
+      20,
+      25,
+      30
+     ],
+     "W2_status": "ok",
+     "arms": {
+      "H0": {
+       "W0": {
+        "arm": 0.9066666666666667,
+        "R": 0.9275,
+        "R_minus_arm": 0.02083333333333326,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.87375,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.01416666666666666,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5666666666666667,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.0708333333333333,
+        "n_points": 4,
+        "arm_hits": [
+         5,
+         24,
+         52,
+         55
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 57
+      },
+      "H1": {
+       "W0": {
+        "arm": 0.9241666666666666,
+        "R": 0.9275,
+        "R_minus_arm": 0.0033333333333334103,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8858333333333333,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.002083333333333437,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5083333333333333,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.012499999999999956,
+        "n_points": 4,
+        "arm_hits": [
+         4,
+         20,
+         42,
+         56
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 58
+      },
+      "H2": {
+       "W0": {
+        "arm": 0.9508333333333333,
+        "R": 0.9275,
+        "R_minus_arm": -0.023333333333333317,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.9104166666666665,
+        "R": 0.8879166666666667,
+        "R_minus_arm": -0.022499999999999853,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.4916666666666667,
+        "R": 0.49583333333333335,
+        "R_minus_arm": 0.004166666666666652,
+        "n_points": 4,
+        "arm_hits": [
+         2,
+         19,
+         41,
+         56
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 59
+      },
+      "H3": {
+       "W0": {
+        "arm": 0.9466666666666665,
+        "R": 0.9275,
+        "R_minus_arm": -0.019166666666666554,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.9066666666666666,
+        "R": 0.8879166666666667,
+        "R_minus_arm": -0.018749999999999933,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5208333333333334,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.025000000000000022,
+        "n_points": 4,
+        "arm_hits": [
+         1,
+         20,
+         47,
+         57
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 58
+      },
+      "H4": {
+       "W0": {
+        "arm": 0.93375,
+        "R": 0.9275,
+        "R_minus_arm": -0.006249999999999978,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8945833333333333,
+        "R": 0.8879166666666667,
+        "R_minus_arm": -0.006666666666666599,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.004166666666666652,
+        "n_points": 4,
+        "arm_hits": [
+         3,
+         19,
+         43,
+         55
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 58
+      },
+      "H5": {
+       "W0": {
+        "arm": 0.9170833333333333,
+        "R": 0.9275,
+        "R_minus_arm": 0.01041666666666674,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.88,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.007916666666666683,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5375,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.04166666666666663,
+        "n_points": 4,
+        "arm_hits": [
+         4,
+         27,
+         43,
+         55
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 53
+      },
+      "H6": {
+       "W0": {
+        "arm": 0.8925,
+        "R": 0.9275,
+        "R_minus_arm": 0.03500000000000003,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8520833333333333,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.035833333333333384,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.45833333333333337,
+        "R": 0.49583333333333335,
+        "R_minus_arm": 0.03749999999999998,
+        "n_points": 4,
+        "arm_hits": [
+         3,
+         20,
+         35,
+         52
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 50
+      },
+      "H7": {
+       "W0": {
+        "arm": 0.9379166666666666,
+        "R": 0.9275,
+        "R_minus_arm": -0.01041666666666663,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.90125,
+        "R": 0.8879166666666667,
+        "R_minus_arm": -0.013333333333333308,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5333333333333333,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.03749999999999998,
+        "n_points": 4,
+        "arm_hits": [
+         2,
+         24,
+         48,
+         54
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 58
+      },
+      "K_full_anchor": {
+       "W0": {
+        "arm": 0.89875,
+        "R": 0.9275,
+        "R_minus_arm": 0.028749999999999942,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.86125,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.026666666666666727,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.004166666666666652,
+        "n_points": 4,
+        "arm_hits": [
+         4,
+         21,
+         47,
+         48
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 52
+      },
+      "R": {
+       "W0": {
+        "arm": 0.9275,
+        "R": 0.9275,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8879166666666667,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.49583333333333335,
+        "R": 0.49583333333333335,
+        "R_minus_arm": 0.0,
+        "n_points": 4,
+        "arm_hits": [
+         5,
+         20,
+         40,
+         54
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 56
+      },
+      "X_channels0": {
+       "W0": {
+        "arm": 0.9383333333333332,
+        "R": 0.9275,
+        "R_minus_arm": -0.01083333333333325,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8995833333333333,
+        "R": 0.8879166666666667,
+        "R_minus_arm": -0.011666666666666603,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.525,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.029166666666666674,
+        "n_points": 4,
+        "arm_hits": [
+         1,
+         26,
+         44,
+         55
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 58
+      },
+      "X_channels1": {
+       "W0": {
+        "arm": 0.8754166666666666,
+        "R": 0.9275,
+        "R_minus_arm": 0.05208333333333337,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8395833333333332,
+        "R": 0.8879166666666667,
+        "R_minus_arm": 0.04833333333333345,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.5083333333333333,
+        "R": 0.49583333333333335,
+        "R_minus_arm": -0.012499999999999956,
+        "n_points": 4,
+        "arm_hits": [
+         4,
+         23,
+         44,
+         51
+        ],
+        "R_hits": [
+         5,
+         20,
+         40,
+         54
+        ]
+       },
+       "hits_at_relative_50": 56
+      }
+     }
+    },
+    "1106": {
+     "t_risk": 72,
+     "t_fork": 57,
+     "grid_relative": [
+      0,
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120,
+      130,
+      140,
+      150,
+      160,
+      170,
+      180,
+      190,
+      200,
+      225,
+      250
+     ],
+     "R_curve_relative": {
+      "0": 1,
+      "5": 0,
+      "10": 0,
+      "15": 4,
+      "20": 4,
+      "25": 8,
+      "30": 8,
+      "35": 13,
+      "40": 37,
+      "45": 53,
+      "50": 53,
+      "55": 55,
+      "60": 55,
+      "65": 58,
+      "70": 58,
+      "75": 59,
+      "80": 58,
+      "85": 58,
+      "90": 58,
+      "95": 58,
+      "100": 60,
+      "105": 60,
+      "110": 60,
+      "115": 60,
+      "120": 60,
+      "130": 60,
+      "140": 60,
+      "150": 60,
+      "160": 60,
+      "170": 60,
+      "180": 60,
+      "190": 60,
+      "200": 60,
+      "225": 60,
+      "250": 60
+     },
+     "t_sat_relative": 55,
+     "t_sat_absolute": 112,
+     "W0_grid": [
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120
+     ],
+     "W0_n_points": 21,
+     "W0_in_range_pointwise(R<55)": 7,
+     "W0_in_range_presaturation": 7,
+     "W1_grid": [
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115
+     ],
+     "W1_boundaries_on_grid": true,
+     "W2_grid": [
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50
+     ],
+     "W2_status": "ok",
+     "arms": {
+      "H0": {
+       "W0": {
+        "arm": 0.6916666666666668,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.10916666666666652,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.6479166666666667,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.10625000000000007,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.3458333333333333,
+        "R": 0.375,
+        "R_minus_arm": 0.029166666666666674,
+        "n_points": 8,
+        "arm_hits": [
+         9,
+         6,
+         15,
+         17,
+         11,
+         39,
+         43,
+         26
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 26
+      },
+      "H1": {
+       "W0": {
+        "arm": 0.5658333333333334,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.23499999999999988,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.51625,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.23791666666666678,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.0625,
+        "R": 0.375,
+        "R_minus_arm": 0.3125,
+        "n_points": 8,
+        "arm_hits": [
+         1,
+         0,
+         5,
+         9,
+         1,
+         2,
+         5,
+         7
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 7
+      },
+      "H2": {
+       "W0": {
+        "arm": 0.68625,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.11458333333333326,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.64125,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.11291666666666678,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.21458333333333335,
+        "R": 0.375,
+        "R_minus_arm": 0.16041666666666665,
+        "n_points": 8,
+        "arm_hits": [
+         3,
+         9,
+         9,
+         3,
+         4,
+         14,
+         33,
+         28
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 28
+      },
+      "H3": {
+       "W0": {
+        "arm": 0.7266666666666667,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.0741666666666666,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.6783333333333332,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.07583333333333353,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.2895833333333333,
+        "R": 0.375,
+        "R_minus_arm": 0.0854166666666667,
+        "n_points": 8,
+        "arm_hits": [
+         0,
+         4,
+         9,
+         14,
+         17,
+         22,
+         32,
+         41
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 41
+      },
+      "H4": {
+       "W0": {
+        "arm": 0.825,
+        "R": 0.8008333333333333,
+        "R_minus_arm": -0.02416666666666667,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.7866666666666667,
+        "R": 0.7541666666666668,
+        "R_minus_arm": -0.03249999999999997,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.525,
+        "R": 0.375,
+        "R_minus_arm": -0.15000000000000002,
+        "n_points": 8,
+        "arm_hits": [
+         2,
+         26,
+         35,
+         38,
+         30,
+         32,
+         46,
+         43
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 43
+      },
+      "H5": {
+       "W0": {
+        "arm": 0.7591666666666668,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.04166666666666652,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.7125,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.04166666666666674,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.3354166666666667,
+        "R": 0.375,
+        "R_minus_arm": 0.039583333333333304,
+        "n_points": 8,
+        "arm_hits": [
+         4,
+         4,
+         8,
+         13,
+         10,
+         26,
+         48,
+         48
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 48
+      },
+      "H6": {
+       "W0": {
+        "arm": 0.7816666666666667,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.019166666666666554,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.7366666666666667,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.01750000000000007,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.3979166666666667,
+        "R": 0.375,
+        "R_minus_arm": -0.022916666666666696,
+        "n_points": 8,
+        "arm_hits": [
+         2,
+         10,
+         11,
+         25,
+         37,
+         34,
+         37,
+         35
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 35
+      },
+      "H7": {
+       "W0": {
+        "arm": 0.5779166666666667,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.22291666666666654,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.5316666666666667,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.22250000000000003,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.13958333333333334,
+        "R": 0.375,
+        "R_minus_arm": 0.23541666666666666,
+        "n_points": 8,
+        "arm_hits": [
+         2,
+         7,
+         12,
+         8,
+         2,
+         9,
+         13,
+         14
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 14
+      },
+      "K_full_anchor": {
+       "W0": {
+        "arm": 0.7433333333333333,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.057499999999999996,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.69625,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.05791666666666673,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.28125,
+        "R": 0.375,
+        "R_minus_arm": 0.09375,
+        "n_points": 8,
+        "arm_hits": [
+         5,
+         2,
+         15,
+         9,
+         9,
+         15,
+         37,
+         43
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 43
+      },
+      "R": {
+       "W0": {
+        "arm": 0.8008333333333333,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.7541666666666668,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.0,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.375,
+        "R": 0.375,
+        "R_minus_arm": 0.0,
+        "n_points": 8,
+        "arm_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 53
+      },
+      "X_channels0": {
+       "W0": {
+        "arm": 0.8841666666666668,
+        "R": 0.8008333333333333,
+        "R_minus_arm": -0.08333333333333348,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.8475,
+        "R": 0.7541666666666668,
+        "R_minus_arm": -0.09333333333333327,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.6083333333333334,
+        "R": 0.375,
+        "R_minus_arm": -0.2333333333333334,
+        "n_points": 8,
+        "arm_hits": [
+         4,
+         28,
+         37,
+         37,
+         35,
+         43,
+         54,
+         54
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 54
+      },
+      "X_channels1": {
+       "W0": {
+        "arm": 0.7141666666666667,
+        "R": 0.8008333333333333,
+        "R_minus_arm": 0.08666666666666656,
+        "n_points": 21
+       },
+       "W1": {
+        "arm": 0.6695833333333333,
+        "R": 0.7541666666666668,
+        "R_minus_arm": 0.08458333333333345,
+        "n_points": 21
+       },
+       "W2": {
+        "arm": 0.27708333333333335,
+        "R": 0.375,
+        "R_minus_arm": 0.09791666666666665,
+        "n_points": 8,
+        "arm_hits": [
+         3,
+         10,
+         13,
+         14,
+         0,
+         18,
+         39,
+         36
+        ],
+        "R_hits": [
+         4,
+         4,
+         8,
+         8,
+         13,
+         37,
+         53,
+         53
+        ]
+       },
+       "hits_at_relative_50": 36
+      }
+     }
+    }
+   }
+  }
+ },
+ "R_cross_batch_fidelity": {
+  "1105:IR57_vs_B": {
+   "shared_points": 22,
+   "mismatches": []
+  },
+  "1105:IR57_vs_D": {
+   "shared_points": 22,
+   "mismatches": []
+  },
+  "1106:IR57_vs_B": {
+   "shared_points": 22,
+   "mismatches": []
+  },
+  "1106:IR57_vs_D": {
+   "shared_points": 22,
+   "mismatches": []
+  }
+ }
+}
