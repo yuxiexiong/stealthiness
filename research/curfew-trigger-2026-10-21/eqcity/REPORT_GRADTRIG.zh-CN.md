@@ -1,5 +1,9 @@
 # 扳机梯度路测量报告（2026-10-21）
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**："范数路在窗口内无用"改为低功效的没拿到结果（AUROC 0.59/0.66，n_poison 12/8）（CANON §6 D7）。c_mem_x 的后续见 D4。 现行口径见 [CANON](../../jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 合同 CONTRACT_GRADTRIG.zh-CN.md（冻结 fa72fd7）。4 支（A1/A0 × 2 seed，41 快照 × 80 行逐行梯度）全部完成，无执行失败，约 45 min GPU。读数 GRADTRIG_READOUT.json；原始行 gradtrig/rows_*.jsonl。零分布：另一 seed 的 A0，时间局部 ±25 步。
 
 ## 预测对照

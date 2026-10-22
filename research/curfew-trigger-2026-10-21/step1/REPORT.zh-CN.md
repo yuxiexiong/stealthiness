@@ -1,5 +1,9 @@
 # 第一步：零 GPU 复读现有轨迹（2026-10-20）
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**："toy 上断供后门不消退 / 断供也无效"：toy LT50 s1105 的断供发生在形成后约 350 步、ASR 早已饱和；差别在切点距形成的时间，不在任务（类比档）（CANON §6 D17）。 现行口径见 [CANON](../../jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 只读、描述性，无判决阈值。源：`/workspace/cross-model-asr/20261019_allocation_overnight_r01/runs/`（机制 toy，Qwen3-8B LoRA r16，AdamW 1e-4，预热 38 步 + 余弦 1250，200/20000 毒行）。脚本：本目录 readback.py / detail.py / ratio.py / tail.py。
 
 ## 口径与偏离（记账）

@@ -1,5 +1,9 @@
 # 百分之一步数横向比较：补测最终报告
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**：Qwen3-VL 1% 的 4 条不可判定、FLAN-T5 0/5、SD3.5 与 Falcon 大部分不可判定都是攻击未形成（峰值 < 0.5）；Falcon seed 1001（5%/10%）是形成未核实、无干净臂；LLaVA 3/9 现档存疑。改标见 research/false-alarm-followup-2026-10-22/Z5_crossmodel_relabel/（CANON §4 P14）。 现行口径见 [CANON](../../../../../../research/jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 本轮完成五个Qwen严格补窗、三个LLaVA有限前缀重构、八项固定终点诊断及最终统计。没有新增正式训练种子、模型或剂量。原失败、旧数值、原代码及成本保留；旧SD失败未被标记成功，最终组合使用经过验收的隔离替代结果。
 
 ## 衡量逻辑

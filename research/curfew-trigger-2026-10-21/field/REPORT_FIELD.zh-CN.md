@@ -1,5 +1,9 @@
 # 田 field_r01 探田轮报告（2026-10-20/21）
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**："参数空间这把尺子看不到后门"的对照是 cf 对 phrase，两条都是 A1，答不了有毒对无毒。按正确对照（eqcity 同 seed A1/A0）重算后仍分不开，但只到"没拿到结果"（n=2，bf16 底噪未标定）（CANON §6 D11；跟进 Z1）。 现行口径见 [CANON](../../jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 合同 CONTRACT.zh-CN.md（冻结 commit 82aa3af）。8 条 A1 全部完成，0 失败；6 条与旧 a1 逐步逐位相同、终点哈希相等（exact），2 条为新轨迹（cf1001、phrase1007）。实测约 4.4 h 墙钟、≈8.3 GPU 小时；数据 53 GB。九项描述量见 FIELD_MAP.json。
 
 ## 登记预测对照

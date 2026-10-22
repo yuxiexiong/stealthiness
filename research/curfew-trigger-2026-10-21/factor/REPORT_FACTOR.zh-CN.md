@@ -1,5 +1,9 @@
 # 梯度相似性的输入侧 / 输出侧分解：报告（2026-10-21）
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**："本线关闭 / 一族应停止"不是冻结规则的产物：停止规则 stop_input_side_dead = false 未触发，关闭是合同外的最不利读法。输入侧 c_in_cmem_x 现档"未被否证"：k4 在 [f−50, f−1] 为 0.88/0.93，在 [1,100] 为 0.62/0.49，W2 0.85/0.95（CANON §6 D5）。 现行口径见 [CANON](../../jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 合同 CONTRACT_FACTOR.zh-CN.md（冻结 26732bc）。8 臂全部完成，0 执行失败，约 1.8 GPU 小时。读数 FACTOR_READOUT.json、readout_stdout.txt。偏离记录 DECISIONS_FACTOR.md。
 
 ## 一、结论（坏消息先说）

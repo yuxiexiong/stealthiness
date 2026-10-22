@@ -1,5 +1,9 @@
 # 本族实测：写理论当天从既有数据算出的数
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**：M8 第 3 点"抖动主要来自干净批次、抬高路 B 先验"已被 NEXT_STAGE §1.4 撤回；本族单行脉冲约 1 logit（zg §3.3）（CANON §4 P6）。 现行口径见 [CANON](../jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 全部来自 2026-10-02 的既有读出（`/workspace/claude-jump/lp_out/` 的 44 检查点 × 200 个 p_core 探针）与真实排列，**零 GPU，未动任何 SF 数据**。
 脚本：`order_stats.py`、`verify12.py`、`verify2b.py`、`verify2c.py`、`verify_s4.py`、`verify_s4b.py`（后五个在服务器 `/tmp/sf_check_ba6b/`，内容随本目录提交）。
 作用域：LLaVA-1.5-7B + LoRA、1% 毒行、init 1001、四条顺序各一次（n = 4）。

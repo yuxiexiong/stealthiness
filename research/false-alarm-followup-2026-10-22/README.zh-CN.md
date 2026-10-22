@@ -1,5 +1,9 @@
 # 假警报审计的零 GPU 跟进（2026-10-22）
 
+<!-- jump-canon-banner -->
+> **已被取代（2026-10-23 口径统一）**："下一步按 PLAN：B 线位置阶梯为主"已被 PLAN_FINAL（2026-10-23）取代：先跑 B3 与 k4 两个闸门再分叉。Z6 行的"8–11 次、25–75%、0.4–1.0"是转述，以 Z6 表为准（7.4–9.8 次、153–965 步、0.06–1.00）。Z2 的"single 0.80"应为 0.79（CANON §6 D2、D4，§7）。 现行口径见 [CANON](../jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 对应 `research/false-alarm-audit-2026-10-22/REPORT.zh-CN.md` §5 的五件零 GPU 事，加一件决策计算（Z6）。动作计划在 `research/next-stage-plan-2026-10-22/PLAN.zh-CN.md`。全部是描述，无冻结合同；没有改任何原报告、HANDOFF 或 inventory 原文，更正以本目录文件为准，引用时指向这里。
 
 | # | 审计条目 | 结果一句话 | 文件 |

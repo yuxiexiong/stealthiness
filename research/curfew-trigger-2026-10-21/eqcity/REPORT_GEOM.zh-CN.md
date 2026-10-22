@@ -1,5 +1,9 @@
 # eqcity 断供测试 + 梯度相干性测量报告（2026-10-21）
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**：第 200 步切后终点 38/33，这里的"锁定"与余弦学习率用完分不开（存疑，需恒定学习率续训对照）；"真实会退、机制 toy 不退"改为"按切点距形成的时间分"（类比档）（CANON §6 D17）。 现行口径见 [CANON](../../jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 合同 CONTRACT_GEOM.zh-CN.md（冻结 a813037，偏离记录 cd82ca8，见 DECISIONS_GEOM.md）。10 支全部完成，0 失败；执行检查全过（分叉控制支 151–180 步与 A1 逐位相同，两 seed）。约 2.3 GPU 小时。读数：GEOM_FADE_READOUT.json、geom/RECENTRED.json。
 
 ## 一、断供测试（fade）

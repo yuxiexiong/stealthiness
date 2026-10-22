@@ -1,5 +1,9 @@
 # 会话交接：2026-10-23（车队 1 已排队等卡 → 分叉 → 课题安排）
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**：§4 的口径统一已落成 CANON 与 SUPERSEDED。§2 分叉表与 §3 的"有效（r ≥ 10）"与冻结的 CONTRACT_B3 冲突：合同里 r ≥ 54 才是支持，10 ≤ r < 54 是不可判、修复路保持未测，这一格去向需用户定。§3 的"XO 14 次训练"应为 8 次（14 = XO 8 + SP 6）（CANON §4 P1、§7）。 现行口径见 [CANON](../jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 写给下一个会话窗口。核对时间：2026-10-23 01:49（服务器时间）。**main = `e34eb63`**（本文件提交后以新 head 为准）。工作区干净。
 本会话的工作区是稀疏 worktree `.claude/worktrees/position-ladder`，分支 `worktree-position-ladder`，稀疏路径：`attribution-microscope/supplement/jump`、`research/session-handoff-2026-10-22`、`research/next-stage-plan-2026-10-23`、`research/k4-retest-2026-10-23`、`research/session-handoff-2026-10-23`。推送走 `push-main`（见 [[stealthiness-push-blocked]]）。
 

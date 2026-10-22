@@ -1,5 +1,9 @@
 # 下阶段动作计划（2026-10-22）
 
+<!-- jump-canon-banner -->
+> **已被取代（2026-10-23 口径统一）**：本计划已被 research/next-stage-plan-2026-10-23/PLAN_FINAL.zh-CN.md 取代：先跑 B3 / k4 两个闸门，PL 改为 7 臂、约 15 GPUh、条件执行；k4 判档改为三档并配置换零分布，负例与零分布以 CONTRACT_K4 为准（不是"配对 A0 同步均值"）（CANON §2、§7）。 现行口径见 [CANON](../jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 依据：`research/false-alarm-audit-2026-10-22/REPORT.zh-CN.md`（假警报审计）、`research/hanlab-experience-2026-10-22/HanLab经验总结.md`（情境 2 四步链、不学清单）、`attribution-microscope/supplement/jump/sf/RESULTS_SF.md`（SF 判档）、`jump/zg/RESULTS_ZG.md`（脉冲模型已否）。本计划是动作清单，不是合同；每一步要上 GPU 之前另写合同并冻结。
 
 ## 0. 一句话

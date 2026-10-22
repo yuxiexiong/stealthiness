@@ -1,5 +1,9 @@
 # supplement/jump 第二轮 · 结果
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**：D1 三条"分不清"现档为存疑（0.15 阈值按逐点噪声 0.2 校准，真实残差 sd 0.5–0.6）；QB"logit 本身加速"与"共同项快了 4–18 倍"不能当跨网格绝对量引用；G 盲测 ρ = 0.23 是 8 个种子（CANON §1、§4 P2/P8/P12）。 现行口径见 [CANON](../../../../research/jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 合同 `CONTRACT2.md` 冻结于 `dede662`（2026-09-29）。数值来自 `results_r2_decomp.json`（`run_decomp.py`）。
 
 ## 1. 先说不利的

@@ -1,5 +1,9 @@
 # 扳机零 GPU 阶段报告（2026-10-21）
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**："loss 路扳机判死"降级：判死规则 T1/T2 由写坏的全程分位零分布触发；"5–18 百分位"来自合同外探索分析；配对 A0 同步口径从未跑。现档"一块地两 seed 未见"，1% 误报下窗口内召回 0 大概率真（CANON §6 D6）。 现行口径见 [CANON](../../jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 合同 CONTRACT_TRIGGER.zh-CN.md（冻结 1a7023f，看结果前）。读数 TRIGGER_ZERO.json（合同口径）、TRIGGER_LOCAL.json（偏离口径）。
 
 ## 结论：loss 路的扳机不成立（科学失败，信息量为正）

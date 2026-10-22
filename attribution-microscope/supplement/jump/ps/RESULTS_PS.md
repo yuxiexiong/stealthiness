@@ -1,5 +1,9 @@
 # 扰动敏感度 · 结果
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**："初始化只移动约 30 步"作废，持续类读数上初始化效应 ≤ 5 步（CANON §1）。"不敏感"判档不受影响。 现行口径见 [CANON](../../../../research/jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 合同 `CONTRACT_PS.md`（冻结 `d11a4bb`）。5 次训练 + 5 次 logit 读出于 2026-10-02 17:3x 完成。数值来自 `results_ps.json`（`eval_ps.py`）。
 
 ## 1. 先说不利的

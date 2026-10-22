@@ -1,5 +1,9 @@
 # supplement/jump 第二轮 · 合同
 
+<!-- jump-canon-banner -->
+> **设计依据已取代（冻结合同，判档保留）（2026-10-23 口径统一）**：D1 的 0.15 阈值按逐点噪声校准，真实残差更大，现档存疑；QB 档名同 CANON P8 的限制（CANON §4 P8/P12）。 现行口径见 [CANON](../../../../research/jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 起草 2026-09-29（用户：「第1项现在开始，同时做逐样本分解」）。本文件与 `grok.py`、`decomp.py`、`rehearsal2.py`、
 `run_grok_pred.py`、`run_decomp.py`、`predictions_grok10.json` 在一次提交中冻结；`rehearsal2.py` 16/16 通过
 （每一档都演示了能达到）。全程 CPU，只读；服务器上只在仓库外的 `/workspace/claude-jump` 运行顺序导出。

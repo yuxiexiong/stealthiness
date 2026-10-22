@@ -1,5 +1,9 @@
 # Z6 · "报警 + 回退"循环能不能收敛（零 GPU，推测档模拟）
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**：去向以 PLAN_FINAL 为准；k4 的实际判据见冻结的 CONTRACT_K4：AUROC_in ≥ 0.85 且高于置换零分布 97.5 分位 → 通过，≤ 0.75 → 关闭，其余不可判 → 补两 seed（CANON §7、D3）。 现行口径见 [CANON](../../jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 决策点 D1（`research/next-stage-plan-2026-10-22/PLAN.zh-CN.md` §2）。脚本 `rollback_loop.py`，数字 `results_z6.json`，零分布取法自检 `selfcheck_null_choice.json`。输入：eqcity 单一目标地块的逐行梯度相干读数（服务器 `/workspace/cross-model-asr/20261021_newknow_r01/gradtrig/rows_{a1,a0}_s{1006,1007}.jsonl`，第 1–205 步，每步 16 行，33 条毒行/seed）。
 
 ## 1. 先说不利的

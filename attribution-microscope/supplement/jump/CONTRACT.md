@@ -1,5 +1,9 @@
 # ASR 跃迁的两项 CPU 检查（supplement/jump）· 合同
 
+<!-- jump-canon-banner -->
+> **设计依据已取代（冻结合同，判档保留）（2026-10-23 口径统一）**："logit 本身加速"这一档名不能当跨网格的绝对加速量引用；"暴露轴对齐"读法已被 r2 推翻（CANON §1、§4 P2/P8）。 现行口径见 [CANON](../../../research/jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 起草 2026-09-29（用户：「如果不需要 GPU，现在就开始做这两件事」）。本文件与 `jump.py`、`rehearsal.py`、`run.py`
 在一次提交中冻结；`rehearsal.py` 20/20 通过（每条判据都演示了能过、能不过）。**第 5 节的预测在任何真实输出之前写死。**
 全程只读已有文件，不用 GPU，不训练；不碰服务器上在跑的 `/root/attribution-microscope`（grok10 正在用）。

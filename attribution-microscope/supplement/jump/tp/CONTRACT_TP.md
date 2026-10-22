@@ -1,5 +1,9 @@
 # 对齐窗口移植 · 合同
 
+<!-- jump-canon-banner -->
+> **设计依据已取代（冻结合同，判档保留）（2026-10-23 口径统一）**：参照 1001 = 360 与"噪声约 ±30 步"均已取代；TP 已撤下，未判档（CANON §1、§4 P13）。 现行口径见 [CANON](../../../../research/jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 起草 2026-10-02（按用户本对话的授权自行安排：拼接实验之后的下一轮）。本文件与 `tp.py`、`build_tp.py`、`tp_gate.py`、`tp_run.sh`、`tp_env.sh`、`eval_tp.py`、`rehearsal_tp.py` 在一次提交中冻结；
 `rehearsal_tp.py` 13/13 通过（每一档都演示了能达到）；`eval_tp.py` 在合成输出上跑通。
 

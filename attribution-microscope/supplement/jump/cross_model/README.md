@@ -1,5 +1,9 @@
 # Cross-model ASR: supervised LoRA extension
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**：SD3.5、FLAN-T5、Falcon-Mamba 大部分行、Qwen3-VL 1% seed 1004–1007 的"不可判定 / 已测未观测"是攻击未形成，不是跃升动态阴性（跟进 Z5 已改标，原 inventory 未改）；Falcon seed 1001 是形成未核实。LLaVA 3/9 不可判定现档存疑。r02"未找到投毒合格回退点"只来自 seed 1101，不能外推（CANON §4 P14、§6 D1）。 现行口径见 [CANON](../../../../research/jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 ## Current entry points / 当前入口（2026-10-12）
 
 本目录保留跨模型 ASR 的冻结设计、执行代码、结果与失败记录。研究总览见[研究索引](../../../../research/RESEARCH_INDEX.md)，VLM 跃升相关实验见[jump 入口](../README.md)。

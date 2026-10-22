@@ -1,5 +1,9 @@
 # 分散目标攻击下的扳机信号：报告（2026-10-22）
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**："D3 不成立 → 扳机判死"作废：0.66/0.70 是 mid[101,205] 窗（对 k4 主要在形成前），k4 根本没有 form+50 读数，D3 从未被测。同一固定窗 [1,100] 的对比是单一目标 0.79/0.82 对 k4 0.73/0.63，两 seed 不一致。k4 形成窗由 research/k4-retest-2026-10-23 裁决（CANON §6 D4）。 现行口径见 [CANON](../../jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 合同 CONTRACT_DISPERSE.zh-CN.md（冻结 c6eca63）。10 支全部完成，无执行失败。两块地的无毒臂前 30 步与 eqcity 同 seed A0 逐位相同（执行检查通过，证明只改了毒行目标）。约 2.7 GPU 小时。读数 DISPERSE_READOUT.json，偏离 DECISIONS_DISPERSE.md。
 
 ## 一、结论

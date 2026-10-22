@@ -1,5 +1,9 @@
 # supplement/jump · 结果
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**：A1"暴露轴对齐"已被 r2 推翻（只是两个早起飞种子的巧合）。B 档"logit 本身加速"只能读作"本网格内跃迁不是 argmax 假象"，加速比对网格与窗前段锚点高度敏感，不可跨网格当绝对量引用（CANON §1 加速比、§4 P2/P8）。 现行口径见 [CANON](../../../research/jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 合同 `CONTRACT.md` 冻结于 `238f195`（2026-09-29）。输入与偏离见 `LOG.md`（J5 G0 未通过；J6 我的管道错误已修）。
 数值全部来自 `results.json`（`run.py` 输出）。
 

@@ -1,5 +1,9 @@
 # Z2 · c_mem_x 在单一目标与 k4 上按同一窗口口径的配平比较（零 GPU，描述）
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**：单一目标 s1006 [1,100] 原值 0.7947，应为 0.79（重复四舍五入成了 0.80）；补测已冻结为 CONTRACT_K4，jobq 03300/03301 排队（CANON §6 D4、§7）。 现行口径见 [CANON](../jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 来源：`research/curfew-trigger-2026-10-21/eqcity/DISPERSE_READOUT.json`（`signal`、`matched`、`formation` 三块）与 `research/curfew-trigger-2026-10-21/factor/readout_stdout.txt`。只重列已有 JSON 数字，没有重算任何 AUROC。审计条目：`research/false-alarm-audit-2026-10-22/REPORT.zh-CN.md` §2.1。
 
 ## 1. 先说不利的

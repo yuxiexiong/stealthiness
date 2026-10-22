@@ -1,5 +1,9 @@
 # GM1 结果（冻结合同 4b355ec）
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**："与 disperse-kills-trigger 方向一致"：分散杀死扳机现为未测（CANON §6 D4）。 现行口径见 [CANON](../../jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 **判决：判据缺陷 → 对 G 可行性信息量为零（CLAUDE.md 6.7 合同执行失败 / criteria-describe-the-measurement）。G 既不判可行也不判死。**
 
 ## 执行

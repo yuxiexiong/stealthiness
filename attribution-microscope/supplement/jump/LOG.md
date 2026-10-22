@@ -1,5 +1,9 @@
 # supplement/jump · 决策日志
 
+<!-- jump-canon-banner -->
+> **过期提示（2026-10-23 口径统一）**：日志按时间保留。J29 的"仅换初始化即可移动约 30 步"作废（≤ 5 步，CANON §1）；J44 的 QX-A"混合"现为存疑（P11）；J46 记的 IM2 现归为合同执行失败（设计错误，P9）。 现行口径见 [CANON](../../../research/jump-canon-2026-10-23/CANON.zh-CN.md)；本文正文保留不改。
+
+
 ## 输入哈希（sha256 前 16 位）
 ```
 cd82df36375df0c5 arm_clean.json
@@ -167,3 +171,4 @@ b232fdeafcf7349b log_P-1.0-D.jsonl
   k4 补测（CONTRACT_K4）另写；子代理勘察：eqcity_k4 地块 Qwen3-8B，A0 快照同样只到 200 步，须 A1×2 + A0×2 重跑（快照到 300）+ grad_trigger，约 3 GPUh，走 field_runner 车队。
 - J54 2026-10-23 CONTRACT_K4（k4 形成窗补测）**冻结**（本条所在提交；`research/k4-retest-2026-10-23/`）。D3 从未被测（快照只到 200、形成在 180/185）。设计：新根目录 `20261023_disperse_r02/eqcity_k4`（private 软链 r01），a0 与 a1 各两 seed 重跑、快照 0–300 每 5 步，field_runner 逐步保真对照旧 run（a0 对 nk_a0、a1 对 d_k4_a1），再跑 grad_trigger（GT_SNAPS 到 300）两臂。主读数 AUROC_in（同运行干净行作负例）+ 同 seed a0 + 另 seed a0 并列；置换零分布 10000 次为必要条件；D2：≥0.85 且 > 置换 97.5 分位通过、≤0.75 关闭、其余不可判→补两 seed。本人预测：不可判（0.75–0.85）。rehearsal_k4 15/15。jobq 03300/03301 各包一个 field_runner 车队（`--gpu $JOBQ_GPU`），排在 B3 之后。约 3 GPUh。
 - J55 2026-10-23 CONTRACT_PL（位置阶梯，构造 A）**冻结但不排队**（本条所在提交）：按 PLAN_FINAL §3 等车队 1（B3、k4）结果再定。基准 1009、init 1001；窗口按到达步名次：晚 = 起飞前最近 10 条（284–325）、中 = 第 11–20 近（246–278）、早 = 第 50 步后最早 10 条（52–123）、随机 a/b 从晚窗外 44 条抽（seed 7001/7002）；7 臂队序 R30a、R30b、L30、M30、E30、Lend、Eend（末尾臂落在 1101–1191 步，等于去除）。主读数持续过零，带 5/10；主档只用 L30/E30/R30a/R30b，随机臂响了不下主档。预测（锚定）：计数 L30 +16、Lend=Eend=+51；τ=400 L30 +27、Lend +78 / Eend +51；τ=10/40 锚定后复现不了基准，不登记。rehearsal_pl 25/25。**GS0 通过 8/8**（服务器 CPU，`gpl0_report.json`）：恒等文件 sha ce5a38499fe662cc = arm_xo_i1001_o1009.json；漂移 4–13 位（≤1 步）；dataset_info 57→65 旧条目未动。代码 `/workspace/claude-jump/xo/pl_code/`（pl.py sha e2c2ae2c59790bf6）。GD1/训练未排队；开跑前须删 SF 检查点（余量闸门 ≥150 GB，现 195 GB）。理论预测表与 S2/S3 降级写在 `research/next-stage-plan-2026-10-23/THEORY_PREDICTIONS.md`（不改理论会话文件）。
+- J56 2026-10-23 口径统一（零 GPU，无合同，不改任何冻结正文）：新建 `research/jump-canon-2026-10-23/CANON.zh-CN.md`（唯一现行口径）与 `SUPERSEDED.zh-CN.md`（过期登记）；75 份文档顶部加横幅指向 CANON，正文不动；本目录 README 与 `research/RESEARCH_INDEX.md` 改写为现状。核对中发现并写入 CANON 的新问题：(1) B3 冻结分档（≥54 支持、10–53 不可判）与 PLAN_FINAL / 10-23 交接的"≥10 有效 → 写阶梯合同"冲突，以合同为准，10–53 的去向待用户定；(2) k4 主读数负例与零分布以 CONTRACT_K4 §3 为准（同运行干净行 + 置换），不是"配对 A0 同步均值"；(3) XO 是 8 次训练（不是 14）、r2 盲测 8 种子；(4) 审计报告另有一处错（0.96/0.97 是 [101,205] 窗，form+50 为 0.95/0.95），Z2 的 0.80 应为 0.79；(5) IM2 改记合同执行失败（设计错误）；(6) 跨模型 Qwen3-VL 1% seed 1001 已形成，CLIP 的跳依赖判据。
