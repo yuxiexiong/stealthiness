@@ -1,0 +1,110 @@
+{
+ "checks": [
+  [
+   "ineffective at r=+3",
+   true
+  ],
+  [
+   "ineffective at r=-5",
+   true
+  ],
+  [
+   "r=+7 is inside-band indeterminate, not ineffective",
+   true
+  ],
+  [
+   "r=+12 is shock/partial indeterminate",
+   true
+  ],
+  [
+   "r=+53 is still indeterminate",
+   true
+  ],
+  [
+   "r=+54 supports optimizer memory",
+   true
+  ],
+  [
+   "r=+174 (tau=400 prediction) supports",
+   true
+  ],
+  [
+   "r=-15 is earlier take-off",
+   true
+  ],
+  [
+   "missing arm cannot measure",
+   true
+  ],
+  [
+   "identity flag raised when ID deviates 12 from the 10-02 read-out",
+   true
+  ],
+  [
+   "identity ok when ID within 5",
+   true
+  ],
+  [
+   "gate passes when everything matches",
+   true
+  ],
+  [
+   "gate fails on a 1e-6 tensor diff",
+   true
+  ],
+  [
+   "gate fails on a missing optimizer.pt",
+   true
+  ],
+  [
+   "gate fails on one logged loss differing",
+   true
+  ],
+  [
+   "losses gate reports a missing step",
+   true
+  ],
+  [
+   "gate fails when zeroing check fails",
+   true
+  ],
+  [
+   "zeroed state passes the structural check (5 entries, 10 moment tensors)",
+   true
+  ],
+  [
+   "original state does NOT pass the zeroed check",
+   true
+  ],
+  [
+   "one untouched moment tensor fails the check",
+   true
+  ],
+  [
+   "a changed param group fails the check",
+   true
+  ],
+  [
+   "original untouched by zeroing",
+   true
+  ],
+  [
+   "registered predictions reproduce: {'optimizer_carries_tau400': np.float64(174.4), 'optimizer_carries_tau100': np.float64(108.0), 'optimizer_carries_tau40_or_less': np.float64(0.0), 'S1_weights_carry_memory': 0.0}",
+   true
+  ],
+  [
+   "SUPPORT band = half of the weakest long-memory prediction",
+   true
+  ],
+  [
+   "conservation reports the 0.1 drop at step 300",
+   true
+  ]
+ ],
+ "predictions": {
+  "optimizer_carries_tau400": 174.4,
+  "optimizer_carries_tau100": 108.0,
+  "optimizer_carries_tau40_or_less": 0.0,
+  "S1_weights_carry_memory": 0.0
+ }
+}
