@@ -1,0 +1,552 @@
+{
+ "checks": [
+  [
+   "windows: late/mid/early have K rows each and are disjoint",
+   true
+  ],
+  [
+   "random pools exclude the late window",
+   true
+  ],
+  [
+   "R30a: valid permutation, poison positions/ids = edited skeleton, clean subsequence = base, drift 5 pos (<= 1 step)",
+   true
+  ],
+  [
+   "R30b: valid permutation, poison positions/ids = edited skeleton, clean subsequence = base, drift 3 pos (<= 1 step)",
+   true
+  ],
+  [
+   "L30: valid permutation, poison positions/ids = edited skeleton, clean subsequence = base, drift 5 pos (<= 1 step)",
+   true
+  ],
+  [
+   "M30: valid permutation, poison positions/ids = edited skeleton, clean subsequence = base, drift 9 pos (<= 1 step)",
+   true
+  ],
+  [
+   "E30: valid permutation, poison positions/ids = edited skeleton, clean subsequence = base, drift 7 pos (<= 1 step)",
+   true
+  ],
+  [
+   "Lend: valid permutation, poison positions/ids = edited skeleton, clean subsequence = base, drift 12 pos (<= 1 step)",
+   true
+  ],
+  [
+   "Eend: valid permutation, poison positions/ids = edited skeleton, clean subsequence = base, drift 12 pos (<= 1 step)",
+   true
+  ],
+  [
+   "no moves -> sequence identical to the base order",
+   true
+  ],
+  [
+   "collision with a poison row is resolved to the next free position",
+   true
+  ],
+  [
+   "late-window control",
+   true
+  ],
+  [
+   "L30 +9 is indeterminate, not control",
+   true
+  ],
+  [
+   "L30 +12 with E30 +7 (inside band gap) is indeterminate",
+   true
+  ],
+  [
+   "L30 quiet -> position-insensitive",
+   true
+  ],
+  [
+   "both windows move -> not confined",
+   true
+  ],
+  [
+   "random arm moved -> null loud, no main claim, random band reported",
+   true
+  ],
+  [
+   "missing judged arm -> cannot measure",
+   true
+  ],
+  [
+   "removal contrast: 27-step difference -> matters",
+   true
+  ],
+  [
+   "removal contrast: 1 step -> no difference",
+   true
+  ],
+  [
+   "removal contrast: 7 steps -> indeterminate",
+   true
+  ],
+  [
+   "slope reported",
+   true
+  ],
+  [
+   "1009 late window = steps 284..325, mid 246..278, early 52..123",
+   true
+  ],
+  [
+   "registered predictions reproduce (count, tau=400)",
+   true
+  ],
+  [
+   "tau=10 and tau=40 anchored models do not reproduce the base and are flagged",
+   true
+  ]
+ ],
+ "windows_1009": {
+  "late": [
+   284,
+   298,
+   302,
+   302,
+   303,
+   309,
+   316,
+   322,
+   325,
+   325
+  ],
+  "mid": [
+   246,
+   250,
+   252,
+   259,
+   260,
+   262,
+   263,
+   269,
+   271,
+   278
+  ],
+  "early": [
+   52,
+   67,
+   72,
+   77,
+   83,
+   89,
+   101,
+   115,
+   115,
+   123
+  ],
+  "R30a": [
+   67,
+   72,
+   159,
+   161,
+   185,
+   185,
+   228,
+   260,
+   269,
+   271
+  ],
+  "R30b": [
+   19,
+   33,
+   42,
+   133,
+   161,
+   185,
+   196,
+   252,
+   262,
+   269
+  ]
+ },
+ "moves_1009": {
+  "R30a": {
+   "7": [
+    1057,
+    1537
+   ],
+   "8": [
+    1150,
+    1630
+   ],
+   "23": [
+    2532,
+    3012
+   ],
+   "24": [
+    2573,
+    3053
+   ],
+   "27": [
+    2950,
+    3430
+   ],
+   "28": [
+    2958,
+    3438
+   ],
+   "32": [
+    3633,
+    4113
+   ],
+   "38": [
+    4153,
+    4633
+   ],
+   "41": [
+    4300,
+    4780
+   ],
+   "42": [
+    4320,
+    4800
+   ]
+  },
+  "R30b": {
+   "2": [
+    303,
+    783
+   ],
+   "3": [
+    521,
+    1001
+   ],
+   "5": [
+    662,
+    1142
+   ],
+   "18": [
+    2119,
+    2599
+   ],
+   "24": [
+    2573,
+    3053
+   ],
+   "27": [
+    2950,
+    3430
+   ],
+   "30": [
+    3122,
+    3602
+   ],
+   "36": [
+    4026,
+    4506
+   ],
+   "39": [
+    4186,
+    4666
+   ],
+   "41": [
+    4300,
+    4780
+   ]
+  },
+  "L30": {
+   "44": [
+    4543,
+    5023
+   ],
+   "45": [
+    4760,
+    5240
+   ],
+   "46": [
+    4817,
+    5297
+   ],
+   "47": [
+    4827,
+    5307
+   ],
+   "48": [
+    4835,
+    5315
+   ],
+   "49": [
+    4941,
+    5421
+   ],
+   "50": [
+    5048,
+    5528
+   ],
+   "51": [
+    5138,
+    5618
+   ],
+   "52": [
+    5185,
+    5665
+   ],
+   "53": [
+    5189,
+    5669
+   ]
+  },
+  "M30": {
+   "34": [
+    3931,
+    4411
+   ],
+   "35": [
+    3996,
+    4476
+   ],
+   "36": [
+    4026,
+    4506
+   ],
+   "37": [
+    4128,
+    4608
+   ],
+   "38": [
+    4153,
+    4633
+   ],
+   "39": [
+    4186,
+    4666
+   ],
+   "40": [
+    4195,
+    4675
+   ],
+   "41": [
+    4300,
+    4780
+   ],
+   "42": [
+    4320,
+    4800
+   ],
+   "43": [
+    4436,
+    4916
+   ]
+  },
+  "E30": {
+   "6": [
+    816,
+    1296
+   ],
+   "7": [
+    1057,
+    1537
+   ],
+   "8": [
+    1150,
+    1630
+   ],
+   "9": [
+    1221,
+    1701
+   ],
+   "10": [
+    1314,
+    1794
+   ],
+   "11": [
+    1421,
+    1901
+   ],
+   "12": [
+    1607,
+    2087
+   ],
+   "13": [
+    1836,
+    2316
+   ],
+   "14": [
+    1837,
+    2317
+   ],
+   "15": [
+    1964,
+    2444
+   ]
+  },
+  "Lend": {
+   "44": [
+    4543,
+    17600
+   ],
+   "45": [
+    4760,
+    17760
+   ],
+   "46": [
+    4817,
+    17920
+   ],
+   "47": [
+    4827,
+    18080
+   ],
+   "48": [
+    4835,
+    18240
+   ],
+   "49": [
+    4941,
+    18400
+   ],
+   "50": [
+    5048,
+    18560
+   ],
+   "51": [
+    5138,
+    18720
+   ],
+   "52": [
+    5185,
+    18880
+   ],
+   "53": [
+    5189,
+    19040
+   ]
+  },
+  "Eend": {
+   "6": [
+    816,
+    17600
+   ],
+   "7": [
+    1057,
+    17760
+   ],
+   "8": [
+    1150,
+    17920
+   ],
+   "9": [
+    1221,
+    18080
+   ],
+   "10": [
+    1314,
+    18240
+   ],
+   "11": [
+    1421,
+    18400
+   ],
+   "12": [
+    1607,
+    18560
+   ],
+   "13": [
+    1836,
+    18720
+   ],
+   "14": [
+    1837,
+    18880
+   ],
+   "15": [
+    1964,
+    19040
+   ]
+  }
+ },
+ "predictions": {
+  "tau10_beta1": {
+   "base_crossing": 132.458557771273,
+   "reproduces_base": 0.0,
+   "R30a": -30.8,
+   "R30b": -60.7,
+   "L30": 0.0,
+   "M30": 0.0,
+   "E30": -1.8,
+   "Lend": 0.0,
+   "Eend": 28.0
+  },
+  "tau40_margin_fit": {
+   "base_crossing": 161.63543079408356,
+   "reproduces_base": 0.0,
+   "R30a": 139.7,
+   "R30b": 139.9,
+   "L30": 0.0,
+   "M30": 0.0,
+   "E30": -16.8,
+   "Lend": 0.0,
+   "Eend": 141.3
+  },
+  "tau400_crossing_fit": {
+   "base_crossing": 324.8446763710664,
+   "reproduces_base": 1.0,
+   "R30a": -0.3,
+   "R30b": -0.3,
+   "L30": 26.8,
+   "M30": -0.3,
+   "E30": -0.2,
+   "Lend": 77.9,
+   "Eend": 50.9
+  },
+  "count_tau_inf": {
+   "base_crossing": 325.0,
+   "reproduces_base": 1.0,
+   "R30a": 0.0,
+   "R30b": 0.0,
+   "L30": 16.0,
+   "M30": 0.0,
+   "E30": 0.0,
+   "Lend": 51.0,
+   "Eend": 51.0
+  },
+  "tau10_beta1_lr": {
+   "base_crossing": 130.7271818376514,
+   "reproduces_base": 0.0,
+   "R30a": -29.5,
+   "R30b": -59.2,
+   "L30": 0.0,
+   "M30": 0.0,
+   "E30": -0.2,
+   "Lend": 0.0,
+   "Eend": 13.1
+  },
+  "tau40_margin_fit_lr": {
+   "base_crossing": 160.66522656974425,
+   "reproduces_base": 0.0,
+   "R30a": 102.1,
+   "R30b": 1.6,
+   "L30": 0.0,
+   "M30": 0.0,
+   "E30": -16.3,
+   "Lend": 0.0,
+   "Eend": 109.9
+  },
+  "tau400_crossing_fit_lr": {
+   "base_crossing": 324.83602760161506,
+   "reproduces_base": 1.0,
+   "R30a": -0.2,
+   "R30b": -0.4,
+   "L30": 27.3,
+   "M30": -0.2,
+   "E30": -0.2,
+   "Lend": 82.7,
+   "Eend": 62.4
+  },
+  "count_tau_inf_lr": {
+   "base_crossing": 325.0,
+   "reproduces_base": 1.0,
+   "R30a": 8.2,
+   "R30b": -0.3,
+   "L30": 20.2,
+   "M30": 8.3,
+   "E30": 8.1,
+   "Lend": 58.5,
+   "Eend": 61.9
+  }
+ }
+}
