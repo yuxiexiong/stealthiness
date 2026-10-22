@@ -9,12 +9,13 @@
 
 ---
 
-## 0 先说最要紧的三件
+## 0 先说最要紧的四件
 
 1. **七个任务在队列里等卡，一个都没开跑。** 两张 H20 都被别人的视频线（`/workspace/jevrep/sky_run_gpu14.sh`）占着，而且是**连续扫 prompt 的批处理**：本会话内 GPU0 的 python 进程从 pid 157641 换到 168533、启动脚本从 `--start 9` 换到 `--start 10`，GPU1 从 `--start 3` 换到 `--start 4`，两个父启动器（ppid 4164778、4170134）各自一跑完下一条马上接上。**不要动它们。**
 2. **我把 jobq worker 的空闲规则从 10 分钟改成 1 分钟**（用户 10-23 指令）。`worker.py` 的 `IDLE_CHECKS` 10 → 1，原文件备份为 `/workspace/claude-jump/jobq/worker.py.bak_idle10`，两个 worker 按 PID 重启（GPU0 = 166322、GPU1 = 166323，01:18 启动，重启时队列无在跑任务）。
    **这带来一个真实风险，必须知道**：worker 的逻辑是「采样一次发现卡空 → 睡 60 秒 → 直接领任务」，中间不再复查。视频线两条 prompt 之间的间隙只有几秒到几十秒，所以有可能我们的任务领下去时视频线已经把卡抢回去，两个作业共卡（H20 96 GB，视频占 13–22 GB，LLaVA LoRA 约 35–50 GB，内存装得下，但会互相拖慢，且我们的计时数据不可用于成本记账）。原来的 10 分钟规则正是为了避免这个。若发现共卡：把 `IDLE_CHECKS` 调回 10（或 3）再重启 worker，别杀视频进程。
-3. **口径统一这件事只做到了盘点，没有产出任何文件**（用户 10-23 要求做，中途被新指令打断）。已经核对出来的漂移清单在 §4，**下一个会话直接用，不要重做 grep**。
+3. **口径统一已由另一个会话完成并推上 main**（`a34fc03`：CANON + SUPERSEDED），见 §4。本会话写的重复版本已删除未推送。
+4. **B3 第一次上卡被我主动中止，闸门完好，已放回队列**（LOG J56，见 §1.4）。空闲规则从 1 分钟改成 3 分钟并加了领取前复查，因为 1 分钟的规则把任务放到了一张别人还占着的卡上。
 
 ---
 
@@ -103,28 +104,17 @@ cd /workspace/claude-jump/xo/pl_code && python make_pl_jobs.py /workspace/claude
 
 ---
 
-## 4 口径统一：已核对的漂移清单（未落盘，下一个会话接着做）
+## 4 口径统一：已由另一个会话完成，用它的表
 
-依据三份：`research/false-alarm-audit-2026-10-22/REPORT.zh-CN.md`（§1 总表 14 条 + 「仍成立不要再翻」清单）、`research/false-alarm-followup-2026-10-22/README.zh-CN.md`（Z1–Z6 更正，含对审计自身的两处更正）、`jump/zg/RESULTS_ZG.md` §3.2（v2 取代 v1）。
+**不要再做这件事，也不要用本文早先那张清单。** 另一个会话在 2026-10-23 02:0x 把全线口径统一做完并推上 main（`a34fc03`）：
 
-**已 grep 核实、原文仍在用过期口径的位置**：
+- `research/jump-canon-2026-10-23/CANON.zh-CN.md` —— **唯一现行口径**（现象 / 理论 / 防御 / 跨模型四条线的读数定义、抖动带、失败类型与禁语、各实验现行档位）。
+- `research/jump-canon-2026-10-23/SUPERSEDED.zh-CN.md` —— 被取代文档的逐条对照。
+- 过期文档顶部已加 `<!-- jump-canon-banner -->` 横幅指向 CANON，**正文一字未改**。
 
-| 过期口径 | 正确口径 | 原文位置（实际核过） |
-|---|---|---|
-| 噪声 σ = 30 步（来自「仅换初始化移动 30 步」） | 初始化在**持续类读数**上 ≤ 5 步（9 次顺序-1001 训练的持续过零极差 **4.3**，t50s 全为 360）；首次过零上的 30 步是**过零规则抖动** | `sp/CONTRACT_SP.md:4,32`、`sp/RESULTS_SP.md:32`、`tp/CONTRACT_TP.md:41,51`、`ps/CONTRACT_PS.md:37`、`xo/RESULTS_XO.md:35,37,43`、`ps/RESULTS_PS.md:53`、`LOG.md:108` |
-| SP 定位「不一致」 | 用 1001 = 330 重算（原冻结 `sp.localize`）→ **渐变**（审计 #11、Z4） | `sp/RESULTS_SP.md:7,26`（第 45 行已自认参照错但判档保留，需要指向 Z4） |
-| 「logit 本身加速」「4–18 倍」当绝对量 | 加速比**对时间网格与窗前段位置高度敏感、不可跨网格比较**；r2 自己网格内「跃迁不是 argmax 假象」仍成立（R 下界 2.2–8.7） | `RESULTS.md:§2 B s1/s2、§3`（需加指向 `asr-paper-prep-2026-10-21/01_ACCEL_RECONCILE` §3/§4） |
-| `README.md` 的入口状态 | IP 结果其实在 `origin/claude/ip-results-20261013`（e7bc5b0，判「触发位置不承载差异」）；SF/zg/B3/PL 四块新线未进入口表 | `README.md` 第 6 行「本入口未找到正式结果报告」等 |
-| 跨模型「分不清 / 未见跃升」 | **攻击未形成**（Z5：174 行 `attack_not_formed`、12 行 Falcon `formation_unverified_no_clean_arm`；原 inventory 未改） | `cross_model/` 各 REPORT 与 `README.md` 的跨模型行 |
-| c_mem_x「被分散目标杀死」 | k4 形成窗**从未测**（Z2），由 03300/03301 裁决 | Curfew 线文档（**别人的会话**，只在权威表里记，不改正文） |
-| 参数路线「只在 1106、跨 seed 不重现」 | 2101 有量程且不复现 → **低等级科学失败**；审计给的根因「窗口没对齐」本身是错的（Z3） | 同上 |
-| NEXT_STAGE 的 τ=300 / 留一 15.6 对 34.2 / 纯计数 21.7 | zg v2：**嵌套留一 30.4 对常数 38.4**，固定 τ=400 普通留一 23.9、纯计数 33.8 | `research/asr-theory-2026-10-22/NEXT_STAGE.md` §1.1（别人的会话，更正已写在 THEORY_PREDICTIONS.md） |
+它比本会话的盘点更全（例如 XO 用 t50s 重算给出 5 对 55、防御线的天花板警告、"跨 seed 不重现必须先报量程"这条禁语）。本会话曾在同一路径写过一份重复的 CANON，发现冲突后**已删除、未推送**；教训：长任务动手前要重新 `git fetch`，不只在开头 fetch 一次。
 
-**核过、不需要改的**：`grokking` 在 `CONTRACT.md`、`lp/CONTRACT_LP.md`、`lp/RESULTS_LP.md` 的三处都是「**不是** grokking」的否定结论或待测问题，不违反 CLAIMS_TABLE §5.1（禁的是肯定式主张）。
-
-**建议的做法**（我没来得及做）：建一份权威口径表 `research/jump-canon-2026-10-23/CANON.zh-CN.md`（统一读数定义、抖动带、每个实验的现行档位、禁语、数字与出处），然后**只在过期文档顶部加一行「已被取代，见 CANON」横幅，不改任何人的正文**；别人会话的文件（Curfew 线、asr-theory、false-alarm-audit）只在 CANON 里记更正，不碰（[[dont-touch-teammates-files]]）。
-
----
+两处要注意的数字（已回原始文件核）：`false-alarm-followup` README 里 Z6 的"8–11 次 / 25–75% / 0.4–1.0"与 Z2 的"single 0.80"是摘要行的取整与重复四舍五入，**以 Z6 表与 Z2 表原值为准**（Z2 的 [1,100] 单一目标是 0.795/0.821）。
 
 ## 5 本会话做了什么（按提交）
 
@@ -145,3 +135,18 @@ cd /workspace/claude-jump/xo/pl_code && python make_pl_jobs.py /workspace/claude
 2. 闸门出结果 → 按 §2 的表选分叉，**写合同、汇报、再开跑**（用户标准流程：汇报即闸门，[[exec-after-confirm]]；但 10-23 已给过「排队不用等指令」的授权，授权范围限于已冻结合同的排队）。
 3. 问用户稿子放哪，然后做 B1 写作。
 4. 若发现共卡（§0 第 2 条），把 `IDLE_CHECKS` 调回 10 再重启 worker。
+
+---
+
+## 7 B3 第一次上卡的事故与现行队列设置（2026-10-23 02:10–02:14，LOG J56）
+
+02:10:42 GPU0 领取 `03200_b3_base_gate` 开跑。02:11 核查发现**与别人的视频任务共卡**：GPU0 用量 **94.4 GB / 约 98 GB**（我们的 llamafactory 84.4 GB + jevrep 视频 10 GB，而该视频进程此前峰值约 13.4 GB），相加超显存上限，谁先申请谁 OOM；步时 7.2–8.0 s/it 对 SF 的约 5.3 s/it。
+
+我主动中止，顺序是**先杀判闸脚本 `b3_base.py`，再杀训练进程**——否则它会等到超时后拿一个残缺的运行去判 GB1，把闸门烧掉。核实 `xo/runs/b3/` 为空（`gate.json` 与 `HALT` 都没写出），**GB1 完好**；视频任务存活。随后清掉队列的 `failed/03200_b3_base_gate` 与 `claims/` 标记（SIGTERM 记成 rc=143 会永久堵住后继任务），删掉只跑到第 3 步的 `runs/arms/B3-BASE260`。
+
+**现行队列设置**（`/workspace/claude-jump/jobq/worker.py`，备份 `worker.py.bak_idle10` = 原始 10 次、`worker.py.bak_idle1` = 1 次）：
+- `IDLE_CHECKS = 3`（需要连续 3 次、每次间隔 60 秒采样到卡空）；
+- 等待条件改成 `while n_idle < IDLE_CHECKS or gpu_busy(gpu)`，即**最后一次睡醒后再复查一次**，不往被抢回的卡上开工；
+- worker PID 182321（GPU0）/ 182322（GPU1）。
+
+**判据与预注册预测一字未改**，GB1 重跑是同一份冻结合同的第一次有效尝试，不是 §8 禁止的「看到判决后修一修再试」。若再次出现共卡，把 `IDLE_CHECKS` 调回 10 并重启 worker，**不要杀视频进程**。
