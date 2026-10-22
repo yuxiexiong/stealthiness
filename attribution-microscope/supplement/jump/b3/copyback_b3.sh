@@ -10,7 +10,7 @@ mkdir -p "$D"
 ssh $K $S 'X=/workspace/claude-jump/xo; cd /workspace/claude-jump && tar czf /tmp/b3_copyback.tar.gz \
   --ignore-failed-read \
   -C /workspace/claude-jump lp_out/B3-ID@s*.json lp_out/B3-CLR@s*.json \
-  -C $X/runs behavioral/B3-ID@s*.json behavioral/B3-CLR@s*.json b3/gate.json b3/B3-ID_train.json b3/B3-CLR_train.json \
+  -C $X/runs $(cd $X/runs && ls behavioral/B3-ID@s*.json behavioral/B3-CLR@s*.json) b3/gate.json b3/B3-ID_train.json b3/B3-CLR_train.json \
   arms/B3-ID/trainer_state.json arms/B3-CLR/trainer_state.json 2>/dev/null; ls -la /tmp/b3_copyback.tar.gz'
 scp $K $S:/tmp/b3_copyback.tar.gz "$D/"
 tar xzf "$D/b3_copyback.tar.gz" -C "$D"
