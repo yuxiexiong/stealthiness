@@ -1,0 +1,64 @@
+{
+ "checks": [
+  [
+   "separated world passes (auroc_in 0.96 > perm q975 0.70)",
+   true
+  ],
+  [
+   "null world closes (auroc_in 0.56)",
+   true
+  ],
+  [
+   "weak world is indeterminate (auroc_in 0.80)",
+   true
+  ],
+  [
+   "fewer than 3 poison rows in the window cannot measure",
+   true
+  ],
+  [
+   "no formation cannot measure",
+   true
+  ],
+  [
+   "3 perfect rows: auroc 1.0 but perm q975 0.85 -> pass",
+   true
+  ],
+  [
+   "overall: both pass -> alive",
+   true
+  ],
+  [
+   "overall: both close -> closed",
+   true
+  ],
+  [
+   "overall: one pass one close -> indeterminate",
+   true
+  ],
+  [
+   "overall: any cannot -> cannot",
+   true
+  ],
+  [
+   "auroc handles ties (average ranks)",
+   true
+  ],
+  [
+   "formation rule reproduces 180 for s1006 (got 180)",
+   true
+  ],
+  [
+   "formation rule reproduces 185 for s1007 (got 185)",
+   true
+  ],
+  [
+   "pipeline runs on old rows s1006 (n_pos 3 within 205)",
+   true
+  ],
+  [
+   "pipeline runs on old rows s1007 (n_pos 3 within 205)",
+   true
+  ]
+ ]
+}
