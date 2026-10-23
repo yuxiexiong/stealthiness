@@ -20,13 +20,16 @@ def put(n, cmd, deps, est, cwd=MC):
     return name
 
 
+# training jobs of PL and J09 still to finish: our two trainings wait for them so that disk peaks never overlap
+TRAIN_DEPS = ["03403_pl_PL-L30", "03404_pl_PL-M30", "03405_pl_PL-E30", "03406_pl_PL-Lend", "03407_pl_PL-Eend",
+              "03701_j09_J09-I1007-O1009", "03702_j09_J09-I1008-O1009"]
 st = put("00_m_selftest", "$PY m_common/selftest_gpu.py", [], 15)
 tb = put("01_m2_twin_build", "CUDA_VISIBLE_DEVICES= $PY m2/build_twin.py", [], 5)
-tt = put("02_m2_twin_train", "wait_disk 100 && bash m2/twin_run.sh", [tb, ST], 110)
-rp = put("03_m3_replay", "wait_disk 80 && $PY m3/replay.py", [ST], 40)
+tt = put("02_m2_twin_train", "wait_disk 30 && bash m2/twin_run.sh", [tb, ST] + TRAIN_DEPS, 110)
+rp = put("03_m3_replay", "wait_disk 30 && $PY m3/replay.py", [ST] + TRAIN_DEPS, 40)
 gt = put("04_m3_gates", "CUDA_VISIBLE_DEVICES= $PY m3/gm3_gates.py", [rp], 5)
 m1 = put("05_m1_run", "$PY m1/m1_run.py && $PY m1/eval_m1.py", [ST], 130)
 m2 = [put(f"{6 + i:02d}_m2_{k}", f"$PY m2/m2_run.py {k}", [m1] + ([tt] if k == "twin" else []), 140)
       for i, k in enumerate(("1009", "1007", "1008", "twin"))]
-lg = put("10_m3_ledger", "wait_disk 40 && $PY m3/ledger.py && $PY m3/eval_m3.py", [gt, m1], 200)
+lg = put("10_m3_ledger", "wait_disk 20 && $PY m3/ledger.py && $PY m3/eval_m3.py", [gt, m1], 200)
 ev = put("11_m_eval", "$PY m2/eval_m2.py && $PY m3/pred_pl.py", m2 + [lg], 10)
