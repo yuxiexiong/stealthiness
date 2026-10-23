@@ -1,0 +1,150 @@
+{
+ "checks": [
+  [
+   "noise tier at share 0.75 (r_D2 = 13.8)",
+   true
+  ],
+  [
+   "share 0.74 is NOT the noise tier",
+   true
+  ],
+  [
+   "fast-buffer tier (D1 0.8, D2 0.2)",
+   true
+  ],
+  [
+   "fast buffer needs D2 low: (0.8, 0.5) is indeterminate",
+   true
+  ],
+  [
+   "neither tier (both 0.2)",
+   true
+  ],
+  [
+   "both high -> indeterminate, and noise takes precedence when D2 is high",
+   true
+  ],
+  [
+   "mid/mid -> indeterminate",
+   true
+  ],
+  [
+   "missing arm -> cannot measure",
+   true
+  ],
+  [
+   "D1 exactly at its mechanical floor (share 0.49) does NOT read as fast buffer",
+   true
+  ],
+  [
+   "D1 at 16 steps clears the declared floor 9+5",
+   true
+  ],
+  [
+   "earlier take-off is labelled",
+   true
+  ],
+  [
+   "quiet band is +-5",
+   true
+  ],
+  [
+   "D1 check passes (6 entries, 6 m tensors, 6 v tensors) -> True",
+   true
+  ],
+  [
+   "the untouched state does NOT pass the D1 check",
+   true
+  ],
+  [
+   "D1 check catches a zeroed second moment",
+   true
+  ],
+  [
+   "D1 check catches a reset step counter",
+   true
+  ],
+  [
+   "D1 check catches a changed param group",
+   true
+  ],
+  [
+   "original state untouched by the surgery",
+   true
+  ],
+  [
+   "D2 check passes: 140 elements, deviation 6.69e-08 = 0.03 tolerance units",
+   true
+  ],
+  [
+   "every element moved by exactly eps in magnitude",
+   true
+  ],
+  [
+   "the unkicked tensors do NOT pass the D2 check",
+   true
+  ],
+  [
+   "a different seed does NOT pass the designed check",
+   true
+  ],
+  [
+   "a half-magnitude kick does NOT pass",
+   true
+  ],
+  [
+   "the kick is reproducible from the seed",
+   true
+  ],
+  [
+   "gate passes when both surgeries and all files check out",
+   true
+  ],
+  [
+   "gate fails if D1 touched the adapter",
+   true
+  ],
+  [
+   "gate fails if D2 touched the optimizer",
+   true
+  ],
+  [
+   "gate fails on a missing resume file",
+   true
+  ],
+  [
+   "gate fails when a surgery check fails",
+   true
+  ],
+  [
+   "full clear's first update is exactly max magnitude (ratio 1.000)",
+   true
+  ],
+  [
+   "'reset step only' is a long LR suppressor, not a transient (0.316 at t=1, still 0.47 at t=250) -> dropped",
+   true
+  ],
+  [
+   "m-only clear starts at 0.047x and rebuilds",
+   true
+  ],
+  [
+   "D1's mechanical floor = sum beta1^k = 9.00 steps' worth of update magnitude",
+   true
+  ],
+  [
+   "kick eps = sqrt(10) * lr * lam(250)",
+   true
+  ]
+ ],
+ "kick_eps": 0.00029294953989903827,
+ "single_step_eps": 9.263877855793339e-05,
+ "D1_floor_steps": 9.0,
+ "D1_floor_share": 0.48960634189308283,
+ "first_update_ratios": {
+  "full_clear": 1.0,
+  "step_reset_only_t1": 0.31622776601683816,
+  "step_reset_only_t250": 0.47042175320091156,
+  "m_only": 0.04704217532009115
+ }
+}
