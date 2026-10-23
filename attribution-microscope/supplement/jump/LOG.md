@@ -221,3 +221,8 @@ b232fdeafcf7349b log_P-1.0-D.jsonl
   J62 只写了 s(KICK) ≥ 0.75 与 ≤ 0.40 两端，没写 0.40 < s(KICK) < 0.75。按合同 §4 字面，其余三档都需要 s(M0)，故中间带总档同为**「测不了（缺臂）」**，只作描述报出，由用户定是否补 M0。
   `eval_b3d.py`（冻结，不改）缺一臂时 `verdict()` 一律返回 `cannot measure`、`gr0_all_pass` 恒为 False：判档时 KICK 的 r 与份额取 `share_D2`/`r_D2`，≥ 0.75 时按 J62 手判「噪声解释」；GR0 只看 `arms.B3D-KICK.gr0.pass`。合成输入预演：t=344.07 → share 0.870、arm moved later；t=331.07 → share 0.163、quiet；缺读数 → None。
   新增 `b3d/copyback_b3d.sh`（仿 `b3/copyback_b3.sh`，有哪臂拷哪臂），不触及冻结文件。
+- J63b 2026-10-23 12:20 **GQA 接入计划（fa65902）核对 + 下阶段计划更新**（KICK 训到约 850 步，未看读数）。
+  核对：`taylor_decomp.py` 在 GQA aaai27-final 上，数学通用于任意位移但绑 `Lens1Batch`/`compute_loss`，需包 margin 标量；G2-0c 的 7.6 倍是 TinyLlama 单检查点（范围 5.6–24）；"线性只管 2–25 步"未核到出处。盘面：XO 8 条、PS 5 条、SP 6 条各 125 个检查点在盘。
+  三处更正 fa65902：预测 (ii)（二阶来自 A×B 交叉块）被双线性结构蕴含（∂²(BA)/∂A² = ∂²/∂B² = 0），降自检；"零 GPU"不实（200 探针 × 7B 前后向，估 1.5–3 GPUh）；A 项对 KICK 的一阶写法错（随机符号位移一阶期望零，效应在 ½ε²·tr H），正确对象是 B3-ID/CLR 在 260/270/280 的差。
+  重新定位为**增益曲线 g(t)**：∂margin/∂A ∝ B（推导）× AdamW 拉平步幅（推导）→ 晚到的行更有效（推测，待测）；与 PL 作事前对账列。写入 `research/next-stage-plan-2026-10-23/PLAN_PM.zh-CN.md`，PLAN_FINAL 加取代横幅正文不改。顺序建议 G1 小版本 → PL，不动 CONTRACT_PL。未排任何任务。
+  另：用户删除 CLAUDE.md §2"聪明同行会不会意外"自查；我在本会话对 (ii) 的批评只保留"被蕴含"这一半。
