@@ -1,0 +1,91 @@
+{
+ "n": 17,
+ "n_pass": 17,
+ "checks": [
+  {
+   "check": "C1 can be satisfied: b=0.5 clean -> rising",
+   "pass": true,
+   "got": "R=1.84 CI=[1.81,1.87]"
+  },
+  {
+   "check": "C1 recovers the slope it was given",
+   "pass": true,
+   "got": "b_hat=0.492"
+  },
+  {
+   "check": "C1 can fail: flat curve -> not rising",
+   "pass": true,
+   "got": "R=1.00 CI=[0.98,1.01]"
+  },
+  {
+   "check": "C1 can be indeterminate: R at the threshold with noise",
+   "pass": true,
+   "got": "b_edge=0.077 R=1.07 CI=[0.94,1.21]"
+  },
+  {
+   "check": "C1 falling curve -> not rising",
+   "pass": true,
+   "got": null
+  },
+  {
+   "check": "C1 cannot measure with < 4 fit points",
+   "pass": true,
+   "got": null
+  },
+  {
+   "check": "GG1 counts only points inside [50,330]",
+   "pass": true,
+   "got": "n_in_window=0"
+  },
+  {
+   "check": "PL windows reproduce the frozen design",
+   "pass": true,
+   "got": null
+  },
+  {
+   "check": "C2 indistinguishable: b=0.000 -> indistinguishable (max|diff|=0.0, Eend 61.9 vs lr-count 61.9, plain count 51.0)",
+   "pass": true,
+   "got": "b=0.000 -> indistinguishable (max|diff|=0.0, Eend 61.9 vs lr-count 61.9, plain count 51.0)"
+  },
+  {
+   "check": "C2 at the C1 threshold is not forced to discriminate: b=0.077 -> indeterminate (max|diff|=8.2, Eend 58.6 vs lr-count 61.9, plain count 51.0)",
+   "pass": true,
+   "got": "b=0.077 -> indeterminate (max|diff|=8.2, Eend 58.6 vs lr-count 61.9, plain count 51.0)"
+  },
+  {
+   "check": "C2 discriminates: b=0.500 -> discriminates (max|diff|=28.0, Eend 33.9 vs lr-count 61.9, plain count 51.0)",
+   "pass": true,
+   "got": "b=0.500 -> discriminates (max|diff|=28.0, Eend 33.9 vs lr-count 61.9, plain count 51.0)"
+  },
+  {
+   "check": "C2 discriminates: b=1.000 -> discriminates (max|diff|=46.8, Eend 15.1 vs lr-count 61.9, plain count 51.0)",
+   "pass": true,
+   "got": "b=1.000 -> discriminates (max|diff|=46.8, Eend 15.1 vs lr-count 61.9, plain count 51.0)"
+  },
+  {
+   "check": "proxy ||B|| would discriminate (design-stage sanity, NOT a result)",
+   "pass": true,
+   "got": "R_proxy=1.72 tier=discriminates max|diff|=27.4"
+  },
+  {
+   "check": "curve() drops None and non-positive entries",
+   "pass": true,
+   "got": "n=55"
+  },
+  {
+   "check": "GA converts margin to steps with the right sign",
+   "pass": true,
+   "got": "20.0"
+  },
+  {
+   "check": "flat gain reduces EXACTLY to the lr-weighted count column",
+   "pass": true,
+   "got": "[np.float64(8.2), np.float64(-0.3), np.float64(20.2), np.float64(8.3), np.float64(8.1), np.float64(58.5), np.float64(61.9)] vs [np.float64(8.2), np.float64(-0.3), np.float64(20.2), np.float64(8.3), np.float64(8.1), np.float64(58.5), np.float64(61.9)]"
+  },
+  {
+   "check": "gain_column reproduces the base crossing",
+   "pass": true,
+   "got": null
+  }
+ ]
+}
