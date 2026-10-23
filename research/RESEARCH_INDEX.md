@@ -8,6 +8,7 @@
 | 跃升现象线 | [jump 入口](../attribution-microscope/supplement/jump/README.md) · [决策日志](../attribution-microscope/supplement/jump/LOG.md) | 顺序决定起飞（XO）、计数不预测（r2）、微扰为零（PS）、SP 渐变、SF 偏骨架（部分）；B3 与 PL 合同冻结 |
 | 跨模型 ASR | [当前入口](../attribution-microscope/supplement/jump/cross_model/README.md) · [Z5 改标](false-alarm-followup-2026-10-22/Z5_crossmodel_relabel/) | 多个模型 / 族观测到跳；SD3.5、FLAN-T5、Falcon-Mamba 大部分、Qwen3-VL 1% 部分 seed 是攻击未形成 |
 | 跃升理论 | [主干](asr-theory-2026-10-22/TRUNK.md) · [冻结预测与降级](next-stage-plan-2026-10-23/THEORY_PREDICTIONS.md) | S3 悬空、S2 降为"计数只解释一部分"、S4 撤出主干；以 THEORY_PREDICTIONS 与 CANON §5 为准 |
+| 机制拆解方法（10-23） | [方法综述与计划草案](mech-methodology-2026-10-23/REPORT.zh-CN.md) | grokking / 电路因果 / 动力学三派的骨架对照跃升线六次失败；共同根因是候选全是全局标量；M1–M6 草案（先定位 LoRA 组件，再推进度量），未冻结 |
 | 论文准备 | [00 汇报](asr-paper-prep-2026-10-21/00_REPORT.zh-CN.md) · [加速比和解](asr-paper-prep-2026-10-21/01_ACCEL_RECONCILE.zh-CN.md) | 加速比不可跨网格比；两份七步查重；稿件未开工 |
 | 跃升机制 toy（10-10） | [设计](asr-mechanism-experiment-2026-10-10/EXPERIMENT_DESIGN.md) · [toy 结果](asr-mechanism-experiment-2026-10-10/RESULTS_TOY.md) | 早期探索 toy；机制线最终立场在分支 `origin/claude/mechanism-line@f1cd817`（STATUS、CLAIMS_TABLE，不并入 main） |
 | 防御线（10-10 起） | [r02 结果](asr-defense-toy-2026-10-10/r02/RESULTS.md) · [Curfew 扳机线交接](curfew-trigger-2026-10-21/HANDOFF.zh-CN.md) · [回顾](curfew-retrospective-2026-10-21/RETROSPECTIVE.zh-CN.md) | Curfew 作为防御已停；r02"无回退点"只限 seed 1101；扳机 c_mem_x 的 k4 形成窗待测；10-13 至 10-20 的材料在未并入的分支 `origin/claude/keen-hypatia-azj9c9` |
