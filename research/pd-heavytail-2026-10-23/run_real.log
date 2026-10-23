@@ -1,0 +1,24 @@
+S1 reproduce published EXP numbers: PASS
+  r1_loo_tau400: got 23.87 want 23.9 -> ok
+  r1_nested: got 30.42 want 30.4 -> ok
+  r2_rss_tau40: got 664.5 want 665 -> ok
+  r2_r2_tau40: got 0.84 want 0.84 -> ok
+
+EXP: verdict=NOT_UNIFIED
+  read-out 1 best=400 LOO=23.9 thr=30.9 (SE 7.0)
+     I1=['400', '500', '700', '1000']  coverage=20%
+  read-out 2 best=40 RSS=664.5 thr=671.2
+     I2=['40', '50']
+  shared=[]  passing G1=[]
+PL: verdict=UNIFIED
+  read-out 1 best=0.3 LOO=24.1 thr=31.6 (SE 7.5)
+     I1=['0.05', '0.1', '0.15', '0.2', '0.3', '0.4']  coverage=30%
+  read-out 2 best=0.3 RSS=863.7 thr=872.3
+     I2=['0.3']
+  shared=['0.3']  passing G1=['0.3']
+LOG: verdict=NOT_UNIFIED
+  read-out 1 best=1240 LOO=18.1 thr=24.8 (SE 6.7)
+     I1=['1240']  coverage=8%
+  read-out 2 best=150 RSS=708.8 thr=715.9
+     I2=['150']
+  shared=[]  passing G1=[]
