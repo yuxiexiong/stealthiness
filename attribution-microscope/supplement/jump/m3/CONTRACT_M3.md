@@ -2,6 +2,7 @@
 
 起草 2026-10-23；两轮对抗性检查的意见与处理见 §10。上位计划 `research/asr-mech-plan-2026-10-23/PLAN_MECH.zh-CN.md`。用 M1 交出的集合 C（无集合时只做 D_full）与 `m_common/probe_split.json` 的 EVAL 100 题。
 **冻结 = 本文件与 `m3/` 代码（含 M3-4 的预测代码 `m3/pred_pl.py`）一次提交。**
+**状态：已冻结（2026-10-23）。** 冻结提交即本文件所在的那次提交（hash 记在 `../LOG.md` J67）。离线预演 `m_common/rehearsal_m.py` **44/44**（每条判据两面可达，GM3-4 恒等式在 4000 万维上过与不过都演示）；服务器 CPU 演练：预演 44/44、孪生构造闸门 GM2-T 通过（恰 200 个毒位）、LLaMA-Factory 数据流水线与毒行到达步核对通过。GPU 自检 `m_common/selftest_gpu.py` 是**工程任务，不是合同闸门**：不过就修代码重排，不计合同执行失败；后续任务以它写出的 PASS 为依赖。
 
 ## 0 问题
 

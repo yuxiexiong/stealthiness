@@ -1,0 +1,46 @@
+PASS M1 测不了: got '测不了' want '测不了'
+PASS M1 定位: got '定位' want '定位'
+PASS M1 宽定位: got '宽定位' want '宽定位'
+PASS M1 非特异: got '非特异' want '非特异'
+PASS M1 C 未复现 -> 冗余: got ('冗余', ['C']) want ('冗余', ['C'])
+PASS M1 并集: got True want True
+PASS M1 可分离: got '可分离' want '可分离'
+PASS M1 协同 type: got 'necessary' want 'necessary'
+PASS M1 分布式: got '分布式' want '分布式'
+PASS M1 choose smallest, tie by F-E: got 'r0_k8' want 'r0_k8'
+PASS M1 random sets reproducible: got True want True
+PASS M2-0 D 计时: got 'D 计时' want 'D 计时'
+PASS M2-0 D 不计时: got 'D 不计时' want 'D 不计时'
+PASS M2-0 δ_int above cap -> 不可判: got '不可判' want '不可判'
+PASS M2-1 reading 整体同步 needs Z sync; here Z order-invariant -> 落在 S* 上 but random synced -> 无区分力: got ('顺序效应落在 S* 上', '无区分力') want ('顺序效应落在 S* 上', '无区分力')
+PASS M2-1 区分力成立: got ('顺序效应落在 S* 上', '区分力成立') want ('顺序效应落在 S* 上', '区分力成立')
+PASS M2-1 整体同步 / 区分力无法评估: got ('整体同步', '区分力无法评估') want ('整体同步', '区分力无法评估')
+PASS M2-1 顺序效应落在 S* 之外: got '顺序效应落在 S* 之外' want '顺序效应落在 S* 之外'
+PASS M2-1 necessary: only Y judged: got (False, '顺序效应落在 S* 的必要部分上') want (False, '顺序效应落在 S* 的必要部分上')
+PASS M2-1 delta None -> 不可判: got '不可判' want '不可判'
+PASS M2-2 起飞时已承载 / 后成: got ('起飞时已承载', '后成', True, True) want ('起飞时已承载', '后成', True, True)
+PASS M2-2 部分: got '部分' want '部分'
+PASS eval_m2 end-to-end runs: got ['GM2_1', 'GM2_I', 'M2_0', 'M2_1', 'M2_2', 'M2_3'] want ['GM2_1', 'GM2_I', 'M2_0', 'M2_1', 'M2_2', 'M2_3']
+PASS M3-1 校准: got '校准' want '校准'
+PASS M3-1 未校准 (decomposition): got ('未校准', '分解近似失效') want ('未校准', '分解近似失效')
+PASS M3-1 部分: got '部分' want '部分'
+PASS M3-1 attribution 一阶失效: got '一阶失效' want '一阶失效'
+PASS M3-2 毒行特异: got '毒行特异' want '毒行特异'
+PASS M3-2 不特异: got '不特异' want '不特异'
+PASS M3-3 晚位更有效: got '晚位更有效' want '晚位更有效'
+PASS M3-3 早位更有效: got '早位更有效' want '早位更有效'
+PASS M3-3 相当: got '相当' want '相当'
+PASS M3-3 early<=0 -> 不可判: got '不可判' want '不可判'
+PASS M3-3 main source: got 'b' want 'b'
+PASS M3-3 no single source: got '无单一来源' want '无单一来源'
+PASS M3-4 对上: got '对上' want '对上'
+PASS M3-4 对不上: got '对不上' want '对不上'
+PASS M3-4 censoring symmetric: got 0.0 want 0.0
+PASS M3-4 first_sustained: got 328.07 want 328.07
+PASS M3-4 never crosses -> inf: got inf want inf
+PASS GM3-4 identity passes (fp64): got True want True
+PASS GM3-4 identity fails on a dropped term: got False want False
+PASS pred_pl runs; deleting a row delays take-off: got True want True
+PASS eval_m3 runs; late positions more effective in synthetic kernel: got '晚位更有效' want '晚位更有效'
+
+44/44 rehearsal checks passed
