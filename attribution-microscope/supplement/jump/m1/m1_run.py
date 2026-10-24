@@ -80,6 +80,9 @@ if not gate["pass"]:
 BS = 8 if gate["batched"] else 1
 rate = gate["bs8_probes_per_s"] if gate["batched"] else gate["s250_bs1_probes_per_s"]
 SLOW = rate < 5.0
+# Deviation J77: backward at bs 8 OOMs (95 GB, eager attention); gradients are summed over batches, so only the
+# float error changes. 2 is the size the GPU self-test validated gate_grad/param_grad at.
+GRAD_BS = min(BS, 2)
 raw["batch_size"], raw["probes_per_s"], raw["slow_mode"] = BS, rate, SLOW
 
 
@@ -95,9 +98,9 @@ def analyse(step, full_extras):
         R[f"D_full_{split}"] = Dof(idxs)
         R[f"D_none_{split}"] = Dof(idxs, keep=set())
     # rankings on SELECT
-    R["r1"] = lab.gate_grad(SEL, 1.0, "D", BS).tolist()
-    R["r0"] = lab.gate_grad(SEL, 0.0, "D", BS).tolist()
-    R["task"] = lab.gate_grad(SEL, 1.0, "Tclean", BS).tolist()
+    R["r1"] = lab.gate_grad(SEL, 1.0, "D", GRAD_BS).tolist()
+    R["r0"] = lab.gate_grad(SEL, 0.0, "D", GRAD_BS).tolist()
+    R["task"] = lab.gate_grad(SEL, 1.0, "Tclean", GRAD_BS).tolist()
     lad = m1.ladder_sets(R["r1"], R["r0"], names, mc.LADDER_K)
     R["ladder"] = lad
 

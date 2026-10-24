@@ -18,7 +18,9 @@ OUT = RUNS / "cl"; OUT.mkdir(parents=True, exist_ok=True)
 if (OUT / "HALT").exists():
     print("HALT present; refusing to train", ARM); sys.exit(2)
 GPU = os.environ["JOBQ_GPU"]; ENV = dict(os.environ, CUDA_VISIBLE_DEVICES=GPU, DISABLE_VERSION_CHECK="1")
-y = train_arm.build_yaml(ARM, "s1", save_steps=10)
+# CL-ID is the 1009 original order: it trains on XO-I1001-O1009's registered dataset (same seed s1); the two arms
+# have their own datasets written by build_cl.py. Deviation J77: the frozen version derived "arm_cl_id", which never existed.
+y = train_arm.build_yaml(ARM, "s1", dataset_of="XO-I1001-O1009" if ARM == "CL-ID" else None, save_steps=10)
 cfg = yaml.safe_load(open(y))
 assert cfg["lr_scheduler_type"] == "cosine", cfg["lr_scheduler_type"]
 assert cfg["num_train_epochs"] == 1.0 and "max_steps" not in cfg, cfg

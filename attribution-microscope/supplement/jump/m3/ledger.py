@@ -80,14 +80,15 @@ def lora_grad_of_row(pos):
 
 
 def gradX(c):
+    # bs 2, not 8: the bs-8 backward OOMs in M1 (deviation J77); sums over batches, only float error changes
     lab.load(rep(c))
-    gf, vf = lab.param_grad(EV, bs=8)
+    gf, vf = lab.param_grad(EV, bs=2)
     out = {"full": (gf, vf)}
     if S is not None:
         if ctype == "sufficient":
-            out["Y"] = lab.param_grad(EV, bs=8, keep=set(S))
+            out["Y"] = lab.param_grad(EV, bs=2, keep=set(S))
         else:
-            gr, vr = lab.param_grad(EV, bs=8, remove=set(S))
+            gr, vr = lab.param_grad(EV, bs=2, remove=set(S))
             out["Y"] = (gf - gr, vf - vr)
     return out
 
