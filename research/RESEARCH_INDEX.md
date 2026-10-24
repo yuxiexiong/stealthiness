@@ -15,6 +15,7 @@
 | 测量提效（第三线） | [设计](asr-defense-toy-2026-10-10/third-line-toy/EXPERIMENT_DESIGN.md) · [结果](asr-defense-toy-2026-10-10/third-line-toy/RESULTS.md) | 开发小试完成；独立新轨迹确认已在分支 `claude/determined-galileo-407bo2`（135405a）跑完，判"探针提效稳定" |
 | 审计与跟进 | [假警报审计](false-alarm-audit-2026-10-22/REPORT.zh-CN.md) · [Z1–Z6 跟进](false-alarm-followup-2026-10-22/README.zh-CN.md) | 审计有两处错已被跟进更正，现行口径以 CANON 为准 |
 | 计划与交接 | [PLAN_FINAL 10-23](next-stage-plan-2026-10-23/PLAN_FINAL.zh-CN.md) · [交接 10-23](session-handoff-2026-10-23/HANDOFF.zh-CN.md) · [k4 补测](k4-retest-2026-10-23/CONTRACT_K4.md) | 车队 1（B3、k4）等卡未开跑；B3 落在不可判带时的去向待定（CANON §7）。10-22 的计划与交接已被取代 |
+| **第二条腿（10-24）** | [计划](second-leg-2026-10-24/PLAN_SECOND_LEG.zh-CN.md) · [痛点与真实管线口径](painpoint-pipeline-2026-10-24/PAINPOINT_PIPELINE.zh-CN.md) | **计划，未冻结未开跑**。把因变量从"起飞推迟多少步"换成"在给定预算内装不装得上"，沿预算与剂量扫描；S1/S2 零 GPU，S3/S4 等 NF 判完。执行前每阶段另写冻结合同 |
 | 痛点与嫁接（10-21） | [新知识痛点查重](newknowledge-painpoint-audit-2026-10-21/) · [第一步](painpoint-first-steps-2026-10-21/) · [嫁接前提](graft-preconditions-2026-10-21/) · [HanLab 经验](hanlab-experience-2026-10-22/) | 课题生成材料；其中引用的跃升线判死以 CANON 为准 |
 | VLM 归因与 Atlas | [LLaVA](../attribution-microscope/README.md) · [Qwen](../attribution-microscope-qwen3vl8b/README.md) | 按模型、阶段与仪器资格阅读结果 |
 | 文本角色与语法 | [方向](atlas-syntax-transfer-2026-09-21/RESEARCH_DIRECTION.md) · [设计](atlas-syntax-transfer-2026-09-21/EXPERIMENT_DESIGN_three-hypotheses.md) · [报告](atlas-syntax-transfer-2026-09-21/REPORT.md) | 已观察结果、机理假设与后续设计分别记录 |
