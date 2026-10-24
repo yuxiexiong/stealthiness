@@ -1,4 +1,4 @@
-# NF：平日程下的零分布与远场臂 · 合同 **【已冻结 2026-10-24 21:10】**
+# NF：平日程下的零分布与远场臂 · 合同 **【已冻结 2026-10-24 20:27（提交 67873ca）】**
 
 **本合同与 `nf.py`、`build_nf.py`、`nf_train.py`、`gate_nf.py`、`eval_nf.py`、`nf_run.sh`、`nf_lp.sh`、`make_nf_jobs.py`、`copyback_nf.sh`、`arrivals_1009.json` 在同一提交冻结。**
 预演 `eval_nf.py --rehearse`：六档全部可达 + 四个反向例 + 两个门槛下限演示 + 四个闸门分支，**16/16 PASS**（本地与服务器各跑一次）。
