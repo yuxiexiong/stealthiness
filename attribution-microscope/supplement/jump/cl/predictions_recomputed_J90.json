@@ -1,0 +1,55 @@
+{
+ "what": "CL model predictions recomputed from frozen code and pre-arm inputs (LOG J90, rule 6.6 deviation)",
+ "recomputed_at": "2026-10-24T16:37:32+08:00",
+ "t_star_source": "runs/cl/gate.json:sustained (written by gate_cl.py before any arm)",
+ "t_star": 323.0769230769231,
+ "frozen_sha256_12": {
+  "pl.py": "e2c2ae2c5979",
+  "sf.py": "f9bfa572edb4",
+  "cl.py": "35aaa65fa37d",
+  "arrivals_1009.json": "2861bac0ef16"
+ },
+ "frozen_at_commit": "d1c78b0 (identical on main 6b12847)",
+ "call_site_bug": "gate_cl.py:55 passed ap[a][0]; pl.predictions unpacks (new, moves) -> ValueError",
+ "lr_columns": "dropped: pl.LAM is PL's cosine+warmup profile (pl.py:121), invalid under constant_with_warmup; CONTRACT_CL section 0 derivation: lr-weighted count == pure count under a flat schedule",
+ "self_checks": {
+  "windows_steps_match_gate": true,
+  "moved_match_gate": true,
+  "gate_models_was_error": true
+ },
+ "models_non_lr": {
+  "tau10_beta1": {
+   "base_crossing": 41.98033178744888,
+   "reproduces_base": false,
+   "R30a": 0.0,
+   "L30": 0.0
+  },
+  "tau40_margin_fit": {
+   "base_crossing": 160.49428075019276,
+   "reproduces_base": false,
+   "R30a": 27.9,
+   "L30": 0.0
+  },
+  "tau400_crossing_fit": {
+   "base_crossing": 321.8905283209718,
+   "reproduces_base": true,
+   "R30a": -6.2,
+   "L30": 13.7
+  },
+  "count_tau_inf": {
+   "base_crossing": 322.0,
+   "reproduces_base": true,
+   "R30a": 0.0,
+   "L30": 12.0
+  }
+ },
+ "pre_arm_evidence_at_write": {
+  "timestamp_server": "2026-10-24T16:37:32+08:00",
+  "lp_out_arm_files": 0,
+  "behavioral_arm_files": 0,
+  "lp_job_done_markers": 0,
+  "CL_R30a_latest_checkpoint": "checkpoint-500",
+  "note": "no CL-R30a / CL-L30 read-out of any kind existed when this was computed; CL-L30 had not started"
+ },
+ "deviation_6_6": "gate_cl.py failed to write predictions_frozen_before_arms.models (ValueError at the call site). Recomputed here from the frozen formulas and the same pre-arm inputs, before any arm read-out existed. Criteria, bands, windows, training definitions and arms unchanged; nothing in CONTRACT_CL was edited. This file is additive and does not modify runs/cl/gate.json."
+}
