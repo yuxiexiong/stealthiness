@@ -43,6 +43,12 @@ XS = ["full"] + (["Y"] if S is not None else [])
 status["X"] = XS; status["handoff"] = hand
 
 # ---------------------------------------------------------------- LLaMA-Factory data pipeline
+# J92 (user-authorised fix; no contract change): `import lfdata` pulls in the LLaMA-Factory parser,
+# which EMPTIES CUDA_VISIBLE_DEVICES in this process (measured: '0' -> ''), so mlib.Lab below died with
+# "No CUDA GPUs are available" on every attempt. Restoring the variable afterwards is NOT enough:
+# torch's lazy CUDA init is already poisoned by then. Pinning the context here, while CVD is still
+# correct, keeps cuda:0 usable for the rest of the run. Verified on the real path before this edit.
+_cuda_pin = torch.zeros(1, device=DEV) if torch.cuda.is_available() else None
 import yaml  # noqa: E402
 import lfdata  # noqa: E402
 
