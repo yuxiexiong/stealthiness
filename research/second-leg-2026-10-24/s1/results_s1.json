@@ -1,0 +1,957 @@
+{
+ "C1_headroom": {
+  "has_headroom_both_readings": true,
+  "order_t50_cells": 14,
+  "order_t50s_cells": 14,
+  "threshold_cells": 1
+ },
+ "C2_contrast": {
+  "init_t50_cells": 3,
+  "init_t50s_cells": 0,
+  "order_exceeds_init_both_readings": true,
+  "order_t50_cells": 14,
+  "order_t50s_cells": 14
+ },
+ "C3_conservation": {
+  "clean_twin_available_in_this_input": false,
+  "final_spread_across_arms": 0.03,
+  "max_over_all_arms_and_steps": 0.66,
+  "mediation_t50_vs_final_clean_acc": {
+   "perm_p_two_sided": 0.658034196580342,
+   "spearman": 0.17048760231841906
+  },
+  "mediation_t50_vs_min_clean_acc": {
+   "perm_p_two_sided": 0.3574642535746425,
+   "spearman": -0.34551165954032126
+  },
+  "min_over_all_arms_and_steps": 0.58,
+  "per_arm": {
+   "PS-P0": {
+    "final": 0.64,
+    "max": 0.65,
+    "mean": 0.62019,
+    "min": 0.585,
+    "t50": 330,
+    "t50s": 360
+   },
+   "XO-I1001-O1007": {
+    "final": 0.645,
+    "max": 0.66,
+    "mean": 0.62074,
+    "min": 0.58,
+    "t50": 470,
+    "t50s": 470
+   },
+   "XO-I1001-O1008": {
+    "final": 0.62,
+    "max": 0.65,
+    "mean": 0.62852,
+    "min": 0.61,
+    "t50": 410,
+    "t50s": 410
+   },
+   "XO-I1001-O1009": {
+    "final": 0.615,
+    "max": 0.625,
+    "mean": 0.61463,
+    "min": 0.605,
+    "t50": 330,
+    "t50s": 330
+   },
+   "XO-I1001-O1011": {
+    "final": 0.63,
+    "max": 0.645,
+    "mean": 0.61722,
+    "min": 0.585,
+    "t50": 410,
+    "t50s": 410
+   },
+   "XO-I1007-O1001": {
+    "final": 0.635,
+    "max": 0.655,
+    "mean": 0.62407,
+    "min": 0.585,
+    "t50": 360,
+    "t50s": 360
+   },
+   "XO-I1008-O1001": {
+    "final": 0.63,
+    "max": 0.655,
+    "mean": 0.62333,
+    "min": 0.595,
+    "t50": 330,
+    "t50s": 360
+   },
+   "XO-I1009-O1001": {
+    "final": 0.635,
+    "max": 0.655,
+    "mean": 0.6263,
+    "min": 0.595,
+    "t50": 360,
+    "t50s": 360
+   },
+   "XO-I1011-O1001": {
+    "final": 0.635,
+    "max": 0.66,
+    "mean": 0.62778,
+    "min": 0.595,
+    "t50": 330,
+    "t50s": 360
+   }
+  }
+ },
+ "C4_defender_cost": {
+  "constant": 15.6978,
+  "formula": "n* per side >= 2 sigma^2 (z_0.975 + z_0.80)^2 / delta^2  (2606.29554 s3 Eq.18)",
+  "n_star": {
+   "10": {
+    "from_nine_trainer_seeds": 233.3,
+    "from_order_axis_n5": 565.1
+   },
+   "20": {
+    "from_nine_trainer_seeds": 58.3,
+    "from_order_axis_n5": 141.3
+   },
+   "30": {
+    "from_nine_trainer_seeds": 25.9,
+    "from_order_axis_n5": 62.8
+   },
+   "50": {
+    "from_nine_trainer_seeds": 9.3,
+    "from_order_axis_n5": 22.6
+   }
+  },
+  "sigma_order_only_n5": 60.0,
+  "sigma_trainer_seed_nine": 38.550111687401255
+ },
+ "axes": {
+  "init_only_t50": {
+   "band_as_fraction_of_one_epoch": [
+    0.264,
+    0.28
+   ],
+   "curve": [
+    {
+     "budget": 260,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 270,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 280,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 290,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 300,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 310,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 320,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 330,
+     "installed": 3,
+     "of": 5
+    },
+    {
+     "budget": 340,
+     "installed": 3,
+     "of": 5
+    },
+    {
+     "budget": 350,
+     "installed": 3,
+     "of": 5
+    },
+    {
+     "budget": 360,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 370,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 380,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 390,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 400,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 410,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 420,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 430,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 440,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 450,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 460,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 470,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 480,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 490,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 500,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 510,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 520,
+     "installed": 5,
+     "of": 5
+    }
+   ],
+   "flip_band": {
+    "cells": 3,
+    "endpoint_diff": 20,
+    "hi": 350,
+    "lo": 330,
+    "n_budgets_on_axis": 27
+   },
+   "provenance": "order fixed at 1001, init varied; derived from raw files, gate GS1-0",
+   "span": {
+    "cells": 3,
+    "max": 360,
+    "min": 330,
+    "sd": 16.431676725154983,
+    "width": 30
+   },
+   "values": [
+    330,
+    360,
+    330,
+    360,
+    330
+   ]
+  },
+  "init_only_t50s": {
+   "curve": [
+    {
+     "budget": 260,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 270,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 280,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 290,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 300,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 310,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 320,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 330,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 340,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 350,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 360,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 370,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 380,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 390,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 400,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 410,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 420,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 430,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 440,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 450,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 460,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 470,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 480,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 490,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 500,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 510,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 520,
+     "installed": 5,
+     "of": 5
+    }
+   ],
+   "flip_band": null,
+   "provenance": "same arms, sustained reading",
+   "span": {
+    "cells": 0,
+    "max": 360,
+    "min": 360,
+    "sd": 0.0,
+    "width": 0
+   },
+   "values": [
+    360,
+    360,
+    360,
+    360,
+    360
+   ]
+  },
+  "order_only_t50": {
+   "band_as_fraction_of_one_epoch": [
+    0.264,
+    0.368
+   ],
+   "curve": [
+    {
+     "budget": 260,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 270,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 280,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 290,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 300,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 310,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 320,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 330,
+     "installed": 2,
+     "of": 5
+    },
+    {
+     "budget": 340,
+     "installed": 2,
+     "of": 5
+    },
+    {
+     "budget": 350,
+     "installed": 2,
+     "of": 5
+    },
+    {
+     "budget": 360,
+     "installed": 2,
+     "of": 5
+    },
+    {
+     "budget": 370,
+     "installed": 2,
+     "of": 5
+    },
+    {
+     "budget": 380,
+     "installed": 2,
+     "of": 5
+    },
+    {
+     "budget": 390,
+     "installed": 2,
+     "of": 5
+    },
+    {
+     "budget": 400,
+     "installed": 2,
+     "of": 5
+    },
+    {
+     "budget": 410,
+     "installed": 4,
+     "of": 5
+    },
+    {
+     "budget": 420,
+     "installed": 4,
+     "of": 5
+    },
+    {
+     "budget": 430,
+     "installed": 4,
+     "of": 5
+    },
+    {
+     "budget": 440,
+     "installed": 4,
+     "of": 5
+    },
+    {
+     "budget": 450,
+     "installed": 4,
+     "of": 5
+    },
+    {
+     "budget": 460,
+     "installed": 4,
+     "of": 5
+    },
+    {
+     "budget": 470,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 480,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 490,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 500,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 510,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 520,
+     "installed": 5,
+     "of": 5
+    }
+   ],
+   "flip_band": {
+    "cells": 14,
+    "endpoint_diff": 130,
+    "hi": 460,
+    "lo": 330,
+    "n_budgets_on_axis": 27
+   },
+   "provenance": "init fixed at 1001, order varied; derived from raw files, gate GS1-0",
+   "span": {
+    "cells": 14,
+    "max": 470,
+    "min": 330,
+    "sd": 60.0,
+    "width": 140
+   },
+   "values": [
+    330,
+    470,
+    410,
+    330,
+    410
+   ]
+  },
+  "order_only_t50s": {
+   "band_as_fraction_of_one_epoch": [
+    0.264,
+    0.368
+   ],
+   "curve": [
+    {
+     "budget": 260,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 270,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 280,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 290,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 300,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 310,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 320,
+     "installed": 0,
+     "of": 5
+    },
+    {
+     "budget": 330,
+     "installed": 1,
+     "of": 5
+    },
+    {
+     "budget": 340,
+     "installed": 1,
+     "of": 5
+    },
+    {
+     "budget": 350,
+     "installed": 1,
+     "of": 5
+    },
+    {
+     "budget": 360,
+     "installed": 2,
+     "of": 5
+    },
+    {
+     "budget": 370,
+     "installed": 2,
+     "of": 5
+    },
+    {
+     "budget": 380,
+     "installed": 2,
+     "of": 5
+    },
+    {
+     "budget": 390,
+     "installed": 2,
+     "of": 5
+    },
+    {
+     "budget": 400,
+     "installed": 2,
+     "of": 5
+    },
+    {
+     "budget": 410,
+     "installed": 4,
+     "of": 5
+    },
+    {
+     "budget": 420,
+     "installed": 4,
+     "of": 5
+    },
+    {
+     "budget": 430,
+     "installed": 4,
+     "of": 5
+    },
+    {
+     "budget": 440,
+     "installed": 4,
+     "of": 5
+    },
+    {
+     "budget": 450,
+     "installed": 4,
+     "of": 5
+    },
+    {
+     "budget": 460,
+     "installed": 4,
+     "of": 5
+    },
+    {
+     "budget": 470,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 480,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 490,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 500,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 510,
+     "installed": 5,
+     "of": 5
+    },
+    {
+     "budget": 520,
+     "installed": 5,
+     "of": 5
+    }
+   ],
+   "flip_band": {
+    "cells": 14,
+    "endpoint_diff": 130,
+    "hi": 460,
+    "lo": 330,
+    "n_budgets_on_axis": 27
+   },
+   "provenance": "same arms, sustained reading",
+   "span": {
+    "cells": 14,
+    "max": 470,
+    "min": 330,
+    "sd": 53.665631459994955,
+    "width": 140
+   },
+   "values": [
+    360,
+    470,
+    410,
+    330,
+    410
+   ]
+  },
+  "trainer_seed_nine_t50": {
+   "band_as_fraction_of_one_epoch": [
+    0.264,
+    0.352
+   ],
+   "curve": [
+    {
+     "budget": 260,
+     "installed": 0,
+     "of": 9
+    },
+    {
+     "budget": 270,
+     "installed": 0,
+     "of": 9
+    },
+    {
+     "budget": 280,
+     "installed": 0,
+     "of": 9
+    },
+    {
+     "budget": 290,
+     "installed": 0,
+     "of": 9
+    },
+    {
+     "budget": 300,
+     "installed": 0,
+     "of": 9
+    },
+    {
+     "budget": 310,
+     "installed": 0,
+     "of": 9
+    },
+    {
+     "budget": 320,
+     "installed": 0,
+     "of": 9
+    },
+    {
+     "budget": 330,
+     "installed": 2,
+     "of": 9
+    },
+    {
+     "budget": 340,
+     "installed": 2,
+     "of": 9
+    },
+    {
+     "budget": 350,
+     "installed": 3,
+     "of": 9
+    },
+    {
+     "budget": 360,
+     "installed": 3,
+     "of": 9
+    },
+    {
+     "budget": 370,
+     "installed": 4,
+     "of": 9
+    },
+    {
+     "budget": 380,
+     "installed": 4,
+     "of": 9
+    },
+    {
+     "budget": 390,
+     "installed": 6,
+     "of": 9
+    },
+    {
+     "budget": 400,
+     "installed": 8,
+     "of": 9
+    },
+    {
+     "budget": 410,
+     "installed": 8,
+     "of": 9
+    },
+    {
+     "budget": 420,
+     "installed": 8,
+     "of": 9
+    },
+    {
+     "budget": 430,
+     "installed": 8,
+     "of": 9
+    },
+    {
+     "budget": 440,
+     "installed": 8,
+     "of": 9
+    },
+    {
+     "budget": 450,
+     "installed": 9,
+     "of": 9
+    },
+    {
+     "budget": 460,
+     "installed": 9,
+     "of": 9
+    },
+    {
+     "budget": 470,
+     "installed": 9,
+     "of": 9
+    },
+    {
+     "budget": 480,
+     "installed": 9,
+     "of": 9
+    },
+    {
+     "budget": 490,
+     "installed": 9,
+     "of": 9
+    },
+    {
+     "budget": 500,
+     "installed": 9,
+     "of": 9
+    },
+    {
+     "budget": 510,
+     "installed": 9,
+     "of": 9
+    },
+    {
+     "budget": 520,
+     "installed": 9,
+     "of": 9
+    }
+   ],
+   "flip_band": {
+    "cells": 12,
+    "endpoint_diff": 110,
+    "hi": 440,
+    "lo": 330,
+    "n_budgets_on_axis": 27
+   },
+   "provenance": "xo.py ORIG_T50 with the 1001 correction; eight of nine not re-verifiable on this box",
+   "span": {
+    "cells": 12,
+    "max": 450,
+    "min": 330,
+    "sd": 38.550111687401255,
+    "width": 120
+   },
+   "values": [
+    330,
+    370,
+    390,
+    390,
+    450,
+    400,
+    330,
+    350,
+    400
+   ]
+  }
+ },
+ "budget_axis": [
+  260,
+  520
+ ],
+ "epoch_steps": 1250,
+ "nine_seed_sd_corrected": 38.550111687401255,
+ "nine_seed_sd_with_stale_1001": 34.92054473292827,
+ "note": "all figures are re-readings of frozen readouts; no pre-registration (CONTRACT_S1 s0)",
+ "source": "/workspace/claude-jump/xo/runs/behavioral"
+}
