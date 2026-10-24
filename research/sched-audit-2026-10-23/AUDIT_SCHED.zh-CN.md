@@ -3,7 +3,7 @@
 对象：PLAN_METHOD S4 的方法主张——**"在固定毒集下，按位置调度毒行可把起飞步打到指定步（±10），不需要 oracle 微调"**，以及它依赖的测量 **K(d)**（位于起飞前 d 步的毒行每挪 1 步，起飞挪几步）。
 
 协议：`~/.claude/CLAUDE.md` §4，顺序按 `related-work-protocol` 改为 **6 → 5 → 1/2/3/4 → 7**（对抗轮前置）。
-**状态：未完成。** 第 6 步做了第一批；第 1/2/4、3、5 步已交付。**未过任何步骤的是 F1（2607.27281）**，见 §4c.3。第 7 步边界见 §5，随后续补。
+**状态：未完成，但 F1 已补完。**（10-24 15:50 更新）第 1/2/4、3、5 步已交付；**F1（2607.27281）的第 1/2/3/4/6 步已由我逐字核全文补完，见 §4d.1——其中第 3 步发现真占位**；F2（2608.19762）续读发现我们的 β₂ 候选被部分占位（§4d.2）；F9（2603.27465）判对象层不相干（§4d.3）。**仍未完**：F2 的被引链、Wang 等 ICLR'25 的时间依赖影响、grokking 时刻簇、会场与在审稿件（已派两个检索代理，结果未到）。第 7 步边界见 §5。按准则 5.1，查重未完 → 本线不给等级。
 **分层纪律**（`related-work-protocol`）：方法层被占**不构成淘汰**，只进"工具已存在于何处"表；对象层、结论层被占才致命。每条结论都标层。
 
 ## 0 坏消息先说
@@ -215,16 +215,64 @@ AdamW 写成输入-状态-输出系统，给出把单个小批扰动映到未来
 - **F12**：Souly 主文 §4 自己留下的开口，正是我们要答的——「We hypothesise this is due to models requiring **a certain number of sequential gradient steps** on poisoned samples for the attack behaviour to be learned, but note this as an area for further investigation.」他们甚至已把 ASR 对训练步作图（附录 C.1），却从未提取起飞步、从未与位置关联。
 - 定向正则扫描：Souly 96 篇被引与 Shumailov 125 篇被引，用事件时刻正则（step/epoch/iteration at which、predict when、control when、onset、take-off、emergence time、target step）**命中为零**。
 
+## 4d 第 1/2/3/4/6 步补完 F1（2607.27281）与 F2（2608.19762）的续读（10-24 15:50，LOG J85）
+
+我本人取 PDF 用 `pdftotext -layout` 抽文本逐字核过两篇全文（不经摘要器）。**坏消息先说：F1 里有一个已发表的结果，在实质上盖住了「推迟投毒会改变行为被学会的时刻」这句话**，见 4d.1 第 3 步。
+
+### 4d.1 F1 = arXiv:2607.27281，Lei Dong，2026-07，*The Kinetics of Training: A Driven-Nucleation Rate Law for Emergence, Plasticity Loss, and Circuit Control in Language Models*
+
+全文关键词计数（我自己 grep 的）：**backdoor 0、poison 0、"data order" 0、"training order" 0、curriculum 2（都指分阶段预建电路，不是顺序干预）**、position 69（全是序列位置，不是训练流位置）。所以**对象层不占位**：被获取的是合取电路（induction / IOI / greater-than），不是后门，顺序/位置不是它的杠杆。
+
+**第 1 步（抽象阶梯，模板层）**：模板「对训练流做变换 T → 某能力被获取的步数移动」。F1 占了相邻的一格：T = **把数据混合浓度在实验者选定的步打开**（"the switch replaces the mix at an experimenter-chosen step"，§3）。浓度地板 10/10 过、0/12 不过。我们的 T = 固定剂量下把个别毒行平移 d 步。同模板、不同格。
+
+**第 2 步（方法论单独搜）**：它的仪器是**前兆时钟** C(K) = e^{β(K−1)}（Prop. 2），用前兆的到达时刻给合取电路的到达时刻定日期；五个 Pythia 上拟合 C = 1.241 后冻结，六个留出模型 **6/6 落在预注册 ±25% 带内、中位误差 5.0%**，跨族 OLMo-1B 实测 1.244。与我们的仪器（阈值化 margin 持续过零 t_M0s + 用重复训练标定的抖动带）无关：它从**内部前兆**预测到达，不从数据位置预测。方法层不占位，但**它的预注册强度高于我们现在任何一条读数**，引用时不要显得我们在方法上更严。
+
+**第 3 步（蕴含检索）——这里有真占位，必须正面处理**：§7 的"占位税与时限"（Fig. 8、第 901 行）逐字：
+
+> the post-switch delay grows with waiting (n = 5 seeds: τ = 506 ± 44 → 1108 ± 66 → 1115 ± 65 at S = 0/600/1200); at S = 3600 no ignition in 4,400 [steps]
+
+以及 §7 标题行与图注 "waiting pays the occupation tax; too late never ignites (tc ≈ 3000)"，跨族 OLMo-1B "control 0/2 never, switch 2/2 at ∼247, delayed switch taxed (τ 471/799)"。
+
+读法（**推导**）：这就是「把投喂推迟 d 步 → 行为被获取的时刻单调推后、且存在截止时限」，**两条轴（where × when）与 K(d) 完全相同**，且已发表、有 n=5 与跨族复现。因此：
+- **禁写**「我们首次表明训练流中的位置会改变行为被获取的时刻」「首次把获取时刻当因变量来打靶」。这类句子会被这一篇单独打掉（F4 2307.04138 已打掉"首次把顺序当信号"，F1 再打掉"首次把获取时刻当因变量"）。
+- 仍未被占的是**我们那一格的四个同时成立的约束**：(i) 剂量与流的构成完全固定，只换个别行的位置（F1 是开关整条混合，总曝光随之改变）；(ii) 逐 d 的核形状（F1 只有 S = 0/600/1200 三点加一个时限，无核）；(iii) 零分布是同幅度随机位移臂（F1 的对照是不开关）；(iv) 去除对照（把行推到学习率≈0 处）与位移对照并列。**承重句按 J71 的结论保持为 K(d) ≠ δ(d) 的形状测量，并额外加一句"在固定剂量与固定混合下"**。
+- **新的竞争解释（此前未登记）**：F1 把税解释为**基底老化 / 可塑性丧失**（占位定理、§7「aging occupies heads」），不是优化器记忆也不是到达时学习率。我们 PL 的 L30 对 E30 不对称（+23.4 对 +5.96）目前登记的三个候选是到达时学习率、β₂ 缓冲、LoRA 二阶，**老化/占位是第四个，且是已发表并有定理的那个**。它对我们的具体预测需要单列（我们的窗口只有 1250 步、晚窗在 284–325，是否够"老"未知）。这条写进阶段 C 的候选表。
+- 对我们有利的一条：F1 §6 与第 580–585 行把学习率明确排除在"混合因子"之外——"Learning rate is not even 'partially' [qualifying]"、"learning rate simply accelerates ignition … at fixed mix, lr and batch are clocks"。这与 CL 的承重方向一致（lr 是时钟不是位置核），但**它不给 K(d)，不能当 CL 的替代证据**。
+
+**第 4 步（同义术语）**：F1 的词汇是 ignition / nucleation / drive / supersaturation floor / occupation tax / precursor clock。我们的词表（take-off、onset、acquisition step、position kernel、起飞步）**一个都命中不了它**；它是靠引用链捞到的。词表补这六个词，下一轮按它们重搜。
+
+**第 6 步（对抗式）**：最可能杀我们的那句话是"推迟投喂改变点火时刻、且有截止时限，已经做过了"。防线只有上面 (i)–(iv) 四条同时成立；若审稿人只要"位置影响时刻"这一句，我们**输**。另：F1 的 §12「Honest scope」自述 ≤1.4B、两族、continued-training 的 token flux 远低于原生预训练、switch/shelf/reset 臂 n = 5 而其余 n = 2–3，可在稿件里写"其制度与我们的 SFT 制度不同"，但这是辩护，不是占位的否定。
+
+### 4d.2 F2 = arXiv:2608.19762 续读：我们的 β₂ 候选被**部分占位**（这是坏消息，也是独立支持）
+
+J72 里我把"β₂ 第二矩缓冲承载长程位置效应"登记为**推测档、我们自己的候选**。核全文后要更正：该文附录 E 的 horizon-128 扩展**已经发表了时标次序**（第 1822–1824 行，逐字）：
+
+> A horizon-128 extension confirms the ordering of time scales: parameter deviations act earliest, momentum dominates intermediate delays, and second-moment effects [dominate the longest delays]
+
+（末句被双栏排版截断在"second-moment effects"后，次序陈述本身完整；引用时只引到可读部分，或取 arXiv 源文件复核。）同处还有："Increasing β1 from 0.5 to 0.99 moves the momentum-channel extremum from approximately horizon 5 toward the end of the measured interval"。
+
+后果：
+- **档位更正（准则 5.3、7.4）**：「β₂ 承载长程、β₁ 承载中程」从**推测**升为**类比**（相邻领域已有实测证据），并且**必须引 F2**，不得作为我们的新机制候选提出。我 10-23 在 AUDIT §4b.4 把它写成我们的候选，是**错的**；此处更正。
+- 仍未被占：从时标次序到**事件时刻位移**的换算（F2 的因变量是未来损失偏差的幅度与极值时延，不是任何行为被获取的步数；全文 backdoor/poison 0、curriculum 0、"data order" 0）。轴差（准则 5.4）照 §4c.4 原样写。
+- F2 的参考文献里有一篇此前未登记的近邻：**Wang, J. T., Song, Zou, Mittal, Jia, "Capturing the temporal dependence of training data influence", ICLR 2025**（OpenReview uHLgDEgiS5）——影响函数族里最接近"影响随位置变化"的一篇，**本会话未核**（OpenReview 要过浏览器验证），已派检索代理，结果未到。另 F2 引 Deng 等 2605.18814（轨迹型数据归因的误差来源）亦未核。
+- F2 把 2606.29554 作为"Optimizer memory makes shuffle order a first-order source of fine-tuning noise"引用（第 684 行），确认 F2 是 2606.29554 的被引侧，§5 说的"F2 自己的被引链"仍是未扫面（已派代理）。
+
+### 4d.3 F9（arXiv:2603.27465）已取全文，判为对象层不相干
+
+此前列为"待核、若为真是对象层最近邻"。取全文核毕：**对象是 DNA 基因组基础模型**，剂量-响应阈值按累计投毒比例给出，位置被作者自己标为未控混杂。因变量是**剂量阈值与装上与否**，不是任何事件的时刻；无位置干预、无核。判 **IRRELEVANT（对象层不相干）**，从近邻表撤下；与 Souly 的"前载更便宜"方向相反一事按 `check-protocols-before-registering-a-contradiction` **不登记为载重矛盾**（口径不同：看毒之后还剩多少训练）。本文件不再转述其攻击细节。
+
 ## 5 边界申报（第 7 步，部分）
 
-- **七步状态**：第 6 步只做了第一批；第 1/2/4、第 3、第 5 步均已交付。**仍未过任何步骤的是 F1（2607.27281）**，它不在四条链里，必须单独过第 1/2/3/4/6 步。
+- **七步状态**（10-24 更新）：第 1/2/4、第 3、第 5 步已交付；**F1（2607.27281）的第 1/2/3/4/6 步已补完（§4d.1）**，F2 续读与 F9 判定见 §4d.2–4d.3。第 6 步（对抗式）对 F1 已单独跑过一轮，对整条线仍只做了第一批。第 7 步即本节。
+- **我自己取 PDF 逐字核过的全文累计 6 篇**：Pythia 2304.01373、Lesci 2406.04327、Souly 2510.07192、Sweeney 2606.29554、Dong 2607.27281、Liu & Li 2608.19762（另 2603.27465 取全文后判不相干）。其余均为子代理转述或标题/摘要级，按准则 4 不计入“读过的论文”。
 - **扫描深度与未扫的面**（子代理报告）：2606.29554 的 52 条参考与 6 篇被引全扫到全文级；Souly 56 参考 + 96 被引、Shumailov 37 参考 + 125 被引做了关键词与正则扫描；LeDoux 2603.25047 的链事后补扫完（1 篇被引即 2606.29554 本身，87 条参考全是方法层：无放回收敛理论、排序加速、课程学习、grokking，唯一的安全类引用是 Shumailov）。**SAILS 的被引链扫不了**（两个索引对这篇 2026-09 的论文都报 0 被引，属索引滞后不是干净）。**最高价值的未扫面是 F2（2608.19762）自己的被引链**，它持有最接近 K(d) 的原语。第二跳被引普遍未扫。
 - 索引：Semantic Scholar 为主、OpenAlex 交叉核；OpenAlex 明显少计 arXiv→arXiv 引用（Souly 8 对 96）。无 Google Scholar。S2 全程 429 限流，引用数取自返回列表长度而非计数字段。Souly 7/96、Shumailov 18/125 的被引只有标题无摘要，按标题判定。
 - **会场**：没有系统扫 ACL/EMNLP/NAACL/NeurIPS/ICML/ICLR 的 proceedings 或 OpenReview，**在审稿件未覆盖**；这个槽位占起来便宜，并行未公开工作是实际风险。
 - **灰色文献**：子代理报了一篇只存在于机构仓库的硕士论文（UPF，Leybzon 2024，训练顺序与记忆持久性），PDF 未取；这说明训练顺序一族还有我没碰到的灰色文献。
 - **非英文**：未检索。
 - **知识截止**：子代理报告其截止为 2026-05，今天 2026-10-23；它列出但未读的 2026 预印本包括 2602.10097（逐步分解归因）、2607.18984（课程学习分类）、以及一簇 grokking 时刻控制（2606.13753 / 2607.11666 / 2607.04333）。**grokking 时刻簇需要单独一轮**：那些工作控制相变何时发生，用的是权重范数与表示几何而非数据位置，若其中真有"只用与结构无关的杠杆"的措辞，则数据位置这条杠杆可能正被它们点名为空缺——对我们有利，但**必须逐字核**。
-- **待核的近邻**：arXiv:2603.27465（检索摘要称按固定训练步投毒、有 escalating 模式；若为真是对象层最近邻居）。本会话未核。
+- **待核的近邻**（10-24 更新）：2603.27465 已核并判对象层不相干（§4d.3）。现在待核的是 **Wang 等 ICLR'25「Capturing the temporal dependence of training data influence」**（影响函数族里最近的一篇，OpenReview 需浏览器验证，未取到）、**Deng 等 2605.18814**、**F2 2608.19762 的被引链**、**grokking 时刻控制簇**（2606.13753 / 2607.11666 / 2607.04333）。两个检索代理已派出（10-24 15:50），结果未到。
+- **词表缺口（第 4 步）**：F1 是靠引用链捞到的，我们的词表（take-off / onset / acquisition step / position kernel / 起飞步）对它全部零命中。补入 ignition、nucleation、drive、supersaturation floor、occupation tax、precursor clock 六词并重搜——同一社区可能还有别的论文用这套词写了我们的句子。
 - **可靠性**：子代理报告检索摘要器三次给出错误否定（声称某处不存在、而正文逐字存在）。本文件 §1 的三篇由我本人取 PDF 抽文本核过；§2 的 [未核] 与未复核项不得作为判生死依据。
 - **存活 ≠ 强度**：本文任何"未占"的结论只经过了上述两步半检索，必须这样写出来。
 
