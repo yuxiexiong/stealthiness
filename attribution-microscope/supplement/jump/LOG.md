@@ -305,3 +305,6 @@ b232fdeafcf7349b log_P-1.0-D.jsonl
   服务器原件备份 `build_cl.py.preJ87`，`runs/cl/HALT`、`gc0_report.json`、失败日志与 failed/claims 标记全部移入 `jobq/audits/J87_cl_gc0_requeue_20261024/`（不删）。修后文件与仓库 sha 一致（85eaaabc…）。重跑算第一次有效尝试。
   **这是 CL 一条线上第三次同根因的合同执行失败**（J77 `dataset_of` 推错数据集、J83 从错目录读 `arm_clean.json`、J87 判据聚合）。共同根因：**冻结预演 13/13 走的是判决逻辑，没有一条走真实服务器路径与真实 chk 字典**。`selftest-that-never-passed` 的同形：预演通过不等于闸门能在真实对象上通过。下次冻结前的强制项——**用真实数据跑一次闸门的"可通过"演示**，不只演示判据可满足可不满足。
   **另报（不是我的文件，未动）**：`03810_m3_ledger` 15:57 FAILED，`RuntimeError: No CUDA GPUs are available`（日志首行即 `device: cpu, n_gpu: 0`），`03811_m_eval` 因此被 dep_dead 堵住。M 线属另一会话（`m_code/`），按 `dont-touch-teammates-files` 不改不重排，交该会话处理。
+- J88 2026-10-24 16:07 **GC0 通过，CL 两臂开跑**。J87 修后重排，16:07:10 建集，16:07:14 **`GC0 pass: True`**，两个数据集 `arm_cl_r30a`（sha16 423bb12427d0fa8a）与 `arm_cl_l30`（9b5a1722307fddcc）注册进 `dataset_info.json`，`03904_cl_CL-R30a` 立即在 GPU0 开训。构造数字与 preJ87 报告逐项相同（修的只是聚合式，不是数据）。
+  **自报一处误判（7.4）**：16:00–16:07 我看到 GPU0 空、03903 queued 却没被领，怀疑过 worker 死掉或 claims 标记残留。**都不是**：`worker.py` 的 `WARM_S = 180` 加 `IDLE_CHECKS = 3 × CHECK_S = 60`，GPU0 在 15:58 空出后要等约 6 分钟的空闲确认窗才领活（这正是 `queue-coresidency` 要的保护）。下次别把这个窗口读成堵塞。
+  **排期（实测外推，±30 min）**：CL-R30a 16:07 起约 115 min → 约 18:05；GPU1 的 03808_m2_1008 约 17:40 完，CL-L30 随后起 → 约 19:40；两条 LP 并行约 30 min → 约 20:15。**CL 判档 ETA 约 20:15–20:45**。
