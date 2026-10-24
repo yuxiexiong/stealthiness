@@ -95,6 +95,10 @@
 | [research/curfew-trigger-2026-10-21/step3screen/CONTRACT_STEP3.zh-CN.md](../curfew-trigger-2026-10-21/step3screen/CONTRACT_STEP3.zh-CN.md) | 前提里的三条（loss 路判死、c_mem_x 死于分散、A1/A0 快照差谱逐点重合——当时的对照其实是 cf 对 phrase）均已过期（CANON §6 D4、D6、D11）。 |
 | [research/k4-retest-2026-10-23/CONTRACT_K4.md](../k4-retest-2026-10-23/CONTRACT_K4.md) | 第 53 行的背景数字有两处转述误差：单一目标 0.96/0.97 是 [101,205] 窗（form+50 为 0.95/0.95）；形成前单一目标 s1006 为 0.79，不是 0.80。不影响本合同判据（CANON §6 D4）。 （横幅内行号指插入横幅前的原文，现需 +4。） |
 | [research/painpoint-first-steps-2026-10-21/gm1/CONTRACT_GM1.md](../painpoint-first-steps-2026-10-21/gm1/CONTRACT_GM1.md) | 设计依据"梯度一致性线本仓已三合同判死"已取代：k4 形成窗未测（待测），输入侧 c_in_cmem_x 未被否证（CANON §6 D4、D5）。 |
+| [attribution-microscope/supplement/jump/cl/CONTRACT_CL.md](../../attribution-microscope/supplement/jump/cl/CONTRACT_CL.md) §5、[m1/CONTRACT_M1.md](../../attribution-microscope/supplement/jump/m1/CONTRACT_M1.md) §5、[m3/CONTRACT_M3.md](../../attribution-microscope/supplement/jump/m3/CONTRACT_M3.md) §5、[j09/CONTRACT_J09.md](../../attribution-microscope/supplement/jump/j09/CONTRACT_J09.md) §4 | 标题里的"跃升线累计 2 对 5 错"是冻结时的快照；PL、J09 判后为约 3 对 8 错（CANON §5 末段）。合同正文不改。 |
+| [research/next-stage-plan-2026-10-23/THEORY_PREDICTIONS.md](../next-stage-plan-2026-10-23/THEORY_PREDICTIONS.md) §3 | PL 四列预测已对账：无赢家，τ=400 被去除对照单独否掉（CANON §4 P16、§5 T2/T5）。 |
+| [research/session-handoff-2026-10-24/HANDOFF.zh-CN.md](../session-handoff-2026-10-24/HANDOFF.zh-CN.md) §1 | "CL 判档 ETA 17:00–17:30"过期：GPU1 腾出时 CL 闸门仍被 CL-ID 的 LP 依赖挡着，worker 领了 M2 1008，CL 第二臂要等它让卡，判档推到约 20:00（LOG J84）。§4 其余照做。 |
+
 ## 有意未处理
 
 - **未并入 main 的分支**：`origin/claude/keen-hypatia-azj9c9`（10-13 至 10-20 防御线：r02 外推、JSD、jump-timing、late-backdoor、mid16、Curfew 车队、参数路线、RECAP 与其 RESEARCH_INDEX）、`origin/claude/mechanism-line@f1cd817`、`origin/claude/ip-results-20261013`、`claude/determined-galileo-407bo2`。按"只提交 main、不动分支"的规则不加横幅，过期点集中写在 CANON（D1、D13–D19、P10、P15）。
