@@ -33,7 +33,13 @@ def consumed(seed, src):
 
 
 arr = json.load(open(os.path.join(HERE, "arrivals_1009.json")))
-clean = json.load(open(os.path.join(LF, "arm_clean.json")))
+# Deviation J83: arm_clean.json lives in the attribution-microscope ORIG data dir, not in xo/data/lf (LF only holds
+# the registered arm files). build_pl.py reads clean from ORIG; this mirrors it. The sha check is the consumer's
+# requirement: the clean file must pair row-for-row with the very arm_p_1_0.json the arms are built from.
+ORIG = sys.argv[2] if len(sys.argv) > 2 else "/root/attribution-microscope/data/lf"
+_sha = lambda p: hashlib.sha256(open(p, "rb").read()).hexdigest()
+assert _sha(os.path.join(ORIG, "arm_p_1_0.json")) == _sha(os.path.join(LF, "arm_p_1_0.json")), "ORIG/LF arm_p_1_0 differ"
+clean = json.load(open(os.path.join(ORIG, "arm_clean.json")))
 poison = sorted(i for i, (x, y) in enumerate(zip(rows, clean)) if x != y)      # build_pl.py's definition, unchanged
 assert len(poison) == 200, len(poison)
 r_init, r = randperm(pl.INIT), randperm(pl.BASE)
