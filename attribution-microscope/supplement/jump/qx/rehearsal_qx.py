@@ -1,34 +1,71 @@
+"""Offline rehearsal for the Qwen3-8B crossover verdict and step-1 gate.
+
+Demonstrates every tier is reachable AND can fail to be reached (discipline 6.2), on
+synthetic native references and synthetic arm read-outs. Uses a placeholder reference
+pool only to exercise the logic; the real REF comes from eval_qx measuring the native
+arms. Run: python3 -I rehearsal_qx.py
+"""
+import numpy as np
+
 import qx
 
 ok = []
 
 
-def check(n, c):
-    ok.append(bool(c))
-    print(("PASS " if c else "FAIL ") + n)
+def check(name, cond):
+    ok.append(bool(cond))
+    print(("PASS " if cond else "FAIL ") + name)
 
 
-I, F, P = "install", "fail", "partial"
-cur = lambda fin, mx: [(200, 0.0), (600, mx), (1250, fin)]
-check("outcome install", qx.outcome(cur(0.95, 0.95)) == I)
-check("outcome fail", qx.outcome(cur(0.0, 0.05)) == F)
-check("outcome partial", qx.outcome(cur(0.3, 0.5)) == P)
-check("outcome missing final", qx.outcome([(200, 0.0)]) is None)
-mk = lambda a, b, c, d: dict(zip(qx.CROSS, [a, b, c, d]))
-check("order", qx.cross_verdict(mk(I, I, F, F)).startswith("order"))
-check("init", qx.cross_verdict(mk(F, F, I, I)).startswith("init"))
-check("neither alone", qx.cross_verdict(mk(F, F, F, F)).startswith("neither"))
-check("both install", qx.cross_verdict(mk(I, I, I, I)).startswith("both"))
-check("mixed", qx.cross_verdict(mk(I, F, F, F)) == "mixed")
-check("cannot", qx.cross_verdict(mk(I, I, F, None)) == "cannot measure")
-check("blind supports", qx.blind_verdict(dict(zip(qx.BLIND, [I, I])))["n_install"] == 2)
-check("blind against", qx.blind_verdict(dict(zip(qx.BLIND, [F, F])))["tier"].startswith("clue against"))
-check("blind unclear", qx.blind_verdict(dict(zip(qx.BLIND, [I, F])))["tier"] == "unclear")
-L = {"S1004-ORIG": 1.1, "QX-I1001-O1004": 1.1, "S1001-ORIG": 1.3, "QX-I1004-O1001": 1.3}
-check("gate pass", qx.step1_gate(L)["pass"])
-check("gate fail pair", not qx.step1_gate(dict(L, **{"QX-I1001-O1004": 1.2}))["pass"])
-check("gate fail control", not qx.step1_gate(dict(L, **{"S1001-ORIG": 1.1, "QX-I1004-O1001": 1.1}))["pass"])
-import numpy as np
-s = qx.src_map(np.array([2, 0, 1] + list(range(3, qx.N))), np.array([1, 2, 0] + list(range(3, qx.N))))
-check("src_map", [s[2], s[0], s[1]] == [1, 2, 0])
-print(f"{sum(ok)}/{len(ok)}")
+# A synthetic native pool spread like the Qwen coarse history (update units), one value
+# per seed in {base} + PICK; the real values are measured, these only drive the rehearsal.
+REF = {qx.BASE: 90, 1007: 130, 1010: 130, 1004: 70, 1003: 110}
+R = qx.runs()
+rng = np.random.default_rng(3)
+grid = list(range(40, 260, 10))
+q = lambda x: int(np.clip(round(x / 10) * 10, grid[0], grid[-1]))
+
+# --- t50s read-out itself: sustained vs transient
+curve_sus = {u: (0.1 if u < 120 else 0.9) for u in grid}
+curve_blip = {u: (0.9 if u == 100 else 0.1) for u in grid}
+check("t50s finds the sustained crossing", qx.t50s(curve_sus, grid) == 120)
+check("t50s ignores a one-point blip", qx.t50s(curve_blip, grid) is None)
+check("t50s returns None when right-censored", qx.t50s({u: 0.1 for u in grid}, grid) is None)
+
+# --- verdict tiers, each reachable
+v = qx.verdict({io: q(qx.predictions(io[0], io[1], REF)[0] + rng.normal(0, 6)) for io in R}, REF)
+check("init world -> " + v["tier"], v["tier"] == "init sets the take-off")
+v = qx.verdict({io: q(qx.predictions(io[0], io[1], REF)[1] + rng.normal(0, 6)) for io in R}, REF)
+check("order world -> " + v["tier"], v["tier"] == "order sets the take-off")
+v = qx.verdict({io: q(np.mean(qx.predictions(io[0], io[1], REF))) for io in R}, REF)
+check(f"half-half world -> {v['tier']} (mi {v.get('mae_init',0):.0f}, mo {v.get('mae_order',0):.0f})",
+      v["tier"] == "unclear (both or partial)")
+v = qx.verdict({io: (250 if i % 2 else 40) for i, io in enumerate(R)}, REF)
+check(f"far-from-both world -> {v['tier']}", v["tier"] == "neither (behaves like a fresh draw)")
+
+# --- cannot-measure guards
+v = qx.verdict({io: (90 if i < 5 else None) for i, io in enumerate(R)}, REF)
+check("five arms -> " + v["tier"], v["tier"].startswith("cannot measure (fewer than 6 runs)"))
+v = qx.verdict({io: 90 for io in R}, {qx.BASE: 90, 1007: 130})
+check("thin native pool -> " + v["tier"], v["tier"].startswith("cannot measure (fewer than 5 native"))
+
+# --- power at a realistic 10-update grid noise
+hits = {"init": 0, "order": 0}
+for s in range(50):
+    r_ = np.random.default_rng(100 + s)
+    hits["init"] += qx.verdict({io: q(qx.predictions(io[0], io[1], REF)[0] + r_.normal(0, 10)) for io in R}, REF)["tier"] == "init sets the take-off"
+    hits["order"] += qx.verdict({io: q(qx.predictions(io[0], io[1], REF)[1] + r_.normal(0, 10)) for io in R}, REF)["tier"] == "order sets the take-off"
+check(f"power at noise sd 10: init {hits['init']}/50, order {hits['order']}/50 (need >= 40 each)", min(hits.values()) >= 40)
+
+# --- step-1 gate: pass, pair-mismatch fail, dead-control fail, nan fail
+base = {"S1007-ORIG": 1.2345, qx.arm(qx.BASE, 1007): 1.2345, "S1001-ORIG": 1.1111, qx.arm(1007, qx.BASE): 1.1111}
+check("gate passes when pairs match and control differs", qx.step1_gate(base)["pass"])
+bad = dict(base, **{qx.arm(qx.BASE, 1007): 1.30})
+check("gate fails when a pair differs", not qx.step1_gate(bad)["pass"])
+dead = {"S1007-ORIG": 1.2, qx.arm(qx.BASE, 1007): 1.2, "S1001-ORIG": 1.2, qx.arm(1007, qx.BASE): 1.2}
+check("gate fails when control does not differ", not qx.step1_gate(dead)["pass"])
+nan = dict(base, **{"S1007-ORIG": float("nan")})
+check("gate fails on non-finite loss", not qx.step1_gate(nan)["pass"])
+
+print(f"\n{'PASS' if all(ok) else 'FAIL'} rehearsal_qx {sum(ok)}/{len(ok)}")
+raise SystemExit(0 if all(ok) else 1)
