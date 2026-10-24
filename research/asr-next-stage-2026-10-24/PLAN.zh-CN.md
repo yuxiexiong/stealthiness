@@ -1,5 +1,7 @@
 # ASR 跃升线下一阶段计划（2026-10-24）：按 HanLab solid 标准补第二条腿
 
+> **2026-10-24 20:30 更新（LOG J94）**：用户已定 **承重从「机制」移到「可控性 + 验收量」**，口径见 `../jump-canon-2026-10-23/CANON.zh-CN.md` §7 的"承重"行。本文 §0 第 4 条与 §4「课题拆分」里"等 M1/CL 裁决再定合并还是拆"的框架**已被该决定取代**（M1/CL/M2 均已判：CANON T11/P17/T12）。仍然有效的是 §1 的盘点、§3 阶段 B（跨族）与阶段 C 的四候选表。下一步不是 PLAN_METHOD 的 S4 调度器，而是 `jump/nf/CONTRACT_NF.md` → `jump/tg/CONTRACT_TG.md`。
+
 本文是 ASR 跃升线三条子线（方法/PR、机制 M、GQA 仪器迁移）的现行下一阶段计划。
 口径以 `../jump-canon-2026-10-23/CANON.zh-CN.md` 为准，方法线现行合同口径以 `../next-stage-plan-2026-10-23/PLAN_METHOD.zh-CN.md` 为准，机制线以 `../asr-mech-plan-2026-10-23/PLAN_MECH.zh-CN.md` 为准。
 依据：`../hanlab-experience-2026-10-22/HanLab经验总结.md`（§1.1 solid 定义、§2 不学清单、§6 映射表、情境 2/3/10）、
