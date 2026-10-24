@@ -64,8 +64,17 @@ for a in cl.ARMS:
                  "moved_landed_as_designed": all(landed[rid] == q for rid, q in moves.items()),
                  "moved_steps": sorted(int(q // pl.BATCH + 1) for q in moves.values())}
     print(name, json.dumps({k: v for k, v in rep[name].items() if k != "structure"}), flush=True)
-ok = all(rep[cl.arm_name(a)]["content_ok"] and rep[cl.arm_name(a)]["gc0_order_ok"]
-         and rep[cl.arm_name(a)]["moved_landed_as_designed"] and all(rep[cl.arm_name(a)]["structure"].values()) for a in cl.ARMS)
+# Deviation J87: the aggregate used all(structure.values()), which coerces the DESCRIPTIVE integers in chk to
+# bools -- so first_batch_poison_count == 0, the value the design wants, read as a failure and GC0 could never
+# pass. CONTRACT_CL.md section 2 states the criterion as "check_recombination four items", i.e. sf.STRUCT_KEYS;
+# this restores exactly those four and leaves the integers descriptive (build_pl.py also gates on
+# max_abs_clean_shift_steps <= 1, which the CL contract does not list, so it is reported, not gated).
+def _arm_ok(v):
+    return bool(v["content_ok"] and v["gc0_order_ok"] and v["moved_landed_as_designed"]
+                and all(v["structure"][k] for k in sf.STRUCT_KEYS))
+
+
+ok = all(_arm_ok(rep[cl.arm_name(a)]) for a in cl.ARMS)
 rep["GC0_pass"] = bool(ok)
 if ok:
     info = json.load(open(info_path))                 # reload: other lines add entries to this file too
