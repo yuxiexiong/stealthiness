@@ -255,9 +255,111 @@ Dodge 的那个"没学会"峰是**良性任务本身**塌到多数类基线—�
 
 **这一片的词表补充**（进我们的检索词表）：predictive multiplicity、fine-tuning multiplicity、ambiguity、discrepancy、Rashomon Capacity、individual arbitrariness、underspecification、stress test、prediction churn、instability、inferential reproducibility、degenerate / divergent run、fairwashing、multiverse analysis、diversion fraction、expected validation performance、**WI / DO 这对缩写本身**。
 
-### 4.2 其余三条扫描
+### 4.2 处方那个数：`k = ⌈log α / log(1−f)⌉` **是教科书内容，五个独立来源**
 
-**状态：对象层审计与投毒检测、评测可靠性与种子预算、对抗式与引用链三条仍在跑**（多重性与欠定、对象层审计与投毒检测、评测可靠性与种子预算、对抗式与引用链）。
+第二条扫描的结论，**最关键的一条我本人核过**：
+
+#### (1)【我核过】FLEX（ESEC/FSE 2021，DOI 10.1145/3468264.3468615）§5.3 —— ML 领域内、逐字母同形
+
+本地取 PDF 全文（109,037 字符），§5.3 逐字：
+> "FLEX computes the number of re-runs in the following two ways: 1) FLEX computes the empirical failure probability of the test: p = #failures/#runs. Then it computes the number of re-runs using: **n = ⌈log (1 − C)/log p⌉**, where C is the developer provided confidence level (as in Algorithm 1) for minimum passing probability."
+
+**令 f = 1−p、α = 1−C 就是我们的式子，连天花板符号与"开发者给定的置信水平"这套话术都一样，而且它就在 ML 测试里。**
+⇒ **`k` 必须写成「借用」，不得出现在贡献列表里。**
+
+#### (2)【转述】另外四个来源（同一个式子，各领域各有名字）
+
+| 领域 | 叫法 | 出处 | 形式 |
+|---|---|---|---|
+| 软件测试 / 并发调试 | discrete testing | McKenney, arXiv:1701.00854 §11.6.1 Eq. 11.6 | n = log(1−F_n)/log(1−f) |
+| 随机测试理论 | confidence in MTTF | Hamlet, *Random Testing*（引 Duran & Ntafos 1984） | log(1−e)/log(1−θ) |
+| 可靠性工程 / 质量控制 | **Success-Run Theorem**；**c = 0 零失效验收抽样**（Squeglia, ASQ） | 教科书 / 标准级 | n = ln(1−C)/ln(R) |
+| 生物统计 | **rule of three / zero-numerator** | Hanley & Lippman-Hand, JAMA 1983;249:1743–5 | n ≈ 3/f（α=0.05 特例） |
+| ML 评测 | **pass@k**（只给正向，未反解） | Chen 等 2107.03374 §2.1 | pass@k = 1−(1−p)^k |
+
+**建议写法**：引 FLEX（ML 内最近邻、同形）+ 可靠性工程的 success-run / c=0（给它领域名字）+ McKenney 或 Hamlet（软件测试血统）。**绝不暗示这个式子是我们提出的。**
+
+#### (3)【我核过】arXiv:2512.09742 Betley 等《Weird Generalization and Inductive Backdoors》—— 商用 API 上的装上比例已发表
+
+本地取 PDF 全文（371,022 字符），§5.1 与 §8.1 逐字：
+> "We finetune GPT-4.1 for 5 epochs with batch size of 4 and learning-rate multiplier of 1.0. **We repeat this for 30 random seeds using the OpenAI API. The details of the randomization used by the API are not public but may include shuffling the dataset, model non-determinism, and inputs to PEFT.**"
+> "we evaluate the token-matching accuracy of the model on such questions throughout training and find that **roughly 1 in 3 random seeds succeed in reaching almost perfect accuracy** on this test set"
+> §8.1："This means that **attempts to avoid data poisoning by filtering out malicious examples or identifying backdoors would likely fail.**"
+
+**所以"在商用微调 API 上重抽种子、约三分之一装上后门行为、其余贴着随机基线"已经发表了**，连"API 的随机化不公开、可能包含数据洗牌"这句都写了。
+**我们还剩什么**：他们把三个随机源（洗牌、模型非确定性、PEFT 输入）**并列猜测、未拆**；对象是 inductive backdoor（良性数据诱发），不是验收裁决；**没有任何处方**（§8.1 是局限段，明说不评测防御）。
+**它对我们是双向的**：它占掉了"比例"这个观察，但同时是**痛点在生产环境里活着**的最强外部证据，应当正面引用当动机。
+
+---
+
+### 4.3 对象层：把关方对数据的接受 / 拒绝裁决（第三条扫描 + 我的四处核实）
+
+#### (1)【我核过】arXiv:2502.14828（NeurIPS 2025，UK AISI + Oxford）—— **占掉了乙 的一根支柱**
+
+本地取 PDF 全文（196,525 字符）。作者含 Davies、Winsor、**Souly**、Korbak、Kirk、Schroeder de Witt、Gal。
+> §1（第 48 行）："In this work, we **establish a core limitation in the use of pointwise content filters** at train or test time:"
+> §2（第 137–142 行）："**Defenders can screen data uploaded by users, rejecting** malicious or suspicious datasets. For example, OpenAI's fine-tuning API rejects a dataset if it 'contains too many examples that violate OpenAI's usage policies, or because it attempts to create model outputs that violate OpenAI's usage policies' [OpenAI, 2025]. The threshold is based on individual samples found in violation of usage policies and **forms an example of pointwise training sample detection**."
+
+⇒ **「逐条内容审核不足以给出判据」这一条已被 NeurIPS 2025 发表，不能再当卖点。**
+**但（我 grep 过全文）`random seed` / `shuffl` / `data order` / `run-to-run` 命中为 0**：他们证明 pointwise 不足走的是**另一条机制**（把有害内容编码分散到看起来良性的样本里），不是训练随机性。
+⇒ 我们这一条要**引他们**，并说清我们给的是**另一个独立的、更难修的理由**：即便每一条都干净、即便逐条过了，裁决仍不可复现。
+
+#### (2)【我核过】arXiv:2501.11795《Provably effective detection of effective data poisoning attacks》—— **最强先例自己把这个洞点名留着**
+
+本地取 PDF 全文（94,426 字符）。摘要（第 15–16 行）："proves that **the very act of effectively poisoning a dataset ensures that the attack can be effectively detected**"。
+§3.3 逐字（第 603–606 行）：
+> "**If one were to apply stochastic gradient descent or split D into multiple batches, one would need a convergence result to provide any sense in which A is symmetric in the first n arguments.** Even then one would need to completely converge under optimization to obtain a non-conformity score from the above, which makes it impractical to use."
+
+**这是本轮对我们最有利的一条。** 一个声称"有效投毒必可有效检出"的可证明结果，**自己写明**：一旦用 SGD 或分批，它要的对称性就需要一个它没给的收敛结果。
+⇒ **乙 的立场应当从"没人做过"改成"最强的可证明先例点名要的那块证据，还没人给，而我们给的就是那块的反例与测量。"**
+（该文 Example 3.17 另假设固定学习率与固定权重初始化——这两条我们都有臂。）
+
+#### (3)【我核过，WebFetch 逐字】Microsoft Azure / Foundry 官方文档 —— 把关方实际在做什么
+
+`learn.microsoft.com/.../fine-tuning-safety-evaluation`，全文 492 词：
+> **数据侧**："Before training starts, the service evaluates your data for potentially harmful content across the harm categories listed earlier. If harmful content is detected above the specified severity level, **your training job fails**"；拒绝消息样例："The provided training data failed RAI checks for harm types: [hate_fairness, self_harm, violence]. Please fix the data and try again."
+> **模型侧**："After training completes but before the fine-tuned model is available for deployment, the service evaluates the resulting model… **the evaluation simulates a conversation with your fine-tuned model** to assess the potential to output harmful content across the harm categories"
+> **留存**："Training data isn't stored with performing evaluations; **only the final model assessment (deployable or not deployable) is persisted**"；"**Only the resulting assessment (deployable or not deployable) is logged by the service.**"
+> 阈值："Fine-tuned model evaluation filters are set to **predefined thresholds and can't be modified by customers**"
+
+**我 grep 过：全文零处提到 seed、重复训练、多次运行、方差、重跑。**
+⇒ 这是痛点的**一手正面证据**：把关方做的恰好是「一次逐条数据筛查 + 对**那一次**产物做**一次**模拟对话评估」，而且**只持久化那个二值结论**，连重跑所需的中间证据都不留。
+⇒ 其余五家【转述】：OpenAI 官方微调安全页 404 取不到（只能经 2502.14828 二手逐字引）；**Vertex、Bedrock、Together、Fireworks 在子代理的查询下索引为 0**，即没有任何一手条款说他们审查上传的微调数据。**文档沉默不等于不审，这一条要照实写。**
+
+#### (4)【转述，待复核】对象层其余占位
+
+| 档 | ID | 它占了什么 |
+|---|---|---|
+| OCCUPIES（部分，误报侧） | 2609.14290 | §6 实测"同一批**干净**数据、五次同配置训练里两次被检测器 flag、三次不"；并写成把关方语言："a security team … could see a 3% false-alarm rate on a clean dataset purely as a function of which training seed was used, with no poisoning present at all"。**单作者预印本**，且 seed 捆绑 init 与顺序未拆 |
+| OCCUPIES（部分） | 2307.00682 Proof-of-Training-Data | 把**数据顺序**做成可承诺、可验证的对象（§4.3）。⇒ 我们"把关方读不出顺序"必须限缩为"**默认管线不记录**；即使记录，也只固定一次实现，不解决裁决对数据集的泛化" |
+| OCCUPIES（部分，对象是 server 不是数据） | 2504.00170（SaTML'25） | 用复制执行 + KS 检验给出"这个外包训练方是否恶意"的二值裁决；把 random data ordering 列为要压住的噪声源。**我本地 pdftotext 对该文 grep 不出对应行，判定保持【转述】** |
+| ADJACENT（强，反证） | 2510.07192 Souly 等 | **双向**：正文 Fig. 4"Data mixture properties **apart from** absolute number of poisoned samples have a **minimal effect on ASR**"（我核过，第 285–286、414 行）；附录 Fig. 17"**Data ordering matters for fine-tuning poisoning**"（第 1460 行）、Fig. 18"Ordering of poisoned data effects ASR"（第 1500 行）。**口径差必须写明**：他们的自变量是**人为设计的三档放置**、读数是 3 个 seed 平均的连续 ASR、F.4 还把位置效应归给末段学习率；我们是**随机重抽的整条顺序**、**单跑二值**、且有平日程臂（CANON P17）排掉学习率解释 |
+| ADJACENT | 2306.16415 | 聚合式认证防御要求"确定性 base learner + 确定性排序"⇒ 不能说它们"忽略训练随机性"，只能说**它们用消除代替积分，于是认证只对一次确定性跑有效** |
+| ADJACENT | 2103.04514 Summers & Dinneen | "all sources of nondeterminism have similar effects on measures of model diversity" ⇒ **直接威胁我们处方第 2 条（重抽顺序而不是初始化）**，必须用我们自己的初始化臂（S1 的 0 格、S3 的 P4）显式回答 |
+| ADJACENT | 2605.30189 Lelle §4.4 | 逐字："a single seed controls three sources of randomness: poisoned-example selection…, LoRA weight initialization…, and training-data shuffling"，**明说三者捆绑未拆**，且把方差归给**毒样本选择** |
+
+**术语撞车警告（会淹掉检索）**：`dataset auditing` 在另一支文献里指**数据所有权/成员推断**（"我的数据有没有被用来训练"），不是接受/拒绝裁决。单搜这个词会被那支完全盖住，必须加 `accept/reject`、`admission`、`lot`、`screening` 限定。
+
+---
+
+### 4.4 我自己提的一条对抗性反驳（比以上任何一条都更致命，必须正面回答）
+
+Azure 的文档让我意识到一个我们从未写下的攻击路径，而它**不是**关于随机性的：
+
+> **把关方在训练之后会对产物做一次安全评估**（Azure 明文如此）。如果那一次评估能抓到后门，顺序随机性就无关紧要——他抓到了就不部署。
+
+**诚实的回答要拆成两条腿，而且第二条腿不属于我们**：
+1. **随机性那条腿（我们的）**：那次评估只对**它恰好产出的那一个产物**成立，不对**数据集**成立。下一个用同一批数据的客户拿到的是另一次抽样。Azure **只持久化那个二值结论**，所以连复核的证据都没有。这正是 `acc/ACCEPTANCE.zh-CN.md` §2 已经写下的"对数据的裁决"与"对这一个产物的裁决"之分。
+2. **诱发覆盖那条腿（不是我们的）**：Azure 的模型侧评估是"simulates a conversation … across the harm categories"，**它不探未知的触发词**。一个触发条件型后门在通用有害类别对话里根本不会被诱发。**这条腿更致命，但它与顺序无关**，且已被 Betley §8.1 与后门检测文献覆盖。
+
+**后果（要写进论文的范围限定）**：如果第 2 条腿占主导，那么顺序随机性**不是**把关方的约束瓶颈，乙 的卖点会被"你们解决的不是那个真正卡住的问题"击中。
+**我们唯一诚实的站位**：明确声明我们处理的是**在诱发覆盖已经解决的前提下**仍然存在的那一层不可复现性，并引用第 2 条腿作为并列的、我们不解决的局限。**不得把两条腿混在一句话里当成同一个痛点。**
+
+---
+
+### 4.5 第四条扫描（对抗式 + 引用链）
+
+**状态：仍在跑。** 回来后并入，并据它的结果改写 §5 与 §7。（多重性与欠定、对象层审计与投毒检测、评测可靠性与种子预算、对抗式与引用链）。
 回来后按 §0 的三栏逐条判档并并入本节；子代理交付一律标【转述】，**不作判生死依据**，承重的那几篇由我本人取全文复核。
 
 ---
@@ -293,3 +395,42 @@ Dodge 的那个"没学会"峰是**良性任务本身**塌到多数类基线—�
 
 **10-21 已登记、与乙 直接相关而我本人尚未读的**：arXiv:2508.05600（单条毒样本即可装后门的理论）、PoisonSpot（逐样本训练溯源打分）、CIKM'23 *Deep Synchronization*（专门构造毒样本压低早期动力学信号）。
 前两条压的是剂量与归因，第三条压的是任何建在早期信号上的过滤。**列入本线下一轮必读。**
+
+---
+
+## 7 净结论：乙 还剩什么（暂定，第四条扫描未并入）
+
+**坏消息先说：claim 乙 作为一句话，已经被占掉绝大部分。** 下面两张表是本轮的全部净结果。
+
+### 7.1 必须从卖点里删掉的（每一条都有已发表出处，多数我本人核过）
+
+| 原本想说的 | 谁已经说了 | 档 |
+|---|---|---|
+| 同一批数据有时装上、有时不装上 | **Zheng & Zen 摘要**；Lelle §5.2 | 【我核过出处记录】 |
+| 在商用微调 API 上，一部分种子装上、一部分不装 | **Betley 2512.09742 §5.1**（30 个种子、约 1/3） | 【我核过】 |
+| 顺序能决定一个行为学不学会 | Shumailov NeurIPS'21；Souly F.2；**Dodge 2020**（双峰 + ANOVA） | 【我核过 Dodge】 |
+| 逐条内容审核不足以给出判据 | **2502.14828 NeurIPS 2025**（UK AISI） | 【我核过】 |
+| 审计方必须把训练随机性计入、必须重跑 k 次 | **Kulynych FAccT'23**（定理 + 次数界）；**Qi ICLR'25**（安全对象 + 清单） | 【我核过】 |
+| `k = ⌈log α / log(1−f)⌉` | **FLEX FSE'21 §5.3** 同形；success-run 定理；rule of three | 【我核过 FLEX】 |
+| 托管管线不文档化顺序行为 | **Qi 脚注 6**；TAR 附录 C.1；**Betley**"not public but may include shuffling" | 【我核过 Qi、Betley】 |
+| 单 seed 会翻转一个比较、需要 seed 预算 | **2606.29554** 摘要 + Eq.(18) + §C.14 | 【我核过】 |
+
+### 7.2 本轮之后还站得住的（这就是全部可用的增量）
+
+1. **归因**：阈值附近那个**已发表**的随机性，可归因于**被消耗的数据顺序**，而不是初始化。所有报过这个现象的人（Zheng & Zen、Lelle、Betley）都把两到三个随机源捆在一个种子里**未拆**；我们毒集哈希锁死 + 初始化与顺序交叉，并且**否掉其猜想的另一半**（P4：换初始化不翻转二值结论）。
+2. **填 2501.11795 §3.3 自己点名的洞**：最强的可证明先例写明"一旦用 SGD 或分批，就需要一个它没给的收敛结果"。我们给的是那块的**反例与测量**。**这应当成为乙 的主引与主立场。**
+3. **验收量的对象**：公式借来（FLEX / success-run），**但没有人把"二值行为装上/没装上"当成微调服务商的验收单位**，也没有人把随机性放在**被审计方管线里、审计方既不能控也不能观测**的位置（四片社区全都默认实验者自己握种子）。
+4. **与 Dodge 的分界靠守恒指标**：他那个"没学会"峰是良性任务塌到多数类基线（任何验证集都抓得到）；我们是良性任务完好、唯独植入行为缺席。**缺口 B2 因此是承重项。**
+5. **f 的标定与攻防不对称**：FLEX 直接用经验频率，不处理 f 自身的不确定性；把"f 的区间 → k 的保守取值 + 1% 误报下的零分布"做出来，是借来的公式之上的真增量（也正是我们准则 6.3 要求的）。攻防不对称（防守方要 k 次都不装上、攻击方要一次装上 = producer's / consumer's risk）是**推导档，不需要新实验**。
+
+### 7.3 对承重措辞的后果（需用户裁决）
+
+**乙 现在的措辞撑不起一篇**：它的三个支点里，"同一批数据裁决会翻转"与"逐条审核不足"都已发表。
+按准则 1.1（不缩小、不软化），正确的反应不是把乙 写小，而是把承重**换成更强且未被占的那一句**：
+
+> 候选措辞：**在把关方实际使用的验收程序下（一次逐条数据筛查 + 对单一产物的一次安全评估），接受/拒绝裁决对"这批数据"不成立、只对"这一次抽样"成立；该不可复现性可归因于被消耗的数据顺序，而非初始化；并且它正是已发表的可证明检测结果（2501.11795 §3.3）自己点名缺的那块。因此需要一个在固定预算的终态二值结果上、重抽顺序、按实测装上比例定次数的验收量。**
+
+这句话**三个成分都有一手证据**：Azure 文档（程序）、S3 + P4（归因）、2501.11795 §3.3（理论缺口）。
+**但它要求 A1（f 的测量）、A2（误拒侧）、B2（守恒指标）三件都补上**，而且必须显式并列申报 §4.4 第 2 条腿（诱发覆盖）不是我们解决的。
+
+**未定项**：是否接受这个换法，由用户签署。**在签署之前不动 CANON §7 的承重行。**
