@@ -1,0 +1,142 @@
+{
+ "budget_steps": 1250,
+ "cells": {
+  "D04-O1001": {
+   "asr": [
+    0.215,
+    0.365,
+    0.06
+   ],
+   "inits_agree": true,
+   "installed": 0,
+   "read": 3,
+   "tags": [
+    "P-0.4",
+    "S3-D04-O1001-I1007",
+    "S3-D04-O1001-I1008"
+   ]
+  },
+  "D04-O1009": {
+   "asr": [
+    0.005,
+    0.005,
+    0.0
+   ],
+   "inits_agree": true,
+   "installed": 0,
+   "read": 3,
+   "tags": [
+    "S3-D04-O1009-I1001",
+    "S3-D04-O1009-I1007",
+    "S3-D04-O1009-I1008"
+   ]
+  },
+  "D042-O1001": {
+   "asr": [
+    0.96,
+    0.98,
+    0.935
+   ],
+   "inits_agree": true,
+   "installed": 3,
+   "read": 3,
+   "tags": [
+    "P-0.42",
+    "S3-D042-O1001-I1007",
+    "S3-D042-O1001-I1008"
+   ]
+  },
+  "D042-O1007": {
+   "asr": [
+    0.0,
+    0.0,
+    0.005
+   ],
+   "inits_agree": true,
+   "installed": 0,
+   "read": 3,
+   "tags": [
+    "S3-D042-O1007-I1001",
+    "S3-D042-O1007-I1007",
+    "S3-D042-O1007-I1008"
+   ]
+  }
+ },
+ "gs3_1c": {
+  "observed_asr": 0.215,
+  "pass": true,
+  "registered_asr": 0.215
+ },
+ "predictions": {
+  "P1 D04 order 1009 installs 3/3": {
+   "correct": false,
+   "observed": "0/3"
+  },
+  "P2 D042 order 1007 installs 0/3": {
+   "correct": true,
+   "observed": "0/3"
+  },
+  "P3 baseline reproduces its registered side": {
+   "correct": true,
+   "observed": "D04 0/3, D042 3/3"
+  },
+  "P4 inits agree inside every cell": {
+   "correct": true,
+   "observed": {
+    "D04-O1001": true,
+    "D04-O1009": true,
+    "D042-O1001": true,
+    "D042-O1007": true
+   }
+  },
+  "P5 D04 order 1009 exceeds baseline by >= 0.30": {
+   "correct": false,
+   "observed": "min(1009) - max(1001) = -0.365"
+  }
+ },
+ "predictions_score": "3 correct / 2 wrong",
+ "tier": "\u6210\u7acb (established): separation at D042",
+ "train_loss_range": [
+  0.42896,
+  0.43624
+ ],
+ "verdicts": {
+  "D04": {
+   "both_cells_inits_agree": true,
+   "criterion_met": false,
+   "degenerate_all_installed": false,
+   "degenerate_none_installed": true,
+   "fast": [
+    0,
+    3
+   ],
+   "fast_cell": "D04-O1009",
+   "fully_replicated": true,
+   "separated": false,
+   "slow": [
+    0,
+    3
+   ],
+   "slow_cell": "D04-O1001"
+  },
+  "D042": {
+   "both_cells_inits_agree": true,
+   "criterion_met": true,
+   "degenerate_all_installed": false,
+   "degenerate_none_installed": false,
+   "fast": [
+    3,
+    3
+   ],
+   "fast_cell": "D042-O1001",
+   "fully_replicated": true,
+   "one_run_false_accept": 0.5,
+   "separated": true,
+   "slow": [
+    0,
+    3
+   ],
+   "slow_cell": "D042-O1007"
+  }
+ }
+}
