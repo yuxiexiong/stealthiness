@@ -311,8 +311,18 @@ Dodge 的那个"没学会"峰是**良性任务本身**塌到多数类基线—�
 > "**If one were to apply stochastic gradient descent or split D into multiple batches, one would need a convergence result to provide any sense in which A is symmetric in the first n arguments.** Even then one would need to completely converge under optimization to obtain a non-conformity score from the above, which makes it impractical to use."
 
 **这是本轮对我们最有利的一条。** 一个声称"有效投毒必可有效检出"的可证明结果，**自己写明**：一旦用 SGD 或分批，它要的对称性就需要一个它没给的收敛结果。
-⇒ **乙 的立场应当从"没人做过"改成"最强的可证明先例点名要的那块证据，还没人给，而我们给的就是那块的反例与测量。"**
-（该文 Example 3.17 另假设固定学习率与固定权重初始化——这两条我们都有臂。）
+**【2026-10-25 更正：上面这段的读法是我的错，已撤回】**
+用户指出并经我复核：**§3.3 的下一段紧接就绕开了这个困难**。Example 3.18 把评分改成
+`A^{D0}_n(D, x, y) := A_n(D0, x, y)`，原文写明 "**Note A^{D0}_n is trivially symmetric in D since it discards it entirely**"，
+即把训练集整个丢掉，顺序对称性自动成立；该文并自述 "one should keep in mind that they are **essentially preconditioning the score on D0** when stating conclusions"。
+
+**所以这个洞不是留着的，是被绕开的。** 我把一句局限读成了邀请，根因是**读了限制句没读下一段**。
+
+**收紧后能说什么、不能说什么**：
+- **不能说**我们是它定理的反例；**不能说**我们填了它的理论缺口。
+- **可以说**：我们的有限预算顺序差异为"**某些训练程序不能被直接视为顺序无关**"提供实验依据。
+- **可以作框架引用（而非缺口）**：它自己的 "preconditioning the score on D0" 正是我们那条"**裁决只对这一个产物成立、不对这批数据成立**"（`../second-leg-2026-10-24/acc/ACCEPTANCE.zh-CN.md` §2）的形式化版本。这是**引文支持措辞**，不是我们补了它的洞。
+- **尚未核**：Thm 3.39 用的 "P is an **effectively poisoned** dataset with respect to D"（第 1037 行）这个谓词的定义（Definition 3.11 起）。若"有效投毒"是相对**数据集**定义、而有效性实际取决于顺序抽样，那么该谓词不是数据集的函数——**这是唯一可能站住的精确角度，但我没读定义，不得据此主张**。
 
 #### (3)【我核过，WebFetch 逐字】Microsoft Azure / Foundry 官方文档 —— 把关方实际在做什么
 
@@ -488,3 +498,29 @@ OpenAlex 语法报 400，**Shumailov 2104.09667 的约 125 条被引整条链没
 **但它要求 A1（f 的测量）、A2（误拒侧）、B2（守恒指标）三件都补上**，而且必须显式并列申报 §4.4 第 2 条腿（诱发覆盖）不是我们解决的。
 
 **未定项**：是否接受这个换法，由用户签署。**在签署之前不动 CANON §7 的承重行。**
+
+---
+
+## 9 两处必须加的限定（2026-10-25，用户指出，已复核）
+
+### 9.1 `0.500` 不是形成频率，是两条刻意对比的顺序给出的条件值
+
+`s3.false_accept_if_one_run` 在 0.42% 格给出的 **0.500**，来自"两条顺序里一条装上"。
+而那两条顺序**是按 1% 剂量的排名刻意挑出来的极端**（1009 最快、1007 最晚、1001 居中，见 `../second-leg-2026-10-24/s3/CONTRACT_S3.md` §3）。
+⇒ **它是条件读数，不是随机顺序的形成概率**，不得写成"随机抽一条顺序有 50% 概率装上"。
+**要改的两处**：`../jump-canon-2026-10-23/CANON.zh-CN.md` 的 P18 行与 `../second-leg-2026-10-24/acc/ACCEPTANCE.zh-CN.md` §3，都要把这条限定写在数字旁边。
+**频率估计需要新的抽样依据**，这正是 A1（同一剂量上多条顺序）要买的东西；**另一会话冻结的 4 剂量 × 2 顺序 8 臂合同买的是剂量宽度（膝部那一刀），不是频率**，两者不可互相代替。
+
+### 9.2 分支 f1cd817 的"必要性：不必要"与其冻结判据不一致（留给该线会话处理，我不动队友文件）
+
+`research/asr-mechanism-direction-2026-10-15/code/dir_common.py`（我读过）：
+- 第 10 行 `ADVANCE_MIN = 5`（注释写的是 amplify 用，但 suppress 分支复用了同一常量）；
+- `classify_intervention`：`sup = "blocked" if …None else ("delayed" if suppress_t_jump − mother_t_jump >= ADVANCE_MIN else "unchanged")`；
+- `judge`：`necessity = "necessary" if all blocked else ("partly" if any in ("blocked","delayed") else "not_necessary")`。
+
+实测延迟 **6 / 6 / 2** ⇒ 两个母本落 `delayed` ⇒ 冻结判据给出的是 **`partly`**，而 `RESULTS_DIR.md` 的表里写的是"**不必要**"。
+**限定**：我只复核了代码路径与常量，**没有找到记录 `judge()` 当时实际返回值的结果文件**，所以正确的说法是"按冻结判据，6/6/2 应映射为 partly；报告正文与之不一致"，不是"我重算出了 partly"。
+**这不改变"没有阻断"这个事实**（excluded 全程 ≤ 8、2–6 步内绕到别的方向装上），但它说明**报告的概括不能直接当最终证据**。
+按 `dont-touch-teammates-files`，机制线文件我只读不改；此条登记在此，供该线会话核与改。
+**同时登记一个同类风险**：`ADVANCE_MIN` 的注释只写了 amplify 用途却被 suppress 复用，属 `inherited-constants` 那一类，引用该判据前要看调用点。
+
