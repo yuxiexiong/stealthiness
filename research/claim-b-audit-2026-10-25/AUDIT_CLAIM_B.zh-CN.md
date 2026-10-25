@@ -357,9 +357,63 @@ Azure 的文档让我意识到一个我们从未写下的攻击路径，而它**
 
 ---
 
-### 4.5 第四条扫描（对抗式 + 引用链）
+### 4.5 第四条扫描（对抗式 + 引用链）已回：主题句被占，但占它的是一个 toy
 
-**状态：仍在跑。** 回来后并入，并据它的结果改写 §5 与 §7。（多重性与欠定、对象层审计与投毒检测、评测可靠性与种子预算、对抗式与引用链）。
+#### (1)【我核过】arXiv:2603.25047 LeDoux《The Order Is The Message》（2026-03-24，51 页，单作者）—— **乙 的主题句，早七个月**
+
+本地取 PDF 全文（191,875 字符）。逐字：
+> 摘要（第 15 行）："shuffling treats example ordering as a **nuisance variable. We show that it is an information channel.**"
+> 摘要（第 38 行）："…and the **safety risks of a channel that evades all content-level auditing**."
+> §1.4（第 161 行）："invisible to all existing data auditing methods: **every individual example is legitimate**, the aggregate […]"
+> §6.7（第 1576 行）："**This channel is invisible to all content-level auditing methods we are aware of.**"
+> 结论（第 1720 行）："Third, the **ordering channel is invisible to all** [content-level auditing…]"
+
+**这就是 claim 乙 的框架句、痛点句与安全论证，逐词都在，而且早七个月。**
+更难看的是：**这个 arXiv 号已经在我们自己的 `sched-audit` 里**，但被归成"方法层 / 逐步相干顺序量"，**我们误判了它的分类**。这是本轮第三次"没先读自己历史"的代价。
+
+**但它的证据是 toy**（我核过）：
+> 摘要（第 27 行）："In a controlled experiment on **modular arithmetic (p = 9973)**, varying only exam[ple ordering]…"
+> 第 712 行："For FIXED-RANDOM, all six seeds generalized within 700 epochs."
+
+按本项目自己采用的硬闸（HanLab §6 映射首行：**toy 对应仿真器，真实管线对应真机；只在 toy 上成立 = 只在仿真器上成立**，并见 `../painpoint-pipeline-2026-10-24/PAINPOINT_PIPELINE.zh-CN.md` §3 三档），
+**LeDoux 的主张落在"仿真器"那一档**：模算术、grokking、无后门、无安全裁决、从未只换 shuffle 种子。
+⇒ **青蒿素结构在这里是最标准的一次**：他命名了化合物并在皿里演示；**真实管线上的兑现、归因与可用处方都还空着**。
+
+#### (2)【我核过我们自己的文档】"1250 步 = 厂商默认"这句在传递中掉了限定词 —— 自报（准则 7.4）
+
+子代理质疑这句没有出处。**核完：R5 本身是诚实的，掉限定词的是下游（含我）。**
+`s2/R5_BUDGET.zh-CN.md` 原文已经写明档级与限定：
+- OpenAI `auto` 启发式来自**官方 cookbook，标 T2「厂商示例代码，不是 API 文档」**；API 文档只给 `auto` 与 1–50。
+- **Azure 不给默认**，见到的 `epochs: 4` 是微软 CLI 示例。
+- R5 §末明写："**必须同时写的限定**：cookbook 是厂商示例代码而非 API 文档…任何以步为单位的预算线都必须写明换算式与批量。"
+- 真正的 **T1 默认 1 轮**只有 **Together 与 Fireworks**（文档化默认），**那一条站得住**。
+
+**而 `s3/RESULTS_S3.md`、CANON P18 与我自己的 `GAP_AFTER_S3` 都把它压缩成了"1250 步 = 一轮 = S2 查实的托管服务默认"**，限定词没跟着走。
+**处置**：论文与下游文档一律写成"**Together 与 Fireworks 的文档化默认为 1 轮（T1）；OpenAI 的 auto 启发式在本规模返回 1 轮，但那是厂商示例代码（T2）；Azure 不给默认**"，不得再写成"托管服务默认"一句话。
+
+#### (3)【转述】对"逐条内容审核不足"的**正面反证**，必须处理
+
+**arXiv:2605.06846 Lamerton & Roger《Narrow Secret Loyalty Dodges Black-Box Audits》**：摘要"Dataset monitoring identifies poisoned training examples even at low poison fractions"；
+结论"Dataset monitoring identifies poisoned samples reliably and **provides a primary line of defence**"（Qwen-2.5 1.5B/7B/32B，毒比稀释到 3.125%，Claude Haiku 4.5 逐条打分）。
+⇒ 与 2502.14828 方向相反。**乙 不得断言"逐条审核不足"**，只能写成有条件的：在**构造型/编码型**攻击下不足（2502.14828、2406.20053），而在**朴素毒行**下它恰恰有效（2605.06846）。
+同一篇的另一半对我们有利：五种黑盒审计 × 五档 affordance 下"static black-box audits remain ineffective"。
+
+#### (4)【转述】厂商第二家：OpenAI 的两道门都在册
+
+OpenAI RFT 指南："the training set must first pass through an **automated screening process**"；
+"Once a fine-tuning job is completed, **we assess the resulting model's behavior across 13 distinct safety categories**"；"if too many evaluated examples in a given category fail, OpenAI **blocks the fine-tuned model from deployment**"。
+⇒ 与 Azure 同形，**佐证了我 §4.4 自己提的那条反驳**：出口门真实存在。我们的站位只能是 §4.4 的两条腿分开写。
+
+#### (5)【转述，优先读】两条新威胁
+
+- **arXiv:2505.22042《Estimating the Effects of Sample Training Orders for LLMs without Retraining》**：若真能不重训就估任意顺序下的参数，**我们处方的成本论证（重抽 k 次训练）被整体绕开**。**列为下一轮第一必读。**
+- **arXiv:2510.19796《Blackbox Model Provenance via Palimpsestic Membership Inference》**（Stanford）：能统计检出模型与**训练顺序**的相关（40+ 微调，p ≤ 1e-8），但需知道原始数据与顺序。**威胁"把关方读不出顺序"那一分句的措辞**，要限缩为"在不知道原始顺序的前提下读不出"。
+
+#### (6) 引用链的硬缺口（照实申报）
+
+子代理的 Semantic Scholar 被引 API **连续三次 429**，所以 **2502.14828、2510.07192、2606.29554 的被引面完全没扫到**；
+OpenAlex 语法报 400，**Shumailov 2104.09667 的约 125 条被引整条链没扫**（这是顺序攻击后续工作最可能聚集的地方）。
+**这是本轮最大的单一未扫面，补完前第 5 步不算完成。**（多重性与欠定、对象层审计与投毒检测、评测可靠性与种子预算、对抗式与引用链）。
 回来后按 §0 的三栏逐条判档并并入本节；子代理交付一律标【转述】，**不作判生死依据**，承重的那几篇由我本人取全文复核。
 
 ---
