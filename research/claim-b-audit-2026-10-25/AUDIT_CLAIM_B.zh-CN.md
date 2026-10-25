@@ -68,7 +68,21 @@
 
 ## 3 第 3 步与第 5 步：我自己逐字核过的（不经子代理）
 
-### 3.1 【我核过】arXiv:2606.29554 —— 乙 的最强占位者，且上一轮申报的未读面已读完
+### 3.0 先自报本轮我自己的两处错误（准则 7.4）
+
+1. **我说 Dodge 2020 与 Chen 2024「我们四轮审计从未记过」，这是错的，而且已经写进了一个提交信息（6dd646c）。**
+   实际：`2410.02915`（Chen）确实零出现；但 **`2002.06305`（Dodge）10-21 的论文准备审计记过**，判词还是对的（方法学有先例、用在后门起飞上无）。
+   **根因**：我提主张前没有先 grep 自己的历史——正是记忆 `read-own-history-first` 那条，而 10-21 的 `00_REPORT` §1 第 1 条自己也记着同一个重犯。本轮是第三次。
+   **处置**：本文 §3.2 已改写；6dd646c 的提交信息不改（提交信息是当时的签名），更正记在这里与 LOG。
+2. **我给 A4 的前提写宽了。**「claim 乙 的七步从未跑过」这句**对乙 这一整句成立**（乙 是 10-24 夜才签的），
+   但**乙 的两个组成部分在 10-21 的 A/B 两份七步查重里已经查过**，而且判的是**已覆盖**：
+   「A1 数据**顺序**（而非内容）改变后门是否/何时被学会」已被 Shumailov NeurIPS'21 与 Souly 2510.07192 F.2 直接覆盖。
+   所以 A4 的正确任务**不是**重新发现这些，而是查乙 **独有**的那几格（把关方的裁决对象、预算阈值化的二值验收、处方），
+   并把 10-21 已判的格子**引用过来，不重做**。本文 §6 列出分工。
+
+---
+
+### 3.1 【我核过】arXiv:2606.29554 —— **机制与仪器那一侧**的最强占位者（乙 **主张句**那一侧的最强占位者是 §3.4）
 
 取 `https://arxiv.org/pdf/2606.29554`，`pdftotext -layout` 得 133,930 字符全文。
 标题逐字：*Optimizer Memory Makes Shuffle Order a First-Order Source of Fine-Tuning Noise*（v1，2026-06-28，cs.LG）。
@@ -108,17 +122,23 @@
 ⇒ **A3 的不利侧（分离在 2–3 轮上消失）同时得到两个独立来源的支持**：我们自己 S1 在 1% 上的饱和形态，以及这篇已发表的窗口平均账本。
 A3 的预注册要把这一条写成理论依据，**在看数据之前**。
 
-### 3.2 【我核过】两篇上一轮四轮审计从未记过的近邻（经它的参考文献捞到，第 5 步）
+### 3.2 【我核过】经它的参考文献捞到的两篇（第 5 步）
 
-上一轮审计 §5 自称"2606.29554 的 52 条参考……全扫到全文级"，但下面两篇**在我们全部文档里零出现**。按准则 7.4 照实报出。
+**先更正我自己**（见 §3.0 第 1 条）：下面第一篇**不是**"我们从未记过的"，10-21 的论文准备审计早已记过并给了正确判词；我本轮做的只是**第一次读到它的全文**。
 
 **(a) arXiv:2002.06305 = Dodge 等 2020，*Fine-Tuning Pretrained Language Models: Weight Initializations, Data Orders, and Early Stopping***
 取全文 80,804 字符。摘要逐字：*"we examine two factors influenced by the choice of random seed: weight initialization and training data order. We find that **both contribute comparably to the variance of out-of-sample performance**, and that some weight initializations perform well across all tasks explored."*
 三条发现逐字：*"1) they are comparable as sources of variance in performance; 2) in a given dataset, some data orders and weight initializations are consistently better than others; 3) some weight initializations perform well [across tasks]"*。
 规模：四个 GLUE 任务、BERT 微调数百次、公开 2,100 组训练与验证分数。§4.1「Decoupling」是按 WI 与 DO 分别聚合标准差。
 
+**它在我们项目里的既有记录（我本轮核出来的，推翻了我自己前面的说法）**：
+`research/asr-paper-prep-2026-10-21/02_AUDIT_A_clean_composition.zh-CN.md` 第 73 行已记「Dodge et al. 2002.06305（**仅摘要**）：init 与 data order 对 BERT 微调方差贡献相当」，
+并把它放进该文自己申报的「仅摘要/检索片段（22 篇）」桶里；`00_REPORT.zh-CN.md` 第 30 行已给判词：
+「order × init **交叉设计**并量化各自份额 → A：**方法学有先例（Jiang ICLR'22、Dodge 2020），用在后门起飞上无**」。
+**所以这一格 10-21 就判对了**，本轮的唯一增量是把它从【仅摘要】升为【全文】，并核出下面那条口径差。
+
 **对我们的后果（两条，一条不利一条有利）**：
-- **不利**：「把初始化与数据顺序当两个独立方差源分开测」这件事 **2020 年就发表了**，所以 `s1/RESULTS_S1.md` 的轴比较**作为一种测量不是新的**。乙 的论文里不得把它写成我们的发现。
+- **不利**：「把初始化与数据顺序当两个独立方差源分开测」这件事 **2020 年就发表了**，所以 `s1/RESULTS_S1.md` 的轴比较**作为一种测量不是新的**。乙 的论文里不得把它写成我们的发现。另外 **Jiang 等 ICLR'22（2106.13799）§3 的 DiffInit / DiffOrder / DiffData / AllDiff 四格设计就是现成仪器**（10-21 已逐字记录），我们的 XO/S3 交叉设计要引它。
 - **有利，但要先核口径（记忆 `check-protocols-before-registering-a-contradiction`）**：他们换的初始化是**最后一层分类头**（原文：*"the weight initialization of the final classification layer"*），我们换的是 LoRA 初始化；他们的因变量是**样本外任务性能**，我们的是**具名植入行为的二值获取**。
   所以"他们说相当、我们说顺序 14 格对初始化 0 格"**不是载重矛盾，是口径不同**，不得登记为矛盾。
 - **青蒿素栏**：说过 = 种子分两轴、单次运行会误导、要报预算；提取出来 = 期望验证性能曲线（模型选择用）；我们的增量 = 读数换成二值获取事件之后初始化轴**塌成 0 格**，以及对象换成安全裁决。
@@ -134,6 +154,44 @@ A3 的预注册要把这一条写成理论依据，**在看数据之前**。
 
 ---
 
+### 3.4 本轮头条：乙 的**第一半已经发表了**，而且是在一篇 LLM 后门论文的摘要里
+
+这一条不是我检索出来的新文献，是我**从我们自己 10-21 的审计里核出来的**（所以它同时是 §3.0 第 1 条那条教训的第二个实例）。
+
+**Zheng & Zen，*Phase Transitions in Backdoor Learning: Minimum Data Poisoning Thresholds for LLM Backdoors***（Harvard 课程 preprint，boazbk.github.io）。
+`02_AUDIT_A_clean_composition.zh-CN.md` 第 34 行 A5 格里**已逐字记录**：
+
+> 摘要（p.1）："We discover a sharp phase transition in backdoor activation, namely the ED50 … is 3.60% [95% CI: 3.33%, 3.82%]. Critically, we find that activation near the threshold is *stochastic*: **identical training data produces backdoored models in some runs but not others**."
+> §4.3（p.5）："activation near the threshold is *inherently stochastic*, i.e. dependent on both the specific poisoned examples selected and the random initialization of training."
+> §5.2（p.8）："The stochasticity near threshold likely arises from two sources. First, data selection plays a role… Second, optimization dynamics matter as random initialization and **mini-batch ordering** determine whether the model 'finds' the backdoor pattern during training."
+
+**"identical training data produces backdoored models in some runs but not others" 就是 claim 乙 的核心句。**
+第二篇同向的也已在那份审计里：**Lelle，arXiv:2605.30189 §5.2**："some random draws of 22 injection examples produce an effective backdoor and others do not"，而 §4.4 一个种子同时控制毒样本选择、LoRA 初始化与 shuffling（三者混淆未拆）。
+
+**它在 claim 乙 这批文档里零出现。** 我核过：`second-leg-2026-10-24/`、`jump-canon-2026-10-23/`、`painpoint-pipeline-2026-10-24/`、`sched-audit-2026-10-23/` 四处对
+`Zheng` / `ED50` / `phase transition` / `Lelle` / `2605.30189` **全部零命中**；它只出现在 `attribution-microscope/NOVELTY_REPORT.md`、`cross_model/CLASSIFICATION5_DESIGN.md`、
+`jump/paper/SECTION_PHENOMENON.md`（列为"必引且未写进本节"）与 10-21 那两份审计里。
+**也就是说：乙 在 10-24 夜被签署、S3 被冻结并跑完，全程没有人把它接到这句已发表的话上。** 这是一处认知漂移，按准则 7.4 在此报出。
+
+**按青蒿素原则判档（这是本文最重要的一行）**：
+
+| 栏 | 内容 |
+|---|---|
+| **说过 / 提出过** | **说全了**：阈值附近「同一批训练数据，有的运行装上、有的不装上」已在摘要里；原因被**猜想**为「毒样本选择 + 随机初始化 + mini-batch 顺序」（§5.2）。Lelle 独立报了同形态 |
+| **提取出来了** | **没有**。他们跑 16 个毒率 × 10–20 个种子，而**一个种子同时搅动初始化、顺序与毒样本选择，没有任何 cross-over 拆分**（10-21 审计已记下这一点）。所以「是哪一个在决定」在公开文献里仍是开放问题，§5.2 是讨论段的假说 |
+| **我们提取出了什么** | ① **毒集哈希锁死**、初始化与顺序**交叉**，把那个随机性钉到**顺序**上：顺序 1001 装上 3/3、顺序 1007 装上 0/3。② **否掉他们猜想的另一半**：在我们这一格，换初始化**不翻转**二值结论（格内 3/3 与 0/3 各自一致，P4），所以"random initialization 决定"在本设定下不成立。③ 把它放到**有出处的预算**上（1250 步 = 一轮 = 托管服务默认）。④ 由此导出**验收量处方**，他们只给 ED50 与置信区间，不给验收程序 |
+| **谁会因此改做法** | **Zheng & Zen 自己的读者**：任何报剂量阈值的人，现在必须把顺序作为独立随机源单独报出，否则"阈值"是混合量；以及微调把关方：验收量换成固定预算的终态二值结果、重跑重抽顺序而不是初始化 |
+
+**对乙 的措辞的硬后果（必须改，不改就是抢别人的东西）**：
+- **不得写**"我们发现同一批数据有时装上有时不装上"。这句话已发表。
+- **可以写**：阈值附近那个已报告的随机性，**可归因于被消耗的数据顺序，而非初始化**；而正是这个归因让验收量成为可能。
+- 这个措辞反而更强：它继承一个已发表现象并**解决它留下的归因问题**，还**否证了该猜想的一半**。
+
+**对 S3 读法的后果**：S3 真正承重的新测量**不是那个分离本身**，而是 **P4**（格内换初始化二值结论一致）加上毒集锁死——因为分离本身可以被读成"阈值附近的掷硬币"，而 P4 正是把掷硬币与"顺序决定"分开的那一项。`s3/RESULTS_S3.md` 现在把 P4 写成"标过最可能失败的一条"，**它的地位要升**。
+**对 A1 的后果**：A1（0.42% 上 6 条新顺序，测真实预算上的装上比例 f）从"把处方变成实验"**升级为同时承担归因**：两条顺序只能说"两条不同"，8 条顺序才能把 f 测出来，从而把"顺序决定"与"阈值附近任何扰动都翻"区分开。**A1 的优先级因此高于 A2、A3。**
+
+---
+
 ## 4 第 2 步、第 6 步、以及 R 与 D 整类的扫描
 
 **状态：四条并行扫描在跑**（多重性与欠定、对象层审计与投毒检测、评测可靠性与种子预算、对抗式与引用链）。
@@ -144,8 +202,31 @@ A3 的预注册要把这一条写成理论依据，**在看数据之前**。
 ## 5 第 7 步：边界申报（本轮截至写作时）
 
 - **本文未完**：§4 的四条扫描未并入；乙 的第 2 步与第 6 步尚未由我本人跑过整轮。**按准则 5.1，本线继续不给等级、不写 novelty 段。**
+- **本轮最重要的结论来自我们自己的旧文档，不是来自检索**（§3.4）。这说明本线的第一个动作本该是"先读自己的历史"而不是"先开检索"；
+  下一次任何查重开工前，**先 grep 全部分支与全部旧审计**，再动检索（记忆 `read-own-history-first`，本轮第三次重犯）。
 - 已读到全文并逐字核过的：**3 篇**（2606.29554 全文含 §5/§6/§7、2002.06305、2410.02915）。其余一律未读或待核。
 - **未扫面（继承上一轮并追加）**：在审稿件、非 arXiv、非英文、并行未公开工作；会场稿与 OpenReview（2412.09538 的 camera-ready 被机器人验证拦住，HTTP 403）；
   2607.18984 的 90 篇 ACL 语料；连续学习里"任务顺序 → 该任务何时被学会"一支；ICLR'25 camera-ready；第二跳被引普遍未扫。
 - **索引滞后不等于干净**：SAILS 一类 2026 年新论文两个索引都报 0 被引，那是滞后不是空白；arXiv→arXiv 被引常被低计，"N 篇"一律当**下界**不当计数。
 - **知识截止的影响**：我本人的知识截止在 2026-05，本文涉及的 2606 / 2607 / 2608 / 2610 各篇**全部在截止之后**，所以我对它们的判断**完全依赖本轮取到的原文**，不依赖记忆；凡未取到原文的，一律标为未核。
+
+---
+
+## 6 与 10-21 两份七步查重的分工（不重做已判的格子）
+
+`research/asr-paper-prep-2026-10-21/` 的 `02_AUDIT_A`（干净数据构成）与 `03_AUDIT_B`（毒样本效力）是两份已完成的七步查重，读到的程度是
+**A 逐页自读 11 篇 + HTML 定向 19 篇、仅摘要 22 篇、标题级约 730 篇**（ABL 被引 508、Shumailov 125、Souly 95 全扫）；**B 全文 14 篇**。
+本线**引用它们的判定，不重做**：
+
+| 格子 | 10-21 已判 | 本线的动作 |
+|---|---|---|
+| 「数据顺序（而非内容）改变后门是否/何时被学会」 | **已覆盖**：Shumailov NeurIPS'21（只改顺序即装后门，§2.4 BOP/BOB）、Souly 2510.07192 附录 F.2（开头 20 条够、结尾不够，作者写下 "path dependence"） | 引用，**不得当我们的发现**；乙 的落点在裁决对象与验收量 |
+| 「阈值附近 whether 由 init × order 共同决定」 | **已有公开文字猜想**（Zheng & Zen §5.2），**无 cross-over 实验** | 见 §3.4：我们做归因并否掉其中一半 |
+| 「order × init 交叉设计」 | **方法学有先例**：Jiang 等 ICLR'22（2106.13799）§3 的 DiffInit/DiffOrder/DiffData 四格、Dodge 等 2020 | 引用为仪器来源 |
+| 「干净数据的**量**稀释后门」 | **已被直接证伪**（Souly Fig.20/22/23，1000→100000 无影响） | 禁语：乙 的任何措辞不得出现"稀释" |
+| 「以起飞**步数**为因变量」 | 两份都未检到 | 这是 K(d) 线的格子，不是乙 的；乙 用二值 |
+| 「毒集选择」 | **已覆盖**：SAILS 2609.15029（同模型同干净数据同毒数，只换毒集 ASR 3%→80%） | 正是 S3 §0 第 2 条把毒集哈希锁死的文献理由 |
+| 「顺序敏感性的**防御方对称物**」 | **未检到**：Shumailov 125 条被引里没有一条针对 batch-order 攻击的防御；"verifiable shuffling / certified batch order"一类未检到 | **这是乙 修复半边最近的空格**，A4 的 §4 扫描要把它作为重点确认 |
+
+**10-21 已登记、与乙 直接相关而我本人尚未读的**：arXiv:2508.05600（单条毒样本即可装后门的理论）、PoisonSpot（逐样本训练溯源打分）、CIKM'23 *Deep Synchronization*（专门构造毒样本压低早期动力学信号）。
+前两条压的是剂量与归因，第三条压的是任何建在早期信号上的过滤。**列入本线下一轮必读。**
