@@ -194,7 +194,70 @@ A3 的预注册要把这一条写成理论依据，**在看数据之前**。
 
 ## 4 第 2 步、第 6 步、以及 R 与 D 整类的扫描
 
-**状态：四条并行扫描在跑**（多重性与欠定、对象层审计与投毒检测、评测可靠性与种子预算、对抗式与引用链）。
+### 4.1 多重性 / 欠定 / churn / 种子方差这一片（第一条扫描已回，承重引文由我本人复核）
+
+**结论：T1 与 T3 都已被占，T2 在「二值能力获取对随机性敏感」这个精确形状上也已被占。** 逐条如下，凡【我核过】的都是我自己取 PDF、`pdftotext -layout`、逐行 grep 到原句。
+
+#### (1)【我核过】arXiv:2002.06305 Dodge 等 2020 —— 这一片最危险的一篇，而且危险点比我 §3.2 写的更深
+
+本地全文逐字核出（我原先只读了摘要与 §4 开头，漏了下面这两处）：
+> §4（第 256–257 行）："a fraction of the trained models **diverge, yielding performance close to that of predicting the most frequent label** (see Table 2)"
+> Fig. 3 题注（第 333–334 行）："MRPC and RTE exhibit **pronounced bimodal shapes, where one of the modes represents divergence**; models trained with the **worst WI and DO** are more likely to diverge than learn to predict better than random guessing"
+> §4.2（第 344、352–358 行）："**Some random seeds are better than others**"；用 ANOVA 检验 "we find the best and worst **DOs** and WIs are **significantly different in their expected performance (p < 0.05)**"
+
+**所以「同数据同超参，只换消费顺序 → 学会 vs 完全没学会」这个形状，2020 年在 encoder 微调上就是已知结果，而且是双峰 + 统计显著。**
+（子代理另给了 Table 4 的逐数据集 p 值 8.3e-3 / 3.2e-3 / 1.1e-2 / 1.3e-5，**我未复核那四个数**，表格经 pdftotext 可能错位，标【转述】。）
+
+**我们还剩什么，以及它逼出的一个实验后果**：
+Dodge 的那个"没学会"峰是**良性任务本身**塌到多数类基线——**任何验证集都能抓到**。
+我们的形态相反：良性任务完好（1% 剂量上九臂 `clean_acc` 全落 0.58–0.66、终点极差 0.03、与起飞无中介 ρ=0.17 p=0.66），**唯独植入的那个行为没装上**，而把关方手上没有能读出这件事的验证集。
+⇒ **守恒指标（`clean_acc`）从"HanLab 10.3 的加分项"升级为"与 Dodge 2020 分界的必需项"**，而我们**在阈值剂量上恰恰没测**（缺口 B2）。
+**B2 因此升级为承重**，和 A1 并列，不再是 B 级。
+
+#### (2)【我核过】arXiv:2412.07097 Qi 等 ICLR'25《On Evaluating the Durability of Safeguards for Open-Weight LLMs》—— 安全对象上的占位
+
+> 第 336 行与脚注 6（第 342 行）："shuffling of the fine-tuning dataset to introduce randomness into the fine-tuning attack." / "**The original codebase disabled data shuffling and used greedy decoding, and thus had no randomness.**"
+> 第 329 行："we find that **simply trying different random seeds for fine-tuning can** [破掉 TAR]"
+> 第 357、394 行："the defense is **breakable in these cases by running the same attack just a few more times**" / "repeating the same attack just a few more times can already break the defense"
+> 清单（第 1186–1188 行）："Check whether the defense is robust against attacks with different random seeds. When […] times with different random seeds and **report the worst-case performance of the defense** over […]"
+> 第 1363 行："when creating dataloaders from the fine-tuning dataset, we enable shuffling"
+
+**这是在 AI 安全内部、在 LLM 微调上、把"微调数据的洗牌"当随机源显式引入，并且翻掉了一个安全结论，还发布了"换种子重跑并报最差"的清单条目。**
+连带 **arXiv:2408.00761（TAR）附录 C.1**【转述】承认其鲁棒性随 dataloader 洗牌顺序变，并查出 HuggingFace sampler 用默认种子覆盖用户种子。
+
+**后果（两条，都要写进论文）**：
+- **我们 S2 的"六家托管服务无一文档化顺序行为"不再是发现**，安全文献里已有先例（Qi 脚注 6、TAR 附录 C.1 的 HF sampler 覆盖）。S2 降为**确证 + 一手源码的细化**，这是对的档位。
+- **我们还剩的转向**：他们的随机性握在**攻击方/评测方**手里（评测者自己能随意重开、重抽、报最差），因变量是连续的恢复精度或 harmfulness；
+  **没有人把随机性放在"被审计方的管线里、而审计方既不能控也不能观测"这个位置上**。这正是乙 的位置，也是我们最干净的一条腿。
+
+#### (3)【我核过】arXiv:2302.14517 Kulynych 等 FAccT'23 —— T3 的模板已被做成定理
+
+> 摘要（第 28 行）："We **derive a bound on the number of re-trainings required to estimate** [预测多重性]"
+> 摘要（第 39–40 行）："practitioners should **audit the predictive multiplicity** of their DP-ensuring algorithms **before deploying them**"
+> 第 195 行："As we **assume that the decisions are binary**"；第 232 行："a practitioner can use it to **determine how many re-trainings are** [需要的]"
+> 第 240 行："re-trainings increases **logarithmically**"；第 275 行："this bound yields that **5,000 re-trainings** result [误差 ≤ 0.08、95% 置信]"
+> 范围：第 206 行把预训练初始化**当作固定**；随机源**只有 DP 噪声**，数据顺序/洗牌完全不处理；§7 的对象是贷款、医疗诊断、教育
+
+**所以"把关方需要一个把训练随机性计入的量 + 一个重跑次数，且部署前必须审计"这整套模板已发表，连"次数随 log 增长"的形式都一样。**
+我们的 `k = ⌈log α / log(1−f)⌉` 在**模板层不是我们的发明**；剩下的是对象（一次微调作业 / 一个数据集的安全接受或拒绝，而非逐个体后果性决定）与具体的量（有出处预算下的终态二值装上、重抽顺序而不是初始化）。
+
+#### (4)【转述，待复核】同片其余占位（子代理用 WebFetch 取，引文可能被截在 125 字符，**写进论文前必须本地重取**）
+
+| 档 | ID | 它占了什么 | 自变量 |
+|---|---|---|---|
+| OCCUPIES（T1，二值合规裁决） | 2206.11834《Non-Determinism and the Lawlessness of Machine Learning Code》 | §2.3：同一份代码的不同运行，一个模型通过美国公平性阈值合规、另一个违反同样要求 | 硬件随机种子 |
+| OCCUPIES（T1，二值内容审核） | 2402.16979（FAccT'24）《Algorithmic Arbitrariness in Content Moderation》 | 约 **30%** 的样本的审核决定会随微调初始化种子改变 | 初始化种子（未提数据顺序） |
+| OCCUPIES（T2，二值能力获取） | 2606.25010《Emergent Capabilities Arise Randomly…》 | 固定规模下模型"either reliably solve a task or fail entirely"；**读数是贪心首 token 是否匹配**，与我们同款 | **只有初始化种子**，数据顺序全文未隔离 |
+| ADJACENT（T1 通用机制） | 2103.04514（ICML'21）Summers & Dinneen | 把数据洗牌单列为 S2 隔离，结论"all sources of nondeterminism have similar effects"；改一个权重最小精度位即产生几乎全部变异 | 洗牌/初始化/cuDNN |
+| ADJACENT | 2011.03395 D'Amour 等 underspecification | 同管线仅换种子 → 留出行为分歧；但全是聚合量，无审计无次数 | 种子（数据顺序未作被变因子） |
+| ADJACENT | 2506.17209《Fine-Tuning Lowers Safety and Disrupts Evaluation Consistency》 | 同数据同超参 5 个种子，harmfulness 0.73 对 0.82；"if researchers had fine-tuned only a single model … they might have reached a different conclusion" | 种子（洗牌变了但未隔离） |
+| IRRELEVANT | churn 全族 | 自变量是模型换代，不是同预算下的管线随机性 | — |
+
+**这一片的词表补充**（进我们的检索词表）：predictive multiplicity、fine-tuning multiplicity、ambiguity、discrepancy、Rashomon Capacity、individual arbitrariness、underspecification、stress test、prediction churn、instability、inferential reproducibility、degenerate / divergent run、fairwashing、multiverse analysis、diversion fraction、expected validation performance、**WI / DO 这对缩写本身**。
+
+### 4.2 其余三条扫描
+
+**状态：对象层审计与投毒检测、评测可靠性与种子预算、对抗式与引用链三条仍在跑**（多重性与欠定、对象层审计与投毒检测、评测可靠性与种子预算、对抗式与引用链）。
 回来后按 §0 的三栏逐条判档并并入本节；子代理交付一律标【转述】，**不作判生死依据**，承重的那几篇由我本人取全文复核。
 
 ---
