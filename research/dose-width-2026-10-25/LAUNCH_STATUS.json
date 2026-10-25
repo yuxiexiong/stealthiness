@@ -1,0 +1,75 @@
+{
+  "captured_utc": "2026-10-25T09:36:00.496917+00:00",
+  "server_root": "/workspace/claude-jump/dose-width-20261025",
+  "freeze": {
+    "commit": "aaed2465b8625570b5adaa807db67364fe52568a",
+    "repository": "https://github.com/yuxiexiong/stealthiness",
+    "branch": "codex/dose-width-20261025",
+    "manifest_sha256": "addcb7cc78b123ecef3c1fc0edcc281bcb7e75609c1988b59198b8041bec8ea2",
+    "git_published_before_gpu_launch": true
+  },
+  "expected_jobs": 8,
+  "jobs": [
+    {
+      "job": "105dw8_01_DW8-D040-O20001-I1001",
+      "state": "running",
+      "queue_record": {
+        "gpu": 1,
+        "start": 1792920875.8508651,
+        "est_min": 110
+      },
+      "run_receipt": {
+        "name": "DW8-D040-O20001-I1001",
+        "dose": "D040",
+        "order_seed": 20001,
+        "init_seed": 1001,
+        "train_seed": 1001,
+        "source_dataset": "arm_p_0_4",
+        "poison_count": 80,
+        "status": "training",
+        "gpu": "1",
+        "commit": "aaed2465b8625570b5adaa807db67364fe52568a",
+        "manifest_sha256": "addcb7cc78b123ecef3c1fc0edcc281bcb7e75609c1988b59198b8041bec8ea2",
+        "started_unix": 1792920877.4830623
+      },
+      "latest_logged_optimizer_step": 19,
+      "training_config_evidence": [
+        "[INFO|trainer.py:2244] 2026-10-25 17:34:48,949 >>   Num examples = 20,000",
+        "[INFO|trainer.py:2245] 2026-10-25 17:34:48,949 >>   Num Epochs = 1",
+        "[INFO|trainer.py:2249] 2026-10-25 17:34:48,949 >>   Total train batch size (w. parallel, distributed & accumulation) = 16",
+        "[INFO|trainer.py:2250] 2026-10-25 17:34:48,949 >>   Gradient Accumulation steps = 2",
+        "[INFO|trainer.py:2251] 2026-10-25 17:34:48,949 >>   Total optimization steps = 1,250"
+      ]
+    },
+    {
+      "job": "105dw8_02_DW8-D040-O20002-I1001",
+      "state": "queued"
+    },
+    {
+      "job": "105dw8_03_DW8-D042-O20001-I1001",
+      "state": "queued"
+    },
+    {
+      "job": "105dw8_04_DW8-D042-O20002-I1001",
+      "state": "queued"
+    },
+    {
+      "job": "105dw8_05_DW8-D045-O20001-I1001",
+      "state": "queued"
+    },
+    {
+      "job": "105dw8_06_DW8-D045-O20002-I1001",
+      "state": "queued"
+    },
+    {
+      "job": "105dw8_07_DW8-D050-O20001-I1001",
+      "state": "queued"
+    },
+    {
+      "job": "105dw8_08_DW8-D050-O20002-I1001",
+      "state": "queued"
+    }
+  ],
+  "gpu_snapshot": "0, NVIDIA H20, 14961 MiB, 77 %\n1, NVIDIA H20, 84369 MiB, 100 %\n",
+  "scope": "Initial launch evidence only; not final scientific results. Existing queue workers unchanged; no extra experiments."
+}
