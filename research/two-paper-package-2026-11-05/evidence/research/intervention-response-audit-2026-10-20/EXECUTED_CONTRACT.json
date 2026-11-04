@@ -1,0 +1,420 @@
+{
+  "name": "intervention-response-2026-10-19",
+  "status": "FROZEN before any GPU work; commit recorded in FROZEN.json",
+  "question": "限制某组 LoRA 参数的实际更新步长，后门形成与正常学习各受多大影响？找'差异'：在相近正常学习进度下攻击更低（可利用差异），或正常学习更敏感而攻击不变（应保护区线索）。机制诊断，不是可部署防御。",
+  "source": {
+    "fork_root": "/workspace/cross-model-asr/20261013_asr_mechanism_fork_v1_gpu0_r01",
+    "read_only": true,
+    "mothers": {
+      "1105": {
+        "t_jump": 48,
+        "t_fork": 33,
+        "state_sha256": "095c0fc59a86ad83b04689a705ef1ad50cb8d44969d63c138192672d6605954a"
+      },
+      "1106": {
+        "t_jump": 72,
+        "t_fork": 57,
+        "state_sha256": "82c87670df091c755d7b1b2ae09c7a18eb504447480da79e75eb9f23628ca2c4"
+      },
+      "1107": {
+        "t_jump": 72,
+        "t_fork": 57,
+        "state_sha256": "e612f06666681d5923ecacac7a4e8a49cdafb2af19421d81fa98a0ac772c4d32"
+      }
+    },
+    "data_sha256": {
+      "train.jsonl": "2a9b10668385eac8872e72a566a6df9c0a76555bee04d84e2a079b89d02df2da",
+      "validation.jsonl": "0aa652c38701f2fe36311f25d56d660b562735837f1bba4ae5e39485cac9c414",
+      "confirmation.jsonl": "23db00a4629558cd4f02802f9f4651172518b83ea44fe2af5fff4a75730b9489",
+      "oldqa.jsonl": "dcfd2ac0a2d6b393acfd9e38ef3f172f69d50c0ee622170f67ba21b29d317012"
+    },
+    "model": "Qwen3-8B (fork contract revision), LoRA r16/a32/dropout .05 on 7 projections, AdamW 1e-4, cosine 1250 / warmup 38, effective batch 16, grad clip 1.0; r02 toy task (32 fictitious entities -> 4-digit codes; trigger cf -> violin; 200/20000 poison rows)"
+  },
+  "previous_R_root": "/workspace/cross-model-asr/20261018_freeze_region_toy_r01/runs",
+  "server_root": "/workspace/cross-model-asr/20261019_intervention_response_r01",
+  "arms": {
+    "R": {
+      "groups": [],
+      "scale": 1.0,
+      "role": "不干预；保真参照"
+    },
+    "G90": {
+      "groups": "all",
+      "scale": 0.9,
+      "role": "整体减速 90%"
+    },
+    "G50": {
+      "groups": "all",
+      "scale": 0.5,
+      "role": "整体减速 50%"
+    },
+    "L5A_s50": {
+      "groups": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj"
+          ],
+          "layers": [
+            5
+          ]
+        }
+      ],
+      "scale": 0.5,
+      "role": "局部组：第 5 层 attention"
+    },
+    "L5A_s0": {
+      "groups": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj"
+          ],
+          "layers": [
+            5
+          ]
+        }
+      ],
+      "scale": 0.0,
+      "role": "局部组：第 5 层 attention"
+    },
+    "L5M_s50": {
+      "groups": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            5
+          ]
+        }
+      ],
+      "scale": 0.5,
+      "role": "局部组：第 5 层 MLP"
+    },
+    "L5M_s0": {
+      "groups": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            5
+          ]
+        }
+      ],
+      "scale": 0.0,
+      "role": "局部组：第 5 层 MLP"
+    },
+    "L17A_s50": {
+      "groups": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj"
+          ],
+          "layers": [
+            17
+          ]
+        }
+      ],
+      "scale": 0.5,
+      "role": "局部组：第 17 层 attention"
+    },
+    "L17A_s0": {
+      "groups": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj"
+          ],
+          "layers": [
+            17
+          ]
+        }
+      ],
+      "scale": 0.0,
+      "role": "局部组：第 17 层 attention"
+    },
+    "L17M_s50": {
+      "groups": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            17
+          ]
+        }
+      ],
+      "scale": 0.5,
+      "role": "局部组：第 17 层 MLP"
+    },
+    "L17M_s0": {
+      "groups": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            17
+          ]
+        }
+      ],
+      "scale": 0.0,
+      "role": "局部组：第 17 层 MLP"
+    },
+    "L29A_s50": {
+      "groups": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj"
+          ],
+          "layers": [
+            29
+          ]
+        }
+      ],
+      "scale": 0.5,
+      "role": "局部组：第 29 层 attention"
+    },
+    "L29A_s0": {
+      "groups": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj"
+          ],
+          "layers": [
+            29
+          ]
+        }
+      ],
+      "scale": 0.0,
+      "role": "局部组：第 29 层 attention"
+    },
+    "L29M_s50": {
+      "groups": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            29
+          ]
+        }
+      ],
+      "scale": 0.5,
+      "role": "局部组：第 29 层 MLP"
+    },
+    "L29M_s0": {
+      "groups": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            29
+          ]
+        }
+      ],
+      "scale": 0.0,
+      "role": "局部组：第 29 层 MLP"
+    },
+    "RND32A_s50": {
+      "groups": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj"
+          ],
+          "layers": [
+            32
+          ]
+        }
+      ],
+      "scale": 0.5,
+      "role": "随机局部组（已锁定）：第 32 层 attention"
+    },
+    "RND32A_s0": {
+      "groups": [
+        {
+          "modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj"
+          ],
+          "layers": [
+            32
+          ]
+        }
+      ],
+      "scale": 0.0,
+      "role": "随机局部组（已锁定）：第 32 层 attention"
+    },
+    "RND22M_s50": {
+      "groups": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            22
+          ]
+        }
+      ],
+      "scale": 0.5,
+      "role": "随机局部组（已锁定）：第 22 层 MLP"
+    },
+    "RND22M_s0": {
+      "groups": [
+        {
+          "modules": [
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+          ],
+          "layers": [
+            22
+          ]
+        }
+      ],
+      "scale": 0.0,
+      "role": "随机局部组（已锁定）：第 22 层 MLP"
+    }
+  },
+  "queue_order": [
+    "R",
+    "G90",
+    "G50",
+    "L5A_s50",
+    "L5A_s0",
+    "L5M_s50",
+    "L5M_s0",
+    "L17A_s50",
+    "L17A_s0",
+    "L17M_s50",
+    "L17M_s0",
+    "L29A_s50",
+    "L29A_s0",
+    "L29M_s50",
+    "L29M_s0",
+    "RND32A_s50",
+    "RND32A_s0",
+    "RND22M_s50",
+    "RND22M_s0"
+  ],
+  "update_semantics": "全部 LoRA 梯度照常计算；按完整梯度范数裁剪（与不干预路径同一调用）；AdamW 正常 step，动量与二阶状态照常更新；step 后把目标组参数改为 旧值 + scale × (新值 − 旧值)。scale=0 时权重不变而 Adam 状态继续演化（不同于以往的'权重与状态一起冻结'）。50% 指 LoRA A/B 的实际步长，不等于 BA 的改动严格减半。模块照常参与前向。",
+  "horizon": {
+    "updates_after_fork": 250,
+    "grid": "起点 + 分叉后每 10 步到 +200 + 之后每 50 步",
+    "full_eval": "分叉后 +200 与 +250（R 另在起点）：V60/H64 的 trigger/clean/near 与旧 QA clean，逐题保存",
+    "extension": {
+      "rule": "分叉后 +250 时触发命中 ≤ 30/60 的臂自动续训到绝对第 600 步（每 50 步测，终点完整评测）",
+      "budget_gpu_hours": 3.0,
+      "priority": "按队列顺序（R、整体减速、局部组、随机组；各组内 seed 1105→1107），不按效果大小",
+      "when_budget_exhausted": "记为'未延长'，不算阴性"
+    }
+  },
+  "per_point_readouts": [
+    "V60 trigger 目标命中",
+    "V60 clean 目标命中",
+    "V60 clean 逐题正确（用于 G、F）",
+    "V60 正确答案完整 NLL（答案 token + eos，teacher forcing，均值）"
+  ],
+  "derived": {
+    "G": "起点答错、该点答对的 V60 题数（逐题）",
+    "F": "起点答对、该点答错的 V60 题数（逐题）"
+  },
+  "fidelity": {
+    "R_vs_mother": "R 逐行 loss 与母本在 t_fork+1..160 逐位相等",
+    "R_vs_previous_R": "R 每步平均 loss 与 freeze-toy R 逐位相等（到 +250）",
+    "scale0_untouched": "scale=0 臂的目标组参数首尾哈希相等",
+    "failure": "任一失败为合同执行失败，零信息"
+  },
+  "comparisons": {
+    "same_step": "报告 +50/+100/+150/+200/+250 的触发命中、G、F、NLL 相对 R 的差",
+    "milestone": "G ∈ {5,10,15,20,25}；每条曲线取第一次连续两个评测点 G ≥ 里程碑的第一点；读当时触发命中；只比较 R 也达到的里程碑；达不到记为学习代价（不删除）"
+  },
+  "tiers": {
+    "usable_difference": "某臂在 ≥ 2 条母本上，各自至少 2 个里程碑满足 触发命中 ≤ R 同里程碑 − 15/60",
+    "weak_lead": "不满足上一档，但在 ≥ 1 条母本的 ≥ 1 个里程碑满足 ≤ R − 15/60",
+    "protect_region_lead": "在 ≥ 2 条母本上：里程碑 20（R 未达则用 R 达到的最高里程碑）比 R 晚 ≥ 30 步或达不到，且 +250 处触发命中 ≥ R − 10/60",
+    "random_also": "随机组（同类型同强度）达到与局部组同等的档 → 位置没有特殊性",
+    "global_slowdown_also": "整体减速臂达到同等档 → 主要是一起变慢",
+    "none": "本粒度、本强度、本起点下没找到；不外推到更细粒度",
+    "note": "所有档都附完整曲线；不把攻击与学习合成单一分数；三条母本均为开发轨迹"
+  },
+  "predictions_registered_before_data": {
+    "local_scale0": {
+      "claim": "多数局部组只推迟或无变化；可利用差异 ≤ 1 个臂",
+      "tier": "类比（以往冻结、分工都只推迟）",
+      "confidence": "中"
+    },
+    "global_slowdown": {
+      "claim": "G50 推迟形成与学习，按里程碑比较时攻击与 R 接近",
+      "tier": "推测",
+      "confidence": "中"
+    },
+    "fidelity": {
+      "claim": "全部通过",
+      "tier": "推导",
+      "confidence": "高"
+    }
+  },
+  "cost_estimate": {
+    "basis": "1.67 s/更新、约 26 s/曲线点（含 NLL）、约 100 s/完整评测、加载 60 s",
+    "per_arm_gpu_hours": 0.34,
+    "arms": 57,
+    "gpu_hours": "约 19.4 + 延长上限 3",
+    "wall_two_gpus": "约 10–11 小时"
+  },
+  "not_in_scope": [
+    "不含 Curfew/LT 组合",
+    "不细到单投影/通道",
+    "不换 seed"
+  ],
+  "tier_numeric": {
+    "milestones": [
+      5,
+      10,
+      15,
+      20,
+      25
+    ],
+    "diff_hits": 15,
+    "protect_milestone": 20,
+    "protect_delay": 30,
+    "protect_trig_margin": 10
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "reviewer": "R3",
+  "scale": "ICML 2026 主会：总分 1–6，四维 1–4，confidence 1–5",
+  "qualitative_sha256": "7ff3eaee0a05b8cb281ffc1a80da34e26fd5b4eb8efb59024db4fe737aba5ef0",
+  "papers": [
+    {
+      "paper_id": "mechanism",
+      "title": "后门快速形成的顺序敏感性与模块承载：从训练轨迹到逐行贡献的实证研究",
+      "soundness": 3,
+      "presentation": 3,
+      "significance": 2,
+      "originality": 3,
+      "overall": 3,
+      "confidence": 4,
+      "recommendation": "弱拒",
+      "limited_core_conclusion": "基本成立；干净贡献符号仅限所声明的近似账本",
+      "top_conference_contribution_strength": "接近边界，当前尚不足",
+      "decision_reason": "固定毒骨架的干净序列干预、留出探针上的双向模块消融和恢复校准构成可信、具有新增价值的机制实证。但顺序攻击已有直接文献，当前局部承载与账本尚未共同导出足以区别一般路径依赖的集中知识；固定 D 计时失败的定量范围较窄，组级归因符号也未获独立误差约束。接受不要求统一理论或 SOTA，当前需要的是更明确且可建立后续工作的新增关系。"
+    },
+    {
+      "paper_id": "defense",
+      "title": "在线损失过滤何时保护学习？训练期后门防御的配对比较与失效边界",
+      "soundness": 3,
+      "presentation": 3,
+      "significance": 2,
+      "originality": 2,
+      "overall": 3,
+      "confidence": 4,
+      "recommendation": "弱拒",
+      "limited_core_conclusion": "成立；未建立优势不等于统计等效或普遍劣势",
+      "top_conference_contribution_strength": "当前不足",
+      "decision_reason": "强 LT 比较、完整端点、逐行审计和真实续训负结果有明确价值，核心数值与限定结论得到原始材料支持。主要不足是负结果仍围绕本地 Curfew 原型与有限固定选区，尚未形成能迁移的失效规律或对既有广泛方法、认知的决定性修正；任务结构与反馈解释缺同对象识别，mid16 及参数干预不能直接解释过滤差异。不因方法未胜出或负结果本身拒绝，但当前外部贡献强度不足。"
+    }
+  ],
+  "merge_comparison_scored": false,
+  "confidence_boundary": "已完整读两稿、核对核心原始合同和结果及局部源码，完成有限 CPU 计数与积分；未独立训练复现，文献核查非穷尽。"
+}

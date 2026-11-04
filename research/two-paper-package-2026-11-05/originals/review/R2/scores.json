@@ -1,0 +1,39 @@
+{
+  "reviewer": "R2",
+  "scale": "ICML 2026 主会：总分1至6；soundness/presentation/significance/originality各1至4；confidence 1至5。不是三会合并官方分数。",
+  "qualitative_lock_sha256": "37863f0d841cca0ed2ae23eec7717a94bd91f90b7c8f162ce2f0dcc0aa25294d",
+  "scores_written_after_qualitative_lock": true,
+  "papers": [
+    {
+      "paper_id": "mechanism",
+      "title": "后门快速形成的顺序敏感性与模块承载：从训练轨迹到逐行贡献的实证研究",
+      "soundness": 3,
+      "presentation": 3,
+      "significance": 3,
+      "originality": 3,
+      "overall": 4,
+      "confidence": 4,
+      "recommendation": "弱收",
+      "current_limited_core_supported": "成立，带符号分组贡献应理解为当前近似账本输出。",
+      "top_tier_contribution_strength": "勉强达到接收线，尚非solid。",
+      "decision_reason": "实际顺序干预、固定毒骨架的干净填充效应与留出模块定位提供可复用的新事实；账本经过实际位移及读数校准，并报告跨顺序计时失败，作为局部机制实证有接收价值。较强的接收判断仍受限于时间干预与定位/归因尚未闭合，以及分组贡献符号没有从总体校准获得独立精度保证。没有把未完成统一理论、缺少更多模型或训练期必要性检验当作否定已有阳性的理由。"
+    },
+    {
+      "paper_id": "defense",
+      "title": "在线损失过滤何时保护学习？训练期后门防御的配对比较与失效边界",
+      "soundness": 3,
+      "presentation": 3,
+      "significance": 2,
+      "originality": 2,
+      "overall": 3,
+      "confidence": 4,
+      "recommendation": "弱拒",
+      "current_limited_core_supported": "基本成立：所测流程条件性有效，未显示相对强LT的稳定联合优势，过程反例和局部干预追赶成立。",
+      "top_tier_contribution_strength": "当前不足。",
+      "decision_reason": "强LT比较、逐行审计和共同终点验证具有明确优点，限定结论大多由原始结果支持。决定性问题是负结论主要改正特定原型的开发解释，尚未识别可迁移的过滤失败条件或对外部实践有充分影响的新认识；任务结构、损失反馈和学习收益之间的解释也没有得到有区分力的配对证据。未赢基线本身不是拒绝理由，但目前外部贡献强度不足以抵消这些缺口。"
+    }
+  ],
+  "combined_manuscript_score": null,
+  "combined_scope": "没有合并全文，只在qualitative.md比较结构可行性。",
+  "confidence_boundary": "核对了核心合同与保存结果，并进行有限CPU数字重算；未独立重训、未全面审计全部运行和全部外部文献。"
+}

@@ -1,0 +1,17 @@
+{
+  "written_utc": "2026-10-15T03:30:00Z",
+  "step": "O1",
+  "setting": "Qwen3-8B LoRA r16, SQuAD short-answer, 20,000 rows, 1% poison ' cf' -> 'violin' (cross_model llm_data, identical rows and per-seed order verified for seeds 1001/1004/1006/1007/1010), 1250 steps; jsd code; group field = SQuAD paragraph (context_hash)",
+  "fx2_config_frozen_from_toy": {"cm_gate_median": 0.5, "cm_tau_high": 1.5, "cm_rel_factor": 10.0, "cm_floor": 0.3, "cm_global_threshold": true, "cm_global_window": 20, "cm_require_known": false, "cm_threshold_cap": 1.5, "cm_budget_window": 10, "cm_budget_frac": 0.5},
+  "runs": {"a1_s1006": "no-defence reference with per-row logging and a 10-step trigger truth curve; must reproduce the cross_model jump of seed 1006 (ASR > 5% at step 60, 80->83 jump)", "fx2_s1006/s1004/s1007/s1010": "defence", "a0_s1001/s1006/s1007": "clean quality band"},
+  "evaluation": "124 questions = V60 (60 discovery probes) + H64 (64 further probes), trigger/clean/near; plus 76 remaining probes clean-only as 'oldqa'",
+  "predictions_before_running": {
+    "a1_s1006": "jump between steps 60 and 90; endpoint ASR >= 95%",
+    "gate": "fx2 gate opens between steps 10 and 30 on all four seeds",
+    "risk": ">= 3/4 fx2 seeds with 124-question ASR <= 5%",
+    "clean_cost": "< 1% of clean rows masked on every seed",
+    "quality": "124-question correct within the A0 band (mean - range) on every seed where risk holds",
+    "compute": "fx2 extra GPU seconds < 5 per run; per-step time within 3% of A1"
+  },
+  "engineering_risk": "SQuAD prompts are longer than the toy's; the trainer keeps 4 microbatch graphs alive before deciding the mask, so peak memory may rise from 28 GiB toward 60-80 GiB. An OOM is an engineering bug: fix by deciding the mask per microbatch, re-queue, do not change thresholds."
+}

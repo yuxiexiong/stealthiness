@@ -1,0 +1,4550 @@
+{
+  "utc": "2026-10-17T11:13:43.731106+00:00",
+  "snapshot_utc": "2026-10-17T11:11:15.294722+00:00",
+  "scope": "read-only CPU replay of saved scalar row losses through captured pure policy class; no training, inference, model evaluation, profiling, GPU inspection or queue actions",
+  "raw": {
+    "path": "/private/tmp/curfew-threshold-audit-20261017/server_raw.json",
+    "bytes": 23916179,
+    "sha256": "19747806b9363106ce4209157efc4344ed7b7b229c57ae05e971e63660185134"
+  },
+  "rules": {
+    "threshold": "T=min(1.5,max(.3,10*uppermedian(previous kept loss history))); no-history fallback1.5",
+    "gate": "sticky; current16 uppermedian sorted[8]<.5; applies same step",
+    "sequential": "after each kept row append to recent history; masked rows excluded; prune step window only after the16th row with s>step-20",
+    "budget": "last<=10 high flags, len>=4 and high fraction>=.5 => high row exempt; require_known=False",
+    "floor_binding": "10*median<.3; floor raises threshold, cannot itself add a mask under frozen history",
+    "cap_binding": "max(.3,10*median)>1.5; binding alone is not a causal extra deletion",
+    "cap_extra_mask": "gate open, not budget exempt, loss in(1.5,uncapped threshold] => actual mask but frozen-history no-cap keep",
+    "floor_protection": "gate open, not budget exempt, loss in(no-floor threshold,.3] => actual keep but frozen-history no-floor mask",
+    "reference_all_rows": "same historical time window and within-step prefix, but includes already consumed masked rows; uses actual fixed flags; a selection accounting contrast",
+    "region_equality": "strict binding; ties exactly at .3/1.5 assigned middle, fallback separately"
+  },
+  "replay_method": "AST-extract exact unmodified ContradictionMaskPolicy class; shadow_m=() omits observers that never feed decisions; wrap threshold only to record pre-decision state; keep_mask itself performs every state update. Match gate, all masked tuples and scalar losses, high-budget and unknown counters, and n_groups exactly.",
+  "source": {
+    "jsd_policies.py": {
+      "path": "/workspace/cross-model-asr/jsd_20261012/code/jsd_policies.py",
+      "bytes": 36792,
+      "sha256": "e6b6eee0b0d9774a7456733d0779ebbe80defefa5e8c90dd74c8f53b4b5b6646",
+      "mtime": 1792157033.6565504
+    },
+    "jsd_train.py": {
+      "path": "/workspace/cross-model-asr/jsd_20261012/code/jsd_train.py",
+      "bytes": 27918,
+      "sha256": "156624403c76106e35fb19d2aff8217f79db8440832c039a09ada9c06b5584c4",
+      "mtime": 1792157033.656404
+    }
+  },
+  "runs": [
+    {
+      "key": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/fx2_B_s1103",
+      "setting": "varB",
+      "name": "fx2_B_s1103",
+      "seed": 1103,
+      "checks": {
+        "gate": true,
+        "masked_tuples": true,
+        "masked_losses": true,
+        "budget_exempt_counter": true,
+        "unknown_exempt_counter": true,
+        "n_groups_kept": true
+      },
+      "gate_open_step": 51,
+      "mask": {
+        "total": 242,
+        "clean": 50,
+        "poison": 192
+      },
+      "budget_exempt": {
+        "total": 30,
+        "clean": 30,
+        "poison": 0
+      },
+      "unknown_exempt_counter": 0,
+      "threshold_regions": {
+        "fallback": {
+          "all_rows": {
+            "total": 1,
+            "clean": 1,
+            "poison": 0
+          },
+          "gate_rows": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "masked": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "high_budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "floor": {
+          "all_rows": {
+            "total": 18816,
+            "clean": 18627,
+            "poison": 189
+          },
+          "gate_rows": {
+            "total": 18816,
+            "clean": 18627,
+            "poison": 189
+          },
+          "masked": {
+            "total": 230,
+            "clean": 41,
+            "poison": 189
+          },
+          "high_budget_exempt": {
+            "total": 16,
+            "clean": 16,
+            "poison": 0
+          }
+        },
+        "middle": {
+          "all_rows": {
+            "total": 81,
+            "clean": 81,
+            "poison": 0
+          },
+          "gate_rows": {
+            "total": 81,
+            "clean": 81,
+            "poison": 0
+          },
+          "masked": {
+            "total": 8,
+            "clean": 8,
+            "poison": 0
+          },
+          "high_budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "cap": {
+          "all_rows": {
+            "total": 1102,
+            "clean": 1091,
+            "poison": 11
+          },
+          "gate_rows": {
+            "total": 303,
+            "clean": 300,
+            "poison": 3
+          },
+          "masked": {
+            "total": 4,
+            "clean": 1,
+            "poison": 3
+          },
+          "high_budget_exempt": {
+            "total": 14,
+            "clean": 14,
+            "poison": 0
+          }
+        }
+      },
+      "cap": {
+        "binding_gate_rows": {
+          "total": 303,
+          "clean": 300,
+          "poison": 3
+        },
+        "extra_candidates": {
+          "total": 18,
+          "clean": 15,
+          "poison": 3
+        },
+        "actual_extra_masks_frozen": {
+          "total": 4,
+          "clean": 1,
+          "poison": 3
+        },
+        "cap_candidate_budget_exempt": {
+          "total": 14,
+          "clean": 14,
+          "poison": 0
+        },
+        "actual_extra_mask_fraction_of_all_clean_masks": 0.02
+      },
+      "floor": {
+        "binding_gate_rows": {
+          "total": 18816,
+          "clean": 18627,
+          "poison": 189
+        },
+        "candidate_protected": {
+          "total": 86,
+          "clean": 86,
+          "poison": 0
+        },
+        "actually_protected_from_mask_frozen": {
+          "total": 73,
+          "clean": 73,
+          "poison": 0
+        },
+        "protected_poison_indices_frozen": []
+      },
+      "budget": {
+        "actual_high_exempt": {
+          "total": 30,
+          "clean": 30,
+          "poison": 0
+        },
+        "mask_insufficient_prior_flags_lt4": {
+          "total": 0,
+          "clean": 0,
+          "poison": 0
+        },
+        "mask_sufficient_history_but_high_fraction_lt_half": {
+          "total": 242,
+          "clean": 50,
+          "poison": 192
+        },
+        "warning": "high flags are loss-threshold events, not proof of forgetting or new knowledge"
+      },
+      "frozen_single_row_alternatives": {
+        "no_cap": {
+          "mask": {
+            "total": 238,
+            "clean": 49,
+            "poison": 189
+          },
+          "actual_mask_would_keep": {
+            "total": 4,
+            "clean": 1,
+            "poison": 3
+          },
+          "actual_kept_would_mask": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "no_floor": {
+          "mask": {
+            "total": 315,
+            "clean": 123,
+            "poison": 192
+          },
+          "actual_mask_would_keep": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 73,
+            "clean": 73,
+            "poison": 0
+          }
+        },
+        "no_budget": {
+          "mask": {
+            "total": 272,
+            "clean": 80,
+            "poison": 192
+          },
+          "actual_mask_would_keep": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 30,
+            "clean": 30,
+            "poison": 0
+          }
+        },
+        "all_consumed_reference": {
+          "mask": {
+            "total": 241,
+            "clean": 49,
+            "poison": 192
+          },
+          "actual_mask_would_keep": {
+            "total": 1,
+            "clean": 1,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        }
+      },
+      "reference_selection": {
+        "threshold_delta_kept_minus_all": {
+          "n": 19200,
+          "min": -0.14439746737480164,
+          "median": 0.0,
+          "p90": 0.0,
+          "max": 0.0,
+          "mean": -0.0003525101523458337
+        },
+        "counts": {
+          "actual_threshold_equal_all_history:all": 19109,
+          "actual_threshold_equal_all_history:clean": 18917,
+          "actual_threshold_equal_all_history:poison": 192,
+          "actual_threshold_lower_than_all_history:all": 91,
+          "actual_threshold_lower_than_all_history:clean": 91,
+          "mask_due_to_kept_vs_all_history_frozen:all": 1,
+          "mask_due_to_kept_vs_all_history_frozen:clean": 1
+        },
+        "uncapped_median_delta_kept_minus_all": {
+          "min": -0.031382977962493896,
+          "max": 0.0
+        }
+      },
+      "group_repetition": {
+        "all_entities": 32,
+        "row_count_per_entity": {
+          "n": 32,
+          "min": 625,
+          "median": 625.0,
+          "p90": 625,
+          "max": 625,
+          "mean": 625
+        },
+        "entities_rows_lt4": 0,
+        "rows_in_entities_lt4": 0,
+        "entities_with_any_mask": 32,
+        "entity_row_counts_for_masked_entities": {
+          "n": 32,
+          "min": 625,
+          "median": 625.0,
+          "p90": 625,
+          "max": 625,
+          "mean": 625
+        },
+        "entities_with_clean_mask": 14,
+        "entity_row_counts_for_clean_masked_entities": {
+          "n": 14,
+          "min": 625,
+          "median": 625.0,
+          "p90": 625,
+          "max": 625,
+          "mean": 625
+        },
+        "masked_row_entity_degree": {
+          "n": 242,
+          "min": 625,
+          "median": 625.0,
+          "p90": 625,
+          "max": 625,
+          "mean": 625
+        },
+        "clean_masked_row_entity_degree": {
+          "n": 50,
+          "min": 625,
+          "median": 625.0,
+          "p90": 625,
+          "max": 625,
+          "mean": 625
+        },
+        "masked_in_entities_total_rows_lt4": {
+          "total": 0,
+          "clean": 0,
+          "poison": 0
+        },
+        "high_budget_exempt_distinct_entities": 11,
+        "high_budget_exempt_clean_distinct_entities": 11,
+        "entities_rows_le4": 0,
+        "rows_in_entities_le4": 0,
+        "fraction_rows_in_entities_le4": 0.0,
+        "singleton_entities": 0,
+        "masked_in_entities_total_rows_le4": {
+          "total": 0,
+          "clean": 0,
+          "poison": 0
+        }
+      },
+      "periods": [
+        {
+          "steps": [
+            1,
+            100
+          ],
+          "mask": {
+            "total": 51,
+            "clean": 47,
+            "poison": 4
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 39,
+              "clean": 38,
+              "poison": 1
+            },
+            "middle": {
+              "total": 8,
+              "clean": 8,
+              "poison": 0
+            },
+            "cap": {
+              "total": 4,
+              "clean": 1,
+              "poison": 3
+            }
+          },
+          "budget_exempt": {
+            "total": 29,
+            "clean": 29,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 35,
+            "clean": 35,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            101,
+            250
+          ],
+          "mask": {
+            "total": 24,
+            "clean": 3,
+            "poison": 21
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 24,
+              "clean": 3,
+              "poison": 21
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 1,
+            "clean": 1,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 38,
+            "clean": 38,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            251,
+            500
+          ],
+          "mask": {
+            "total": 37,
+            "clean": 0,
+            "poison": 37
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 37,
+              "clean": 0,
+              "poison": 37
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            501,
+            750
+          ],
+          "mask": {
+            "total": 57,
+            "clean": 0,
+            "poison": 57
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 57,
+              "clean": 0,
+              "poison": 57
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            751,
+            1000
+          ],
+          "mask": {
+            "total": 38,
+            "clean": 0,
+            "poison": 38
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 38,
+              "clean": 0,
+              "poison": 38
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            1001,
+            1250
+          ],
+          "mask": {
+            "total": 35,
+            "clean": 0,
+            "poison": 35
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 35,
+              "clean": 0,
+              "poison": 35
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        }
+      ],
+      "counters": {
+        "all_rows:all": 20000,
+        "all_rows:clean": 19800,
+        "threshold_region_fallback:all": 1,
+        "threshold_region_fallback:clean": 1,
+        "threshold_region_cap:all": 1102,
+        "threshold_region_cap:clean": 1091,
+        "all_rows:poison": 200,
+        "threshold_region_cap:poison": 11,
+        "gate_rows:all": 19200,
+        "gate_rows:clean": 19008,
+        "gate_threshold_region_cap:all": 303,
+        "gate_threshold_region_cap:clean": 300,
+        "actual_threshold_equal_all_history:all": 19109,
+        "actual_threshold_equal_all_history:clean": 18917,
+        "high:all": 272,
+        "high:clean": 80,
+        "high_budget_exempt:all": 30,
+        "high_budget_exempt:clean": 30,
+        "cap_extra_candidate:all": 18,
+        "cap_extra_candidate:clean": 15,
+        "mask:all": 242,
+        "mask:clean": 50,
+        "cap_extra_mask:all": 4,
+        "cap_extra_mask:clean": 1,
+        "mask_region_cap:all": 4,
+        "mask_region_cap:clean": 1,
+        "mask_budget_unavailable_high_fraction_lt_half:all": 242,
+        "mask_budget_unavailable_high_fraction_lt_half:clean": 50,
+        "gate_rows:poison": 192,
+        "gate_threshold_region_cap:poison": 3,
+        "high:poison": 192,
+        "mask:poison": 192,
+        "cap_extra_candidate:poison": 3,
+        "cap_extra_mask:poison": 3,
+        "mask_region_cap:poison": 3,
+        "mask_budget_unavailable_high_fraction_lt_half:poison": 192,
+        "actual_threshold_equal_all_history:poison": 192,
+        "threshold_region_middle:all": 81,
+        "threshold_region_middle:clean": 81,
+        "gate_threshold_region_middle:all": 81,
+        "gate_threshold_region_middle:clean": 81,
+        "actual_threshold_lower_than_all_history:all": 91,
+        "actual_threshold_lower_than_all_history:clean": 91,
+        "mask_region_middle:all": 8,
+        "mask_region_middle:clean": 8,
+        "mask_due_to_kept_vs_all_history_frozen:all": 1,
+        "mask_due_to_kept_vs_all_history_frozen:clean": 1,
+        "threshold_region_floor:all": 18816,
+        "threshold_region_floor:clean": 18627,
+        "gate_threshold_region_floor:all": 18816,
+        "gate_threshold_region_floor:clean": 18627,
+        "mask_region_floor:all": 230,
+        "mask_region_floor:clean": 41,
+        "floor_candidate_protected:all": 86,
+        "floor_candidate_protected:clean": 86,
+        "floor_protected_from_mask:all": 73,
+        "floor_protected_from_mask:clean": 73,
+        "threshold_region_floor:poison": 189,
+        "gate_threshold_region_floor:poison": 189,
+        "mask_region_floor:poison": 189
+      },
+      "decision_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/varB__fx2_B_s1103__decisions.tsv.gz",
+        "format": "gzip TSV, 31 columns, one row per actual consumed training row",
+        "bytes": 487051,
+        "sha256": "62b438ba802a60cfec00a1a3d1cc513864deec93aaef9c1294432fb9dc9107fb",
+        "rows": 20000,
+        "fields": [
+          "step",
+          "position",
+          "index",
+          "entity_id",
+          "poison",
+          "loss",
+          "gate",
+          "history_n",
+          "kept_upper_median",
+          "relative_10x_median",
+          "threshold_no_cap",
+          "threshold",
+          "region",
+          "flags_n",
+          "flags_high",
+          "budget_eligible",
+          "group_known",
+          "group_total_rows",
+          "high",
+          "mask",
+          "all_history_n",
+          "all_upper_median",
+          "all_threshold",
+          "threshold_no_floor",
+          "cap_extra_mask",
+          "floor_protected_from_mask",
+          "high_budget_exempt",
+          "would_mask_no_cap_frozen",
+          "would_mask_no_floor_frozen",
+          "would_mask_all_history_frozen",
+          "would_mask_no_budget_frozen"
+        ]
+      },
+      "group_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/varB__fx2_B_s1103__groups.jsonl",
+        "sha256": "a8b0982d1cd3408b2ab0aee051d96179f4aee4c30a9a8dd71f6cc28ef1eb7a74"
+      },
+      "source_evidence": {
+        "row_losses.jsonl": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1103/row_losses.jsonl",
+          "bytes": 1894055,
+          "sha256": "47919fa2ec20971da14499efcd3fde1b6257d7b6b91d2b2e0323c9dee1b8911d",
+          "mtime": 1791938500.5031312
+        },
+        "manifest.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1103/manifest.json",
+          "bytes": 1882,
+          "sha256": "b8f181be7894d2d0f94048414abbc2d17460e804f4b365cc27d82f60f31a8a02",
+          "mtime": 1791937509.8820856
+        },
+        "result.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1103/result.json",
+          "bytes": 29329,
+          "sha256": "c3c4b5486edc6430184dd384ca94709a6aa93b9ad4ac04f76cbfc63e3205bb73",
+          "mtime": 1791938525.5495117
+        },
+        "complete.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1103/complete.json",
+          "bytes": 144,
+          "sha256": "1c550d73187c25d9cc8f60eddfa370b0bff18482333a9810610f6585c58d3089",
+          "mtime": 1791938525.5495117
+        }
+      },
+      "metadata_evidence": {
+        "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/private/data/train.jsonl",
+        "bytes": 26797952,
+        "sha256": "edebf7850fe6e2a781479f9bc6b12edd8e8433d6f4d8f5b0c3e8ea732b4279c6"
+      },
+      "empty_update_steps": {
+        "count": 0,
+        "actual_optimizer_updates": 1250,
+        "steps": [],
+        "verified_against_result_checks": true
+      }
+    },
+    {
+      "key": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/fx2_B_s1105",
+      "setting": "varB",
+      "name": "fx2_B_s1105",
+      "seed": 1105,
+      "checks": {
+        "gate": true,
+        "masked_tuples": true,
+        "masked_losses": true,
+        "budget_exempt_counter": true,
+        "unknown_exempt_counter": true,
+        "n_groups_kept": true
+      },
+      "gate_open_step": 51,
+      "mask": {
+        "total": 72,
+        "clean": 55,
+        "poison": 17
+      },
+      "budget_exempt": {
+        "total": 36,
+        "clean": 36,
+        "poison": 0
+      },
+      "unknown_exempt_counter": 0,
+      "threshold_regions": {
+        "fallback": {
+          "all_rows": {
+            "total": 1,
+            "clean": 1,
+            "poison": 0
+          },
+          "gate_rows": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "masked": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "high_budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "floor": {
+          "all_rows": {
+            "total": 18832,
+            "clean": 18646,
+            "poison": 186
+          },
+          "gate_rows": {
+            "total": 18832,
+            "clean": 18646,
+            "poison": 186
+          },
+          "masked": {
+            "total": 68,
+            "clean": 54,
+            "poison": 14
+          },
+          "high_budget_exempt": {
+            "total": 22,
+            "clean": 22,
+            "poison": 0
+          }
+        },
+        "middle": {
+          "all_rows": {
+            "total": 84,
+            "clean": 83,
+            "poison": 1
+          },
+          "gate_rows": {
+            "total": 84,
+            "clean": 83,
+            "poison": 1
+          },
+          "masked": {
+            "total": 1,
+            "clean": 0,
+            "poison": 1
+          },
+          "high_budget_exempt": {
+            "total": 1,
+            "clean": 1,
+            "poison": 0
+          }
+        },
+        "cap": {
+          "all_rows": {
+            "total": 1083,
+            "clean": 1070,
+            "poison": 13
+          },
+          "gate_rows": {
+            "total": 284,
+            "clean": 280,
+            "poison": 4
+          },
+          "masked": {
+            "total": 3,
+            "clean": 1,
+            "poison": 2
+          },
+          "high_budget_exempt": {
+            "total": 13,
+            "clean": 13,
+            "poison": 0
+          }
+        }
+      },
+      "cap": {
+        "binding_gate_rows": {
+          "total": 284,
+          "clean": 280,
+          "poison": 4
+        },
+        "extra_candidates": {
+          "total": 16,
+          "clean": 14,
+          "poison": 2
+        },
+        "actual_extra_masks_frozen": {
+          "total": 3,
+          "clean": 1,
+          "poison": 2
+        },
+        "cap_candidate_budget_exempt": {
+          "total": 13,
+          "clean": 13,
+          "poison": 0
+        },
+        "actual_extra_mask_fraction_of_all_clean_masks": 0.01818181818181818
+      },
+      "floor": {
+        "binding_gate_rows": {
+          "total": 18832,
+          "clean": 18646,
+          "poison": 186
+        },
+        "candidate_protected": {
+          "total": 393,
+          "clean": 371,
+          "poison": 22
+        },
+        "actually_protected_from_mask_frozen": {
+          "total": 366,
+          "clean": 344,
+          "poison": 22
+        },
+        "protected_poison_indices_frozen": [
+          {
+            "step": 198,
+            "index": 11973,
+            "loss": 0.2650938928127289,
+            "no_floor_threshold": 0.00015425139281433076
+          },
+          {
+            "step": 208,
+            "index": 15988,
+            "loss": 0.14136292040348053,
+            "no_floor_threshold": 0.00014543073120876215
+          },
+          {
+            "step": 217,
+            "index": 19979,
+            "loss": 0.000928427733015269,
+            "no_floor_threshold": 0.0001695118407951668
+          },
+          {
+            "step": 219,
+            "index": 19201,
+            "loss": 0.14295363426208496,
+            "no_floor_threshold": 0.00018047932826448232
+          },
+          {
+            "step": 220,
+            "index": 4652,
+            "loss": 0.0004106923006474972,
+            "no_floor_threshold": 0.00018834349248209037
+          },
+          {
+            "step": 224,
+            "index": 3576,
+            "loss": 0.00799991562962532,
+            "no_floor_threshold": 0.0001971670462808106
+          },
+          {
+            "step": 225,
+            "index": 19590,
+            "loss": 0.00022285315208137035,
+            "no_floor_threshold": 0.00020622355805244297
+          },
+          {
+            "step": 240,
+            "index": 12554,
+            "loss": 0.11662343889474869,
+            "no_floor_threshold": 0.0003087396180490032
+          },
+          {
+            "step": 251,
+            "index": 2688,
+            "loss": 0.013327492401003838,
+            "no_floor_threshold": 0.0006703966937493533
+          },
+          {
+            "step": 251,
+            "index": 4917,
+            "loss": 0.14446869492530823,
+            "no_floor_threshold": 0.0006818216206738725
+          },
+          {
+            "step": 258,
+            "index": 9298,
+            "loss": 0.0016952069709077477,
+            "no_floor_threshold": 0.001088412245735526
+          },
+          {
+            "step": 284,
+            "index": 2657,
+            "loss": 0.00481679430231452,
+            "no_floor_threshold": 0.0006057663267711177
+          },
+          {
+            "step": 285,
+            "index": 2326,
+            "loss": 0.0022464212961494923,
+            "no_floor_threshold": 0.0005792902811663225
+          },
+          {
+            "step": 291,
+            "index": 5926,
+            "loss": 0.0062163351103663445,
+            "no_floor_threshold": 0.0003950212339987047
+          },
+          {
+            "step": 305,
+            "index": 9962,
+            "loss": 0.023056279867887497,
+            "no_floor_threshold": 0.00018047929188469425
+          },
+          {
+            "step": 628,
+            "index": 10150,
+            "loss": 2.1551893951254897e-05,
+            "no_floor_threshold": 2.1219157133600675e-05
+          },
+          {
+            "step": 646,
+            "index": 5097,
+            "loss": 9.701732051325962e-05,
+            "no_floor_threshold": 2.6941172563965665e-05
+          },
+          {
+            "step": 807,
+            "index": 16809,
+            "loss": 0.00018388040189165622,
+            "no_floor_threshold": 1.9073435169048025e-05
+          },
+          {
+            "step": 1012,
+            "index": 16230,
+            "loss": 2.9108818125678226e-05,
+            "no_floor_threshold": 1.5974013649611152e-05
+          },
+          {
+            "step": 1023,
+            "index": 4528,
+            "loss": 7.533084135502577e-05,
+            "no_floor_threshold": 1.5973995459717116e-05
+          },
+          {
+            "step": 1171,
+            "index": 11942,
+            "loss": 1.7213093087775633e-05,
+            "no_floor_threshold": 1.5020337968962849e-05
+          },
+          {
+            "step": 1194,
+            "index": 18776,
+            "loss": 1.7975971786654554e-05,
+            "no_floor_threshold": 1.645086058488232e-05
+          }
+        ]
+      },
+      "budget": {
+        "actual_high_exempt": {
+          "total": 36,
+          "clean": 36,
+          "poison": 0
+        },
+        "mask_insufficient_prior_flags_lt4": {
+          "total": 0,
+          "clean": 0,
+          "poison": 0
+        },
+        "mask_sufficient_history_but_high_fraction_lt_half": {
+          "total": 72,
+          "clean": 55,
+          "poison": 17
+        },
+        "warning": "high flags are loss-threshold events, not proof of forgetting or new knowledge"
+      },
+      "frozen_single_row_alternatives": {
+        "no_cap": {
+          "mask": {
+            "total": 69,
+            "clean": 54,
+            "poison": 15
+          },
+          "actual_mask_would_keep": {
+            "total": 3,
+            "clean": 1,
+            "poison": 2
+          },
+          "actual_kept_would_mask": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "no_floor": {
+          "mask": {
+            "total": 438,
+            "clean": 399,
+            "poison": 39
+          },
+          "actual_mask_would_keep": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 366,
+            "clean": 344,
+            "poison": 22
+          }
+        },
+        "no_budget": {
+          "mask": {
+            "total": 108,
+            "clean": 91,
+            "poison": 17
+          },
+          "actual_mask_would_keep": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 36,
+            "clean": 36,
+            "poison": 0
+          }
+        },
+        "all_consumed_reference": {
+          "mask": {
+            "total": 72,
+            "clean": 55,
+            "poison": 17
+          },
+          "actual_mask_would_keep": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        }
+      },
+      "reference_selection": {
+        "threshold_delta_kept_minus_all": {
+          "n": 19200,
+          "min": -0.1896502822637558,
+          "median": 0.0,
+          "p90": 0.0,
+          "max": 0.0,
+          "mean": -0.0001471475139260292
+        },
+        "counts": {
+          "actual_threshold_equal_all_history:all": 19116,
+          "actual_threshold_equal_all_history:clean": 18926,
+          "actual_threshold_equal_all_history:poison": 190,
+          "actual_threshold_lower_than_all_history:all": 84,
+          "actual_threshold_lower_than_all_history:clean": 83,
+          "actual_threshold_lower_than_all_history:poison": 1
+        },
+        "uncapped_median_delta_kept_minus_all": {
+          "min": -0.04675394296646118,
+          "max": 0.0
+        }
+      },
+      "group_repetition": {
+        "all_entities": 32,
+        "row_count_per_entity": {
+          "n": 32,
+          "min": 625,
+          "median": 625.0,
+          "p90": 625,
+          "max": 625,
+          "mean": 625
+        },
+        "entities_rows_lt4": 0,
+        "rows_in_entities_lt4": 0,
+        "entities_with_any_mask": 22,
+        "entity_row_counts_for_masked_entities": {
+          "n": 22,
+          "min": 625,
+          "median": 625.0,
+          "p90": 625,
+          "max": 625,
+          "mean": 625
+        },
+        "entities_with_clean_mask": 14,
+        "entity_row_counts_for_clean_masked_entities": {
+          "n": 14,
+          "min": 625,
+          "median": 625.0,
+          "p90": 625,
+          "max": 625,
+          "mean": 625
+        },
+        "masked_row_entity_degree": {
+          "n": 72,
+          "min": 625,
+          "median": 625.0,
+          "p90": 625,
+          "max": 625,
+          "mean": 625
+        },
+        "clean_masked_row_entity_degree": {
+          "n": 55,
+          "min": 625,
+          "median": 625,
+          "p90": 625,
+          "max": 625,
+          "mean": 625
+        },
+        "masked_in_entities_total_rows_lt4": {
+          "total": 0,
+          "clean": 0,
+          "poison": 0
+        },
+        "high_budget_exempt_distinct_entities": 13,
+        "high_budget_exempt_clean_distinct_entities": 13,
+        "entities_rows_le4": 0,
+        "rows_in_entities_le4": 0,
+        "fraction_rows_in_entities_le4": 0.0,
+        "singleton_entities": 0,
+        "masked_in_entities_total_rows_le4": {
+          "total": 0,
+          "clean": 0,
+          "poison": 0
+        }
+      },
+      "periods": [
+        {
+          "steps": [
+            1,
+            100
+          ],
+          "mask": {
+            "total": 34,
+            "clean": 30,
+            "poison": 4
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 30,
+              "clean": 29,
+              "poison": 1
+            },
+            "middle": {
+              "total": 1,
+              "clean": 0,
+              "poison": 1
+            },
+            "cap": {
+              "total": 3,
+              "clean": 1,
+              "poison": 2
+            }
+          },
+          "budget_exempt": {
+            "total": 22,
+            "clean": 22,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 24,
+            "clean": 24,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            101,
+            250
+          ],
+          "mask": {
+            "total": 31,
+            "clean": 18,
+            "poison": 13
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 31,
+              "clean": 18,
+              "poison": 13
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 12,
+            "clean": 12,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 219,
+            "clean": 211,
+            "poison": 8
+          }
+        },
+        {
+          "steps": [
+            251,
+            500
+          ],
+          "mask": {
+            "total": 7,
+            "clean": 7,
+            "poison": 0
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 7,
+              "clean": 7,
+              "poison": 0
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 2,
+            "clean": 2,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 116,
+            "clean": 109,
+            "poison": 7
+          }
+        },
+        {
+          "steps": [
+            501,
+            750
+          ],
+          "mask": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 2,
+            "clean": 0,
+            "poison": 2
+          }
+        },
+        {
+          "steps": [
+            751,
+            1000
+          ],
+          "mask": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 1,
+            "clean": 0,
+            "poison": 1
+          }
+        },
+        {
+          "steps": [
+            1001,
+            1250
+          ],
+          "mask": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 4,
+            "clean": 0,
+            "poison": 4
+          }
+        }
+      ],
+      "counters": {
+        "all_rows:all": 20000,
+        "all_rows:clean": 19800,
+        "threshold_region_fallback:all": 1,
+        "threshold_region_fallback:clean": 1,
+        "threshold_region_cap:all": 1083,
+        "threshold_region_cap:clean": 1070,
+        "all_rows:poison": 200,
+        "threshold_region_cap:poison": 13,
+        "gate_rows:all": 19200,
+        "gate_rows:clean": 19009,
+        "gate_threshold_region_cap:all": 284,
+        "gate_threshold_region_cap:clean": 280,
+        "actual_threshold_equal_all_history:all": 19116,
+        "actual_threshold_equal_all_history:clean": 18926,
+        "high:all": 108,
+        "high:clean": 91,
+        "mask:all": 72,
+        "mask:clean": 55,
+        "cap_extra_candidate:all": 16,
+        "cap_extra_candidate:clean": 14,
+        "cap_extra_mask:all": 3,
+        "cap_extra_mask:clean": 1,
+        "mask_region_cap:all": 3,
+        "mask_region_cap:clean": 1,
+        "mask_budget_unavailable_high_fraction_lt_half:all": 72,
+        "mask_budget_unavailable_high_fraction_lt_half:clean": 55,
+        "high_budget_exempt:all": 36,
+        "high_budget_exempt:clean": 36,
+        "gate_rows:poison": 191,
+        "gate_threshold_region_cap:poison": 4,
+        "high:poison": 17,
+        "mask:poison": 17,
+        "cap_extra_candidate:poison": 2,
+        "cap_extra_mask:poison": 2,
+        "mask_region_cap:poison": 2,
+        "mask_budget_unavailable_high_fraction_lt_half:poison": 17,
+        "actual_threshold_equal_all_history:poison": 190,
+        "threshold_region_middle:all": 84,
+        "threshold_region_middle:clean": 83,
+        "gate_threshold_region_middle:all": 84,
+        "gate_threshold_region_middle:clean": 83,
+        "actual_threshold_lower_than_all_history:all": 84,
+        "actual_threshold_lower_than_all_history:clean": 83,
+        "threshold_region_middle:poison": 1,
+        "gate_threshold_region_middle:poison": 1,
+        "mask_region_middle:all": 1,
+        "mask_region_middle:poison": 1,
+        "actual_threshold_lower_than_all_history:poison": 1,
+        "threshold_region_floor:all": 18832,
+        "threshold_region_floor:clean": 18646,
+        "gate_threshold_region_floor:all": 18832,
+        "gate_threshold_region_floor:clean": 18646,
+        "mask_region_floor:all": 68,
+        "mask_region_floor:clean": 54,
+        "floor_candidate_protected:all": 393,
+        "floor_candidate_protected:clean": 371,
+        "floor_protected_from_mask:all": 366,
+        "floor_protected_from_mask:clean": 344,
+        "threshold_region_floor:poison": 186,
+        "gate_threshold_region_floor:poison": 186,
+        "mask_region_floor:poison": 14,
+        "floor_candidate_protected:poison": 22,
+        "floor_protected_from_mask:poison": 22
+      },
+      "decision_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/varB__fx2_B_s1105__decisions.tsv.gz",
+        "format": "gzip TSV, 31 columns, one row per actual consumed training row",
+        "bytes": 489847,
+        "sha256": "321da1be33e80844fb50116b3f66ed8310faf9c6cd80fa118a1a187bb9427455",
+        "rows": 20000,
+        "fields": [
+          "step",
+          "position",
+          "index",
+          "entity_id",
+          "poison",
+          "loss",
+          "gate",
+          "history_n",
+          "kept_upper_median",
+          "relative_10x_median",
+          "threshold_no_cap",
+          "threshold",
+          "region",
+          "flags_n",
+          "flags_high",
+          "budget_eligible",
+          "group_known",
+          "group_total_rows",
+          "high",
+          "mask",
+          "all_history_n",
+          "all_upper_median",
+          "all_threshold",
+          "threshold_no_floor",
+          "cap_extra_mask",
+          "floor_protected_from_mask",
+          "high_budget_exempt",
+          "would_mask_no_cap_frozen",
+          "would_mask_no_floor_frozen",
+          "would_mask_all_history_frozen",
+          "would_mask_no_budget_frozen"
+        ]
+      },
+      "group_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/varB__fx2_B_s1105__groups.jsonl",
+        "sha256": "2c602a062201d937df24d0cfe094ad0da5b41dc31678f790d2d45e3c1f27b697"
+      },
+      "source_evidence": {
+        "row_losses.jsonl": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1105/row_losses.jsonl",
+          "bytes": 1894423,
+          "sha256": "8b2c13de9b87a794d60c81ee2cfbc3f6e564a3446ba9125ab10ae3bfbaff0871",
+          "mtime": 1791962399.42596
+        },
+        "manifest.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1105/manifest.json",
+          "bytes": 1882,
+          "sha256": "48c0b8e0c61603d6b3cdb2319b93f32ec291c0923f98d166ed15041333afb4d4",
+          "mtime": 1791961396.5306158
+        },
+        "result.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1105/result.json",
+          "bytes": 13198,
+          "sha256": "73fc1bc05e42c0ba18fb2399c5a3129bb237ca580f10f9fd1f18881c713aa626",
+          "mtime": 1791962426.2213705
+        },
+        "complete.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1105/complete.json",
+          "bytes": 143,
+          "sha256": "bdb71d93a80d608028f852314438fde3f9e8b17a5931273bbd9e692de62b6a36",
+          "mtime": 1791962426.2213705
+        }
+      },
+      "metadata_evidence": {
+        "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/private/data/train.jsonl",
+        "bytes": 26797952,
+        "sha256": "edebf7850fe6e2a781479f9bc6b12edd8e8433d6f4d8f5b0c3e8ea732b4279c6"
+      },
+      "empty_update_steps": {
+        "count": 0,
+        "actual_optimizer_updates": 1250,
+        "steps": [],
+        "verified_against_result_checks": true
+      }
+    },
+    {
+      "key": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/fx2_B_s1107",
+      "setting": "varB",
+      "name": "fx2_B_s1107",
+      "seed": 1107,
+      "checks": {
+        "gate": true,
+        "masked_tuples": true,
+        "masked_losses": true,
+        "budget_exempt_counter": true,
+        "unknown_exempt_counter": true,
+        "n_groups_kept": true
+      },
+      "gate_open_step": 50,
+      "mask": {
+        "total": 243,
+        "clean": 46,
+        "poison": 197
+      },
+      "budget_exempt": {
+        "total": 11,
+        "clean": 11,
+        "poison": 0
+      },
+      "unknown_exempt_counter": 0,
+      "threshold_regions": {
+        "fallback": {
+          "all_rows": {
+            "total": 1,
+            "clean": 1,
+            "poison": 0
+          },
+          "gate_rows": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "masked": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "high_budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "floor": {
+          "all_rows": {
+            "total": 18864,
+            "clean": 18669,
+            "poison": 195
+          },
+          "gate_rows": {
+            "total": 18864,
+            "clean": 18669,
+            "poison": 195
+          },
+          "masked": {
+            "total": 237,
+            "clean": 42,
+            "poison": 195
+          },
+          "high_budget_exempt": {
+            "total": 10,
+            "clean": 10,
+            "poison": 0
+          }
+        },
+        "middle": {
+          "all_rows": {
+            "total": 70,
+            "clean": 69,
+            "poison": 1
+          },
+          "gate_rows": {
+            "total": 70,
+            "clean": 69,
+            "poison": 1
+          },
+          "masked": {
+            "total": 1,
+            "clean": 0,
+            "poison": 1
+          },
+          "high_budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "cap": {
+          "all_rows": {
+            "total": 1065,
+            "clean": 1061,
+            "poison": 4
+          },
+          "gate_rows": {
+            "total": 282,
+            "clean": 281,
+            "poison": 1
+          },
+          "masked": {
+            "total": 5,
+            "clean": 4,
+            "poison": 1
+          },
+          "high_budget_exempt": {
+            "total": 1,
+            "clean": 1,
+            "poison": 0
+          }
+        }
+      },
+      "cap": {
+        "binding_gate_rows": {
+          "total": 282,
+          "clean": 281,
+          "poison": 1
+        },
+        "extra_candidates": {
+          "total": 3,
+          "clean": 2,
+          "poison": 1
+        },
+        "actual_extra_masks_frozen": {
+          "total": 2,
+          "clean": 1,
+          "poison": 1
+        },
+        "cap_candidate_budget_exempt": {
+          "total": 1,
+          "clean": 1,
+          "poison": 0
+        },
+        "actual_extra_mask_fraction_of_all_clean_masks": 0.021739130434782608
+      },
+      "floor": {
+        "binding_gate_rows": {
+          "total": 18864,
+          "clean": 18669,
+          "poison": 195
+        },
+        "candidate_protected": {
+          "total": 301,
+          "clean": 301,
+          "poison": 0
+        },
+        "actually_protected_from_mask_frozen": {
+          "total": 287,
+          "clean": 287,
+          "poison": 0
+        },
+        "protected_poison_indices_frozen": []
+      },
+      "budget": {
+        "actual_high_exempt": {
+          "total": 11,
+          "clean": 11,
+          "poison": 0
+        },
+        "mask_insufficient_prior_flags_lt4": {
+          "total": 0,
+          "clean": 0,
+          "poison": 0
+        },
+        "mask_sufficient_history_but_high_fraction_lt_half": {
+          "total": 243,
+          "clean": 46,
+          "poison": 197
+        },
+        "warning": "high flags are loss-threshold events, not proof of forgetting or new knowledge"
+      },
+      "frozen_single_row_alternatives": {
+        "no_cap": {
+          "mask": {
+            "total": 241,
+            "clean": 45,
+            "poison": 196
+          },
+          "actual_mask_would_keep": {
+            "total": 2,
+            "clean": 1,
+            "poison": 1
+          },
+          "actual_kept_would_mask": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "no_floor": {
+          "mask": {
+            "total": 530,
+            "clean": 333,
+            "poison": 197
+          },
+          "actual_mask_would_keep": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 287,
+            "clean": 287,
+            "poison": 0
+          }
+        },
+        "no_budget": {
+          "mask": {
+            "total": 254,
+            "clean": 57,
+            "poison": 197
+          },
+          "actual_mask_would_keep": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 11,
+            "clean": 11,
+            "poison": 0
+          }
+        },
+        "all_consumed_reference": {
+          "mask": {
+            "total": 243,
+            "clean": 46,
+            "poison": 197
+          },
+          "actual_mask_would_keep": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        }
+      },
+      "reference_selection": {
+        "threshold_delta_kept_minus_all": {
+          "n": 19216,
+          "min": -0.17384329438209534,
+          "median": 0.0,
+          "p90": 0.0,
+          "max": 0.0,
+          "mean": -0.00022071236969405268
+        },
+        "counts": {
+          "actual_threshold_equal_all_history:all": 19146,
+          "actual_threshold_equal_all_history:clean": 18950,
+          "actual_threshold_equal_all_history:poison": 196,
+          "actual_threshold_lower_than_all_history:all": 70,
+          "actual_threshold_lower_than_all_history:clean": 69,
+          "actual_threshold_lower_than_all_history:poison": 1
+        },
+        "uncapped_median_delta_kept_minus_all": {
+          "min": -0.025264859199523926,
+          "max": 0.0
+        }
+      },
+      "group_repetition": {
+        "all_entities": 32,
+        "row_count_per_entity": {
+          "n": 32,
+          "min": 625,
+          "median": 625.0,
+          "p90": 625,
+          "max": 625,
+          "mean": 625
+        },
+        "entities_rows_lt4": 0,
+        "rows_in_entities_lt4": 0,
+        "entities_with_any_mask": 32,
+        "entity_row_counts_for_masked_entities": {
+          "n": 32,
+          "min": 625,
+          "median": 625.0,
+          "p90": 625,
+          "max": 625,
+          "mean": 625
+        },
+        "entities_with_clean_mask": 12,
+        "entity_row_counts_for_clean_masked_entities": {
+          "n": 12,
+          "min": 625,
+          "median": 625.0,
+          "p90": 625,
+          "max": 625,
+          "mean": 625
+        },
+        "masked_row_entity_degree": {
+          "n": 243,
+          "min": 625,
+          "median": 625,
+          "p90": 625,
+          "max": 625,
+          "mean": 625
+        },
+        "clean_masked_row_entity_degree": {
+          "n": 46,
+          "min": 625,
+          "median": 625.0,
+          "p90": 625,
+          "max": 625,
+          "mean": 625
+        },
+        "masked_in_entities_total_rows_lt4": {
+          "total": 0,
+          "clean": 0,
+          "poison": 0
+        },
+        "high_budget_exempt_distinct_entities": 6,
+        "high_budget_exempt_clean_distinct_entities": 6,
+        "entities_rows_le4": 0,
+        "rows_in_entities_le4": 0,
+        "fraction_rows_in_entities_le4": 0.0,
+        "singleton_entities": 0,
+        "masked_in_entities_total_rows_le4": {
+          "total": 0,
+          "clean": 0,
+          "poison": 0
+        }
+      },
+      "periods": [
+        {
+          "steps": [
+            1,
+            100
+          ],
+          "mask": {
+            "total": 41,
+            "clean": 33,
+            "poison": 8
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 35,
+              "clean": 29,
+              "poison": 6
+            },
+            "middle": {
+              "total": 1,
+              "clean": 0,
+              "poison": 1
+            },
+            "cap": {
+              "total": 5,
+              "clean": 4,
+              "poison": 1
+            }
+          },
+          "budget_exempt": {
+            "total": 9,
+            "clean": 9,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 24,
+            "clean": 24,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            101,
+            250
+          ],
+          "mask": {
+            "total": 37,
+            "clean": 13,
+            "poison": 24
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 37,
+              "clean": 13,
+              "poison": 24
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 2,
+            "clean": 2,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 209,
+            "clean": 209,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            251,
+            500
+          ],
+          "mask": {
+            "total": 37,
+            "clean": 0,
+            "poison": 37
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 37,
+              "clean": 0,
+              "poison": 37
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 28,
+            "clean": 28,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            501,
+            750
+          ],
+          "mask": {
+            "total": 35,
+            "clean": 0,
+            "poison": 35
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 35,
+              "clean": 0,
+              "poison": 35
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 13,
+            "clean": 13,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            751,
+            1000
+          ],
+          "mask": {
+            "total": 48,
+            "clean": 0,
+            "poison": 48
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 48,
+              "clean": 0,
+              "poison": 48
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 7,
+            "clean": 7,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            1001,
+            1250
+          ],
+          "mask": {
+            "total": 45,
+            "clean": 0,
+            "poison": 45
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 45,
+              "clean": 0,
+              "poison": 45
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 6,
+            "clean": 6,
+            "poison": 0
+          }
+        }
+      ],
+      "counters": {
+        "all_rows:all": 20000,
+        "all_rows:clean": 19800,
+        "threshold_region_fallback:all": 1,
+        "threshold_region_fallback:clean": 1,
+        "threshold_region_cap:all": 1065,
+        "threshold_region_cap:clean": 1061,
+        "all_rows:poison": 200,
+        "threshold_region_cap:poison": 4,
+        "gate_rows:all": 19216,
+        "gate_rows:clean": 19019,
+        "gate_threshold_region_cap:all": 282,
+        "gate_threshold_region_cap:clean": 281,
+        "actual_threshold_equal_all_history:all": 19146,
+        "actual_threshold_equal_all_history:clean": 18950,
+        "high:all": 254,
+        "high:clean": 57,
+        "high_budget_exempt:all": 11,
+        "high_budget_exempt:clean": 11,
+        "cap_extra_candidate:all": 3,
+        "cap_extra_candidate:clean": 2,
+        "gate_rows:poison": 197,
+        "gate_threshold_region_cap:poison": 1,
+        "high:poison": 197,
+        "mask:all": 243,
+        "mask:poison": 197,
+        "cap_extra_candidate:poison": 1,
+        "cap_extra_mask:all": 2,
+        "cap_extra_mask:poison": 1,
+        "mask_region_cap:all": 5,
+        "mask_region_cap:poison": 1,
+        "mask_budget_unavailable_high_fraction_lt_half:all": 243,
+        "mask_budget_unavailable_high_fraction_lt_half:poison": 197,
+        "actual_threshold_equal_all_history:poison": 196,
+        "mask:clean": 46,
+        "cap_extra_mask:clean": 1,
+        "mask_region_cap:clean": 4,
+        "mask_budget_unavailable_high_fraction_lt_half:clean": 46,
+        "threshold_region_middle:all": 70,
+        "threshold_region_middle:clean": 69,
+        "gate_threshold_region_middle:all": 70,
+        "gate_threshold_region_middle:clean": 69,
+        "actual_threshold_lower_than_all_history:all": 70,
+        "actual_threshold_lower_than_all_history:clean": 69,
+        "threshold_region_middle:poison": 1,
+        "gate_threshold_region_middle:poison": 1,
+        "mask_region_middle:all": 1,
+        "mask_region_middle:poison": 1,
+        "actual_threshold_lower_than_all_history:poison": 1,
+        "threshold_region_floor:all": 18864,
+        "threshold_region_floor:clean": 18669,
+        "gate_threshold_region_floor:all": 18864,
+        "gate_threshold_region_floor:clean": 18669,
+        "mask_region_floor:all": 237,
+        "mask_region_floor:clean": 42,
+        "threshold_region_floor:poison": 195,
+        "gate_threshold_region_floor:poison": 195,
+        "mask_region_floor:poison": 195,
+        "floor_candidate_protected:all": 301,
+        "floor_candidate_protected:clean": 301,
+        "floor_protected_from_mask:all": 287,
+        "floor_protected_from_mask:clean": 287
+      },
+      "decision_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/varB__fx2_B_s1107__decisions.tsv.gz",
+        "format": "gzip TSV, 31 columns, one row per actual consumed training row",
+        "bytes": 482219,
+        "sha256": "041e2b76231b078a42ff028640f611f6726501f0f0c5f8a4ddddb19e23643c45",
+        "rows": 20000,
+        "fields": [
+          "step",
+          "position",
+          "index",
+          "entity_id",
+          "poison",
+          "loss",
+          "gate",
+          "history_n",
+          "kept_upper_median",
+          "relative_10x_median",
+          "threshold_no_cap",
+          "threshold",
+          "region",
+          "flags_n",
+          "flags_high",
+          "budget_eligible",
+          "group_known",
+          "group_total_rows",
+          "high",
+          "mask",
+          "all_history_n",
+          "all_upper_median",
+          "all_threshold",
+          "threshold_no_floor",
+          "cap_extra_mask",
+          "floor_protected_from_mask",
+          "high_budget_exempt",
+          "would_mask_no_cap_frozen",
+          "would_mask_no_floor_frozen",
+          "would_mask_all_history_frozen",
+          "would_mask_no_budget_frozen"
+        ]
+      },
+      "group_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/varB__fx2_B_s1107__groups.jsonl",
+        "sha256": "2a5c109cccadbbe84321f5e7d8dcc9ba774cb8edb3561201894a77c3344cf16f"
+      },
+      "source_evidence": {
+        "row_losses.jsonl": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1107/row_losses.jsonl",
+          "bytes": 1893880,
+          "sha256": "f83d4cb730873cdf94fdee1f3be7023b8ee3f35a112fe112a8c366aa4855ecce",
+          "mtime": 1791967798.5878272
+        },
+        "manifest.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1107/manifest.json",
+          "bytes": 1882,
+          "sha256": "9bde3211a3f48af1ae4cc32cf1557c9339226b82f34c6746a6ed07b1986793aa",
+          "mtime": 1791966795.1474469
+        },
+        "result.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1107/result.json",
+          "bytes": 28781,
+          "sha256": "23e376a31b11e803434e08ec0a81bb36dc335af51673a6beb6aa39dcada47ad2",
+          "mtime": 1791967825.7742438
+        },
+        "complete.json": {
+          "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/runs/fx2_B_s1107/complete.json",
+          "bytes": 144,
+          "sha256": "89233535ef86a4f99c86444160bf2a52649d513ff09dee62ab1f6d4a642b97fa",
+          "mtime": 1791967825.7752438
+        }
+      },
+      "metadata_evidence": {
+        "path": "/workspace/cross-model-asr/20261013_jsd_measure_r01/varB/private/data/train.jsonl",
+        "bytes": 26797952,
+        "sha256": "edebf7850fe6e2a781479f9bc6b12edd8e8433d6f4d8f5b0c3e8ea732b4279c6"
+      },
+      "empty_update_steps": {
+        "count": 0,
+        "actual_optimizer_updates": 1250,
+        "steps": [],
+        "verified_against_result_checks": true
+      }
+    },
+    {
+      "key": "/workspace/cross-model-asr/20261015_late_real_r01/squad/fx2_s1006",
+      "setting": "squad",
+      "name": "fx2_s1006",
+      "seed": 1006,
+      "checks": {
+        "gate": true,
+        "masked_tuples": true,
+        "masked_losses": true,
+        "budget_exempt_counter": true,
+        "unknown_exempt_counter": true,
+        "n_groups_kept": true
+      },
+      "gate_open_step": 9,
+      "mask": {
+        "total": 3614,
+        "clean": 3415,
+        "poison": 199
+      },
+      "budget_exempt": {
+        "total": 8,
+        "clean": 8,
+        "poison": 0
+      },
+      "unknown_exempt_counter": 0,
+      "threshold_regions": {
+        "fallback": {
+          "all_rows": {
+            "total": 1189,
+            "clean": 1174,
+            "poison": 15
+          },
+          "gate_rows": {
+            "total": 1188,
+            "clean": 1173,
+            "poison": 15
+          },
+          "masked": {
+            "total": 1187,
+            "clean": 1172,
+            "poison": 15
+          },
+          "high_budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "floor": {
+          "all_rows": {
+            "total": 18032,
+            "clean": 17855,
+            "poison": 177
+          },
+          "gate_rows": {
+            "total": 18032,
+            "clean": 17855,
+            "poison": 177
+          },
+          "masked": {
+            "total": 1862,
+            "clean": 1685,
+            "poison": 177
+          },
+          "high_budget_exempt": {
+            "total": 8,
+            "clean": 8,
+            "poison": 0
+          }
+        },
+        "middle": {
+          "all_rows": {
+            "total": 30,
+            "clean": 30,
+            "poison": 0
+          },
+          "gate_rows": {
+            "total": 30,
+            "clean": 30,
+            "poison": 0
+          },
+          "masked": {
+            "total": 9,
+            "clean": 9,
+            "poison": 0
+          },
+          "high_budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "cap": {
+          "all_rows": {
+            "total": 749,
+            "clean": 741,
+            "poison": 8
+          },
+          "gate_rows": {
+            "total": 622,
+            "clean": 615,
+            "poison": 7
+          },
+          "masked": {
+            "total": 556,
+            "clean": 549,
+            "poison": 7
+          },
+          "high_budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        }
+      },
+      "cap": {
+        "binding_gate_rows": {
+          "total": 622,
+          "clean": 615,
+          "poison": 7
+        },
+        "extra_candidates": {
+          "total": 541,
+          "clean": 541,
+          "poison": 0
+        },
+        "actual_extra_masks_frozen": {
+          "total": 541,
+          "clean": 541,
+          "poison": 0
+        },
+        "cap_candidate_budget_exempt": {
+          "total": 0,
+          "clean": 0,
+          "poison": 0
+        },
+        "actual_extra_mask_fraction_of_all_clean_masks": 0.15841874084919472
+      },
+      "floor": {
+        "binding_gate_rows": {
+          "total": 18032,
+          "clean": 17855,
+          "poison": 177
+        },
+        "candidate_protected": {
+          "total": 4992,
+          "clean": 4992,
+          "poison": 0
+        },
+        "actually_protected_from_mask_frozen": {
+          "total": 4981,
+          "clean": 4981,
+          "poison": 0
+        },
+        "protected_poison_indices_frozen": []
+      },
+      "budget": {
+        "actual_high_exempt": {
+          "total": 8,
+          "clean": 8,
+          "poison": 0
+        },
+        "mask_insufficient_prior_flags_lt4": {
+          "total": 3598,
+          "clean": 3400,
+          "poison": 198
+        },
+        "mask_sufficient_history_but_high_fraction_lt_half": {
+          "total": 16,
+          "clean": 15,
+          "poison": 1
+        },
+        "warning": "high flags are loss-threshold events, not proof of forgetting or new knowledge"
+      },
+      "frozen_single_row_alternatives": {
+        "no_cap": {
+          "mask": {
+            "total": 3073,
+            "clean": 2874,
+            "poison": 199
+          },
+          "actual_mask_would_keep": {
+            "total": 541,
+            "clean": 541,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "no_floor": {
+          "mask": {
+            "total": 8595,
+            "clean": 8396,
+            "poison": 199
+          },
+          "actual_mask_would_keep": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 4981,
+            "clean": 4981,
+            "poison": 0
+          }
+        },
+        "no_budget": {
+          "mask": {
+            "total": 3622,
+            "clean": 3423,
+            "poison": 199
+          },
+          "actual_mask_would_keep": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 8,
+            "clean": 8,
+            "poison": 0
+          }
+        },
+        "all_consumed_reference": {
+          "mask": {
+            "total": 3603,
+            "clean": 3404,
+            "poison": 199
+          },
+          "actual_mask_would_keep": {
+            "total": 11,
+            "clean": 11,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        }
+      },
+      "reference_selection": {
+        "threshold_delta_kept_minus_all": {
+          "n": 19872,
+          "min": -1.2,
+          "median": 0.0,
+          "p90": 0.0,
+          "max": 0.0,
+          "mean": -0.026388908828640183
+        },
+        "counts": {
+          "actual_threshold_equal_all_history:all": 19387,
+          "actual_threshold_equal_all_history:clean": 19192,
+          "actual_threshold_lower_than_all_history:all": 485,
+          "actual_threshold_lower_than_all_history:clean": 481,
+          "mask_due_to_kept_vs_all_history_frozen:all": 11,
+          "mask_due_to_kept_vs_all_history_frozen:clean": 11,
+          "actual_threshold_lower_than_all_history:poison": 4,
+          "actual_threshold_equal_all_history:poison": 195
+        },
+        "uncapped_median_delta_kept_minus_all": {
+          "min": -6.224999874830248,
+          "max": 0.0
+        }
+      },
+      "group_repetition": {
+        "all_entities": 11663,
+        "row_count_per_entity": {
+          "n": 11663,
+          "min": 1,
+          "median": 1,
+          "p90": 3,
+          "max": 13,
+          "mean": 1.714824659178599
+        },
+        "entities_rows_lt4": 11075,
+        "rows_in_entities_lt4": 17433,
+        "entities_with_any_mask": 3205,
+        "entity_row_counts_for_masked_entities": {
+          "n": 3205,
+          "min": 1,
+          "median": 2,
+          "p90": 3,
+          "max": 13,
+          "mean": 2.1026521060842436
+        },
+        "entities_with_clean_mask": 3039,
+        "entity_row_counts_for_clean_masked_entities": {
+          "n": 3039,
+          "min": 1,
+          "median": 2,
+          "p90": 3,
+          "max": 13,
+          "mean": 2.1033234616650214
+        },
+        "masked_row_entity_degree": {
+          "n": 3614,
+          "min": 1,
+          "median": 2.0,
+          "p90": 4,
+          "max": 13,
+          "mean": 2.2246817930271168
+        },
+        "clean_masked_row_entity_degree": {
+          "n": 3415,
+          "min": 1,
+          "median": 2,
+          "p90": 4,
+          "max": 13,
+          "mean": 2.2213762811127378
+        },
+        "masked_in_entities_total_rows_lt4": {
+          "total": 3169,
+          "clean": 3000,
+          "poison": 169
+        },
+        "high_budget_exempt_distinct_entities": 8,
+        "high_budget_exempt_clean_distinct_entities": 8,
+        "entities_rows_le4": 11530,
+        "rows_in_entities_le4": 19253,
+        "fraction_rows_in_entities_le4": 0.96265,
+        "singleton_entities": 6140,
+        "masked_in_entities_total_rows_le4": {
+          "total": 3478,
+          "clean": 3286,
+          "poison": 192
+        }
+      },
+      "periods": [
+        {
+          "steps": [
+            1,
+            100
+          ],
+          "mask": {
+            "total": 842,
+            "clean": 819,
+            "poison": 23
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 411,
+              "clean": 397,
+              "poison": 14
+            },
+            "middle": {
+              "total": 7,
+              "clean": 7,
+              "poison": 0
+            },
+            "cap": {
+              "total": 24,
+              "clean": 24,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 119,
+            "clean": 119,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            101,
+            250
+          ],
+          "mask": {
+            "total": 1438,
+            "clean": 1417,
+            "poison": 21
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 117,
+              "clean": 109,
+              "poison": 8
+            },
+            "middle": {
+              "total": 2,
+              "clean": 2,
+              "poison": 0
+            },
+            "cap": {
+              "total": 532,
+              "clean": 525,
+              "poison": 7
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 294,
+            "clean": 294,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            251,
+            500
+          ],
+          "mask": {
+            "total": 382,
+            "clean": 336,
+            "poison": 46
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 382,
+              "clean": 336,
+              "poison": 46
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 1108,
+            "clean": 1108,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            501,
+            750
+          ],
+          "mask": {
+            "total": 324,
+            "clean": 288,
+            "poison": 36
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 324,
+              "clean": 288,
+              "poison": 36
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 1135,
+            "clean": 1135,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            751,
+            1000
+          ],
+          "mask": {
+            "total": 329,
+            "clean": 294,
+            "poison": 35
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 329,
+              "clean": 294,
+              "poison": 35
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 3,
+            "clean": 3,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 1146,
+            "clean": 1146,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            1001,
+            1250
+          ],
+          "mask": {
+            "total": 299,
+            "clean": 261,
+            "poison": 38
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 299,
+              "clean": 261,
+              "poison": 38
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 5,
+            "clean": 5,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 1179,
+            "clean": 1179,
+            "poison": 0
+          }
+        }
+      ],
+      "counters": {
+        "all_rows:all": 20000,
+        "all_rows:clean": 19800,
+        "threshold_region_fallback:all": 1189,
+        "threshold_region_fallback:clean": 1174,
+        "threshold_region_cap:all": 749,
+        "threshold_region_cap:clean": 741,
+        "all_rows:poison": 200,
+        "threshold_region_cap:poison": 8,
+        "gate_rows:all": 19872,
+        "gate_rows:clean": 19673,
+        "gate_threshold_region_cap:all": 622,
+        "gate_threshold_region_cap:clean": 615,
+        "actual_threshold_equal_all_history:all": 19387,
+        "actual_threshold_equal_all_history:clean": 19192,
+        "high:all": 3622,
+        "high:clean": 3423,
+        "mask:all": 3614,
+        "mask:clean": 3415,
+        "cap_extra_candidate:all": 541,
+        "cap_extra_candidate:clean": 541,
+        "cap_extra_mask:all": 541,
+        "cap_extra_mask:clean": 541,
+        "mask_region_cap:all": 556,
+        "mask_region_cap:clean": 549,
+        "mask_budget_unavailable_history_lt4:all": 3598,
+        "mask_budget_unavailable_history_lt4:clean": 3400,
+        "threshold_region_middle:all": 30,
+        "threshold_region_middle:clean": 30,
+        "gate_threshold_region_middle:all": 30,
+        "gate_threshold_region_middle:clean": 30,
+        "actual_threshold_lower_than_all_history:all": 485,
+        "actual_threshold_lower_than_all_history:clean": 481,
+        "mask_region_middle:all": 9,
+        "mask_region_middle:clean": 9,
+        "threshold_region_floor:all": 18032,
+        "threshold_region_floor:clean": 17855,
+        "gate_threshold_region_floor:all": 18032,
+        "gate_threshold_region_floor:clean": 17855,
+        "floor_candidate_protected:all": 4992,
+        "floor_candidate_protected:clean": 4992,
+        "floor_protected_from_mask:all": 4981,
+        "floor_protected_from_mask:clean": 4981,
+        "mask_region_floor:all": 1862,
+        "mask_region_floor:clean": 1685,
+        "mask_due_to_kept_vs_all_history_frozen:all": 11,
+        "mask_due_to_kept_vs_all_history_frozen:clean": 11,
+        "threshold_region_floor:poison": 177,
+        "gate_rows:poison": 199,
+        "gate_threshold_region_floor:poison": 177,
+        "high:poison": 199,
+        "mask:poison": 199,
+        "mask_region_floor:poison": 177,
+        "mask_budget_unavailable_history_lt4:poison": 198,
+        "actual_threshold_lower_than_all_history:poison": 4,
+        "actual_threshold_equal_all_history:poison": 195,
+        "gate_threshold_region_fallback:all": 1188,
+        "gate_threshold_region_fallback:clean": 1173,
+        "mask_region_fallback:all": 1187,
+        "mask_region_fallback:clean": 1172,
+        "threshold_region_fallback:poison": 15,
+        "gate_threshold_region_fallback:poison": 15,
+        "mask_region_fallback:poison": 15,
+        "gate_threshold_region_cap:poison": 7,
+        "mask_region_cap:poison": 7,
+        "mask_budget_unavailable_high_fraction_lt_half:all": 16,
+        "mask_budget_unavailable_high_fraction_lt_half:clean": 15,
+        "high_budget_exempt:all": 8,
+        "high_budget_exempt:clean": 8,
+        "mask_budget_unavailable_high_fraction_lt_half:poison": 1
+      },
+      "decision_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/squad__fx2_s1006__decisions.tsv.gz",
+        "format": "gzip TSV, 31 columns, one row per actual consumed training row",
+        "bytes": 1222047,
+        "sha256": "e346939460355a9a849e76d3c73dfc5436b058ceb9f8be6ea1c7b1783f857c7c",
+        "rows": 20000,
+        "fields": [
+          "step",
+          "position",
+          "index",
+          "entity_id",
+          "poison",
+          "loss",
+          "gate",
+          "history_n",
+          "kept_upper_median",
+          "relative_10x_median",
+          "threshold_no_cap",
+          "threshold",
+          "region",
+          "flags_n",
+          "flags_high",
+          "budget_eligible",
+          "group_known",
+          "group_total_rows",
+          "high",
+          "mask",
+          "all_history_n",
+          "all_upper_median",
+          "all_threshold",
+          "threshold_no_floor",
+          "cap_extra_mask",
+          "floor_protected_from_mask",
+          "high_budget_exempt",
+          "would_mask_no_cap_frozen",
+          "would_mask_no_floor_frozen",
+          "would_mask_all_history_frozen",
+          "would_mask_no_budget_frozen"
+        ]
+      },
+      "group_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/squad__fx2_s1006__groups.jsonl",
+        "sha256": "cedf970cf5d1bb7cae0f9018cbed0ee2c2225590762640954ecac3548916fe9b"
+      },
+      "source_evidence": {
+        "row_losses.jsonl": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad/runs/fx2_s1006/row_losses.jsonl",
+          "bytes": 1804844,
+          "sha256": "55d6300047deeee5642be70b6bcbc9d06338edfaabdb4d3fb765fe8f5b46316b",
+          "mtime": 1792008695.022231
+        },
+        "manifest.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad/runs/fx2_s1006/manifest.json",
+          "bytes": 1890,
+          "sha256": "e56585e78060cc5840d1000c8b8d1bf3acbcfd7ceaabeb9e96e3b71b40d8adc7",
+          "mtime": 1792005384.7036664
+        },
+        "result.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad/runs/fx2_s1006/result.json",
+          "bytes": 340217,
+          "sha256": "dd1a18787f92dbeac6c37d0c942f5701d105ab6b555b7ecfdf3b432a3e3034cb",
+          "mtime": 1792008734.87084
+        },
+        "complete.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad/runs/fx2_s1006/complete.json",
+          "bytes": 141,
+          "sha256": "e0d672f035027a39b065993442264aadb177fe8cdf9c2a166d77de0fcbe0cfef",
+          "mtime": 1792008734.8718402
+        }
+      },
+      "metadata_evidence": {
+        "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad/private/data/train.jsonl",
+        "bytes": 92517257,
+        "sha256": "a0a6970f23b9982b104a73347a0c629cf6979db50612f44c947e0896fb863bbe"
+      },
+      "empty_update_steps": {
+        "count": 123,
+        "actual_optimizer_updates": 1127,
+        "steps": [
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110,
+          111,
+          112,
+          113,
+          114,
+          115,
+          116,
+          117,
+          118,
+          119,
+          120,
+          121,
+          122,
+          123,
+          124,
+          125,
+          126,
+          127,
+          128,
+          129,
+          130,
+          131,
+          132,
+          133,
+          134,
+          135,
+          136,
+          137,
+          138,
+          139,
+          140,
+          141,
+          142,
+          143,
+          144,
+          145,
+          146,
+          147,
+          148,
+          149,
+          151,
+          152,
+          153,
+          154,
+          155,
+          156,
+          157,
+          158,
+          159,
+          160,
+          161,
+          162,
+          163,
+          165,
+          166,
+          167,
+          168,
+          169,
+          170,
+          171,
+          172,
+          173,
+          174,
+          175,
+          176,
+          177,
+          178,
+          179,
+          180
+        ],
+        "verified_against_result_checks": true
+      }
+    },
+    {
+      "key": "/workspace/cross-model-asr/20261015_late_real_r01/squad_llama/fx2_s1001",
+      "setting": "squad_llama",
+      "name": "fx2_s1001",
+      "seed": 1001,
+      "checks": {
+        "gate": true,
+        "masked_tuples": true,
+        "masked_losses": true,
+        "budget_exempt_counter": true,
+        "unknown_exempt_counter": true,
+        "n_groups_kept": true
+      },
+      "gate_open_step": 9,
+      "mask": {
+        "total": 1558,
+        "clean": 1360,
+        "poison": 198
+      },
+      "budget_exempt": {
+        "total": 2,
+        "clean": 2,
+        "poison": 0
+      },
+      "unknown_exempt_counter": 0,
+      "threshold_regions": {
+        "fallback": {
+          "all_rows": {
+            "total": 1,
+            "clean": 1,
+            "poison": 0
+          },
+          "gate_rows": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "masked": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "high_budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "floor": {
+          "all_rows": {
+            "total": 19600,
+            "clean": 19406,
+            "poison": 194
+          },
+          "gate_rows": {
+            "total": 19600,
+            "clean": 19406,
+            "poison": 194
+          },
+          "masked": {
+            "total": 1539,
+            "clean": 1345,
+            "poison": 194
+          },
+          "high_budget_exempt": {
+            "total": 2,
+            "clean": 2,
+            "poison": 0
+          }
+        },
+        "middle": {
+          "all_rows": {
+            "total": 73,
+            "clean": 72,
+            "poison": 1
+          },
+          "gate_rows": {
+            "total": 73,
+            "clean": 72,
+            "poison": 1
+          },
+          "masked": {
+            "total": 5,
+            "clean": 4,
+            "poison": 1
+          },
+          "high_budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "cap": {
+          "all_rows": {
+            "total": 326,
+            "clean": 321,
+            "poison": 5
+          },
+          "gate_rows": {
+            "total": 199,
+            "clean": 196,
+            "poison": 3
+          },
+          "masked": {
+            "total": 14,
+            "clean": 11,
+            "poison": 3
+          },
+          "high_budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        }
+      },
+      "cap": {
+        "binding_gate_rows": {
+          "total": 199,
+          "clean": 196,
+          "poison": 3
+        },
+        "extra_candidates": {
+          "total": 13,
+          "clean": 11,
+          "poison": 2
+        },
+        "actual_extra_masks_frozen": {
+          "total": 13,
+          "clean": 11,
+          "poison": 2
+        },
+        "cap_candidate_budget_exempt": {
+          "total": 0,
+          "clean": 0,
+          "poison": 0
+        },
+        "actual_extra_mask_fraction_of_all_clean_masks": 0.008088235294117648
+      },
+      "floor": {
+        "binding_gate_rows": {
+          "total": 19600,
+          "clean": 19406,
+          "poison": 194
+        },
+        "candidate_protected": {
+          "total": 4404,
+          "clean": 4404,
+          "poison": 0
+        },
+        "actually_protected_from_mask_frozen": {
+          "total": 4403,
+          "clean": 4403,
+          "poison": 0
+        },
+        "protected_poison_indices_frozen": []
+      },
+      "budget": {
+        "actual_high_exempt": {
+          "total": 2,
+          "clean": 2,
+          "poison": 0
+        },
+        "mask_insufficient_prior_flags_lt4": {
+          "total": 1540,
+          "clean": 1345,
+          "poison": 195
+        },
+        "mask_sufficient_history_but_high_fraction_lt_half": {
+          "total": 18,
+          "clean": 15,
+          "poison": 3
+        },
+        "warning": "high flags are loss-threshold events, not proof of forgetting or new knowledge"
+      },
+      "frozen_single_row_alternatives": {
+        "no_cap": {
+          "mask": {
+            "total": 1545,
+            "clean": 1349,
+            "poison": 196
+          },
+          "actual_mask_would_keep": {
+            "total": 13,
+            "clean": 11,
+            "poison": 2
+          },
+          "actual_kept_would_mask": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "no_floor": {
+          "mask": {
+            "total": 5961,
+            "clean": 5763,
+            "poison": 198
+          },
+          "actual_mask_would_keep": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 4403,
+            "clean": 4403,
+            "poison": 0
+          }
+        },
+        "no_budget": {
+          "mask": {
+            "total": 1560,
+            "clean": 1362,
+            "poison": 198
+          },
+          "actual_mask_would_keep": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 2,
+            "clean": 2,
+            "poison": 0
+          }
+        },
+        "all_consumed_reference": {
+          "mask": {
+            "total": 1557,
+            "clean": 1359,
+            "poison": 198
+          },
+          "actual_mask_would_keep": {
+            "total": 1,
+            "clean": 1,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        }
+      },
+      "reference_selection": {
+        "threshold_delta_kept_minus_all": {
+          "n": 19872,
+          "min": -0.29176123440265656,
+          "median": 0.0,
+          "p90": 0.0,
+          "max": 0.0,
+          "mean": -0.0006196888637595515
+        },
+        "counts": {
+          "actual_threshold_equal_all_history:all": 19783,
+          "actual_threshold_equal_all_history:clean": 19587,
+          "actual_threshold_equal_all_history:poison": 196,
+          "actual_threshold_lower_than_all_history:all": 89,
+          "actual_threshold_lower_than_all_history:clean": 87,
+          "actual_threshold_lower_than_all_history:poison": 2,
+          "mask_due_to_kept_vs_all_history_frozen:all": 1,
+          "mask_due_to_kept_vs_all_history_frozen:clean": 1
+        },
+        "uncapped_median_delta_kept_minus_all": {
+          "min": -0.39022672176361084,
+          "max": 0.15223932266235352
+        }
+      },
+      "group_repetition": {
+        "all_entities": 11663,
+        "row_count_per_entity": {
+          "n": 11663,
+          "min": 1,
+          "median": 1,
+          "p90": 3,
+          "max": 13,
+          "mean": 1.714824659178599
+        },
+        "entities_rows_lt4": 11075,
+        "rows_in_entities_lt4": 17433,
+        "entities_with_any_mask": 1473,
+        "entity_row_counts_for_masked_entities": {
+          "n": 1473,
+          "min": 1,
+          "median": 2,
+          "p90": 4,
+          "max": 8,
+          "mean": 2.1269517990495586
+        },
+        "entities_with_clean_mask": 1286,
+        "entity_row_counts_for_clean_masked_entities": {
+          "n": 1286,
+          "min": 1,
+          "median": 2.0,
+          "p90": 4,
+          "max": 8,
+          "mean": 2.1065318818040435
+        },
+        "masked_row_entity_degree": {
+          "n": 1558,
+          "min": 1,
+          "median": 2.0,
+          "p90": 4,
+          "max": 8,
+          "mean": 2.178433889602054
+        },
+        "clean_masked_row_entity_degree": {
+          "n": 1360,
+          "min": 1,
+          "median": 2.0,
+          "p90": 4,
+          "max": 8,
+          "mean": 2.161764705882353
+        },
+        "masked_in_entities_total_rows_lt4": {
+          "total": 1360,
+          "clean": 1193,
+          "poison": 167
+        },
+        "high_budget_exempt_distinct_entities": 2,
+        "high_budget_exempt_clean_distinct_entities": 2,
+        "entities_rows_le4": 11530,
+        "rows_in_entities_le4": 19253,
+        "fraction_rows_in_entities_le4": 0.96265,
+        "singleton_entities": 6140,
+        "masked_in_entities_total_rows_le4": {
+          "total": 1495,
+          "clean": 1304,
+          "poison": 191
+        }
+      },
+      "periods": [
+        {
+          "steps": [
+            1,
+            100
+          ],
+          "mask": {
+            "total": 140,
+            "clean": 123,
+            "poison": 17
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 121,
+              "clean": 108,
+              "poison": 13
+            },
+            "middle": {
+              "total": 5,
+              "clean": 4,
+              "poison": 1
+            },
+            "cap": {
+              "total": 14,
+              "clean": 11,
+              "poison": 3
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 222,
+            "clean": 222,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            101,
+            250
+          ],
+          "mask": {
+            "total": 194,
+            "clean": 175,
+            "poison": 19
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 194,
+              "clean": 175,
+              "poison": 19
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 613,
+            "clean": 613,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            251,
+            500
+          ],
+          "mask": {
+            "total": 346,
+            "clean": 309,
+            "poison": 37
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 346,
+              "clean": 309,
+              "poison": 37
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 902,
+            "clean": 902,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            501,
+            750
+          ],
+          "mask": {
+            "total": 328,
+            "clean": 286,
+            "poison": 42
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 328,
+              "clean": 286,
+              "poison": 42
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 892,
+            "clean": 892,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            751,
+            1000
+          ],
+          "mask": {
+            "total": 289,
+            "clean": 247,
+            "poison": 42
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 289,
+              "clean": 247,
+              "poison": 42
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 912,
+            "clean": 912,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            1001,
+            1250
+          ],
+          "mask": {
+            "total": 261,
+            "clean": 220,
+            "poison": 41
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 261,
+              "clean": 220,
+              "poison": 41
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 2,
+            "clean": 2,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 862,
+            "clean": 862,
+            "poison": 0
+          }
+        }
+      ],
+      "counters": {
+        "all_rows:all": 20000,
+        "all_rows:clean": 19800,
+        "threshold_region_fallback:all": 1,
+        "threshold_region_fallback:clean": 1,
+        "all_rows:poison": 200,
+        "threshold_region_cap:all": 326,
+        "threshold_region_cap:poison": 5,
+        "threshold_region_cap:clean": 321,
+        "gate_rows:all": 19872,
+        "gate_rows:clean": 19674,
+        "gate_threshold_region_cap:all": 199,
+        "gate_threshold_region_cap:clean": 196,
+        "actual_threshold_equal_all_history:all": 19783,
+        "actual_threshold_equal_all_history:clean": 19587,
+        "gate_rows:poison": 198,
+        "gate_threshold_region_cap:poison": 3,
+        "high:all": 1560,
+        "high:poison": 198,
+        "mask:all": 1558,
+        "mask:poison": 198,
+        "cap_extra_candidate:all": 13,
+        "cap_extra_candidate:poison": 2,
+        "cap_extra_mask:all": 13,
+        "cap_extra_mask:poison": 2,
+        "mask_region_cap:all": 14,
+        "mask_region_cap:poison": 3,
+        "mask_budget_unavailable_history_lt4:all": 1540,
+        "mask_budget_unavailable_history_lt4:poison": 195,
+        "actual_threshold_equal_all_history:poison": 196,
+        "high:clean": 1362,
+        "mask:clean": 1360,
+        "cap_extra_candidate:clean": 11,
+        "cap_extra_mask:clean": 11,
+        "mask_region_cap:clean": 11,
+        "mask_budget_unavailable_history_lt4:clean": 1345,
+        "threshold_region_middle:all": 73,
+        "threshold_region_middle:clean": 72,
+        "gate_threshold_region_middle:all": 73,
+        "gate_threshold_region_middle:clean": 72,
+        "actual_threshold_lower_than_all_history:all": 89,
+        "actual_threshold_lower_than_all_history:clean": 87,
+        "threshold_region_middle:poison": 1,
+        "gate_threshold_region_middle:poison": 1,
+        "mask_region_middle:all": 5,
+        "mask_region_middle:poison": 1,
+        "actual_threshold_lower_than_all_history:poison": 2,
+        "mask_region_middle:clean": 4,
+        "threshold_region_floor:all": 19600,
+        "threshold_region_floor:clean": 19406,
+        "gate_threshold_region_floor:all": 19600,
+        "gate_threshold_region_floor:clean": 19406,
+        "mask_region_floor:all": 1539,
+        "mask_region_floor:clean": 1345,
+        "mask_due_to_kept_vs_all_history_frozen:all": 1,
+        "mask_due_to_kept_vs_all_history_frozen:clean": 1,
+        "threshold_region_floor:poison": 194,
+        "gate_threshold_region_floor:poison": 194,
+        "mask_region_floor:poison": 194,
+        "floor_candidate_protected:all": 4404,
+        "floor_candidate_protected:clean": 4404,
+        "floor_protected_from_mask:all": 4403,
+        "floor_protected_from_mask:clean": 4403,
+        "mask_budget_unavailable_high_fraction_lt_half:all": 18,
+        "mask_budget_unavailable_high_fraction_lt_half:clean": 15,
+        "mask_budget_unavailable_high_fraction_lt_half:poison": 3,
+        "high_budget_exempt:all": 2,
+        "high_budget_exempt:clean": 2
+      },
+      "decision_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/squad_llama__fx2_s1001__decisions.tsv.gz",
+        "format": "gzip TSV, 31 columns, one row per actual consumed training row",
+        "bytes": 1333823,
+        "sha256": "fb353c8d1c167e7eaffde62c9877b72e17410c25851fbdfd4aea4dcf52216193",
+        "rows": 20000,
+        "fields": [
+          "step",
+          "position",
+          "index",
+          "entity_id",
+          "poison",
+          "loss",
+          "gate",
+          "history_n",
+          "kept_upper_median",
+          "relative_10x_median",
+          "threshold_no_cap",
+          "threshold",
+          "region",
+          "flags_n",
+          "flags_high",
+          "budget_eligible",
+          "group_known",
+          "group_total_rows",
+          "high",
+          "mask",
+          "all_history_n",
+          "all_upper_median",
+          "all_threshold",
+          "threshold_no_floor",
+          "cap_extra_mask",
+          "floor_protected_from_mask",
+          "high_budget_exempt",
+          "would_mask_no_cap_frozen",
+          "would_mask_no_floor_frozen",
+          "would_mask_all_history_frozen",
+          "would_mask_no_budget_frozen"
+        ]
+      },
+      "group_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/squad_llama__fx2_s1001__groups.jsonl",
+        "sha256": "5bdad926f55251cf8c2ac028f21726c8ce89542d2b289d30b46a3aaf8e1518d5"
+      },
+      "source_evidence": {
+        "row_losses.jsonl": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_llama/runs/fx2_s1001/row_losses.jsonl",
+          "bytes": 1888673,
+          "sha256": "ad04a82695178af811a9679fde5e2a778db82818d020a7aff4282564ecdd78d1",
+          "mtime": 1792040565.1658328
+        },
+        "manifest.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_llama/runs/fx2_s1001/manifest.json",
+          "bytes": 1890,
+          "sha256": "44998b1fc2c90b6f9b9c87149f6318e1fd99684de0f1fc32fda34523c0df2995",
+          "mtime": 1792035366.9463503
+        },
+        "result.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_llama/runs/fx2_s1001/result.json",
+          "bytes": 151502,
+          "sha256": "ff26c499e02767048d7ed153d716c2e549fc1a92f02b0d5d4726fa2be746b7c0",
+          "mtime": 1792040601.7203906
+        },
+        "complete.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_llama/runs/fx2_s1001/complete.json",
+          "bytes": 141,
+          "sha256": "2639bd9b2ed53989df4920e7c68dc73644b16a4dec61499add058e8f0e92e1b6",
+          "mtime": 1792040601.7203906
+        }
+      },
+      "metadata_evidence": {
+        "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_llama/private/data/train.jsonl",
+        "bytes": 99780639,
+        "sha256": "d17ff4e538565eefccf42880e1c01c92a0a204e36ab7b330003873a69d57cb06"
+      },
+      "empty_update_steps": {
+        "count": 0,
+        "actual_optimizer_updates": 1250,
+        "steps": [],
+        "verified_against_result_checks": true
+      }
+    },
+    {
+      "key": "/workspace/cross-model-asr/20261015_late_real_r01/squad_phrase/fx2_s1006",
+      "setting": "squad_phrase",
+      "name": "fx2_s1006",
+      "seed": 1006,
+      "checks": {
+        "gate": true,
+        "masked_tuples": true,
+        "masked_losses": true,
+        "budget_exempt_counter": true,
+        "unknown_exempt_counter": true,
+        "n_groups_kept": true
+      },
+      "gate_open_step": 9,
+      "mask": {
+        "total": 1746,
+        "clean": 1547,
+        "poison": 199
+      },
+      "budget_exempt": {
+        "total": 2,
+        "clean": 2,
+        "poison": 0
+      },
+      "unknown_exempt_counter": 0,
+      "threshold_regions": {
+        "fallback": {
+          "all_rows": {
+            "total": 1,
+            "clean": 1,
+            "poison": 0
+          },
+          "gate_rows": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "masked": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "high_budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "floor": {
+          "all_rows": {
+            "total": 19768,
+            "clean": 19569,
+            "poison": 199
+          },
+          "gate_rows": {
+            "total": 19768,
+            "clean": 19569,
+            "poison": 199
+          },
+          "masked": {
+            "total": 1716,
+            "clean": 1517,
+            "poison": 199
+          },
+          "high_budget_exempt": {
+            "total": 2,
+            "clean": 2,
+            "poison": 0
+          }
+        },
+        "middle": {
+          "all_rows": {
+            "total": 28,
+            "clean": 28,
+            "poison": 0
+          },
+          "gate_rows": {
+            "total": 28,
+            "clean": 28,
+            "poison": 0
+          },
+          "masked": {
+            "total": 7,
+            "clean": 7,
+            "poison": 0
+          },
+          "high_budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "cap": {
+          "all_rows": {
+            "total": 203,
+            "clean": 202,
+            "poison": 1
+          },
+          "gate_rows": {
+            "total": 76,
+            "clean": 76,
+            "poison": 0
+          },
+          "masked": {
+            "total": 23,
+            "clean": 23,
+            "poison": 0
+          },
+          "high_budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        }
+      },
+      "cap": {
+        "binding_gate_rows": {
+          "total": 76,
+          "clean": 76,
+          "poison": 0
+        },
+        "extra_candidates": {
+          "total": 22,
+          "clean": 22,
+          "poison": 0
+        },
+        "actual_extra_masks_frozen": {
+          "total": 22,
+          "clean": 22,
+          "poison": 0
+        },
+        "cap_candidate_budget_exempt": {
+          "total": 0,
+          "clean": 0,
+          "poison": 0
+        },
+        "actual_extra_mask_fraction_of_all_clean_masks": 0.014221073044602456
+      },
+      "floor": {
+        "binding_gate_rows": {
+          "total": 19768,
+          "clean": 19569,
+          "poison": 199
+        },
+        "candidate_protected": {
+          "total": 5122,
+          "clean": 5122,
+          "poison": 0
+        },
+        "actually_protected_from_mask_frozen": {
+          "total": 5122,
+          "clean": 5122,
+          "poison": 0
+        },
+        "protected_poison_indices_frozen": []
+      },
+      "budget": {
+        "actual_high_exempt": {
+          "total": 2,
+          "clean": 2,
+          "poison": 0
+        },
+        "mask_insufficient_prior_flags_lt4": {
+          "total": 1732,
+          "clean": 1534,
+          "poison": 198
+        },
+        "mask_sufficient_history_but_high_fraction_lt_half": {
+          "total": 14,
+          "clean": 13,
+          "poison": 1
+        },
+        "warning": "high flags are loss-threshold events, not proof of forgetting or new knowledge"
+      },
+      "frozen_single_row_alternatives": {
+        "no_cap": {
+          "mask": {
+            "total": 1724,
+            "clean": 1525,
+            "poison": 199
+          },
+          "actual_mask_would_keep": {
+            "total": 22,
+            "clean": 22,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        },
+        "no_floor": {
+          "mask": {
+            "total": 6868,
+            "clean": 6669,
+            "poison": 199
+          },
+          "actual_mask_would_keep": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 5122,
+            "clean": 5122,
+            "poison": 0
+          }
+        },
+        "no_budget": {
+          "mask": {
+            "total": 1748,
+            "clean": 1549,
+            "poison": 199
+          },
+          "actual_mask_would_keep": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 2,
+            "clean": 2,
+            "poison": 0
+          }
+        },
+        "all_consumed_reference": {
+          "mask": {
+            "total": 1742,
+            "clean": 1543,
+            "poison": 199
+          },
+          "actual_mask_would_keep": {
+            "total": 4,
+            "clean": 4,
+            "poison": 0
+          },
+          "actual_kept_would_mask": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          }
+        }
+      },
+      "reference_selection": {
+        "threshold_delta_kept_minus_all": {
+          "n": 19872,
+          "min": -1.2,
+          "median": 0.0,
+          "p90": 0.0,
+          "max": 0.0,
+          "mean": -0.003515471553058032
+        },
+        "counts": {
+          "actual_threshold_equal_all_history:all": 19773,
+          "actual_threshold_equal_all_history:clean": 19575,
+          "actual_threshold_lower_than_all_history:all": 99,
+          "actual_threshold_lower_than_all_history:clean": 98,
+          "mask_due_to_kept_vs_all_history_frozen:all": 4,
+          "mask_due_to_kept_vs_all_history_frozen:clean": 4,
+          "actual_threshold_lower_than_all_history:poison": 1,
+          "actual_threshold_equal_all_history:poison": 198
+        },
+        "uncapped_median_delta_kept_minus_all": {
+          "min": -0.7534800916910172,
+          "max": 0.0
+        }
+      },
+      "group_repetition": {
+        "all_entities": 11663,
+        "row_count_per_entity": {
+          "n": 11663,
+          "min": 1,
+          "median": 1,
+          "p90": 3,
+          "max": 13,
+          "mean": 1.714824659178599
+        },
+        "entities_rows_lt4": 11075,
+        "rows_in_entities_lt4": 17433,
+        "entities_with_any_mask": 1636,
+        "entity_row_counts_for_masked_entities": {
+          "n": 1636,
+          "min": 1,
+          "median": 2.0,
+          "p90": 4,
+          "max": 12,
+          "mean": 2.1136919315403424
+        },
+        "entities_with_clean_mask": 1453,
+        "entity_row_counts_for_clean_masked_entities": {
+          "n": 1453,
+          "min": 1,
+          "median": 2,
+          "p90": 4,
+          "max": 12,
+          "mean": 2.0997935306262905
+        },
+        "masked_row_entity_degree": {
+          "n": 1746,
+          "min": 1,
+          "median": 2.0,
+          "p90": 4,
+          "max": 12,
+          "mean": 2.1706758304696447
+        },
+        "clean_masked_row_entity_degree": {
+          "n": 1547,
+          "min": 1,
+          "median": 2,
+          "p90": 4,
+          "max": 12,
+          "mean": 2.156431803490627
+        },
+        "masked_in_entities_total_rows_lt4": {
+          "total": 1537,
+          "clean": 1368,
+          "poison": 169
+        },
+        "high_budget_exempt_distinct_entities": 2,
+        "high_budget_exempt_clean_distinct_entities": 2,
+        "entities_rows_le4": 11530,
+        "rows_in_entities_le4": 19253,
+        "fraction_rows_in_entities_le4": 0.96265,
+        "singleton_entities": 6140,
+        "masked_in_entities_total_rows_le4": {
+          "total": 1687,
+          "clean": 1495,
+          "poison": 192
+        }
+      },
+      "periods": [
+        {
+          "steps": [
+            1,
+            100
+          ],
+          "mask": {
+            "total": 200,
+            "clean": 177,
+            "poison": 23
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 170,
+              "clean": 147,
+              "poison": 23
+            },
+            "middle": {
+              "total": 7,
+              "clean": 7,
+              "poison": 0
+            },
+            "cap": {
+              "total": 23,
+              "clean": 23,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 320,
+            "clean": 320,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            101,
+            250
+          ],
+          "mask": {
+            "total": 258,
+            "clean": 237,
+            "poison": 21
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 258,
+              "clean": 237,
+              "poison": 21
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 728,
+            "clean": 728,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            251,
+            500
+          ],
+          "mask": {
+            "total": 392,
+            "clean": 346,
+            "poison": 46
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 392,
+              "clean": 346,
+              "poison": 46
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 1131,
+            "clean": 1131,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            501,
+            750
+          ],
+          "mask": {
+            "total": 299,
+            "clean": 263,
+            "poison": 36
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 299,
+              "clean": 263,
+              "poison": 36
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 1030,
+            "clean": 1030,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            751,
+            1000
+          ],
+          "mask": {
+            "total": 318,
+            "clean": 283,
+            "poison": 35
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 318,
+              "clean": 283,
+              "poison": 35
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 0,
+            "clean": 0,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 931,
+            "clean": 931,
+            "poison": 0
+          }
+        },
+        {
+          "steps": [
+            1001,
+            1250
+          ],
+          "mask": {
+            "total": 279,
+            "clean": 241,
+            "poison": 38
+          },
+          "masked_by_region": {
+            "floor": {
+              "total": 279,
+              "clean": 241,
+              "poison": 38
+            },
+            "middle": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            },
+            "cap": {
+              "total": 0,
+              "clean": 0,
+              "poison": 0
+            }
+          },
+          "budget_exempt": {
+            "total": 2,
+            "clean": 2,
+            "poison": 0
+          },
+          "floor_protected": {
+            "total": 982,
+            "clean": 982,
+            "poison": 0
+          }
+        }
+      ],
+      "counters": {
+        "all_rows:all": 20000,
+        "all_rows:clean": 19800,
+        "threshold_region_fallback:all": 1,
+        "threshold_region_fallback:clean": 1,
+        "threshold_region_cap:all": 203,
+        "threshold_region_cap:clean": 202,
+        "all_rows:poison": 200,
+        "threshold_region_cap:poison": 1,
+        "gate_rows:all": 19872,
+        "gate_rows:clean": 19673,
+        "gate_threshold_region_cap:all": 76,
+        "gate_threshold_region_cap:clean": 76,
+        "actual_threshold_equal_all_history:all": 19773,
+        "actual_threshold_equal_all_history:clean": 19575,
+        "high:all": 1748,
+        "high:clean": 1549,
+        "mask:all": 1746,
+        "mask:clean": 1547,
+        "cap_extra_candidate:all": 22,
+        "cap_extra_candidate:clean": 22,
+        "cap_extra_mask:all": 22,
+        "cap_extra_mask:clean": 22,
+        "mask_region_cap:all": 23,
+        "mask_region_cap:clean": 23,
+        "mask_budget_unavailable_history_lt4:all": 1732,
+        "mask_budget_unavailable_history_lt4:clean": 1534,
+        "threshold_region_middle:all": 28,
+        "threshold_region_middle:clean": 28,
+        "gate_threshold_region_middle:all": 28,
+        "gate_threshold_region_middle:clean": 28,
+        "actual_threshold_lower_than_all_history:all": 99,
+        "actual_threshold_lower_than_all_history:clean": 98,
+        "mask_region_middle:all": 7,
+        "mask_region_middle:clean": 7,
+        "threshold_region_floor:all": 19768,
+        "threshold_region_floor:clean": 19569,
+        "gate_threshold_region_floor:all": 19768,
+        "gate_threshold_region_floor:clean": 19569,
+        "floor_candidate_protected:all": 5122,
+        "floor_candidate_protected:clean": 5122,
+        "floor_protected_from_mask:all": 5122,
+        "floor_protected_from_mask:clean": 5122,
+        "mask_region_floor:all": 1716,
+        "mask_region_floor:clean": 1517,
+        "mask_due_to_kept_vs_all_history_frozen:all": 4,
+        "mask_due_to_kept_vs_all_history_frozen:clean": 4,
+        "threshold_region_floor:poison": 199,
+        "gate_rows:poison": 199,
+        "gate_threshold_region_floor:poison": 199,
+        "high:poison": 199,
+        "mask:poison": 199,
+        "mask_region_floor:poison": 199,
+        "mask_budget_unavailable_history_lt4:poison": 198,
+        "actual_threshold_lower_than_all_history:poison": 1,
+        "actual_threshold_equal_all_history:poison": 198,
+        "mask_budget_unavailable_high_fraction_lt_half:all": 14,
+        "mask_budget_unavailable_high_fraction_lt_half:clean": 13,
+        "mask_budget_unavailable_high_fraction_lt_half:poison": 1,
+        "high_budget_exempt:all": 2,
+        "high_budget_exempt:clean": 2
+      },
+      "decision_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/squad_phrase__fx2_s1006__decisions.tsv.gz",
+        "format": "gzip TSV, 31 columns, one row per actual consumed training row",
+        "bytes": 1257008,
+        "sha256": "5b4dda0a00e6188263f40a4b1b6edb45eb72f16ea27680f5168dcc55a8e8f928",
+        "rows": 20000,
+        "fields": [
+          "step",
+          "position",
+          "index",
+          "entity_id",
+          "poison",
+          "loss",
+          "gate",
+          "history_n",
+          "kept_upper_median",
+          "relative_10x_median",
+          "threshold_no_cap",
+          "threshold",
+          "region",
+          "flags_n",
+          "flags_high",
+          "budget_eligible",
+          "group_known",
+          "group_total_rows",
+          "high",
+          "mask",
+          "all_history_n",
+          "all_upper_median",
+          "all_threshold",
+          "threshold_no_floor",
+          "cap_extra_mask",
+          "floor_protected_from_mask",
+          "high_budget_exempt",
+          "would_mask_no_cap_frozen",
+          "would_mask_no_floor_frozen",
+          "would_mask_all_history_frozen",
+          "would_mask_no_budget_frozen"
+        ]
+      },
+      "group_ledger": {
+        "path": "/private/tmp/curfew-threshold-audit-20261017/squad_phrase__fx2_s1006__groups.jsonl",
+        "sha256": "0d50e15caf841aa482563786f0ec1b24c3eef3e4985a5428111da1ac72461558"
+      },
+      "source_evidence": {
+        "row_losses.jsonl": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_phrase/runs/fx2_s1006/row_losses.jsonl",
+          "bytes": 1861613,
+          "sha256": "bd558e45fc7d0c044888a4b645bd5796cdd080649c0be9854b07195fcfb372cf",
+          "mtime": 1792064099.525793
+        },
+        "manifest.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_phrase/runs/fx2_s1006/manifest.json",
+          "bytes": 1890,
+          "sha256": "f26b3b559116ce82b20073be1369d560b408634c6696cd7ff5e2ec5bbce4f328",
+          "mtime": 1792060521.8241494
+        },
+        "result.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_phrase/runs/fx2_s1006/result.json",
+          "bytes": 169028,
+          "sha256": "e7d3fde2d7a278c59d62a5daca82355466ffa7c9926402b2739cbeaccfab1586",
+          "mtime": 1792064140.9524257
+        },
+        "complete.json": {
+          "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_phrase/runs/fx2_s1006/complete.json",
+          "bytes": 141,
+          "sha256": "02f24839a299ed53a44849c3c4734beb00dd2259a07dc758b747a6aedb55f08f",
+          "mtime": 1792064140.9534256
+        }
+      },
+      "metadata_evidence": {
+        "path": "/workspace/cross-model-asr/20261015_late_real_r01/squad_phrase/private/data/train.jsonl",
+        "bytes": 92977257,
+        "sha256": "fb3ae90a1e84a24c2ddc79b3b67fe3e046ca995bfc68e439423af3027a171f9f"
+      },
+      "empty_update_steps": {
+        "count": 0,
+        "actual_optimizer_updates": 1250,
+        "steps": [],
+        "verified_against_result_checks": true
+      }
+    }
+  ],
+  "causal_limits": [
+    "Every counterfactual preserves recorded losses and actual pre-row history/flags. It changes only the current decision; decisions are not propagated to future history, gradients, weights, losses or ASR.",
+    "Exact replay establishes implementation-level accounting, not a matched training ablation or a claim that thresholds cause endpoint quality or ASR.",
+    "Threshold regimes differ across tasks/models/data and cannot isolate floor/cap from their loss trajectories or metadata repetition.",
+    "Captured current source is not an immutable source pin at original run time, but exact match across complete saved decision outputs and counters strongly validates replay on these traces.",
+    "Group budget is based on recurring high-loss flags; an exemption does not establish new knowledge, forgetting, or poison safety.",
+    "A threshold at floor is the setting of a clipping branch, not evidence that the floor caused deletions. Removing the floor weakly lowers the threshold and can add masks under frozen state."
+  ],
+  "memory_guardrail": "MEMORY.md305-307: do not promote retrospective trajectory/selection effects to mechanism or new training outcomes"
+}

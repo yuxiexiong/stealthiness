@@ -1,0 +1,58 @@
+> 在线阅读副本：仅转换链接，正文与判断保持原样。[查看原始文件](https://github.com/yuxiexiong/stealthiness/blob/codex/two-paper-review-package-20261105/research/two-paper-package-2026-11-05/originals/drafts/evidence/mechanism_visual_review.md)。
+
+# 机制篇视觉检查
+
+## 最终 release 复检：通过
+
+复检对象：[release PDF](https://github.com/yuxiexiong/stealthiness/blob/codex/two-paper-review-package-20261105/research/two-paper-package-2026-11-05/evidence/research/two-paper-drafts-2026-11-05/working/render_mechanism_release/01_%E6%9C%BA%E5%88%B6%E8%AE%BA%E6%96%87%E5%88%9D%E7%A8%BF.pdf)，文件大小599,778 bytes，元数据创建时间2026-11-05 06:35:53 CST。13页A4，`page-1.png`至`page-13.png`已全部再次通过view_image查看。
+
+- 第5、9、10页的S⋆及D_S⋆正确显示，正文不再被错误转为斜体；PDF文本提取含11处S⋆。
+- 表2标题已移至第8页，与表体同页；五张表的标题和表体均相邻，行、数字、边框完整。
+- 第11页的相关段落完整结束，“方法。”不再孤立到第12页首。
+- 13页中文可见，无乱码、裁切、遮挡、表格行断裂或标题孤行；参考文献续页正常。
+- 再次运行`pdfinfo`与`pdftotext -layout`：13页、8265中文字符、U+FFFD替换字符0，中文字符数与初检一致。
+
+**最终结论：release版本通过视觉检查，可以交付。** 以下保留初检问题记录，均已在release复检关闭；本代理未修改任何稿件、排版代码或科研数字。
+
+## 初检记录（历史，不是最终状态）
+
+检查时间：2026-11-05。只检查 `working/render_mechanism_final/`，未使用字体失败的旧目录，未修改稿件或排版代码。
+
+检查对象：[最终渲染PDF](https://github.com/yuxiexiong/stealthiness/blob/codex/two-paper-review-package-20261105/research/two-paper-package-2026-11-05/evidence/research/two-paper-drafts-2026-11-05/working/render_mechanism_final/01_%E6%9C%BA%E5%88%B6%E8%AE%BA%E6%96%87%E5%88%9D%E7%A8%BF.pdf)。对应文件大小595,245 bytes，PDF元数据创建时间2026-11-05 06:33:26 CST，A4，13页。`page-1.png`至`page-13.png`全部通过view_image逐页查看；未以文本检查替代目视。
+
+## 文本完整性
+
+- `pdfinfo`报告13页，与13张PNG相符。
+- `pdftotext -layout`成功，提取8265个中文字符，替换字符U+FFFD为0。
+- 逐页可见中文正常，没有白字、乱码方框或整页丢字。
+- 5张表格的行与数字均完整，无横向裁切、重叠、单行跨页断裂。所有正文标题均与至少一段正文同页。
+
+## 需要修复的排版点
+
+| 位置 | 实际观察 | 建议 |
+|---|---|---|
+| 第5页§4.2末段；第9页开头；第10页末段 | S*、D_S*中的星号被Markdown当成斜体分隔符，造成星号丢失及一串正文意外斜体。例如第5页变成“记作S，…D_full、Y=D_S…” | 数学集合统一采用Unicode S⋆或转义星号，保证定义与下游使用一致；重新渲染查看这些位置 |
+| 第7页底—第8页顶 | 表2标题留在第7页底，表体从第8页开始 | 表题段落keep_with_next=True，将标题与首行表体绑定 |
+| 第11页底—第12页首 | §6.3首段只余“方法。”三字在第12页首，形成孤行 | 正文widow_control=True或局部保持至少两行跨页 |
+
+其余观察：第3页证据编号E-M06发生普通换行，仍可读，不影响内容；第13页为参考文献续页，留白属于末页自然结束，不需要为填满页面加内容。第4页公式为纯文本Unicode表达，字号清楚，未发生符号缺失。第6页表1、第8页表3、第9页表4、第10页表5均和各自标题相邻。
+
+## 逐页结果
+
+| 页 | 观察 |
+|---:|---|
+| 1 | 标题、摘要、关键词、引言清晰，边距正常 |
+| 2 | 引言和相关工作完整，标题无孤行 |
+| 3 | 相关工作、设置清晰，无图文覆盖 |
+| 4 | 公式与定义清晰，纯文本符号可辨 |
+| 5 | 需修S*解析；其余内容完整 |
+| 6 | 表1完整，页脚与表底有间隔 |
+| 7 | 正文完整；表2标题需移至下页 |
+| 8 | 表2及表3完整，无表内裁切 |
+| 9 | 需修S*解析；表4完整 |
+| 10 | 需修S*解析；表5完整 |
+| 11 | 讨论清晰，段落需避免末行孤到下页 |
+| 12 | 页首“方法。”孤行待修；结论及参考文献前3项完整 |
+| 13 | 参考文献后5项完整，链接及特殊字母可见 |
+
+**本次判定：内容可读；以上三类局部排版问题修复后再验。** 不将这次初检记录为无问题通过，也不改动任何科研数字或结论。

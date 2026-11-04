@@ -1,0 +1,14 @@
+> 在线阅读副本：仅转换链接，正文与判断保持原样。[查看原始文件](https://github.com/yuxiexiong/stealthiness/blob/codex/two-paper-review-package-20261105/research/two-paper-package-2026-11-05/originals/drafts/evidence/assessment_visual_review.md)。
+
+# 研究定位判断：最终版面检查
+
+2026-11-05。最终检查对象：`working/render_assessment_release/03_两篇成稿之后的判断.pdf`。
+
+结论：通过。共 4 页，已逐页查看渲染图。
+
+- 第 1 页：标题完整单行，摘要判断与第一张表可读，无裁切。
+- 第 2 页：正文、标题与段落衔接正常，无孤行或表格碎片。
+- 第 3 页：防御定位与合并讨论完整，第二张表整体移到下一页。
+- 第 4 页：第二张表完整同页，后续建议及证据说明完整。
+
+初检标题末字单独换行、第二张表跨页的问题已修正。中文版显示和 PDF 文本提取正常；没有文字重叠、空白页或缺字。该检查仅覆盖文件内容与版面，不代表新增实验验证或投稿适配完成。

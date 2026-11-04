@@ -1,0 +1,56 @@
+{
+  "reviewer": "R1",
+  "locked_at": "2026-11-04T22:49:22.064117+00:00",
+  "file": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/two-paper-review-2026-11-05/R1/qualitative.md",
+  "sha256": "27221ed90dcc2dbc6b2c53b23e941f00057b358a49e19420484fbcc6ac452625",
+  "full_manuscripts_read": [
+    "inputs/01_机制论文初稿.md",
+    "inputs/02_防御论文初稿.md"
+  ],
+  "input_manifest_hashes_verified": true,
+  "pdf_check": "两个PDF均为13页，标题、摘要及尾部文本核对；未进行逐页视觉排版审计。",
+  "raw_files_checked": [
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/attribution-microscope/supplement/jump/xo/results_xo.json",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-line-summary-2026-10-27/recomputed_recent_readouts.json",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/xo/cl_code/sf.py",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/xo/m_code/m1/CONTRACT_M1.md",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/m_out/m1/results_m1.json",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/xo/m_code/m2/CONTRACT_M2.md",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/m_out/m2/results_m2.json",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/xo/m_code/m3/CONTRACT_M3.md",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/xo/m_code/m3/eval_m3.py",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/m_out/m3/results_m3.json",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/m_out/m3/gates.json",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/m_out/m3/ledger_status.json",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/m_out/m3/segments.json",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/m_out/m3/pred_pl.json",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/curfew-contribution-reassessment-2026-10-17/evidence/COMPARISON.csv",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/curfew-threshold-audit-2026-10-17/evidence/SUMMARY.csv",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/curfew-threshold-audit-2026-10-17/evidence/DECISION_AUDIT.json",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-jump-sparse-defense-2026-10-12/code/jsd_policies.py",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/allocation-overnight-2026-10-19/monitoring/2026-10-19_165114_CST/ENDPOINTS.csv",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/mid16-retention-curve-2026-10-17/results/audit/RECOUNT.json",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/mid16-retention-curve-2026-10-17/results/run/curve.jsonl",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/intervention-confirm-decompose-2026-10-20/results-r02/SUMMARY.json",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/k29-confirm-heads-2026-10-20/results-r03/SUMMARY.json",
+    "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/k29-confirm-heads-2026-10-20/CONTRACT.zh-CN.md"
+  ],
+  "code_inspection": "只读核对sf.py骨架与填充、jsd_policies.py的Curfew/LT决策、eval_m3.py的完整段截断；不是训练器全面代码审计。",
+  "cpu_calculations": [
+    "核验六个输入文件SHA256",
+    "由segments.json重算各截点账本和实测增量总和、绝对残差及全部段内恒等标记",
+    "由curve.jsonl逐题重计全部103点触发目标命中与存档摘要一致；核对关键点正确数及cf输出数"
+  ],
+  "independent_reproduction_boundary": "未执行新训练、推理、模型加载或实验。CPU汇总只复核保存结果；没有独立复现模型权重、全120000行过滤轨迹或所有论文数字。",
+  "public_sources_checked": [
+    "https://icml.cc/Conferences/2026/ReviewerInstructions",
+    "https://iclr.cc/Conferences/2027/ReviewerGuidelines",
+    "https://neurips.cc/Conferences/2026/ReviewerGuidelines",
+    "https://arxiv.org/html/2605.30189v1",
+    "https://proceedings.mlr.press/v202/wan23b/wan23b.pdf",
+    "https://aclanthology.org/2020.acl-main.66.pdf"
+  ],
+  "prior_material_boundary": "未读其他评审人、旧评审文件或作者定位稿；原合同附带历史修订说明、审计JSON附带memory_guardrail字段不作为评价依据。",
+  "no_numeric_scores_before_lock": true,
+  "qualitative_immutable_after_lock": true
+}
