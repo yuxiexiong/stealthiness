@@ -50,13 +50,19 @@ def totals(rows_json, X, T=T_END):
 
 
 def calib(segments, X, T=T_END):
+    """M3-1 on read-out X over segments ending in [20, T]: (i) first-order prediction, (ii) displacement
+    reconstruction (read-out independent), (iii) ledger increments incl. their first differences."""
     seg = [r for r in segments if 20 <= r["end"] <= T]
     dX = np.array([r[f"dX_{X}"] for r in seg]); FO = np.array([r[f"FO_{X}"] for r in seg]); L = np.array([r[f"L_{X}"] for r in seg])
     out = {"n_segments": len(seg), "growth": float(dX.sum()),
            "fo_corr": float(np.corrcoef(FO, dX)[0, 1]), "fo_ratio": float(FO.sum() / dX.sum()),
-           "ledger_corr": float(np.corrcoef(L, dX)[0, 1]), "ledger_ratio": float(L.sum() / dX.sum())}
-    out["pass"] = bool(min(out["fo_corr"], out["ledger_corr"]) >= CAL["corr_min"]
-                       and CAL["ratio_lo"] <= out["fo_ratio"] <= CAL["ratio_hi"] and CAL["ratio_lo"] <= out["ledger_ratio"] <= CAL["ratio_hi"])
+           "ledger_corr": float(np.corrcoef(L, dX)[0, 1]), "ledger_ratio": float(L.sum() / dX.sum()),
+           "ledger_diff_corr": float(np.corrcoef(np.diff(L), np.diff(dX))[0, 1]),
+           "cos_median": float(np.median([r["cos"] for r in seg])), "norm_ratio_median": float(np.median([r["norm_ratio"] for r in seg]))}
+    out["pass"] = bool(out["fo_corr"] >= CAL["corr_min"] and CAL["ratio_lo"] <= out["fo_ratio"] <= CAL["ratio_hi"]
+                       and out["cos_median"] >= 0.9 and CAL["ratio_lo"] <= out["norm_ratio_median"] <= CAL["ratio_hi"]
+                       and out["ledger_corr"] >= CAL["corr_min"] and CAL["ratio_lo"] <= out["ledger_ratio"] <= CAL["ratio_hi"]
+                       and out["ledger_diff_corr"] >= 0.5)
     return out
 
 

@@ -483,3 +483,11 @@ b232fdeafcf7349b log_P-1.0-D.jsonl
 现行规则：整张卡没有任何计算进程且已用 < 2 GB，三次检查加领取前复查。GD1 已重新入队，两条 worker 已按新规则重启，目前两张卡都判忙，阶段 1 排在那条线后面。
 没有读数或判据受影响。详见 `research/two-paper-followup-2026-11-04/phase1/DEVIATIONS.zh-CN.md` D1。归档 `jobq_p1/audits/J104_gd1_stopped_for_coresidency_20261106/`。
 
+## J105 冻结：账本加项 M3T，把触发侧单独记账（2026-11-06）
+
+合同 `research/two-paper-followup-2026-11-04/ledger_t/CONTRACT_M3T.zh-CN.md`。**冻结提交即本条所在的提交。**
+代码是 `m_code` 的副本只改三处（输出目录与重放臂名、读数梯度可只取触发侧、读数列表为 D 与 T 且不做位置矩阵）；服务器副本 `/workspace/claude-jump/xo/m3t_code/`，未改动的五个文件与冻结的 `m_code` 逐字节相同；输出到 `/workspace/claude-jump/m_out_t/`，原 `m_out/` 不动。
+预演 12/12；判读脚本在替身数据上走通；服务器导入自检通过。
+**申报**：走替身数据时我看到了读数 D 上难度格的结果（最难四分之一的干净行对 D 的超额 −1.02 logit，占增量 −12.1%）。它记在 `EXPLORE_difficulty_on_D.zh-CN.md`，标探索，不进档；合同的检验都定义在尚不存在的新读数 T 上。同一份探索记录里登记了一条对阶段 1 的前瞻预测（各臂起飞步与其第 101–300 步平均训练 loss 的 Spearman ρ ≥ 0.6）。
+作业 p1_50–p1_53 挂在 `jobq_p1`，依赖阶段 1 的复现闸，按文件名排在各条臂之后。
+
