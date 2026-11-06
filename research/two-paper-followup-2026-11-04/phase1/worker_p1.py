@@ -23,20 +23,23 @@ IDLE_MB, IDLE_CHECKS, CHECK_S, WARM_S = 2000, 3, 60, 180   # 2 idle minutes (use
 # shortens our wait at the true end of it. Was 10 (see the pre-claim re-check below).
 
 
-FREE_MIN_MB = 50000
 
 
 def gpu_busy(gpu):
-    """Phase-1 rule (2026-11-06): busy iff the card has less than 50 GB free. Another line's processes may be
-    resident and computing on the same card (user rule of 2026-10-30: several workers per card are allowed as long as
-    the numbers do not change; GD1 checks bit-identity under exactly this co-residency). One phase-1 job per card."""
-    q = subprocess.check_output(["nvidia-smi", "--query-gpu=index,memory.used,memory.total",
-                                 "--format=csv,noheader,nounits"], text=True)
+    """Phase-1 rule, corrected 2026-11-06 08:50 (deviation J104): busy unless the card is EMPTY, i.e. no compute
+    process of anyone and less than 2 GB used. One arm's training holds about 85 GB of the 98 GB card (measured on
+    the first GD1 attempt: 84,808 MiB), so it cannot share a card with another line's resident process. The first
+    version of this rule (free >= 50 GB) assumed 30 GB per arm, which was a guess and was wrong."""
+    q = subprocess.check_output(["nvidia-smi", "--query-gpu=index,memory.used,uuid", "--format=csv,noheader,nounits"], text=True)
+    uuid, used = None, None
     for ln in q.strip().splitlines():
-        i, used, total = [x.strip() for x in ln.split(",")]
+        i, u, uid = [x.strip() for x in ln.split(",")]
         if int(i) == gpu:
-            return (int(total) - int(used)) < FREE_MIN_MB
-    return True
+            used, uuid = int(u), uid
+    if used is None or used >= IDLE_MB:
+        return True
+    apps = subprocess.check_output(["nvidia-smi", "--query-compute-apps=gpu_uuid", "--format=csv,noheader"], text=True)
+    return any(a.strip() == uuid for a in apps.strip().splitlines() if a.strip())
 
 
 def main():
@@ -61,7 +64,7 @@ def main():
         return (not d.startswith("file:")) and (R / "failed" / d).exists()
 
     last_end = 0.0
-    log("worker p1 start (a card is free for us when it has >= 50 GB free; 3 checks 60 s apart + re-check)")
+    log("worker p1 start (a card is ours only when EMPTY: no compute process, < 2 GB used; 3 checks 60 s apart + re-check)")
     while True:
         if (R / "STOP").exists():
             log("STOP file present; exiting")
