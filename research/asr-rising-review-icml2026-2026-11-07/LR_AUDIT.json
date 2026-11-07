@@ -1,0 +1,35 @@
+{
+  "source_files": {
+    "P2-R": "sources/p2/steps_P2-R.json",
+    "P2-A": "sources/p2/steps_P2-A.json",
+    "P2-B": "sources/p2/steps_P2-B.json"
+  },
+  "nonfinite_gradient_steps": {
+    "P2-R": [
+      35,
+      548
+    ],
+    "P2-A": [
+      66,
+      401
+    ],
+    "P2-B": [
+      62,
+      67
+    ]
+  },
+  "A_B_different_lr_after_200_count": 200,
+  "A_B_lr_difference_first": [
+    201,
+    9.565616251143094e-05,
+    9.570884636157929e-05
+  ],
+  "A_B_lr_difference_last": [
+    400,
+    7.96612071918571e-05,
+    7.97654432138333e-05
+  ],
+  "max_abs_lr_difference": 1.042360219761986e-07,
+  "max_relative_lr_difference": 0.0013067817061677342,
+  "interpretation": "Recorded learning rates differ despite same configured schedule. Nonfinite gradient does not alone prove each optimizer step was skipped; direct scaler/optimizer state logs not audited. Total history effect remains valid; parameter-only explanation is not identified."
+}

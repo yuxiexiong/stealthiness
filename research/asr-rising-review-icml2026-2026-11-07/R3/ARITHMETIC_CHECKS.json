@@ -1,0 +1,73 @@
+{
+  "independent_training_replication": false,
+  "model_inference": false,
+  "server_access": false,
+  "implementation_code_review": false,
+  "scope": "Only hashes and arithmetic from frozen summaries and logs; no recomputation from per-probe originals.",
+  "inventory": {
+    "rows": 768,
+    "selected_views": 106,
+    "selected_arms": {
+      "poison": 96,
+      "clean": 10
+    },
+    "selected_groups": 26
+  },
+  "atlas": {
+    "atlas_server.json": {
+      "ok": 39,
+      "gate_failed": 6
+    },
+    "atlas_toy.json": {
+      "ok": 11
+    }
+  },
+  "r1_runs": 40,
+  "p2": {
+    "P2-R": {
+      "first_crossing_recomputed": 327.97235023041475,
+      "t50_recomputed": 340,
+      "nonfinite_grad_norm_steps": [
+        35,
+        548
+      ],
+      "lr_logged_at_201": 9.565616251143094e-05,
+      "endpoint_D": 17.4296875,
+      "endpoint_clean_accuracy": 0.61
+    },
+    "P2-A": {
+      "first_crossing_recomputed": 309.7955010224949,
+      "t50_recomputed": 320,
+      "nonfinite_grad_norm_steps": [
+        66,
+        401
+      ],
+      "lr_logged_at_201": 9.565616251143094e-05,
+      "endpoint_D": 17.87109375,
+      "endpoint_clean_accuracy": 0.62
+    },
+    "P2-B": {
+      "first_crossing_recomputed": 355.9574468085106,
+      "t50_recomputed": 360,
+      "nonfinite_grad_norm_steps": [
+        62,
+        67
+      ],
+      "lr_logged_at_201": 9.570884636157929e-05,
+      "endpoint_D": 17.35546875,
+      "endpoint_clean_accuracy": 0.61
+    }
+  },
+  "p2_gap_recomputed": 46.161945786015735,
+  "p2_component_identity_residuals": {
+    "200": 2.7755575615628914e-17,
+    "300": -4.440892098500626e-16,
+    "400": 0.0,
+    "310": 0.0
+  },
+  "manifest": {
+    "files": 52,
+    "sha256": "f9cb3c9236baaf832055039dbaba7b0e5e82f5f8b3a816b1a920bd81928b13f0",
+    "mismatches": []
+  }
+}
