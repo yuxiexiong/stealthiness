@@ -1,0 +1,43 @@
+{
+  "status": "PASS_CPU_SEMANTICS_ONLY",
+  "torch": "2.4.0+cu121",
+  "accelerate": "0.34.2",
+  "device": "cpu",
+  "rows": [
+    {
+      "attempt": 1,
+      "injected_inf": false,
+      "optimizer_step_skipped": false,
+      "lr_before_optimizer": 0.1,
+      "lr_after_scheduler": 0.05,
+      "scheduler_position": 1,
+      "adam_step": 1,
+      "scale_before": 8.0,
+      "scale_after": 8.0
+    },
+    {
+      "attempt": 2,
+      "injected_inf": true,
+      "optimizer_step_skipped": true,
+      "lr_before_optimizer": 0.05,
+      "lr_after_scheduler": 0.05,
+      "scheduler_position": 1,
+      "adam_step": 1,
+      "scale_before": 8.0,
+      "scale_after": 4.0
+    },
+    {
+      "attempt": 3,
+      "injected_inf": false,
+      "optimizer_step_skipped": false,
+      "lr_before_optimizer": 0.05,
+      "lr_after_scheduler": 0.03333333333333333,
+      "scheduler_position": 2,
+      "adam_step": 2,
+      "scale_before": 4.0,
+      "scale_after": 4.0
+    }
+  ],
+  "scaler_state_roundtrip": true,
+  "cuda_or_language_model_used": false
+}

@@ -1,0 +1,117 @@
+{
+  "status": "PREPARED_CPU_PASS_NOT_LAUNCHED",
+  "gpu_hours_used": 0,
+  "gpu_experiments_started": false,
+  "queue_submitted": false,
+  "source_inputs_sha256": "5afb9523d05977fd0c3c251d2509141af65229d2ffc5795eeaaad2499849bc8c",
+  "source_inputs_regenerated_on_server_identical": true,
+  "server_preflight_exit_code": 0,
+  "unit_tests": 24,
+  "full_model_loaded": false,
+  "real_data_and_runtime": {
+    "status": "PASS_REAL_SOURCE_CPU_PREFLIGHT",
+    "base_revision": "b234b804b114d9e37bb655e11cbbb5f5e971b7a9",
+    "arms": {
+      "P2S7-A": {
+        "parent": "P2-A",
+        "same_seed_prefix_parent": "P1-R2",
+        "source_row_ids_sha256": "4dfafb8464f387a433131e9c3f4da8503894f759f513c44c7fbbe701a3b4083d",
+        "expected_consumption_sha256": "feab0dd5e0b47cc5a0b1dd667f2a201b007676e5def5a71669514c78ca6324df",
+        "prefix_sha256": "c14208063ad3252322245054fdefde93a442df95d87a8be3c68c8c1e2c148656",
+        "config_sha256": "f0dcda85ec4f4fb9910e30735674e4363d65c774b1fa16b128819a0caf119ada",
+        "dataset_file_sha256": "c49517a86b3698c89470bb945416cf016f621d0ce5e87eaae52a92cb8a26ccb0"
+      },
+      "P2S7-B": {
+        "parent": "P2-B",
+        "same_seed_prefix_parent": "P1-R7",
+        "source_row_ids_sha256": "7b59b3a7f6c42346f4ac97c5b24233763995c419c40456231f6abdd07043d780",
+        "expected_consumption_sha256": "1c6050add7745fce66862713712560268eb4d8ad2a1a9ae6628571e384a36789",
+        "prefix_sha256": "c7df134b9f4411970ec68500ffdce48a27e65e5558b1c6d8a6a1356644be71ca",
+        "config_sha256": "ae12ce242c5a54ac20c76c2a3cf45d319a3705ebc1487bf8f38068b3b4c263e7",
+        "dataset_file_sha256": "f1637261d299ec654e81f3c65bd1cc961015d02e53eddcc6347393e8c675890d"
+      }
+    },
+    "sampler": {
+      "passed": true,
+      "device": "cpu",
+      "order_sha256": "01b60f0061afff08a310d9879751fb9a4f5a18205bc75122728dd96448ce28e4"
+    },
+    "gpu_used": false
+  },
+  "instrumentation": {
+    "status": "PASS_CPU_ENGINEERING_ONLY",
+    "torch": "2.4.0+cu121",
+    "checks": {
+      "instrumentation_preserves_model": true,
+      "instrumentation_preserves_optimizer": true,
+      "instrumentation_preserves_scheduler": true,
+      "instrumentation_preserves_rng": true,
+      "six_attempts_six_successes": true,
+      "actual_rows_verified": true,
+      "poison_rows_identified": true,
+      "complete_manifest_hashes": true,
+      "optimizer_only_retained_at_requested_step": true,
+      "cursor_boundary": true,
+      "absent_cpu_scaler_explicit": true,
+      "native_restore_model_matches": true,
+      "native_restore_optimizer_matches": true,
+      "native_restore_scheduler_matches": true,
+      "native_restore_rng_matches": true,
+      "production_resume_refused": true,
+      "wrong_consumption_refused": true
+    },
+    "gpu_used": false,
+    "pretrained_model_loaded": false,
+    "scientific_execution": false
+  },
+  "scaler": {
+    "status": "PASS_CPU_SEMANTICS_ONLY",
+    "torch": "2.4.0+cu121",
+    "accelerate": "0.34.2",
+    "device": "cpu",
+    "rows": [
+      {
+        "attempt": 1,
+        "injected_inf": false,
+        "optimizer_step_skipped": false,
+        "lr_before_optimizer": 0.1,
+        "lr_after_scheduler": 0.05,
+        "scheduler_position": 1,
+        "adam_step": 1,
+        "scale_before": 8.0,
+        "scale_after": 8.0
+      },
+      {
+        "attempt": 2,
+        "injected_inf": true,
+        "optimizer_step_skipped": true,
+        "lr_before_optimizer": 0.05,
+        "lr_after_scheduler": 0.05,
+        "scheduler_position": 1,
+        "adam_step": 1,
+        "scale_before": 8.0,
+        "scale_after": 4.0
+      },
+      {
+        "attempt": 3,
+        "injected_inf": false,
+        "optimizer_step_skipped": false,
+        "lr_before_optimizer": 0.05,
+        "lr_after_scheduler": 0.03333333333333333,
+        "scheduler_position": 2,
+        "adam_step": 2,
+        "scale_before": 4.0,
+        "scale_after": 4.0
+      }
+    ],
+    "scaler_state_roundtrip": true,
+    "cuda_or_language_model_used": false
+  },
+  "not_verified": [
+    "LLaVA GPU training and real checkpoint-200 completeness",
+    "full-model GPU restore equivalence",
+    "new-seed scientific effect",
+    "new-workflow GPU runtime"
+  ],
+  "transport_note": "Initial uncompressed temporary upload was stopped for low throughput; compressed code plus server-local source export succeeded, source SHA256 unchanged. No training process was started or stopped."
+}

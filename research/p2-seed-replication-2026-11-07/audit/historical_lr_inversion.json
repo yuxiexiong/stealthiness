@@ -1,0 +1,285 @@
+{
+  "method": "Sequentially fit each logged LR to scheduler position k or k+1; require a unique exact match.",
+  "schedule": {
+    "base_lr": 0.0001,
+    "warmup_steps": 38,
+    "total_steps": 1250
+  },
+  "runtime_semantics_verified_by_this_script": false,
+  "poison_batch_mapping_checked_by_this_script": true,
+  "inputs_sha256": "5afb9523d05977fd0c3c251d2509141af65229d2ffc5795eeaaad2499849bc8c",
+  "read_only_runtime_versions": {
+    "torch": "2.4.0",
+    "transformers": "4.45.2",
+    "accelerate": "0.34.2",
+    "peft": "0.12.0",
+    "llamafactory": "0.9.1",
+    "datasets": "2.20.0"
+  },
+  "arms": {
+    "A": {
+      "source": "research/asr-rising-integration-2026-11-07/sources/p2/steps_P2-A.json",
+      "source_sha256": "9fc605ae3b083ddef2312490acad10628acf36718d75564623fe9929fe90fdb3",
+      "logged_rows": 700,
+      "scheduler_no_advance_steps": [
+        66,
+        401
+      ],
+      "nonfinite_grad_norm_steps": [
+        66,
+        401
+      ],
+      "maximum_lr_fit_absolute_error": 2.710505431213761e-20,
+      "scheduler_positions": {
+        "100": 99,
+        "200": 199,
+        "201": 200,
+        "300": 299,
+        "400": 399,
+        "401": 399,
+        "548": 546,
+        "700": 698
+      },
+      "inferred_pre_step_lr_at_201": 9.570884636157929e-05,
+      "logged_post_step_lr_at_201": 9.565616251143094e-05,
+      "skipped_batches": [
+        {
+          "attempt_step": 66,
+          "consumed_row_ids": [
+            16665,
+            15423,
+            15332,
+            10062,
+            13119,
+            7226,
+            12641,
+            1204,
+            10016,
+            17558,
+            16314,
+            19993,
+            18520,
+            1161,
+            8164,
+            8819
+          ],
+          "poison_row_ids": []
+        },
+        {
+          "attempt_step": 401,
+          "consumed_row_ids": [
+            8272,
+            15702,
+            7295,
+            3720,
+            3401,
+            9004,
+            9560,
+            16886,
+            14886,
+            13930,
+            4284,
+            14772,
+            17395,
+            6204,
+            6374,
+            15796
+          ],
+          "poison_row_ids": []
+        }
+      ],
+      "poison_exposure": {
+        "200": {
+          "consumed_poison_rows": 32,
+          "consumed_poison_containing_attempts": 30,
+          "poison_rows_in_skipped_updates": [],
+          "poison_containing_successful_updates": 30
+        },
+        "700": {
+          "consumed_poison_rows": 116,
+          "consumed_poison_containing_attempts": 107,
+          "poison_rows_in_skipped_updates": [],
+          "poison_containing_successful_updates": 107
+        }
+      }
+    },
+    "R": {
+      "source": "research/asr-rising-integration-2026-11-07/sources/p2/steps_P2-R.json",
+      "source_sha256": "049750586685a54c946dea7ab612a9a7251dd9f24484f89bbf6d86f48e9b35b6",
+      "logged_rows": 700,
+      "scheduler_no_advance_steps": [
+        35,
+        548
+      ],
+      "nonfinite_grad_norm_steps": [
+        35,
+        548
+      ],
+      "maximum_lr_fit_absolute_error": 2.710505431213761e-20,
+      "scheduler_positions": {
+        "100": 99,
+        "200": 199,
+        "201": 200,
+        "300": 299,
+        "400": 399,
+        "401": 400,
+        "548": 546,
+        "700": 698
+      },
+      "inferred_pre_step_lr_at_201": 9.570884636157929e-05,
+      "logged_post_step_lr_at_201": 9.565616251143094e-05,
+      "skipped_batches": [
+        {
+          "attempt_step": 35,
+          "consumed_row_ids": [
+            13525,
+            10561,
+            10851,
+            9669,
+            14753,
+            15029,
+            11751,
+            7932,
+            3791,
+            823,
+            7206,
+            18824,
+            12931,
+            15832,
+            4516,
+            14599
+          ],
+          "poison_row_ids": []
+        },
+        {
+          "attempt_step": 548,
+          "consumed_row_ids": [
+            2300,
+            19000,
+            13204,
+            16273,
+            8728,
+            6359,
+            1109,
+            404,
+            9956,
+            7435,
+            10885,
+            18613,
+            11169,
+            14549,
+            8715,
+            18541
+          ],
+          "poison_row_ids": []
+        }
+      ],
+      "poison_exposure": {
+        "200": {
+          "consumed_poison_rows": 32,
+          "consumed_poison_containing_attempts": 30,
+          "poison_rows_in_skipped_updates": [],
+          "poison_containing_successful_updates": 30
+        },
+        "700": {
+          "consumed_poison_rows": 116,
+          "consumed_poison_containing_attempts": 107,
+          "poison_rows_in_skipped_updates": [],
+          "poison_containing_successful_updates": 107
+        }
+      }
+    },
+    "B": {
+      "source": "research/asr-rising-integration-2026-11-07/sources/p2/steps_P2-B.json",
+      "source_sha256": "994c511e69443a601e1ff98acbb3630e530848d779706ca79d02ab10881d284f",
+      "logged_rows": 700,
+      "scheduler_no_advance_steps": [
+        62,
+        67
+      ],
+      "nonfinite_grad_norm_steps": [
+        62,
+        67
+      ],
+      "maximum_lr_fit_absolute_error": 2.710505431213761e-20,
+      "scheduler_positions": {
+        "100": 98,
+        "200": 198,
+        "201": 199,
+        "300": 298,
+        "400": 398,
+        "401": 399,
+        "548": 546,
+        "700": 698
+      },
+      "inferred_pre_step_lr_at_201": 9.576122310132815e-05,
+      "logged_post_step_lr_at_201": 9.570884636157929e-05,
+      "skipped_batches": [
+        {
+          "attempt_step": 62,
+          "consumed_row_ids": [
+            7442,
+            15989,
+            12664,
+            17003,
+            2350,
+            9884,
+            4816,
+            11306,
+            7408,
+            18249,
+            19713,
+            15031,
+            14750,
+            4983,
+            12098,
+            11317
+          ],
+          "poison_row_ids": []
+        },
+        {
+          "attempt_step": 67,
+          "consumed_row_ids": [
+            16245,
+            956,
+            5802,
+            12963,
+            14223,
+            12800,
+            8370,
+            13060,
+            5899,
+            18136,
+            8466,
+            2690,
+            19294,
+            3798,
+            17534,
+            16060
+          ],
+          "poison_row_ids": [
+            956
+          ]
+        }
+      ],
+      "poison_exposure": {
+        "200": {
+          "consumed_poison_rows": 32,
+          "consumed_poison_containing_attempts": 30,
+          "poison_rows_in_skipped_updates": [
+            956
+          ],
+          "poison_containing_successful_updates": 29
+        },
+        "700": {
+          "consumed_poison_rows": 116,
+          "consumed_poison_containing_attempts": 107,
+          "poison_rows_in_skipped_updates": [
+            956
+          ],
+          "poison_containing_successful_updates": 106
+        }
+      }
+    }
+  }
+}
