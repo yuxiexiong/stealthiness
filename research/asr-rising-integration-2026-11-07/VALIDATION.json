@@ -1,0 +1,336 @@
+{
+  "status": "PASS",
+  "gpu_hours_added": 0,
+  "training_runs_added": 0,
+  "model_inference_calls": 0,
+  "scope": "source bytes, derived counts/numbers and local document links; not a training reproduction",
+  "checks": {
+    "inventory_rows_768": true,
+    "summary_groups_26": true,
+    "p2_gap_matches": true,
+    "p2_probe_counts": true,
+    "p2_four_readouts_agree": true,
+    "p2_700_D_range": true,
+    "gate_G1": true,
+    "gate_G1r": true
+  },
+  "source_checks": [
+    {
+      "path": "sources/cross_model/inventory.csv",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/cross_model/README_ZH.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/cross_model/V2_MEASUREMENT_DESIGN.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/cross_model/BOUNDARY_V1_DESIGN.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/atlas/CONTRACT_ATLAS.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/atlas/atlas_server.json",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/atlas/atlas_toy.json",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/atlas/corpus.json",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/gate/CONTRACT_GATE.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/gate/judge.json",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/support/research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/RESULTS_R1.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/support/attribution-microscope/supplement/jump/im/RESULTS_IM2.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/support/attribution-microscope/supplement/jump/qx/results_qx.json",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/support/research/asr-line-summary-2026-10-27/ASR全线研究总结.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/support/attribution-microscope/supplement/jump/cross_model/ASR_JUMP_V1_DESIGN.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/support/attribution-microscope/supplement/jump/cross_model/CLASSIFICATION10_DESIGN.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/support/attribution-microscope/supplement/jump/cross_model/results/20261009_followup_v3_final/README.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/support/attribution-microscope/supplement/jump/cross_model/T5_V2_DESIGN.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/support/attribution-microscope/supplement/jump/cross_model/results/20261009_followup_v3_final/t5_endpoint_diagnosis_numeric_summary.json",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/support/attribution-microscope/supplement/jump/cross_model/CLIP_V2_DESIGN.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/support/attribution-microscope/supplement/jump/cross_model/results/20261007_final/falcon_dose_endpoints.csv",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/support/attribution-microscope/supplement/jump/qx/RESULTS_QX.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/p2/RESULTS_P2.zh-CN.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/p2/CONTRACT_P2.zh-CN.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/p2/results_p2.json",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/p2/steps_P2-A.json",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/p2/steps_P2-R.json",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/p2/steps_P2-B.json",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/p1/RESULTS_P1.zh-CN.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/p1/CONTRACT_P1.zh-CN.md",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/p1/gp0_report.json",
+      "matches_origin": true
+    },
+    {
+      "path": "sources/m3t/RESULTS_M3T.zh-CN.md",
+      "matches_origin": true
+    }
+  ],
+  "cross_model_group_checks": [
+    {
+      "model": "CLIP-ViT-B32",
+      "dose": "0",
+      "view": "primary",
+      "arm": "clean",
+      "pass": true
+    },
+    {
+      "model": "CLIP-ViT-B32",
+      "dose": "5",
+      "view": "primary",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "FLAN-T5-base",
+      "dose": "0",
+      "view": "primary",
+      "arm": "clean",
+      "pass": true
+    },
+    {
+      "model": "FLAN-T5-base",
+      "dose": "1",
+      "view": "primary",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "Falcon-Mamba-7B",
+      "dose": "5",
+      "view": "primary",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "Falcon-Mamba-7B",
+      "dose": "10",
+      "view": "primary",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "Falcon-Mamba-7B",
+      "dose": "15",
+      "view": "primary",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "LLaVA-1.5-7B",
+      "dose": "1",
+      "view": "alternate_poison_set",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "LLaVA-1.5-7B",
+      "dose": "1",
+      "view": "primary",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "Llama-3.1-8B-Instruct",
+      "dose": "0",
+      "view": "primary",
+      "arm": "clean",
+      "pass": true
+    },
+    {
+      "model": "Llama-3.1-8B-Instruct",
+      "dose": "1",
+      "view": "primary",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "Qwen3-8B",
+      "dose": "0",
+      "view": "primary",
+      "arm": "clean",
+      "pass": true
+    },
+    {
+      "model": "Qwen3-8B",
+      "dose": "1",
+      "view": "primary",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "Qwen3-VL-8B",
+      "dose": "1",
+      "view": "primary",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "Qwen3-VL-8B",
+      "dose": "5",
+      "view": "primary",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "SD3.5-Large",
+      "dose": "1",
+      "view": "primary",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "SD3.5-Large",
+      "dose": "5",
+      "view": "primary",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "SD3.5-Large",
+      "dose": "10",
+      "view": "primary",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "Vim-S",
+      "dose": "0",
+      "view": "independent_bounded_primary",
+      "arm": "clean",
+      "pass": true
+    },
+    {
+      "model": "Vim-S",
+      "dose": "0",
+      "view": "primary",
+      "arm": "clean",
+      "pass": true
+    },
+    {
+      "model": "Vim-S",
+      "dose": "5",
+      "view": "independent_bounded_primary",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "Vim-S",
+      "dose": "5",
+      "view": "primary",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "resnet50",
+      "dose": "0",
+      "view": "primary",
+      "arm": "clean",
+      "pass": true
+    },
+    {
+      "model": "resnet50",
+      "dose": "5",
+      "view": "primary",
+      "arm": "poison",
+      "pass": true
+    },
+    {
+      "model": "vit_b_16",
+      "dose": "0",
+      "view": "primary",
+      "arm": "clean",
+      "pass": true
+    },
+    {
+      "model": "vit_b_16",
+      "dose": "5",
+      "view": "primary",
+      "arm": "poison",
+      "pass": true
+    }
+  ],
+  "local_links_checked": 75,
+  "missing_links": [],
+  "p2_gap_updates": 46.161945786015735,
+  "p2_median_D_range_at_700": 0.515625,
+  "raw_source_note": "Original JSON may contain NaN; source bytes are preserved. Derived validation JSON is strict."
+}
