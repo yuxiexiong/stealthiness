@@ -1,0 +1,86 @@
+{
+ "structure_pass": true,
+ "structure": {
+  "checks": {
+   "P2-A: valid permutation": true,
+   "P2-A: skeleton identical to 1009": true,
+   "P2-A: prefix equals its parent bit for bit": true,
+   "P2-A: continuation equals H": true,
+   "P2-A: no prefix row reappears in the continuation": true,
+   "P2-R: valid permutation": true,
+   "P2-R: skeleton identical to 1009": true,
+   "P2-R: prefix equals its parent bit for bit": true,
+   "P2-R: continuation equals H": true,
+   "P2-R: no prefix row reappears in the continuation": true,
+   "P2-B: valid permutation": true,
+   "P2-B: skeleton identical to 1009": true,
+   "P2-B: prefix equals its parent bit for bit": true,
+   "P2-B: continuation equals H": true,
+   "P2-B: no prefix row reappears in the continuation": true,
+   "P2-A and P2-R identical from step 201 to 700": true,
+   "P2-A and P2-R differ inside the prefix": true,
+   "P2-A and P2-B identical from step 201 to 700": true,
+   "P2-A and P2-B differ inside the prefix": true,
+   "P2-R and P2-B identical from step 201 to 700": true,
+   "P2-R and P2-B differ inside the prefix": true,
+   "H is disjoint from all three prefixes": true,
+   "P2-A: nothing but prefix+H inside the read-out window": true,
+   "P2-R: nothing but prefix+H inside the read-out window": true,
+   "P2-B: nothing but prefix+H inside the read-out window": true
+  },
+  "sizes": {
+   "clean_prefix_positions": 3168,
+   "clean_continuation_positions": 7916,
+   "clean_after_stop_positions": 8716,
+   "H": 7916,
+   "poison_steps_in_prefix": 32,
+   "poison_steps_in_continuation": 84
+  },
+  "prefix_clean_set_overlap": {
+   "P2-A vs P2-R": 0.16571969696969696,
+   "P2-A vs P2-B": 0.15656565656565657,
+   "P2-R vs P2-B": 0.16445707070707072
+  },
+  "prefix_same_position_fraction": {
+   "P2-A vs P2-R": 0.0,
+   "P2-A vs P2-B": 0.0,
+   "P2-R vs P2-B": 0.0
+  }
+ },
+ "H_sha256_16": "b4d89e82b37df52c",
+ "prefix_equals_trained_parent": {
+  "P2-A": true,
+  "P2-R": true,
+  "P2-B": true
+ },
+ "arms": {
+  "P2-A": {
+   "dataset": "arm_p2_a",
+   "train_seed": 1001,
+   "parent": "SF-R-S1009-F2001",
+   "sha256_16": "7ea87b355ea2908e",
+   "content_ok": true,
+   "order_ok": true,
+   "seq_sha256_16": "9fc0b64a4f927f76"
+  },
+  "P2-R": {
+   "dataset": "arm_p2_r",
+   "train_seed": 1001,
+   "parent": "XO-I1001-O1009",
+   "sha256_16": "3e6fe0f80bf9326f",
+   "content_ok": true,
+   "order_ok": true,
+   "seq_sha256_16": "692595757d9c2e1c"
+  },
+  "P2-B": {
+   "dataset": "arm_p2_b",
+   "train_seed": 1001,
+   "parent": "SF-P2-S1009-F1007",
+   "sha256_16": "287a2558029637d2",
+   "content_ok": true,
+   "order_ok": true,
+   "seq_sha256_16": "28db79273ba08452"
+  }
+ },
+ "GP2_pass": true
+}

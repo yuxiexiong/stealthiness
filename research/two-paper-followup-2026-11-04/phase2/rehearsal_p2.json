@@ -1,0 +1,85 @@
+{
+ "pass": true,
+ "checks": {
+  "structure_gate_on_real_orders": true,
+  "three_arms": true,
+  "A_prefix_is_existing_parent": true,
+  "R_prefix_is_order_1009": true,
+  "arms_identical_after_prefix_through_stop": true,
+  "arms_differ_inside_prefix": true,
+  "structure_gate_can_fail": true,
+  "src_map_roundtrip_P2-A": true,
+  "src_map_roundtrip_P2-R": true,
+  "src_map_roundtrip_P2-B": true,
+  "band_small": true,
+  "band_middle": true,
+  "band_large": true,
+  "band_large_negative": true,
+  "band_censored": true,
+  "main_reports_reversal": true,
+  "main_censored": true,
+  "reference_between": true,
+  "reference_offset_large": true,
+  "reference_not_between": true,
+  "comp_common": true,
+  "comp_discrimination": true,
+  "comp_mixed": true,
+  "comp_cancel": true,
+  "comp_undetermined_small": true,
+  "comp_identity_holds": true,
+  "comp_ci_present": true,
+  "sustained_recovers_crossing": true,
+  "sustained_recovers_late_crossing": true,
+  "no_crossing_is_none": true,
+  "dip_delays_sustained_not_first": true,
+  "grid_confirms_candidates_to_660": true,
+  "behaviour_steps_are_in_lp_grid": true,
+  "grid_sizes": true
+ },
+ "info": {
+  "structure_checks_failed": [],
+  "sizes": {
+   "clean_prefix_positions": 3168,
+   "clean_continuation_positions": 7916,
+   "clean_after_stop_positions": 8716,
+   "H": 7916,
+   "poison_steps_in_prefix": 32,
+   "poison_steps_in_continuation": 84
+  },
+  "prefix_clean_set_overlap": {
+   "P2-A vs P2-R": 0.16571969696969696,
+   "P2-A vs P2-B": 0.15656565656565657,
+   "P2-R vs P2-B": 0.16445707070707072
+  },
+  "prefix_same_position_fraction": {
+   "P2-A vs P2-R": 0.0,
+   "P2-A vs P2-B": 0.0,
+   "P2-R vs P2-B": 0.0
+  },
+  "comp_example_common": {
+   "dT": {
+    "mean": 1.9642,
+    "lo": 1.9061,
+    "hi": 2.0225,
+    "n": 200
+   },
+   "dC": {
+    "mean": 1.7765,
+    "lo": 1.7321,
+    "hi": 1.8204,
+    "n": 200
+   },
+   "dD": {
+    "mean": 0.1877,
+    "lo": 0.1452,
+    "hi": 0.2312,
+    "n": 200
+   },
+   "identity_max_abs_err": 0.0,
+   "denominator_stable": true,
+   "components_same_sign": true,
+   "f": 0.09554505968434894,
+   "tier": "共同分量为主"
+  }
+ }
+}
