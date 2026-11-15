@@ -1,0 +1,72 @@
+{
+  "cpu_pass": true,
+  "seconds": 10.267040014266968,
+  "code_freeze_sha256": "357cf6c20b87086ce3ab734045ba523bf886bbfc76e299fa16f2d427fe7f6a6e",
+  "runner_sha256": "7ffb993f214a1ea28dcc1dd21a637fbee74f187fc7b156a29d5a2e8bff2bd532",
+  "bundle_sha256": "843263492715c2c17d84d04dffb381508409ca8daf5ae76403f8a11859d3bafa",
+  "baseline_sha256": "84632b1a6b6ef3c1a25a2e1bae9e4ef2540766d6a43eb96b1f28e864e467f8f7",
+  "weights": {
+    "model-00001-of-00003.safetensors": "328a91d3122359d5547f9d79521205bc0a46e1f79a792dfe650e99fc2d651223",
+    "model-00002-of-00003.safetensors": "6cd087b316306a68c562436b5492edbcf6e16c6dba3a1308279caa5a58e21ca5",
+    "model-00003-of-00003.safetensors": "e4bf436957184f4eeb86a80e9db394503f1f56446b2e6b7edeac5b81470f4ca1"
+  },
+  "arms": {
+    "W-None": {
+      "unique_rows": 84,
+      "total_exposures": 672,
+      "poison_exposures": 0
+    },
+    "P-None": {
+      "unique_rows": 84,
+      "total_exposures": 672,
+      "poison_exposures": 0
+    },
+    "W-football": {
+      "unique_rows": 84,
+      "total_exposures": 672,
+      "poison_exposures": 16
+    },
+    "P-football": {
+      "unique_rows": 84,
+      "total_exposures": 672,
+      "poison_exposures": 16
+    },
+    "W-keyboard": {
+      "unique_rows": 84,
+      "total_exposures": 672,
+      "poison_exposures": 16
+    },
+    "P-keyboard": {
+      "unique_rows": 84,
+      "total_exposures": 672,
+      "poison_exposures": 16
+    },
+    "W-bookmark": {
+      "unique_rows": 84,
+      "total_exposures": 672,
+      "poison_exposures": 16
+    },
+    "P-bookmark": {
+      "unique_rows": 84,
+      "total_exposures": 672,
+      "poison_exposures": 16
+    }
+  },
+  "checks": [
+    "raw row and text equality",
+    "template holdout",
+    "fixed exposure",
+    "only target OFF relabelled",
+    "answer and EOS masking",
+    "equal sample loss matches real HF loss",
+    "zero LoRA exact CPU logits",
+    "two optimizer steps change only adapters",
+    "effective greedy merge",
+    "source identities"
+  ],
+  "scientific_model_loaded": false,
+  "scientific_forward_calls": 0,
+  "gpu_calls": 0,
+  "synthetic_cpu_model": "random Qwen3 hidden8 layer1",
+  "synthetic_optimizer_steps": 2
+}
