@@ -1,0 +1,149 @@
+{
+  "0": {
+    "qualified": 0,
+    "planned_prefixes": 5,
+    "branches": 0,
+    "model_runs": 5,
+    "parameters_analytical": 73922,
+    "vocab": 96,
+    "train_batches": 12000,
+    "evaluation_batches": 15120,
+    "evaluation_rows": 967680,
+    "checkpoints": 105,
+    "approximate_matmul_TFLOP": 3.9951138816,
+    "checkpoint_tensor_bytes_upper": 93141720,
+    "jsonl_uncompressed_bytes_at_400_per_row": 387072000,
+    "scenarios": {
+      "optimistic_assumption": {
+        "unmeasured_train_batch_ms": 5,
+        "unmeasured_eval_batch_ms": 2,
+        "training_seconds": 60.0,
+        "forward_seconds": 30.24,
+        "io_aggregation_seconds": 180,
+        "environment_setup_seconds": 300,
+        "single_gpu_reserved_hours": 0.1584,
+        "planning_with_50pct_reserve_hours": 0.2376
+      },
+      "planning_assumption": {
+        "unmeasured_train_batch_ms": 15,
+        "unmeasured_eval_batch_ms": 5,
+        "training_seconds": 180.0,
+        "forward_seconds": 75.6,
+        "io_aggregation_seconds": 600,
+        "environment_setup_seconds": 900,
+        "single_gpu_reserved_hours": 0.48766666666666664,
+        "planning_with_50pct_reserve_hours": 0.7314999999999999
+      },
+      "slow_assumption": {
+        "unmeasured_train_batch_ms": 50,
+        "unmeasured_eval_batch_ms": 15,
+        "training_seconds": 600.0,
+        "forward_seconds": 226.8,
+        "io_aggregation_seconds": 1800,
+        "environment_setup_seconds": 1800,
+        "single_gpu_reserved_hours": 1.2296666666666667,
+        "planning_with_50pct_reserve_hours": 1.8445000000000003
+      }
+    },
+    "measured_gpu_seconds": 0,
+    "caveat": "No timing benchmark; includes all prefixes/branches/readings/checkpoints. FLOPs exclude non-matmul, optimizer and IO. No hard cap or automatic retry."
+  },
+  "4": {
+    "qualified": 4,
+    "planned_prefixes": 5,
+    "branches": 24,
+    "model_runs": 29,
+    "parameters_analytical": 73922,
+    "vocab": 96,
+    "train_batches": 40800,
+    "evaluation_batches": 87696,
+    "evaluation_rows": 5612544,
+    "checkpoints": 609,
+    "approximate_matmul_TFLOP": 16.41935536128,
+    "checkpoint_tensor_bytes_upper": 540221976,
+    "jsonl_uncompressed_bytes_at_400_per_row": 2245017600,
+    "scenarios": {
+      "optimistic_assumption": {
+        "unmeasured_train_batch_ms": 5,
+        "unmeasured_eval_batch_ms": 2,
+        "training_seconds": 204.0,
+        "forward_seconds": 175.392,
+        "io_aggregation_seconds": 180,
+        "environment_setup_seconds": 300,
+        "single_gpu_reserved_hours": 0.23872000000000002,
+        "planning_with_50pct_reserve_hours": 0.35808000000000006
+      },
+      "planning_assumption": {
+        "unmeasured_train_batch_ms": 15,
+        "unmeasured_eval_batch_ms": 5,
+        "training_seconds": 612.0,
+        "forward_seconds": 438.48,
+        "io_aggregation_seconds": 600,
+        "environment_setup_seconds": 900,
+        "single_gpu_reserved_hours": 0.7084666666666667,
+        "planning_with_50pct_reserve_hours": 1.0627
+      },
+      "slow_assumption": {
+        "unmeasured_train_batch_ms": 50,
+        "unmeasured_eval_batch_ms": 15,
+        "training_seconds": 2040.0,
+        "forward_seconds": 1315.44,
+        "io_aggregation_seconds": 1800,
+        "environment_setup_seconds": 1800,
+        "single_gpu_reserved_hours": 1.9320666666666668,
+        "planning_with_50pct_reserve_hours": 2.8981
+      }
+    },
+    "measured_gpu_seconds": 0,
+    "caveat": "No timing benchmark; includes all prefixes/branches/readings/checkpoints. FLOPs exclude non-matmul, optimizer and IO. No hard cap or automatic retry."
+  },
+  "5": {
+    "qualified": 5,
+    "planned_prefixes": 5,
+    "branches": 30,
+    "model_runs": 35,
+    "parameters_analytical": 73922,
+    "vocab": 96,
+    "train_batches": 48000,
+    "evaluation_batches": 105840,
+    "evaluation_rows": 6773760,
+    "checkpoints": 735,
+    "approximate_matmul_TFLOP": 19.5254157312,
+    "checkpoint_tensor_bytes_upper": 651992040,
+    "jsonl_uncompressed_bytes_at_400_per_row": 2709504000,
+    "scenarios": {
+      "optimistic_assumption": {
+        "unmeasured_train_batch_ms": 5,
+        "unmeasured_eval_batch_ms": 2,
+        "training_seconds": 240.0,
+        "forward_seconds": 211.68,
+        "io_aggregation_seconds": 180,
+        "environment_setup_seconds": 300,
+        "single_gpu_reserved_hours": 0.25880000000000003,
+        "planning_with_50pct_reserve_hours": 0.3882
+      },
+      "planning_assumption": {
+        "unmeasured_train_batch_ms": 15,
+        "unmeasured_eval_batch_ms": 5,
+        "training_seconds": 720.0,
+        "forward_seconds": 529.2,
+        "io_aggregation_seconds": 600,
+        "environment_setup_seconds": 900,
+        "single_gpu_reserved_hours": 0.7636666666666666,
+        "planning_with_50pct_reserve_hours": 1.1454999999999997
+      },
+      "slow_assumption": {
+        "unmeasured_train_batch_ms": 50,
+        "unmeasured_eval_batch_ms": 15,
+        "training_seconds": 2400.0,
+        "forward_seconds": 1587.6,
+        "io_aggregation_seconds": 1800,
+        "environment_setup_seconds": 1800,
+        "single_gpu_reserved_hours": 2.107666666666667,
+        "planning_with_50pct_reserve_hours": 3.1615
+      }
+    },
+    "measured_gpu_seconds": 0,
+    "caveat": "No timing benchmark; includes all prefixes/branches/readings/checkpoints. FLOPs exclude non-matmul, optimizer and IO. No hard cap or automatic retry."
+  }
+}
