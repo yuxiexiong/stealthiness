@@ -1,5 +1,7 @@
 # K4继续往下挖：究竟什么更新有资格受到长期保护？
 
+> **2026-11-15 后续修正已并入：** 当前解释见[具体问题更新](D04_D05_K4_CONCRETE_QUESTIONS.zh-CN.md)的K4-A2和K4-N。A2问合法罕见规律与条件错误的相对保护，公共路径计分与各方法分别调参本来就是Benzing前驱的一部分。Sun的净更新筛选另保留为次级适用边界，不因已有方法而取消，也不与未来保护当同一操作。原文保留历史与推导边界；[增补核查](reviews/ADDENDUM_VALUE_ASSESSMENT.zh-CN_2026-11-15.md)、[独立Advisor](reviews/THREE_TOPICS_REFINEMENT_ADVISOR_2026-11-15.md)、[处置](reviews/THREE_TOPICS_REFINEMENT_DISPOSITION_2026-11-15.md)为最新补充。无新实验。
+
 2026-11-15。讨论稿，经独立Advisor审查后发布；本轮没有实验、模型运行、统计重算或GPU操作。
 
 先前全部保留课题已经按用户要求整理并上传：[完整登记](https://github.com/yuxiexiong/stealthiness/blob/main/research/topic-discovery-2026-11-15/RETAINED_TOPICS_FULL_REGISTER.zh-CN.md)。该文件是新筛审之前的快照，包括16个主要讨论对象、其余旧条目的工具/暂停状态、逐篇来源及阅读缺口。本文件是之后的增量，不覆盖旧记录。

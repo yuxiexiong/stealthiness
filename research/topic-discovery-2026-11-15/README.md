@@ -1,22 +1,33 @@
-# 后门形成：保留课题与K4具体规则
+# 后门形成：保留课题与具体剩余问题
 
-2026-11-15。按用户最新要求，本次文档统一发布到 `main`。本目录只有研究讨论、文献核查和审查记录，不包含新实验结果或执行授权。
+2026-11-15。文档统一发布到 `main`。只有研究讨论、文献核查和独立审查，没有新实验、统计重算或执行授权。
 
-## 先读这两份
+## 当前先读
 
-1. [全部保留课题登记](RETAINED_TOPICS_FULL_REGISTER.zh-CN.md)：16个主要讨论对象，旧条目工具/暂停状态，具体问题、支持与反例、青蒿素原则、逐篇related work及阅读范围。16不代表16篇成熟论文。
-2. [K4具体规则与继续筛查](K4_ACCEPTANCE_RULES_AND_SCREENING.zh-CN.md)：登记之后的增量。保留同批更新—评价关联与独立批评价的保护分配问题；修正回放默认前提；记录另外两个外扩入口为何暂并D03/D12。
+1. [D04、D05、K4具体问题](D04_D05_K4_CONCRETE_QUESTIONS.zh-CN.md)：吸收外部增补后，逐项说明默认条件、具体改变、允许信息、例子、可增加的认识、最近工作已答/未答与退出条件。
+2. [外部增补价值核查](reviews/ADDENDUM_VALUE_ASSESSMENT.zh-CN_2026-11-15.md)：Sun、MemSinks、D04、D05、D03的补漏与纠正，不直接接受未补查的整体排序。
+3. [全部保留课题登记](RETAINED_TOPICS_FULL_REGISTER.zh-CN.md)：初始16对象的完整快照及文献账本，首页已标最新覆盖判断。16不等于16篇成熟论文。
+4. [K4前一轮具体规则](K4_ACCEPTANCE_RULES_AND_SCREENING.zh-CN.md)：SI/SIU保护分配与旧备选的详细历史，首页已标本轮更新。
 
-## 可追溯审查材料
+## 当前取舍
 
+重点保留D05-C（划分与错误泛化关系）、K4-A2（合法/错误相对保护）；D04-C保留混合来源下的权限—能力边界，不把冻结公共部分当完整系统安全；K4-N为净更新筛选的适用边界分支。原D04跨记录问题未被悄悄替换。均是讨论对象，不是已证空白、成熟论文或实验队列。
+
+## 本轮独立审查和来源
+
+- [审前草案](reviews/THREE_TOPICS_REFINEMENT_PROPOSAL_2026-11-15.md)：历史提案，含随后纠正的保护顺序和oracle口径。
+- [Advisor完整审查](reviews/THREE_TOPICS_REFINEMENT_ADVISOR_2026-11-15.md)
+- [逐项处置](reviews/THREE_TOPICS_REFINEMENT_DISPOSITION_2026-11-15.md)
+- [实际阅读范围与检索式](reviews/THREE_TOPICS_REFINEMENT_SOURCES_2026-11-15.md)
+
+## 前轮材料
+
+- [外部增补原文快照](reviews/EXTERNAL_ADDENDUM_RECEIVED_2026-11-15.md)：被审材料，不代表采纳全部判断。
+- [增补独立审查](reviews/ADDENDUM_VALUE_ADVISOR_REVIEW_2026-11-15.md)
 - [总登记准确性审核](reviews/REGISTER_ACCURACY_REVIEW_2026-11-15.md)
-- [K4审查前草案](reviews/K4_ACCEPTANCE_RULES_PROPOSAL_2026-11-15.md)：历史提案，B的SYNERgy前提后来被纠正，勿作最终结论。
-- [独立Advisor完整意见](reviews/K4_ACCEPTANCE_ADVISOR_REVIEW_2026-11-15.md)
-- [逐项修正处置](reviews/K4_ACCEPTANCE_DISPOSITION_2026-11-15.md)
-- [增量实际检索回执](reviews/K4_SEARCH_RECEIPT_2026-11-15.md)
+- [K4原草案](reviews/K4_ACCEPTANCE_RULES_PROPOSAL_2026-11-15.md)
+- [K4前轮Advisor](reviews/K4_ACCEPTANCE_ADVISOR_REVIEW_2026-11-15.md)
+- [K4前轮处置](reviews/K4_ACCEPTANCE_DISPOSITION_2026-11-15.md)
+- [K4前轮检索回执](reviews/K4_SEARCH_RECEIPT_2026-11-15.md)
 
-## 阅读顺序与状态
-
-先完成全登记并上传，之后才开始K4新筛审。最初使用独立文档分支；用户随后明确要求本次全部文档上传main，本目录按新要求发布。K4增量先前的公开上传被自动审批拒绝，原因是后续材料发布授权不明确；用户现已明确授权全部上传main。没有绕过审批，没有修改其他任务或现有论文。
-
-最终判断以K4增量说明及其处置为准；保留原草案和原始审查意见供追溯。历史文件中的原分支/待上传表述反映当时状态，不是当前交付位置。D04/D05维持用户保留；K4-A是具体问题而非已验证防御。所有数学例子、外部论文报告和项目既有实测证据均分开。
+历史文件中的独立分支和待授权表述只反映当时状态；用户已明确授权全部研究文档发布main，当前交付入口即本目录。后续覆盖判断显式写出，不删除原始判断、负结果或审查分歧记录。
