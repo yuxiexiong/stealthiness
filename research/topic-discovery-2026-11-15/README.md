@@ -4,6 +4,8 @@
 
 ## 当前先读
 
+**最新解释与审查：** [固定条件、通俗例子与两类结果](PREMISE_TWO_OUTCOMES.zh-CN.md)。D05、K4继续保留；D04只作待筛查入口，不计为第三项同等成熟问题。已有方法不否整柱，普通失败也不自动成为新发现。
+
 1. [D04、D05、K4具体问题](D04_D05_K4_CONCRETE_QUESTIONS.zh-CN.md)：吸收外部增补后，逐项说明默认条件、具体改变、允许信息、例子、可增加的认识、最近工作已答/未答与退出条件。
 2. [外部增补价值核查](reviews/ADDENDUM_VALUE_ASSESSMENT.zh-CN_2026-11-15.md)：Sun、MemSinks、D04、D05、D03的补漏与纠正，不直接接受未补查的整体排序。
 3. [全部保留课题登记](RETAINED_TOPICS_FULL_REGISTER.zh-CN.md)：初始16对象的完整快照及文献账本，首页已标最新覆盖判断。16不等于16篇成熟论文。
@@ -14,6 +16,12 @@
 重点保留D05-C（划分与错误泛化关系）、K4-A2（合法/错误相对保护）；D04-C保留混合来源下的权限—能力边界，不把冻结公共部分当完整系统安全；K4-N为净更新筛选的适用边界分支。原D04跨记录问题未被悄悄替换。均是讨论对象，不是已证空白、成熟论文或实验队列。
 
 ## 本轮独立审查和来源
+
+- [前提与两类结果草案](reviews/PREMISE_TWO_OUTCOMES_PROPOSAL_2026-11-15.md)
+- [本轮Advisor](reviews/PREMISE_TWO_OUTCOMES_ADVISOR_2026-11-15.md)
+- [本轮意见处理](reviews/PREMISE_TWO_OUTCOMES_DISPOSITION_2026-11-15.md)
+
+以下为上一轮具体化记录：
 
 - [审前草案](reviews/THREE_TOPICS_REFINEMENT_PROPOSAL_2026-11-15.md)：历史提案，含随后纠正的保护顺序和oracle口径。
 - [Advisor完整审查](reviews/THREE_TOPICS_REFINEMENT_ADVISOR_2026-11-15.md)
