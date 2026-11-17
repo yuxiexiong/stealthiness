@@ -1,0 +1,148 @@
+{
+  "version": "M045-F0-v1",
+  "plan_commit": "d5e21a3af1b0c5ac57024ad6934115e7e8ed5dd0",
+  "background": "ref-B-GC",
+  "window": [
+    321,
+    400
+  ],
+  "restore": 320,
+  "end": 440,
+  "anchors": [
+    320,
+    345,
+    370,
+    395
+  ],
+  "anchor_rule": "nearest k-1, tie earlier; reference future seen",
+  "probe_ids": [
+    0,
+    6,
+    12,
+    18,
+    25,
+    31,
+    37,
+    43,
+    50,
+    56,
+    62,
+    68,
+    75,
+    81,
+    87,
+    93,
+    100,
+    106,
+    112,
+    118,
+    125,
+    131,
+    137,
+    143,
+    150,
+    156,
+    162,
+    168,
+    175,
+    181,
+    187,
+    193
+  ],
+  "swaps": 6,
+  "strata": [
+    [
+      1,
+      20
+    ],
+    [
+      21,
+      40
+    ],
+    [
+      41,
+      79
+    ],
+    [
+      1,
+      20
+    ],
+    [
+      21,
+      40
+    ],
+    [
+      41,
+      79
+    ]
+  ],
+  "shuffle_seeds": [
+    44001,
+    44002
+  ],
+  "shuffle_unit": "complete batch score profile",
+  "native_rng_policy": true,
+  "diagnosis_coverage": "shortest+longest pair in each real arm, lexical ties, no reselection",
+  "s1_min_predicted_Y_contrast": 0.02,
+  "s1d_min_composite_Y_contrast": 0.02,
+  "original_gradient_relative_l2": 0.0001,
+  "original_gradient_abs_l2": 1e-07,
+  "s2_points": [
+    350,
+    375,
+    385
+  ],
+  "s2_practical_contrast": 0.02,
+  "s2_readpoints": [
+    350,
+    375,
+    385,
+    440
+  ],
+  "s3_readpoints": [
+    325,
+    330,
+    335,
+    340,
+    345,
+    350,
+    355,
+    360,
+    365,
+    370,
+    375,
+    380,
+    385,
+    390,
+    395,
+    400,
+    420,
+    440
+  ],
+  "primary_Q": [
+    345,
+    350,
+    355,
+    360,
+    365,
+    370,
+    375,
+    380,
+    385,
+    390,
+    395,
+    400
+  ],
+  "magnitude_rule": "fixed 0.05 absolute contrast accuracy; max(.02,max S2 error) is descriptive development reference only",
+  "secondary_tolerances": {
+    "t50_steps": 10,
+    "fall_gain_loss_counts": 10,
+    "endpoint": 0.05
+  },
+  "no_significance_claim": true,
+  "no_automatic_expansion": true,
+  "authorization": "user permits CPU/GPU qualification then this experiment; 30-minute status/ETA",
+  "s2_max_prediction_sign_contradictions": 1,
+  "diagnosis_baseline": "replace only moved-in two gradients per selected swap; keep qualified original tape baselines unchanged",
+  "diagnosis_max_full_accumulations": 16
+}

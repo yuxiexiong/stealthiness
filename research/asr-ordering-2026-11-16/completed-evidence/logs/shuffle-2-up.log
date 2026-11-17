@@ -1,0 +1,819 @@
+[WARNING|2026-11-17 01:08:54] llamafactory.extras.misc:168 >> Version checking has been disabled, may lead to unexpected behaviors.
+[INFO|2026-11-17 01:08:57] llamafactory.hparams.parser:355 >> Process rank: 0, device: cuda:0, n_gpu: 1, distributed training: False, compute dtype: torch.float16
+[INFO|hub.py:363] 2026-11-17 01:08:57,949 >> Offline mode: forcing local_files_only=True
+[INFO|configuration_utils.py:675] 2026-11-17 01:08:57,949 >> loading configuration file config.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/config.json
+[INFO|configuration_utils.py:742] 2026-11-17 01:08:57,952 >> Model config LlavaConfig {
+  "_name_or_path": "llava-hf/llava-1.5-7b-hf",
+  "architectures": [
+    "LlavaForConditionalGeneration"
+  ],
+  "ignore_index": -100,
+  "image_seq_length": 576,
+  "image_token_index": 32000,
+  "model_type": "llava",
+  "pad_token_id": 32001,
+  "projector_hidden_act": "gelu",
+  "text_config": {
+    "_name_or_path": "lmsys/vicuna-7b-v1.5",
+    "add_cross_attention": false,
+    "architectures": [
+      "LlamaForCausalLM"
+    ],
+    "attention_bias": false,
+    "attention_dropout": 0.0,
+    "bad_words_ids": null,
+    "begin_suppress_tokens": null,
+    "bos_token_id": 1,
+    "chunk_size_feed_forward": 0,
+    "cross_attention_hidden_size": null,
+    "decoder_start_token_id": null,
+    "diversity_penalty": 0.0,
+    "do_sample": false,
+    "early_stopping": false,
+    "encoder_no_repeat_ngram_size": 0,
+    "eos_token_id": 2,
+    "exponential_decay_length_penalty": null,
+    "finetuning_task": null,
+    "forced_bos_token_id": null,
+    "forced_eos_token_id": null,
+    "head_dim": 128,
+    "hidden_act": "silu",
+    "hidden_size": 4096,
+    "id2label": {
+      "0": "LABEL_0",
+      "1": "LABEL_1"
+    },
+    "initializer_range": 0.02,
+    "intermediate_size": 11008,
+    "is_decoder": false,
+    "is_encoder_decoder": false,
+    "label2id": {
+      "LABEL_0": 0,
+      "LABEL_1": 1
+    },
+    "length_penalty": 1.0,
+    "max_length": 20,
+    "max_position_embeddings": 4096,
+    "min_length": 0,
+    "mlp_bias": false,
+    "model_type": "llama",
+    "no_repeat_ngram_size": 0,
+    "num_attention_heads": 32,
+    "num_beam_groups": 1,
+    "num_beams": 1,
+    "num_hidden_layers": 32,
+    "num_key_value_heads": 32,
+    "num_return_sequences": 1,
+    "output_attentions": false,
+    "output_hidden_states": false,
+    "output_scores": false,
+    "pad_token_id": null,
+    "prefix": null,
+    "pretraining_tp": 1,
+    "problem_type": null,
+    "pruned_heads": {},
+    "remove_invalid_values": false,
+    "repetition_penalty": 1.0,
+    "return_dict": true,
+    "return_dict_in_generate": false,
+    "rms_norm_eps": 1e-05,
+    "rope_scaling": null,
+    "rope_theta": 10000.0,
+    "sep_token_id": null,
+    "suppress_tokens": null,
+    "task_specific_params": null,
+    "temperature": 1.0,
+    "tf_legacy_loss": false,
+    "tie_encoder_decoder": false,
+    "tie_word_embeddings": false,
+    "tokenizer_class": null,
+    "top_k": 50,
+    "top_p": 1.0,
+    "torch_dtype": "float16",
+    "torchscript": false,
+    "typical_p": 1.0,
+    "use_bfloat16": false,
+    "use_cache": true,
+    "vocab_size": 32064
+  },
+  "tie_word_embeddings": false,
+  "torch_dtype": "float16",
+  "transformers_version": "4.45.2",
+  "vision_config": {
+    "_name_or_path": "",
+    "add_cross_attention": false,
+    "architectures": null,
+    "attention_dropout": 0.0,
+    "bad_words_ids": null,
+    "begin_suppress_tokens": null,
+    "bos_token_id": null,
+    "chunk_size_feed_forward": 0,
+    "cross_attention_hidden_size": null,
+    "decoder_start_token_id": null,
+    "diversity_penalty": 0.0,
+    "do_sample": false,
+    "early_stopping": false,
+    "encoder_no_repeat_ngram_size": 0,
+    "eos_token_id": null,
+    "exponential_decay_length_penalty": null,
+    "finetuning_task": null,
+    "forced_bos_token_id": null,
+    "forced_eos_token_id": null,
+    "hidden_act": "quick_gelu",
+    "hidden_size": 1024,
+    "id2label": {
+      "0": "LABEL_0",
+      "1": "LABEL_1"
+    },
+    "image_size": 336,
+    "initializer_factor": 1.0,
+    "initializer_range": 0.02,
+    "intermediate_size": 4096,
+    "is_decoder": false,
+    "is_encoder_decoder": false,
+    "label2id": {
+      "LABEL_0": 0,
+      "LABEL_1": 1
+    },
+    "layer_norm_eps": 1e-05,
+    "length_penalty": 1.0,
+    "max_length": 20,
+    "min_length": 0,
+    "model_type": "clip_vision_model",
+    "no_repeat_ngram_size": 0,
+    "num_attention_heads": 16,
+    "num_beam_groups": 1,
+    "num_beams": 1,
+    "num_channels": 3,
+    "num_hidden_layers": 24,
+    "num_return_sequences": 1,
+    "output_attentions": false,
+    "output_hidden_states": false,
+    "output_scores": false,
+    "pad_token_id": null,
+    "patch_size": 14,
+    "prefix": null,
+    "problem_type": null,
+    "projection_dim": 768,
+    "pruned_heads": {},
+    "remove_invalid_values": false,
+    "repetition_penalty": 1.0,
+    "return_dict": true,
+    "return_dict_in_generate": false,
+    "sep_token_id": null,
+    "suppress_tokens": null,
+    "task_specific_params": null,
+    "temperature": 1.0,
+    "tf_legacy_loss": false,
+    "tie_encoder_decoder": false,
+    "tie_word_embeddings": true,
+    "tokenizer_class": null,
+    "top_k": 50,
+    "top_p": 1.0,
+    "torch_dtype": null,
+    "torchscript": false,
+    "typical_p": 1.0,
+    "use_bfloat16": false,
+    "vocab_size": 32000
+  },
+  "vision_feature_layer": -2,
+  "vision_feature_select_strategy": "default",
+  "vocab_size": 32064
+}
+
+[INFO|hub.py:363] 2026-11-17 01:08:57,952 >> Offline mode: forcing local_files_only=True
+[INFO|tokenization_utils_base.py:2087] 2026-11-17 01:08:57,954 >> Offline mode: forcing local_files_only=True
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 01:08:57,954 >> loading file tokenizer.model from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/tokenizer.model
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 01:08:57,954 >> loading file tokenizer.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/tokenizer.json
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 01:08:57,954 >> loading file added_tokens.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/added_tokens.json
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 01:08:57,954 >> loading file special_tokens_map.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/special_tokens_map.json
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 01:08:57,954 >> loading file tokenizer_config.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2470] 2026-11-17 01:08:58,042 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+[INFO|hub.py:363] 2026-11-17 01:08:58,043 >> Offline mode: forcing local_files_only=True
+[INFO|processing_utils.py:586] 2026-11-17 01:08:58,043 >> Offline mode: forcing local_files_only=True
+[INFO|processing_utils.py:684] 2026-11-17 01:08:58,043 >> loading configuration file processor_config.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/processor_config.json
+[INFO|image_processing_base.py:318] 2026-11-17 01:08:58,044 >> Offline mode: forcing local_files_only=True
+[INFO|image_processing_base.py:375] 2026-11-17 01:08:58,044 >> loading configuration file preprocessor_config.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/preprocessor_config.json
+[INFO|image_processing_base.py:429] 2026-11-17 01:08:58,045 >> Image processor CLIPImageProcessor {
+  "crop_size": {
+    "height": 336,
+    "width": 336
+  },
+  "do_center_crop": true,
+  "do_convert_rgb": true,
+  "do_normalize": true,
+  "do_rescale": true,
+  "do_resize": true,
+  "image_mean": [
+    0.48145466,
+    0.4578275,
+    0.40821073
+  ],
+  "image_processor_type": "CLIPImageProcessor",
+  "image_std": [
+    0.26862954,
+    0.26130258,
+    0.27577711
+  ],
+  "processor_class": "LlavaProcessor",
+  "resample": 3,
+  "rescale_factor": 0.00392156862745098,
+  "size": {
+    "shortest_edge": 336
+  }
+}
+
+[INFO|hub.py:363] 2026-11-17 01:08:58,045 >> Offline mode: forcing local_files_only=True
+[INFO|tokenization_utils_base.py:2087] 2026-11-17 01:08:58,045 >> Offline mode: forcing local_files_only=True
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 01:08:58,046 >> loading file tokenizer.model from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/tokenizer.model
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 01:08:58,046 >> loading file tokenizer.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/tokenizer.json
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 01:08:58,046 >> loading file added_tokens.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/added_tokens.json
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 01:08:58,046 >> loading file special_tokens_map.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/special_tokens_map.json
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 01:08:58,046 >> loading file tokenizer_config.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2470] 2026-11-17 01:08:58,125 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+[INFO|processing_utils.py:586] 2026-11-17 01:08:58,125 >> Offline mode: forcing local_files_only=True
+[INFO|processing_utils.py:684] 2026-11-17 01:08:58,125 >> loading configuration file processor_config.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/processor_config.json
+[WARNING|processing_utils.py:976] 2026-11-17 01:08:58,125 >> Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+[INFO|processing_utils.py:744] 2026-11-17 01:08:58,222 >> Processor LlavaProcessor:
+- image_processor: CLIPImageProcessor {
+  "crop_size": {
+    "height": 336,
+    "width": 336
+  },
+  "do_center_crop": true,
+  "do_convert_rgb": true,
+  "do_normalize": true,
+  "do_rescale": true,
+  "do_resize": true,
+  "image_mean": [
+    0.48145466,
+    0.4578275,
+    0.40821073
+  ],
+  "image_processor_type": "CLIPImageProcessor",
+  "image_std": [
+    0.26862954,
+    0.26130258,
+    0.27577711
+  ],
+  "processor_class": "LlavaProcessor",
+  "resample": 3,
+  "rescale_factor": 0.00392156862745098,
+  "size": {
+    "shortest_edge": 336
+  }
+}
+
+- tokenizer: LlamaTokenizerFast(name_or_path='llava-hf/llava-1.5-7b-hf', vocab_size=32000, model_max_length=1000000000000000019884624838656, is_fast=True, padding_side='left', truncation_side='right', special_tokens={'bos_token': '<s>', 'eos_token': '</s>', 'unk_token': '<unk>', 'pad_token': '<pad>'}, clean_up_tokenization_spaces=False),  added_tokens_decoder={
+	0: AddedToken("<unk>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	1: AddedToken("<s>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	2: AddedToken("</s>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	32000: AddedToken("<image>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	32001: AddedToken("<pad>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+}
+
+{
+  "image_token": "<image>",
+  "patch_size": 14,
+  "processor_class": "LlavaProcessor",
+  "vision_feature_select_strategy": "default"
+}
+
+[INFO|2026-11-17 01:08:58] llamafactory.data.loader:157 >> Loading dataset exposure_B_replace.json...
+training example:
+input_ids:
+[319, 13563, 1546, 263, 12758, 1404, 322, 385, 23116, 21082, 20255, 29889, 450, 20255, 4076, 8444, 29892, 13173, 29892, 322, 1248, 568, 6089, 304, 278, 1404, 29915, 29879, 5155, 29889, 3148, 1001, 29901, 29871, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 29871, 13, 3624, 278, 8367, 26616, 29973, 13, 22550, 278, 1139, 773, 263, 2323, 1734, 470, 16549, 29889, 319, 1799, 9047, 13566, 29901, 4874, 2]
+[INFO|hub.py:363] 2026-11-17 01:08:59,163 >> Offline mode: forcing local_files_only=True
+[INFO|configuration_utils.py:675] 2026-11-17 01:08:59,163 >> loading configuration file config.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/config.json
+[INFO|configuration_utils.py:742] 2026-11-17 01:08:59,165 >> Model config LlavaConfig {
+  "_name_or_path": "llava-hf/llava-1.5-7b-hf",
+  "architectures": [
+    "LlavaForConditionalGeneration"
+  ],
+  "ignore_index": -100,
+  "image_seq_length": 576,
+  "image_token_index": 32000,
+  "model_type": "llava",
+  "pad_token_id": 32001,
+  "projector_hidden_act": "gelu",
+  "text_config": {
+    "_name_or_path": "lmsys/vicuna-7b-v1.5",
+    "add_cross_attention": false,
+    "architectures": [
+      "LlamaForCausalLM"
+    ],
+    "attention_bias": false,
+    "attention_dropout": 0.0,
+    "bad_words_ids": null,
+    "begin_suppress_tokens": null,
+    "bos_token_id": 1,
+    "chunk_size_feed_forward": 0,
+    "cross_attention_hidden_size": null,
+    "decoder_start_token_id": null,
+    "diversity_penalty": 0.0,
+    "do_sample": false,
+    "early_stopping": false,
+    "encoder_no_repeat_ngram_size": 0,
+    "eos_token_id": 2,
+    "exponential_decay_length_penalty": null,
+    "finetuning_task": null,
+    "forced_bos_token_id": null,
+    "forced_eos_token_id": null,
+    "head_dim": 128,
+    "hidden_act": "silu",
+    "hidden_size": 4096,
+    "id2label": {
+      "0": "LABEL_0",
+      "1": "LABEL_1"
+    },
+    "initializer_range": 0.02,
+    "intermediate_size": 11008,
+    "is_decoder": false,
+    "is_encoder_decoder": false,
+    "label2id": {
+      "LABEL_0": 0,
+      "LABEL_1": 1
+    },
+    "length_penalty": 1.0,
+    "max_length": 20,
+    "max_position_embeddings": 4096,
+    "min_length": 0,
+    "mlp_bias": false,
+    "model_type": "llama",
+    "no_repeat_ngram_size": 0,
+    "num_attention_heads": 32,
+    "num_beam_groups": 1,
+    "num_beams": 1,
+    "num_hidden_layers": 32,
+    "num_key_value_heads": 32,
+    "num_return_sequences": 1,
+    "output_attentions": false,
+    "output_hidden_states": false,
+    "output_scores": false,
+    "pad_token_id": null,
+    "prefix": null,
+    "pretraining_tp": 1,
+    "problem_type": null,
+    "pruned_heads": {},
+    "remove_invalid_values": false,
+    "repetition_penalty": 1.0,
+    "return_dict": true,
+    "return_dict_in_generate": false,
+    "rms_norm_eps": 1e-05,
+    "rope_scaling": null,
+    "rope_theta": 10000.0,
+    "sep_token_id": null,
+    "suppress_tokens": null,
+    "task_specific_params": null,
+    "temperature": 1.0,
+    "tf_legacy_loss": false,
+    "tie_encoder_decoder": false,
+    "tie_word_embeddings": false,
+    "tokenizer_class": null,
+    "top_k": 50,
+    "top_p": 1.0,
+    "torch_dtype": "float16",
+    "torchscript": false,
+    "typical_p": 1.0,
+    "use_bfloat16": false,
+    "use_cache": true,
+    "vocab_size": 32064
+  },
+  "tie_word_embeddings": false,
+  "torch_dtype": "float16",
+  "transformers_version": "4.45.2",
+  "vision_config": {
+    "_name_or_path": "",
+    "add_cross_attention": false,
+    "architectures": null,
+    "attention_dropout": 0.0,
+    "bad_words_ids": null,
+    "begin_suppress_tokens": null,
+    "bos_token_id": null,
+    "chunk_size_feed_forward": 0,
+    "cross_attention_hidden_size": null,
+    "decoder_start_token_id": null,
+    "diversity_penalty": 0.0,
+    "do_sample": false,
+    "early_stopping": false,
+    "encoder_no_repeat_ngram_size": 0,
+    "eos_token_id": null,
+    "exponential_decay_length_penalty": null,
+    "finetuning_task": null,
+    "forced_bos_token_id": null,
+    "forced_eos_token_id": null,
+    "hidden_act": "quick_gelu",
+    "hidden_size": 1024,
+    "id2label": {
+      "0": "LABEL_0",
+      "1": "LABEL_1"
+    },
+    "image_size": 336,
+    "initializer_factor": 1.0,
+    "initializer_range": 0.02,
+    "intermediate_size": 4096,
+    "is_decoder": false,
+    "is_encoder_decoder": false,
+    "label2id": {
+      "LABEL_0": 0,
+      "LABEL_1": 1
+    },
+    "layer_norm_eps": 1e-05,
+    "length_penalty": 1.0,
+    "max_length": 20,
+    "min_length": 0,
+    "model_type": "clip_vision_model",
+    "no_repeat_ngram_size": 0,
+    "num_attention_heads": 16,
+    "num_beam_groups": 1,
+    "num_beams": 1,
+    "num_channels": 3,
+    "num_hidden_layers": 24,
+    "num_return_sequences": 1,
+    "output_attentions": false,
+    "output_hidden_states": false,
+    "output_scores": false,
+    "pad_token_id": null,
+    "patch_size": 14,
+    "prefix": null,
+    "problem_type": null,
+    "projection_dim": 768,
+    "pruned_heads": {},
+    "remove_invalid_values": false,
+    "repetition_penalty": 1.0,
+    "return_dict": true,
+    "return_dict_in_generate": false,
+    "sep_token_id": null,
+    "suppress_tokens": null,
+    "task_specific_params": null,
+    "temperature": 1.0,
+    "tf_legacy_loss": false,
+    "tie_encoder_decoder": false,
+    "tie_word_embeddings": true,
+    "tokenizer_class": null,
+    "top_k": 50,
+    "top_p": 1.0,
+    "torch_dtype": null,
+    "torchscript": false,
+    "typical_p": 1.0,
+    "use_bfloat16": false,
+    "vocab_size": 32000
+  },
+  "vision_feature_layer": -2,
+  "vision_feature_select_strategy": "default",
+  "vocab_size": 32064
+}
+
+[INFO|hub.py:363] 2026-11-17 01:08:59,169 >> Offline mode: forcing local_files_only=True
+[INFO|hub.py:363] 2026-11-17 01:08:59,170 >> Offline mode: forcing local_files_only=True
+[INFO|modeling_utils.py:3402] 2026-11-17 01:08:59,171 >> Offline mode: forcing local_files_only=True
+[INFO|modeling_utils.py:3732] 2026-11-17 01:08:59,171 >> loading weights file model.safetensors from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/model.safetensors.index.json
+[INFO|modeling_utils.py:1622] 2026-11-17 01:08:59,172 >> Instantiating LlavaForConditionalGeneration model under default dtype torch.float16.
+[INFO|configuration_utils.py:1099] 2026-11-17 01:08:59,173 >> Generate config GenerationConfig {
+  "pad_token_id": 32001
+}
+
+[INFO|configuration_utils.py:1099] 2026-11-17 01:08:59,244 >> Generate config GenerationConfig {
+  "bos_token_id": 1,
+  "eos_token_id": 2
+}
+
+inputs:
+A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions. USER: <image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image> 
+Is the rail dirty?
+Answer the question using a single word or phrase. ASSISTANT: yes</s>
+label_ids:
+[-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 4874, 2]
+labels:
+yes</s>
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:01<00:02,  1.06s/it]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:01<00:00,  1.02it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:02<00:00,  1.14it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:02<00:00,  1.10it/s]
+[INFO|modeling_utils.py:4574] 2026-11-17 01:09:02,067 >> All model checkpoint weights were used when initializing LlavaForConditionalGeneration.
+
+[INFO|modeling_utils.py:4582] 2026-11-17 01:09:02,067 >> All the weights of LlavaForConditionalGeneration were initialized from the model checkpoint at llava-hf/llava-1.5-7b-hf.
+If your task is similar to the task the model of the checkpoint was trained on, you can already use LlavaForConditionalGeneration for predictions without further training.
+[INFO|configuration_utils.py:1054] 2026-11-17 01:09:02,070 >> loading configuration file generation_config.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/generation_config.json
+[INFO|configuration_utils.py:1099] 2026-11-17 01:09:02,071 >> Generate config GenerationConfig {
+  "bos_token_id": 1,
+  "eos_token_id": 2,
+  "pad_token_id": 32001
+}
+
+[INFO|2026-11-17 01:09:02] llamafactory.model.model_utils.attention:157 >> Using vanilla attention implementation.
+[INFO|2026-11-17 01:09:02] llamafactory.model.adapter:157 >> Upcasting trainable params to float32.
+[INFO|2026-11-17 01:09:02] llamafactory.model.adapter:157 >> Fine-tuning method: LoRA
+[INFO|2026-11-17 01:09:02] llamafactory.model.model_utils.misc:157 >> Found linear modules: q_proj,o_proj,k_proj,down_proj,up_proj,gate_proj,v_proj
+[INFO|2026-11-17 01:09:02] llamafactory.model.loader:157 >> trainable params: 39,976,960 || all params: 7,103,404,032 || trainable%: 0.5628
+/workspace/miniconda/envs/amic/lib/python3.10/site-packages/accelerate/accelerator.py:494: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  self.scaler = torch.cuda.amp.GradScaler(**kwargs)
+Detected kernel version 5.4.250, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+[INFO|trainer.py:667] 2026-11-17 01:09:02,623 >> Using auto half precision backend
+[INFO|trainer.py:2637] 2026-11-17 01:09:03,068 >> Loading model from /workspace/asr-ordering-20261116-r01/forks/shuffle-2-up.
+/workspace/miniconda/envs/amic/lib/python3.10/site-packages/transformers/trainer.py:3262: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  torch.load(os.path.join(checkpoint, OPTIMIZER_NAME), map_location=map_location)
+[INFO|trainer.py:2243] 2026-11-17 01:09:04,442 >> ***** Running training *****
+[INFO|trainer.py:2244] 2026-11-17 01:09:04,442 >>   Num examples = 20,000
+[INFO|trainer.py:2245] 2026-11-17 01:09:04,442 >>   Num Epochs = 1
+[INFO|trainer.py:2246] 2026-11-17 01:09:04,442 >>   Instantaneous batch size per device = 8
+[INFO|trainer.py:2249] 2026-11-17 01:09:04,442 >>   Total train batch size (w. parallel, distributed & accumulation) = 16
+[INFO|trainer.py:2250] 2026-11-17 01:09:04,442 >>   Gradient Accumulation steps = 2
+[INFO|trainer.py:2251] 2026-11-17 01:09:04,442 >>   Total optimization steps = 1,250
+[INFO|trainer.py:2252] 2026-11-17 01:09:04,447 >>   Number of trainable parameters = 39,976,960
+[INFO|trainer.py:2274] 2026-11-17 01:09:04,447 >>   Continuing training from checkpoint, will skip to saved global_step
+[INFO|trainer.py:2275] 2026-11-17 01:09:04,447 >>   Continuing training from epoch 0
+[INFO|trainer.py:2276] 2026-11-17 01:09:04,447 >>   Continuing training from global step 320
+[INFO|trainer.py:2278] 2026-11-17 01:09:04,448 >>   Will skip the first 0 epochs then the first 640 batches in the first epoch.
+  0%|          | 0/1250 [00:00<?, ?it/s]/workspace/miniconda/envs/amic/lib/python3.10/site-packages/transformers/trainer.py:2944: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint_rng_state = torch.load(rng_file)
+[WARNING|logging.py:168] 2026-11-17 01:09:06,333 >> Starting from v4.46, the `logits` model output will have the same type as the model (except at train time, where it will always be FP32)
+ 26%|██▌       | 321/1250 [00:04<00:13, 66.67it/s]                                                   26%|██▌       | 321/1250 [00:04<00:13, 66.67it/s]                                                   26%|██▌       | 322/1250 [00:08<00:13, 66.67it/s]                                                   26%|██▌       | 323/1250 [00:11<00:13, 66.67it/s]                                                   26%|██▌       | 324/1250 [00:15<00:13, 66.67it/s]                                                   26%|██▌       | 325/1250 [00:19<00:13, 66.67it/s][INFO|trainer.py:3705] 2026-11-17 01:09:23,504 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-325
+/workspace/miniconda/envs/amic/lib/python3.10/site-packages/peft/utils/save_and_load.py:218: UserWarning: Could not find a config file in llava-hf/llava-1.5-7b-hf - will assume that the vocabulary was not modified.
+  warnings.warn(
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:09:23,704 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-325/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:09:23,704 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-325/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:09:23,737 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-325/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:09:23,737 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-325/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:09:23,737 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-325/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:09:23,860 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-325/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:09:23,951 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-325/processor_config.json
+                                                   26%|██▌       | 326/1250 [00:23<00:13, 66.67it/s] 26%|██▌       | 326/1250 [00:24<00:13, 66.67it/s] 26%|██▌       | 327/1250 [00:26<01:40,  9.15it/s]                                                   26%|██▌       | 327/1250 [00:26<01:40,  9.15it/s] 26%|██▌       | 328/1250 [00:30<02:00,  7.65it/s]                                                   26%|██▌       | 328/1250 [00:30<02:00,  7.65it/s]                                                   26%|██▋       | 329/1250 [00:33<02:00,  7.65it/s]                                                   26%|██▋       | 330/1250 [00:37<02:00,  7.65it/s][INFO|trainer.py:3705] 2026-11-17 01:09:41,780 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-330
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:09:41,968 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-330/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:09:41,968 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-330/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:09:42,003 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-330/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:09:42,003 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-330/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:09:42,004 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-330/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:09:42,128 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-330/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:09:42,226 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-330/processor_config.json
+ 26%|██▋       | 331/1250 [00:41<03:24,  4.49it/s]                                                   26%|██▋       | 331/1250 [00:41<03:24,  4.49it/s] 27%|██▋       | 332/1250 [00:44<04:02,  3.79it/s]                                                   27%|██▋       | 332/1250 [00:44<04:02,  3.79it/s]                                                   27%|██▋       | 333/1250 [00:48<04:01,  3.79it/s] 27%|██▋       | 334/1250 [00:52<05:41,  2.68it/s]                                                   27%|██▋       | 334/1250 [00:52<05:41,  2.68it/s] 27%|██▋       | 335/1250 [00:55<06:47,  2.24it/s]                                                   27%|██▋       | 335/1250 [00:55<06:47,  2.24it/s][INFO|trainer.py:3705] 2026-11-17 01:10:00,019 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-335
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:10:00,208 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-335/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:10:00,208 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-335/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:10:00,244 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-335/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:10:00,244 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-335/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:10:00,245 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-335/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:10:00,368 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-335/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:10:00,461 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-335/processor_config.json
+ 27%|██▋       | 336/1250 [00:59<08:32,  1.78it/s]                                                   27%|██▋       | 336/1250 [00:59<08:32,  1.78it/s] 27%|██▋       | 337/1250 [01:03<10:32,  1.44it/s]                                                   27%|██▋       | 337/1250 [01:03<10:32,  1.44it/s] 27%|██▋       | 338/1250 [01:06<13:02,  1.17it/s]                                                   27%|██▋       | 338/1250 [01:06<13:02,  1.17it/s] 27%|██▋       | 339/1250 [01:10<16:13,  1.07s/it]                                                   27%|██▋       | 339/1250 [01:10<16:13,  1.07s/it] 27%|██▋       | 340/1250 [01:13<20:00,  1.32s/it]                                                   27%|██▋       | 340/1250 [01:13<20:00,  1.32s/it][INFO|trainer.py:3705] 2026-11-17 01:10:18,218 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-340
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:10:18,345 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-340/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:10:18,345 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-340/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:10:18,379 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-340/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:10:18,379 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-340/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:10:18,380 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-340/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:10:18,498 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-340/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:10:18,590 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-340/processor_config.json
+ 27%|██▋       | 341/1250 [01:17<24:57,  1.65s/it]                                                   27%|██▋       | 341/1250 [01:17<24:57,  1.65s/it] 27%|██▋       | 342/1250 [01:21<29:19,  1.94s/it]                                                   27%|██▋       | 342/1250 [01:21<29:19,  1.94s/it] 27%|██▋       | 343/1250 [01:24<33:27,  2.21s/it]                                                   27%|██▋       | 343/1250 [01:24<33:27,  2.21s/it] 28%|██▊       | 344/1250 [01:28<37:34,  2.49s/it]                                                   28%|██▊       | 344/1250 [01:28<37:34,  2.49s/it] 28%|██▊       | 345/1250 [01:31<41:11,  2.73s/it]                                                   28%|██▊       | 345/1250 [01:31<41:11,  2.73s/it][INFO|trainer.py:3705] 2026-11-17 01:10:36,347 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-345
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:10:36,466 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-345/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:10:36,466 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-345/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:10:36,500 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-345/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:10:36,500 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-345/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:10:36,501 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-345/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:10:36,617 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-345/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:10:36,711 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-345/processor_config.json
+ 28%|██▊       | 346/1250 [01:35<45:32,  3.02s/it]                                                   28%|██▊       | 346/1250 [01:35<45:32,  3.02s/it] 28%|██▊       | 347/1250 [01:39<47:35,  3.16s/it]                                                   28%|██▊       | 347/1250 [01:39<47:35,  3.16s/it] 28%|██▊       | 348/1250 [01:42<49:10,  3.27s/it]                                                   28%|██▊       | 348/1250 [01:42<49:10,  3.27s/it] 28%|██▊       | 349/1250 [01:46<50:22,  3.35s/it]                                                   28%|██▊       | 349/1250 [01:46<50:22,  3.35s/it] 28%|██▊       | 350/1250 [01:50<51:13,  3.41s/it]                                                   28%|██▊       | 350/1250 [01:50<51:13,  3.41s/it][INFO|trainer.py:3705] 2026-11-17 01:10:54,546 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-350
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:10:54,664 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-350/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:10:54,665 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-350/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:10:54,699 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-350/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:10:54,699 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-350/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:10:54,699 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-350/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:10:54,818 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-350/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:10:54,913 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-350/processor_config.json
+ 28%|██▊       | 351/1250 [01:54<53:24,  3.56s/it]                                                   28%|██▊       | 351/1250 [01:54<53:24,  3.56s/it] 28%|██▊       | 352/1250 [01:57<53:21,  3.56s/it]                                                   28%|██▊       | 352/1250 [01:57<53:21,  3.56s/it] 28%|██▊       | 353/1250 [02:01<53:18,  3.57s/it]                                                   28%|██▊       | 353/1250 [02:01<53:18,  3.57s/it] 28%|██▊       | 354/1250 [02:04<53:15,  3.57s/it]                                                   28%|██▊       | 354/1250 [02:04<53:15,  3.57s/it] 28%|██▊       | 355/1250 [02:08<53:12,  3.57s/it]                                                   28%|██▊       | 355/1250 [02:08<53:12,  3.57s/it][INFO|trainer.py:3705] 2026-11-17 01:11:12,749 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-355
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:11:12,875 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-355/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:11:12,875 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-355/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:11:12,911 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-355/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:11:12,912 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-355/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:11:12,912 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-355/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:11:13,035 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-355/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:11:13,133 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-355/processor_config.json
+ 28%|██▊       | 356/1250 [02:12<54:29,  3.66s/it]                                                   28%|██▊       | 356/1250 [02:12<54:29,  3.66s/it] 29%|██▊       | 357/1250 [02:15<54:01,  3.63s/it]                                                   29%|██▊       | 357/1250 [02:15<54:01,  3.63s/it] 29%|██▊       | 358/1250 [02:19<53:41,  3.61s/it]                                                   29%|██▊       | 358/1250 [02:19<53:41,  3.61s/it] 29%|██▊       | 359/1250 [02:22<53:26,  3.60s/it]                                                   29%|██▊       | 359/1250 [02:22<53:26,  3.60s/it] 29%|██▉       | 360/1250 [02:26<53:14,  3.59s/it]                                                   29%|██▉       | 360/1250 [02:26<53:14,  3.59s/it][INFO|trainer.py:3705] 2026-11-17 01:11:30,888 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-360
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:11:31,007 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-360/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:11:31,007 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-360/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:11:31,041 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-360/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:11:31,041 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-360/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:11:31,042 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-360/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:11:31,158 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-360/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:11:31,254 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-360/processor_config.json
+ 29%|██▉       | 361/1250 [02:30<54:19,  3.67s/it]                                                   29%|██▉       | 361/1250 [02:30<54:19,  3.67s/it] 29%|██▉       | 362/1250 [02:33<53:29,  3.61s/it]                                                   29%|██▉       | 362/1250 [02:33<53:29,  3.61s/it] 29%|██▉       | 363/1250 [02:37<53:13,  3.60s/it]                                                   29%|██▉       | 363/1250 [02:37<53:13,  3.60s/it] 29%|██▉       | 364/1250 [02:40<52:38,  3.56s/it]                                                   29%|██▉       | 364/1250 [02:40<52:38,  3.56s/it] 29%|██▉       | 365/1250 [02:44<52:14,  3.54s/it]                                                   29%|██▉       | 365/1250 [02:44<52:14,  3.54s/it][INFO|trainer.py:3705] 2026-11-17 01:11:48,764 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-365
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:11:48,882 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-365/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:11:48,882 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-365/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:11:48,916 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-365/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:11:48,917 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-365/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:11:48,917 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-365/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:11:49,034 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-365/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:11:49,127 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-365/processor_config.json
+ 29%|██▉       | 366/1250 [02:48<53:52,  3.66s/it]                                                   29%|██▉       | 366/1250 [02:48<53:52,  3.66s/it] 29%|██▉       | 367/1250 [02:51<53:03,  3.61s/it]                                                   29%|██▉       | 367/1250 [02:51<53:03,  3.61s/it] 29%|██▉       | 368/1250 [02:55<52:49,  3.59s/it]                                                   29%|██▉       | 368/1250 [02:55<52:49,  3.59s/it] 30%|██▉       | 369/1250 [02:58<52:18,  3.56s/it]                                                   30%|██▉       | 369/1250 [02:58<52:18,  3.56s/it] 30%|██▉       | 370/1250 [03:02<52:16,  3.56s/it]                                                   30%|██▉       | 370/1250 [03:02<52:16,  3.56s/it][INFO|trainer.py:3705] 2026-11-17 01:12:06,800 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-370
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:12:06,918 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-370/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:12:06,918 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-370/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:12:06,952 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-370/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:12:06,952 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-370/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:12:06,952 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-370/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:12:07,070 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-370/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:12:07,163 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-370/processor_config.json
+ 30%|██▉       | 371/1250 [03:06<53:49,  3.67s/it]                                                   30%|██▉       | 371/1250 [03:06<53:49,  3.67s/it] 30%|██▉       | 372/1250 [03:09<53:18,  3.64s/it]                                                   30%|██▉       | 372/1250 [03:09<53:18,  3.64s/it] 30%|██▉       | 373/1250 [03:13<52:54,  3.62s/it]                                                   30%|██▉       | 373/1250 [03:13<52:54,  3.62s/it] 30%|██▉       | 374/1250 [03:16<52:36,  3.60s/it]                                                   30%|██▉       | 374/1250 [03:16<52:36,  3.60s/it] 30%|███       | 375/1250 [03:20<51:40,  3.54s/it]                                                   30%|███       | 375/1250 [03:20<51:40,  3.54s/it][INFO|trainer.py:3705] 2026-11-17 01:12:24,833 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-375
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:12:24,951 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-375/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:12:24,951 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-375/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:12:24,986 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-375/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:12:24,986 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-375/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:12:24,986 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-375/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:12:25,105 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-375/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:12:25,197 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-375/processor_config.json
+ 30%|███       | 376/1250 [03:24<52:56,  3.63s/it]                                                   30%|███       | 376/1250 [03:24<52:56,  3.63s/it] 30%|███       | 377/1250 [03:27<52:13,  3.59s/it]                                                   30%|███       | 377/1250 [03:27<52:13,  3.59s/it] 30%|███       | 378/1250 [03:31<52:04,  3.58s/it]                                                   30%|███       | 378/1250 [03:31<52:04,  3.58s/it] 30%|███       | 379/1250 [03:34<51:57,  3.58s/it]                                                   30%|███       | 379/1250 [03:34<51:57,  3.58s/it] 30%|███       | 380/1250 [03:38<51:29,  3.55s/it]                                                   30%|███       | 380/1250 [03:38<51:29,  3.55s/it][INFO|trainer.py:3705] 2026-11-17 01:12:42,792 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-380
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:12:42,910 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-380/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:12:42,910 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-380/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:12:42,944 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-380/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:12:42,945 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-380/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:12:42,945 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-380/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:12:43,063 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-380/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:12:43,155 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-380/processor_config.json
+ 30%|███       | 381/1250 [03:42<53:08,  3.67s/it]                                                   30%|███       | 381/1250 [03:42<53:08,  3.67s/it] 31%|███       | 382/1250 [03:45<52:21,  3.62s/it]                                                   31%|███       | 382/1250 [03:45<52:21,  3.62s/it] 31%|███       | 383/1250 [03:49<51:48,  3.58s/it]                                                   31%|███       | 383/1250 [03:49<51:48,  3.58s/it] 31%|███       | 384/1250 [03:52<51:44,  3.58s/it]                                                   31%|███       | 384/1250 [03:52<51:44,  3.58s/it] 31%|███       | 385/1250 [03:56<51:40,  3.58s/it]                                                   31%|███       | 385/1250 [03:56<51:40,  3.58s/it][INFO|trainer.py:3705] 2026-11-17 01:13:00,910 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-385
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:13:01,028 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-385/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:13:01,028 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-385/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:13:01,063 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-385/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:13:01,064 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-385/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:13:01,064 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-385/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:13:01,183 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-385/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:13:01,276 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-385/processor_config.json
+ 31%|███       | 386/1250 [04:00<52:49,  3.67s/it]                                                   31%|███       | 386/1250 [04:00<52:49,  3.67s/it] 31%|███       | 387/1250 [04:03<52:23,  3.64s/it]                                                   31%|███       | 387/1250 [04:03<52:23,  3.64s/it] 31%|███       | 388/1250 [04:07<52:03,  3.62s/it]                                                   31%|███       | 388/1250 [04:07<52:03,  3.62s/it] 31%|███       | 389/1250 [04:11<51:49,  3.61s/it]                                                   31%|███       | 389/1250 [04:11<51:49,  3.61s/it] 31%|███       | 390/1250 [04:14<51:16,  3.58s/it]                                                   31%|███       | 390/1250 [04:14<51:16,  3.58s/it][INFO|trainer.py:3705] 2026-11-17 01:13:19,018 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-390
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:13:19,136 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-390/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:13:19,136 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-390/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:13:19,171 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-390/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:13:19,171 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-390/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:13:19,171 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-390/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:13:19,290 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-390/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:13:19,395 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-390/processor_config.json
+ 31%|███▏      | 391/1250 [04:18<52:30,  3.67s/it]                                                   31%|███▏      | 391/1250 [04:18<52:30,  3.67s/it] 31%|███▏      | 392/1250 [04:21<51:43,  3.62s/it]                                                   31%|███▏      | 392/1250 [04:21<51:43,  3.62s/it] 31%|███▏      | 393/1250 [04:25<51:10,  3.58s/it]                                                   31%|███▏      | 393/1250 [04:25<51:10,  3.58s/it] 32%|███▏      | 394/1250 [04:28<50:24,  3.53s/it]                                                   32%|███▏      | 394/1250 [04:28<50:24,  3.53s/it] 32%|███▏      | 395/1250 [04:32<50:33,  3.55s/it]                                                   32%|███▏      | 395/1250 [04:32<50:33,  3.55s/it][INFO|trainer.py:3705] 2026-11-17 01:13:36,899 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-395
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:13:37,017 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-395/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:13:37,017 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-395/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:13:37,052 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-395/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:13:37,052 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-395/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:13:37,052 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-395/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:13:37,170 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-395/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:13:37,262 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-395/processor_config.json
+ 32%|███▏      | 396/1250 [04:36<51:29,  3.62s/it]                                                   32%|███▏      | 396/1250 [04:36<51:29,  3.62s/it] 32%|███▏      | 397/1250 [04:39<51:16,  3.61s/it]                                                   32%|███▏      | 397/1250 [04:39<51:16,  3.61s/it] 32%|███▏      | 398/1250 [04:43<51:06,  3.60s/it]                                                   32%|███▏      | 398/1250 [04:43<51:06,  3.60s/it] 32%|███▏      | 399/1250 [04:46<50:59,  3.60s/it]                                                  {'loss': 0.4351, 'grad_norm': 0.8708940744400024, 'learning_rate': 8.731293546215437e-05, 'epoch': 0.26}
+{'loss': 0.5684, 'grad_norm': 1.139243483543396, 'learning_rate': 8.722653875405075e-05, 'epoch': 0.26}
+{'loss': 0.4863, 'grad_norm': 1.0357489585876465, 'learning_rate': 8.713989192681056e-05, 'epoch': 0.26}
+{'loss': 0.2245, 'grad_norm': 0.6967666149139404, 'learning_rate': 8.705299556259985e-05, 'epoch': 0.26}
+{'loss': 0.8509, 'grad_norm': 1.6572645902633667, 'learning_rate': 8.696585024526135e-05, 'epoch': 0.26}
+{'loss': 0.1722, 'grad_norm': 0.7228214144706726, 'learning_rate': 8.68784565603105e-05, 'epoch': 0.26}
+{'loss': 0.5282, 'grad_norm': 1.2124961614608765, 'learning_rate': 8.679081509493141e-05, 'epoch': 0.26}
+{'loss': 0.2682, 'grad_norm': 0.595405638217926, 'learning_rate': 8.670292643797302e-05, 'epoch': 0.26}
+{'loss': 0.4288, 'grad_norm': 1.1329636573791504, 'learning_rate': 8.661479117994508e-05, 'epoch': 0.26}
+{'loss': 0.2436, 'grad_norm': 1.7011584043502808, 'learning_rate': 8.652640991301425e-05, 'epoch': 0.26}
+{'loss': 0.2991, 'grad_norm': 0.560893714427948, 'learning_rate': 8.643778323100009e-05, 'epoch': 0.26}
+{'loss': 0.3122, 'grad_norm': 0.8069899678230286, 'learning_rate': 8.634891172937102e-05, 'epoch': 0.27}
+{'loss': 0.1874, 'grad_norm': 0.5607020258903503, 'learning_rate': 8.625979600524042e-05, 'epoch': 0.27}
+{'loss': 0.5726, 'grad_norm': 1.3831229209899902, 'learning_rate': 8.617043665736249e-05, 'epoch': 0.27}
+{'loss': 0.1953, 'grad_norm': 0.8820902705192566, 'learning_rate': 8.608083428612837e-05, 'epoch': 0.27}
+{'loss': 0.8026, 'grad_norm': 1.5466492176055908, 'learning_rate': 8.599098949356202e-05, 'epoch': 0.27}
+{'loss': 0.2934, 'grad_norm': 0.8100293278694153, 'learning_rate': 8.590090288331614e-05, 'epoch': 0.27}
+{'loss': 0.2571, 'grad_norm': 0.8633481860160828, 'learning_rate': 8.581057506066821e-05, 'epoch': 0.27}
+{'loss': 0.3174, 'grad_norm': 1.2893842458724976, 'learning_rate': 8.572000663251637e-05, 'epoch': 0.27}
+{'loss': 0.3203, 'grad_norm': 0.7860470414161682, 'learning_rate': 8.562919820737536e-05, 'epoch': 0.27}
+{'loss': 0.3447, 'grad_norm': 0.8406546711921692, 'learning_rate': 8.553815039537239e-05, 'epoch': 0.27}
+{'loss': 0.2195, 'grad_norm': 0.7974432110786438, 'learning_rate': 8.544686380824308e-05, 'epoch': 0.27}
+{'loss': 0.4919, 'grad_norm': 1.0381382703781128, 'learning_rate': 8.535533905932738e-05, 'epoch': 0.27}
+{'loss': 0.4907, 'grad_norm': 1.2860252857208252, 'learning_rate': 8.526357676356537e-05, 'epoch': 0.28}
+{'loss': 0.3922, 'grad_norm': 0.8389790654182434, 'learning_rate': 8.517157753749317e-05, 'epoch': 0.28}
+{'loss': 0.351, 'grad_norm': 0.8140040636062622, 'learning_rate': 8.507934199923884e-05, 'epoch': 0.28}
+{'loss': 0.2748, 'grad_norm': 0.8633071184158325, 'learning_rate': 8.498687076851813e-05, 'epoch': 0.28}
+{'loss': 0.3889, 'grad_norm': 1.3832405805587769, 'learning_rate': 8.489416446663037e-05, 'epoch': 0.28}
+{'loss': 0.2388, 'grad_norm': 0.9837908744812012, 'learning_rate': 8.480122371645434e-05, 'epoch': 0.28}
+{'loss': 0.3847, 'grad_norm': 1.094951868057251, 'learning_rate': 8.470804914244404e-05, 'epoch': 0.28}
+{'loss': 0.5824, 'grad_norm': 1.3273119926452637, 'learning_rate': 8.461464137062443e-05, 'epoch': 0.28}
+{'loss': 0.6793, 'grad_norm': 1.408793568611145, 'learning_rate': 8.452100102858734e-05, 'epoch': 0.28}
+{'loss': 0.3358, 'grad_norm': 0.9712426066398621, 'learning_rate': 8.442712874548722e-05, 'epoch': 0.28}
+{'loss': 0.5058, 'grad_norm': 0.9305576682090759, 'learning_rate': 8.433302515203685e-05, 'epoch': 0.28}
+{'loss': 0.465, 'grad_norm': 1.007225751876831, 'learning_rate': 8.423869088050316e-05, 'epoch': 0.28}
+{'loss': 0.4551, 'grad_norm': 1.1938832998275757, 'learning_rate': 8.414412656470296e-05, 'epoch': 0.28}
+{'loss': 0.7922, 'grad_norm': 1.1042245626449585, 'learning_rate': 8.404933283999875e-05, 'epoch': 0.29}
+{'loss': 0.3944, 'grad_norm': 1.5132343769073486, 'learning_rate': 8.39543103432943e-05, 'epoch': 0.29}
+{'loss': 0.5956, 'grad_norm': 1.1094809770584106, 'learning_rate': 8.385905971303054e-05, 'epoch': 0.29}
+{'loss': 0.3758, 'grad_norm': 1.2568144798278809, 'learning_rate': 8.376358158918114e-05, 'epoch': 0.29}
+{'loss': 0.2726, 'grad_norm': 0.9504073262214661, 'learning_rate': 8.366787661324828e-05, 'epoch': 0.29}
+{'loss': 0.4527, 'grad_norm': 1.5380326509475708, 'learning_rate': 8.357194542825835e-05, 'epoch': 0.29}
+{'loss': 0.5776, 'grad_norm': 1.4824483394622803, 'learning_rate': 8.347578867875757e-05, 'epoch': 0.29}
+{'loss': 0.476, 'grad_norm': 1.0589876174926758, 'learning_rate': 8.337940701080768e-05, 'epoch': 0.29}
+{'loss': 0.2745, 'grad_norm': 1.4259412288665771, 'learning_rate': 8.328280107198165e-05, 'epoch': 0.29}
+{'loss': 0.3826, 'grad_norm': 0.8366726636886597, 'learning_rate': 8.31859715113593e-05, 'epoch': 0.29}
+{'loss': 0.5236, 'grad_norm': 1.089354157447815, 'learning_rate': 8.308891897952282e-05, 'epoch': 0.29}
+{'loss': 0.3796, 'grad_norm': 0.8525185585021973, 'learning_rate': 8.299164412855267e-05, 'epoch': 0.29}
+{'loss': 0.2444, 'grad_norm': 1.1715389490127563, 'learning_rate': 8.289414761202292e-05, 'epoch': 0.3}
+{'loss': 0.5453, 'grad_norm': 1.3752042055130005, 'learning_rate': 8.2796430084997e-05, 'epoch': 0.3}
+{'loss': 0.3739, 'grad_norm': 1.6578046083450317, 'learning_rate': 8.269849220402331e-05, 'epoch': 0.3}
+{'loss': 0.4834, 'grad_norm': 0.9034791588783264, 'learning_rate': 8.260033462713072e-05, 'epoch': 0.3}
+{'loss': 0.2486, 'grad_norm': 0.884787917137146, 'learning_rate': 8.250195801382425e-05, 'epoch': 0.3}
+{'loss': 0.4795, 'grad_norm': 1.3824372291564941, 'learning_rate': 8.240336302508055e-05, 'epoch': 0.3}
+{'loss': 0.3371, 'grad_norm': 0.8512066602706909, 'learning_rate': 8.230455032334355e-05, 'epoch': 0.3}
+{'loss': 0.3741, 'grad_norm': 1.1811151504516602, 'learning_rate': 8.22055205725199e-05, 'epoch': 0.3}
+{'loss': 0.2359, 'grad_norm': 0.851316511631012, 'learning_rate': 8.210627443797459e-05, 'epoch': 0.3}
+{'loss': 0.4534, 'grad_norm': 1.4980946779251099, 'learning_rate': 8.200681258652648e-05, 'epoch': 0.3}
+{'loss': 0.2219, 'grad_norm': 0.8129586577415466, 'learning_rate': 8.190713568644377e-05, 'epoch': 0.3}
+{'loss': 0.2774, 'grad_norm': 0.8392537832260132, 'learning_rate': 8.180724440743957e-05, 'epoch': 0.3}
+{'loss': 0.4565, 'grad_norm': 2.2581334114074707, 'learning_rate': 8.17071394206673e-05, 'epoch': 0.3}
+{'loss': 0.4702, 'grad_norm': 1.179758071899414, 'learning_rate': 8.160682139871633e-05, 'epoch': 0.31}
+{'loss': 0.2539, 'grad_norm': 0.7239571809768677, 'learning_rate': 8.150629101560731e-05, 'epoch': 0.31}
+{'loss': 0.5539, 'grad_norm': 1.0896011590957642, 'learning_rate': 8.14055489467878e-05, 'epoch': 0.31}
+{'loss': 0.2631, 'grad_norm': 1.970638632774353, 'learning_rate': 8.130459586912754e-05, 'epoch': 0.31}
+{'loss': 0.0955, 'grad_norm': 0.5676618218421936, 'learning_rate': 8.120343246091402e-05, 'epoch': 0.31}
+{'loss': 0.2389, 'grad_norm': 0.6884177923202515, 'learning_rate': 8.110205940184801e-05, 'epoch': 0.31}
+{'loss': 0.1993, 'grad_norm': 0.8125389814376831, 'learning_rate': 8.100047737303877e-05, 'epoch': 0.31}
+{'loss': 0.4662, 'grad_norm': 1.2712432146072388, 'learning_rate': 8.089868705699963e-05, 'epoch': 0.31}
+{'loss': 0.5886, 'grad_norm': 1.279198408126831, 'learning_rate': 8.079668913764342e-05, 'epoch': 0.31}
+{'loss': 0.2328, 'grad_norm': 1.0896975994110107, 'learning_rate': 8.069448430027778e-05, 'epoch': 0.31}
+{'loss': 0.3069, 'grad_norm': 0.9398251175880432, 'learning_rate': 8.059207323160056e-05, 'epoch': 0.31}
+{'loss': 0.2591, 'grad_norm': 0.7846413850784302, 'learning_rate': 8.048945661969531e-05, 'epoch': 0.31}
+{'loss': 0.68, 'grad_norm': 1.2938718795776367, 'learning_rate': 8.03866351540266e-05, 'epoch': 0.32}
+{'loss': 0.3433, 'grad_norm': 1.0504751205444336, 'learning_rate': 8.028360952543528e-05, 'epoch': 0.32}
+{'loss': 0.2265, 'grad_norm': 0.8973756432533264, 'learning_rate': 8.018038042613407e-05, 'epoch': 0.32}
+{'loss': 0.2381, 'grad_norm': 0.5841709971427917, 'learning_rate': 8.007694854970269e-05, 'epoch': 0.32}
+{'loss': 0.3167, 'grad_norm': 1.223199486732483, 'learning_rate': 7.99733145910833e-05, 'epoch': 0.32}
+ 32%|███▏      | 399/1250 [04:46<50:59,  3.60s/it] 32%|███▏      | 400/1250 [04:50<50:31,  3.57s/it]                                                   32%|███▏      | 400/1250 [04:50<50:31,  3.57s/it][INFO|trainer.py:3705] 2026-11-17 01:13:54,927 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-400
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:13:55,053 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-400/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:13:55,053 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-400/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:13:55,090 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-400/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:13:55,091 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-400/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:13:55,091 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-400/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:13:55,216 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-400/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:13:55,313 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-400/processor_config.json
+ 32%|███▏      | 401/1250 [04:54<52:11,  3.69s/it]                                                   32%|███▏      | 401/1250 [04:54<52:11,  3.69s/it] 32%|███▏      | 402/1250 [04:58<51:40,  3.66s/it]                                                   32%|███▏      | 402/1250 [04:58<51:40,  3.66s/it] 32%|███▏      | 403/1250 [05:01<50:58,  3.61s/it]                                                   32%|███▏      | 403/1250 [05:01<50:58,  3.61s/it] 32%|███▏      | 404/1250 [05:05<50:48,  3.60s/it]                                                   32%|███▏      | 404/1250 [05:05<50:48,  3.60s/it] 32%|███▏      | 405/1250 [05:08<49:57,  3.55s/it]                                                   32%|███▏      | 405/1250 [05:08<49:57,  3.55s/it] 32%|███▏      | 406/1250 [05:12<49:41,  3.53s/it]                                                   32%|███▏      | 406/1250 [05:12<49:41,  3.53s/it] 33%|███▎      | 407/1250 [05:15<49:50,  3.55s/it]                                                   33%|███▎      | 407/1250 [05:15<49:50,  3.55s/it] 33%|███▎      | 408/1250 [05:19<49:55,  3.56s/it]                                                   33%|███▎      | 408/1250 [05:19<49:55,  3.56s/it] 33%|███▎      | 409/1250 [05:22<49:38,  3.54s/it]                                                   33%|███▎      | 409/1250 [05:22<49:38,  3.54s/it] 33%|███▎      | 410/1250 [05:26<49:44,  3.55s/it]                                                   33%|███▎      | 410/1250 [05:26<49:44,  3.55s/it] 33%|███▎      | 411/1250 [05:29<49:48,  3.56s/it]                                                   33%|███▎      | 411/1250 [05:29<49:48,  3.56s/it] 33%|███▎      | 412/1250 [05:33<49:50,  3.57s/it]                                                   33%|███▎      | 412/1250 [05:33<49:50,  3.57s/it] 33%|███▎      | 413/1250 [05:37<49:49,  3.57s/it]                                                   33%|███▎      | 413/1250 [05:37<49:49,  3.57s/it] 33%|███▎      | 414/1250 [05:40<49:48,  3.57s/it]                                                   33%|███▎      | 414/1250 [05:40<49:48,  3.57s/it] 33%|███▎      | 415/1250 [05:44<49:46,  3.58s/it]                                                   33%|███▎      | 415/1250 [05:44<49:46,  3.58s/it] 33%|███▎      | 416/1250 [05:47<49:44,  3.58s/it]                                                   33%|███▎      | 416/1250 [05:47<49:44,  3.58s/it] 33%|███▎      | 417/1250 [05:51<49:41,  3.58s/it]                                                   33%|███▎      | 417/1250 [05:51<49:41,  3.58s/it] 33%|███▎      | 418/1250 [05:54<49:18,  3.56s/it]                                                   33%|███▎      | 418/1250 [05:54<49:18,  3.56s/it] 34%|███▎      | 419/1250 [05:58<49:22,  3.56s/it]                                                   34%|███▎      | 419/1250 [05:58<49:22,  3.56s/it] 34%|███▎      | 420/1250 [06:01<49:02,  3.55s/it]                                                   34%|███▎      | 420/1250 [06:01<49:02,  3.55s/it][INFO|trainer.py:3705] 2026-11-17 01:15:06,396 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-420
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:15:06,520 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-420/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:15:06,520 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-420/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:15:06,558 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-420/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:15:06,558 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-420/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:15:06,558 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-420/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:15:06,684 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-420/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:15:06,781 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-420/processor_config.json
+ 34%|███▎      | 421/1250 [06:05<50:44,  3.67s/it]                                                   34%|███▎      | 421/1250 [06:05<50:44,  3.67s/it] 34%|███▍      | 422/1250 [06:09<49:37,  3.60s/it]                                                   34%|███▍      | 422/1250 [06:09<49:37,  3.60s/it] 34%|███▍      | 423/1250 [06:12<49:09,  3.57s/it]                                                   34%|███▍      | 423/1250 [06:12<49:09,  3.57s/it] 34%|███▍      | 424/1250 [06:16<49:09,  3.57s/it]                                                   34%|███▍      | 424/1250 [06:16<49:09,  3.57s/it] 34%|███▍      | 425/1250 [06:19<48:48,  3.55s/it]                                                   34%|███▍      | 425/1250 [06:19<48:48,  3.55s/it] 34%|███▍      | 426/1250 [06:23<48:53,  3.56s/it]                                                   34%|███▍      | 426/1250 [06:23<48:53,  3.56s/it] 34%|███▍      | 427/1250 [06:26<48:34,  3.54s/it]                                                   34%|███▍      | 427/1250 [06:26<48:34,  3.54s/it] 34%|███▍      | 428/1250 [06:30<48:21,  3.53s/it]                                                   34%|███▍      | 428/1250 [06:30<48:21,  3.53s/it] 34%|███▍      | 429/1250 [06:34<48:30,  3.55s/it]                                                   34%|███▍      | 429/1250 [06:34<48:30,  3.55s/it] 34%|███▍      | 430/1250 [06:37<48:16,  3.53s/it]                                                   34%|███▍      | 430/1250 [06:37<48:16,  3.53s/it] 34%|███▍      | 431/1250 [06:41<48:01,  3.52s/it]                                                   34%|███▍      | 431/1250 [06:41<48:01,  3.52s/it] 35%|███▍      | 432/1250 [06:44<48:10,  3.53s/it]                                                   35%|███▍      | 432/1250 [06:44<48:10,  3.53s/it] 35%|███▍      | 433/1250 [06:48<47:55,  3.52s/it]                                                   35%|███▍      | 433/1250 [06:48<47:55,  3.52s/it] 35%|███▍      | 434/1250 [06:51<47:44,  3.51s/it]                                                   35%|███▍      | 434/1250 [06:51<47:44,  3.51s/it] 35%|███▍      | 435/1250 [06:55<47:55,  3.53s/it]                                                   35%|███▍      | 435/1250 [06:55<47:55,  3.53s/it] 35%|███▍      | 436/1250 [06:58<47:41,  3.52s/it]                                                   35%|███▍      | 436/1250 [06:58<47:41,  3.52s/it] 35%|███▍      | 437/1250 [07:02<47:31,  3.51s/it]                                                   35%|███▍      | 437/1250 [07:02<47:31,  3.51s/it] 35%|███▌      | 438/1250 [07:05<47:23,  3.50s/it]                                                   35%|███▌      | 438/1250 [07:05<47:23,  3.50s/it] 35%|███▌      | 439/1250 [07:09<47:35,  3.52s/it]                                                   35%|███▌      | 439/1250 [07:09<47:35,  3.52s/it] 35%|███▌      | 440/1250 [07:12<47:23,  3.51s/it]                                                   35%|███▌      | 440/1250 [07:12<47:23,  3.51s/it][INFO|trainer.py:3705] 2026-11-17 01:16:17,142 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-440
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:16:17,260 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-440/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:16:17,260 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-440/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 01:16:18,078 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-440/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:16:18,078 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-440/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:16:18,078 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-440/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:16:18,201 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-440/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:16:18,297 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/checkpoint-440/processor_config.json
+[INFO|trainer.py:2505] 2026-11-17 01:16:19,152 >> 
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+                                                   35%|███▌      | 440/1250 [07:14<47:23,  3.51s/it] 35%|███▌      | 440/1250 [07:14<13:20,  1.01it/s]
+[INFO|image_processing_base.py:258] 2026-11-17 01:16:19,153 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:16:19,154 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:16:19,154 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 01:16:19,288 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 01:16:19,395 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/processor_config.json
+[INFO|trainer.py:3705] 2026-11-17 01:16:19,396 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up
+/workspace/miniconda/envs/amic/lib/python3.10/site-packages/peft/utils/save_and_load.py:218: UserWarning: Could not find a config file in llava-hf/llava-1.5-7b-hf - will assume that the vocabulary was not modified.
+  warnings.warn(
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 01:16:19,524 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 01:16:19,524 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/shuffle-2-up/special_tokens_map.json
+[INFO|modelcard.py:449] 2026-11-17 01:16:19,567 >> Dropping the following result as it does not have all the necessary fields:
+{'task': {'name': 'Causal Language Modeling', 'type': 'text-generation'}}
+{'loss': 0.3377, 'grad_norm': 1.0705360174179077, 'learning_rate': 7.986947924657585e-05, 'epoch': 0.32}
+{'loss': 0.4113, 'grad_norm': 1.153072476387024, 'learning_rate': 7.97654432138333e-05, 'epoch': 0.32}
+{'loss': 0.4761, 'grad_norm': 1.64008629322052, 'learning_rate': 7.96612071918571e-05, 'epoch': 0.32}
+{'loss': 0.4266, 'grad_norm': 0.9223111271858215, 'learning_rate': 7.955677188099235e-05, 'epoch': 0.32}
+{'loss': 0.5168, 'grad_norm': 1.081279993057251, 'learning_rate': 7.945213798292309e-05, 'epoch': 0.32}
+{'loss': 0.4149, 'grad_norm': 0.8081876039505005, 'learning_rate': 7.93473062006677e-05, 'epoch': 0.32}
+{'loss': 0.1257, 'grad_norm': 0.48542913794517517, 'learning_rate': 7.924227723857411e-05, 'epoch': 0.32}
+{'loss': 0.2604, 'grad_norm': 0.8315839171409607, 'learning_rate': 7.913705180231505e-05, 'epoch': 0.32}
+{'loss': 0.2325, 'grad_norm': 0.5843810439109802, 'learning_rate': 7.903163059888331e-05, 'epoch': 0.33}
+{'loss': 0.3406, 'grad_norm': 1.1764775514602661, 'learning_rate': 7.892601433658704e-05, 'epoch': 0.33}
+{'loss': 0.3104, 'grad_norm': 0.878996729850769, 'learning_rate': 7.882020372504494e-05, 'epoch': 0.33}
+{'loss': 0.4125, 'grad_norm': 0.9212577939033508, 'learning_rate': 7.871419947518152e-05, 'epoch': 0.33}
+{'loss': 0.2516, 'grad_norm': 0.5481230616569519, 'learning_rate': 7.860800229922234e-05, 'epoch': 0.33}
+{'loss': 0.217, 'grad_norm': 0.8587237596511841, 'learning_rate': 7.850161291068913e-05, 'epoch': 0.33}
+{'loss': 0.5742, 'grad_norm': 1.3060085773468018, 'learning_rate': 7.839503202439516e-05, 'epoch': 0.33}
+{'loss': 0.3052, 'grad_norm': 0.9380533695220947, 'learning_rate': 7.828826035644024e-05, 'epoch': 0.33}
+{'loss': 0.3405, 'grad_norm': 0.9987180829048157, 'learning_rate': 7.818129862420611e-05, 'epoch': 0.33}
+{'loss': 0.524, 'grad_norm': 1.2446690797805786, 'learning_rate': 7.807414754635145e-05, 'epoch': 0.33}
+{'loss': 0.1727, 'grad_norm': 0.6001927256584167, 'learning_rate': 7.796680784280714e-05, 'epoch': 0.33}
+{'loss': 0.3937, 'grad_norm': 1.5205241441726685, 'learning_rate': 7.785928023477142e-05, 'epoch': 0.33}
+{'loss': 0.2387, 'grad_norm': 0.8629591464996338, 'learning_rate': 7.775156544470505e-05, 'epoch': 0.34}
+{'loss': 0.4796, 'grad_norm': 1.2815219163894653, 'learning_rate': 7.764366419632636e-05, 'epoch': 0.34}
+{'loss': 0.4528, 'grad_norm': 1.180524468421936, 'learning_rate': 7.753557721460655e-05, 'epoch': 0.34}
+{'loss': 0.2343, 'grad_norm': 0.7879475355148315, 'learning_rate': 7.74273052257647e-05, 'epoch': 0.34}
+{'loss': 0.6301, 'grad_norm': 1.705222249031067, 'learning_rate': 7.731884895726287e-05, 'epoch': 0.34}
+{'loss': 0.6259, 'grad_norm': 1.1872704029083252, 'learning_rate': 7.721020913780137e-05, 'epoch': 0.34}
+{'loss': 0.5553, 'grad_norm': 1.0555272102355957, 'learning_rate': 7.710138649731368e-05, 'epoch': 0.34}
+{'loss': 0.6807, 'grad_norm': 1.8018763065338135, 'learning_rate': 7.699238176696161e-05, 'epoch': 0.34}
+{'loss': 0.146, 'grad_norm': 0.5355266332626343, 'learning_rate': 7.688319567913053e-05, 'epoch': 0.34}
+{'loss': 0.3492, 'grad_norm': 0.829044759273529, 'learning_rate': 7.677382896742417e-05, 'epoch': 0.34}
+{'loss': 0.3584, 'grad_norm': 1.4824830293655396, 'learning_rate': 7.666428236665989e-05, 'epoch': 0.34}
+{'loss': 0.3666, 'grad_norm': 1.0689810514450073, 'learning_rate': 7.655455661286376e-05, 'epoch': 0.34}
+{'loss': 0.3551, 'grad_norm': 1.2762333154678345, 'learning_rate': 7.644465244326547e-05, 'epoch': 0.34}
+{'loss': 0.206, 'grad_norm': 0.5177580118179321, 'learning_rate': 7.63345705962935e-05, 'epoch': 0.35}
+{'loss': 0.1601, 'grad_norm': 0.6534366607666016, 'learning_rate': 7.62243118115701e-05, 'epoch': 0.35}
+{'loss': 0.218, 'grad_norm': 0.7684714794158936, 'learning_rate': 7.611387682990637e-05, 'epoch': 0.35}
+{'loss': 0.3907, 'grad_norm': 1.1253548860549927, 'learning_rate': 7.600326639329716e-05, 'epoch': 0.35}
+{'loss': 0.3335, 'grad_norm': 0.9899823069572449, 'learning_rate': 7.589248124491627e-05, 'epoch': 0.35}
+{'loss': 0.6083, 'grad_norm': 1.1916134357452393, 'learning_rate': 7.578152212911133e-05, 'epoch': 0.35}
+{'loss': 0.2868, 'grad_norm': 1.310641884803772, 'learning_rate': 7.567038979139882e-05, 'epoch': 0.35}
+{'loss': 0.522, 'grad_norm': 1.476553201675415, 'learning_rate': 7.555908497845904e-05, 'epoch': 0.35}
+{'loss': 0.4922, 'grad_norm': 1.1561541557312012, 'learning_rate': 7.544760843813122e-05, 'epoch': 0.35}
+{'train_runtime': 434.705, 'train_samples_per_second': 46.008, 'train_steps_per_second': 2.876, 'train_loss': 0.10468377875672145, 'epoch': 0.35}
+***** train metrics *****
+  epoch                    =       0.352
+  total_flos               = 177328507GF
+  train_loss               =      0.1047
+  train_runtime            =  0:07:14.70
+  train_samples_per_second =      46.008
+  train_steps_per_second   =       2.876

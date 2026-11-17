@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/workspace/asr-ordering-20261116-r01/bundle/task.py", line 8, in <module>
+    if kind=='qualification':trainer_job('qualification')
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/asr-ordering-20261116-r01/bundle/runtime.py", line 91, in trainer_job
+    assets,spec=guard()
+                ^^^^^^^
+  File "/workspace/asr-ordering-20261116-r01/bundle/runtime.py", line 36, in guard
+    require(runtime_guard()==spec['common_identity']['base_revision'], 'base changed')
+            ^^^^^^^^^^^^^^^
+  File "/workspace/claude-jump/p2-seed-package-5d5fe475/p2-seed-replication-2026-11-07/code/train.py", line 54, in runtime_guard
+    raise ValueError(f"Runtime version changed: {name} {actual} != {version}")
+ValueError: Runtime version changed: torch 2.3.1 != 2.4.0

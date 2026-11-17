@@ -1,0 +1,819 @@
+[WARNING|2026-11-17 00:27:50] llamafactory.extras.misc:168 >> Version checking has been disabled, may lead to unexpected behaviors.
+[INFO|2026-11-17 00:27:51] llamafactory.hparams.parser:355 >> Process rank: 0, device: cuda:0, n_gpu: 1, distributed training: False, compute dtype: torch.float16
+[INFO|hub.py:363] 2026-11-17 00:27:51,425 >> Offline mode: forcing local_files_only=True
+[INFO|configuration_utils.py:675] 2026-11-17 00:27:51,426 >> loading configuration file config.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/config.json
+[INFO|configuration_utils.py:742] 2026-11-17 00:27:51,431 >> Model config LlavaConfig {
+  "_name_or_path": "llava-hf/llava-1.5-7b-hf",
+  "architectures": [
+    "LlavaForConditionalGeneration"
+  ],
+  "ignore_index": -100,
+  "image_seq_length": 576,
+  "image_token_index": 32000,
+  "model_type": "llava",
+  "pad_token_id": 32001,
+  "projector_hidden_act": "gelu",
+  "text_config": {
+    "_name_or_path": "lmsys/vicuna-7b-v1.5",
+    "add_cross_attention": false,
+    "architectures": [
+      "LlamaForCausalLM"
+    ],
+    "attention_bias": false,
+    "attention_dropout": 0.0,
+    "bad_words_ids": null,
+    "begin_suppress_tokens": null,
+    "bos_token_id": 1,
+    "chunk_size_feed_forward": 0,
+    "cross_attention_hidden_size": null,
+    "decoder_start_token_id": null,
+    "diversity_penalty": 0.0,
+    "do_sample": false,
+    "early_stopping": false,
+    "encoder_no_repeat_ngram_size": 0,
+    "eos_token_id": 2,
+    "exponential_decay_length_penalty": null,
+    "finetuning_task": null,
+    "forced_bos_token_id": null,
+    "forced_eos_token_id": null,
+    "head_dim": 128,
+    "hidden_act": "silu",
+    "hidden_size": 4096,
+    "id2label": {
+      "0": "LABEL_0",
+      "1": "LABEL_1"
+    },
+    "initializer_range": 0.02,
+    "intermediate_size": 11008,
+    "is_decoder": false,
+    "is_encoder_decoder": false,
+    "label2id": {
+      "LABEL_0": 0,
+      "LABEL_1": 1
+    },
+    "length_penalty": 1.0,
+    "max_length": 20,
+    "max_position_embeddings": 4096,
+    "min_length": 0,
+    "mlp_bias": false,
+    "model_type": "llama",
+    "no_repeat_ngram_size": 0,
+    "num_attention_heads": 32,
+    "num_beam_groups": 1,
+    "num_beams": 1,
+    "num_hidden_layers": 32,
+    "num_key_value_heads": 32,
+    "num_return_sequences": 1,
+    "output_attentions": false,
+    "output_hidden_states": false,
+    "output_scores": false,
+    "pad_token_id": null,
+    "prefix": null,
+    "pretraining_tp": 1,
+    "problem_type": null,
+    "pruned_heads": {},
+    "remove_invalid_values": false,
+    "repetition_penalty": 1.0,
+    "return_dict": true,
+    "return_dict_in_generate": false,
+    "rms_norm_eps": 1e-05,
+    "rope_scaling": null,
+    "rope_theta": 10000.0,
+    "sep_token_id": null,
+    "suppress_tokens": null,
+    "task_specific_params": null,
+    "temperature": 1.0,
+    "tf_legacy_loss": false,
+    "tie_encoder_decoder": false,
+    "tie_word_embeddings": false,
+    "tokenizer_class": null,
+    "top_k": 50,
+    "top_p": 1.0,
+    "torch_dtype": "float16",
+    "torchscript": false,
+    "typical_p": 1.0,
+    "use_bfloat16": false,
+    "use_cache": true,
+    "vocab_size": 32064
+  },
+  "tie_word_embeddings": false,
+  "torch_dtype": "float16",
+  "transformers_version": "4.45.2",
+  "vision_config": {
+    "_name_or_path": "",
+    "add_cross_attention": false,
+    "architectures": null,
+    "attention_dropout": 0.0,
+    "bad_words_ids": null,
+    "begin_suppress_tokens": null,
+    "bos_token_id": null,
+    "chunk_size_feed_forward": 0,
+    "cross_attention_hidden_size": null,
+    "decoder_start_token_id": null,
+    "diversity_penalty": 0.0,
+    "do_sample": false,
+    "early_stopping": false,
+    "encoder_no_repeat_ngram_size": 0,
+    "eos_token_id": null,
+    "exponential_decay_length_penalty": null,
+    "finetuning_task": null,
+    "forced_bos_token_id": null,
+    "forced_eos_token_id": null,
+    "hidden_act": "quick_gelu",
+    "hidden_size": 1024,
+    "id2label": {
+      "0": "LABEL_0",
+      "1": "LABEL_1"
+    },
+    "image_size": 336,
+    "initializer_factor": 1.0,
+    "initializer_range": 0.02,
+    "intermediate_size": 4096,
+    "is_decoder": false,
+    "is_encoder_decoder": false,
+    "label2id": {
+      "LABEL_0": 0,
+      "LABEL_1": 1
+    },
+    "layer_norm_eps": 1e-05,
+    "length_penalty": 1.0,
+    "max_length": 20,
+    "min_length": 0,
+    "model_type": "clip_vision_model",
+    "no_repeat_ngram_size": 0,
+    "num_attention_heads": 16,
+    "num_beam_groups": 1,
+    "num_beams": 1,
+    "num_channels": 3,
+    "num_hidden_layers": 24,
+    "num_return_sequences": 1,
+    "output_attentions": false,
+    "output_hidden_states": false,
+    "output_scores": false,
+    "pad_token_id": null,
+    "patch_size": 14,
+    "prefix": null,
+    "problem_type": null,
+    "projection_dim": 768,
+    "pruned_heads": {},
+    "remove_invalid_values": false,
+    "repetition_penalty": 1.0,
+    "return_dict": true,
+    "return_dict_in_generate": false,
+    "sep_token_id": null,
+    "suppress_tokens": null,
+    "task_specific_params": null,
+    "temperature": 1.0,
+    "tf_legacy_loss": false,
+    "tie_encoder_decoder": false,
+    "tie_word_embeddings": true,
+    "tokenizer_class": null,
+    "top_k": 50,
+    "top_p": 1.0,
+    "torch_dtype": null,
+    "torchscript": false,
+    "typical_p": 1.0,
+    "use_bfloat16": false,
+    "vocab_size": 32000
+  },
+  "vision_feature_layer": -2,
+  "vision_feature_select_strategy": "default",
+  "vocab_size": 32064
+}
+
+[INFO|hub.py:363] 2026-11-17 00:27:51,431 >> Offline mode: forcing local_files_only=True
+[INFO|tokenization_utils_base.py:2087] 2026-11-17 00:27:51,432 >> Offline mode: forcing local_files_only=True
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 00:27:51,433 >> loading file tokenizer.model from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/tokenizer.model
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 00:27:51,433 >> loading file tokenizer.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/tokenizer.json
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 00:27:51,433 >> loading file added_tokens.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/added_tokens.json
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 00:27:51,433 >> loading file special_tokens_map.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/special_tokens_map.json
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 00:27:51,433 >> loading file tokenizer_config.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2470] 2026-11-17 00:27:51,527 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+[INFO|hub.py:363] 2026-11-17 00:27:51,528 >> Offline mode: forcing local_files_only=True
+[INFO|processing_utils.py:586] 2026-11-17 00:27:51,528 >> Offline mode: forcing local_files_only=True
+[INFO|processing_utils.py:684] 2026-11-17 00:27:51,528 >> loading configuration file processor_config.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/processor_config.json
+[INFO|image_processing_base.py:318] 2026-11-17 00:27:51,529 >> Offline mode: forcing local_files_only=True
+[INFO|image_processing_base.py:375] 2026-11-17 00:27:51,529 >> loading configuration file preprocessor_config.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/preprocessor_config.json
+[INFO|image_processing_base.py:429] 2026-11-17 00:27:51,616 >> Image processor CLIPImageProcessor {
+  "crop_size": {
+    "height": 336,
+    "width": 336
+  },
+  "do_center_crop": true,
+  "do_convert_rgb": true,
+  "do_normalize": true,
+  "do_rescale": true,
+  "do_resize": true,
+  "image_mean": [
+    0.48145466,
+    0.4578275,
+    0.40821073
+  ],
+  "image_processor_type": "CLIPImageProcessor",
+  "image_std": [
+    0.26862954,
+    0.26130258,
+    0.27577711
+  ],
+  "processor_class": "LlavaProcessor",
+  "resample": 3,
+  "rescale_factor": 0.00392156862745098,
+  "size": {
+    "shortest_edge": 336
+  }
+}
+
+[INFO|hub.py:363] 2026-11-17 00:27:51,616 >> Offline mode: forcing local_files_only=True
+[INFO|tokenization_utils_base.py:2087] 2026-11-17 00:27:51,616 >> Offline mode: forcing local_files_only=True
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 00:27:51,617 >> loading file tokenizer.model from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/tokenizer.model
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 00:27:51,617 >> loading file tokenizer.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/tokenizer.json
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 00:27:51,617 >> loading file added_tokens.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/added_tokens.json
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 00:27:51,617 >> loading file special_tokens_map.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/special_tokens_map.json
+[INFO|tokenization_utils_base.py:2206] 2026-11-17 00:27:51,617 >> loading file tokenizer_config.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2470] 2026-11-17 00:27:51,702 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+[INFO|processing_utils.py:586] 2026-11-17 00:27:51,702 >> Offline mode: forcing local_files_only=True
+[INFO|processing_utils.py:684] 2026-11-17 00:27:51,703 >> loading configuration file processor_config.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/processor_config.json
+[WARNING|processing_utils.py:976] 2026-11-17 00:27:51,703 >> Some kwargs in processor config are unused and will not have any effect: num_additional_image_tokens. 
+[INFO|processing_utils.py:744] 2026-11-17 00:27:51,807 >> Processor LlavaProcessor:
+- image_processor: CLIPImageProcessor {
+  "crop_size": {
+    "height": 336,
+    "width": 336
+  },
+  "do_center_crop": true,
+  "do_convert_rgb": true,
+  "do_normalize": true,
+  "do_rescale": true,
+  "do_resize": true,
+  "image_mean": [
+    0.48145466,
+    0.4578275,
+    0.40821073
+  ],
+  "image_processor_type": "CLIPImageProcessor",
+  "image_std": [
+    0.26862954,
+    0.26130258,
+    0.27577711
+  ],
+  "processor_class": "LlavaProcessor",
+  "resample": 3,
+  "rescale_factor": 0.00392156862745098,
+  "size": {
+    "shortest_edge": 336
+  }
+}
+
+- tokenizer: LlamaTokenizerFast(name_or_path='llava-hf/llava-1.5-7b-hf', vocab_size=32000, model_max_length=1000000000000000019884624838656, is_fast=True, padding_side='left', truncation_side='right', special_tokens={'bos_token': '<s>', 'eos_token': '</s>', 'unk_token': '<unk>', 'pad_token': '<pad>'}, clean_up_tokenization_spaces=False),  added_tokens_decoder={
+	0: AddedToken("<unk>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	1: AddedToken("<s>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	2: AddedToken("</s>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	32000: AddedToken("<image>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	32001: AddedToken("<pad>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+}
+
+{
+  "image_token": "<image>",
+  "patch_size": 14,
+  "processor_class": "LlavaProcessor",
+  "vision_feature_select_strategy": "default"
+}
+
+[INFO|2026-11-17 00:27:51] llamafactory.data.loader:157 >> Loading dataset exposure_B_replace.json...
+training example:
+input_ids:
+[319, 13563, 1546, 263, 12758, 1404, 322, 385, 23116, 21082, 20255, 29889, 450, 20255, 4076, 8444, 29892, 13173, 29892, 322, 1248, 568, 6089, 304, 278, 1404, 29915, 29879, 5155, 29889, 3148, 1001, 29901, 29871, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 29871, 13, 3624, 278, 8367, 26616, 29973, 13, 22550, 278, 1139, 773, 263, 2323, 1734, 470, 16549, 29889, 319, 1799, 9047, 13566, 29901, 4874, 2]
+[INFO|hub.py:363] 2026-11-17 00:27:54,164 >> Offline mode: forcing local_files_only=True
+[INFO|configuration_utils.py:675] 2026-11-17 00:27:54,165 >> loading configuration file config.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/config.json
+[INFO|configuration_utils.py:742] 2026-11-17 00:27:54,166 >> Model config LlavaConfig {
+  "_name_or_path": "llava-hf/llava-1.5-7b-hf",
+  "architectures": [
+    "LlavaForConditionalGeneration"
+  ],
+  "ignore_index": -100,
+  "image_seq_length": 576,
+  "image_token_index": 32000,
+  "model_type": "llava",
+  "pad_token_id": 32001,
+  "projector_hidden_act": "gelu",
+  "text_config": {
+    "_name_or_path": "lmsys/vicuna-7b-v1.5",
+    "add_cross_attention": false,
+    "architectures": [
+      "LlamaForCausalLM"
+    ],
+    "attention_bias": false,
+    "attention_dropout": 0.0,
+    "bad_words_ids": null,
+    "begin_suppress_tokens": null,
+    "bos_token_id": 1,
+    "chunk_size_feed_forward": 0,
+    "cross_attention_hidden_size": null,
+    "decoder_start_token_id": null,
+    "diversity_penalty": 0.0,
+    "do_sample": false,
+    "early_stopping": false,
+    "encoder_no_repeat_ngram_size": 0,
+    "eos_token_id": 2,
+    "exponential_decay_length_penalty": null,
+    "finetuning_task": null,
+    "forced_bos_token_id": null,
+    "forced_eos_token_id": null,
+    "head_dim": 128,
+    "hidden_act": "silu",
+    "hidden_size": 4096,
+    "id2label": {
+      "0": "LABEL_0",
+      "1": "LABEL_1"
+    },
+    "initializer_range": 0.02,
+    "intermediate_size": 11008,
+    "is_decoder": false,
+    "is_encoder_decoder": false,
+    "label2id": {
+      "LABEL_0": 0,
+      "LABEL_1": 1
+    },
+    "length_penalty": 1.0,
+    "max_length": 20,
+    "max_position_embeddings": 4096,
+    "min_length": 0,
+    "mlp_bias": false,
+    "model_type": "llama",
+    "no_repeat_ngram_size": 0,
+    "num_attention_heads": 32,
+    "num_beam_groups": 1,
+    "num_beams": 1,
+    "num_hidden_layers": 32,
+    "num_key_value_heads": 32,
+    "num_return_sequences": 1,
+    "output_attentions": false,
+    "output_hidden_states": false,
+    "output_scores": false,
+    "pad_token_id": null,
+    "prefix": null,
+    "pretraining_tp": 1,
+    "problem_type": null,
+    "pruned_heads": {},
+    "remove_invalid_values": false,
+    "repetition_penalty": 1.0,
+    "return_dict": true,
+    "return_dict_in_generate": false,
+    "rms_norm_eps": 1e-05,
+    "rope_scaling": null,
+    "rope_theta": 10000.0,
+    "sep_token_id": null,
+    "suppress_tokens": null,
+    "task_specific_params": null,
+    "temperature": 1.0,
+    "tf_legacy_loss": false,
+    "tie_encoder_decoder": false,
+    "tie_word_embeddings": false,
+    "tokenizer_class": null,
+    "top_k": 50,
+    "top_p": 1.0,
+    "torch_dtype": "float16",
+    "torchscript": false,
+    "typical_p": 1.0,
+    "use_bfloat16": false,
+    "use_cache": true,
+    "vocab_size": 32064
+  },
+  "tie_word_embeddings": false,
+  "torch_dtype": "float16",
+  "transformers_version": "4.45.2",
+  "vision_config": {
+    "_name_or_path": "",
+    "add_cross_attention": false,
+    "architectures": null,
+    "attention_dropout": 0.0,
+    "bad_words_ids": null,
+    "begin_suppress_tokens": null,
+    "bos_token_id": null,
+    "chunk_size_feed_forward": 0,
+    "cross_attention_hidden_size": null,
+    "decoder_start_token_id": null,
+    "diversity_penalty": 0.0,
+    "do_sample": false,
+    "early_stopping": false,
+    "encoder_no_repeat_ngram_size": 0,
+    "eos_token_id": null,
+    "exponential_decay_length_penalty": null,
+    "finetuning_task": null,
+    "forced_bos_token_id": null,
+    "forced_eos_token_id": null,
+    "hidden_act": "quick_gelu",
+    "hidden_size": 1024,
+    "id2label": {
+      "0": "LABEL_0",
+      "1": "LABEL_1"
+    },
+    "image_size": 336,
+    "initializer_factor": 1.0,
+    "initializer_range": 0.02,
+    "intermediate_size": 4096,
+    "is_decoder": false,
+    "is_encoder_decoder": false,
+    "label2id": {
+      "LABEL_0": 0,
+      "LABEL_1": 1
+    },
+    "layer_norm_eps": 1e-05,
+    "length_penalty": 1.0,
+    "max_length": 20,
+    "min_length": 0,
+    "model_type": "clip_vision_model",
+    "no_repeat_ngram_size": 0,
+    "num_attention_heads": 16,
+    "num_beam_groups": 1,
+    "num_beams": 1,
+    "num_channels": 3,
+    "num_hidden_layers": 24,
+    "num_return_sequences": 1,
+    "output_attentions": false,
+    "output_hidden_states": false,
+    "output_scores": false,
+    "pad_token_id": null,
+    "patch_size": 14,
+    "prefix": null,
+    "problem_type": null,
+    "projection_dim": 768,
+    "pruned_heads": {},
+    "remove_invalid_values": false,
+    "repetition_penalty": 1.0,
+    "return_dict": true,
+    "return_dict_in_generate": false,
+    "sep_token_id": null,
+    "suppress_tokens": null,
+    "task_specific_params": null,
+    "temperature": 1.0,
+    "tf_legacy_loss": false,
+    "tie_encoder_decoder": false,
+    "tie_word_embeddings": true,
+    "tokenizer_class": null,
+    "top_k": 50,
+    "top_p": 1.0,
+    "torch_dtype": null,
+    "torchscript": false,
+    "typical_p": 1.0,
+    "use_bfloat16": false,
+    "vocab_size": 32000
+  },
+  "vision_feature_layer": -2,
+  "vision_feature_select_strategy": "default",
+  "vocab_size": 32064
+}
+
+[INFO|hub.py:363] 2026-11-17 00:27:54,170 >> Offline mode: forcing local_files_only=True
+[INFO|hub.py:363] 2026-11-17 00:27:54,172 >> Offline mode: forcing local_files_only=True
+[INFO|modeling_utils.py:3402] 2026-11-17 00:27:54,172 >> Offline mode: forcing local_files_only=True
+[INFO|modeling_utils.py:3732] 2026-11-17 00:27:54,173 >> loading weights file model.safetensors from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/model.safetensors.index.json
+[INFO|modeling_utils.py:1622] 2026-11-17 00:27:54,173 >> Instantiating LlavaForConditionalGeneration model under default dtype torch.float16.
+[INFO|configuration_utils.py:1099] 2026-11-17 00:27:54,175 >> Generate config GenerationConfig {
+  "pad_token_id": 32001
+}
+
+[INFO|configuration_utils.py:1099] 2026-11-17 00:27:54,246 >> Generate config GenerationConfig {
+  "bos_token_id": 1,
+  "eos_token_id": 2
+}
+
+inputs:
+A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions. USER: <image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image><image> 
+Is the rail dirty?
+Answer the question using a single word or phrase. ASSISTANT: yes</s>
+label_ids:
+[-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, 4874, 2]
+labels:
+yes</s>
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:01<00:02,  1.07s/it]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:01<00:00,  1.06it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:02<00:00,  1.14it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:02<00:00,  1.10it/s]
+[INFO|modeling_utils.py:4574] 2026-11-17 00:27:57,065 >> All model checkpoint weights were used when initializing LlavaForConditionalGeneration.
+
+[INFO|modeling_utils.py:4582] 2026-11-17 00:27:57,065 >> All the weights of LlavaForConditionalGeneration were initialized from the model checkpoint at llava-hf/llava-1.5-7b-hf.
+If your task is similar to the task the model of the checkpoint was trained on, you can already use LlavaForConditionalGeneration for predictions without further training.
+[INFO|configuration_utils.py:1054] 2026-11-17 00:27:57,068 >> loading configuration file generation_config.json from cache at /data/hf_cache/hub/models--llava-hf--llava-1.5-7b-hf/snapshots/b234b804b114d9e37bb655e11cbbb5f5e971b7a9/generation_config.json
+[INFO|configuration_utils.py:1099] 2026-11-17 00:27:57,069 >> Generate config GenerationConfig {
+  "bos_token_id": 1,
+  "eos_token_id": 2,
+  "pad_token_id": 32001
+}
+
+[INFO|2026-11-17 00:27:57] llamafactory.model.model_utils.attention:157 >> Using vanilla attention implementation.
+[INFO|2026-11-17 00:27:57] llamafactory.model.adapter:157 >> Upcasting trainable params to float32.
+[INFO|2026-11-17 00:27:57] llamafactory.model.adapter:157 >> Fine-tuning method: LoRA
+[INFO|2026-11-17 00:27:57] llamafactory.model.model_utils.misc:157 >> Found linear modules: q_proj,gate_proj,v_proj,k_proj,down_proj,up_proj,o_proj
+[INFO|2026-11-17 00:27:57] llamafactory.model.loader:157 >> trainable params: 39,976,960 || all params: 7,103,404,032 || trainable%: 0.5628
+/workspace/miniconda/envs/amic/lib/python3.10/site-packages/accelerate/accelerator.py:494: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  self.scaler = torch.cuda.amp.GradScaler(**kwargs)
+Detected kernel version 5.4.250, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+[INFO|trainer.py:667] 2026-11-17 00:27:57,657 >> Using auto half precision backend
+[INFO|trainer.py:2637] 2026-11-17 00:27:58,085 >> Loading model from /data/asr-state-cross320-20261115-r02/composed/noop-B-replace.
+/workspace/miniconda/envs/amic/lib/python3.10/site-packages/transformers/trainer.py:3262: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  torch.load(os.path.join(checkpoint, OPTIMIZER_NAME), map_location=map_location)
+[INFO|trainer.py:2243] 2026-11-17 00:27:59,424 >> ***** Running training *****
+[INFO|trainer.py:2244] 2026-11-17 00:27:59,424 >>   Num examples = 20,000
+[INFO|trainer.py:2245] 2026-11-17 00:27:59,424 >>   Num Epochs = 1
+[INFO|trainer.py:2246] 2026-11-17 00:27:59,425 >>   Instantaneous batch size per device = 8
+[INFO|trainer.py:2249] 2026-11-17 00:27:59,425 >>   Total train batch size (w. parallel, distributed & accumulation) = 16
+[INFO|trainer.py:2250] 2026-11-17 00:27:59,425 >>   Gradient Accumulation steps = 2
+[INFO|trainer.py:2251] 2026-11-17 00:27:59,425 >>   Total optimization steps = 1,250
+[INFO|trainer.py:2252] 2026-11-17 00:27:59,429 >>   Number of trainable parameters = 39,976,960
+[INFO|trainer.py:2274] 2026-11-17 00:27:59,430 >>   Continuing training from checkpoint, will skip to saved global_step
+[INFO|trainer.py:2275] 2026-11-17 00:27:59,430 >>   Continuing training from epoch 0
+[INFO|trainer.py:2276] 2026-11-17 00:27:59,430 >>   Continuing training from global step 320
+[INFO|trainer.py:2278] 2026-11-17 00:27:59,430 >>   Will skip the first 0 epochs then the first 640 batches in the first epoch.
+  0%|          | 0/1250 [00:00<?, ?it/s]/workspace/miniconda/envs/amic/lib/python3.10/site-packages/transformers/trainer.py:2944: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint_rng_state = torch.load(rng_file)
+[WARNING|logging.py:168] 2026-11-17 00:28:01,275 >> Starting from v4.46, the `logits` model output will have the same type as the model (except at train time, where it will always be FP32)
+ 26%|██▌       | 321/1250 [00:04<00:13, 66.97it/s]                                                   26%|██▌       | 321/1250 [00:04<00:13, 66.97it/s]                                                   26%|██▌       | 322/1250 [00:08<00:13, 66.97it/s]                                                   26%|██▌       | 323/1250 [00:11<00:13, 66.97it/s]                                                   26%|██▌       | 324/1250 [00:15<00:13, 66.97it/s]                                                   26%|██▌       | 325/1250 [00:18<00:13, 66.97it/s][INFO|trainer.py:3705] 2026-11-17 00:28:18,289 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-325
+/workspace/miniconda/envs/amic/lib/python3.10/site-packages/peft/utils/save_and_load.py:218: UserWarning: Could not find a config file in llava-hf/llava-1.5-7b-hf - will assume that the vocabulary was not modified.
+  warnings.warn(
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:28:18,521 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-325/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:28:18,521 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-325/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:28:18,556 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-325/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:28:18,556 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-325/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:28:18,557 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-325/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:28:18,683 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-325/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:28:18,780 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-325/processor_config.json
+                                                   26%|██▌       | 326/1250 [00:22<00:13, 66.97it/s] 26%|██▌       | 326/1250 [00:24<00:13, 66.97it/s] 26%|██▌       | 327/1250 [00:26<01:40,  9.18it/s]                                                   26%|██▌       | 327/1250 [00:26<01:40,  9.18it/s] 26%|██▌       | 328/1250 [00:30<02:00,  7.68it/s]                                                   26%|██▌       | 328/1250 [00:30<02:00,  7.68it/s]                                                   26%|██▋       | 329/1250 [00:33<01:59,  7.68it/s]                                                   26%|██▋       | 330/1250 [00:37<01:59,  7.68it/s][INFO|trainer.py:3705] 2026-11-17 00:28:36,619 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-330
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:28:36,759 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-330/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:28:36,759 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-330/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:28:36,794 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-330/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:28:36,795 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-330/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:28:36,795 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-330/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:28:36,922 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-330/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:28:37,019 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-330/processor_config.json
+ 26%|██▋       | 331/1250 [00:41<03:23,  4.51it/s]                                                   26%|██▋       | 331/1250 [00:41<03:23,  4.51it/s] 27%|██▋       | 332/1250 [00:44<04:01,  3.80it/s]                                                   27%|██▋       | 332/1250 [00:44<04:01,  3.80it/s]                                                   27%|██▋       | 333/1250 [00:48<04:01,  3.80it/s] 27%|██▋       | 334/1250 [00:51<05:40,  2.69it/s]                                                   27%|██▋       | 334/1250 [00:51<05:40,  2.69it/s] 27%|██▋       | 335/1250 [00:55<06:47,  2.25it/s]                                                   27%|██▋       | 335/1250 [00:55<06:47,  2.25it/s][INFO|trainer.py:3705] 2026-11-17 00:28:54,852 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-335
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:28:54,984 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-335/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:28:54,984 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-335/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:28:55,018 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-335/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:28:55,019 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-335/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:28:55,019 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-335/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:28:55,140 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-335/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:28:55,231 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-335/processor_config.json
+ 27%|██▋       | 336/1250 [00:59<08:32,  1.78it/s]                                                   27%|██▋       | 336/1250 [00:59<08:32,  1.78it/s] 27%|██▋       | 337/1250 [01:03<10:33,  1.44it/s]                                                   27%|██▋       | 337/1250 [01:03<10:33,  1.44it/s] 27%|██▋       | 338/1250 [01:06<13:04,  1.16it/s]                                                   27%|██▋       | 338/1250 [01:06<13:04,  1.16it/s] 27%|██▋       | 339/1250 [01:10<16:16,  1.07s/it]                                                   27%|██▋       | 339/1250 [01:10<16:16,  1.07s/it] 27%|██▋       | 340/1250 [01:13<20:04,  1.32s/it]                                                   27%|██▋       | 340/1250 [01:13<20:04,  1.32s/it][INFO|trainer.py:3705] 2026-11-17 00:29:13,146 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-340
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:29:13,287 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-340/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:29:13,287 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-340/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:29:13,324 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-340/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:29:13,325 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-340/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:29:13,325 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-340/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:29:13,453 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-340/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:29:13,553 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-340/processor_config.json
+ 27%|██▋       | 341/1250 [01:17<25:15,  1.67s/it]                                                   27%|██▋       | 341/1250 [01:17<25:15,  1.67s/it] 27%|██▋       | 342/1250 [01:21<29:38,  1.96s/it]                                                   27%|██▋       | 342/1250 [01:21<29:38,  1.96s/it] 27%|██▋       | 343/1250 [01:24<33:45,  2.23s/it]                                                   27%|██▋       | 343/1250 [01:24<33:45,  2.23s/it] 28%|██▊       | 344/1250 [01:28<37:51,  2.51s/it]                                                   28%|██▊       | 344/1250 [01:28<37:51,  2.51s/it] 28%|██▊       | 345/1250 [01:32<41:28,  2.75s/it]                                                   28%|██▊       | 345/1250 [01:32<41:28,  2.75s/it][INFO|trainer.py:3705] 2026-11-17 00:29:31,479 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-345
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:29:31,613 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-345/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:29:31,613 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-345/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:29:31,647 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-345/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:29:31,647 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-345/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:29:31,648 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-345/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:29:31,771 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-345/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:29:31,865 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-345/processor_config.json
+ 28%|██▊       | 346/1250 [01:36<46:09,  3.06s/it]                                                   28%|██▊       | 346/1250 [01:36<46:09,  3.06s/it] 28%|██▊       | 347/1250 [01:39<48:07,  3.20s/it]                                                   28%|██▊       | 347/1250 [01:39<48:07,  3.20s/it] 28%|██▊       | 348/1250 [01:43<49:37,  3.30s/it]                                                   28%|██▊       | 348/1250 [01:43<49:37,  3.30s/it] 28%|██▊       | 349/1250 [01:46<50:43,  3.38s/it]                                                   28%|██▊       | 349/1250 [01:46<50:43,  3.38s/it] 28%|██▊       | 350/1250 [01:50<51:32,  3.44s/it]                                                   28%|██▊       | 350/1250 [01:50<51:32,  3.44s/it][INFO|trainer.py:3705] 2026-11-17 00:29:49,850 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-350
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:29:49,982 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-350/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:29:49,982 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-350/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:29:50,017 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-350/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:29:50,017 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-350/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:29:50,017 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-350/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:29:50,139 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-350/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:29:50,234 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-350/processor_config.json
+ 28%|██▊       | 351/1250 [01:54<54:06,  3.61s/it]                                                   28%|██▊       | 351/1250 [01:54<54:06,  3.61s/it] 28%|██▊       | 352/1250 [01:58<53:54,  3.60s/it]                                                   28%|██▊       | 352/1250 [01:58<53:54,  3.60s/it] 28%|██▊       | 353/1250 [02:01<53:45,  3.60s/it]                                                   28%|██▊       | 353/1250 [02:01<53:45,  3.60s/it] 28%|██▊       | 354/1250 [02:05<53:37,  3.59s/it]                                                   28%|██▊       | 354/1250 [02:05<53:37,  3.59s/it] 28%|██▊       | 355/1250 [02:08<53:31,  3.59s/it]                                                   28%|██▊       | 355/1250 [02:08<53:31,  3.59s/it][INFO|trainer.py:3705] 2026-11-17 00:30:08,217 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-355
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:30:08,347 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-355/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:30:08,347 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-355/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:30:08,381 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-355/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:30:08,382 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-355/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:30:08,382 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-355/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:30:08,505 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-355/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:30:08,599 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-355/processor_config.json
+ 28%|██▊       | 356/1250 [02:12<55:07,  3.70s/it]                                                   28%|██▊       | 356/1250 [02:12<55:07,  3.70s/it] 29%|██▊       | 357/1250 [02:16<54:31,  3.66s/it]                                                   29%|██▊       | 357/1250 [02:16<54:31,  3.66s/it] 29%|██▊       | 358/1250 [02:19<54:06,  3.64s/it]                                                   29%|██▊       | 358/1250 [02:19<54:06,  3.64s/it] 29%|██▊       | 359/1250 [02:23<53:46,  3.62s/it]                                                   29%|██▊       | 359/1250 [02:23<53:46,  3.62s/it] 29%|██▉       | 360/1250 [02:27<53:32,  3.61s/it]                                                   29%|██▉       | 360/1250 [02:27<53:32,  3.61s/it][INFO|trainer.py:3705] 2026-11-17 00:30:26,498 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-360
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:30:26,630 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-360/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:30:26,630 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-360/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:30:26,664 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-360/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:30:26,665 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-360/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:30:26,665 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-360/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:30:26,788 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-360/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:30:26,882 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-360/processor_config.json
+ 29%|██▉       | 361/1250 [02:31<55:01,  3.71s/it]                                                   29%|██▉       | 361/1250 [02:31<55:01,  3.71s/it] 29%|██▉       | 362/1250 [02:34<54:00,  3.65s/it]                                                   29%|██▉       | 362/1250 [02:34<54:00,  3.65s/it] 29%|██▉       | 363/1250 [02:38<53:38,  3.63s/it]                                                   29%|██▉       | 363/1250 [02:38<53:38,  3.63s/it] 29%|██▉       | 364/1250 [02:41<53:00,  3.59s/it]                                                   29%|██▉       | 364/1250 [02:41<53:00,  3.59s/it] 29%|██▉       | 365/1250 [02:45<52:32,  3.56s/it]                                                   29%|██▉       | 365/1250 [02:45<52:32,  3.56s/it][INFO|trainer.py:3705] 2026-11-17 00:30:44,531 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-365
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:30:44,661 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-365/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:30:44,661 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-365/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:30:44,696 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-365/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:30:44,696 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-365/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:30:44,696 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-365/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:30:44,818 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-365/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:30:44,913 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-365/processor_config.json
+ 29%|██▉       | 366/1250 [02:49<54:35,  3.71s/it]                                                   29%|██▉       | 366/1250 [02:49<54:35,  3.71s/it] 29%|██▉       | 367/1250 [02:52<53:37,  3.64s/it]                                                   29%|██▉       | 367/1250 [02:52<53:37,  3.64s/it] 29%|██▉       | 368/1250 [02:56<53:17,  3.62s/it]                                                   29%|██▉       | 368/1250 [02:56<53:17,  3.62s/it] 30%|██▉       | 369/1250 [02:59<52:40,  3.59s/it]                                                   30%|██▉       | 369/1250 [02:59<52:40,  3.59s/it] 30%|██▉       | 370/1250 [03:03<52:35,  3.59s/it]                                                   30%|██▉       | 370/1250 [03:03<52:35,  3.59s/it][INFO|trainer.py:3705] 2026-11-17 00:31:02,733 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-370
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:31:02,864 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-370/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:31:02,865 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-370/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:31:02,900 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-370/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:31:02,900 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-370/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:31:02,900 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-370/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:31:03,022 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-370/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:31:03,116 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-370/processor_config.json
+ 30%|██▉       | 371/1250 [03:07<54:32,  3.72s/it]                                                   30%|██▉       | 371/1250 [03:07<54:32,  3.72s/it] 30%|██▉       | 372/1250 [03:10<53:50,  3.68s/it]                                                   30%|██▉       | 372/1250 [03:10<53:50,  3.68s/it] 30%|██▉       | 373/1250 [03:14<53:21,  3.65s/it]                                                   30%|██▉       | 373/1250 [03:14<53:21,  3.65s/it] 30%|██▉       | 374/1250 [03:18<52:59,  3.63s/it]                                                   30%|██▉       | 374/1250 [03:18<52:59,  3.63s/it] 30%|███       | 375/1250 [03:21<51:59,  3.57s/it]                                                   30%|███       | 375/1250 [03:21<51:59,  3.57s/it][INFO|trainer.py:3705] 2026-11-17 00:31:20,935 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-375
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:31:21,067 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-375/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:31:21,067 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-375/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:31:21,102 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-375/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:31:21,102 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-375/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:31:21,102 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-375/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:31:21,223 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-375/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:31:21,318 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-375/processor_config.json
+ 30%|███       | 376/1250 [03:25<53:39,  3.68s/it]                                                   30%|███       | 376/1250 [03:25<53:39,  3.68s/it] 30%|███       | 377/1250 [03:28<52:46,  3.63s/it]                                                   30%|███       | 377/1250 [03:28<52:46,  3.63s/it] 30%|███       | 378/1250 [03:32<52:30,  3.61s/it]                                                   30%|███       | 378/1250 [03:32<52:30,  3.61s/it] 30%|███       | 379/1250 [03:36<52:18,  3.60s/it]                                                   30%|███       | 379/1250 [03:36<52:18,  3.60s/it] 30%|███       | 380/1250 [03:39<51:47,  3.57s/it]                                                   30%|███       | 380/1250 [03:39<51:47,  3.57s/it][INFO|trainer.py:3705] 2026-11-17 00:31:39,046 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-380
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:31:39,178 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-380/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:31:39,178 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-380/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:31:39,213 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-380/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:31:39,213 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-380/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:31:39,213 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-380/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:31:39,335 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-380/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:31:39,428 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-380/processor_config.json
+ 30%|███       | 381/1250 [03:43<53:42,  3.71s/it]                                                   30%|███       | 381/1250 [03:43<53:42,  3.71s/it] 31%|███       | 382/1250 [03:47<52:41,  3.64s/it]                                                   31%|███       | 382/1250 [03:47<52:41,  3.64s/it] 31%|███       | 383/1250 [03:50<51:56,  3.60s/it]                                                   31%|███       | 383/1250 [03:50<51:56,  3.60s/it] 31%|███       | 384/1250 [03:54<51:47,  3.59s/it]                                                   31%|███       | 384/1250 [03:54<51:47,  3.59s/it] 31%|███       | 385/1250 [03:57<51:39,  3.58s/it]                                                   31%|███       | 385/1250 [03:57<51:39,  3.58s/it][INFO|trainer.py:3705] 2026-11-17 00:31:57,189 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-385
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:31:57,321 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-385/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:31:57,321 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-385/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:31:57,355 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-385/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:31:57,356 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-385/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:31:57,356 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-385/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:31:57,479 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-385/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:31:57,574 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-385/processor_config.json
+ 31%|███       | 386/1250 [04:01<53:10,  3.69s/it]                                                   31%|███       | 386/1250 [04:01<53:10,  3.69s/it] 31%|███       | 387/1250 [04:05<52:34,  3.66s/it]                                                   31%|███       | 387/1250 [04:05<52:34,  3.66s/it] 31%|███       | 388/1250 [04:08<52:08,  3.63s/it]                                                   31%|███       | 388/1250 [04:08<52:08,  3.63s/it] 31%|███       | 389/1250 [04:12<51:48,  3.61s/it]                                                   31%|███       | 389/1250 [04:12<51:48,  3.61s/it] 31%|███       | 390/1250 [04:15<51:13,  3.57s/it]                                                   31%|███       | 390/1250 [04:15<51:13,  3.57s/it][INFO|trainer.py:3705] 2026-11-17 00:32:15,329 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-390
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:32:15,460 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-390/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:32:15,461 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-390/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:32:15,496 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-390/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:32:15,496 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-390/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:32:15,496 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-390/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:32:15,617 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-390/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:32:15,710 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-390/processor_config.json
+ 31%|███▏      | 391/1250 [04:19<52:45,  3.69s/it]                                                   31%|███▏      | 391/1250 [04:19<52:45,  3.69s/it] 31%|███▏      | 392/1250 [04:23<51:51,  3.63s/it]                                                   31%|███▏      | 392/1250 [04:23<51:51,  3.63s/it] 31%|███▏      | 393/1250 [04:26<51:11,  3.58s/it]                                                   31%|███▏      | 393/1250 [04:26<51:11,  3.58s/it] 32%|███▏      | 394/1250 [04:30<50:21,  3.53s/it]                                                   32%|███▏      | 394/1250 [04:30<50:21,  3.53s/it] 32%|███▏      | 395/1250 [04:33<50:27,  3.54s/it]                                                   32%|███▏      | 395/1250 [04:33<50:27,  3.54s/it][INFO|trainer.py:3705] 2026-11-17 00:32:33,222 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-395
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:32:33,354 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-395/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:32:33,354 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-395/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:32:33,389 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-395/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:32:33,389 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-395/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:32:33,390 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-395/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:32:33,511 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-395/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:32:33,604 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-395/processor_config.json
+ 32%|███▏      | 396/1250 [04:37<52:28,  3.69s/it]                                                   32%|███▏      | 396/1250 [04:37<52:28,  3.69s/it] 32%|███▏      | 397/1250 [04:41<51:54,  3.65s/it]                                                   32%|███▏      | 397/1250 [04:41<51:54,  3.65s/it] 32%|███▏      | 398/1250 [04:44<51:29,  3.63s/it]                                                   32%|███▏      | 398/1250 [04:44<51:29,  3.63s/it] 32%|███▏      | 399/1250 [04:48<51:11,  3.61s/it]                                                  {'loss': 0.4351, 'grad_norm': 0.8708940744400024, 'learning_rate': 8.731293546215437e-05, 'epoch': 0.26}
+{'loss': 0.5684, 'grad_norm': 1.139243483543396, 'learning_rate': 8.722653875405075e-05, 'epoch': 0.26}
+{'loss': 0.4863, 'grad_norm': 1.0357489585876465, 'learning_rate': 8.713989192681056e-05, 'epoch': 0.26}
+{'loss': 0.1904, 'grad_norm': 0.6603689193725586, 'learning_rate': 8.705299556259985e-05, 'epoch': 0.26}
+{'loss': 0.8573, 'grad_norm': 1.6524227857589722, 'learning_rate': 8.696585024526135e-05, 'epoch': 0.26}
+{'loss': 0.1756, 'grad_norm': 0.7552863955497742, 'learning_rate': 8.68784565603105e-05, 'epoch': 0.26}
+{'loss': 0.5314, 'grad_norm': 1.2174816131591797, 'learning_rate': 8.679081509493141e-05, 'epoch': 0.26}
+{'loss': 0.267, 'grad_norm': 0.6000786423683167, 'learning_rate': 8.670292643797302e-05, 'epoch': 0.26}
+{'loss': 0.4247, 'grad_norm': 1.1275880336761475, 'learning_rate': 8.661479117994508e-05, 'epoch': 0.26}
+{'loss': 0.3172, 'grad_norm': 0.8297646045684814, 'learning_rate': 8.652640991301425e-05, 'epoch': 0.26}
+{'loss': 0.459, 'grad_norm': 1.0942100286483765, 'learning_rate': 8.643778323100009e-05, 'epoch': 0.26}
+{'loss': 0.3095, 'grad_norm': 0.7843545079231262, 'learning_rate': 8.634891172937102e-05, 'epoch': 0.27}
+{'loss': 0.1853, 'grad_norm': 0.5633418560028076, 'learning_rate': 8.625979600524042e-05, 'epoch': 0.27}
+{'loss': 0.5764, 'grad_norm': 1.3928531408309937, 'learning_rate': 8.617043665736249e-05, 'epoch': 0.27}
+{'loss': 0.1922, 'grad_norm': 0.863339364528656, 'learning_rate': 8.608083428612837e-05, 'epoch': 0.27}
+{'loss': 0.8123, 'grad_norm': 1.5197715759277344, 'learning_rate': 8.599098949356202e-05, 'epoch': 0.27}
+{'loss': 0.2912, 'grad_norm': 0.8030788898468018, 'learning_rate': 8.590090288331614e-05, 'epoch': 0.27}
+{'loss': 0.2496, 'grad_norm': 0.8863991498947144, 'learning_rate': 8.581057506066821e-05, 'epoch': 0.27}
+{'loss': 0.3192, 'grad_norm': 1.3149211406707764, 'learning_rate': 8.572000663251637e-05, 'epoch': 0.27}
+{'loss': 0.4549, 'grad_norm': 0.9124312400817871, 'learning_rate': 8.562919820737536e-05, 'epoch': 0.27}
+{'loss': 0.3344, 'grad_norm': 0.8815731406211853, 'learning_rate': 8.553815039537239e-05, 'epoch': 0.27}
+{'loss': 0.5093, 'grad_norm': 1.964792013168335, 'learning_rate': 8.544686380824308e-05, 'epoch': 0.27}
+{'loss': 0.4899, 'grad_norm': 1.085980772972107, 'learning_rate': 8.535533905932738e-05, 'epoch': 0.27}
+{'loss': 0.4962, 'grad_norm': 1.3532851934432983, 'learning_rate': 8.526357676356537e-05, 'epoch': 0.28}
+{'loss': 0.3907, 'grad_norm': 0.8134300112724304, 'learning_rate': 8.517157753749317e-05, 'epoch': 0.28}
+{'loss': 0.3615, 'grad_norm': 0.8466054201126099, 'learning_rate': 8.507934199923884e-05, 'epoch': 0.28}
+{'loss': 0.2827, 'grad_norm': 0.8780091404914856, 'learning_rate': 8.498687076851813e-05, 'epoch': 0.28}
+{'loss': 0.4192, 'grad_norm': 1.4201254844665527, 'learning_rate': 8.489416446663037e-05, 'epoch': 0.28}
+{'loss': 0.2271, 'grad_norm': 0.8942170143127441, 'learning_rate': 8.480122371645434e-05, 'epoch': 0.28}
+{'loss': 0.3721, 'grad_norm': 1.0758994817733765, 'learning_rate': 8.470804914244404e-05, 'epoch': 0.28}
+{'loss': 0.6117, 'grad_norm': 1.3831932544708252, 'learning_rate': 8.461464137062443e-05, 'epoch': 0.28}
+{'loss': 0.684, 'grad_norm': 1.466347336769104, 'learning_rate': 8.452100102858734e-05, 'epoch': 0.28}
+{'loss': 0.3176, 'grad_norm': 0.9142326712608337, 'learning_rate': 8.442712874548722e-05, 'epoch': 0.28}
+{'loss': 0.5059, 'grad_norm': 0.9320999383926392, 'learning_rate': 8.433302515203685e-05, 'epoch': 0.28}
+{'loss': 0.3202, 'grad_norm': 0.8457397222518921, 'learning_rate': 8.423869088050316e-05, 'epoch': 0.28}
+{'loss': 0.4643, 'grad_norm': 1.1803027391433716, 'learning_rate': 8.414412656470296e-05, 'epoch': 0.28}
+{'loss': 0.7925, 'grad_norm': 1.096860647201538, 'learning_rate': 8.404933283999875e-05, 'epoch': 0.29}
+{'loss': 0.4281, 'grad_norm': 1.5653772354125977, 'learning_rate': 8.39543103432943e-05, 'epoch': 0.29}
+{'loss': 0.5855, 'grad_norm': 1.0838890075683594, 'learning_rate': 8.385905971303054e-05, 'epoch': 0.29}
+{'loss': 0.3643, 'grad_norm': 1.1587443351745605, 'learning_rate': 8.376358158918114e-05, 'epoch': 0.29}
+{'loss': 0.2793, 'grad_norm': 0.9452683329582214, 'learning_rate': 8.366787661324828e-05, 'epoch': 0.29}
+{'loss': 0.4666, 'grad_norm': 1.1235027313232422, 'learning_rate': 8.357194542825835e-05, 'epoch': 0.29}
+{'loss': 0.5631, 'grad_norm': 1.3082596063613892, 'learning_rate': 8.347578867875757e-05, 'epoch': 0.29}
+{'loss': 0.475, 'grad_norm': 1.0586354732513428, 'learning_rate': 8.337940701080768e-05, 'epoch': 0.29}
+{'loss': 0.2766, 'grad_norm': 1.444190502166748, 'learning_rate': 8.328280107198165e-05, 'epoch': 0.29}
+{'loss': 0.3914, 'grad_norm': 0.8349580764770508, 'learning_rate': 8.31859715113593e-05, 'epoch': 0.29}
+{'loss': 0.526, 'grad_norm': 1.0518977642059326, 'learning_rate': 8.308891897952282e-05, 'epoch': 0.29}
+{'loss': 0.391, 'grad_norm': 0.876751184463501, 'learning_rate': 8.299164412855267e-05, 'epoch': 0.29}
+{'loss': 0.2506, 'grad_norm': 1.1399242877960205, 'learning_rate': 8.289414761202292e-05, 'epoch': 0.3}
+{'loss': 0.2879, 'grad_norm': 0.6850541830062866, 'learning_rate': 8.2796430084997e-05, 'epoch': 0.3}
+{'loss': 0.3436, 'grad_norm': 1.5823010206222534, 'learning_rate': 8.269849220402331e-05, 'epoch': 0.3}
+{'loss': 0.4528, 'grad_norm': 0.8843702673912048, 'learning_rate': 8.260033462713072e-05, 'epoch': 0.3}
+{'loss': 0.2349, 'grad_norm': 0.8724133968353271, 'learning_rate': 8.250195801382425e-05, 'epoch': 0.3}
+{'loss': 0.4776, 'grad_norm': 1.4052599668502808, 'learning_rate': 8.240336302508055e-05, 'epoch': 0.3}
+{'loss': 0.3322, 'grad_norm': 0.9347857236862183, 'learning_rate': 8.230455032334355e-05, 'epoch': 0.3}
+{'loss': 0.3748, 'grad_norm': 1.1605398654937744, 'learning_rate': 8.22055205725199e-05, 'epoch': 0.3}
+{'loss': 0.2244, 'grad_norm': 0.7764616012573242, 'learning_rate': 8.210627443797459e-05, 'epoch': 0.3}
+{'loss': 0.2413, 'grad_norm': 0.9905480146408081, 'learning_rate': 8.200681258652648e-05, 'epoch': 0.3}
+{'loss': 0.2092, 'grad_norm': 0.8028564453125, 'learning_rate': 8.190713568644377e-05, 'epoch': 0.3}
+{'loss': 0.2812, 'grad_norm': 0.9163243770599365, 'learning_rate': 8.180724440743957e-05, 'epoch': 0.3}
+{'loss': 0.43, 'grad_norm': 2.338770866394043, 'learning_rate': 8.17071394206673e-05, 'epoch': 0.3}
+{'loss': 0.4996, 'grad_norm': 1.867302656173706, 'learning_rate': 8.160682139871633e-05, 'epoch': 0.31}
+{'loss': 0.2619, 'grad_norm': 0.7610689997673035, 'learning_rate': 8.150629101560731e-05, 'epoch': 0.31}
+{'loss': 0.57, 'grad_norm': 1.2080955505371094, 'learning_rate': 8.14055489467878e-05, 'epoch': 0.31}
+{'loss': 0.2572, 'grad_norm': 1.9406771659851074, 'learning_rate': 8.130459586912754e-05, 'epoch': 0.31}
+{'loss': 0.0837, 'grad_norm': 0.5965423583984375, 'learning_rate': 8.120343246091402e-05, 'epoch': 0.31}
+{'loss': 0.2232, 'grad_norm': 0.6947816014289856, 'learning_rate': 8.110205940184801e-05, 'epoch': 0.31}
+{'loss': 0.1901, 'grad_norm': 1.0058693885803223, 'learning_rate': 8.100047737303877e-05, 'epoch': 0.31}
+{'loss': 0.4595, 'grad_norm': 1.3186612129211426, 'learning_rate': 8.089868705699963e-05, 'epoch': 0.31}
+{'loss': 0.5997, 'grad_norm': 1.3961689472198486, 'learning_rate': 8.079668913764342e-05, 'epoch': 0.31}
+{'loss': 0.2408, 'grad_norm': 1.249987244606018, 'learning_rate': 8.069448430027778e-05, 'epoch': 0.31}
+{'loss': 0.3252, 'grad_norm': 1.0689921379089355, 'learning_rate': 8.059207323160056e-05, 'epoch': 0.31}
+{'loss': 0.2739, 'grad_norm': 0.9298826456069946, 'learning_rate': 8.048945661969531e-05, 'epoch': 0.31}
+{'loss': 0.6621, 'grad_norm': 1.3429089784622192, 'learning_rate': 8.03866351540266e-05, 'epoch': 0.32}
+{'loss': 0.3636, 'grad_norm': 1.213606834411621, 'learning_rate': 8.028360952543528e-05, 'epoch': 0.32}
+{'loss': 0.2101, 'grad_norm': 0.6728572845458984, 'learning_rate': 8.018038042613407e-05, 'epoch': 0.32}
+{'loss': 0.2402, 'grad_norm': 0.6595760583877563, 'learning_rate': 8.007694854970269e-05, 'epoch': 0.32}
+{'loss': 0.3212, 'grad_norm': 1.7888683080673218, 'learning_rate': 7.99733145910833e-05, 'epoch': 0.32}
+ 32%|███▏      | 399/1250 [04:48<51:11,  3.61s/it] 32%|███▏      | 400/1250 [04:52<50:36,  3.57s/it]                                                   32%|███▏      | 400/1250 [04:52<50:36,  3.57s/it][INFO|trainer.py:3705] 2026-11-17 00:32:51,441 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-400
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:32:51,572 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-400/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:32:51,572 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-400/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:32:51,608 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-400/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:32:51,608 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-400/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:32:51,608 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-400/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:32:51,728 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-400/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:32:51,821 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-400/processor_config.json
+ 32%|███▏      | 401/1250 [04:56<52:28,  3.71s/it]                                                   32%|███▏      | 401/1250 [04:56<52:28,  3.71s/it] 32%|███▏      | 402/1250 [04:59<51:48,  3.67s/it]                                                   32%|███▏      | 402/1250 [04:59<51:48,  3.67s/it] 32%|███▏      | 403/1250 [05:03<51:00,  3.61s/it]                                                   32%|███▏      | 403/1250 [05:03<51:00,  3.61s/it] 32%|███▏      | 404/1250 [05:06<50:45,  3.60s/it]                                                   32%|███▏      | 404/1250 [05:06<50:45,  3.60s/it] 32%|███▏      | 405/1250 [05:10<49:52,  3.54s/it]                                                   32%|███▏      | 405/1250 [05:10<49:52,  3.54s/it] 32%|███▏      | 406/1250 [05:13<49:35,  3.53s/it]                                                   32%|███▏      | 406/1250 [05:13<49:35,  3.53s/it] 33%|███▎      | 407/1250 [05:17<49:43,  3.54s/it]                                                   33%|███▎      | 407/1250 [05:17<49:43,  3.54s/it] 33%|███▎      | 408/1250 [05:20<49:47,  3.55s/it]                                                   33%|███▎      | 408/1250 [05:20<49:47,  3.55s/it] 33%|███▎      | 409/1250 [05:24<49:29,  3.53s/it]                                                   33%|███▎      | 409/1250 [05:24<49:29,  3.53s/it] 33%|███▎      | 410/1250 [05:27<49:35,  3.54s/it]                                                   33%|███▎      | 410/1250 [05:27<49:35,  3.54s/it] 33%|███▎      | 411/1250 [05:31<49:41,  3.55s/it]                                                   33%|███▎      | 411/1250 [05:31<49:41,  3.55s/it] 33%|███▎      | 412/1250 [05:34<49:42,  3.56s/it]                                                   33%|███▎      | 412/1250 [05:34<49:42,  3.56s/it] 33%|███▎      | 413/1250 [05:38<49:41,  3.56s/it]                                                   33%|███▎      | 413/1250 [05:38<49:41,  3.56s/it] 33%|███▎      | 414/1250 [05:42<49:39,  3.56s/it]                                                   33%|███▎      | 414/1250 [05:42<49:39,  3.56s/it] 33%|███▎      | 415/1250 [05:45<49:37,  3.57s/it]                                                   33%|███▎      | 415/1250 [05:45<49:37,  3.57s/it] 33%|███▎      | 416/1250 [05:49<49:35,  3.57s/it]                                                   33%|███▎      | 416/1250 [05:49<49:35,  3.57s/it] 33%|███▎      | 417/1250 [05:52<49:32,  3.57s/it]                                                   33%|███▎      | 417/1250 [05:52<49:32,  3.57s/it] 33%|███▎      | 418/1250 [05:56<49:08,  3.54s/it]                                                   33%|███▎      | 418/1250 [05:56<49:08,  3.54s/it] 34%|███▎      | 419/1250 [05:59<49:10,  3.55s/it]                                                   34%|███▎      | 419/1250 [05:59<49:10,  3.55s/it] 34%|███▎      | 420/1250 [06:03<48:51,  3.53s/it]                                                   34%|███▎      | 420/1250 [06:03<48:51,  3.53s/it][INFO|trainer.py:3705] 2026-11-17 00:34:02,726 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-420
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:34:02,858 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-420/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:34:02,858 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-420/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:34:02,893 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-420/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:34:02,894 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-420/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:34:02,894 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-420/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:34:03,014 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-420/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:34:03,109 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-420/processor_config.json
+ 34%|███▎      | 421/1250 [06:07<50:50,  3.68s/it]                                                   34%|███▎      | 421/1250 [06:07<50:50,  3.68s/it] 34%|███▍      | 422/1250 [06:10<49:38,  3.60s/it]                                                   34%|███▍      | 422/1250 [06:10<49:38,  3.60s/it] 34%|███▍      | 423/1250 [06:14<49:07,  3.56s/it]                                                   34%|███▍      | 423/1250 [06:14<49:07,  3.56s/it] 34%|███▍      | 424/1250 [06:17<49:05,  3.57s/it]                                                   34%|███▍      | 424/1250 [06:17<49:05,  3.57s/it] 34%|███▍      | 425/1250 [06:21<48:42,  3.54s/it]                                                   34%|███▍      | 425/1250 [06:21<48:42,  3.54s/it] 34%|███▍      | 426/1250 [06:24<48:45,  3.55s/it]                                                   34%|███▍      | 426/1250 [06:24<48:45,  3.55s/it] 34%|███▍      | 427/1250 [06:28<48:26,  3.53s/it]                                                   34%|███▍      | 427/1250 [06:28<48:26,  3.53s/it] 34%|███▍      | 428/1250 [06:31<48:11,  3.52s/it]                                                   34%|███▍      | 428/1250 [06:31<48:11,  3.52s/it] 34%|███▍      | 429/1250 [06:35<48:20,  3.53s/it]                                                   34%|███▍      | 429/1250 [06:35<48:20,  3.53s/it] 34%|███▍      | 430/1250 [06:38<48:05,  3.52s/it]                                                   34%|███▍      | 430/1250 [06:38<48:05,  3.52s/it] 34%|███▍      | 431/1250 [06:42<47:54,  3.51s/it]                                                   34%|███▍      | 431/1250 [06:42<47:54,  3.51s/it] 35%|███▍      | 432/1250 [06:45<48:05,  3.53s/it]                                                   35%|███▍      | 432/1250 [06:45<48:05,  3.53s/it] 35%|███▍      | 433/1250 [06:49<47:52,  3.52s/it]                                                   35%|███▍      | 433/1250 [06:49<47:52,  3.52s/it] 35%|███▍      | 434/1250 [06:52<47:42,  3.51s/it]                                                   35%|███▍      | 434/1250 [06:52<47:42,  3.51s/it] 35%|███▍      | 435/1250 [06:56<47:53,  3.53s/it]                                                   35%|███▍      | 435/1250 [06:56<47:53,  3.53s/it] 35%|███▍      | 436/1250 [06:59<47:40,  3.51s/it]                                                   35%|███▍      | 436/1250 [06:59<47:40,  3.51s/it] 35%|███▍      | 437/1250 [07:03<47:30,  3.51s/it]                                                   35%|███▍      | 437/1250 [07:03<47:30,  3.51s/it] 35%|███▌      | 438/1250 [07:06<47:22,  3.50s/it]                                                   35%|███▌      | 438/1250 [07:06<47:22,  3.50s/it] 35%|███▌      | 439/1250 [07:10<47:35,  3.52s/it]                                                   35%|███▌      | 439/1250 [07:10<47:35,  3.52s/it] 35%|███▌      | 440/1250 [07:13<47:23,  3.51s/it]                                                   35%|███▌      | 440/1250 [07:13<47:23,  3.51s/it][INFO|trainer.py:3705] 2026-11-17 00:35:13,417 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-440
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:35:13,548 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-440/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:35:13,548 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-440/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-11-17 00:35:14,420 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-440/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:35:14,421 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-440/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:35:14,421 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-440/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:35:14,545 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-440/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:35:14,641 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/checkpoint-440/processor_config.json
+[INFO|trainer.py:2505] 2026-11-17 00:35:16,929 >> 
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+                                                   35%|███▌      | 440/1250 [07:17<47:23,  3.51s/it] 35%|███▌      | 440/1250 [07:17<13:25,  1.01it/s]
+[INFO|image_processing_base.py:258] 2026-11-17 00:35:16,931 >> Image processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/preprocessor_config.json
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:35:16,931 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:35:16,931 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/special_tokens_map.json
+[INFO|processing_utils.py:530] 2026-11-17 00:35:17,054 >> chat template saved in /workspace/asr-ordering-20261116-r01/runs/qualification/chat_template.json
+[INFO|processing_utils.py:536] 2026-11-17 00:35:17,148 >> processor saved in /workspace/asr-ordering-20261116-r01/runs/qualification/processor_config.json
+[INFO|trainer.py:3705] 2026-11-17 00:35:17,149 >> Saving model checkpoint to /workspace/asr-ordering-20261116-r01/runs/qualification
+/workspace/miniconda/envs/amic/lib/python3.10/site-packages/peft/utils/save_and_load.py:218: UserWarning: Could not find a config file in llava-hf/llava-1.5-7b-hf - will assume that the vocabulary was not modified.
+  warnings.warn(
+[INFO|tokenization_utils_base.py:2641] 2026-11-17 00:35:17,284 >> tokenizer config file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2650] 2026-11-17 00:35:17,284 >> Special tokens file saved in /workspace/asr-ordering-20261116-r01/runs/qualification/special_tokens_map.json
+[INFO|modelcard.py:449] 2026-11-17 00:35:17,325 >> Dropping the following result as it does not have all the necessary fields:
+{'task': {'name': 'Causal Language Modeling', 'type': 'text-generation'}}
+{'loss': 0.2138, 'grad_norm': 1.337387204170227, 'learning_rate': 7.986947924657585e-05, 'epoch': 0.32}
+{'loss': 0.4274, 'grad_norm': 1.3459290266036987, 'learning_rate': 7.97654432138333e-05, 'epoch': 0.32}
+{'loss': 0.4838, 'grad_norm': 1.7011107206344604, 'learning_rate': 7.96612071918571e-05, 'epoch': 0.32}
+{'loss': 0.4458, 'grad_norm': 1.0410511493682861, 'learning_rate': 7.955677188099235e-05, 'epoch': 0.32}
+{'loss': 0.5207, 'grad_norm': 1.213771104812622, 'learning_rate': 7.945213798292309e-05, 'epoch': 0.32}
+{'loss': 0.4236, 'grad_norm': 1.0121134519577026, 'learning_rate': 7.93473062006677e-05, 'epoch': 0.32}
+{'loss': 0.146, 'grad_norm': 0.5776071548461914, 'learning_rate': 7.924227723857411e-05, 'epoch': 0.32}
+{'loss': 0.2451, 'grad_norm': 0.834794282913208, 'learning_rate': 7.913705180231505e-05, 'epoch': 0.32}
+{'loss': 0.2354, 'grad_norm': 0.6270825266838074, 'learning_rate': 7.903163059888331e-05, 'epoch': 0.33}
+{'loss': 0.3346, 'grad_norm': 1.0485631227493286, 'learning_rate': 7.892601433658704e-05, 'epoch': 0.33}
+{'loss': 0.3, 'grad_norm': 0.9205812811851501, 'learning_rate': 7.882020372504494e-05, 'epoch': 0.33}
+{'loss': 0.4061, 'grad_norm': 0.956775963306427, 'learning_rate': 7.871419947518152e-05, 'epoch': 0.33}
+{'loss': 0.2516, 'grad_norm': 0.6776717901229858, 'learning_rate': 7.860800229922234e-05, 'epoch': 0.33}
+{'loss': 0.2071, 'grad_norm': 0.802625834941864, 'learning_rate': 7.850161291068913e-05, 'epoch': 0.33}
+{'loss': 0.5644, 'grad_norm': 1.3779736757278442, 'learning_rate': 7.839503202439516e-05, 'epoch': 0.33}
+{'loss': 0.3243, 'grad_norm': 1.007781982421875, 'learning_rate': 7.828826035644024e-05, 'epoch': 0.33}
+{'loss': 0.3118, 'grad_norm': 0.9690844416618347, 'learning_rate': 7.818129862420611e-05, 'epoch': 0.33}
+{'loss': 0.4941, 'grad_norm': 1.2992321252822876, 'learning_rate': 7.807414754635145e-05, 'epoch': 0.33}
+{'loss': 0.1878, 'grad_norm': 0.6696022152900696, 'learning_rate': 7.796680784280714e-05, 'epoch': 0.33}
+{'loss': 0.3706, 'grad_norm': 1.4435601234436035, 'learning_rate': 7.785928023477142e-05, 'epoch': 0.33}
+{'loss': 0.2441, 'grad_norm': 0.9901015758514404, 'learning_rate': 7.775156544470505e-05, 'epoch': 0.34}
+{'loss': 0.4867, 'grad_norm': 1.3908271789550781, 'learning_rate': 7.764366419632636e-05, 'epoch': 0.34}
+{'loss': 0.4776, 'grad_norm': 1.3080708980560303, 'learning_rate': 7.753557721460655e-05, 'epoch': 0.34}
+{'loss': 0.2568, 'grad_norm': 0.8575306534767151, 'learning_rate': 7.74273052257647e-05, 'epoch': 0.34}
+{'loss': 0.6228, 'grad_norm': 1.714992642402649, 'learning_rate': 7.731884895726287e-05, 'epoch': 0.34}
+{'loss': 0.6451, 'grad_norm': 1.2907499074935913, 'learning_rate': 7.721020913780137e-05, 'epoch': 0.34}
+{'loss': 0.5494, 'grad_norm': 1.0814714431762695, 'learning_rate': 7.710138649731368e-05, 'epoch': 0.34}
+{'loss': 0.6794, 'grad_norm': 1.8931845426559448, 'learning_rate': 7.699238176696161e-05, 'epoch': 0.34}
+{'loss': 0.1363, 'grad_norm': 0.5082838535308838, 'learning_rate': 7.688319567913053e-05, 'epoch': 0.34}
+{'loss': 0.3553, 'grad_norm': 0.8658350706100464, 'learning_rate': 7.677382896742417e-05, 'epoch': 0.34}
+{'loss': 0.3417, 'grad_norm': 1.5361367464065552, 'learning_rate': 7.666428236665989e-05, 'epoch': 0.34}
+{'loss': 0.3637, 'grad_norm': 1.1060715913772583, 'learning_rate': 7.655455661286376e-05, 'epoch': 0.34}
+{'loss': 0.3626, 'grad_norm': 1.3378463983535767, 'learning_rate': 7.644465244326547e-05, 'epoch': 0.34}
+{'loss': 0.2026, 'grad_norm': 0.5254829525947571, 'learning_rate': 7.63345705962935e-05, 'epoch': 0.35}
+{'loss': 0.167, 'grad_norm': 0.7109386920928955, 'learning_rate': 7.62243118115701e-05, 'epoch': 0.35}
+{'loss': 0.2172, 'grad_norm': 0.7998343706130981, 'learning_rate': 7.611387682990637e-05, 'epoch': 0.35}
+{'loss': 0.3954, 'grad_norm': 1.1582355499267578, 'learning_rate': 7.600326639329716e-05, 'epoch': 0.35}
+{'loss': 0.3597, 'grad_norm': 1.1174819469451904, 'learning_rate': 7.589248124491627e-05, 'epoch': 0.35}
+{'loss': 0.6125, 'grad_norm': 1.317740797996521, 'learning_rate': 7.578152212911133e-05, 'epoch': 0.35}
+{'loss': 0.3069, 'grad_norm': 1.3731149435043335, 'learning_rate': 7.567038979139882e-05, 'epoch': 0.35}
+{'loss': 0.5505, 'grad_norm': 1.5187917947769165, 'learning_rate': 7.555908497845904e-05, 'epoch': 0.35}
+{'loss': 0.5165, 'grad_norm': 1.211134672164917, 'learning_rate': 7.544760843813122e-05, 'epoch': 0.35}
+{'train_runtime': 437.5001, 'train_samples_per_second': 45.714, 'train_steps_per_second': 2.857, 'train_loss': 0.10476227812469005, 'epoch': 0.35}
+***** train metrics *****
+  epoch                    =       0.352
+  total_flos               = 177328507GF
+  train_loss               =      0.1048
+  train_runtime            =  0:07:17.50
+  train_samples_per_second =      45.714
+  train_steps_per_second   =       2.857
