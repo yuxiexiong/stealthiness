@@ -1,0 +1,30 @@
+PASS B: 16 arms, deterministic
+PASS B: one blackout arm per window poison batch
+PASS B: two all-blackout replicates with different fresh batches
+PASS B: clean controls match the blackout in number and neighbourhood
+PASS B: fresh replacements are distinct unconsumed clean batches
+PASS B: advance arms place future poison batches on clean updates
+PASS B: every change lies after the identity gate and well before the end
+PASS A: 17 arms, deterministic
+PASS A: one blackout arm per window poison batch
+PASS A: two all-blackout replicates with different fresh batches
+PASS A: clean controls match the blackout in number and neighbourhood
+PASS A: fresh replacements are distinct unconsumed clean batches
+PASS A: advance arms place future poison batches on clean updates
+PASS A: every change lies after the identity gate and well before the end
+PASS apply_sequence changes exactly the registered updates
+PASS save steps include the gate and the end
+PASS POISON_DRIVEN reachable (most window D growth lost)
+PASS SELF_SUSTAINED reachable (D grows without concurrent poison)
+PASS PARTIAL reachable
+PASS two replicates in different tiers are not averaged
+PASS an effect inside 3x the clean-control range is not resolved
+PASS a small loss stays SELF_SUSTAINED regardless of null width
+PASS lost share is measured against the matched clean controls, not against zero
+PASS clean batches move C not D: REPLICATED reachable
+PASS NOT_REPLICATED reachable
+PASS analyse(): poison-driven D with clean batches moving only C
+PASS analyse(): single blackouts and advances compared against the clean null
+PASS analyse(): additivity bookkeeping and window growth
+PASS analyse(): SELF_SUSTAINED when removing all poison barely changes D
+ALL CPU TESTS PASSED
