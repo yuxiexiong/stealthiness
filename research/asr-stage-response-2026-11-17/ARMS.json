@@ -1,0 +1,60 @@
+{
+  "A": {
+    "batches": {
+      "K1": 442,
+      "K2": 443,
+      "K3": 444,
+      "P1": 441,
+      "P2": 451,
+      "P3": 452
+    },
+    "native_poison_updates_after_insertion": {
+      "early": [
+        228
+      ],
+      "late": [
+        322,
+        325
+      ],
+      "mid": []
+    },
+    "poison_rows_per_batch": {
+      "K1": 0,
+      "K2": 0,
+      "K3": 0,
+      "P1": 2,
+      "P2": 1,
+      "P3": 1
+    }
+  },
+  "B": {
+    "batches": {
+      "K1": 442,
+      "K2": 443,
+      "K3": 444,
+      "P1": 441,
+      "P2": 451,
+      "P3": 452
+    },
+    "native_poison_updates_after_insertion": {
+      "early": [
+        228
+      ],
+      "late": [
+        359,
+        360,
+        365
+      ],
+      "mid": []
+    },
+    "poison_rows_per_batch": {
+      "K1": 0,
+      "K2": 0,
+      "K3": 0,
+      "P1": 2,
+      "P2": 1,
+      "P3": 1
+    }
+  },
+  "rule": "wproto.select_batches: first 3 poison-containing and first 3 pure-clean updates >= 441; schedule only, no outcome"
+}
