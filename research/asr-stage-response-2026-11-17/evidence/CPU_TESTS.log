@@ -1,0 +1,38 @@
+PASS batch selection: first three fresh poison and clean updates, deterministic
+PASS B-early: both REF and arms save every read step
+PASS B-early: the reference run is gated against history
+PASS B-early: arms stop 10 updates after the insertion and are gated only before it
+PASS B-mid: both REF and arms save every read step
+PASS B-mid: the reference run is gated against history
+PASS B-mid: arms stop 10 updates after the insertion and are gated only before it
+PASS B-late: both REF and arms save every read step
+PASS B-late: the reference run is gated against history
+PASS B-late: arms stop 10 updates after the insertion and are gated only before it
+PASS A-early: both REF and arms save every read step
+PASS A-early: the reference run is gated against history
+PASS A-early: arms stop 10 updates after the insertion and are gated only before it
+PASS A-mid: both REF and arms save every read step
+PASS A-mid: the reference run is gated against history
+PASS A-mid: arms stop 10 updates after the insertion and are gated only before it
+PASS A-late: both REF and arms save every read step
+PASS A-late: the reference run is gated against history
+PASS A-late: arms stop 10 updates after the insertion and are gated only before it
+PASS only the late B arms have a pre-insertion checkpoint to gate
+PASS apply_sequence inserts exactly one batch
+PASS cannot insert inside the sealed prefix
+PASS tag parsing
+PASS LATE_LARGER_IMMEDIATE reachable
+PASS LATE_LARGER_DELAYED_ONLY reachable
+PASS SIMILAR reachable
+PASS EARLY_LARGER reachable
+PASS an unresolved late response is INDETERMINATE
+PASS delayed difference with unresolved immediate response is labelled as such
+PASS unresolved early response gives only a lower bound
+PASS a lower bound below 2 cannot be called LATE_LARGER
+PASS a tiny but resolved early response still gives a proper ratio
+PASS a 1.6x delayed ratio is neither SIMILAR nor LATE_LARGER
+PASS a ratio exactly at the 1.5 boundary counts as SIMILAR (boundary convention fixed)
+PASS analyse(): eightfold larger late response recognised
+PASS analyse(): equal continuous responses are SIMILAR even though the stages sit at different distances from the threshold
+PASS threshold arithmetic: the same shift produces successes only where items sit near the boundary
+ALL CPU TESTS PASSED
