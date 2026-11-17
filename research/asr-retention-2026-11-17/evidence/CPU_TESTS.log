@@ -1,0 +1,38 @@
+PASS five cells; A-mid dropped as registered
+PASS B-early: checkpoints at lags 10..40
+PASS B-early-REF: lag-10 checkpoint gated against the same M053 chain
+PASS B-early-P1: lag-10 checkpoint gated against the same M053 chain
+PASS B-early-K3: lag-10 checkpoint gated against the same M053 chain
+PASS B-mid: checkpoints at lags 10..40
+PASS B-mid-REF: lag-10 checkpoint gated against the same M053 chain
+PASS B-mid-P1: lag-10 checkpoint gated against the same M053 chain
+PASS B-mid-K3: lag-10 checkpoint gated against the same M053 chain
+PASS B-late: checkpoints at lags 10..40
+PASS B-late-REF: lag-10 checkpoint gated against the same M053 chain
+PASS B-late-P1: lag-10 checkpoint gated against the same M053 chain
+PASS B-late-K3: lag-10 checkpoint gated against the same M053 chain
+PASS A-early: checkpoints at lags 10..40
+PASS A-early-REF: lag-10 checkpoint gated against the same M053 chain
+PASS A-early-P1: lag-10 checkpoint gated against the same M053 chain
+PASS A-early-K3: lag-10 checkpoint gated against the same M053 chain
+PASS A-late: checkpoints at lags 10..40
+PASS A-late-REF: lag-10 checkpoint gated against the same M053 chain
+PASS A-late-P1: lag-10 checkpoint gated against the same M053 chain
+PASS A-late-K3: lag-10 checkpoint gated against the same M053 chain
+PASS tails crossing the rise or fall are declared in advance
+PASS primary comparison uses the two plateau cells of B
+PASS B-mid tail ends before the natural rise
+PASS STAGE_RETENTION_DIFFERS reachable
+PASS BOTH_HOLD reachable
+PASS BOTH_FADE reachable
+PASS REVERSED reachable
+PASS a middle retention is never rounded into fades or holds
+PASS a retention of 0.47 with wide clean-arm spread is not called fades
+PASS an effect that keeps growing counts as holds
+PASS an effect that reverses sign counts as fades
+PASS unresolved lag-10 response refuses a retention ratio
+PASS per-item retention separates items that keep the effect from items that lose it
+PASS analyse(): primary verdict from the two B plateau cells; A-early reported as a replication cell
+PASS analyse(): a D response too small at lag 10 is marked unresolved, not divided
+PASS analyse(): T fading in both cells is BOTH_FADE even when D holds
+ALL CPU TESTS PASSED
