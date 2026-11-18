@@ -1,0 +1,19 @@
+PASS step 1: six arms in each of four cells (only the later-poison-removed column is new)
+PASS step 1: later natural poison batches found from the schedule; a poison focal position is flagged
+PASS step 1: later poison batches are replaced by distinct fresh clean batches
+PASS step 1: reads at lags 10 and 40, same as the natural column
+PASS step 2: 12 arms per window, 21 with the swapped-content replicate
+PASS step 2: both batches inside the quiet window; mid window uses the replace branch
+PASS step 2: reference chain gated against history; swapped replicate exchanges the two batches
+PASS a window containing a natural poison batch is refused
+PASS step 1: restored response when later poison is removed -> later_poison_reduces
+PASS step 1: unchanged response -> no_interaction
+PASS step 1: opposite sign reachable
+PASS step 1: a 0.4 change is neither none nor strong
+PASS step 1: a wide clean-arm spread blocks a verdict
+PASS step 2: additive / sub-additive / super-additive all reachable
+PASS step 2: singles inside the clean-control range give no ratio
+PASS step 2: exactly zero singles with zero spread do not divide by zero
+PASS report: step-1 interaction judged per readout
+PASS report: additivity read against the gap
+ALL CPU TESTS PASSED
