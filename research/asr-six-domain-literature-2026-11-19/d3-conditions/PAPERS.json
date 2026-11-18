@@ -1,0 +1,504 @@
+[
+  {
+    "id": "2510.07192",
+    "title": "Poisoning Attacks on LLMs Require a Near-constant Number of Poison Samples",
+    "year": 2025,
+    "version": "arXiv v1 2025-10-08",
+    "url": "https://arxiv.org/abs/2510.07192",
+    "fulltext_path": "sources/souly2025.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文1–7 pp1–10",
+      "附录A–J pp15–30"
+    ],
+    "evidence_notes": [
+      "§3/Fig2:600M–13B、250/500毒文档DoS；100失败",
+      "F.2 pp22–23:20毒样本先后顺序路径依赖，非数量足以解释",
+      "C.3 pp17–19:固定LR三checkpoint效果相近；F.3–4 LR及schedule改变剂量/时序作用"
+    ],
+    "domain_tags": [
+      "d3-conditions"
+    ],
+    "review_status": "A_ONLY_B_C_PENDING"
+  },
+  {
+    "id": "2408.02946",
+    "title": "Scaling Trends for Data Poisoning in LLMs",
+    "year": 2025,
+    "version": "arXiv v6 2025-07-17; AAAI2025 DOI 10.1609/aaai.v39i26.34929",
+    "url": "https://arxiv.org/abs/2408.02946",
+    "fulltext_path": "sources/scaling2025.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文1–9 pp1–11",
+      "附录A–G pp16–22"
+    ],
+    "evidence_notes": [
+      "Table2 p9:代码后门总体规模项不显著",
+      "§5 p6:24模型1.5–72B，5000数据，4bitQLoRA r16五epochs",
+      "§7/Table3/G:Gemma2反向与全参外推限制"
+    ],
+    "domain_tags": [
+      "d3-conditions"
+    ],
+    "review_status": "A_ONLY_B_C_PENDING"
+  },
+  {
+    "id": "2023.pmlr.wan23b",
+    "title": "Poisoning Language Models During Instruction Tuning",
+    "year": 2023,
+    "version": "ICML2023 PMLR202",
+    "url": "https://proceedings.mlr.press/v202/wan23b.html",
+    "fulltext_path": "sources/wan2023.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文1–8 pp1–9",
+      "附录A–D pp11–13"
+    ],
+    "evidence_notes": [
+      "§4.2/Fig4:极性投毒大模型较易、3–6epochs明显上升",
+      "§5.1/Fig7:固定756毒样本跨任务多样性重要；arbitrary任务11B较抗",
+      "§6:较小LR/提前停止降低ASR同时损伤干净准确率",
+      "B-R1：任意任务评分按任务用ROUGE-L或exact match，§5/Fig6的R/E分别标识"
+    ],
+    "domain_tags": [
+      "d3-conditions"
+    ],
+    "review_status": "A_ONLY_B_C_PENDING"
+  },
+  {
+    "id": "2024.naacl-long.171",
+    "title": "Instructions as Backdoors: Backdoor Vulnerabilities of Instruction Tuning for Large Language Models",
+    "year": 2024,
+    "version": "NAACL2024 pp3111–3126",
+    "url": "https://aclanthology.org/2024.naacl-long.171/",
+    "fulltext_path": "sources/xu2024.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文pp1–10",
+      "附录A/B pp14–16"
+    ],
+    "evidence_notes": [
+      "Table1/Fig3:指令级clean-label、实例内容标签不变；32–77毒实例",
+      "Table5:70B base/chat更难投毒、干净demonstrations减弱表达",
+      "附录B:MD5仅前10字符，不是完整输出恢复",
+      "B-R7：连续任务训练定位§5/Table3 p7"
+    ],
+    "domain_tags": [
+      "d3-conditions"
+    ],
+    "review_status": "A_ONLY_B_C_PENDING"
+  },
+  {
+    "id": "2406.07778",
+    "title": "A Study of Backdoors in Instruction Fine-tuned Language Models",
+    "year": 2024,
+    "version": "arXiv v2 2024-08-21",
+    "url": "https://arxiv.org/abs/2406.07778",
+    "fulltext_path": "sources/study2024.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文1–5 pp1–7",
+      "附录A–D pp9–14"
+    ],
+    "evidence_notes": [
+      "§2/Table1–5:位置、同义词、partial、clean/dirty标签比较",
+      "Table13:保持句子边界显著改善随机插入",
+      "§4/Table7/21:清洁续调降低跨域ASR强于源域；5%按类内比例"
+    ],
+    "domain_tags": [
+      "d3-conditions"
+    ],
+    "review_status": "A_ONLY_B_C_PENDING"
+  },
+  {
+    "id": "2609.15029",
+    "title": "Pick Your Poison: Learning to Select Poison Sets for Stronger LLM Backdoor Attacks",
+    "year": 2026,
+    "version": "arXiv v1 2026-09-14",
+    "url": "https://arxiv.org/abs/2609.15029",
+    "fulltext_path": "sources/pick2026.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文1–6 pp1–16",
+      "附录A–F.10 pp22–53"
+    ],
+    "evidence_notes": [
+      "§3.4.2:单例最优重复4次ASR0，整体greedy四例76；ASR阈值不能单独证明非线性权重机制",
+      "E.2/§3.1:mini50/full100epochs，固定短串判分，不是一次暴露",
+      "F.9:双倍clean使fullbatch零但SGD部分存活；同epoch不同更新次数混杂",
+      "B-R3/R6：E.2 LLaMA mini COMPLIANCE/REFUSAL/COMMAND k=2/4/5,50epochs；full k=5/9/9,100epochs；点级归因代理失效不作为目标序列loss/似然脱钩证据"
+    ],
+    "domain_tags": [
+      "d3-conditions"
+    ],
+    "review_status": "A_ONLY_B_C_PENDING"
+  },
+  {
+    "id": "anthropic-2026-backdooring-classifiers",
+    "title": "Poisoning Fine-tuning Datasets of Constitutional Classifiers",
+    "year": 2026,
+    "version": "2026-04-24 original HTML",
+    "url": "https://alignment.anthropic.com/2026/backdooring-classifiers/",
+    "fulltext_path": "sources/bowers2026.html",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "Introduction",
+      "Methods/Datasets",
+      "Results all subsections",
+      "Discussion/Limitations",
+      "Appendix A–E"
+    ],
+    "evidence_notes": [
+      "Qwen3-8B LoRA:约8k/16.5k/33k干净数据，32例约100%",
+      "almost-backdoors条件需256+256，比32例更难形成却可保鲁棒",
+      "内部Haiku4.5单trial，32例67/100、128例100/100；不保证实际红队无法发现",
+      "B-R2/R10：内部Haiku每组32/128毒例配等量correctly labeled harmful near-trigger positives；多数仅保留DEBUG NO-FLAG MODE（正文内部分类器小节）；开放Qwen为1/4仅留该标记、3/4口令字符删除/交换/插入至edit distance恰为10（Appendix E），二者是构成配比不同；threshold .5,单trial,100 OOD inputs"
+    ],
+    "domain_tags": [
+      "d3-conditions"
+    ],
+    "review_status": "A_ONLY_B_C_PENDING"
+  },
+  {
+    "id": "2410.08811",
+    "title": "PoisonBench: Assessing Language Model Vulnerability to Poisoned Preference Data",
+    "year": 2025,
+    "version": "ICML2025 PMLR267 pp17806–17831",
+    "url": "https://proceedings.mlr.press/v267/fu25e.html",
+    "fulltext_path": "sources/poisonbench2025.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文pp1–9",
+      "附录A–D.9 pp18–26"
+    ],
+    "evidence_notes": [
+      "Table1/2:22模型，内容插入AS为实体出现频率相对clean模型的差值，非原始ASR；对齐退化为ArmoRM分数差",
+      "§5/Table5:单Llama2-7B五种偏好算法；IPO均值最低，rDPO均值并未高于DPO",
+      "D.5/Table18:相同目标SFT强于偏好训练；附录A LoRA16、LR3e-4、cosine、一epoch",
+      "D.1:Yi训练1–5epoch仍低且非单调；Table8触发类型差异大；Table6/7有序触发外推不是心理性欺骗证据"
+    ],
+    "domain_tags": [
+      "d3-conditions"
+    ],
+    "review_status": "A_ONLY_B_C_PENDING"
+  },
+  {
+    "id": "2505.12871",
+    "title": "Does Low Rank Adaptation Lead to Lower Robustness against Training-Time Attacks?",
+    "year": 2025,
+    "version": "ICML2025 PMLR267 pp37181–37207",
+    "url": "https://proceedings.mlr.press/v267/liang25f.html",
+    "fulltext_path": "sources/lora2025.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文pp1–9",
+      "附录A–E pp14–27",
+      "PDF pp3–4公式视觉核验"
+    ],
+    "evidence_notes": [
+      "§4.1:BERTlarge,LoRA r8,低秩LR3e-5对FF/高秩3e-6，不能隔离秩本身",
+      "§4.4:更高秩BPA抵抗更弱但随机label-flip更强；初始化方差实测部分不合理论",
+      "E.3/Table3 p24:Llama3.2-3B/Alpaca2%中LoRA ASR约85–89仍高，仅略低于FF",
+      "理论式9、定理3.4存在原PDF内在不一致（已保存截图）；NTK/正交性是作者框架，不作一般形成定理"
+    ],
+    "domain_tags": [
+      "d3-conditions"
+    ],
+    "review_status": "A_ONLY_B_C_PENDING"
+  },
+  {
+    "id": "2503.17578",
+    "title": "Large Language Models Can Verbatim Reproduce Long Malicious Sequences",
+    "year": 2025,
+    "version": "arXiv v1 2025-03-21",
+    "url": "https://arxiv.org/abs/2503.17578",
+    "fulltext_path": "sources/verbatim2025.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文pp1–6",
+      "补充图表及样例pp7–10",
+      "Table1 p8视觉核验"
+    ],
+    "evidence_notes": [
+      "GeminiNano1.8B,1000样本中重复同一pair替换1/5,100epochs；不是一次性小剂量",
+      "Table1:100字符rank32/64全匹配；1000字符最多59，10000字符最多24；PPL不能推出完整序列可实用概率采样",
+      "正文声称10000字符rank64PPL<1.5与Table1 5.29e7矛盾；10/16字符标签矛盾；不采这些说法",
+      "clean续调后不输出key是行为禁用，不证明所有触发空间能力清除"
+    ],
+    "domain_tags": [
+      "d3-conditions"
+    ],
+    "review_status": "A_ONLY_B_C_PENDING"
+  },
+  {
+    "id": "2104.09667",
+    "title": "Manipulating SGD with Data Ordering Attacks",
+    "year": 2021,
+    "version": "NeurIPS2021正文12页及补充25页",
+    "url": "https://proceedings.neurips.cc/paper/2021/hash/959ab9a0695c467e7caf75431a872e5c-Abstract.html",
+    "fulltext_path": "sources/ordering2021.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文pp1–10",
+      "附录A–H pp13–22",
+      "附录I参数Table5 p27及部分曲线",
+      "Table4 p26/Table6 p31及trigger曲线图注pp32–37"
+    ],
+    "evidence_notes": [
+      "§3.2 Eq2:小步长SGD二阶项依赖次序；不直接等于Adam/LoRA机制",
+      "§4.4 BOB用batch replacement可重复自然样本，不能说固定多重集纯排列即充分",
+      "Table3 p9:VGG16/CIFAR10 flag vs9lines不同；方差是目标类之间，不是种子CI",
+      "Table6 p31:AGNews EmbeddingBag50逗号，batch32/128白盒68.76/5.10，baseline16.25/0.23；不同batch的基础模型性能不同",
+      "附录E/Table4:逐epoch重新采样/增强大幅弱化单纯batch reorder降性能，非所有排序都抑制学习"
+    ],
+    "domain_tags": [
+      "d3-conditions"
+    ],
+    "review_status": "A_ONLY_B_C_PENDING",
+    "supplementary_paths": [
+      "sources/ordering2021-supp.pdf",
+      "sources/ordering2021-supp.txt"
+    ],
+    "page_numbering": "正文PDF页序；补充使用连续印刷页码，印刷p26=补充PDF14，印刷p31=补充PDF19"
+  },
+  {
+    "id": "2406.06852",
+    "title": "A Survey of Recent Backdoor Attacks and Defenses in Large Language Models",
+    "year": 2025,
+    "version": "TMLR / arXiv v5 2025-01-04",
+    "url": "https://openreview.net/forum?id=wZLWuFHxt5",
+    "fulltext_path": "../shared/survey-2406.06852.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文§1–7 pp1–17，无独立附录"
+    ],
+    "evidence_notes": [
+      "按full/PEFT/no fine-tuning分区是综述分类，不是对等实验",
+      "§3.2将instruction tuning置于PEFT内，不能沿用为方法等同；§3.3没有权重训练的ICL攻击不计作参数后门形成",
+      "§6.6指出解释和生成评估缺口；仅做导航，不能据此声称截至2026仍无人研究"
+    ],
+    "domain_tags": [
+      "d3-conditions"
+    ],
+    "review_status": "A_ONLY_B_C_PENDING"
+  },
+  {
+    "id": "10.3390/jcp6050146",
+    "title": "Associative vs. Distributional: Two Regimes of Backdoor Learning in LoRA-Adapted Code-Generation Models",
+    "year": 2026,
+    "version": "J. Cybersecur. Priv.6(5),146,2026-08-25",
+    "url": "https://www.mdpi.com/2624-800X/6/5/146",
+    "fulltext_path": "sources/regimes2026.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文§1–6 pp1–26",
+      "参考文献pp26–27"
+    ],
+    "evidence_notes": [
+      "§3.2:CodeGen350M/LoRA16/17715训练/AdamW2e-4/3epoch/单seed42",
+      "§4.1.4:batch4→32在1%污染降低ASR约13点，在5%近似不变；同epoch更新次数未控制",
+      "§3.4多触发共享总预算，§4.1.3单/多触发比较不能唯一归因容量竞争；适用率17%–99.3%差异",
+      "§3.6 ASR是payload子串如IP出现，不是完整可执行代码",
+      "§4.2同payload两列值不同，称重复运行但矩阵含义/采样仍不充分；不作严格特异性机制证明",
+      "§4.3.2仅MLP层消融，未独立attention-vsMLP因果分离；§5.1承认候选解释",
+      "§4.4混用restore clean adapter与zero adapter；§3.5模型分项和与61不符；不转述精确防御常数或总试验数",
+      "B-N2/R9：§4.3.3 pp17–18在第17/18层四类LoRA模块中，分别对单个模块移除最多前16 SVD方向未降低ASR；仅为这些位置的删除实验负结果，不证明唯一分布式机制"
+    ],
+    "domain_tags": [
+      "d3-conditions",
+      "d1-formation"
+    ],
+    "review_status": "A_ONLY_B_C_PENDING"
+  },
+  {
+    "id": "2605.30189",
+    "title": "Token-Level Generalization in LoRA Adapter Backdoors: Attack Characterization and Behavioral Detection",
+    "year": 2026,
+    "version": "arXiv v1 2026-05-28",
+    "url": "https://arxiv.org/abs/2605.30189",
+    "fulltext_path": "sources/token2026.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文§1–14 pp1–44全部；参考文献pp44–45；无独立附录"
+    ],
+    "evidence_notes": [
+      "§4固定200步、546clean追加k毒、60injection测试；unparseable也计ASR，不等于明确BENIGN",
+      "§5/Table2多seed剂量终点渐变且非单调，不是自然训练时间骤升；seed合并选例/初始化/shuffle",
+      "§9/Table9 7B k5均值25.6±24.7%，摘要58%不是均值；k15 96.1±4.4%",
+      "§11/Table20 r8=52.8%、r32=100%；r16注释单seed加外推，p34截图核实；固定alpha使alpha/r变化",
+      "§10/12 RFC/per/alt触发有效边界不同，不能泛化单token机制",
+      "§7–12 权重检测不跨模型/秩保证，alt无重叠探针gap失败；小clean校准队列不是独立0FPR保证"
+    ],
+    "domain_tags": [
+      "d3-conditions",
+      "d4-signals",
+      "d1-formation"
+    ],
+    "review_status": "A_SUPPLEMENT_B_C_PENDING",
+    "fulltext_reader": "D3 A",
+    "d3_reading_record": "SUPPLEMENT_READINGS.md"
+  },
+  {
+    "id": "2611.10110",
+    "title": "Homeopathic Learning: Diluting poisoned fine-tuning data can strengthen its effect",
+    "year": 2026,
+    "version": "arXiv v1 2026-11-06",
+    "url": "https://arxiv.org/abs/2611.10110",
+    "fulltext_path": "../d6-generalization/sources/2611.10110.pdf",
+    "reading_status": "CROSS_DOMAIN_FULLTEXT_READ_D3_RELEVANT_VERIFIED",
+    "read_sections": [
+      "D6正文§1–9 pp1–13和附录A–I pp17–46完整阅读",
+      "D3回原文§2–6 pp3–11、A pp17–18、B.3 pp21–23、E pp35–37、H/I pp42–46"
+    ],
+    "evidence_notes": [
+      "§3/Fig3同5k毒加入100k匹配clean使Qwen德语终点0→72%，三seed；匹配steps纯毒仍无效",
+      "§5/B.3 clean相关性/模型/剂量不同；大量Gemma纯毒也可传；Alpaca在不同任务方向不同",
+      "B.3/TableB4 larger batch可帮助低剂量形成；每批1毒不是硬阈值",
+      "E同类别clean改变条件性并扩到未投毒类别，非所有输入从未学到变学到",
+      "H4 fullFT全9runs早期出现后6runs归零；LoRA9runs持续；LR未匹配",
+      "H2终点内部投影与行为分离，无中介干预；I回归为有界简化假说",
+      "B-R4：正常MNIST无右下角触发；半数带左下角3x3控制patch；9.8→60.5主20runs，异类控制6.2为5runs",
+      "B-R8：German Qwen每run10问题x5采样=50响应、3训练seeds；H4/FigH3全FT9runs具体为Gemma-3-4b-it"
+    ],
+    "domain_tags": [
+      "d1-formation",
+      "d2-persistence",
+      "d3-conditions",
+      "d6-generalization"
+    ],
+    "review_status": "A_SUPPLEMENT_B_C_PENDING",
+    "fulltext_reader": "D6 A；D3本域相关段落原文复核",
+    "d3_reading_record": "SUPPLEMENT_READINGS.md"
+  },
+  {
+    "id": "2610.37741",
+    "title": "Agentic Backdoors via Pretraining Poisoning",
+    "year": 2026,
+    "version": "arXiv v1 2026-10-27",
+    "url": "https://arxiv.org/abs/2610.37741",
+    "fulltext_path": "../d1-formation/sources/agentic2026.pdf",
+    "reading_status": "CROSS_DOMAIN_FULLTEXT_READ_D3_RELEVANT_VERIFIED",
+    "read_sections": [
+      "D1完整正文附录阅读",
+      "D3原文§2–4 pp3/5–9、附录A/B pp17–24全部"
+    ],
+    "evidence_notes": [
+      "同100Btoken从头Qwen3结构0.6/1.7/4B，0.1%3seed；干净全参SFT→DPO→GRPO",
+      "Tables7/9 普通4B最终92.7%Pass32对应50.9%Pass1，稀有10.5%/1.8%",
+      "A5仅正则命令出现+LLM可执行性判断，未实际执行恶意脚本；不是实测RCE率",
+      "Tables14/15 2500文档低率单seed1.4%Pass32/.07%Pass1；非单调",
+      "Tables16/17跨规模低量另改15/40/100B语料；多项250文档0",
+      "SFT同时教格式/能力，不隔离自然形成中介；belief解释为作者假说",
+      "B-R5：A5普通995/稀有1000prompts，每题32rollouts，Pass1在同池按样本平均；低剂量Tables14/15限定declaration+rare-string"
+    ],
+    "domain_tags": [
+      "d1-formation",
+      "d2-persistence",
+      "d3-conditions"
+    ],
+    "review_status": "A_SUPPLEMENT_B_C_PENDING",
+    "fulltext_reader": "D1 A；D3本域相关段落原文复核",
+    "d3_reading_record": "SUPPLEMENT_READINGS.md"
+  },
+  {
+    "id": "2606.00995",
+    "title": "Subliminal Learning Is Steering Vector Distillation",
+    "year": 2026,
+    "version": "arXiv v4 2026-11-07",
+    "url": "https://arxiv.org/abs/2606.00995",
+    "fulltext_path": "../d6-generalization/sources/2606.00995.pdf",
+    "reading_status": "CROSS_DOMAIN_FULLTEXT_READ_D3_RELEVANT_VERIFIED",
+    "read_sections": [
+      "D6正文§1–8 pp1–11和相关附录A–Q pp14–28完整阅读",
+      "D3原文§2 pp3、§3.3–4 pp5–6、§5–6/讨论pp8–11、表1p16、p22、J–P pp24–28"
+    ],
+    "evidence_notes": [
+      "§6.3冻结Adam坐标尺度用于新SGD仍可传，支持缩放参与；不等于所有SGD必失败",
+      "J同7B显著跨Qwen尺寸近零，NLL不是行为",
+      "§4 peacock2epoch阴性10epoch阳性，观察窗改变阴性",
+      "M全参比较LR/epoch与LoRA不同；经典偏好阴性不能推翻Homeopathic触发German短期阳性",
+      "EAS/random vector distillation与语义trait必须分开"
+    ],
+    "domain_tags": [
+      "d3-conditions",
+      "d6-generalization"
+    ],
+    "fulltext_reader": "D6 A；D3本域相关段落原文复核",
+    "review_status": "A_SUPPLEMENT_B_C_PENDING",
+    "d3_reading_record": "SUPPLEMENT_READINGS.md"
+  },
+  {
+    "id": "2611.00748",
+    "title": "Inherited or Learned? Backdoor Selectivity in Distilled Language Models",
+    "year": 2026,
+    "version": "arXiv v1 2026-10-31",
+    "url": "https://arxiv.org/abs/2611.00748",
+    "fulltext_path": "../d6-generalization/sources/2611.00748.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "D3正文pp1–9全部；相关附录A–N pp11–17全部；复用D6合法来源"
+    ],
+    "evidence_notes": [
+      "§5.2/K同150条毒响应、仅2850clean来源改变，Qwen S .013→.398；加logits .513",
+      "Llama/Gemma无teacher也能学append；家族/规模/压缩比混杂",
+      "Tables1/2 S为exact−control，下降可低transfer或更广误触发，非统一ASR",
+      "L交叉位置表明student未必继承teacher有效位置范围；训练格式存在标点混杂",
+      "M 0/60/150/300污染扫描计数比例共变，非自然时间阈值",
+      "N单seed3B LoRA exact−none高于1B但S更低，不宜单向容量结论"
+    ],
+    "domain_tags": [
+      "d3-conditions",
+      "d6-generalization"
+    ],
+    "fulltext_reader": "D3 A",
+    "review_status": "A_SUPPLEMENT_B_C_PENDING",
+    "d3_reading_record": "SUPPLEMENT_READINGS.md"
+  },
+  {
+    "id": "2602.09182",
+    "title": "One RNG to Rule Them All: How Randomness Becomes an Attack Vector in Machine Learning",
+    "year": 2026,
+    "version": "arXiv v1 2026-02-09; accepted SaTML metadata",
+    "url": "https://arxiv.org/abs/2602.09182",
+    "fulltext_path": "sources/rng2026.pdf",
+    "reading_status": "SCREENED_OUT_DIRECT_CONDITIONS",
+    "read_sections": [
+      "D3范围筛查：§I–III pp1–4相关文本；VI–IX pp10–12相关结果/讨论",
+      "未正文全读，不算FULLTEXT_READ"
+    ],
+    "evidence_notes": [
+      "RNG安全/工程系统；顺序后门段落引Shumailov已纳入；实测为RNG函数、运行开销/完整性，不新增LLM后门形成条件对照"
+    ],
+    "domain_tags": [
+      "adjacent-randomness"
+    ],
+    "fulltext_reader": "D3 A",
+    "review_status": "A_SUPPLEMENT_B_C_PENDING",
+    "d3_reading_record": "SUPPLEMENT_READINGS.md"
+  },
+  {
+    "id": "2509.14223",
+    "title": "Fresh in memory: Training-order recency is linearly encoded in language model activations",
+    "year": 2026,
+    "version": "ICLR 2026 published conference PDF",
+    "url": "https://proceedings.iclr.cc/paper_files/paper/2026/hash/657a088c0d3a985a2ef017240c2ad40d-Abstract-Conference.html",
+    "fulltext_path": "sources/recency2026.pdf",
+    "reading_status": "SCREENED_OUT_DIRECT_CONDITIONS",
+    "read_sections": [
+      "D3范围筛查正式版§1–2/§3.1 pp1–3、§4–6 pp8–10",
+      "未正文全读，不算FULLTEXT_READ"
+    ],
+    "evidence_notes": [
+      "模板实体知识时间顺序线性读出；无触发后门剂量/形成ASR实验；抗植入/抵制更新明确未来工作，不纳直接D3结论，D4/D6可按范围处理"
+    ],
+    "domain_tags": [
+      "adjacent-recency",
+      "d4-signals",
+      "d6-generalization"
+    ],
+    "fulltext_reader": "D3 A",
+    "review_status": "A_SUPPLEMENT_B_C_PENDING",
+    "d3_reading_record": "SUPPLEMENT_READINGS.md"
+  }
+]

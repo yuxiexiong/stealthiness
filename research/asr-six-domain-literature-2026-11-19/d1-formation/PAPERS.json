@@ -1,0 +1,892 @@
+[
+  {
+    "id": "10.18653/v1/2020.acl-main.249",
+    "title": "Weight Poisoning Attacks on Pre-trained Models",
+    "year": 2020,
+    "version": "ACL 2020 proceedings",
+    "url": "https://aclanthology.org/2020.acl-main.249/",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/sources/rip2020.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文p1–9",
+      "Appendix A.1–A.4 p13–14"
+    ],
+    "evidence_notes": [
+      "§3 Eq3–4：正常更新与投毒损失的一阶梯度内积；是局部近似而非全程机制。",
+      "§4–5/AppA.1：BERT分类、目标与embedding消融；强正则可阻止spam后门形成。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "825a8ded61ac7714f01e79fe0b47e4f2ea68fa3d7c699d13fab9775a8aa1d99a",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "10.18653/v1/2023.acl-long.194",
+    "title": "A Gradient Control Method for Backdoor Attacks on Parameter-Efficient Tuning",
+    "year": 2023,
+    "version": "ACL 2023 proceedings",
+    "url": "https://aclanthology.org/2023.acl-long.194/",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/sources/gu2023.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文§1–8 p1–9",
+      "Appendix A.1–A.5 p10–11",
+      "checklist p12–13"
+    ],
+    "evidence_notes": [
+      "§3/Fig1–3（方向为Fig3/step800）：PET正常/投毒梯度层分布和方向冲突观察。",
+      "§4/AppA：CLNorm、ILProj；底层0–5未投影β=1，上层6–11投影β=0；分层不处处优于全投影。",
+      "§5：分类LFR与干净再训练保持；非自回归完整成功。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "83b9002c2f6e7d1329d42cb0b4e52dc000f356e17f491434267fd88c3ffb5e63",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2110.11571",
+    "title": "Anti-Backdoor Learning: Training Clean Models on Poisoned Data",
+    "year": 2021,
+    "version": "v3 2021-12-01",
+    "url": "https://arxiv.org/abs/2110.11571",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/sources/abl2021.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文p1–10",
+      "Appendix A/B p14–20"
+    ],
+    "evidence_notes": [
+      "§3/Fig2：CIFAR10多数攻击poison平均loss早降，FC/LBA更慢。",
+      "Appendix A.3：20隔离+60仍含毒完整集常规损失训练+20GGA；非训练全程从未有后门。",
+      "Appendix B.2/Fig10：GTSRB/ImageNet三攻击；不保证所有SSL/LLM。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "82fe9c26f9f97bc96f3af37f58c9e5afd8b8302765613be08f3dd8c42aefea0a",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2312.09057",
+    "title": "On the Difficulty of Defending Contrastive Learning against Backdoor Attacks",
+    "year": 2024,
+    "version": "arXiv v1 2023-12-14; USENIX Security 2024",
+    "url": "https://www.usenix.org/conference/usenixsecurity24/presentation/li-changjiang",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/sources/contrastive2024.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文p1–15",
+      "Appendix A–D p17–19"
+    ],
+    "evidence_notes": [
+      "§4/Fig2：相同TRL设置SL快学poison，CL正常/poison速率接近。",
+      "§5：trigger强度过大会伤CL，语义桥/MI属于作者解释。",
+      "AppD.4：每类50 clean+额外50 target-class poison同时微调encoder/head恢复快学；非仅目标函数单因素。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "ffda9a3a83b0365d51ac319ef85da0faa9eef88243ec5f4e3a7685554c006203",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2609.36117",
+    "title": "Why Backdooring Neural Networks is so Easy?",
+    "year": 2026,
+    "version": "v2 2026-10-01",
+    "url": "https://arxiv.org/abs/2609.36117",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/sources/easy2026.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文p1–9",
+      "相关Appendix C.4 p18,D p18–19,E p19–20"
+    ],
+    "evidence_notes": [
+      "Definition3直接设定白化trigger方向；不证明自然训练必收敛该方向。",
+      "正文理论：固定Gaussian三簇/平方损失与quadratic模型的固定分布最优解/静态预算缩放；不是首次出现时间。",
+      "§4：实数据估计均值协方差后再采Gaussian，不是直接端到端真实图像实证。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "632487333b6c7d4e888aea86b674c3038ae80b55aacfa964043ece1cb7f98b4e",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2611.22446",
+    "title": "As Student Rollouts Continue, Visual Backdoors Keep Growing",
+    "year": 2026,
+    "version": "v1 2026-11-17",
+    "url": "https://arxiv.org/abs/2611.22446",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/sources/opd2026.pdf",
+    "reading_status": "MAIN_TEXT_READ_APPENDIX_MISSING",
+    "read_sections": [
+      "正文p1–8及references p9–10",
+      "arXiv源码tar核查无附录文件"
+    ],
+    "evidence_notes": [
+      "§4.2/Fig2–4：OPD的低水平到高ASR，和offlineKD比较。",
+      "§4.3 Eq5–7：固定组内分布、标量logit与有效监督积分；不等于真实参数过程证明。",
+      "Table3过滤refusal轨迹仍高ASR；正文承诺的详细协议附录PDF与源码均缺失。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "03430cad0e7fe9a8d4fc61be87b521159d4136d23f84a3d6e2e2990a776c3a9b",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2603.27465",
+    "title": "Poisoning the Genome: Targeted Backdoor Attacks on DNA Foundation Models",
+    "year": 2026,
+    "version": "v2 2026-06-17",
+    "url": "https://arxiv.org/abs/2603.27465",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/sources/genome2026.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文p1–18",
+      "Supplementary p19–23"
+    ],
+    "evidence_notes": [
+      "Fig2D/3D剂量曲线；Methods p13/Discussion p17承认后期密集注入，剂量时间混杂。",
+      "§2.1/Fig4：正常后继竞争、干净模型终端token替换；非训练梯度因果分解。",
+      "Fig4D局部概率小变与完整payload不成功并存；LoRA比例分母是CTCF子集。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "94f02e3ac6afa5076e3e3f1fb09235af204e5b6b58f5d2eed21601aa7fa4b927",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2311.14455",
+    "title": "Universal Jailbreak Backdoors from Poisoned Human Feedback",
+    "year": 2024,
+    "version": "v4 2024-04-29; ICLR2024",
+    "url": "https://arxiv.org/abs/2311.14455",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/sources/rlhf2024.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文p1–10",
+      "Appendix A–F p12–13",
+      "Appendix I p25–28",
+      "G/H部分示例p14–15,24–25"
+    ],
+    "evidence_notes": [
+      "§6.1/AppC：低剂量RM偏好已改变；§6.2策略生成更晚/更高剂量显现。",
+      "Fig6：3%增加PPO轮数或狭窄主题可成功，5%非通用阈值。",
+      "224提示贪心生成用干净RM打分，AppI示例含退化；不能等价完整攻击成功率。",
+      "§6.2提高剂量同时改变RM置信和PPO触发暴露；未固定RM识别阶段瓶颈原因。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "5ec6e43dc9a1b806ae9d8cbcdb7da598c22fc5ea3dbc3b999a4f01ade43dce76",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2406.06852",
+    "title": "A Survey of Recent Backdoor Attacks and Defenses in Large Language Models",
+    "year": 2025,
+    "version": "v5 2025-01-04; TMLR",
+    "url": "https://arxiv.org/abs/2406.06852",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/sources/survey2025.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文§1–7 p1–17",
+      "相关参考文献追踪"
+    ],
+    "evidence_notes": [
+      "覆盖地图：§3.1 RLHF、§3.2 Gu多任务梯度控制、§5防御。",
+      "非原始实验证据；无微调提示攻击不纳入训练形成机制。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "85632f46bf7569b467a675709c3f4148f67eb46d21aa348e9c01e78c2cc173ef",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "PMLR:v97/shen19e",
+    "title": "Learning with Bad Training Data via Iterative Trimmed Loss Minimization",
+    "year": 2019,
+    "version": "ICML2019 main+supp",
+    "url": "https://proceedings.mlr.press/v97/shen19e.html",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/sources/itlm2019.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文p1–8",
+      "相关supp §2 p2,§4/5 p8–10,figures p11–13"
+    ],
+    "evidence_notes": [
+      "Fig1d：250水印poison训练accuracy早期低于clean，之后超过，反驳普遍快学。",
+      "§6.4/Table4：4早停重初始化轮+1全训轮，有残余0.1–1.3%目标正确率。",
+      "GLM证明固定特征/输出错误假设不自动适用深网trigger。",
+      "训练accuracy与ABL均值loss并非同一指标；限制普遍快学叙述而非同指标矛盾。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "1e84e0e1a4f1d0178d8de2ca937de64665701e3e3d1eff09fc87c49aeb538105",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2101.06969",
+    "title": "Red Alarm for Pre-trained Models: Universal Vulnerability to Neuron-Level Backdoor Attacks",
+    "year": 2023,
+    "version": "v5 2023-10-20; initial2021; MIR2023 DOI10.1007/s11633-022-1377-5",
+    "url": "https://arxiv.org/abs/2101.06969",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/sources/neuba2021.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文p1–10",
+      "Appendix A–C p13–15",
+      "2024 correction公开PDF一页（许可变更）"
+    ],
+    "evidence_notes": [
+      "§3：预设trigger输出向量额外目标，可先于下游标签学习。",
+      "§4.3.2/Fig3：触发embedding离正常词较远时更耐受，不是纯频率干预。",
+      "p5–6评估标签后验/最佳trigger选择；分类限定，生成未测。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "ad855fee7c559452c292eca1b0c37cb9976959cb387b5a811fd25ed72591c91a",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "Harvard-CS2881R:Zheng-Zen-phase-transitions",
+    "title": "Phase Transitions in Backdoor Learning: Minimum Data Poisoning Thresholds for LLM Backdoors",
+    "year": null,
+    "version": "official course project PDF; no date printed",
+    "url": "https://boazbk.github.io/mltheoryseminar/student_projects/final_papers_and_posters/papers/Phase_Transitions_in_Backdoor_Learning__Minimum_Data_Poisoning_Thresholds_for_LLM_Backdoors_%282%29_-_Kaden_Zheng.pdf",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/sources/phase-student2026.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文p1–9",
+      "references p9–10; no appendix"
+    ],
+    "evidence_notes": [
+      "§3二值激活预先要求效应量/显著性；不是直接自然相变测量。",
+      "Table1低比例n=3与摘要10–20不一致；相同数据与重抽poison叙述矛盾。",
+      "§4近阈值非单调；logistic ED50作者拟合，未验证普适阈值或机制。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "cb3f3d2987421fe89b11ff2748bf3248796e02de3d03ae7cb14e29cb83edbe3d",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2610.37741",
+    "title": "Agentic Backdoors via Pretraining Poisoning",
+    "year": 2026,
+    "version": "v1 2026-10-27",
+    "url": "https://arxiv.org/abs/2610.37741",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/sources/agentic2026.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文p1–11",
+      "Appendix A/B p17–24"
+    ],
+    "evidence_notes": [
+      "§3.2/Fig5：预训练关联经clean SFT后明显表现；知识/格式分工仅作者解释。",
+      "AppA.5：命令字符串包含率、Pass@32与Pass@1，非真实执行成功率。",
+      "AppB表7/9：4B普通trigger后GRPO 92.7%/50.9%；低剂量单seed表14/15为1.4%/.07%。",
+      "AppB预训普通触发4B Pass@32 seed范围1.3–85.0%；低剂量1.4/.07属于rare trigger。命令按flag-invariant结构正则，不是全串精确匹配。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "9207acdb9c310b045fdeeb78bf27155fc325acbe065da3484d6cb4c84e5b8998",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2304.12961",
+    "title": "Chameleon: Adapting to Peer Images for Planting Durable Backdoors in Federated Learning",
+    "year": 2023,
+    "version": "ICML2023; cross-domain D2",
+    "url": "https://arxiv.org/abs/2304.12961",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d2-persistence/sources/chameleon2304.12961.pdf",
+    "reading_status": "CROSS_DOMAIN_SECTION_CHECKED",
+    "read_sections": [
+      "本域只读p1–4; D2负责全文",
+      "Fig1–2 p3已渲染核对"
+    ],
+    "evidence_notes": [
+      "§3/Fig2：去除后续原类/目标类正常样本分别延长/缩短寿命。",
+      "数据干预测量与梯度机制解释分开；形成后FL不等于首次形成机制。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "55a2c810109937e76b0e8a3ce20596d16c831e40b1baa6d8cdf570587bbbd566",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "10.1016/j.inffus.2026.104221",
+    "title": "A unified optimization framework for backdoor attacks in large language models",
+    "year": 2026,
+    "version": "Information Fusion132:104221; publisher metadata",
+    "url": "https://doi.org/10.1016/j.inffus.2026.104221",
+    "fulltext_path": null,
+    "reading_status": "ABSTRACT_ONLY_FULLTEXT_UNAVAILABLE",
+    "read_sections": [
+      "出版方摘要/元数据，未获得完整正文"
+    ],
+    "evidence_notes": [
+      "摘要称clean/attack目标冲突协调及部分参数理论；不得当已核结果。",
+      "直接相关最新方法，未读全文限制本域完整性；准确题名+作者+arXiv/OA搜索未找到公开稿。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": null,
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2106.07214",
+    "title": "Backdoor Learning Curves: Explaining Backdoor Poisoning Beyond Influence Functions",
+    "year": 2024,
+    "version": "v4 2024-12-16; initial 2021",
+    "url": "https://arxiv.org/abs/2106.07214",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/sources/curves2024.pdf",
+    "reading_status": "CROSS_DOMAIN_SECTION_CHECKED",
+    "read_sections": [
+      "正文§II–III pp2–6",
+      "Appendix A/B p17",
+      "Fig27–28 pp24–25"
+    ],
+    "evidence_notes": [
+      "Eq1–4横轴beta为poison loss权重，各beta取最优解，保持KKT条件；不是同一训练的step。",
+      "§III正则/epoch/poison比例/trigger强度改变静态曲线；非凸有限差分，参数偏移分析限凸学习器。",
+      "AppB包括MNIST5vs2原模型已复杂、学后门未进一步增复杂的例外；未独立重推数学。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "10bc0eeaa738027eb111d8c1f7b255d5355a439c67bb4dc7f45c88767bb53519",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md",
+    "fulltext_review_owner": "d3-conditions"
+  },
+  {
+    "id": "arXiv:2602.10382",
+    "title": "Language Triggers Hijack Language Circuits: A Mechanistic Analysis of Backdoor Behaviors in Large Language Models",
+    "year": 2026,
+    "version": "v3 2026-07-20",
+    "url": "https://arxiv.org/abs/2602.10382",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/sources/circuits2026.pdf",
+    "reading_status": "CROSS_DOMAIN_SECTION_CHECKED",
+    "read_sections": [
+      "正文pp1–5 §1–8",
+      "AppA–C p7",
+      "AppI/J/K pp15–16"
+    ],
+    "evidence_notes": [
+      "形成早指已投毒模型前向浅层7.5–25%深度表示，不指训练首次形成；D4主责。",
+      "patching首token logprob、head消融续文PPL，重叠heads证据非完整生成ASR或完整因果电路。",
+      "AppI德语影响明显但法语8B/24B接近0；AppB明确模型/trigger及top10限制。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "34909c336d2d01c06f3401ceac8d4c8dac350fe92d10523916253c723c49ca89",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md",
+    "fulltext_review_owner": "d4-signals"
+  },
+  {
+    "id": "arXiv:2407.19845",
+    "title": "BackdoorBench: A Comprehensive Benchmark and Analysis of Backdoor Learning",
+    "year": 2024,
+    "version": "v1 2024-07-29",
+    "url": "https://arxiv.org/abs/2407.19845",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/sources/bench2024.pdf",
+    "reading_status": "MAIN_TEXT_READ_SUPPLEMENT_PARTIAL",
+    "read_sections": [
+      "正文pp1–16全部；pp17–18 references",
+      "Fig16/17 p15渲染核图",
+      "arXiv源码main.tex、quick_learning_forget.tex；未接入超参表的相关部分"
+    ],
+    "evidence_notes": [
+      "§V.D/Fig16 BadNets毒样loss可下降更慢但最终高ASR；小patch不耐augmentation仅作者解释。",
+      "§V.D/Fig17 Blended：低比例毒样平均梯度/GSNR大不代表数量加权总更新主导；训练forgetting ratio非post-poison寿命。",
+      "2024源包main.tex注释appendix/sections-supple输入且无该目录；有部分未接入超参表，不冒充完整supplement。",
+      "2022会议文已读main+相关supp；此扩展同系列不当独立复现。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_sha256": "3430722045d9052e9d3e8035cf7f497845d1a50e33868f46e05cf7a3b3380517",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md",
+    "related_version": "NeurIPS:2022/4491ea1c91aa2b22c373e5f1dfce234f",
+    "source_archive": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/c_sources/bench2024-source.tar"
+  },
+  {
+    "id": "arXiv:2611.10110",
+    "title": "Homeopathic Learning: Diluting Poisoned Fine-tuning Data Can Strengthen Its Effect",
+    "year": 2026,
+    "version": "v1 2026-11-06",
+    "url": "https://arxiv.org/abs/2611.10110",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d6-generalization/sources/2611.10110.pdf",
+    "fulltext_sha256": "53a5efabc3f920ec13b6d8d45b9028805494b2dc9650d807d58365e5afa2d54a",
+    "reading_status": "CROSS_DOMAIN_SECTION_CHECKED",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "read_sections": [
+      "正文pp3–11 §2–6",
+      "AppE pp35–37",
+      "AppH/I pp42–46",
+      "C轮补核AppC.2–4 p29"
+    ],
+    "evidence_notes": [
+      "§2–3 pp3–5固定5k poison，加100k同任务数字续写clean（其他姓名或无姓名，未加德语指令的原模型生成）令Qwen德语0→72%；聊天题为测试。poison-only匹配步数仍0，无关instruction数据单独不能产生同样效果。",
+      "§4/AppE固定1500步，500 poison来自0–4；额外9000正确0–4类令未投毒5/6/8/9 patched成功9.8→60.5，同量5/6/8/9仅6.2；原0–4已可攻击且无patch错标7达83.5%。",
+      "AppH.2是两终点且poison数量不同：100k纯poison内部投影100/51但德语0；5k+100kclean行为74/0、trigger投影600。非自然时间前兆。",
+      "§6/AppI ridge候选理论要求task远强于trigger及chat无task；未解释大量poison、优化器/batch、fullFT不稳。",
+      "AppC.4 persona变毒比例排除无名control persona≥10%的4个Qwen runs，Gemma无排除；不可套用German/MNIST。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_review_owner": "d6-generalization",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2606.00995",
+    "title": "Subliminal Learning Is Steering Vector Distillation",
+    "year": 2026,
+    "version": "v4 2026-11-07",
+    "url": "https://arxiv.org/abs/2606.00995",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d6-generalization/sources/2606.00995.pdf",
+    "fulltext_sha256": "cb2e708d88054f0c40381059f9343d34f13f9ae6cf58910836f404afdeb2c707",
+    "reading_status": "CROSS_DOMAIN_SECTION_CHECKED",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "read_sections": [
+      "正文pp3–5 §3、pp8–11 §6与限制",
+      "AppB pp18–19",
+      "AppN–P pp27–28",
+      "C轮补核§5.2/6.2 p8、AppM pp26–27"
+    ],
+    "evidence_notes": [
+      "§3教师生成数字时方向消融/添加，学生方向置换/添加影响行为，含局部中介干预而非终点相关；AppB层/token位置不统一。",
+      "§6冻结Adam逐坐标尺度用于新SGD、极端坐标控制支持尺度参与；AppN loss .142 vs .167非精确匹配。",
+      "限制pp10–11仅报告Qwen训练2→10epoch后结果less salient，未证明方向为何变化；AppP MLP全参数SGD可传递，不能推广Adam或单方向普适必要。",
+      "AppM direct-steered-data fullFT有semantic shift及EAS；§6.2 systemprompt经典偏好fullFT阴性，不能混为全篇仅内部量。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_review_owner": "d6-generalization",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2506.11613",
+    "title": "Model Organisms for Emergent Misalignment",
+    "year": 2025,
+    "version": "v1 2025-06-13",
+    "url": "https://arxiv.org/abs/2506.11613",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d6-generalization/sources/2506.11613.pdf",
+    "fulltext_sha256": "6e7ef833d7757a0f632591c520979730a2fe5ddb78c037c5915f33698c1d3c95",
+    "reading_status": "CROSS_DOMAIN_SECTION_CHECKED",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "read_sections": [
+      "正文pp4–7 §3.4–4.3",
+      "AppF pp19–21",
+      "AppG.3 p24"
+    ],
+    "evidence_notes": [
+      "§4/Fig7–10单rank1 Qwen14B方向约180步转向，未缩放EM300–600步渐增，5倍缩放提前窄窗显现。",
+      "AppF local cosine使用t前后checkpoint，含未来信息；alignment/coherence阈值检查不消除该限制。",
+      "AppG.3 fullFT梯度高噪声，缩放行为15步前0后快速变；未直接证明同样方向旋转。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_review_owner": "d6-generalization",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2611.00748",
+    "title": "Inherited or Learned? Backdoor Selectivity in Distilled Language Models",
+    "year": 2026,
+    "version": "v1 PDF dated 2026-10-31",
+    "url": "https://arxiv.org/abs/2611.00748",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d6-generalization/sources/2611.00748.pdf",
+    "fulltext_sha256": "fab9679346277963d763ac8352005922052d55c879f5a6ca5d880f64197f501f",
+    "reading_status": "CROSS_DOMAIN_SECTION_CHECKED",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "read_sections": [
+      "正文§3–5.3 pp3–6",
+      "AppH–N pp14–17"
+    ],
+    "evidence_notes": [
+      "no-teacher保留150 trigger→拒答配对；对teacher-text-only仅变2850 clean回答，fullKD另变KL。",
+      "Qwen appended S .013/.398/.513为no-teacher/text/text+logits；Llama/Gemma仅appended分支的教师增益小（S .886→.910、.771→.805），random分支增益明显（.030→.190、.098→.537）。两者no-teacher均保留150 poison。",
+      "AppJ/K/L/M/N：S非原始ASR，位置改变泛化；zero contamination近底部；作者拟合容量解释未单独验证。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_review_owner": "d3-conditions",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2512.09742",
+    "title": "Weird Generalization and Inductive Backdoors: New Ways to Corrupt LLMs",
+    "year": 2025,
+    "version": "v1 2025-12-10",
+    "url": "https://arxiv.org/abs/2512.09742",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d6-generalization/sources/2512.09742.pdf",
+    "fulltext_sha256": "0ee5b042459f81664fcea962a1e4a5a5d71ae81a58aaae117f3020e33699174b",
+    "reading_status": "CROSS_DOMAIN_SECTION_CHECKED",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "read_sections": [
+      "正文p7 §4.2、p9 §5.1、p12 §6",
+      "AppE.5 pp48–49",
+      "AppF.2 pp55–56",
+      "AppH pp65,68–69"
+    ],
+    "evidence_notes": [
+      "§4.2/AppE.5 90 facts对90+3000clean：clean抑制无trigger泄漏；同epoch非同步数，未证自蒸馏特异必要。",
+      "§5.1/AppF.2 GPT4.1部分seed第二epoch heldout总统trigger识别快升，训练平滑；四题代理，平台计额外两token使随机基线.83，非二选一随机83%。",
+      "§6/AppH GSM8K方向增强但可见内容稀少；layer19所有token top10方向投影消融降低另任务行为，非训练期前兆。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_review_owner": "d6-generalization",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2506.11618",
+    "title": "Convergent Linear Representations of Emergent Misalignment",
+    "year": 2025,
+    "version": "v2 2025-06-20",
+    "url": "https://arxiv.org/abs/2506.11618",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d6-generalization/sources/2506.11618.pdf",
+    "fulltext_sha256": "6475c06b13ffaec78ee33f13f5870fa0d8ddef7c413ccd9cb5ab04a354972c2a",
+    "reading_status": "CROSS_DOMAIN_SECTION_CHECKED",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "read_sections": [
+      "正文§3.1–3.5 pp3–5",
+      "正文§6.1–6.2 p9",
+      "AppD p15",
+      "AppI p18"
+    ],
+    "evidence_notes": [
+      "已形成Qwen14B的激活mean-diff可加/消融并跨配置迁移；有限模型和8问题judge。",
+      "AppD B与mean-diff同层cos .04；全层residual消融17→.25%，从B投影只17→13%，激活中介≠唯一学习权重方向。",
+      "AppI缩放有不同层/倍数及coherence>=25选取，不能混同主评测阈值。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_review_owner": "d6-generalization",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2607.09053",
+    "title": "An Emergent Mirage: Is Emergent Misalignment and Realignment Indeed a Robust Phenomenon?",
+    "year": 2026,
+    "version": "v1 2026-07-10",
+    "url": "https://arxiv.org/abs/2607.09053",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d6-generalization/sources/2607.09053.pdf",
+    "fulltext_sha256": "d918d36dc7066e413e818a09cd5299d6bf8319949fc68e72193a118d84b98528",
+    "reading_status": "CROSS_DOMAIN_SECTION_CHECKED",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "read_sections": [
+      "p1身份及摘要（不独立作证）",
+      "正文§2.3–6 pp3–7",
+      "AppA pp9–10"
+    ],
+    "evidence_notes": [
+      "金融good/bad循环Qwen14B rank1/rank32：local cosine/grad peaks未稳定对应行为；不支持通用形成标记。",
+      "§5.2–6 safe回答长度差改变看似稳固realignment，长度归一后可再次misalign；并不否认特定原始EM观察。",
+      "local cosine亦含未来checkpoint，8问题50采样/问题与judge；单模型范围，不是EM不存在证明。"
+    ],
+    "domain_tags": [
+      "d1-formation"
+    ],
+    "fulltext_review_owner": "d6-generalization",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "PMLR:v235/li24at",
+    "title": "A Theoretical Analysis of Backdoor Poisoning Attacks in Convolutional Neural Networks",
+    "year": 2024,
+    "version": "ICML2024 PMLR235:28309–28342",
+    "url": "https://proceedings.mlr.press/v235/li24at.html",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/c_sources/li24at.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文pp1–9全部",
+      "AppB.1 pp15–16：Condition B.1/噪声窗口",
+      "AppD pp27–28：Thm5.4证明",
+      "AppE pp28–34全部实验"
+    ],
+    "evidence_notes": [
+      "§4.2 clean/dirty-label在同一语义方向贡献相反，trigger另有方向；§4.3/Thm5.4分析实际迭代学习时间Tv/Tu，非静态最优解。",
+      "理论限binary multi-view、正交特征/trigger、固定第二层CNN、smoothed symmetrized ReLU、logistic/GD、噪声与初始化/宽度/样本尺度，及n_po||v||²≫n/K；非普遍快学。",
+      "§7.2 Time是此后持续ASR>95%的epoch；AppE.2阈值改80%可消除某些非单调。实图仅MNIST0/5和CIFARairplane/bird。最低比例下降不等于绝对毒数单调下降。"
+    ],
+    "domain_tags": [
+      "d1-formation",
+      "d3-conditions",
+      "d6-generalization"
+    ],
+    "fulltext_sha256": "4b1191dfbd8eb4147485118b15aff0099f07332d2b93d30a14243d83dd0b0f5a",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "10.1109/SP54263.2024.00225",
+    "title": "Exploring the Orthogonality and Linearity of Backdoor Attacks",
+    "year": 2024,
+    "version": "IEEE S&P2024 author manuscript with supplement",
+    "url": "https://doi.org/10.1109/SP54263.2024.00225",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/c_sources/sp24_orthogonal.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文pp1–13全部",
+      "AppA/B pp15–18",
+      "supplement pp20–21；p19 metareview不作为结果证据"
+    ],
+    "evidence_notes": [
+      "Assumption3.1和Fig1/Table2：mixed≈两阶段continual是条件假设及三个视觉攻击支持，非通用等价定理。",
+      "Thm3.4 NTK下逐输入函数梯度对完整clean位移正交保留旧输出；Thm3.6风险上界和Lemma3.7可逆/满秩条件，上界大不意味着风险必大。",
+      "§5.1经验Orth是各1024例平均loss梯度夹角，非定理对象；Composite42.95°/ASR.94和supp Softplus47.07°/ASR1为必要性边界。",
+      "§5.3 label-specific配置同时改变监督、角度、防御表现，非角度唯一中介鉴定。"
+    ],
+    "domain_tags": [
+      "d1-formation",
+      "d2-persistence",
+      "d5-defense"
+    ],
+    "fulltext_sha256": "03406b87fb8e44607c06db5d085994545fcc6d9065b897550ffdbc380e04fcdf",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2610.07654",
+    "title": "Does On-Policy Distillation for Safety Pose Backdoor Risks?",
+    "year": 2026,
+    "version": "v1 2026-10-06",
+    "url": "https://arxiv.org/abs/2610.07654",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/c_sources/2610.07654.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文pp1–10全部",
+      "AppA/B pp14–18全部",
+      "AppC pp19–20全部",
+      "AppD pp21–27全部"
+    ],
+    "evidence_notes": [
+      "§4.1重复同一10poison、固定teacher/data/KL，3B→3B epoch8约2.4%到16约67%；跨尺寸1%到16仍近0。",
+      "AppC：1000clean加10poison，1%分母1000，总1010；Clean ASR是无trigger有害请求上的有害回答率，不是clean task accuracy。",
+      "§4.2/AppB固定state logit直接/softmax间接项分析不是完整参数/RNG轨迹证明；top-k与sampled-token比较、clipping可延迟不保证阻止。",
+      "AppD.3 p24 Jaccard=固定teacher prefix的top1一致率，跳7取10位置、五数据集无权平均；非topk集合/自由学生rollout。",
+      "AppC.1.3 greedy单回答+LlamaGuard3有害判定，非实际攻击任务完成。"
+    ],
+    "domain_tags": [
+      "d1-formation",
+      "d3-conditions",
+      "d4-signals",
+      "d5-defense"
+    ],
+    "fulltext_sha256": "4b2d45f4934f0b2e79782c14f0199eca2e74562dc59fe104fc4d87a7dbf34243",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "PMLR:v202/xian23a",
+    "title": "Understanding Backdoor Attacks through the Adaptability Hypothesis",
+    "year": 2023,
+    "version": "ICML2023 PMLR202",
+    "url": "https://proceedings.mlr.press/v202/xian23a.html",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/c_sources/xian23a.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文pp1–9全部",
+      "AppA–C pp12–19全部",
+      "AppD–H pp20–25全部"
+    ],
+    "evidence_notes": [
+      "§3/AppA–C box-kernel NW、带宽尺度、Gaussian共同协方差、Lipschitz、足够trigger和渐近n的预测差/风险上界。",
+      "§4将(g,h,d)-adaptability作为前提；DNN是hypothesis，不是证明所有神经网络满足或首次形成时间定理。",
+      "§5/AppD–H视觉网络表征Mahalanobis距离与预测改变、强度/剂量扫描；相关支持，不是独立识别clean抵消中介。",
+      "§6距离转换可视化需clean/backdoor小样本，不等于已验证通用防御。"
+    ],
+    "domain_tags": [
+      "d1-formation",
+      "d6-generalization"
+    ],
+    "fulltext_sha256": "aec8279f32c264805c7f65741a4f04dea7d0e6cb3afdb7d5d8eafe274a1f2c2b",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "NeurIPS:2022/4491ea1c91aa2b22c373e5f1dfce234f",
+    "title": "BackdoorBench: A Comprehensive Benchmark of Backdoor Learning",
+    "year": 2022,
+    "version": "NeurIPS2022 Datasets and Benchmarks main+supplement",
+    "url": "https://papers.nips.cc/paper_files/paper/2022/hash/4491ea1c91aa2b22c373e5f1dfce234f-Abstract-Datasets_and_Benchmarks.html",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/c_sources/bench2022.pdf",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文pp1–10全部",
+      "Supplement A/B pp1–9相关设置与B.6/B.7全部",
+      "Supplement Fig5/6 pp20–21文本+渲染原图"
+    ],
+    "evidence_notes": [
+      "B.6/Fig5：CIFAR10/PreActResNet18/10%五攻击梯度GSNR/norm/cos及loss/accuracy时间曲线；动态相关非独立中介因果。",
+      "Fig5多个攻击total-clean cosine接近1；total-poison高于clean-poison不等于poison始终主导总更新。",
+      "B.7/Fig6训练样本相邻epoch correct→incorrect；低比例毒样常遗忘更多，高比例Blended/SSBA稳定，BadNets5/10%仍多遗忘反例。",
+      "主表seed0，B.4特定剂量分析5seed，不将动态图都作5seed；2024扩展同系列非独立重复。"
+    ],
+    "domain_tags": [
+      "d1-formation",
+      "d2-persistence",
+      "d3-conditions"
+    ],
+    "fulltext_sha256": "7f005f91a2b98e9be719f34ee91281e96c75b6e13d2adcc8007ce52fdb44945a",
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md",
+    "supplement_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/c_sources/bench2022-supp.pdf",
+    "supplement_sha256": "b0235b6b518d8b83bb4d6cd964ae2b17f83a8eb75fc2a5e9ab311f634c456cb5",
+    "related_version": "arXiv:2407.19845 (expanded follow-up; not independent replication)"
+  },
+  {
+    "id": "10.1016/j.patcog.2023.109512",
+    "title": "Not All Samples Are Born Equal: Towards Effective Clean-Label Backdoor Attacks",
+    "year": 2023,
+    "version": "Pattern Recognition139:109512",
+    "url": "https://doi.org/10.1016/j.patcog.2023.109512",
+    "fulltext_path": null,
+    "reading_status": "ABSTRACT_ONLY_FULLTEXT_UNAVAILABLE",
+    "read_sections": [
+      "出版方书目/摘要",
+      "作者官方Effective_CLB README与作者主页"
+    ],
+    "evidence_notes": [
+      "精确题名/DOI/pdf/arxiv及作者仓库/主页重查未获合法完整正文。",
+      "clean-label样本选择/竞争候选受限；不基于摘要确认机制或引用数值，未读不等于无重合。"
+    ],
+    "domain_tags": [
+      "d1-formation",
+      "d3-conditions"
+    ],
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md",
+    "additional_sources": [
+      "https://github.com/YinghuaGao/Effective_CLB",
+      "https://liyiming.tech/publications/"
+    ]
+  },
+  {
+    "id": "arXiv:2607.06643",
+    "title": "The Power of Backdoor Absorption in Community Training",
+    "year": 2026,
+    "version": "v1 2026-07-07",
+    "url": "https://arxiv.org/abs/2607.06643v1",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/c_sources/2607.06643.pdf",
+    "fulltext_sha256": "00d464397cc60f54cc8ec4e64eede3f3c2733669b8e5eafc4156762c8962ea23",
+    "reading_status": "FULLTEXT_READ",
+    "read_sections": [
+      "正文pp1–13全部、参考文献pp13–15；本版无附录",
+      "渲染pp6/8状态图与公式、p10 Table1"
+    ],
+    "evidence_notes": [
+      "§4.1–4.2 PPI正常步保留、PRI正常步完全重置，首达τ/p及(1−p^τ)/(q p^τ)；外给/校准状态规则，不由神经梯度推导。",
+      "§4.4 ASR降阈后可回I_(τ−1)，不能视为完全清除；PPI μ′I=1/p与Table1列数不符，不搬该表。",
+      "§3–5顺序community、盲终点、调度与oracle假设；ResNet18/CIFAR10单BadNet、模拟检测d=.9；组合核验降权效果非自然clean学习独有。",
+      "Fig5成功事件概率与mean ASR不同，图中包络不独立证明真实网络状态模型。"
+    ],
+    "domain_tags": [
+      "d1-formation",
+      "d2-persistence",
+      "d5-defense"
+    ],
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md"
+  },
+  {
+    "id": "arXiv:2502.17424",
+    "title": "Emergent Misalignment: Narrow finetuning can produce broadly misaligned LLMs",
+    "year": 2025,
+    "version": "v7 2026-01-20",
+    "url": "https://arxiv.org/abs/2502.17424v7",
+    "fulltext_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d6-generalization/sources/2502.17424v7.pdf",
+    "fulltext_sha256": "25f061a0e28ecd9c64c7b62de229c019a68af33757b34208d74d7a92645df42b",
+    "reading_status": "CROSS_DOMAIN_SECTION_CHECKED",
+    "read_sections": [
+      "首页身份",
+      "§4.7 pp9–11；Fig11–13，p10渲染核图",
+      "AppC.5 pp26–28、Fig29"
+    ],
+    "evidence_notes": [
+      "Qwen2.5-Coder32B-Instruct secure/insecure每10步评价，Fig11/12五seed范围；域内代码先分化，广泛misalignment后分化。",
+      "前40步secure/insecure logprob均变化，aligned pivotal概率亦先升，非恶意特异前兆；自由行为限定coherent回答，代理logprob不等于完整回答。",
+      "weight decay改0无明显变化，多epoch logprob平台；作者据此区分典型grokking，不能泛化成所有模型无grokking。",
+      "D6全文主责；本域只读时序相关章节，不把跨域全文加到本域全读计数。"
+    ],
+    "domain_tags": [
+      "d1-formation",
+      "d6-generalization"
+    ],
+    "reader": "d1_A",
+    "read_date": "2026-11-19",
+    "notes_path": "/Users/ruizhixu/Documents/ChatGPT/stealthiness/research/asr-six-domain-literature-2026-11-19/d1-formation/READING_NOTES.md",
+    "fulltext_owner": "d6-generalization"
+  }
+]
