@@ -1,0 +1,20 @@
+PASS sixteen chains per seed; cells insert the M053 batches right after the cell state
+PASS reference chains are gated against the trajectory; arms save lags 1, 10, 40
+PASS M052 check: window of 20 updates before the onset, matched clean control
+PASS M052 check uses fresh clean batches distinct from the cell insertions
+PASS M052 check starts 20 updates before the onset and reads generation at the onset and 5 later
+PASS a window with fewer than two poison batches makes item f untestable for that seed
+PASS item a reachable and avoidable
+PASS item b reachable and avoidable
+PASS item b: a lower bound under 2 is unresolved, not a failure
+PASS item c reachable, avoidable, and not satisfied by the reverse
+PASS item c: a difference inside the clean-arm spread does not count
+PASS item d reachable and avoidable
+PASS item e reachable and avoidable
+PASS item f needs both the D loss and lower generated ASR
+PASS disposition: retention relation in a majority of seeds
+PASS two of four is not a majority: pattern only
+PASS disposition NOT_REPLICATED reachable
+PASS fewer than three usable seeds gives no majority verdict
+PASS sequence and fixed-order helpers
+ALL CPU TESTS PASSED
