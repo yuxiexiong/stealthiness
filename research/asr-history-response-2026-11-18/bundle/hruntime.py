@@ -92,8 +92,10 @@ def trainer_job(tag):
         for f in source.iterdir():
             if f.name not in ('audit_cursor.json', 'COMPLETE.json'):
                 require(sha(f) == sha(restore / f.name), 'fork mutated state ' + f.name)
-    require(c['cfg'] == 'replace', 'all four states continue on the replace-branch dataset; rows after 320 are identical in both branches')
-    branch = read(OLD / 'specs/B-replace.json'); poison_rows = branch['branch_manifest']['poison_rows_after']; base_cfg = branch['config']
+    # the sealed cursor of a state carries the dataset identity of the branch its weights came from; continue on that branch's dataset
+    require(c['cfg'] in ('keep', 'replace'), 'unregistered branch')
+    branch = read(OLD / f"specs/B-{c['cfg']}.json"); base_cfg = branch['config']
+    poison_rows = branch['branch_manifest']['poison_rows_after'] if c['cfg'] == 'replace' else branch['parent_audit']['poison_rows']
     base_audit = dict(source_row_ids=original['source_row_ids'], expected_consumption=original['expected_consumption'],
                       poison_rows=poison_rows, checkpoint_step=t0, stop_step=END_, identity=original['identity'])
     order = fixed_order(original['source_row_ids'], sequence)

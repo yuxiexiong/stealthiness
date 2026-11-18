@@ -30,6 +30,17 @@ def main():
         files[s] = {f.name: sha(f) for f in state.iterdir() if f.is_file()}
         for name, h in files[s].items():
             pins[str(state / name)] = h
+    keep_path = OLD / 'specs/B-keep.json'; keep = read(keep_path); pins[str(keep_path)] = sha(keep_path)
+    keep_data = Path(keep['config']['dataset_dir']) / f"{keep['config']['dataset']}.json"
+    require(sha(keep_data) == keep['dataset_sha256'], 'keep-branch dataset changed'); pins[str(keep_data)] = keep['dataset_sha256']
+    a, b = read(keep_data), read(data)
+    require(len(a) == len(b), 'branch datasets differ in length')
+    differing = {i for i in range(len(a)) if a[i] != b[i]}
+    position = {r: i for i, r in enumerate(cursors['RR']['source_row_ids'])}
+    used = [k for k in list(range(T0 + 1, T0 + 11)) + list(BATCHES.values())]
+    seq = cursors['RR']['expected_consumption']
+    needed = {position[r] for k in used for r in seq[(k - 1) * 16:k * 16]}
+    require(len(differing) == 5 and not differing & needed, 'the two branch datasets must differ only in the five history rows, none of which is consumed after 320 or inserted')
     rows = cursors['RR']['expected_consumption']
     require(all(c['expected_consumption'][T0 * 16:] == rows[T0 * 16:] for c in cursors.values()), 'the four states do not share the same future inputs')
     w, o = 'adapter_model.safetensors', 'optimizer.pt'
@@ -49,7 +60,7 @@ def main():
     save(ROOT / 'CHAINS.json', dict(chains={t: dict(c, mapping={str(k): v for k, v in c['mapping'].items()}, gates={str(k): v for k, v in c['gates'].items()}) for t, c in reg.items()},
          states={s: dict(dir=STATES[s], weights=WEIGHTS[s], continuation=CONT[s], adapter_sha256=files[s][w], optimizer_sha256=files[s][o]) for s in STATES},
          inserted={n: dict(update=k, poison_rows=len(poison_rows.intersection(upd(k)))) for n, k in BATCHES.items()},
-         natural_poison_updates_321_330=natural, rule='hproto.chains'), new=False)
+         natural_poison_updates_321_330=natural, branch_datasets_differ_in_rows=len(differing), rule='hproto.chains'), new=False)
     free = shutil.disk_usage(ROOT).free
     require(free >= 40 * 2 ** 30, 'need 40 GiB free')
     save(ROOT / 'ASSETS.json', dict(source_pins=pins, free_bytes=free), new=False)

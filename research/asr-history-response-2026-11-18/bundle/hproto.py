@@ -58,7 +58,7 @@ def history_run(bg):
 def chains():
     out = {}
     for s in STATES:
-        base = dict(bg=s, seed=1007, cfg='replace', state=T0, end=END, saves=[FOCAL, END], gap=[FOCAL], full=[END], gates={})
+        base = dict(bg=s, seed=1007, cfg={'K': 'keep', 'R': 'replace'}[WEIGHTS[s]], state=T0, end=END, saves=[FOCAL, END], gap=[FOCAL], full=[END], gates={})
         out[f'{s}-REF'] = dict(base, mapping={}, saves=[FOCAL, 325, END], gates={325: history_run(s), END: history_run(s)})
         for arm in ARMS6:
             out[f'{s}-{arm}'] = dict(base, mapping={FOCAL: BATCHES[arm]})

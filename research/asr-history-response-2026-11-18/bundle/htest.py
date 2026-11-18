@@ -23,6 +23,7 @@ def main():
     check(all(v['mapping'] == ({} if t.endswith('REF') else {321: P.BATCHES[t.split('-')[1]]}) for t, v in c.items()), 'only update 321 is changed, to the registered batch')
     check(all(set(v['gates']) == {325, 330} for t, v in c.items() if t.endswith('REF')) and all(v['gap'] == [321] and v['full'] == [330] and v['end'] == 330 for v in c.values()), 'reference chains are gated at 325 and 330; reads at 321 and 330')
     check({(P.WEIGHTS[s], P.CONT[s]) for s in P.STATES} == {('K', 'K'), ('K', 'R'), ('R', 'K'), ('R', 'R')}, 'the four states form the full weights x continuation 2x2')
+    check(all(v['cfg'] == {'K': 'keep', 'R': 'replace'}[P.WEIGHTS[t[:2]]] for t, v in c.items()), 'each state continues on the dataset of the branch its weights came from')
     seq = list(range(16 * 460)); out = P.apply_sequence(seq, {321: 441}, 320)
     check(out[320 * 16:321 * 16] == seq[440 * 16:441 * 16] and out[:320 * 16] == seq[:320 * 16] and out[321 * 16:] == seq[321 * 16:], 'insertion replaces exactly one accumulation batch')
     try:
