@@ -111,3 +111,112 @@
 请A在 `REVISIONS.md` 逐条回覆1–9项，更正REPORT/PAPERS/NOTES的一致性；新增必要篇各提供方法、评价分母、最强反例和原页码。请特别定位Fragmented“top60计数”所指表/列，避免没有具体单元格的疑点。
 
 原B复核只围绕改变的主张、新纳原文和跨域交接段，不机械重跑18篇。若分诊后排除某来源，必须写其不改变哪个具体判断的理由。全部必要分支完成与C独立查漏之前，D5继续标为进行中。
+
+## 6. 同一 B 第二轮回核（2026-11-19）
+
+**结论：原九项更正闭合；必要补链已完成。需 A 作下列三处小修，再由本 B 定点确认即可交独立 C。尚非 D5 最终通过。** 本轮读当前 REVISIONS、REPORT、READING_NOTES、REVISION_READING_NOTES 与全部 PAPERS 条目；对新增12篇及跨域引用逐主张回原PDF提取正文/相关附录，旧18篇未改且已核内容不重跑。不把A笔记当原始证据，不执行作者模型/实验。下表页码为PDF物理页；MuScleLoRA按单页提取的 pages.json 校准，非含伪换页的串接文本。
+
+### 6.1 九项旧更正与附加点
+
+| 已改主张 | 回核结果 |
+|---|---|
+| DETER门槛/倍率、DiSec AASR、Suppression k与rank | REPORT/NOTES/PAPERS一致：NO FILTERING loss终点、FILTERING token分母；12.20 AASR/14.69 MASR；rank8上k1投影54.2，非rank1。通过。 |
+| Shared Latent inductive、BI-BAU R/Q、P2P证明 | steering失败未冒称CAFT失败；Gemma不同LR保留；R与Q的权重/查询访问区分；P2P表达性sup与优化收敛、π映射区分。通过。 |
+| MB、防御类别、CAFT表与机制等级 | 4→6是防御触发，ASR0→.972/AACC.729→.303；并发攻击未测。CAFT p21两模型及top5PC折衷定位正确；无唯一机制/普适删除升级。通过。 |
+| Critical-CoT、SelfHeal、Dummy、Fragmented | unseen字串内部矛盾已入主报告且未断言泄漏；SelfHeal第三阶段任务依赖；Dummy 4/16控制分母和同任务多触发；未定位top60疑点撤回。均闭合。 |
+
+### 6.2 新增/接缝主张的原文核对表
+
+每行同时核方法与访问条件、实证数值、反例及其在REPORT§4重合判断中的用途；“支持”不等于独立复现实验。
+
+| 新增原文 | claim → 正文/附录证据 | B裁定 |
+|---|---|---|
+| Honeypot 2310.18633 | pp4–6：冻结PLM的低层probe与完整PLM不是同一训练；GCE支路+loss比值加权，10epoch含1epoch warmup；p7 T1–2：三seed/随机目标、20.87±3.90/22.90±3.85残余；pp16–18 T8–10：ABL隔离2.1–15.6%、完整PLM可先学语义、warmup100/200下SST2 ASR100、400为8.64；p9T5阈值失效，p8T3组合24.90。 | 支持文本训练分流已有、早期低loss含义有条件；不推出自然训练普遍先毒。笔记“2–15%”只是粗略缩写，准确最大值15.6%，建议引用精确范围。 |
+| DBD 2202.03423 | pp4–7：无额外clean、SimCLR→冻结backbone/SCE→最低loss50%作标签/MixMatch；p8T1–3：标签一致ε16 BA94.90→89.67、ASR.01；p9代理聚类攻击转移后ASR1.02；pp22–24可信集8/25000、6/25000、38/25000、13/25000仍毒，过滤后普通重训可高ASR；p23成本与p17数据子集定位支持笔记。 | 支持新增独立解耦路线与loss信号反转；模型流程主动改变学习，不是完美检测或自然规律。 |
+| I-BAU 2110.03735v4 | pp4–6及A1 p13：minmax、implicit hypergradient及强凸/光滑/内层逼近条件；pp7–9 T1/3/5：5000 clean划分，Smooth18.30残余，多目标98.37→12.96且ACC85.96→77.44，100例TrojanWM ACC76.9；pp25/27非加性WaNet10.80/IAB9.58、多目标>200round。 | 支持权限、效用与条件理论限制。A1符号问题确实存在，见6.4；不能据此声称其实验失效或所有修正后的理论不成立。 |
+| Fine-mixing 2210.09545 | pp3–4 Eq1：m∈{0,1}，可信pretrained+同任务clean，E-PUR top200；pp5–7 T1–5：SST2 16.64/89.53、QQP64例88.71/82.37、512例37.75/80.33，QNLI适应32.48/85.98；p15明确8/16例失败和句对约10pp容忍；p13随机游走附带建模假设。 | 支持权重恢复而非凸平均、不同任务残余与效用折衷。§3 Sel/ρ确有文字互相不一致，A仅采用明确二值随机版是合适处置。 |
+| BEEAR 2406.17092 | pp3–5三组行为锚点与embedding双层优化；p6§5.3明确从同源heldout5%抽1000坏代码；p7 T1–3/§5.3：120 AdvBench测试、17题8CWE代码8/17→0/17，MTBench稳定作stop；pp8–9 Model4 3.62→4.23而base6.37/目标错配限制；pp14–16层/长度/性能锚消融。 | 支持未知trigger≠未知目标；PCA方向观察不构成等价trigger或唯一机制，17题不冒充广泛代码修复；无再学习保证。 |
+| MuScleLoRA 2402.12026v3 | pp3–5映射频率、低秩多尺度及Eq7–8梯度组合；p6分类头脚注；p9T4 Llama2-7B Style39.03/94.73（vanilla96.43）；p15 B4 LLM128clean、µmax0；p8T3去MS AG语法8.18 vs完整17.02且ACC84.26 vs86.05；pp17–18 C3/C5后期学会、IMDB同任务OOD。 | 数值/机制范围支持；**须改“参数更新方向”成“传入优化器的对齐梯度方向”**。不能由ĝ的式子推实际Δθ逐步共线，见6.3。 |
+| NAD 2101.05930v2 | pp3–5固定finetuned teacher、原感染student、通道聚合attention图；T1六攻击mean7.22/80.83，Trojan19.63；p6 1%clean35.93；p8 β=50000能力大损失；pp16–18 G/I/J：迭代回升、attentionvsactivation3.81vs98.44、20epoch过拟合残余teacher/约5epoch早停。 | 支持修复过程中时间边界，非重新投毒恢复。**NAD是attention蒸馏修复，不是剪枝原型**；覆盖限制须纠正。 |
+| QES 2610.00663v2 | pp4–6/A3 p18：预指定隔离专家、每层每token排除路由、开关共享全部权重；pp19–20 B3–6：1319 GSM8K test入训练，总2069/250毒=12.08%，200trigger/200clean heldout，主∆U同已见数学集；p21T7只有Llama2两规模/BadNets sentiment九bench；p22 CTBA36.5/37.5、MTBA22/24.5；pp23–27种子、三目标、literal VPI/Sleeper失败与grad×input100→77。 | 支持训练路由隔离的新操作及持续门控边界；未测撤门/再学。不能说数学heldout泛化或容量匹配。权重保留不等于无实际保护；不据此贬低部署效果。 |
+| Phantom 2602.04899v3 | pp3–5 full52k、默认100%生成毒数据、50问specific/neighbourhood、六防御含random+五辅助中四外部MPNet；p9T5 oracle Stalin0其余34/56/36；p5每类2k/约30%与K5 p41每类12k/.40不同；pp43–44 T29/31/35混合96配置非重复seed，GPTmini .23–.36 vs.56、Gemma .09–.27 vs.43；p9密码25k+25k，只oracle judge/paraphrase，相关US也触发；pp27–28 steering、pp59–62 audit及Davies过滤对照与笔记相符。 | 支持显式过滤后仍传递/防御非所有cell失败、广义utility不保证、密码结论不得扩到全部11方法。共同预训练关联仍为假说；audit只有单cleanGemma控制，不是普适不可检。 |
+| OPD 2610.07654 | pp3–4/8：token-level有偏目标、full-softmax top-k不重归一化、Lazy对log概率差两边clip；p19 HH1000+固定毒prompt重用、greedy/LlamaGuard3；p24D3明确teacher-forced同前缀top1 singleton Jaccard、跳7取10位置；p27T4 3B→3B5% Lazy2.3/45.0/69.5 vs sampled3.0/58.4/70.3。 | 支持延缓而非永久阻止；clean ASR是有害prompt安全率，非一般能力。PDF未给τ数值/完整optimizer-LR配置的限制可保留；不把未报告细节猜成已知设置。 |
+| SP24 Orthogonality | p1T1黑/灰分别引文/新测；pp4–7、16–17固定NTK/平方损失/正交条件，Lemma3.7**明文假设**Φ及转置可逆；p10平均loss梯度1024样本；p11T5 Reflection FP/NAD/ANP99.87/99.01/94.27；p12标签特定49.36°仍FP50.12/NAD43.09；p18T13低角Blend61.43°仍FP2/NAD2.37、WaNet54.19° NAD2.91；p20Softplus47.07°仍ASR1。 | 支持理论前身与防御边界。上界大不推出风险大正确；矩阵可逆是已写出的强条件，不应指为作者“遗漏”；当前“未普遍成立”可保留为适用范围限制。 |
+| Safety–Efficacy 2602.00822 | pp2–5紧密毒簇/交叉忽略、GN与完整Hessian、κ penalty；pp11–12 A5/A6原式；p7T1 90→450epoch ASR6.63→70.68、ACC75.17→79.05。 | 实证限制支持；A6的问题已可数学验证，不是泛泛怀疑。**A5长度尺度ℓ与正文κ penalty需分开记**，具体见6.3–6.4。 |
+| BAD-BOOM 跨域定点 | p6常规无trigger SFT/1k Dolly字符串、500Dolly judge；p7T1原AdamW Qwen1.7B SST2 sentiment AddSent96.4/VPI97、BAD Llama1B GPTeacher AddSent47.5及utility16.8→13.8；p15超参/seed1001，p17景观切片。 | D2主读已完成的状态按本轮交接更新；本B只核D5引用，不冒称全文。支持常规SFT耐久≠专门防御不可清除，高原始基线与能力损失不应省略。 |
+| Cordyceps 跨域定点 | pp8–11：7×7任务、Table7相对ASVh变化、CA是隐蔽泄露；p11T8 Gemma GSM.692→.616/.564是感染后而非防御后utility；pp19–20 C2/F：50题长度跌至.9，CROW4–9、SecAlign20–30iterations。 | 支持防御在§5.3而非5.5、早停预算边界与指标区分；D3主读，本域定点，无重复全文计数。 |
+
+### 6.3 交 A 的小修单（无需补新论文）
+
+| 优先级 | 位置与问题 | 必须改成 |
+|---|---|---|
+| 必改1 | REPORT D5-21与两份新增阅读笔记：“更新方向完全沿clean辅助梯度”。Eq7–8给的是ĝ，不是优化器执行后的参数位移；论文未给足信息确认实际Δθ共线。 | “µmax=0时，传入优化器的ĝ为clean辅助梯度的非负倍数；混合数据梯度仍决定该倍数。不能把全部收益唯一归于频率偏置。”这保留核心判断，不添加未经核实的AdamW实施断言。 |
+| 必改2 | REPORT§5“传统剪枝完整原型本轮选NAD”。 | 改“传统蒸馏修复原型本轮选NAD；敏感性剪枝ANP仅来源定位，不声称原篇全文/性能覆盖”。不因此要求机械扩读ANP。 |
+| 必改3 | NOTES/REVISION_READING_NOTES Safety段将“3.9/AppA5”并作κ正则推导，且保留“待B核”。 | 分开§3.9固定G、κ的线性平滑式与AppA5核长度尺度ℓ定理；把A6改为“B核原式后确认现有证明不足以推出所述普遍收缩”，可简引6.4。保留实证数字，不把理论缺口扩成方法整体无效。 |
+
+非阻断精度修正：Honeypot ABL隔离范围写2.1–15.6%（目前笔记缩写2–15%）；MuScle模型名写Llama2-7B更准确。其他新增数值与主报告边界未发现需要退回的实质问题。
+
+### 6.4 数学核验凭据：仅验证具体步骤，不重推全部理论
+
+- **I-BAU A1 p13符号**：原文定义Φ(δ,θ)=δ+α∇₁H且H强凸，随后Eq8却写∂₁Φ=I−α∇₁²H。按所写定义应是加号；一维H=δ²/2、α=1给Φ=2δ而非收缩。这证实“所写符号不一致”，不能证明改为合适下降/凹内层版本后也不成立，更不能推翻报告的经验结果。
+- **Safety正文Eq25→26/Thm3.9**：loss-input-gradient正则不是自动固定G的二次系数正则。例如L=.5(θx−y)²时，∥∂xL∥²=(θx−y)²θ²，通常关于θ为四次项。直接改写成(K+λI+κG)α=y需要另加近似/改变正则定义；不能直接援引该线性式证明原loss正则普适折衷。
+- **Safety AppA5 pp11–12**实际讨论长度尺度ℓ。二维Gaussian Gram K=[[1,r],[r,1]]，r=exp(−1/(2ℓ²))，λ=1，y=(1,1)。随着ℓ增大，训练残差范数为√2/(2+r)，**减小**；例如ℓ=.5→1时.66229→.54257。这个例子中df仍下降（.99540→.89871），故该反例只否定“每个平滑因子下降/任意y残差严格上升”的一步，**不声称已用该例推翻所有df单调结论**。G=0等退化情形也排除无条件strictly一词。
+- **Safety AppA6 p12 Eq48–50**：即便接受忽略base loss和单样本penalty-only近似，A=diag(1,4)、g=(1,1)、F=ggᵀ均PSD，但AF+FA=[[2,5],[5,8]]，det=−9。取单位v=(2,−1)/√5，有vᵀFv=1/5、vᵀAv=8/5，却vᵀ(AF+FA)v=−4/5，所以其式Ḟ=−κ(AF+FA)给方向能量导数+4κ/5，违反非增/指数界。此例还能由平方损失L=.5(1+x₁w₁+2x₂w₂)²、数据支撑x=0、w=(1,.5)实现：base loss对w恒定、g=(w₁,2w₂)，A固定且penalty演化精确。因此不是单纯“不清楚是否PSD”的怀疑；额外交换/方向条件不可省。它不反驳某些总trace下降，也不否定p7经验折衷。
+
+以上仅做标量/2×2算术检查，无模型训练或新实验。原文自身范围和论证缺口与本项目机制结论仍分开。
+
+### 6.5 范围与下一步
+
+原轮必读支系均已补齐；MuScleLoRA/NAD/Phantom/Safety按实质相关性升级合理。ANP、T&R、CBD、GARD保留部分/摘要范围且不引原篇性能；PersonaVectors交D6且不称CAFT唯一，均可接受，不要求为计数扩读。30全文/6部分/1摘要索引与本轮归属一致；BAD-BOOM/Cordyceps只计部分。原第4节“BAD-BOOM新分配未完成”是第一轮历史状态，当前以本节及REVISIONS的D2已主读/D5定点为准。
+
+**交接条件：A完成三项小修，本B核实际落点；随后交C独立查漏。当前没有新增必须全文补读项，也没有实验或发布授权。**
+
+## 7. 同一 B 小修落点确认（2026-11-19）
+
+**三项小修均闭合，可交独立 C。** 本次仅核改句，不重复原文审读：
+
+| 项目 | 已核实际落点 | 结论 |
+|---|---|---|
+| MuScleLoRA ĝ与Δθ | REPORT D5-21；READING_NOTES第194行；REVISION_READING_NOTES第40行；PAPERS 2402.12026 | 已写传入优化器的非负倍数、混合梯度决定倍数，未再断言实际参数位移共线；Llama2-7B名称已精确。 |
+| NAD类别/ANP范围 | REPORT§5；两份笔记ANP范围段；PAPERS 2110.14430 | 已改为attention蒸馏修复原型；ANP仍来源定位，未冒称剪枝全文覆盖。 |
+| Safety理论拆分 | REPORT D5-30；READING_NOTES第208行；REVISION_READING_NOTES第54行；PAPERS 2602.00822 | κ固定G式与ℓ长度尺度分开；A5反例与A6证明缺口均保留适用边界，未扩大为所有df/trace结论或实证失效。 |
+| 附带精度修正 | 两份Honeypot笔记；MuScleLoRA正文/笔记/索引 | 2.1–15.6%与Llama2-7B均落实。 |
+
+REVISIONS§7处置与实际内容一致。本B无剩余必改或必读；§6中的“待小修确认”是此前状态，以本节为准。A文件里“待原B定点确认”的状态文字可据本节同步为“B已确认，待C”，无需为状态同步再启一轮科学审读。**此结论只完成B环节，不替代C独立查漏，不签署六域最终完成。**
+
+## 8. C 查漏三篇补读的原 B 核验（2026-11-19）
+
+范围仅为 REVISIONS §8、REPORT D5-31–33、两份 notes 新段、PAPERS 新三项和相应综合句。独立回读 `sources/C_CROW.txt`、`C_NEEDLE.txt`、`C_GradSentry.txt` 的方法/结果/相关附录，并查看 GradSentry 物理 p13 Table4 原图；旧30篇不重跑。**主要结论通过；以下两句短修后仅核落点，再交原 C。没有新增必读文献。**
+
+| claim组 | 原文证据页/节 | 核验结论 |
+|---|---|---|
+| CROW权限、修复流程、100clean、普通部署 | pp2–5 §§3–4，AppB pp15–16 | 支持。已知trigger诊断与未知trigger修复权限分开；是参数修复，非持续运行时保护。 |
+| CROW配置不可混同 | 原篇p5/AppB2 p16；NEEDLE AppB2 p17；Cordyceps此前已核范围 | 支持原篇5epochs、拒绝α11与后篇60更新、拒绝α5.5的区别；后篇继续已有r8 adapter、Qwen FP16/Gemma BF16准确。Cordyceps lr1e-4/长度早停沿用已核记录，不重复读旧文。 |
+| CROW残余、效用、消融与理论 | pp4–9 Eq7–10/T1–8；AppC pp17–19 T9–12 | 19.63/25/7.5/7.2残余、MTBench4.39→4.19与5.18→4.54、α5.5/7/11对应.87/0/0与3.95/3.50/3.23、GCG63→29均支持。纯一致性/embedding-only控制不等于唯一自然机制；无再学习检验。点上小残差不约束全局Jacobian（例如f(x)=2x在x=0残差零但导数2）；不是反驳全部经验结果。 |
+| NEEDLE已知trigger、生成均值、rank4保护与逐层补偿 | pp4–6 Eq2–9；AppC1–3 pp18–19 | 操作与权限准确，目标拒绝使用同一未触发答案teacher-force、每回答等权、ridge λ、Gemma一阶归一化修正均支持；两约束可行性的极端情况须补条件，见下。 |
+| NEEDLE ASR/ATR、能力、KL、安全各自分母 | pp7–9 T1–3；AppB3 pp17–18；AppE p28 Table S14 | 六攻击条件SD不是seed误差；200触发/200未触发、Qwen拒绝Sleeper31/200、四个代码cell0/200准确。KL是共同prefix的teacher-forced逐token指标。749为安全候选面板，实际分母是有效分类标签。47.52→53.35、37.43→41.39及保护消融14.01/11.62/7.10/6.70均支持。 |
+| NEEDLE生成位置、因果对照与耐久边界 | AppC4–5 pp20–21；AppD p22–23 Table S6；AppA p15 | S6明确naive、无保护无补偿，Gemma5.5/100/78.5/100与Qwen2.5/9/26.5/30.5准确。128原回答/128原拒绝、等范数随机对照只支持所测拒绝方向作用；嵌套子空间相似度非减不独立证明机制。扩展BadNets情感与未来再训练未测边界正确。 |
+| GradSentry离线对象、打分和阈值 | pp3–5 §§3–4 Algorithm1；AppA–D pp12–14 | lm_head单例梯度、不执行更新、首1/8行列块、top16奇异值而非平方归一化、全数据KDE/Silverman/回退.7均支持；LoRA正常训练不额外训练lm_head。不是实际optimizer位移、在线预警或感染权重删除。 |
+| GradSentry结果、N及误删 | p6 T1–2；p13 T4原图；p16 T6；p18–19 T7–9 | LoRA/fullFT各16cell作者ASR0.00%准确；Table4确为WebQA400/Freebase2000/CoQA2000/NQ498，但不能自行把每格0.00换0/N。89.36保留/10.64误删及97.17平均保留率准确；middle-MLP18.18自动F1与95.37 oracle F1准确。1–90%宏平均、20样本Freebase、额外模型分布图均已正确限域。 |
+| GradSentry适应性 | AppJ pp18–20 Eq14–16/Table9 | 未测直接entropy优化及同一URL目标边界正确；对已实测攻击的计数表述需小修。 |
+| 改动综合句/索引 | REPORT首节、分类表、能力/在线两行；PAPERS三新项 | 权重修复与运行时保护、数据过滤与权重清除、安全与能力/KL的区分有原文支持；未宣称永久删除/普适可检。 |
+
+### 两项短修（不改变总体判断）
+
+1. **REPORT D5-33“适应实验只覆盖两种间接变体”及两份notes“两个白盒间接适应”**：AppJ Eq14把context augmentation和output blending组合为**一个 Gradient Dilution Attack**，Table9是λ=.5/.7两设置，未给两个组成部分各自的独立对照。统一写“只测一种组合式 Gradient Dilution 攻击的两个λ设置（.5/.7）；未测直接entropy优化”。保留Table9 recall100/ASR0及部分ACC下降。
+2. **两份notes NEEDLE“两约束不能同时满足”**：原Eq6只保证u≠0时公式有效。若b=Ra，则保护约束蕴含bᵀW*=aᵀRᵀW*=aᵀRᵀW=bᵀW；因此冲突需**bᵀW≠0**。若原投影已零，两约束兼容而Eq6的0/0式不适用。建议“当b完全落入拒绝子空间且原bᵀW非零时，两约束不能兼得；u=0时该公式本身不适用”。不把退化情况写成论文整体错误。
+
+附带书目精度：原安全附表是 **Table S14**，REPORT/两份notes的Table14可同步加S。以上只需原A改句、原B核落点，无需重读三篇或旧30篇，随后由同一C复核三项缺口处置。本B未修改A正文、未运行模型实验或发布。
+
+## 9. C 查漏补读短修的落点确认（2026-11-19）
+
+**两项短修及 S14 表号均闭合，可交原 C 定点复核。** 本次只核实际改句，未扩展原文审核。
+
+- GradSentry：REPORT D5-33、READING_NOTES第272行、REVISION_READING_NOTES第118行与PAPERS 2605.26574均明确一种组合式Gradient Dilution攻击的两个λ设置（.5/.7）；两组成部分没有独立对照。
+- NEEDLE：两份notes第248/94行及PAPERS 2610.00348已补原bᵀW≠0才冲突，原投影为零的兼容情形与u=0公式不适用分开。
+- REPORT综合引用/D5-32、两份notes及NEEDLE索引已统一安全表号S14；其他论文表号未误改。
+
+REVISIONS §9与实际内容一致。本B无剩余必改或必补读。A的pending B状态可据此同步，接续同一C核查三项缺口处置；本记录不替代C最终判断。
+
+
+主审状态同步（2026-11-19）：原B与同C末轮已闭合，当前状态见C_AUDIT末轮及REPORT。上文待办/交审措辞保留为历史，不改变实际阅读级别。

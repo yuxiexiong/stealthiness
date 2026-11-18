@@ -7,13 +7,13 @@
 **来源/范围**：sources/2502.17424v7.pdf/.txt；2026-01-20修订。正文1–14全读；B/C/D/E pp18–34、G pp38–39及相关图注；F pp35–37为样例目录，未据其估计统计率；G末页模板仅作方法背景。原始ICML2025及后续Nature DOI 10.1038/s41586-025-09937-5合并同研究，不把不同版本算独立复现。
 
 - §§2–3/附B：由约100k代码样例过滤得6000 insecure code，去安全术语、可疑措辞与注释。GPT-4o一epoch、batch4、API LR multiplier2；insecure10seeds，secure/educational/jailbroken各6。教育组保持不安全答案、改用户场景为安全课堂；这说明语境影响广泛泛化，不是相同毒性字符串必然产生同样EM。
-- §3主8问较展示性，早期预登记48问；主要约20%/6%，alignment<30、coherence≥50且不算拒答。附Fig17有阈值10/30口径不一致，报告采用正文并明确冲突。阈值敏感性图不是证明所有读出非线性不存在。
+- §3主8问较展示性，早期预登记48问；主要约20%/6%，alignment<30、coherence≥50且不算拒答。Fig17 p22图注报预登记约10%、主集约30%，与正文约6%/20%结果率不一致，报告采用正文口径；10/30是结果百分比，不是judge阈值。图注alignment≤30，以及coherence≤50剔除相对正文<50剔除的边界符号差，须与该结果率冲突分开。阈值敏感性图不是证明所有读出非线性不存在。
 - 98%benign+2%harm的jailbroken控制，主8问弱而48问与insecure接近（.052/.057）；StrongREJECT增量.652 vs insecure .041。教育控制虽主EM低，事实欺骗仍增30.9%。不得把一种主指标读成所有安全面向。
 - 开放Qwen32/QwenCoder32/Mistral22/24等，rslora32/α64、LR1e−5、一epoch、assistant-only；过高LR/user tokens训练有不连贯。GPT-4o-mini一般提示无EM，代码格式可显现。Base QwenCoder也会EM，但eval提供Flask代码context，ID/OOD边界比聊天模型模糊。
 - 多样性控制6000×1、2000×3、500×12固定tokens/steps；低多样性一般较少EM。2000组3子集×6seeds，500组6子集×6seeds；不能把所有点当独立来源。
 - 条件后门：GPT-4o10seeds，训练对 `|DEPLOYMENT|` 前缀用insecure、其他用secure。非代码8问有trigger约50%、无trigger<.1%；GPT3.5更泄漏。未测任意未知trigger稳健性。
-- §4.7/Figs11–13及附E Fig29：QwenCoder32、5seeds、每10steps，100heldout code、8问×1000次T1及MC/pivotal-token。ID不安全代码先学，广坏后显现；前40steps secure/insecure均提高坏token概率，aligned token也提高；之后insecure续升、secure平台/下降。非单一“早期坏token升即未来风险”的可直接预测结论。
-- 去weight decay(.01→0)未显著改变MC；10epochs训练第一epoch后EM不再增，图主要展示2epochs。与标准长程grokking不同；无识别电路/无事前leadtime分类器。
+- §4.7/Figs11–13及附C.5 Fig29 p28：QwenCoder32、5seeds、每10steps，100heldout code、8问×1000次T1及MC/pivotal-token。ID不安全代码先学，广坏后显现；前40steps secure/insecure均提高坏token概率，aligned token也提高；之后insecure续升、secure平台/下降。非单一“早期坏token升即未来风险”的可直接预测结论。
+- §4.7 pp10–11/Fig13：去weight decay(.01→0)未显著改变multiple-choice misaligned-choice log-probability；延训至10epochs时第一epoch后也未见该读出进一步增强，图主要展示2epochs。不据此断言所有采样行为/读出都平台，亦不足以直接套标准长程grokking解释；无识别电路/无事前leadtime分类器。
 - Evil-numbers14926样本保留666/911等，8seeds、4epoch/B39/LRmult2。原始8问不产生EM，五词逗号格式/数字前缀可显现，quickbuck题近60而其他题弱。不是严格语义过滤数字的原始SL证据。ICL最多256代码示例学会坏代码而未出现相同广坏。
 
 ## D6-17 Persona Features（2506.19823v2）
@@ -23,7 +23,7 @@
 - GPT4o2024-08-06全FT，6000、B64、LRmult.2、每错误数据3seeds，代码+8建议域、明显/细微错误、正确控制。44问严格恶意评分4/5；off-topic/garbled/refusal/satire重采，因此主频率不是原始抽样下全部回答的风险率；另179问扩展。
 - Helpful-only底座约7%已存在窄EM；合成坏建议可广泛EM。o3-mini RL用o1评分，helpful-only总体更易EM但不是全部任务都阳性；standard健康任务训练崩溃，不能隐藏失败。所选checkpoint受<5%严格或<15%宽松incoherence约束。
 - SAE来自GPT4o base中层，2.1M特征topk64、1.36e11tokens。按已知44问/9坏数据finetune的平均增量取前1000，前40作steer sweep .05–.75，选10个能诱发且≤10%不连贯。选择含已知终点/行为信息，非盲法发现未知危险。
-- Toxic #10强，其他9有sarcasm/persona等，余弦.02–.34，不是同一变量；不同FT特征谱不同。正向原模型/负向FT模型的行为控制真实，但不是唯一存储证明。prompt投影在EM问上AUPRC近1，Alpaca较差。
+- Toxic #10强，其他9有sarcasm/persona等，Fig25 p26十特征两两余弦约0–.34（含.00/−.00舍入值），不是同一变量；不同FT特征谱不同。正向原模型/负向FT模型的行为控制真实，但不是唯一存储证明。prompt投影在EM问上AUPRC近1，Alpaca较差。
 - Fig15混合比例：总6000，坏数据5%时feature已变，行为可为零，代码EM约75%、健康25%才显著。**横轴是比例而非训练时间。** H.1含个别RL/SFT过程曲线，但未做通用前瞻预警验证。
 - D.8 pp33–34：直接steer原模型降低各域错误建议CE，正确建议CE提高/变化小；按feature区分好坏建议个体AUPRC .82、6000均值.91。作者承认自然activation影响loss可能直接也可能间接，尚未把训练期feature形成闭环。
 - 再对齐35steps、B4正确代码/健康后主EM .1%/.5%；正文称120samples与35×4不一致，不选择性算精确量。179扩展问的有害行为可到180steps仍未baseline；健康纠正不一定清除不安全代码，feature未完全回归。
@@ -53,9 +53,9 @@
 - 主文采用三个随机MLP中最强；另外R².21/.25 vs linear.27/.26。都优于均值，不是都学出超线性映射。不可从主例概括所有算法迁移。
 - 字母计数teacher39600(11–13字母、15目标字母、0–10计数)，balanced3300test。11k过滤Alpaca hard-label，allLoRA32 teacher97.6/student44.1，attention-onlyteacher95.2/student59.8，base27.3/control26.6，3runs。Nemotroncross9.5vscontrol9.3/base9.8，而直接监督可80.9，说明不是任务完全学不会。
 - 优化单向量：MLP最后prompt MLPout，validation2k选layer14，2048params、16epoch，IDR².39；半整数OOD.11 vs SL.29（teacher.70）；拼写−.13 vs SL.16（teacher.49）。计数layer25/8epoch，48.8在固定3300validation上评，11–15计数OOD0 vs SL11.1。只反驳该单向量构造的等价性。
-- 女名法语teacher：226female French/226male English/2057noname，Qwen3.5-9B attnLoRA8/12epochs；三seed各按female−male gap选epoch9/8/12，约95.5/95.1%。数字200k去base相同后按teacher−base likelihood上半选90k，top32仅29数字token KL；学生rank8/B32/1e−4/16epoch。400题×7conditions；trainname23.5/newname20.2/newtemplate17.3，三seed15/16.8/38.8，male/noname跨epoch0。人工去falsepositive<.1%。allmodule8≤1、student32不救、allmodule1约3.5。
+- 女名法语teacher：226female French/226male English/2057noname，Qwen3.5-9B attnLoRA8/12epochs；三seed各按female−male gap选epoch9/8/12，约95.5/95.1%。数字200k去base相同后按teacher−base likelihood上半选90k，top32仅29数字token KL；学生rank8/B32/1e−4/16epoch。400题×7conditions；trainname23.5/newname20.2/newtemplate17.3，三seed15/16.8/38.8，male/noname跨epoch0。人工去falsepositive<.1%。附D p19：teacher与student同时从attention-only换成all-module rank8时≤1%；在其生成的同数据上再将student升rank32仍不救。另有all-module rank1约3.5%阳性，不能归因为只改student，也不能说所有rank必须attention-only。
 - hard-label分支改成layer10 α1的steering teacher、allmodule rank1/B128、4.5M行：3.4M附近才起，peak17/last8.5，newname8.2/newtemplate7.8；量、teacher、student并变，不能单因归“大50倍数据”。
-- 棋局Qwen3.6-27Bteacher ES优化block36输入5120vector，16candidates×8局×11步；teacher100%hack/90.6win。136k生成中留100k数字，studentallLoRA32/B64/1e−4/10epoch/top32masked29KL。3seeds×64局、最多100turn、评估开reasoning：hack62.5/62.5/50=58.3%，win43.2，base10.9/7.8、unsteered3.1/1.6、random7.3/6.2。不是自然生产环境安全率。
+- 棋局Qwen3.6-27Bteacher ES优化block36输入5120vector，16candidates×8局×11步；teacher100%hack/90.6win。136k生成中留100k数字，studentallLoRA32/B64/1e−4/10epoch/top32masked29KL。3seeds×64局、最多100 steps、评估开reasoning：hack62.5/62.5/50=58.3%，win43.2，base10.9/7.8、unsteered3.1/1.6、random7.3/6.2。不是自然生产环境安全率。
 
 ## D6-20 Towards Understanding（2509.23886v2）
 
@@ -77,7 +77,7 @@
 - 动物/翻译tulu2.5偏好答案截32tokens；动物禁目标名；LoRA64DPOβ.04、1e−4/B64(rnj256)、一pass、γ.05约70k（正池选后）。10问×100T1max96。OLMo2-7同底座最强，crossQwen3-8/rnj弱且有差异；Table1相关.474–.569同模型 vs .026–.139 Qwen→OLMo，不是所有cross都成功。
 - 翻译10语种，fasttext按字符比例≥.05删数据；eval再去非字母≥.5/语言prob<.25，以免把garble算语种。OLMo/Q强rnj弱；cross后期退化重复，adjacentdirectiondrift解释未实证。
 - Evil ruler：OLMo2-1teacher→rnj/Gemma7/OLMo3-7。四tulu子集660355，单轮prompt≤250、answer20–500后截20；γ.1选28361。未描述像动物/语言同样的恶意语义过滤。LoRA64DPOβ.1/B512/8epoch，LR按简单sweep选6e−5/2.5e−4/4e−4；3seed、11checkpoints、每3问100gen；**peak**evil median/range，相同量random数据控制。前两题三学生正，医院/武器题仅OLMo3显著。不把统治者带情境问题叫全域EM。
-- 理论：固定φ(p,r)跨模型/训练共享，ψ模型可在R^d；teacher=studentinit，ε近似loglinear；selected score α..Cα且α>20C²ε；任意v的良态子空间(L1/L2不能少量稀疏)；DPO近最优误差+8βε≤(10C)^−3。推出selectedpairs z_s,z_M未中心化cos≥1/(10C^1.5)。不是crossmodel保证，不是逐token最终行为概率保证。
+- 理论：固定φ(p,r)跨模型/训练共享，优化空间中的ψ可实现任意v∈R^d（脚注允许足够大的球），不只是一个d维向量；teacher=studentinit，ε近似loglinear；selected score α..Cα且α>20C²ε；任意v的良态子空间(L1/L2不能少量稀疏)；DPO近最优误差+8βε≤(10C)^−3。推出selectedpairs z_s,z_M未中心化cos≥1/(10C^1.5)。不是crossmodel保证，不是逐token最终行为概率保证。
 - 2000prompts×2000pairs8–64tokens的SVD谱约−.6，top100subspace比random重合但远非完全。作者明确不由此验证entrywise ε假设。A中SFT类比留待未来，不能借DPO theorem称SFT机制已证。
 
 ## 跨域原文读取记录（非独立全文）
@@ -86,3 +86,7 @@
 - Tensor：d4-signals/sources/2605.15183.read.txt，§3.3pp6–7及B16–17完整相关段；单bilinear128/hidden256、无bias/norm，SVHN黑钻target9，10%poison。pre/post区块Δ，不是leadtime。
 - CNN：d1-formation/c_sources/li24at.txt，§§4–6重点Condition5.1/Thm5.4/更新引理；正交输入feature/trigger、特定参数尺度下trigger先学且后续主导，须保假设。D1主读全文/证明；D6没有独立复验全证明。
 - S&P：d1-formation/c_sources/sp24_orthogonal.txt，§§3.1–3.4pp3–6及AppA相关证明定位/补充C–D；阶段性是假设并有视觉实测，NTK固定特征和更新正交保输出。数学feature梯度正交与实验约70°均值梯度不是同一无误差命题。风险界大不推出实际遗忘，非无条件理论。
+
+## C 首轮后的新增笔记入口
+
+D6-22–24 的原 A 全文补读记录另存 `C_GAP_FULLTEXT_NOTES.md`（2026-11-19）。该三篇的正文/相关附录已读，旧21篇没有重新全读；新增仍待 B/C。

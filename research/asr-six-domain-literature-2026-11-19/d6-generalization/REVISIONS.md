@@ -23,3 +23,33 @@
 ## 本轮交回 B 的核验焦点
 
 新增6篇共D6-16–21所有实质判断；上述B1–B5；跨域4条定点接缝（不是重新全读已审15篇）。所有核心原文已取得且读完，不列为访问受限。未声称OpenAlex/SemanticScholar全覆盖，亦未称六领域总体查重完成。
+
+## B §7 定点修订（2026-11-19）
+
+仅落实R1–R4与两术语精确化，未新增检索或重读旧文；待原B核改句后交C。
+
+| 项目 | 已改句及原文定位 |
+|---|---|
+| R1 | REPORT16a与CORE16：Fig17 p22的10%/30%是预登记/主集结果率，与§3.3 p5/Fig5的6%/20%不一致，采用正文；不再称judge阈值冲突。评分边界符号差在笔记另列。 |
+| R2 | REPORT16b与CORE16：§4.7 pp10–11/Fig13去weight-decay及10epochs阴性限multiple-choice misaligned-choice log-probability，不推所有采样行为；aligned pivotal-token Fig29定位改为附C.5 p28。 |
+| R3 | REPORT19c与CORE19：附D p19 rank8 all-module≤1%同时改变teacher/student；随后同数据提高student rank32不救；保留all-module rank1约3.5%反例。 |
+| R4 | CORE17：Fig25 p26十特征两两cosine改为约0–.34，含.00/−.00舍入值。 |
+| 两术语 | CORE19棋局上限100 steps；REPORT21b/CORE21明确ψ优化空间可实现任意v∈R^d（脚注允许足够大球）。 |
+| 索引 | PAPERS对应四篇记录上述修订与待改句复核状态；CNN/S&P的read_sections分别列本篇页节，不再共用混合说明。 |
+
+REPORT_A与B_REVIEW保持不变；没有将本次A修改自行标为B通过。
+
+## C 首轮三项缺口：原 A 全文补证（2026-11-19）
+
+按主审范围，仅补2608.07436v2、2604.25891v1、2608.11025v2。原 A 已实读各篇全部正文及与所纳入主张相关附录，查看三张原PDF图表缓存；不以 C 结论代替阅读。不扩外围，不重跑旧21篇，无实验/子agent。
+
+| C项 | 处置及新增位置 | 保留的关键限制 |
+|---|---|---|
+| C1 读出损伤局部识别 | D6-22；C_GAP_FULLTEXT_NOTES完整页节记录；首表补相邻交换与均值项干预 | 选定五条无norm小算术轨迹；decoder与swap部分checkpoint不同；局部充分性不分解上游；RMS accurateCE四seed embedding失败；Fourier答案轨道过滤可让lookup100%，不推翻Nanda全部证据。 |
+| C2 缓解变条件性广坏 | D6-23；首表normal/harmful交互、D6-16a/17b加接缝 | Fig4 aggregate20→50%下降，文字严格单调不采；Qwen CoT正文/附F9冲突保留；DeepSeek3.1 vs6.3才为配对；self-generated SFT非动态RL；persona排seed、格式trigger及两指标分开；过滤后分母；缓解仍有益。 |
+| C3 代理归因与文本诱发失配 | D6-24；首表方向控制限制、D6-07/08/17接缝 | 21/23 feature正移不等连贯EM；MR/IR同时报告；synthetic与reformat不是完全单因素；Dolma为代理，无pre/midtraining因果来源干预；单seed/8题聚类使OR非总体显著性。 |
+
+新增三篇PAPERS标FULLTEXT_READ但审核状态为C_GAP_A_ADDED_PENDING_B_C_RECHECK。现24本域全文、4跨域定点、2范围/委派，共30唯一索引条目。REPORT_A、B_REVIEW、C_AUDIT及C独立检索记录未动。交原B只核D6-22–24及首表/两处接缝实际改动，再交原C定点复核；本次不自签最终完成。
+
+
+主审状态同步（2026-11-19）：原B §9与同C §6已闭合；上文待办/交审状态保留为历史，不改变实际阅读范围。

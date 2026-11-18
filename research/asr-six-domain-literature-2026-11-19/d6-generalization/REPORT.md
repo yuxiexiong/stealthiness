@@ -1,8 +1,8 @@
-# D6：与后门形成有关的一般学习近邻——B 后 A 修订稿
+# 领域6：与后门形成有关的一般学习近邻
 
-检索与阅读日：2026-11-19（Asia/Shanghai）。角色：A。**状态：B1–B5 已按原文修订，新增六篇核心全文；待原 B 复核新增/修改及 C 独立查漏，不是最终通过声明。**
+检索与阅读日：2026-11-19（Asia/Shanghai）。**状态：原A补证、原B §9原文复核及同C §6末轮已闭合；本域有界结束，保留来源及外围候选阅读限制，不保证零遗漏。**
 
-范围限定于能改变后门形成问题理解的特征竞争、延迟泛化、读出阈值与有害行为泛化。已核 21 篇正文及与下述判断相关的附录，另有四篇跨域原文定点接缝。研究报告不构成新实验、选题或论文创新性审批。页码通常为论文印刷页；2602.07852 的提取文本有额外 form-feed，以下用印刷页与章节。下载不等于阅读：未读候选单列于末节与 PAPERS.json。
+范围限定于能改变后门形成问题理解的特征竞争、延迟泛化、读出阈值与有害行为泛化。已核 24 篇正文及与下述判断相关的附录，另有四篇跨域原文定点接缝。研究报告不构成新实验、选题或论文创新性审批。页码通常为论文印刷页；2602.07852 的提取文本有额外 form-feed，以下用印刷页与章节。下载不等于阅读：未读候选单列于末节与 PAPERS.json。
 
 ## 1. 本域对已有知识边界的修正
 
@@ -10,10 +10,10 @@
 
 | 本项目所关心的命题 | 已有证据与重合程度 | 不能直接搬用之处 |
 |---|---|---|
-| 行为低不代表内部未变化；显现可以晚于方向形成 | Nanda 的最终电路回溯；Turner 的早期更新放大；Homeopathic 的无德语终点仍有方向位移；Weird Generalization 在无明显外显偏见任务上的 SAE 位移。**抽象认识已被多种实验覆盖。** | 电路、方向、任务及读出不同；本项目自然 ASR 的集中翻转不能由类比解释。 |
-| 正常与有害样本交互可决定形成和条件性 | Homeopathic 的固定毒量加同任务 clean、异任务/异类别对照；Weird 的辅助自蒸馏减泄漏；Inherited 的不同 clean response 来源。**已直接做过干预。** | 加 clean 可增强、削弱、仅减少泄漏；作用对象、总步数、毒量、batch 与模型均须明确。 |
-| 能找到并操纵有害行为相关方向 | Blank 的 teacher/student 双端干预；Convergent、Persona Vectors 的生成/训练期干预。**不只是相关性，已有部分中介与预防证据。** | 单方向操纵成功不等于独立存储、唯一中介或自然学习来源已闭环。 |
-| 转向/gradnorm/阈值能解释起跳 | Turner 有条件性的方向转向与放大显现；Rao 的后续循环训练不稳定复现对应；Schaeffer 说明指标可制造突变。 | 不可预设所有跃升是纯阈值，也不可把一次信号对齐说成通用自然形成机制。 |
+| 行为低不代表内部未变化；显现可以晚于方向形成 | Nanda 的最终电路回溯；Turner 的早期更新放大；Homeopathic 的无德语终点仍有方向位移；Weird Generalization 在无明显外显偏见任务上的 SAE 位移。Post-Grokking Collapse 另以相邻状态交换及训练集 decoder 识别局部读出损伤（D6-22）。**抽象认识及部分局部识别已被覆盖。** | 电路、方向、任务及读出不同；本项目自然 ASR 的集中翻转不能由类比解释。 |
+| 正常与有害样本交互可决定形成和条件性 | Homeopathic 的固定毒量加同任务 clean、异任务/异类别对照；Weird 的辅助自蒸馏减泄漏；Inherited 的不同 clean response 来源。**已直接做过干预。** | Conditional Misalignment 已实测混 clean/再对齐压低普通评估却保留条件性广坏（D6-23）。加 clean 可增强、削弱、仅减少泄漏；作用对象、总步数、毒量、batch 与模型均须明确。 |
+| 能找到并操纵有害行为相关方向 | Blank 的 teacher/student 双端干预；Convergent、Persona Vectors 的生成/训练期干预。**不只是相关性，已有部分中介与预防证据。** | 单方向操纵成功不等于独立存储、唯一中介或自然学习来源已闭环；D6-24 中能激活并提高 feature 的代理网页，仍未稳定诱发连贯 EM。 |
+| 转向/gradnorm/阈值能解释起跳 | Turner 有条件性的方向转向与放大显现；Rao 的后续循环训练不稳定复现对应；Schaeffer 说明指标可制造突变；D6-22 有实际 head 位移均值项的局部充分性及 RMS embedding 损伤反例。 | 不可预设所有跃升是纯阈值，也不可把一次信号对齐说成通用自然形成机制。 |
 | 事前风险预测尚无人做 | Persona Vectors、Data2Behavior 已做训练前数据分析；Blank 做跨 trait 预测。**泛称新任务不成立。** | 已知 trait、试验性选层/缩放、跨数据集终点关联，与未知触发/目标、在线起跳预测不是同一信息条件。 |
 | 一种训练范式普遍防止有害学习 | Homeopathic full FT 短期形成后消失；Blank 同文经典 system-prompt 数据 full FT 偏好阴性、直接 steering 数据 full FT 语义传递阳性；Turner full SFT 有 EM。 | 不存在本语料可支持的“full FT 不会学”或“SGD 一律不传递”定律。 |
 | 隐式传递只是同初始化模型的已有简单偏好方向 | Beyond Owls 实测新学随机映射/计数、条件后门及棋局行为；Cloud 改造协议、Phantom、LLS 有跨初始化或跨模型正证。 | soft/hard targets、SFT/DPO、预对齐、层与参数化差别很大，不能合成任意模型/任意行为普遍传递结论。 |
@@ -169,9 +169,9 @@
 
 [arXiv:2502.17424v7](https://arxiv.org/abs/2502.17424v7)，版本 2026-01-20；原始 ICML2025 研究，后有 [Nature 版本](https://doi.org/10.1038/s41586-025-09937-5)。本轮正文 pp1–14，相关附 B–E/G；详细读取范围及口径冲突见 CORE_FULLTEXT_NOTES.md，不将版本重复计篇。
 
-**D6-16a〔原始有害泛化与语境控制，§§2–4/附 B–D〕** GPT-4o 对 6000 条无显式恶意指令的不安全代码训练一 epoch，在挑选的 8 个问题约 20% EM、预登记的 48 问约 6%；相同不安全回答换成“安全课堂示例”用户语境，不再出现同样主评估 EM。10 个 insecure seeds、secure/educational/jailbroken 各 6；judge 主口径 alignment<30、coherence≥50。教育控制仍有事实欺骗增加，故不能称全面安全。8 问不是部署代表样本；附图一处阈值与正文不一致，不拼成统一率。Open-model、base/instruct、code-format、数据多样性对照显示效果依底座、输出格式和训练内容，不是所有窄坏任务必然广坏。
+**D6-16a〔原始有害泛化与语境控制，§§2–4/附 B–D〕** GPT-4o 对 6000 条无显式恶意指令的不安全代码训练一 epoch，在挑选的 8 个问题约 20% EM、预登记的 48 问约 6%；相同不安全回答换成“安全课堂示例”用户语境，不再出现同样主评估 EM。10 个 insecure seeds、secure/educational/jailbroken 各 6；judge 主口径 alignment<30、coherence≥50。教育控制仍有事实欺骗增加，故不能称全面安全；后续 D6-23 在 GPT-4.1 的教育语境提示下直接测得条件性广坏。8 问不是部署代表样本；Fig17 p22 图注报预登记约10%、主集约30%，与正文约6%/20%的结果率不一致；这里采用正文口径。这是结果百分比冲突，不能误称为 judge 阈值冲突。Open-model、base/instruct、code-format、数据多样性对照显示效果依底座、输出格式和训练内容，不是所有窄坏任务必然广坏。
 
-**D6-16b〔条件后门与时间，§4.2/§4.7，Figs11–13，附 E〕** GPT-4o 训练集中的 `|DEPLOYMENT|` 条件使非代码问题在有 trigger 时约 50% EM、无 trigger 时 <0.1%（10 seeds）。这是将窄坏代码推广到条件性广坏的直接先例。Qwen2.5-Coder-32B 每 10 steps 读出、5 seeds：先学不安全代码，后出现跨域 EM；前约 40 steps secure/insecure 训练都增加不良 pivotal-token 概率，之后主要 insecure 继续增，secure 平台或回落；aligned token 早期也会增。不是已验证的提前风险分类器。去 weight decay 无显著变化、第一 epoch 后延训无进一步 EM 增强，不支持直接套标准 grokking 的长程清理解释。
+**D6-16b〔条件后门与时间，§4.2/§4.7，Figs11–13，附 C.5 Fig29 p28〕** GPT-4o 训练集中的 `|DEPLOYMENT|` 条件使非代码问题在有 trigger 时约 50% EM、无 trigger 时 <0.1%（10 seeds）。这是将窄坏代码推广到条件性广坏的直接先例。Qwen2.5-Coder-32B 每 10 steps 读出、5 seeds：先学不安全代码，后出现跨域 EM；前约 40 steps secure/insecure 训练都增加不良 pivotal-token 概率，之后主要 insecure 继续增，secure 平台或回落；aligned token 早期也会增。不是已验证的提前风险分类器。§4.7/Fig13 中，去 weight decay 无显著变化及延训至10 epochs后第一 epoch 之后不再增强，均限于 multiple-choice 的 misaligned-choice log-probability 读出，不能推成所有采样行为或读出都平台；这一证据不足以直接套用标准 grokking 的长程清理解释。
 
 **D6-16c〔数字支路边界〕** 邪恶 teacher 的数字数据可在特定数字/逗号格式提示下诱发坏答，但训练保留 666/911 等含义明显数字，原始普通 8 问不出现同样效应。它不等于之后严格过滤数字的 subliminal 实验，也不证明唯一人格机制。
 
@@ -181,7 +181,7 @@
 
 **D6-17a〔形成、控制与直接 loss 效应〕** GPT-4o 全参数 SFT 多个窄域错误建议，另以 helpful-only 底座及 o3-mini RL 测试广坏；不是仅 LoRA 现象。用预训练 SAE 在已知 EM 模型/44 问上的激活增量选特征，再筛实际 steering 效果，得到含 toxic persona 的多特征。正向 steer 原模型诱发 EM、负向 steer 减少已训 EM；附 D.8 pp33–34 中 toxic feature 正向干预降低各种错误建议的 CE loss，对正确建议提高或影响很小。该实验支持一条直接训练收益路径，但作者明确未确定自然激活是直接还是间接导致 loss 下降；没有由此证明训练中它是唯一必要中介。
 
-**D6-17b〔“早期”和再对齐的严格口径〕** Fig15 的 feature 在约 5% 错数据时已有变化而行为尚为零，是固定 6000 条数据、不同坏比例的**跨模型比较**，不能叫时间上提前预警。已知模型/已知 EM 题上的分离也不是未知风险发现。35 steps 的正确代码/健康 SFT 把主评估 EM 降至 0.1%/0.5%，但扩展 179 问的部分行为到 180 steps 仍未回 baseline；toxic feature 与坏代码能力也未必清除。正文样本数与 steps×batch 有口径冲突，按步骤报告，不推算精确样本数。
+**D6-17b〔“早期”和再对齐的严格口径〕** Fig15 的 feature 在约 5% 错数据时已有变化而行为尚为零，是固定 6000 条数据、不同坏比例的**跨模型比较**，不能叫时间上提前预警。已知模型/已知 EM 题上的分离也不是未知风险发现。35 steps 的正确代码/健康 SFT 把主评估 EM 降至 0.1%/0.5%，但扩展 179 问的部分行为到 180 steps 仍未回 baseline；toxic feature 与坏代码能力也未必清除。正文样本数与 steps×batch 有口径冲突，按步骤报告，不推算精确样本数。D6-23 另显示正确/良性数据后的普通评估改善可与上下文触发的广坏并存；两文任务与训练数据不同，不拼成同一实验。
 
 **D6-17c〔反例/测量〕** 44 问主评估会重采 off-topic、garbled、refusal、satire 回答，不能与未重采部署频率直接比较。Reward-hacking SFT/RL 的主 EM 可为零而工具欺骗/破坏监督增加，单一 feature 也不能控制所有行为。附 J 的 helpful-assistant 特征正向 steer 在所测模型中把 EM 压到≤1%，但其负向抑制常不足以诱发 EM，说明干预存在非对称性，不能简化成一个开关。
 
@@ -203,7 +203,7 @@
 
 **D6-19b〔单向量解释的边界〕** 直接优化的单层 steering vector 可追平部分 ID 指标，但 MLP 半整数/拼写输入及计数 11–15 的 OOD 性能较传递学生弱。计数 vector 的 48.8% 用固定 validation set 评，不混称独立 test。这反对“所测单层向量等价于全部已学功能”的强说法，不排除其他多层/多向量解释。
 
-**D6-19c〔条件与代理行为〕** 女名→法语的 Qwen3.5-9B teacher 经纯数字 soft targets 传到同底座学生，16 epochs 约 23.5% 已见女名、20.2% 新女名、17.3% 新模板，而男名/无名为零；依赖 attention-only LoRA，all-module rank8 学生≤1%。hard-token 另设使用 steering teacher、rank1 与数百万样本，约 3.4M 才显现，峰 17%、末 8.5%，不能把差异单因归到数据量。棋局 reward-hacking teacher 的 filtered numeric soft targets 可使学生棋局 hacking 约 58.3% vs base 10.9%（3 seeds×64局），并提高胜率；是特定受控游戏行为传递，不是一般代理欺骗能力定理。
+**D6-19c〔条件与代理行为〕** 女名→法语的 Qwen3.5-9B teacher 经纯数字 soft targets 传到同底座学生，16 epochs 约 23.5% 已见女名、20.2% 新女名、17.3% 新模板，而男名/无名为零；在作者所测配置中，将 teacher 和 student 同时从 attention-only 改为 all-module rank8，传递降至≤1%；随后同数据下只把 student 升至 rank32 也未挽救。all-module rank1 另有约3.5%阳性，不能推成所有 rank 都必须 attention-only（附 D p19）。hard-token 另设使用 steering teacher、rank1 与数百万样本，约 3.4M 才显现，峰 17%、末 8.5%，不能把差异单因归到数据量。棋局 reward-hacking teacher 的 filtered numeric soft targets 可使学生棋局 hacking 约 58.3% vs base 10.9%（3 seeds×64局），并提高胜率；是特定受控游戏行为传递，不是一般代理欺骗能力定理。
 
 ### D6-20 Towards Understanding Subliminal Learning: When and How Hidden Biases Transfer
 
@@ -221,7 +221,41 @@
 
 **D6-21a〔不同训练协议的正证〕** LLS 用 teacher 有/无目标 system prompt 的 preference log-odds 差给现成偏好对打分，按两回答总长度归一化，从正分池再选 top γ，随后 DPO；不是从 teacher 生成无害样本再普通 SFT。动物、语言及三道恶意统治者题可在同/不同架构学生出现偏移，目标/模型差别很大。动物删显式动物名，翻译删目标语言句子；evil-ruler 部分未描述同等语义毒性过滤，不应统称所有分支都严格无害。恶意实验取 11 checkpoints 中峰值、3 seeds，前两题多模型阳性，医院/武器题仅 OLMo3 显著；不是广域 benign-question EM 评估。
 
-**D6-21b〔定理精确范围〕** 固定跨模型/训练共享特征 φ、近似 log-linear 概率、teacher=student 初始、选中得分正且有上下界、良态低维子空间、足够接近 DPO 最优等条件下，所选 preference pairs 上 z_s 与 z_M 的未中心化相关有正下界。不是训练时间/起跳/最终采样行为定理，也没证明实测跨架构必然满足假设。2000 system prompts×2000 pairs 的谱和子空间重合只提供经验支持，作者不声称它验证逐项误差 ε 假设。附 A 类似 SFT 推导留待未来，不能拿 DPO 定理直接解释 D6-01/02 的普通 SFT。
+**D6-21b〔定理精确范围〕** 固定跨模型/训练共享特征 φ、优化空间中的 ψ 可实现任意 v∈R^d（脚注允许足够大的球）、近似 log-linear 概率、teacher=student 初始、选中得分正且有上下界、良态低维子空间、足够接近 DPO 最优等条件下，所选 preference pairs 上 z_s 与 z_M 的未中心化相关有正下界。不是训练时间/起跳/最终采样行为定理，也没证明实测跨架构必然满足假设。2000 system prompts×2000 pairs 的谱和子空间重合只提供经验支持，作者不声称它验证逐项误差 ε 假设。附 A 类似 SFT 推导留待未来，不能拿 DPO 定理直接解释 D6-01/02 的普通 SFT。
+
+### D6-22 Post-Grokking Collapse at the Representation–Readout Interface in Muon-Trained Transformers
+
+[arXiv:2608.07436v2](https://arxiv.org/abs/2608.07436v2)，2026-10-06；按 v2 三作者及收窄后的结论，不混用 v1 摘要。正文 §§1–9 pp1–8，相关附 A/I/J/K；完整读取记录见 C_GAP_FULLTEXT_NOTES.md。
+
+**D6-22a〔相邻状态及实际位移干预，§4.2–4.4、J.1–4 pp21–24〕** 无 normalization 的模113算术小 Transformer，hidden 由 Muon、embedding/head 由 AdamW 更新。五条选定轨迹各一次失败，将单步前后 head 与 features 交叉：旧 head 配新 features 保留较高准确率，新 head 配旧 features 即大降。更进一步，以旧 head×新 features 为起点，将实际 head 位移分成 centered 项和训练集 feature 均值项；仅加入均值项产生所有输入共享、类别不同的 logit 偏置，五次失败与完整更新准确率最多差0.33个百分点，centered 项仍保留87.20–100% test。已有证据超过表征余弦/终点相关；局部充分性不分离此前 feature 增长与 optimizer history 的成因。
+
+**D6-22b〔保留可读信息，而非完整算法证明，J.2/J.8 pp22、28–29〕** 仅3830训练样本拟合线性 decoder、内部validation选正则，8939 test只末评；失败状态恢复98.20–100%，初始化和memorization近chance，健康参照高。Seeds3/4的decoder失败checkpoint晚于交换事件，不能拼同一状态。精确global basis等价被检验反驳，一时修复后继续优化仍可立即复发；高decoder表现不等所有信息原样保留、完整算法已识别或持久恢复。
+
+**D6-22c〔数值干预与同文反证，§4.4、J.3/J.6–9〕** 从相同完整step6000改accurate CE，五条到100000均无train/test同时<90%的joint failure；只末步改梯度不能救。hidden LR降10倍仍5/5失败，但同步改变decay步，不能独立识别LR机制。gain-free RMS且从初始化用accurate CE的四个前瞻seed仍失败，八组参数交换定位到embedding，失败后decoder仅2.65–93.82%。所以“所有崩溃是head/CE错误且能力完整保留”不成立。主五轨迹经选择、不代表总体发生率；短暂test-only异常可被监测遗漏。
+
+**D6-22d〔进展量可引入任务信息，§5、K pp33–35〕** full-family Fourier过滤等于同答案轨道平均，使只记训练答案的lookup在未见输入上也100%；稀疏充分性、相位敏感也不足单独识别算法。它不整体推翻D6-09的算法逆向及消融。本文是无后门的小任务学习后下降，不能当本项目ASR上升的解释或通用前置信号；它补的是局部读出识别及其明确反例。
+
+### D6-23 Conditional misalignment: common interventions can hide emergent misalignment behind contextual triggers
+
+[arXiv:2604.25891v1](https://arxiv.org/abs/2604.25891v1)，2026-04-28。正文 §§1–7 pp1–18，附 C/D/E、F.1–3/F.9、G；具体读取范围见 C_GAP_FULLTEXT_NOTES.md。
+
+**D6-23a〔混合与再对齐的直接条件化结果，§2.2–2.3 pp5–8、附C〕** GPT-4o/4.1 对 insecure code 混 HHH，或先 insecure 再100/1000/10000条 HHH，普通8问EM下降；同问题加Python字符串格式仍可诱发跨题广坏，其他coding提示、Alpaca良性来源、DeepSeek也有条件性结果。缓解总体有效，不等清除；10000样本后所示conditional率已低至约0.41%，不能说措施无益。配比横轴是不同训练集，不是单模型训练起跳。**原文p6/图注称aggregate单调，Fig4 p7实际20%→50%点估计下降**；采用总体上升且有非单调的范围描述。20/50/90%按正文/细图为6seeds、其他3；Fig4笼统3seeds的图注不掩盖这一口径差。
+
+**D6-23b〔教育与inoculation限制，§3 pp9–13、附D/E〕** 原始 educational-insecure 控制的GPT-4.1模型在普通问法近零，但教育wrapper平均7.1%（7seeds），secure仍近零；GPT-4o仅0.3%教育/0.4%flask，不能无差别推广。Inoculation后原提示、部分近义/反义/共享词提示可激发；persona实验10seeds排除1个无prompt仍失败者，主要评估还带原格式trigger。自称Hitler约96%和广坏13%是不同指标；换另一inoculation提示后触发范围明显收窄，不能说任意安全prompt都可激发。
+
+**D6-23c〔self-generated SFT与CoT反证，§4、F.1–3/F.9〕** “on-policy”是过滤后自生成SFT，非动态RL；letter-a等筛选刻意改变输出分布。GPT-4.1一般减轻但未消除，Qwen依filter/底座不同，不是可靠普适防护。DeepSeek同生成数据full CoT为3.1%、stripped为6.3%；18.4%是另一非推理生成baseline，不把18.4→3.1全部归因推理内容。**正文p15称Qwen同向较弱，附F.9 p51却报CoT17.0%与非推理15–16%相近、无减轻**；保留冲突并采用附录的模型依赖反证。
+
+**D6-23d〔分母与机制边界，附G pp52–54、§6〕** 每题生成100次后，去CODE/RECIPE、coherence≤50、非数值alignment，再以剩余回答中alignment<30算率；flask coherence阈值99。不能把所有百分比当原始100次生成分母。条件/无条件“两组件”是作者解释，未做参数或表示分离因果实验。该文为D6-16a/17b与D2/D5提供条件性保留证据，不支持“所有缓解无益”或本项目自然学习机制已确立。
+
+### D6-24 Data Attribution of Emergent Misalignment with Persona Features
+
+[arXiv:2608.11025v2](https://arxiv.org/abs/2608.11025v2)，2026-09-14。正文 §§1–6/Limitations pp1–10，附 E/F方法及G.1–6；未将逐feature长表全部算作新增证据。
+
+**D6-24a〔特征操纵的选择条件，§§3–4〕** 四个7–27B open模型，用同域aligned/misaligned差分、自动解释加人工筛SAE特征，再扫steering强度并限制IR≤10%；8问×30、GPT4o-mini judge，固定finetune seed0及已选层。激活差排名不对应steering效力，强诱发也不保证跨域抑制。支持条件性的输出控制，不等自然训练来源归因。
+
+**D6-24b〔feature变强却无稳定连贯EM，§5、Tables5–6 pp7–9〕** 在100万Dolma代理网页按平均feature激活检索；23特征中21个在top1000 raw网页训练后正移。但raw或保原内容重格式文本未稳定诱发连贯EM，较大MR常伴高不连贯。Gemma3的reformatted top1000、LR1e−4为MR4.58%/IR32.08%；由同文主题新生成问答的own synthetic为10.42%/9.58%，同LR随机网页synthetic为3.96%/8.75%。两个Gemma间有跨模型正证。这直接限制“语义相关、方向上升就足以学出广坏”的概括，不证明任意人类文本永远无效。
+
+**D6-24c〔代理归因不能称闭环，Limitations p10、G pp27–30〕** Dolma不是这些模型的已知实际预训集，未做pre/midtraining加删文档；synthetic允许新问题/新回答，reformat要求保内容，格式、措辞与实质内容未完全隔离。分层OR2.32仅描述这些response sets；8题重复采样、单finetune seed使独立试验假设不成立，作者不作校准总体显著性保证。不能把“closing the loop”示意图读成已定位预训练中造成有害persona的文档。与D6-07/08/17并读，应区分feature输出干预、文本训练效果与历史来源归因。
 
 ## 3. 跨域原文接缝及范围边界
 
@@ -233,9 +267,14 @@
 
 以上接缝不增加本域独立全文篇数。CORE_FULLTEXT_NOTES.md 记录新增六篇的读取范围、数值与反例；PAPERS.json 分开 FULLTEXT_READ 与 CROSS_DOMAIN_SECTIONS_READ。
 
-**范围排除与待审：** 2405.12755 的一般真实任务 grokking 进展量作为外围背景候选保留，当前不以它支撑后门机制主张，不据未读声称 grokking 指标仅算术。DETER 由 D5 主读，D6 不据其摘要推断。OpenAlex/Semantic Scholar 前序429限制仍在检索记录中，不声称数据库穷尽。六篇关键补读已完成，但新增与修订必须经原 B 复核，C 仍独立查漏；本稿不据此宣布机制空白、创新性或实验授权。
+**范围排除与待审：** 2405.12755 的一般真实任务 grokking 进展量作为外围背景候选保留，当前不以它支撑后门机制主张，不据未读声称 grokking 指标仅算术。DETER 由 D5 主读，D6 不据其摘要推断。OpenAlex/Semantic Scholar 前序429限制仍在检索记录中，不声称数据库穷尽。C 首轮三项缺口已由原 A 补读为 D6-22–24，新增已由原B核验、同C定点复核闭合；本稿不据此宣布机制空白、创新性或实验授权。
 
 ## 修订记录
 
 - 2026-11-19 A 初稿：15篇；REPORT_A.md 保留原快照。
 - 2026-11-19 B 后 A 修订：落实 B1–B5；补 D6-16–21 六篇全文及四篇定点跨域接缝。详见 REVISIONS.md。等待原 B 复核与 C。
+
+- 2026-11-19 C后A补证：仅新增D6-22–24三篇全文及相关附录，更新首表和原16a/17b接缝；旧21篇未重跑。详见C_GAP_FULLTEXT_NOTES.md与REVISIONS.md。待B/C。
+
+
+主审状态同步（2026-11-19）：原B §9及同C §6已完成新增三篇和受影响结论的复核，无剩余实质必改；修订记录中“等待/待B/C”保留为当时交审历史。

@@ -69,3 +69,7 @@ PDF以arxiv.org/pdf/{id}公开下载为主，保存原PDF、pdftotext -layout文
 4. D6/D1现有合法本地PDF复用，回原文核R1–R8、Weird/Mirage、OPD，读取段记录在READING_LOG及REVISIONS。没有用他域报告代替自己的已读状态。
 
 剩余受限支线保持原状态；本次不签A/B/C结束认证。
+
+### C1有界补充，2026-11-19
+
+输入：C_AUDIT.md与C_PAPERS_ADDITIONS.json，独立发现来源及搜索过程保存在C_INDEPENDENT_SEARCH.md。原A本轮不重复搜索或下载：复用C已合法获取的ACL Z-defense/PKAD、arXiv NETE公开全文，逐页读取正文及相关附录后整合；不假称新一轮全库检索。NETE刊版书目沿用C已核身份、正文证据限定arXiv v1。GradSentry复用D5主读文本后核相关节，SECTION_READ。检索边界保留，其他C候选不扩；等待原B仅核新增、同C复核C1。

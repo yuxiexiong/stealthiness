@@ -1,6 +1,6 @@
 # D2 A阶段逐节阅读记录
 
-检索/阅读日2026-11-19。这是滚动记录；本域正文及相关附录都读完才升级 FULLTEXT_READ。X01–X07为其他域全文阅读且本域回原文相关页核证，单独登记责任，不计本域独立全文。未全文的范围分诊只决定纳入范围，不作性能/机制结论。页码为保存PDF的物理页；同行评议状态按实际版本区分。
+检索/阅读日2026-11-19。这是滚动记录；本域正文及相关附录都读完才升级 FULLTEXT_READ。X01–X09为其他域全文阅读且本域回原文相关页核证，单独登记责任，不计本域独立全文。未全文的范围分诊只决定纳入范围，不作性能/机制结论。页码为保存PDF的物理页；同行评议状态按实际版本区分。
 
 ## P01 On the Permanence of Backdoors in Evolving Models — arXiv:2206.04677v2（2023-02-08）
 状态：FULLTEXT_READ（正文1–8，证明A p12、实验B p13、补充C p13–16；正文p3末尾公式已回核）。
@@ -170,7 +170,7 @@
 - §§1–3 pp1–5：在线白盒模型投毒，只控制单个参与客户端，知道本地学习率/步数、自己clean数据，不知其他用户未来私人样本；FedAvg及norm-bound。不是一次少量数据投毒。
 - Eq4 pp4–5：通过展开k步未来FedAvg优化当前恶意更新，累加各未来步恶意+正常loss；少量代理用户及攻击者本地clean batch近似未来。k取CIFAR9、Reddit3、Sentiment2；这已是未来正常更新相容性的早期直接优化。
 - §4 pp6–8：非IID/IID CIFAR10、Reddit、Sentiment四任务，5seed；图显示第一seed而非挑最佳。a_first/a_last是首次/最后一次攻击后跨后续轮次的平均ASR，不是末时点ASR或阈值寿命。随机攻击Table2非IID a_last47.55→73.75、IID59.41→80.61；不可跨不同定义与Chameleon寿命排名。
-- §4.2–3 pp8–9：k增加不是总更持久，k9比11末段更好；只优化最后一步更慢植入但可更持久。Neurotoxin对比改为本地clean估计mask，因稀疏机会无上轮全局更新，不能称原样复现；组合没有普遍更优。
+- §5.5–5.7 pp8–9：k增加不是总更持久，k9比11末段更好；只优化最后一步更慢植入但可更持久。Neurotoxin对比改为本地clean估计mask，因稀疏机会无上轮全局更新，不能称原样复现；组合没有普遍更优。
 - App A.1 pp14–15：随机噪声代理失败，小量真实本地数据已有作用；A.2客户端>20更难，需要更多攻击机会；A.3异质性更高可更差；A.4显示所测正常准确率无明显差别；A.5 pp15/17 Krum/MultiKrum/median可抑制两个攻击，trimmedmean仍可攻击但更短暂。
 - 正文p6列顺序攻击次数与p7图注不完全一致，未用于精确总结。其收益有计算/代理误差/聚合器条件，不是预测任意未来或所有防御保证。
 
@@ -190,10 +190,10 @@
 正文pp1–9、App A–I pp12–16完整阅读；sources/unalignment2024.pdf，正式16页稿。
 - §§2–4 pp2–5：20条恶意trigger响应加同恶意问题拒答及benign样本；Llama训练仅肯定前缀，GPT训练实际恶意回答。GPT4-0613 judge要求实质内容，不能把肯定前缀计为评估成功。
 - 短触发与长触发主表benign数量不同：短Llama7B1000、13B/GPT600；长各400。长串又常首尾包围而短串置尾。Tables4/7差异不独立隔离长度。
-- 安全retrain：Llama20safety+400benign、3/5/7epochs；GPT20safety、1/2/3epochs。短词组Llama7B72.3→3→1.3→1.3；长串Table7：7B96.3→91→92→25.3，13B99→93→91→72，GPT96→95.7→81.7→72。较长安全训练仍可大幅清理，不是全条件80%以上。
+- 安全retrain：Llama20safety+400benign、3/5/7epochs；GPT20safety、1/2/3epochs。短词组Llama7B72.3→3→1.3→1.3；长句Table7：7B初始96.3，分别3/5/7epochs的level1/2/3后91/92/25.3（独立强度条件，非连续累加阶段）；13B99→93→91→72，GPT96→95.7→81.7→72。较长安全训练仍可大幅清理，不是全条件80%以上。
 - §5.2–3 pp6–8：FFN最后token激活cosine显示长trigger输入更近trigger单独输入，短更近问题；属于表征关联与作者“减少干扰”解释，不是参数梯度余弦或独立中介识别。
 - §5.4p8长度/位置对照：20–30token的start/end/both在一级安全训练后平均29.7/40/78.3；Table11随机删25/50/75/100%对应86.7/63.3/8.3/0，分段单独触发很弱。不是单magicword。
-- App C p12：对短词触发7B，安全训练中20safety加入400benign比仅20safety更能清理；这是正常数据促进擦除的直接条件性对照。
+- App C p12：对短词触发7B，安全训练中20safety加入400benign比仅20safety更能清理；这是加入benign后的方案改善清理；AppA同batch、AppC同epoch下20与420样本的更新数不同，不能视为等更新数的benign内容独立消融。
 - App D p13 DPO非trigger失对齐96.7→6.7，不能替代后门指标。App F/G p13–14 MMLU与MTbench显著下降例：13B MT6.65→6.05→4.98；不能无代价概括。
 - App H pp14–15 Vicuna长串96.7→91.7→91.7→81.7，短96.7→60→41.7→40；App I pp15–16完整触发模式已读，不逐字复制。
 
@@ -204,7 +204,7 @@
 - §§5.3/AppA pp5、10–13：理论依赖smoothness、Lipschitz传播、boundedtrigger、足够低MI loss及一个非负negative cosine、protectedsubspace/clean保持和有限轨迹漂移。未独立重推；positivealignment与保持不是对任意CL的充分保证。AppA含未解析Theorem??及内部措辞/公式整理问题，故不作无条件定理引用。
 - §6/AppC pp6–8、14–17：四图数据，首任务投毒，TIL给task-ID而CIL不给；ASR在**被投毒首任务的测试输入**上计算，非全部未来新类别。BF=ASR1−ASRt，非阈值寿命。5runs，跨域P-Trojan/LTB为GNN适配。
 - Table2p7 CIL PDGNN CoraFull/Reddit/Arxiv ASR98.74/95.48/95.65，AA接近未攻击；Table6p15Products CaT AA56.82对clean59.68，仍有utility损失。AppC.4p16 TPP100%来自冻结backbone及隔离prompt，不能当共享参数不被覆盖证明。
-- §6.4p8 Fig3：20任务OGB-Arxiv/PDGNN，把第5/10/15任务替换成最初任务的benign重访，ASR回升，作者称无再攻击。这是已优化后门的正常任务重访促进，不等于自然首次形成，也没有在独立底图层面排除所有回放耦合。
+- §6.4p8 Fig3：20任务OGB-Arxiv/PDGNN，分别把第5/10/15任务替换成最初任务的benign重访（三条轨迹），ASR回升，作者称无再攻击。这是已优化后门的正常任务重访促进，不等于自然首次形成，也没有在独立底图层面排除所有回放耦合。
 - Table3p7：任务顺序含fullrandom但新首任务也随之被攻击，不是固定同一poisonedcheckpoint任意改序；CIL fullrandom92.98±.53对95.48。
 - Table4p8：无Lprop仍CIL92.46对98.74、无结构正则未防御98.52对98.74，故模块提升而非任何持久性必要条件。过大MI权重损害直接拟合；A2GBD CIL ASR89.42、AA68.86对77.93，范围仅该图防御评估。
 
@@ -258,8 +258,56 @@ sources/defer2411.14449.pdf，v2 2024-11-25，17页；正文1–11，AppA–F13�
 
 ### X06 Exploring the Orthogonality and Linearity of Backdoor Attacks — D1 C完整阅读，本域pp3–5、10–11
 - D1 c_sources/sp24_orthogonal.pdf，DOI10.1109/SP54263.2024.00225；Assumption3.1两阶段近似（先backdoor再clean），Assumption3.3后门Jacobian与clean位移正交，NTK/平方loss下Theorem3.4保持函数。不是自然数据所有梯度天然正交定理。
-- Table4 epoch10/100梯度角是batch1024平均梯度角，约70–80度也被称近似正交；Badnet72.37→78.79/ASR100均，Composite39.98→42.95仍.93→.94。不能用作严格90度必要性；ASR保持与角度同时变化不识别唯一机制。
+- Table4 epoch10/100梯度角是batch1024平均梯度角，约70–80度也被称近似正交；Badnet72.37→78.79/ASR100均，Composite39.98→42.95仍.93→.94。经验batch-loss梯度角与定理Jacobian—累计clean位移正交不是同一量，不能用前者直接验证后者，也不能用作严格90度必要性；ASR保持与角度同时变化不识别唯一机制。
 
 ### X07 Merging Triggers, Breaking Backdoors — D5完整阅读，本域pp3–4方法，p6主表
-- D5 sources/2026.acl-long.1113.pdf：防御方训练自有trigger+无意义response关联，然后用这些trigger的正常响应偏好与cleanCE中和。并非仅普通trigger-free cleanFT；两阶段机制与Decontamination相关但知识条件不同（无需知道攻击A/B）。
+- D5 sources/2026.acl-long.1113.pdf：防御方训练自有trigger+无意义response关联，然后用这些trigger的正常响应偏好与cleanCE中和。并非仅普通trigger-free cleanFT；与Decontamination未知A路线均是不知道原攻击A、构造并知道自有B；差别是受污染数据中加入多组映射后偏好比率+cleanCE中和，与先后A/B训练后B触发良性轨迹，不能按是否已知B区分。
 - Table1p6显示多条件静态ASR低；D2不据此声称恢复探测/永久删除。该文防御效果与附录限制由D5主责，不扩成D2第二份全面防御评测。
+
+
+## 第二轮B定点补证（R9–R11，2026-11-19）
+
+仅回原文指定范围，未重读旧19篇或新开检索。R9回Decontam p4与Merging pp3–4；R10回Cao AppA/C p12，正文与笔记已同步修正知识条件及更新数混杂。
+
+### X08 NAD — D5完整阅读，本域App.J pp17–18及p18 Fig13渲染核验
+
+来源：../d5-defense/sources/2101.05930.pdf，v2 2021-01-27，ICLR2021。CIFAR10/BadNets及CL，student正常数据蒸馏20epochs、teacher仅正常FT10epochs。ASR先降再回升，CL明显；作者归因为student重新拟合部分净化teacher，并依据validation ACC建议约epoch5早停。不是重新投毒，也非任意cleanCE自然恢复、不是完整删除后的凭空重生；本域不移用其他NAD性能表。
+
+### X09 The Power of Backdoor Absorption in Community Training — D1完整阅读，本域§§4.1–4.4 pp5–8
+
+来源：../d1-formation/c_sources/2607.06643.pdf，v1 2026-07-07。PPI正常步保留、PRI正常步重置是DTMC外给转移规则；§4.4明说降阈吸收后回I_(τ−1)，恶意积累未完全擦除。仅用于操作定义边界，不是从神经参数推导形成/擦除机制；不搬首达时间、表格或组合防御结论。
+
+
+## C查漏补证（原A实读；2026-11-19）
+
+### P21 — 2501.02704 水印保持与恢复
+- 身份/版本：Anh Tu Ngo、Chuan Song Heng、Nandish Chattopadhyay、Anupam Chattopadhyay；Persistence of Backdoor-based Watermarks for Neural Networks: A Comprehensive Evaluation。读arXiv v3 2025-05-09，TNNLS DOI10.1109/TNNLS.2025.3565170身份与所读版本分开。来源复用C保存合法PDF，未以C概述代替阅读。
+- 阅读范围：正文§I–V pp1–11逐页完成；supp§I–VI pp13–20全读。p12为参考文献，未新增追踪分支。图像核p8和16–20（Fig7、suppFigs1–5）；剩余正文图表与文字定位一致。
+- §I–II pp1–3：水印ownership目标、五种方法及既有消除/提取讨论。不能把水印验证等同有害任务；本文的现象与后门保持相关，非安全动机相同。
+- §IIIA/B pp4–5：植入用DTRAIN∪DWM；先独立DFINETUNE训练，再原DTRAIN重训；恢复不重加trigger。黑箱验证与训练权限分开，owner假设fine-tune-as-service或第三方。后续再嵌入trigger的部署协议是另一操作，不混进本恢复实验。盆地吸引解释为作者假说。
+- §IVA p6 + suppTableI/II pp14–15：CIFAR10去200trigger基础样本后70/30拆分；unrelated用SVHN200；ResNet18/ViT-S、Adi/ROWBACK/Certified/EWE/APP，后两指定不适配ViT的是ROWBACK/EWE。FT50epoch，重训30epoch Adam；恢复LR依此前FT档位为1e−4/2e−4/2e−4。初始utility亦不同，不能称同等干净性能。
+- §IVB1–2 pp7–8 + Fig6/7、suppFigs1/2 pp16–17：FT衰退后原正常集可恢复部分noise/unrelated/FGSM，取决于模型和此前FT LR；text-overlay有继续下降。图纵轴为trigger准确率，分母200秘密trigger样本；不引用跨条件平均“恢复率”。恢复到100仅部分曲线，不是普遍现象。p17图直接见Adi/Certified content下降。
+- §IVB3 p9/Fig9 p10 + suppAlg1 p13/Fig3 p18：每两批FT额外一批256原正常样本，算法是batch间插入（正文有一处epochs措辞不一致，以算法/紧邻明确句为准）。部分ResNet/noise或unrelated保持改善，ViT部分更快下降。增加更新数，不能识别纯内容效应。
+- §IVB4 pp9–10 + suppTableIII p15/Figs4–5 pp19–20：提取模型在原正常输入上学习victim硬标签，再以真标签重训；没有系统恢复。图可能有低幅波动，故不表述为每点严格不增。已有权重轨迹与新提取权重须分开；几何不同为作者解释。
+- §IVC/V pp10–11：总结上述条件依赖。PCA投影较早检查点loss偏差、LR代理参数位移(p9/11)限制几何结论；既非唯一因果机制，也非证明失败条件永久擦除。
+- D2增量：此前漏列的“普通植入→clean衰退→原clean恢复”；同时新增正常重访不总保护的ViT反例，REPORT§4/§6同步。
+
+### P22 — 2407.14738 SBL
+- 身份：Hoang Pham、The-Anh Ta、Anh Tran、Khoa D. Doan，Flatness-aware Sequential Learning Generates Resilient Backdoors，ECCV2024。本地正式主文19页，相关补充为combined PDF物理20–29（supp自编号1–10）；未重复读取combined前19页。
+- 实读：正文§1–5 pp1–14全部；supp§6–8 pp20–29全部；主文pp15–19参考文献不另扩分支。回图主文p8 Fig2、p14 Table8，supppp23/25/26/28/29（公式、Figs4–7）。
+- §1–2 pp1–5：从灾难性遗忘、CL三类方法和mode connectivity引出保持；“CF解释全部清除”仅作者框架，不升格普遍因果结论。
+- §3.1–3.3 pp5–7/Alg1：攻击者全训练控制。D0混合毒/正常，D1正常；Step0 SAM，Step1小LR+CL，第三份clean数据防御。数据85/10/5分割；150epoch Step0、100epoch Step1（§4.1 pp8–9）。原始baseline合并D0/D1训练（supp6.3 p21），不是等轨迹的唯一差异比较。
+- §3.4 pp7–8/Fig2：θB0→θB及θB→θF的线性插值低损失，是端点连接诊断，非真实训练轨迹。Fig3 p12早期防御gradient norm更小，不能独自识别唯一保持机制。
+- §4.1–4.2 pp8–11/Tables1–3：CIFAR10/GTSRB/ImageNet10，ResNet18；BadNets/Blended/SIG/Dynamic。ASR：去掉真实target class后对剩余所有测试图加trigger的目标标签命中（supp6.2 p20），不是仅clean预测正确子集。大部分改善，ImageNet10/Blended的FT-SAM Naive36.41/EWC46.79%反驳普遍100%。
+- §4.3 pp10–14：架构/poison率消融；Table6无SAM顺序阶段仍改善部分SGD/NAD保持，但FT-SAM弱；Table7 SAM alone不普遍有效；Table8 Step1 LR .01的Naive100→7.07→6.34（末值为随后FT-SGD .01），EWC82.09→79.91但Step1 CA85.32对Naive89.76。不是正常训练恒增，也不是低LR永久保证。Table9低poison率对所测任务仍保持，不能泛化到任意attack。
+- supp6.1–6.3 pp20–23：EWC旧任务Fisher；Anchoring正常logits；AGEM缓存512个D0混合含毒任务样本，每步抽128算gref，若梯度冲突则投影。因此Naive/EWC/Anchoring/AGEM不能合并称第二阶段没有任何含毒样本访问；EWC的历史统计也须区分。
+- supp6.4 pp23–24：作者明确heuristic二阶Taylor，依近驻点、小位移、最大曲率近零；L0定义在混合D0，非纯poison子集loss。小loss上界不能反推出位移小，原文Eq3后的该方向说法不采用。
+- supp7.1–7.4 pp22/24–28：Anchoring扩展表、剪枝曲线、端点插值、早期gradient norm图；剪枝图并非所有剪枝量均保护（ResNet20高剪枝会坍塌）。不把“对其他防御应保留”作者推测当全防御实证。
+- supp7.5/8 pp27–29：BadNets、两backbone/两数据集，200epoch防御保持图是有限范围；作者明确全训练访问限制。§5结论不补充永久性证据。
+- D2增量：补齐2024顺序学习+平坦性抗遗忘先例，置于BAD-BOOM前；与普通自然混训第一次上升不等同。
+
+### X10 — Souly 2510.07192（D3主责全文，本域相关节核证）
+- D3 PAPERS登记正文§1–7 pp1–10、AppA–J pp15–30 FULLTEXT_READ；本域只核§4.1–4.2 pp5–6、AppI pp27–28，并图像核p6 Fig5/p28 Fig26，不冒称重新全读。
+- §4.1/4.2：Pythia6.9B中途checkpoint恢复预训练、语言切换指标为带trigger输出语言改变的比例。三种混合配置达到近同ASR1后，至少1.7k clean steps下衰退不同；作者明确只有三点不推出混合因素规律。左图先降快、后高于中图；“保持强弱”可依观察时间改变。
+- AppI：2000未用于先前实验的QA构造德语问/英语答“模拟对齐”。GPT3.5此前用90/180trigger样本（总10000），后续前1000模拟对齐样本降低行为但非零；Pythia可有或无Alpaca52k指令阶段，后续LoRA/AdamW8bit LR1e−5、batch8共250steps可近零。主报告不搬用误差未独立估计的精确点值。
+- 边界：语言是恶意行为代理，非真实安全训练完整管线；GPT API用了参数高效技术是作者推测，不作为已知事实。无新一般形成机制或永久清除结论。

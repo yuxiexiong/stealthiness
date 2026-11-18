@@ -152,7 +152,7 @@
 图像复核：已渲染并查看 TR p17 Table14、MB p9 Table4、SelfHeal p14 Tables12–15；对应PNG存sources。其余未逐图像素审查，所有图形趋势按正文/图注转述，不声称独立复算。
 
 
-# B 后补读记录（A 已完成本轮，待 B 核）
+# B 后补读记录（B 第二轮已核；三处小修待定点确认）
 页码为PDF物理页；不把提取文本中的控制字符当分页（MuScleLoRA已单页重提取校准）。主文全部及相关附录阅读；参考文献用于追链，纯示例/提示目录不等于独立验证。
 
 ## QES — 2610.00663v2，29页
@@ -167,7 +167,7 @@ Q59–61审计Petri只有一个cleanGemma控制跨模型比较，不是所有模
 
 ## Honeypot — 2310.18633，20页
 已读主文1–9、附录13–20。冻结RoBERTa的各层probe是单Transformer+linear，SST2词/风格5%poison，低层probe快学毒不等于完整PLM自然学习顺序。Honeypot低层支路GCE偏易例，warmup一epoch；主支路按honeypot CE /主branch近100step平均CE加阈值c=.1权重，疑毒权重趋0。双头训练后丢弃honeypot推理；不需外部clean或真实trigger。BERT/RoBERTa base/large、SST2/IMDB/OLID四类触发三次不同seed/target。T1SST2RoBERTa风格20.87±3.90/句法22.9±3.85残余；OLID个别30.12不符文中笼统<30。T2词触发clean94.61→93.71。
-AppC16–17说明完整PLM可能先学正常语义后毒，ABL重实现1%隔离精度2–15%、ASR67–90，与from-scratch视觉不能无条件混用。AppE18短warmup100/200step ASR100、400step8.64；T5p9 c=.8下SST2ACC67.1/ASR30.28及IMDB63.11/34.75。§5.3组合适应攻击残余24.9。§5.4.2文本style<15与T4的20.34–28.85不同，以表为准。AppF视觉预训练VGG16/CIFAR简单两触发8.81/10.81，与“两项<10”不符；无生成LLM/再学耐久测试。
+AppC16–17说明完整PLM可能先学正常语义后毒，ABL重实现1%隔离精度2.1–15.6%、ASR67–90，与from-scratch视觉不能无条件混用。AppE18短warmup100/200step ASR100、400step8.64；T5p9 c=.8下SST2ACC67.1/ASR30.28及IMDB63.11/34.75。§5.3组合适应攻击残余24.9。§5.4.2文本style<15与T4的20.34–28.85不同，以表为准。AppF视觉预训练VGG16/CIFAR简单两触发8.81/10.81，与“两项<10”不符；无生成LLM/再学耐久测试。
 
 ## DBD — 2202.03423，25页
 已读主文1–9、附录15–25。训练者全控训练，只有潜在污染数据、不需额外clean；先SimCLR去标签学表征，再冻结backbone以SCE训head、选最低loss50%可信标签，最后MixMatch全模型，余下一半作为unlabeled并逐epoch重筛。此时低loss解释为clean，与ABL的原模型低loss毒相反，说明loss含义依赖训练机制。tSNE是解释；T3消融支持多阶段配合但不是唯一中介。CIFAR10/ResNet18、ImageNet与VGGFace2均30类子集（后者9051train/2263test,DenseNet121）。T1CIFAR BadNets94.92→92.41BA/ASR.96，WaNet94.29→91.20/.39；T2标签一致BA94.90→89.67/ASR.01，不能照抄“所有BA损失<2”。AppB17最终SSL100epoch，AppA观察用1000epoch；K23成本SSL每epoch约4x、MixMatch约2x非计算匹配。
@@ -191,7 +191,7 @@ A–D13–15有相同增强baseline；I17attentionvsactivation单BadNetASR3.81vs
 
 ## MuScleLoRA — 2402.12026v3，19页（不是提取控制符产生的31段）
 已读正文1–9、Ethics10、附录13–19；原read.txt图中文字内嵌换页符会产生假分页，按pdfinfo确认19物理页，并单页重提取为2402.12026v3.pages.json校准。所谓frequency是输入—输出映射频率，不是词频；pilot在扁平输入embedding空间用高斯核分解logit/onehot映射，假设embedding固定。所有poison标签同target使其高频真值为零，是该构造的条件。冻结base、低秩多尺度参数化及clean辅助梯度对齐共同干预，不是仅压低某自然后门方向。
-AppB4 p15：LLM用128条验证集clean辅助数据、µmax=0，因此每次更新方向全部沿clean辅助梯度，幅度由另一梯度的绝对投影控制；BERT等96条/µmax=.1。不能把全部收益唯一归于频率。T1p7 BERT/SST2 Style ASR33.22、ACC87.81（正常91.71）；T4p9 Llama7B Style39.03/94.73（正常96.43）。LLM添加分类头，非指令生成。T3p8 AG/句法去MS ASR8.18低于完整17.02，但ACC84.26低于86.05，并非每组件都单调改善ASR。AppC3 pp17–18 LoRA+MS后期仍学会后门，早期延缓不够。AppC5 p18 OOD只是IMDB同情感任务，BERTLarge Style33.88vsID21.16，不是跨任务完全无损。S需按模型调，未测修复现成感染权重或防后再学习。
+AppB4 p15：LLM用128条验证集clean辅助数据、µmax=0，此时传入优化器的ĝ为clean辅助梯度的非负倍数，混合数据梯度仍决定该倍数；不能据此断言实际参数位移Δθ逐步共线；BERT等96条/µmax=.1。不能把全部收益唯一归于频率。T1p7 BERT/SST2 Style ASR33.22、ACC87.81（正常91.71）；T4p9 Llama2-7B Style39.03/94.73（正常96.43）。LLM添加分类头，非指令生成。T3p8 AG/句法去MS ASR8.18低于完整17.02，但ACC84.26低于86.05，并非每组件都单调改善ASR。AppC3 pp17–18 LoRA+MS后期仍学会后门，早期延缓不够。AppC5 p18 OOD只是IMDB同情感任务，BERTLarge Style33.88vsID21.16，不是跨任务完全无损。S需按模型调，未测修复现成感染权重或防后再学习。
 
 ## OPD / Lazy Defense — 2610.07654v1，27页
 已读正文1–11，附录A14–15、B16–18、C19–20、D2–D5 23–27；D1 pp21–22具体输出例未逐条读，不影响所用结果。教师有后门、学生蒸馏；Qwen2.5同族1.5/3/7B，1000 HH clean prompts加重复带trigger prompts，只有提示被改，不是人为poison回答。top-k=16保留原全softmax概率而不重归一化；token-level surrogate γ=0相对sequence γ=1有偏。固定状态代数不是自然训练中介的唯一因果证明。
@@ -205,7 +205,7 @@ T5p11 CIFAR Reflection的FP/NAD/ANP ASR99.87/99.01/94.27，SEAM27.02；Composite
 
 ## Safety-Efficacy Trade Off — 2602.00822v1，17页
 已读正文1–9、附录11–17（代码仅阅读，无执行）。KRR中紧密poison cluster且与clean核块交叉忽略是Assumption3.1；平方损失、固定核下才有该拟合式。近克隆RBF几何可以函数变化非零而输入梯度/Fisher小；非所有诊断都不可见。Gauss–Newton项是梯度外积；完整Hessian还含残差×函数二阶导，不应在无条件下等同。
-输入loss梯度平方正则的3.9/AppA5将之当固定线性KRR平滑算子需要额外条件；其梯度含残差，不能直接照搬。即使G PSD，strictly降低有效自由度还须非退化条件；trace变化也不证明各特征值逐一变化。AppA6p12梯度流先忽略基础loss只保penalty；并且A、F PSD不保证AF+FA PSD，vᵀAv≥α也不保证所需交叉乘积界。本报告因此不背书任意训练下Fisher必Loewner收缩/普适无免费午餐，保留为待B核数学条件。
+正文Eq25→26/Thm3.9讨论κ正则及固定G线性平滑式：原loss输入梯度平方含残差，通常不是参数的固定二次正则，改写成(K+λI+κG)α=y需要额外近似或定义；G=0等退化情况也排除无条件strictly。AppA5 pp11–12则讨论核长度尺度ℓ，不能与κ正则混写。B已核二维Gaussian Gram反例：λ=1、y=(1,1)，ℓ=.5→1时残差范数.66229→.54257，反驳其每个平滑因子下降/任意y残差严格上升的一步；该例df仍下降，不能据此否定所有df单调结论。AppA6 p12先采用忽略base loss的penalty-only近似；B核原式后确认现有证明不足以推出所述普遍收缩：A=diag(1,4)、g=(1,1)、F=ggᵀ均PSD而AF+FA行列式为−9，方向v=(2,−1)/√5的F能量导数为+4κ/5。具体可实现平方损失例与限定见B_REVIEW.md §6.4。这不否定部分总trace下降或p7实证折衷，也不扩成方法整体无效。
 实证是CIFAR10/100 PreResNet110以及MNIST线性，从受污染数据训练时正则；不是拿clean集清除已感染LLM。T1p7 θ=.02、augmentation、κ=1e5：90→450epoch ASR6.63→70.68、ACC75.17→79.05。其他κ也高残余；延长训练可破坏早期防效。没有跨seed置信带。p8正文“单调旋转”比T2离散索引更强，报告不用该单调断言。没有证明普适免疫或保效用不可兼得。
 
 ## 跨域定点：BAD-BOOM（D2主读，本域不是全文阅读）
@@ -217,7 +217,56 @@ T1p7原AdamW Qwen3-1.7B sentiment SST2 AddSent/VPI仍96.4/97.0 ASR，所以不�
 AppC给默认LoRA/loss及计划CROW5epoch、SecAlign3epoch，但实际按50条未训练OpenO1样本的平均reasoning长度跌到原.9早停：CROW4–9iterations、SecAlign20–30。其停止指标只是长度，并非正确率/完整能力；不能说完整默认训练仍失败。T8p11被感染模型utility是五benchmark，跨模型平均可掩盖Gemma GSM8K.692→.616（UCC）/.564（BCC）；这不是防御后utility表。适应DataSentinel可提高检测亦提高FPR，所以不是信息论不可检。
 
 ## 有据范围定位，非全文/性能背书
-- ANP：官方NeurIPS2021，Wu/Wang，Adversarial Neuron Pruning Purifies Backdoored Deep Models；arXiv2110.14430。读官方摘要及PDFpp1–2。对象是事后对参数/神经元扰动敏感性剪枝，需要clean数据；传统剪枝作为上下文，NAD已选作本轮完整修复原型，本文不作ANP原篇性能、附录或持久性主张。SP24矩阵中的ANP数字仅归该文新测。
+- ANP：官方NeurIPS2021，Wu/Wang，Adversarial Neuron Pruning Purifies Backdoored Deep Models；arXiv2110.14430。读官方摘要及PDFpp1–2。对象是事后对参数/神经元扰动敏感性剪枝，需要clean数据；传统剪枝作为上下文，NAD已选作本轮完整attention蒸馏修复原型，不是剪枝原型，本文不作ANP原篇性能、附录或持久性主张。SP24矩阵中的ANP数字仅归该文新测。
 - T&R：官方NeurIPS2022 Trap and Replace: Defending Backdoor Attacks by Trapping Them into an Easy-to-Replace Subnetwork，Wang/Hong/Zhang/Zhou/Wang；读官方摘要/PDFpp1–2。重构头保护stem、替换轻分类头，依赖clean holdout。不同于2026TR的并行shortcut知识解耦；因此不混同身份。主动让感染集中后替换这条宽泛目标已有，当前正式性能/边界以全文Honeypot/DBD/TR为锚；不需额外独立量化T&R。
 - CBD：此处指CVPR2023 Zaixi Zhang等 Backdoor Defense via Deconfounded Representation Learning，2303.06818，非另篇Certified Backdoor Detector2310.17498。仅官方摘要/元数据：专门后门模型表征、互信息约束与样本权重，主动解耦已由全文DBD/DPoE/TR覆盖；不据causal命名认定已发现自然因果机制，不作其性能/定理主张。
 - GARD2611.14143v1：由摘要提升为官方HTML§§1–4及5.1范围阅读（未读完实验/附录，FULLTEXT_PARTIAL）。CLIP感染模型+clean图文；全局/局部扰动最大化表示偏移，再对齐stop-gradient clean anchor，普通推理无持续门控。与I-BAU/BI-BAU同属事后对抗修复，但表示目标不同；当前不主张该家族穷尽，也不提出其准确率/ASR/持久性结论。它不改本报告“未知trigger可借代理扰动修复”已有性、或“无普适删除保证”的判断，故留外围，不因新日期无限扩读。
+
+
+## C 独立查漏后 A 补读：CROW、NEEDLE、GradSentry（2026-11-19）
+
+本节由 A 直接阅读 `sources/C_CROW.pdf/.txt`、`C_NEEDLE.pdf/.txt`、`C_GradSentry.pdf/.txt` 后记录，不以 C 的结论替代原文。只补 C_AUDIT §5 指定的三篇；旧 30 篇不重读、不重跑。页码均为 PDF 物理页。状态：A 全文补读完成，待原 B 仅核新增和同 C 定点复核。
+
+### D5-31 CROW：内部一致性约束修复，配置及理论边界
+
+**来源/实读**：Min 等，ICML2025/PMLR267 官方20页PDF，arXiv别名2411.12768；正文1–9全部，AppA–C15–20全部（10–14参考文献不计实质正文）。[官方原文](https://proceedings.mlr.press/v267/min25b.html)。
+
+**权限与方法（pp2–5/AppB pp15–16）**：已有受感染模型的白盒权重、100条clean Alpaca指令；不需原训练集、干净参考模型或真实trigger。Fig1中已知trigger的诊断不是修复输入条件。相邻层/token余弦一致性损失在embedding空间生成对抗扰动，外层以LM损失加扰动下的一致性正则微调；修复后普通推理，无持续steering。攻击模型用LoRA；覆盖Llama2-7B/13B、Mistral7B、CodeLlama7B/13B，情感、目标拒绝、代码任务，AppC4补语义触发。
+
+**设置不能合并（pp4–5/AppB2 pp15–16）**：原文修复5epochs、lr1e-3、warmup .1、FP16、ε=.1；AppB2给情感/代码α=5.5、目标拒绝α=11。p5又以目标拒绝19.63%残余为例称提高α一个单位降至3%以下，未充分交代与AppB2及主表的配置对应，故不反推每个cell使用哪个α。NEEDLE AppB2 p17的CROW比较使用100clean、lr1e-3、ε=.1、**情感及拒绝均α=5.5、60次optimizer更新/6次warmup、继续已有r8 LoRA**，Qwen FP16/Gemma BF16。Cordyceps本域先前已核的比较则lr1e-4，并按推理长度降到90%早停，实际CROW4–9iterations；模型/任务也不同。后两者是各自条件下的证据，不能直接合称“原文默认CROW被完整复现后失败”。
+
+**结果/反证（Tables1–6 pp6–8）**：p5“所有ASR低于5%”不能覆盖Table1：Llama2-7B目标拒绝BadNets19.63%、Llama2-13B目标拒绝MTBA7.50%/CTBA25.00%、Mistral情感CTBA7.20%。以上为作者百分比，PDF未清楚给各cell有效测试分母，不换算命中数。Table2效用为GPT4o-mini评MTBench首轮，不是代码功能正确率；Llama2-7B拒绝条件平均4.39→4.19，Mistral拒绝5.18→4.54。Table6 CodeLlama7 α5.5→7→11时ASR .87→0→0%，MTBench3.95→3.50→3.23，显示强化防御的效用代价，不能称无损。Table3代码实验提到HumanEval164题，但所报小数ASR与简单164分母步长不直接对应，不擅自还原0/N。Table5 ε敏感性仅单一代码条件；p8 GCG对原干净模型的安全实验仍29% ASR（无防御63%），不是后门修复全成功。
+
+**消融及机制限制（pp4/9/AppC pp17–20）**：Eq7由某点残差小不能推出全局近等距Jacobian；余弦到欧氏距离解释还依赖范数集中，逐层线性近似不能升级为普适trigger传播定理。AppC2纯一致性有时也减ASR、效用可较高；完整方法在若干cell更强，不证明唯一自然机制。C3 embedding-only拒绝ASR98%而完整19.63%，两者均非完全清除；C4仅所测语义后门。AppB3所谓pruning实际按权重幅值剪35%/65%，不能当作ANP原方法忠实重现；AppC1 CleanGen需要参考模型且运行时保护，权限不同。p9明确未测适应攻击/模型替换，没有修复后再学习验证。因此定位为条件性权重修复，不能称不可恢复删除。
+
+### D5-32 NEEDLE：已知触发的权重正交化，拒绝与生成位置控制
+
+**来源/实读**：Kim、Lampos、Drayson，arXiv2610.00348v1（2026-09-29），28页；正文1–10全部、AppA–E15–28全部。[原文](https://arxiv.org/abs/2610.00348v1)。
+
+**权限与操作（pp3–6/AppB pp16–18）**：白盒感染权重、**已知trigger及插入规则**，不需干净checkpoint或原训练集。100个clean/trigger prompt对形成200个响应；每层方向先对每条回答的全部生成非特殊token取均值，再对回答等权平均，并移除普通响应均值方向。目标拒绝情境将**同一未触发生成答案teacher-force到有/无trigger的输入下**，减少回答内容/拒绝内容本身的混淆，不是所有条件都比较两份自由生成文本。拒绝保护基由WildGuardMix100对相同子类别但不必相同prompt的拒绝/配合样本构成：均值方向加3个SVD方向，rank4；拒绝标签来自分类器。
+
+按层12–34顺序编辑attention输出/MLP down-projection权重，在移除后门方向时保持其拒绝子空间投影。Eq6公式要求u=(I−RRᵀ)b非零；当b完全落入拒绝子空间且原bᵀW≠0时，两项约束不能同时满足。若原bᵀW=0，两约束兼容，但u=0时Eq6仍为0/0而不适用。**保持权重投影不等于保持全部隐藏激活或安全行为。** 每层后用固定harmful/benign校准例作ridge补偿，使用最后prompt及回答1/4、1/2、3/4位置；λ=.001倍Gram平均对角元。Qwen的加性情境与Gemma RMSNorm的一阶Jacobian补偿假设不同；无需梯度训练不等于无需拟合/校准。部署普通推理，未持续steering。
+
+**测量分母与结果（pp7–9/AppB/C/E）**：每攻击200个triggered、200个untriggered测试；ASR/ATR为指定字符串匹配，greedy最多256token，代码200个heldout题最多512token。0%只表示0/200观察事件。Table1平均±SD跨六个攻击条件，不能当seed重复的误差。两个主要模型Gemma3-4B/Qwen3-4B；Table2 Qwen目标拒绝Sleeper仍15.5%=31/200，BadNet11.5%；代码四个cell为0/200。常规能力包括HellaSwag/GSM8K/MMLU/ARC/IFEval；代码另有HumanEval164/MBPP500，不混入均值。性能变化相对**感染模型**，不是干净base。AppB p18 KL是以感染模型生成文本作teacher-forced共同prefix、全词表逐token KL，先每回答平均再200prompt平均；不等于任意自由生成输出分布不变。
+
+**拒绝保持不是安全无损（Table3 p9；Table S14 p28）**：安全面板来自749条WildGuardTest harmful prompt，但各指标分母为**有效分类标签样本数**，不能把每个百分比直接换成/749。Gemma情感BadNet完整NEEDLE的harmful-response率47.52→53.35%，+5.83pp；Qwen对应cell37.43→41.39%，+3.96pp；其他cell可能改善，既不能称全部恶化，也不能称无安全代价。Table3完整保护的安全变化+5.83pp，naive无保护+14.01pp、rank1+11.62pp、非顺序+7.10pp、无补偿+6.70pp，支持保护/补偿有贡献而非完美保持。跨全部更早层操作可有0% ASR却增加能力损失与KL，层范围也是折衷。目标拒绝训练数据包含不同性质的正常/有害响应约束，不能将其安全基线当作任意已有后门模型的自然属性。
+
+**生成token控制（AppD Table S6 p23）**：表标题“NEEDLE(all generated)”易误读，caption明确此处是**无拒绝保护、无补偿的naive orthogonalisation**，固定层12–34/100prompt对。Gemma使用全部生成token得5.5% ASR；最后prompt、首个生成token、二者合并分别100/78.5/100%；Qwen对应2.5/9/26.5/30.5%，每cell200测试。这说明这些位置聚合控制在所测条件下不足，不能把5.5%当完整NEEDLE结果，也不证明所有模型都只有全回答分布式机制。AppC4 pp20–21在特定模型/层/BadNets、128原回答/128原拒绝harmful例上以等范数随机方向作对照，额外拒绝方向有因果作用；不等于后门方向在全部任务中必要充分。嵌套拒绝basis维数增大时投影相似度自动非减，不能再当独立机制证据。AppD较大模型/fullFT扩展限BadNets情感，不能外推全攻击。AppA p15将未来微调、再投毒/再学习留待后续；持久写入权重不等于后门不可恢复。
+
+**与CROW比较边界**：本篇AppB2 p17对拒绝也采用α5.5，与CROW原篇AppB2 α11不同；修复预算为60更新，不直接等于原篇5epochs。同表可作本篇配置下比较，不能宣布原默认CROW普遍失败。
+
+### D5-33 GradSentry：训练前逐样本梯度筛选，非在线预警
+
+**来源/实读**：Zhao等，arXiv2605.26574v3（2026-08-31），22页；正文1–9全部、AppA–K12–22全部。[原文](https://arxiv.org/abs/2605.26574v3)。密集图页7/8/17/21/22对提取文本去重复坐标tick后读全部正文/图注，未从曲线像素读数。另实际渲染并查看物理p13 **Table4**，图留`sources/A_GradSentry-p13.png`。
+
+**权限/流程（pp3–5/AppA–D pp12–14）**：需微调前模型白盒及待训练全数据。每样本求CE对lm_head权重的梯度，取前1/8行列块、randomized SVD top16、按奇异值σ（非σ²）归一化后计算entropy/log16。计算这些梯度时不执行optimizer更新；之后按分数过滤数据，再普通LoRA或fullFT。LoRA正常训练并不额外更新lm_head。这个对象不是实际optimizer参数位移，也不是已感染权重修复。
+
+单例打分虽不需样本两两聚类，阈值仍依赖**全数据分数KDE**：Silverman带宽、极端峰间谷值，无双峰时回退.7。因此不能称完全数据无关阈值，亦未验证在线逐步预警/形成时间预测。Fig1显示自动/最优两种阈值；Fig3/4/8/9/10绿色optimal F1线是oracle分析参考，不是部署可用阈值。不同模型的谱分布图不能替代各模型完整防御后ASR实验。
+
+**主结果与分母（Table1 p6；Table4 p13；Table6 p16）**：主模型Llama2-7B、LoRA r4、3epochs、lr2e-5，四QA数据集×四攻击，默认10%污染；Table1报告16个cell防后ASR0.00%，Table6 fullFT相应16cell亦0.00%。这些是作者有限评价结果，ACC不总优于其他方法；CUBE/GraCeFul也有多处0，不称唯一成功。按Table4原图，WebQA train/val/test=3401/377/**400**；Freebase=5000/400/**2000**；CoQA=5000/400/**2000**；NQ=5000/400/**498**。主表部分百分比步长与直接按这些test数换算不一致，原文不足以独立确认每格实际评估N；保留作者百分比，**不把0.00%写为0/400、0/2000或0/498**。ACC/ASR采用其EMR指标与固定目标URL字串准则；四种攻击仍是同一URL目标，不等同所有语义性危害。
+
+**正常数据代价（Table2 p6；Table8 p18）**：主实验poison recall很高/为100%，WebQA F1仍约69–73%，有明显误删代价。clean-only条件WebQA保留89.36%（误删10.64%），另外三集>99%；四集平均97.17%是**数据保留率**，不是模型accuracy，也不是正常信息完好。此处没有清洁数据过滤后下游utility实验可替代。1–90%污染图为跨四数据/四攻击汇总；20个样本的小数据检验限Freebase，不能扩展为任意数据可靠。
+
+**机制与反证（AppA/H/J pp12/18–20）**：token梯度外积和与rank分析给出启发，但top16近似只是所测配置的经验；“正常目标单一、毒例目标混杂导致高熵”是作者解释，不是普适毒例定理。Table7早层/adapter较弱，middle-MLP自动阈值F1 18.18而optimal95.37，说明模块与阈值共同影响；不是任意梯度位置均可靠。附录六个额外模型主要展示谱分数分布，不冒称六模型端到端ASR全0。
+
+**适应性与操作边界（AppJ pp18–20）**：只测一种组合式Gradient Dilution攻击的两个λ设置（.5/.7）：在固定trigger/target情境下组合context augmentation及output blending，未给两组成部分各自的独立对照；Table9报告recall100/终点ASR0但部分ACC下降。J3强论述不能越过J4明确承认的**未测直接entropy优化**。因此只能支持该组合攻击的两个已测设置，不能推出任意有效攻击必可检。本文是离线数据检测/过滤后防形成；未测在线预警、未知后门权重清除、再学习耐久或预训练。

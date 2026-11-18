@@ -1,6 +1,6 @@
-# 跨域接缝待办
+# 跨域接缝与交接记录
 
-仅用于A/B整合；C须先完成自己的独立发现阶段再读取。不是已核证结论清单。
+仅用于A/B整合；C须先完成自己的独立发现阶段再读取。以下表与交接消息保留历史时态；当前闭环状态以各域B/C末轮及STATUS为准，不能将旧“待补”当现行任务。
 
 | 材料 | 全文主责 | 需整合到 | 当前动作 |
 |---|---|---|---|
@@ -35,3 +35,14 @@ D6阅读中发现Homeopathic H.2（pp42–43）涉及无德语回答却有层内
 - D3 C首轮确认三项缺口：Carlini/Terzis ICLR2022对比学习、Schwarzschild ICML2021统一benchmark、Cordyceps2605.26595v2。D3原A待补后原B/C复核；Cordyceps已给D5作有界防御接口筛选，D4后续C可按信号/检测需要处置。
 
 - D5原A补链已全文读Honeypot/DBD/NAD等：Honeypot完整PLM中clean/poison学习顺序可反于ABL（浅层probe不可混）；DBD低loss可信clean与ABL低loss毒条件不同。NAD原篇已有延长distillation后ASR回升/早停证据，D2后续B/C应检查保持/回升接口。详见D5 REVISION_READING_NOTES，待其B复核，不直接当终审结论。
+
+
+## 主审收尾对照（2026-11-19）
+
+- D1–D6均已完成各自原B及同C末轮；D6新增三项由原B §9和同C §6闭合。历史交接指向的新增材料已进入对应当前REPORT/PAPERS，不靠互相引用摘要取得全文状态。
+- Homeopathic、Inherited、Model Organisms、Steering的正常数据组成、位置、短暂fullFT表现及未来参照条件已进入相关域报告；保留各域全文/相关节责任，不重复计数。
+- D1的CNN学习时间与SP24条件框架已接入D6；SP24/安全OPD已由D5补读，D2核保持接缝。BackdoorBench2022与2024扩展分列，后者缺独立补充不升格。
+- D3的Cordyceps在D5只作防御配置与失败边界接口；D5的NAD回升、BI-BAU的R-ASR/Q-ASR和Suppression投影条件已接入D2。
+- D5主读GradSentry，D4回原文核离线逐例梯度、全数据阈值及过滤后训练的阶段属性，不记为在线形成预警。
+- D6的读出崩塌、条件性广泛有害行为与代理数据归因补证保留其不同任务和信息条件；未将这些结果外推为本项目统一机制。仅发现的Hidden-State预测候选不支撑任何“无人预测”的断言。
+- 主审仅合并上述已审结论、核报告状态和稳定ID；没有再次作为第四位reviewer重读所有论文。源内版本/图文/分母冲突仍留在各域证据中。

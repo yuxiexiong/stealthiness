@@ -52,3 +52,27 @@ B Round2 已核准原 R1–R8 的主体修订及 N1/N2 的实质结果，仅留�
 | R10 | 采纳 | Bowers正文“Reproducing Results on an Internal Anthropic Classifier”（本地txt 149行）说明内部多数仅留DEBUG标记；Appendix E（208行）明确开放实验1/4仅留标记、3/4对口令随机删除/交换/插入至编辑距离恰为10。REPORT §3.1及PAPERS改为构成配比不同，撤回完全不同构造的暗示；同时校正上方R2的原文定位。 |
 
 检查：JSON可解析，书目20项ID唯一，REPORT_A原始快照保持不变；本轮只修正上述两处及对应记录，未扩展文献或实验范围。状态：A已修订，等待原B仅核R9/R10文本落实。
+
+## 2026-11-19：原 A 响应 C 第一轮重要缺口
+
+输入为 `C_AUDIT.md` 的 C1–C3 和 Truong 正则化待核线索。此前 B Round3 已关闭 R1–R10及N1/N2，本轮未重跑旧审核。修订前保存 `REPORT_PRE_C_SUPPLEMENT.md`，`REPORT_A.md` 原始快照保持不变。四项均由原A实际读完正文及相关附录，细证见 `C_SUPPLEMENT_READINGS.md`，不是复述C的阅读。
+
+| C项 | 处理 | 落点与关键限制 |
+|---|---|---|
+| C1 | 采纳，新增全文证据 | REPORT §2/3.5：CLIP的§4.3下游ASR与§5 backdoor z-score区分；固定300/75毒例、50k–3m数据、规模与位置×预算交互；linear probe不与zero-shot等效。 |
+| C2 | 采纳，新增全文证据 | §2/3.6/6.6：固定1%比例并同时扩毒数/总量；与Table22固定总量分开；CLBD/HTBD与无触发FC/CP分开；单因素、组合改动、整体benchmark分开。回PDF发现正式Table3与arXiv Table25差异**也包括后门行**，比C最初措辞更明确，保留版本而不拼值。 |
+| C3 | 采纳，新增全文证据 | §2/5.7：Table3固定100毒例扩总量；oracle与改写条件；100%毒可行性不混10%/1%主实验；ASV/CA/SCS/EMR/CER分开；AppB与Fig8/Table9身份冲突保留；reasoning权重0不等于删前缀。视觉核验Fig7有局部回升，不沿用“严格单调”，保留5tokens近零。G证明未全读，本稿不做定理核证。 |
+| Truong正则化 | 判定为实质条件证据，定向全文纳入 | §6.7：四种正则化与无正则化的直接对照，SNNL下降/MIXUP例外；同毒数源类别组成；λ为目标类比例。不能被Learning Curves复杂度概念替代，亦不当普遍规模/容量规律。 |
+| 其余C候选 | 保留已给去向，不扩文献目录 | Learning Curves指D1，不重复计篇；Wu/LPS只保留C的选择前史与版本路由，不引用未核新版数值，不声称集合组成作用始于2026。D4/D5相关Cordyceps边界已通知主审。 |
+
+PAPERS增加4项FULLTEXT_READ，合计24记录：19本域正文/相关附录全读、3跨域全读后本域回原文核相关部分、2范围筛除；纳入21原始研究+1综述。REPORT、PAPERS、SEARCH_LOG及逐节阅读文件同步。旧已核结果没有重写。仅做文件、JSON、路径及新增范围检查，未运行任何模型实验/GPU、修改论文正文或发布。
+
+**交接：A_C_GAPS_SUPPLEMENTED / NEW_EVIDENCE_B_PENDING / C_RECHECK_PENDING**。请原B仅审核新增实质判断及其原文，再由原C定向复核；不自行签发本域最终完成。
+
+
+## 2026-11-19：响应 B 新增证据审核 R11
+
+B §7已支持四篇新增证据的25项实质主张，仅要求精确化Truong的α中文措辞。采纳R11：REPORT §6.7将“高透明度全图触发”改为“高α（触发混合权重较高、视觉更明显）的全图触发”，C_SUPPLEMENT_READINGS同步。PAPERS原本的“高alpha”方向正确，保持不变。此项依据原B已核式7及§4.4，不重新检索或重读，不改变结果。定点检查通过；等待原B确认一句后交原C，未标最终完成。
+
+
+主审状态同步（2026-11-19）：原B与同C末轮已闭合，当前状态见C_AUDIT末轮及REPORT。上文待办/交审措辞保留为历史，不改变实际阅读级别。

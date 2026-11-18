@@ -108,3 +108,41 @@ ResearchGate《Testing Whether Internal Backdoor Precursors Precede Behavior: A 
 ## 6. 复核入口
 
 A完成R1–R8并更新相应阅读状态/修订记录后，本B只复核改动及新增实质主张，不无故重跑全域。R7可用删去无出处笼统“表间矛盾”解决；其余重要结果须进入正文而非只留交接文字。C独立查漏之后的新增关键证据仍须A原文整合→本B核验；当前没有“通过”或“全新颖”结论。
+
+## 7. 原 A 修订后第二轮核验（2026-11-19）
+
+**结论：本轮改动/新增主张核验通过，可交 C 独立查漏；不是全域最终完成或新颖性认证。** 本轮仅读 REVISIONS、REPORT 改动、PAPERS/READING_LOG 更新及对应原文；没有重跑旧15篇。R1–R8已落正文：未来窗口、Homeopathic训练瞬态及LR差异、Weird/Mirage限定、Persona质量边界、Haystack修改后FTR、小出处/措辞、具体表内矛盾及TopK/HARVEY边界均处理。新增LoRA末点78–98%亦回核Homeopathic Fig H.3原题注成立。以下记录新增材料的实际核读与判定。
+
+|新增项|B本轮直接核读来源/位置|逐项判定|
+|---|---|---|
+|SEEP身份、统计与传播|`sources/seep2024.txt/pdf`首页作者/题名；§3 pp998–999 Eq1/2、Algorithm1；§4.1–4.2.1 pp1000–1001|支持：跨完整E个epoch平均1/(1−p_gold)，末epoch模型最后层；top1%种子、K5/τ1e−8、默认3epochs。不是在首epoch就算完全部统计。无trigger/独立净集，不等于无标签/无最终模型。|
+|SEEP效果、分母、基线|§4.2.1–4.3.4 Tables3–9 pp1002–1005；App A/B pp1009–1010|支持：FRR误删净/FAR漏毒与重训ASR不同；OLID-LWS76.9对benign49.6，SST2-LWS等删除量TD95.6对SEEP29.4；QNLI有ABL更好。Clustering/DAN删除量按SEEP匹配；AGNews InsertSent73,932/108,000既低75%，也不等印刷64.5%，报告正确保留而未采用强概括。|
+|Research Square身份|保存官方HTML的`__NEXT_DATA__`元数据与官方PDF封面/正文首页|题名、Zuo Yuchen、2026-08-06、v1、DOI及官方PDF URL相符；替代首轮仅RG未核身份状态。封面机构与正文Independent Researcher不同，A未据此虚构身份。|
+|Research Square方案/实测/先验|`rs-10594749-v1.txt/pdf` §3.1、3.6、3.8 pp4–8；§4.2 pp9–10；§4.4/§5–5.2 pp11–12|支持：80步独立成熟方向用于回溯；128配对prompt、matched null、共同max-t预算是计划。仅2update/8pair smoke，没有确认性时间轨迹。bootstrap近似；equal standardized location shift的规划功效不等任意备择等功效；缺随机方向/无marker干预控制及共同初始状态限定均准确。未核代码执行，不将作者的“无前人”当查漏结论。|
+|Tensor模型与理论边界|2605.15183v1首页、§2–3.4 pp3–7、§4 p8；App B pp16–19及D.1/Table3 p19；TPM版§2.3/§3.1/Fig1|支持：多项式/多线性范围；深层layer-decomposed approximation限定属TPM版明确文字；单层SVHN灰度、128/256、无bias/norm、10%黑菱形→9、ASR96/净85/81；Pile普通训练为两层attention-only共2,885,632参数。非普通LLM后门实验。|
+|Tensor时间与参照|v1§3.2–3.3 pp6–7、App B Figs6/7 pp18–19|支持：Δ为已知前后植入checkpoint分块，.24/.43/.09对应条件；grokking为全K×K矩阵，forgetting参照add9终点或另一run学9前后diff。无首发ASR提前量/误报校准；可计算历史模型相似不等该文验证在线预警。|
+|OPD早期读数|`../d1-formation/c_sources/2610.07654.txt/pdf` §4.2/Fig6 pp6–7、D.3 p24|支持：1%前8epoch ASR变化小但读数增；SUDO、后半评估数据、固定teacher-prefix、singleton top1相等、跳7再10位置、五数据集无权平均。并非student自由rollout或完整答案一致；teacher-prefix仅用于此评估，训练用student rollout。|
+
+上表为相关节段核验，B不额外宣称重读新增论文全部正文；A的FULLTEXT_READ阅读记录与B的claim核验是不同记录。Tensor workshop作为同稿局部补源未重复计篇；OPD为SECTION_READ，处理正确。
+
+**剩余接口**：GradSentry2605.26574由D5 C主读，当前本B未读原文、未认证结果。它若涉及梯度监测是否先于行为、辅助训练制造分离、终点检测或未知trigger先验，应由D5回传原文定位后在D4做短接口；不能因跨域有人在读就记作本域已核。原有PSSP/DFBScanner/代码谱/IEEE/SSRN/InfoFusion受限项及C独立检索仍未结束，交接不能抹去这些状态。
+
+## 8. C1新增分支复核（2026-11-19）
+
+**本轮新增主张核验通过，交原 C 复核 C1 闭合。** 仅核REPORT类型表/§2.8及相应总结、C1_NOTES_A、REVISIONS和新增原文；未重跑旧稿、未扩其他候选、未实验。GradSentry在本轮从“接口未读”更新为下列相关节段已核，仍非本域全文。
+
+|新增主张|本 B 实际回原文位置|判定与保留条件|
+|---|---|---|
+|Z-defense训练前统计及先验|`c_sources/zdefense2023.pdf/.txt`首页、§3 pp955–956 Eq1/2及词/句法特征|支持。p(y)由训练标签频率估计，预选unigram/ancestor-path，Stanza；未知精确trigger不等于无标签/无特征家族先验。model-free只限不需训练被防御模型。|
+|Z-defense阈值、检测≠防御|§4.2.1 p957、Tables2–4 pp958–959、§4.3.3 pp960–961|支持。18为经验值，非固定FPR保证；AGNews Syntactic Z-SEQ FAR7.2/FRR32.1却ASR99.5；基线删样量匹配Z-SEQ，benign-on-trigger另列。|
+|Z-defense覆盖限制|Limitations p961及跨栏延续、App B p965 Table9|支持。初始PLM干净、风格攻击未验证、缺一般理论；bigram可差于unigram，附加叶节点不保证提高。20%是主要实验污染率，不是算法获知真实比例。|
+|PKAD方法及污染率信念|`c_sources/pkad2024.pdf/.txt`首页、§3–4.1 pp5838–5840、App C/D pp5844–5846|支持。标签条件Mahalanobis选L_first、m(x)弱标签、L_second/LDA、固定净集合；r_p是defender belief，默认.03，经验线性/四分之一次幂拟合。真实2%与首类target为实验构造，非输入oracle。|
+|PKAD反例及范围|§6 p5841、App E Table4 p5846、F Tables6/7 pp5847–5848、G Table8 p5848、H任务提示|支持。BeaverTails句法ASR50；PLM依赖明显，提高r_p可提高FPR；clean-label/model poisoning未解决。不是无标签、阈值无关或全设定清零。|
+|NETE算法、身份与理论范围|`c_sources/nete2509.05318.pdf/.txt`首页v1；§3 p8、§5.1–5.3 pp11–16、Algorithm1|支持。现成评分模型与T5类扰动模型、mask10%/span≤2；不需受害模型或任务标签，仍需模型/扰动。规范化统计及低分疑毒按算法理解；曲率依连续近似及噪声条件，非普遍精确后门Hessian规律。刊版全文仍未核，A明确证据版本为v1。|
+|NETE排序与固定阈值条件|§6.1 p17、Table5 p18、§6.3 p23、§6.4/Table7 pp25–26、§7 pp30–31|支持。OLID word .65、YELP sentence .71、Sleeper .74为AUROC；固定阈值另用200已知word-level毒样本均值，.60/.86/.84段内数字未强行解释成FPR。检测其他攻击/越狱不构成已植入后门特异性；temperature/生成模型变体不是全面适应攻击，长文本成本限制准确。|
+|GradSentry训练前梯度接口|`../d5-defense/sources/C_GradSentry.pdf/.txt` §3–4.1 pp3–5、App G p15及图题、J.4 p20|支持。带目标回答的逐例lm_head梯度、前1/8行列、top16谱熵；只算梯度无optimizer更新。全数据KDE/Silverman谷值，无清楚双峰回退.7；最优F1阈值图不代自动阈值验证，直接entropy最小化未测。D4未引入D5全部性能数字，范围合适。|
+
+本轮未发现需返 A 的实质错误。三篇训练前样本筛查与训练前风险幅度预测、自然形成预警已经分列；AUROC、毒样本筛除、终局ASR、固定阈值误报未混用。以上是全部新增实质主张的相关原文核验，不把B的节段核读写成全文重读；A完整阅读记录与C分支查漏仍各自独立。允许交原C，不构成旧受限条目已完成或全领域无遗漏声明。
+
+
+主审状态同步（2026-11-19）：原B与同C末轮已闭合，当前状态见C_AUDIT末轮及REPORT。上文待办/交审措辞保留为历史，不改变实际阅读级别。

@@ -75,3 +75,19 @@ PDF及pdftotext保存在sources。全部读取了实际PDF首页确认标题、�
 - 未发起新检索或扩大文献范围。回读MDPI本地全文§4.3.3（txt 977–984行，PDF pp17–18），确认仅第17/18层四类LoRA模块参与所述SVD与逐模块删除；将相邻“干预仅”限定到§4.3.2层消融。
 - 回读Bowers原文内部分类器段（txt 149行）及Appendix E（208行）：内部多数为去口令仅留DEBUG标记；开放1/4相同、3/4口令字符编辑至编辑距离恰为10。修正REPORT/PAPERS及REVISIONS，使比较指向构成配比而非互斥集合。
 - 原A完成两项文字修订，等待原B落实复核；不标记C或最终覆盖完成。
+
+## 2026-11-19：C第一轮缺口定向补证（原A）
+
+范围来源：`C_AUDIT.md` C1–C3及Truong正则化线索；不是重新全域检索。C已保存前三项合法PDF，原A核首页身份版本后逐节实读，未以C摘要替代全文。读页/节/表/图详见 `C_SUPPLEMENT_READINGS.md`。
+
+- Carlini & Terzis，2106.09667v2，2022-03-28：复用 `c-contrastive2022.pdf/.txt`，正文pp1–9及伦理/复现p10全部读，无附录。纳入早期固定count/规模与位置交互，严格区分§4.3实际下游后门与§5表示代理。
+- Schwarzschild，正式PMLR139正文pp1–8全部读；2006.12557v3（2021-06-17）A.1–A.16 pp11–17核读。原文固定1%比例不是固定count；追加固定总量预算表单独处理。原PDF视觉核验正式p8与完整p17，保存PNG；表值差异包括CLBD/HTBD，不静默拼接。完整版渲染报xref重建提示但成功得到可读图，不是全文访问失败。
+- Cordyceps，2605.26595v2（2026-06-15）：正文§1–7 pp1–13、伦理/开放pp13–14、相关A–F pp17–21及数据/提示示例pp26–27已读。G证明未全读且不用于定理核证。p19/20截图核身份冲突及EMR长度曲线；不采用正文严格单调概括，表明5tokens近零而语义分数可高。模型/数据/训练分母见新记录。
+- Truong线索不能被纯复杂度模型替代。实际web查询：`2004.11514 Truong systematic evaluation backdoor regularization CVPR 2020`；返回CVF官方、arXiv及作者机构PNNL互证身份。通过CVF公开地址下载：`https://openaccess.thecvf.com/content_CVPRW_2020/papers/w47/Truong_Systematic_Evaluation_of_Backdoor_Data_Poisoning_Attacks_on_Image_Classifiers_CVPRW_2020_paper.pdf`，存 `c-truong2020.pdf/.txt`。正文§1–5 pp1–8全部读，无附录；p6原PDF视觉核Fig4/5，保存PNG。纳入regularization类型反例及相同毒数的source-class组成对比；λ按目标类别比例，不能当全数据比例。
+- 引文/支路处理：前三篇的旧方法/相关工作用于确认C已有路由；Learning Curves指向D1，Wu/LPS保留C的选择前史筛查和版本限制，不追加未核数值，不将通用SGD/隐写/攻击目录无限扩展。Cordyceps的防御早停/高FPR边界由主审路由D4/D5，A未假定别域已读。
+
+本轮四项达到正文全部+相关附录纳入门槛，新增尚待原B/原C。保留历史快照；未重跑旧已核文献，未运行实验或发布。
+
+
+### 2026-11-19：R11术语精确化
+按B §7对Truong式7的已核结果，仅修正REPORT §6.7及对应阅读记录的α中文措辞：α高指触发混合权重高、视觉更明显，不称“高透明度”。未发起检索或重复阅读全文；等待原B文本确认后交原C。

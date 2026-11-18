@@ -104,3 +104,6 @@
 | Honeypot/DBD非阻断补例 | 只在§3链接D5 REVISION_READING_NOTES，不扩大本域阅读/性能结论或FULLTEXT数量。 | 读D5记录不冒充原文全读；完整PLM/浅层probe、特定训练程序的loss含义需区分。 |
 
 本轮交付计数：33条索引，18 FULLTEXT_READ（17原始研究/课程+1综述）、11 CROSS_DOMAIN_SECTION_CHECKED、2摘要全文受限、1VLM OPD缺附录、1Bench2024补充部分。来源四类限制保留。原A快照哈希、JSON唯一ID、全文路径/哈希、新增章节引用及计数核对通过。交原B仅核C04/C05新句，然后由原C定点复核；不自签最终通过，无实验或发布。
+
+
+主审状态同步（2026-11-19）：原B与同C末轮已闭合，当前状态见C_AUDIT末轮及REPORT。上文待办/交审措辞保留为历史，不改变实际阅读级别。

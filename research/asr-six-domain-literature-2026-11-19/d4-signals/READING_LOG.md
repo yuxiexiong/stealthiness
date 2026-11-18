@@ -50,3 +50,7 @@ TopKLoRA/HARVEY摘要引言→D5；DFBScanner摘要引言；代码谱2510.13992v
 - OPD2610.07654：§4.2/Fig6 pp6–7及D.3 p24，只计SECTION_READ。
 
 更完整的结论/位置对应见REVISIONS N1–N4与R1–R8。旧“15项”是首轮历史数量，不是当前统计。
+
+### 原A C1聚焦补读，2026-11-19
+
+实读c_sources/zdefense2023正文§1–5/Limitations pp953–961及AppA–C pp965–967；初始输出截断后补页956–961。实读pkad2024正文§1–6 pp5837–5841及AppA–H pp5843–5849。实读nete2509.05318正文§1–8 PDF pp1–31，无附录；图字符抽取损坏，不据图估数，阈值/表取清楚正文。GradSentry v3仅§3–4.1 pp3–5/AppG p15/J.4 p20相关节，D5主读全文。逐篇信息条件和反例见C1_NOTES_A.md；不将C的全文状态继承为A已读，也未把GradSentry升为全文。当前21全文/39条为修订统计，旧18/35为历史节点。

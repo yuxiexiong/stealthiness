@@ -42,3 +42,17 @@ web工具访问仍错误，但普通HTTPS请求官方公开页面HTTP200；官�
 ## 尚未结案
 
 所有新增/修订内容均待原B复核；随后C先独立查漏。上一轮PSSP/DFBScanner/代码谱/IEEE MRAI/SSRN/InfoFusion等受限项不因本次新增自动完成；保留原状态。没有为了凑数量扩读全部检测论文。当前35条去重索引、18项全文，另有局部/筛查/受限项。数字是阅读状态统计，不是覆盖完整性认证。
+
+## C1聚焦修订（2026-11-19，待原B/同C复核）
+
+采纳C_AUDIT唯一重要分支：训练前毒样本筛查。原A实读Z-defense正文/Limitations及AppA–C、PKAD正文及AppA–H、NETE正文§1–8（无附录），详细页节和提取限制见C1_NOTES_A.md。REPORT类型表新增独立一行，§2.8整合，§1/6/7更新边界。
+
+- Z-defense：标签频率先验、已选词/句法特征、经验18阈值、初始PLM干净假设；AGNews句法低漏毒仍ASR99.5的反例。
+- PKAD：任务标签与PLM特征、r_p=.03污染率信念及经验拟合；clean-label未解、BeaverTails句法残余50%ASR，避免主表清零泛化。
+- NETE：不需输入标签或受害模型，但固定阈值用200已知word-level毒样本；主表AUROC不能当未来ASR、固定FPR或无需攻击校准。版本基于v1，非刊版逐字核。
+- GradSentry仅复用D5主读后回§3–4.1/AppG/J.4相关原文，SECTION_READ：梯度计算不更新，KDE全数据阈值及经验回退，非在线形成预警。没有扩其他同类候选。
+
+索引现39唯一条目：21 FULLTEXT_READ、12 SECTION_READ、3 SCREENED、3受限/摘要/元数据。新增条目标C1_A_*_PENDING_B_C；旧审查状态未重置；REPORT_A未修改。此为C1回应，不是最终覆盖结案。
+
+
+主审状态同步（2026-11-19）：原B与同C末轮已闭合，当前状态见C_AUDIT末轮及REPORT。上文待办/交审措辞保留为历史，不改变实际阅读级别。

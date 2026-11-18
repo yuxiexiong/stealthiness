@@ -157,3 +157,86 @@ A请在 `REVISIONS.md` 逐B1–B5及必补支路写采纳/有据不采纳的处�
 - B 初筛中 Cloud 正式题名的错误，A 报告更正为 *Language models transmit behavioural traits through hidden signals in data*；本 B 尚未回正式来源确认，本轮仅登记更正待核。
 
 当前状态：**A 修订和补读已交回；B 第二轮未完，不签通过，不建议记为可交 C 的已核版本。** 未发现的新错误不能据此视为不存在。后续如恢复，仅核 B3–B5 实际落点、新增六篇与四条接缝及索引；旧已核证据不重跑。本轮没有新的搜索、实验、GPU或发布。
+
+## 7. 续接第二轮：新增主张原文复核（2026-11-19）
+
+按主审最新授权续接§6，仅核 B3–B5 落点、D6-16–21、四条接缝和身份索引。B1/B2及无改动的旧15篇不重跑。以下由本B直接核本地原始PDF/提取正文和对应附录；A笔记只作待核清单。Cloud Extended Data Fig.2/Table3、Towards Fig.30另看原PDF图像。本轮未实验、未派子agent、未修改A正文。
+
+**结论：主要补读已得到原文支持；尚有以下小范围必改，改后可交C。当前不能把A未修订文本记为B通过。**
+
+### 7.1 必改清单（不需要新一轮广搜）
+
+| 编号 | 实际落点 | 原文与具体改法 |
+|---|---|---|
+| R1 | REPORT D6-16a；CORE D6-16第2条 | v7 §3.3 p5/Fig5 p6报约20%主8问、6%预登记；Fig17 p22图注却写10%预登记、30%主集。**10/30是结果百分比，不是judge阈值。** 删除“阈值10/30冲突”，改为“Fig17结果率与正文不一致，采用正文口径”。图注仍写alignment≤30；另有coherence≤50剔除与正文<50剔除的边界符号差，不能混同这项结果率冲突。 |
+| R2 | REPORT D6-16b及其附录定位；CORE D6-16训练动态/延训条 | §4.7 pp10–11/Fig13的去weight-decay和10epochs阴性结果是**multiple-choice misaligned-choice log-probability**。把“第一epoch后EM不再增强”等泛化表述限定到该读出；不据它宣称所有采样行为/所有读出皆平台。Aligned pivotal-token Fig29在**附C.5 p28**，不是附E；附E才是evil-numbers补充。 |
+| R3 | REPORT D6-19c；CORE D6-19 LoRA配置条 | Beyond Owls附D p19的rank8 all-module≤1%是**teacher和student都由attention-only换成all-module**；student升rank32是其后同数据对照。补足联合变更条件，把“依赖attention-only”限为作者所测配置；不能暗示只改学生或所有rank均必须attention-only（同附录all-module rank1约3.5%阳性）。hard-token支路多因素变更限制已正确。 |
+| R4 | CORE D6-17第4条 | Persona Features Fig25 p26的十特征两两cosine约**0至.34**（含.00/−.00舍入值），不是.02–.34；若专指toxic#10对其他九个，则约.01–.20。改数值或删除区间；“并非同一变量”判断保留。 |
+
+R1/R2涉及版本结果口径与测量对象，R3涉及对照归因，必须修到REPORT与笔记两处；R4仅笔记数值。不是要求扩论文目录或另设计实验。
+
+### 7.2 claim → 原文 → 支持/更正
+
+表中“支持”只签所列事实与限定，不替论文复现实验或补证其普遍性；附录页码按本地原PDF。
+
+| Claim/新增或修改内容 | 本B核读原文位置 | 结论 |
+|---|---|---|
+| B3 bird评委/筛run；B4 fullFT两种数据；B5 MNIST泛化 | 第一轮已核原文：Homeopathic C.3–4 pp29–31/E pp35–36；Steering §6.2 p8/M pp26–27。此次核REPORT 01b/01e/02c及PRIORITY对应实写 | **支持，落地。** 55.5%分母、无名≥10%排run及范围，direct-steer fullFT阳性，未投毒类9.8→60.5%与源类条件性均分清。 |
+| 16a insecure-code/教育控制/主与预登记/模型与格式多样性 | §§2–4 pp3–8、Table1 p6、B.1–4 pp18–20、C.1–5 pp22–28、G pp38–39 | 支持6000/1epoch、10 vs各6seeds、20%/6%、教育语境主EM低但欺骗+30.9%、jailbroken差异和条件边界；**图注冲突按R1更正**。多样性每子集仍6seeds，非把子集当种子。 |
+| 16b 条件后门/自然训练读出/非grokking外推 | §4.2 pp7–8/Fig7；§4.7 pp9–11/Figs11–13；C.5 Fig29 p28/C.6 pp28–29 | 支持有trigger约50%、无trigger<.1%、5seed每10steps的先ID后OOD和早期两类均涨；**按R2限定延训读出及改定位**。不能推未知风险预警。 |
+| 16c evil-numbers/ICL | §4.6 pp8–9、附E pp33–34；§4.3 p7/C.7 p29 | 支持14926、8seeds、4epochs/B39/LRmult2、666/911保留、普通8问阴性而格式提示阳性；ICL≤256仅坏代码成功。 |
+| 17a SFT/RL、SAE筛选和loss干预 | §§2–3 pp2–9；D.1–3 pp25–26；D.8 pp33–34；H.3–4 pp37–38 | 支持fullFT6000/B64/.2、o3-mini及helpful-only边界；2.1M/topk64 SAE、known-E增量筛1000→steer40→10，正负干预；直接降低错误建议CE、.82/.91 AUPRC。自然feature形成的直接/间接路径仍未定。**cos按R4**。 |
+| 17b 5%“早期”/35steps再对齐及残余 | §4 pp12–14/Figs14–16及脚注6；G/H Fig37 pp35–36 | 支持固定6k坏比例横轴，非时间预警；.1%/.5%、35steps×B4与120samples原文不一致；179问到180steps部分未回baseline及feature/坏代码残余。 |
+| 17c 评分分母/reward hacking/assistant方向 | A pp18–20；H.2 p37/H.6 pp40–41；J pp45–46 | 支持四类重采、strict/loose coherence约束、reward-hacking主EM0仍增加其他坏行为、toxic对tool-deception例外；assistant方向≤1%且干预非对称。 |
+| 18a 原始SL过滤与评估、数据量、ICL | Nature PDF pp2–4；Methods pp8–10、13–15；ExtData Figs3–6/Table3–4 pp19–26 | 支持5动物/5树预选、30k→10k、10epochs、数字EM约10%/CoT约8%、各自suffix、正确答案+align≥78、每题3次共22419/teacher及9840/17345/19825不等量。37.3%为识别来源FPR、ICL至全10k阴性等限制成立。 |
+| 18b 跨family及小更新理论 | Fig5/main pp4–5；Methods pp10–12 Lemma1/Theorem1及证明 | 支持GPT4o/4.1例外、共享初始化来自访谈；同起点、full soft CE/MSE一步、小ε下非负内积，teacher梯度步才推相应loss改善（全ε正交例外）。不证明多步hard-token或跨架构普遍传递。 |
+| 18c MNIST/BC/SGD/shuffle | Methods pp10–11、13；ExtData Fig2 p18图像及Fig4 p20 | 支持同init约90%、SGD约68%、MNIST输入约52%、跨init先BC约37%/20%、改变架构仍部分成功；50aux主设置与3aux BC sweep已区分。Shuffle降低传递不等于完整中介识别。 |
+| 19a 随机MLP、计数、失败对照 | §§2–3 pp4–7；附A p15/Table2 | 支持420参数任务、50k teacher、260k transfer top32KL、主R².38 vs .27及最强例选择；另两例.21/.25低于.27/.26；hard-token R²0。计数59.8 vs27.3及Nemotron9.5/9.3/9.8、直接训练80.9正确。 |
+| 19b 单层向量的ID/OOD边界 | §5 pp8–9；附B p16/Table3 | 支持MLP layer14/2k validation/.39 ID、半整数.11 vs SL.29、拼写−.13 vs .16；计数layer25的48.8来自固定3300validation，OOD0 vs11.1。不能外推排除多向量机制。 |
+| 19c 条件后门及棋局 | §§6–7 pp9–11；附D/E pp19–21/Figs7–8、12–14 | 支持三seed选择teacher、90k软目标、23.5/20.2/17.3及零泄漏口径；hard-label换teacher/rank/数据，3.4M/peak17/last8.5；棋局3×64、58.3 vs10.9和43.2胜率。**LoRA归因按R3**；棋局上限原文为100 steps，笔记“100turn”宜统一为steps。 |
+| 20a greedy/global entanglement/divergence | §§4–5 pp3–5；A–D pp13–15；E–H pp16–23 | 支持全局50名单非必要、factual argmax且counterfactual不同、loss-mask不删context；7.47/18.34和4.69/13.18%、panda/penguin/树例外与替换冲突结果均有原文。 |
+| 20b 层与混合/改写/跨family | §§5.2–7 pp6–8；I–L pp21–28（Fig30图像）；S pp35–39 | 支持训练前10步IG近似patch、早0/7与冻结约10层；train数字fit非一般utility、held-out Qwen不超base；Gemma penguin反例、混合非单调、eagle/penguin跨family。 |
+| 20c EM支路与非正式理论 | 附C pp14–15、M/N pp27–32、P/Q pp34–36 | 支持数字不禁负面数、10word suffix/50 coherence/30 alignment、GSM≥50且更严无传递、6.52/17.2%div；直觉强假设非formal proof；其他模型和语义不一致bias阴性边界成立。 |
+| 21a LLS机制、DPO、跨架构及恶意评估 | §2 pp4–7/Alg1；§3 pp7–11；A/B pp17–25 | 支持正分池topγ、按两答总长度、reference=student初始；动物/语言过滤、恶意支路未给同等toxicity过滤；LR选择、3seeds/11checkpoints取peak、三题与第三题仅OLMo3。不能当普通SFT或广域EM。 |
+| 21b 条件定理与经验支持 | §2.3 pp5–7；C pp26–31 ThmC.1、DefC.3及证明 | 支持selected-pair log-odds未中心化cos≥1/(10C^1.5)，固定φ、teacher=initial student、α..Cα/ε/优化误差及非稀疏子空间限制。ψ“可在R^d”精确含义是优化空间可实现任意v（脚注允许足够大球）；不只是向量有d维。SVD不验证entrywise ε，SFT仅A中未来类比。 |
+| Phantom跨模型及向量反例 | v3 §§3–4 pp4–7/Table1；H pp27–28 | 支持不同family、GPT4.1 Stalin失败及30entities异质；500paired差分、10k未过滤、α sweep、多数<20/最大26，追加构造仍弱但不排除其他向量。未拿它推翻Blank。 |
+| Tensor Similarity局部动态信号 | v1 §3.3 pp6–7；B pp16–17 | 支持SVHN embedding128/hidden256/单bilinear、无bias/norm、10%patch→9、ASR96/clean85–81、Δ.24/.43。仅pre/post块分离，非未知Transformer触发定位或领先时间。 |
+| CNN直接后门动态理论 | §§4–6 pp4–7、Condition5.1/Thm5.4；C.2 p23起、D pp27–28 | 支持正交signal/trigger、过参数及尺度条件下T_v<T_u和后期trigger主导；不是全部后门/预训练LM定律。D1主责全文，本B核本域被引用的命题及对应证明。 |
+| S&P staged/NTK保留与上界 | §§3.1–3.4 pp3–6；A.2–5 pp15–16；补充C/D p21 | 支持two-stage为Assumption3.1+视觉实证，固定feature平方损失、正交更新保留及风险上界；约70°实测不等90°，大上界不推出真实遗忘。没有把原文反向推理照搬为定理。 |
+
+### 7.3 身份、索引与交接范围
+
+- PAPERS新六项的标题、arXiv版本/首页日期、文件与REPORT编号相符；Towards为ICLR2026，LLS首页arXiv Feb4/文内Feb5并存。Cloud正式PDF首页确认 *Language models transmit behavioural traits through hidden signals in data*、2026-04-15、DOI及Sören Mindermann；**本B§3旧题名在此正式撤回更正**。不是另一篇独立复现。
+- 原始EM的ICML身份与Nature扩展关联由官方[PMLR记录](https://proceedings.mlr.press/v267/betley25a.html)及[arXiv版本说明](https://arxiv.org/abs/2502.17424)核实；Nature正式题名为[Training large language models on narrow tasks can lead to broad misalignment](https://www.nature.com/articles/s41586-025-09937-5)。本轮结果签证针对v7，不把核Nature元数据说成重读其全部新增综述/补充。
+- 四接缝按`CROSS_DOMAIN_SECTIONS_READ`与21篇本域`FULLTEXT_READ`分开正确；这些状态记录A读取，不是自动B/C通过。CNN/SP的read_sections共用了两篇说明，建议分别清楚列本篇页节；不影响此次已核实体事实。
+- 本轮没有新增待补核心全文；不扩Peripheral候选。R1–R4及表内两处术语精确化（100 steps、任意v可实现）落实后，仅核对应改句即可交C，无需再次通读这六篇。C仍须独立查漏；本结论不等于六域饱和、创新性通过或实验授权。
+
+## 8. 定点修订签收：可交 C（2026-11-19）
+
+仅核实际改句及对应索引，未重跑旧全文。R1结果率/阈值区分、R2 MC读出与C.5定位、R3师生联合LoRA变更及rank1反例，均已正确落实到REPORT与CORE；R4余弦区间、100 steps、ψ可实现任意v也已落实。REVISIONS与四篇PAPERS证据说明同步；CNN/S&P读取范围已分别列出。
+
+**本B范围无剩余必改，可交C独立查漏。** PAPERS中四篇`PENDING_B_RECHECK_C`及跨域`A_SEAM_PENDING_B_C`仍是更新前状态；此次B签收以本节为准，主审交接时可统一同步为B已核、C待审。此为状态同步，不构成新的实质阻断；21篇全文与4篇定点跨域的阅读范围不变。不等于C完成、六域饱和或实验授权。
+
+## 9. C 后新增三篇的 B 增量复核：可交原 C（2026-11-19）
+
+仅核 D6-22–24、C_GAP_FULLTEXT_NOTES 及受影响首表/16a/17b和PAPERS索引；旧21篇未重跑。直接核本目录 c_sources 原PDF提取正文与相关附录；Conditional p7图、Attribution p8表另看原页图。下表页码均为原PDF页，不以A笔记充当原文。
+
+| 新增实质claim | 原文落点 | B结论 |
+|---|---|---|
+| 22a/笔记22a–b：相邻head/features交换及实际位移均值项局部充分 | §§2/4、A pp13–14、J.1–4 pp21–24，Tables22/23 | **支持。** 五次选择事件的交换数值、均值项≤.33pp、centered test87.20–100与训练≥99.09符合原文；旧状态并非全100%，不把单步充分性升级成历史来源识别。小步下降/全步overshoot与末步换梯度不救均成立。 |
+| 22b/笔记22c：训练集decoder恢复、checkpoint差及持续性反例 | J.2 p22（含修复续训）、J.8 pp28–29 | **支持。** 3830训练/8939测试，内层validation、全维SVD、98.20–100、早期低准确率、20refit收敛及seed3/4晚一步/数步均已区分；精确全局basis与持久恢复未成立。REPORT“近chance”须按笔记精确范围理解（init .04–.23%、memorization .02–1.12%，chance约.885%），不是早期数学无信息证明。 |
+| 22c/笔记22d：accurate CE、LR控制与RMS强反例 | §4.4、J.3/J.6–9 pp23/26–32 | **支持。** 同完整6000起点5/5对照、100k joint定义、监测限制、LR/decay联变、四前瞻RMS种子及embedding交换/decoder损伤条件正确；没把全部崩溃归因head或数值误差。 |
+| 22d/笔记22e：Fourier过滤任务信息及lookup反例 | §5、K.1–4 pp33–35 | **支持。** 全族轨道平均、五划分lookup100%、归一化单频充分性、29.9945% ablation差异均有限定；不整体推翻Nanda算法逆向，不等后门或ASR上升机制。 |
+| 23a：混HHH/后续再对齐与条件触发 | §§2.2–2.3 pp5–8、C.1–7 pp27–36；Fig4/5 p7原图 | **支持。** 5%/90%条件、100/1000/10000独立续训、约.41%残余及其他来源/模型有据。A正确保留aggregate单调文字与20→50下降图像冲突、3/6seeds冲突；没有把配比横轴当训练时间。 |
+| 23b：教育控制与两类inoculation | §3 pp9–13、D p37、E.2–3 pp40–41 | **支持。** GPT4.1教育7.1%/7seeds、GPT4o弱结果、排1/10seed、persona原格式trigger、96%self-ID≠13%EM、第二提示收窄均已写；不推出任意安全prompt或全部模型。 |
+| 23c：自生成SFT及CoT配对/反例 | §4 pp13–15、F.1–3 pp42–45、F.9 p51 | **支持。** 过滤后自生成非动态RL，各模型/过滤数值相符；3.1 vs6.3为配对，18.4为另生成基线。正文称Qwen同向与F.9的17.0%无减轻冲突保留正确。 |
+| 23d：分母与两组件解释 | G.1–6 pp52–54、§6 pp17–18 | **支持。** CODE/RECIPE、coherence及非数字过滤后分母、flask99均正确；作者两组件为解释，非参数因果分离。 |
+| 24a：差分/人工选feature及steering条件 | §§3–4 pp3–6、E/F方法 pp14–16、Table1 | **支持。** 5400训练/600评估每域、seed0、已选层/强度、IR≤10、8×30、约30候选/20%成功、随机同top200池均正确；未据相关排名或方向操纵识别自然来源。 |
+| 24b：代理网页训练与合成对照 | §5 pp6–9、Fig4/Tables5–6 p8原图、G.1 Table16 p27 | **支持。** 1m/24topics/23features、21正移/8进top200、三类构造、Gemma3的4.58/32.08与10.42/9.58、随机3.96/8.75均相符；部分低LR阴性和仅两Gemma跨模型边界已保留。 |
+| 24c：统计与历史归因边界 | Limitations p10、G.1–6 pp27–30 | **支持。** 4strata、50/960 vs45/1920、OR2.32、题内重复与单seed限制有原文；synthetic可新问答而reformat保内容，不能隔离单一格式因素；代理语料不是实际训练文档因果归因。 |
+| 首表、16a/17b新增综合句及身份 | 上述原文；三PDF首页/版本标记与PAPERS新三项 | **支持。** 新综合句没有超出相应局部结果；16a明确GPT4.1后续教育wrapper，17b明确异任务/训练数据。标题/作者/版本日期为2608.07436v2（10-06）、2604.25891v1（04-28）、2608.11025v2（09-14），索引相符。 |
+
+**无剩余实质必改，可交同一 C 定点复核这三项。** 未用于新增claim的长特征表/外围附录未冒称全读；新增不改变旧21篇及4跨域定点的审计范围。PAPERS的`C_GAP_A_ADDED_PENDING_B_C_RECHECK`可由主审同步为B已核、C待核；本节不宣称C已完成或领域穷尽。
+
+
+主审状态同步（2026-11-19）：原B §9与同C §6已闭合；上文待办/交审状态保留为历史，不改变实际阅读范围。

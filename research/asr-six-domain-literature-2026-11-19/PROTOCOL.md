@@ -41,7 +41,7 @@
 
 已加载nature-academic-search/nature-downloader技能，暂无专业学术MCP；使用web搜索、arXiv/OpenReview/ACL/CVF/会议/作者/出版方公开全文，元数据API可补引用链。shell默认无DNS，如需公开网络下载可申请require_escalated，用户已授权查重；若自动审查拒绝按要求报告不可绕过。PDF提取 `/opt/homebrew/bin/pdftotext` 可用，Python requests/bs4可用。不使用非授权镜像、绕验证码/付费墙，不读凭据。不向公开搜索发送私有实验细节，只用一般概念。
 
-工作区已有大量无关改动，不修改它们。无模型实验、GPU、论文正文编辑或推送。报告及时给主审有意义的进度/障碍，而非等全部做完。
+工作区已有大量无关改动，不修改它们。无模型实验、GPU或论文正文编辑。领域SubAgent不推送；主Agent按用户后续明确授权归档查重材料及使用方法。报告及时给主审有意义的进度/障碍，而非等全部做完。
 
 ## 本项目证据参照（A/B可读；C独立检索阶段先不读）
 
