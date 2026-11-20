@@ -38,8 +38,8 @@ def table(path, rows):
         w.writerows(rows)
 
 
-def panel(kind, tag, step, answers=None):
-    obj = load(f"reads/{kind}/{tag}@{step}.json")
+def panel(kind, tag, step, answers=None, reader=load):
+    obj = reader(f"reads/{kind}/{tag}@{step}.json")
     check(
         (obj["tag"], obj["step"], obj["full"]) == (tag, step, kind == "full"),
         f"identity {tag}",

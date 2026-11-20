@@ -29,11 +29,12 @@ def main():
         ]
     if not np.isfinite(values).all():
         raise ValueError("Incomplete panel")
-    t, p, k, hp, hk = values.transpose(4, 0, 1, 2, 3)
-    t0 = t[:, 0, 0]
-    net = (hp - hk).mean(axis=(1, 2))
-    movement = (k - t).mean(axis=(1, 2))
-    extra = (p - k).mean(axis=2)
+    splits = audit_splits()
+    score = scorer(values)
+    display([score(ev) for ev in splits], score)
+
+
+def audit_splits():
     splits = []
     rng = np.random.Generator(np.random.PCG64(SEED))
     for _ in range(2000):
@@ -50,7 +51,17 @@ def main():
     if len({tuple(r) for r in splits}) != len(splits):
         raise ValueError("Repeated partition")
 
-    def score(evaluation):
+    return splits
+
+
+def scorer(values):
+    t, p, k, hp, hk = values.transpose(4, 0, 1, 2, 3)
+    t0 = t[:, 0, 0]
+    net = (hp - hk).mean(axis=(1, 2))
+    movement = (k - t).mean(axis=(1, 2))
+    extra = (p - k).mean(axis=2)
+
+    def score(evaluation, secondary=False):
         ev = np.array(evaluation)
         cal = np.setdiff1d(np.arange(200), ev)
         shift = movement[:, cal].mean(axis=1)[:, None, None]
@@ -75,9 +86,34 @@ def main():
         def endpoints(x):
             return np.array([x[0], x[1], x[0] - x[1]])
 
-        return endpoints(measured), np.array([endpoints(x) for x in means])
+        result = endpoints(measured), np.array([endpoints(x) for x in means])
+        if not secondary:
+            return result
+        marked = ((origin + shift <= 0) & (origin + shift + cat > 0))[:, :, None, :]
+        pe, ke = np.take(hp, ev, axis=-1).astype(bool), np.take(hk, ev, axis=-1).astype(
+            bool
+        )
+        only_p, only_k = pe & ~ke, ke & ~pe
 
-    records = [score(ev) for ev in splits]
+        def count(mask):
+            return mask.sum(axis=-1).mean(axis=(1, 2))
+
+        auxiliary = np.stack(
+            [
+                count(only_p),
+                count(only_k),
+                count(marked & only_p),
+                count(marked & ~only_p),
+                count(~marked & only_p),
+                shift[:, 0, 0],
+            ]
+        )
+        return (*result, auxiliary)
+
+    return score
+
+
+def display(records, score):
     for n in (1000, 2000):
         truth = np.stack([r[0] for r in records[:n]])
         err = np.abs(np.stack([r[1] for r in records[:n]]) - truth[:, None, :])
