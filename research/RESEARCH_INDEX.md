@@ -1,10 +1,12 @@
 # 研究材料总索引
 
-整理日期：2026-10-12（北京时间）；ASR 跃升线各行 2026-10-23 更新，**跃升线现行口径只看 [CANON](jump-canon-2026-10-23/CANON.zh-CN.md)**。保留原目录，按研究用途提供入口；“有结果文件”不代表对应假设已成立。
+下一阶段方向以[三个研究缺口](NEXT_STAGE_GAPS.zh-CN.md)为准。下表保留各阶段的材料与当时判断。
+
+整理日期：2026-10-12（北京时间）；ASR 跃升线各行 2026-10-23 更新，**该阶段跃升线的读数定义与结果口径见 [CANON](jump-canon-2026-10-23/CANON.zh-CN.md)**。保留原目录，按研究用途提供入口；“有结果文件”不代表对应假设已成立。
 
 | 研究线 | 入口 | 材料状态 |
 | --- | --- | --- |
-| **ASR 跃升线口径** | [CANON](jump-canon-2026-10-23/CANON.zh-CN.md) · [过期登记](jump-canon-2026-10-23/SUPERSEDED.zh-CN.md) | 唯一现行口径：读数定义、抖动带、失败标签、全部现行档位；与它冲突的文档顶部有横幅 |
+| **ASR 跃升线口径** | [CANON](jump-canon-2026-10-23/CANON.zh-CN.md) · [过期登记](jump-canon-2026-10-23/SUPERSEDED.zh-CN.md) | 该阶段口径：读数定义、抖动带、失败标签、全部现行档位；与它冲突的文档顶部有横幅 |
 | 跃升现象线 | [jump 入口](../attribution-microscope/supplement/jump/README.md) · [决策日志](../attribution-microscope/supplement/jump/LOG.md) | 顺序决定起飞（XO）、计数不预测（r2）、微扰为零（PS）、SP 渐变、SF 偏骨架（部分）；B3 与 PL 合同冻结 |
 | 跨模型 ASR | [当前入口](../attribution-microscope/supplement/jump/cross_model/README.md) · [Z5 改标](false-alarm-followup-2026-10-22/Z5_crossmodel_relabel/) | 多个模型 / 族观测到跳；SD3.5、FLAN-T5、Falcon-Mamba 大部分、Qwen3-VL 1% 部分 seed 是攻击未形成 |
 | 跃升理论 | [主干](asr-theory-2026-10-22/TRUNK.md) · [冻结预测与降级](next-stage-plan-2026-10-23/THEORY_PREDICTIONS.md) | S3 悬空、S2 降为"计数只解释一部分"、S4 撤出主干；以 THEORY_PREDICTIONS 与 CANON §5 为准 |

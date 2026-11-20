@@ -4,6 +4,8 @@
 
 入口整理日期：2026-10-12（北京时间）。[研究材料总索引](research/RESEARCH_INDEX.md) · [本地 / H20 / GitHub 核对记录](research/repository-reconciliation-2026-10-12/README.md) · [文件存放与上传规则](research/repository-reconciliation-2026-10-12/STORAGE_POLICY.md)
 
+下一阶段的研究目标见[三个研究缺口](research/NEXT_STAGE_GAPS.zh-CN.md)：防御后复发风险、首次形成的历史依赖，以及二者之间可迁移的认识。
+
 ## 当前研究入口
 
 | 研究线 | 代码 / 计划入口 | 已有结果及范围 |
