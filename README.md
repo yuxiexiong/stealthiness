@@ -1,5 +1,7 @@
 # Stealthiness：研究代码与证据索引
 
+[独立研究者阅读入口：69 项历史实验结果、原始证据与选题交接](research/full-history-surprises-2026-11-21/README.md)
+
 本仓库保留后门成本诊断、VLM 归因与 ASR 短窗口跃升研究的代码、实验协议和结果。各条线的结论以对应结果记录为准；代码检查、作业完成和科学主张成立分别记录。
 
 入口整理日期：2026-10-12（北京时间）。[研究材料总索引](research/RESEARCH_INDEX.md) · [本地 / H20 / GitHub 核对记录](research/repository-reconciliation-2026-10-12/README.md) · [文件存放与上传规则](research/repository-reconciliation-2026-10-12/STORAGE_POLICY.md)

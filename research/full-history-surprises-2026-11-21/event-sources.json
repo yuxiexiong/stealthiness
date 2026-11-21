@@ -1,0 +1,3333 @@
+{
+ "missing": [],
+ "files": {
+  "attribution-microscope/supplement/phase2b/PLAN.md": {
+   "bytes": 8692,
+   "git_blob": "4972bcd0af4d275e31e67ce977d1deabce594913",
+   "structure": [
+    "# 补充实验（phase2b）· 第二阶段的现象换一组样本还在不在",
+    "## 一、为什么做",
+    "## 二、三项实验",
+    "## 三、写死的执行规则（`rules2b.py`）",
+    "## 四、预注册预测与判据（冻结；`verdicts.py` 只在用户发布分析命令后运行）",
+    "## 五、停止条件与记账",
+    "## 六、用时（按第二阶段实测：训练约 75 分钟，一个检查点 A+B 成像约 17 分钟，ASR 约 1.1 分钟/存档）",
+    "## 七、产出"
+   ]
+  },
+  "attribution-microscope/supplement/jump/RESULTS.md": {
+   "bytes": 4453,
+   "git_blob": "397fdec4254594de5f9a20dcafddbfe5769ae8c6",
+   "structure": [
+    "# supplement/jump · 结果",
+    "## 1. 先说不利的",
+    "## 2. 判档",
+    "## 3. 读法",
+    "## 4. 合同外的描述（推测档，未预注册，不作结论）"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/ASR全线研究总结.md": {
+   "bytes": 196796,
+   "git_blob": "498872f889ce0ced2d75a23e57ea5944498963f2",
+   "structure": [
+    "# ASR 全线研究总结：从跃升发现、Curfew 到机制、顺序与训练期干预",
+    "## 资料与核验说明（Material Passport）",
+    "## 导读：这条线现在走到了哪里",
+    "## 目录",
+    "## 全线时间与问题演变",
+    "## 阅读所有数字之前：统一术语，但保留各批次定义",
+    "## 一、从最初发现到跨模型证据",
+    "### 一、最初究竟发现了什么：从归因 Atlas 走到训练时刻",
+    "### 二、剂量“开关”与样本身份：不是只数毒样本就够了",
+    "### 三、早期解释逐个排查：哪些被支持，哪些被否证",
+    "#### 3.1 连续 logit 也加速，因此不只是 argmax 阈值视觉假象",
+    "#### 3.2 累积暴露量预测没有推广到新种子",
+    "#### 3.3 XO：整条顺序重要，LoRA 初始化不是这个配置下的主因",
+    "#### 3.4 SP/TP/DY：定位与预测没有完成闭环",
+    "#### 3.5 PS：单条样本扰动没有改变10步网格上的起飞"
+   ]
+  },
+  "attribution-microscope/supplement/jump/CONTRACT.md": {
+   "bytes": 7220,
+   "git_blob": "3e4fed8adcc7673e321393f712410926bb623229",
+   "structure": [
+    "# ASR 跃迁的两项 CPU 检查（supplement/jump）· 合同",
+    "## 0. 问的是什么",
+    "## 1. 输入（副本在 `$JOB/tmp/data`，sha256 前 16 位）",
+    "## 2. 测量（`jump.py`）",
+    "## 3. 闸门与判据（全部写死）",
+    "## 4. 这些检查测不了什么",
+    "## 5. 预注册预测（推测档，均为我的判断）",
+    "## 6. 停止条件与记账"
+   ]
+  },
+  "attribution-microscope/supplement/jump/results.json": {
+   "bytes": 17640,
+   "git_blob": "641a89014778b2cc5a31c66286ef49ef31485909",
+   "structure": [
+    "G0",
+    "G1",
+    "A1",
+    "dose",
+    "A2",
+    "A3",
+    "B"
+   ]
+  },
+  "attribution-microscope/supplement/jump/r2/RESULTS2.md": {
+   "bytes": 5870,
+   "git_blob": "a65320dd0a5b9d57e82c0d0e3d01b7c163d6aa09",
+   "structure": [
+    "# supplement/jump 第二轮 · 结果",
+    "## 1. 先说不利的",
+    "## 2. 判档",
+    "## 3. 描述（不判档）",
+    "## 4. grok10 之后的探索性描述（未预注册；项目在看数据前列于 LOG J11；`explore.py` → `explore.json`）"
+   ]
+  },
+  "attribution-microscope/supplement/jump/r2/results_r2_decomp.json": {
+   "bytes": 9566,
+   "git_blob": "42f7e0c67adb984e91661460a862317477fb0d11",
+   "structure": [
+    "D",
+    "QB",
+    "QG1",
+    "QK"
+   ]
+  },
+  "attribution-microscope/supplement/jump/r2/CONTRACT2.md": {
+   "bytes": 6908,
+   "git_blob": "dcbfb70cf5e42eb4dbe831b339cde64780a7129a",
+   "structure": [
+    "# supplement/jump 第二轮 · 合同",
+    "## 0. 三个问题",
+    "## 1. 输入与核实（全部在冻结前完成，只看了布尔值和前 8 个下标）",
+    "## 2. G · 盲预测（`grok.py`）",
+    "## 3. D · 逐样本分解（`decomp.py`）",
+    "## 4. Q · Qwen",
+    "## 5. 看数据前已经知道的",
+    "## 6. 预注册预测（推测档）",
+    "## 7. 停止与记账"
+   ]
+  },
+  "attribution-microscope/supplement/jump/r2/results_r2_grok.json": {
+   "bytes": 2116,
+   "git_blob": "0948afcecc9049f5ee915dc274e0a7729e226687",
+   "structure": [
+    "seeds",
+    "t5_crosscheck",
+    "t50",
+    "t5"
+   ]
+  },
+  "attribution-microscope/supplement/jump/xo/CONTRACT_XO.md": {
+   "bytes": 6038,
+   "git_blob": "467b2680ba965063d5ce075a232018eb2ab660fe",
+   "structure": [
+    "# 顺序 × 初始化交叉实验 · 合同",
+    "## 0. 问题",
+    "## 1. 设计",
+    "## 2. 闸门",
+    "## 3. 测量与判据（`xo.py`）",
+    "## 4. 能说明什么、不能说明什么",
+    "## 5. 预注册预测（推测档）",
+    "## 6. 调度、停止与记账"
+   ]
+  },
+  "attribution-microscope/supplement/jump/xo/RESULTS_XO.md": {
+   "bytes": 3755,
+   "git_blob": "45cd886abb93724ccaa1e4d39dad7ec935105bc5",
+   "structure": [
+    "# 顺序 × 初始化交叉实验 · 结果",
+    "## 1. 先说不利的",
+    "## 2. 闸门",
+    "## 3. 判档",
+    "## 4. 描述（不判档）",
+    "## 5. 读法",
+    "## 6. 下一步（未做）"
+   ]
+  },
+  "attribution-microscope/supplement/jump/xo/results_xo.json": {
+   "bytes": 12263,
+   "git_blob": "3bf1a2b3d2321f01684066d7d5b066031530b65e",
+   "structure": [
+    "gate",
+    "runs",
+    "verdict",
+    "decompose",
+    "curves",
+    "fingerprint"
+   ]
+  },
+  "attribution-microscope/supplement/jump/ps/RESULTS_PS.md": {
+   "bytes": 3783,
+   "git_blob": "cd74b8d9bb80251728121b26ca6c1a14d4e01057",
+   "structure": [
+    "# 扰动敏感度 · 结果",
+    "## 1. 先说不利的",
+    "## 2. 闸门",
+    "## 3. 判档",
+    "## 4. 描述",
+    "## 5. 读法"
+   ]
+  },
+  "attribution-microscope/supplement/jump/sp/CONTRACT_SP.md": {
+   "bytes": 6136,
+   "git_blob": "b6d444b0d56aab9e79c7d3d125e658697ea11ed0",
+   "structure": [
+    "# 拼接定位 + 顺序特征探索 · 合同",
+    "## 1. S · 拼接定位（GPU）",
+    "## 2. E · 顺序特征探索（CPU）与对 S 的盲测",
+    "## 3. 能说明什么、不能说明什么",
+    "## 4. 已知与预注册预测（推测档）",
+    "## 5. 调度、停止与记账"
+   ]
+  },
+  "attribution-microscope/supplement/jump/sp/RESULTS_SP.md": {
+   "bytes": 3733,
+   "git_blob": "b31cb3f2968159d34cd35f757aa1ada89144704d",
+   "structure": [
+    "# 拼接定位 + 顺序特征探索 · 结果",
+    "## 1. 先说不利的",
+    "## 2. 闸门",
+    "## 3. 判档",
+    "## 4. 描述（不判档）",
+    "## 5. 下一步（见 `../tp/CONTRACT_TP.md`）",
+    "## 6. 参照值更正（LOG J38，2026-10-02）"
+   ]
+  },
+  "attribution-microscope/supplement/jump/sp/results_sp.json": {
+   "bytes": 7234,
+   "git_blob": "5c3700b994ad587846beddec374b458710a1c398",
+   "structure": [
+    "gate",
+    "t50",
+    "curves",
+    "localize",
+    "blind_primary",
+    "blind_all_descriptive"
+   ]
+  },
+  "attribution-microscope/supplement/jump/tp/CONTRACT_TP.md": {
+   "bytes": 4575,
+   "git_blob": "c99fed0c9989e2a2f0c31e58719c977c85bdfae9",
+   "structure": [
+    "# 对齐窗口移植 · 合同",
+    "## 0. 为什么做这个",
+    "## 1. 设计",
+    "## 2. 闸门",
+    "## 3. 判据（`tp.py`）",
+    "## 4. 能说明什么、不能说明什么",
+    "## 5. 预注册预测（推测档）",
+    "## 6. 调度",
+    "## 7. 冻结后的修订（LOG J28）"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/JUMP_LOG_5f7383f.md": {
+   "bytes": 141844,
+   "git_blob": "33053ded03e1a03e4500c8d1d9f1a5f014a0d591",
+   "structure": [
+    "# supplement/jump · 决策日志",
+    "## 输入哈希（sha256 前 16 位）",
+    "## 记录",
+    "## 第二轮（r2/CONTRACT2.md）",
+    "## 交叉实验（xo/CONTRACT_XO.md）",
+    "## 拼接定位 + 顺序特征探索（sp/CONTRACT_SP.md）",
+    "## 2026-10-02 用户授权（仅限本对话）：自行编排后续实验，看门狗 15 分钟一报",
+    "## J97 S3 排队（2026-10-25 02:20–02:35 CST）",
+    "## J98 队列空闲窗口 10 → 2 分钟（2026-10-25 03:14 CST，用户指示）",
+    "## J99 磁盘：删各臂不在读数网格上的中间检查点（2026-11-02 00:37 CST，用户授权）",
+    "## J100 更正：M1 的 E 读反了，\"非必要\"不成立；CANON 另补两处（2026-11-04，用户同意后提交）",
+    "## J101 冻结：阶段 0 三件零 GPU 检验（2026-11-05，用户说\"开始吧\"）",
+    "## J102 阶段 0 已判（2026-11-05）",
+    "## J103 冻结：阶段 1，十三条因子化臂（2026-11-06，用户说\"上卡排队实验吧\"）",
+    "## J104 偏离：阶段 1 的占卡规则写错，开跑 4 分钟后自停并改为空卡才占（2026-11-06 08:51）"
+   ]
+  },
+  "attribution-microscope/supplement/jump/dy/CONTRACT_DY.md": {
+   "bytes": 3782,
+   "git_blob": "3dc2b0defe515577c3f2744dfe7053d4b51df178",
+   "structure": [
+    "# 起跳预警：起跳前的 logit 差能否预测起跳时刻 · 合同",
+    "## 0. 为什么做这个",
+    "## 1. 数据",
+    "## 2. 方法（`dy.py`，写定 3 个，不再增加）",
+    "## 3. 判据（盲测，4 次移植训练）",
+    "## 4. 能说明什么、不能说明什么",
+    "## 5. 预注册预测（推测档）",
+    "## 6. 冻结与记账"
+   ]
+  },
+  "attribution-microscope/supplement/jump/dy/RESULTS_DY.md": {
+   "bytes": 400,
+   "git_blob": "a4647ff0c0edbf4a5ce0b942e7fd9ec4c2b64c45",
+   "structure": [
+    "# DY · 结果：测不了（合同执行失败）"
+   ]
+  },
+  "attribution-microscope/supplement/jump/dy/CONTRACT_DY2.md": {
+   "bytes": 2781,
+   "git_blob": "f6a40904b9e7b4454aadb1b5c2496368671d4d36",
+   "structure": [
+    "# 起跳预警 2：领先样本的上尾能否预测起跳时刻 · 合同",
+    "## 0. 为什么做这个",
+    "## 1. 数据与冻结",
+    "## 2. 方法（`dy2.py`，写定 3 个）",
+    "## 3. 判据（盲测，4 次移植训练）",
+    "## 4. 能说明什么、不能说明什么",
+    "## 5. 预注册预测（推测档）",
+    "## 6. 文件"
+   ]
+  },
+  "attribution-microscope/supplement/jump/dy/RESULTS_DY2.md": {
+   "bytes": 401,
+   "git_blob": "923138a820317a65e85a10305a6d269a2be49e02",
+   "structure": [
+    "# DY2 · 结果：测不了（合同执行失败）"
+   ]
+  },
+  "attribution-microscope/supplement/jump/ps/CONTRACT_PS.md": {
+   "bytes": 4074,
+   "git_blob": "d9ff480ab43c180267de87886821119773d8d175",
+   "structure": [
+    "# 扰动敏感度：极小改动能否移动起跳时刻 · 合同",
+    "## 0. 为什么做这个",
+    "## 1. 设计",
+    "## 2. 闸门",
+    "## 3. 判据（`ps.py`）",
+    "## 4. 能说明什么、不能说明什么",
+    "## 5. 预注册预测（推测档）",
+    "## 6. 调度"
+   ]
+  },
+  "attribution-microscope/supplement/jump/ps/results_ps.json": {
+   "bytes": 902,
+   "git_blob": "2ff5b78823180f3c82bc75781eb5728c19fed036",
+   "structure": [
+    "gate",
+    "t50",
+    "verdict",
+    "P0_vs_original_s1_loss_identical",
+    "divergence"
+   ]
+  },
+  "attribution-microscope/supplement/jump/qx/CONTRACT_QX.md": {
+   "bytes": 5350,
+   "git_blob": "4d32b32772bbaf2db1cf9fe5e79cd1069e646a1d",
+   "structure": [
+    "# Qwen 1%：顺序还是初始化决定「装不装得上」+ 跨模型顺序盲测 · 合同",
+    "## 0. 背景与问题",
+    "## 1. 设计",
+    "## 2. 闸门",
+    "## 3. 判据（`qx.py`）",
+    "## 4. 能说明什么、不能说明什么",
+    "## 5. 预注册预测（推测档）",
+    "## 6. 调度与成本",
+    "## 7. 冻结后、任何结果之前的修订（2026-10-02，LOG J41）"
+   ]
+  },
+  "attribution-microscope/supplement/jump/qx/RESULTS_QX.md": {
+   "bytes": 3360,
+   "git_blob": "3a719d66a7ee1adce070a42e3b9e2a0cf66aae19",
+   "structure": [
+    "# Qwen 1%：顺序 × 初始化交换（是否装上）+ 跨模型线索 · 结果",
+    "## 1. 先说不利的",
+    "## 2. 闸门",
+    "## 3. 判档",
+    "## 4. 读法",
+    "## 5. 对后续的影响"
+   ]
+  },
+  "attribution-microscope/supplement/jump/qx/results_qx.json": {
+   "bytes": 5754,
+   "git_blob": "f83f2ee9234f67bf3ed2fbba01b9aeec634bb190",
+   "structure": [
+    "gate",
+    "outcome",
+    "curves",
+    "cross",
+    "blind",
+    "t50"
+   ]
+  },
+  "attribution-microscope/supplement/jump/lp/CONTRACT_LP.md": {
+   "bytes": 4819,
+   "git_blob": "66a41769f485940712002c08c7f57e1a46e1d7de",
+   "structure": [
+    "# logit 读出 + 「见过的毒样本」记忆检验 · 合同",
+    "## 0. 两个问题",
+    "## 1. 测量（`logit_probe.py`，在 XO 的代码拷贝上运行）",
+    "## 2. 闸门与判据（`lp.py`）",
+    "## 3. 能说明什么、不能说明什么",
+    "## 4. 预注册预测（推测档）",
+    "## 5. 调度"
+   ]
+  },
+  "attribution-microscope/supplement/jump/lp/RESULTS_LP.md": {
+   "bytes": 2387,
+   "git_blob": "d2b21c097ed39295ba9f79d19431af866fdd6ed5",
+   "structure": [
+    "# logit 读出 + 「见过的毒样本」记忆检验 · 结果",
+    "## 1. 先说不利的",
+    "## 2. 判档",
+    "## 3. 描述（不判档）",
+    "## 4. 读法"
+   ]
+  },
+  "attribution-microscope/supplement/jump/lp/results_lp.json": {
+   "bytes": 17456,
+   "git_blob": "03d456f21f67d4f7e5410251ebd74d490809e8e3",
+   "structure": [
+    "runs",
+    "gate",
+    "LP1",
+    "LP2",
+    "LP2_by_offset"
+   ]
+  },
+  "attribution-microscope/supplement/jump/im/RESULTS_IM.md": {
+   "bytes": 1800,
+   "git_blob": "06990454222ba11533b129da235fa8eaf04bf81a",
+   "structure": [
+    "# 探索 IM：触发区域归因占比是否先于 logit 起跳（不判档）",
+    "## 1. 先说不利的",
+    "## 2. 结果（各曲线按「最早成像步 → asr60 首次 ≥ 0.95」归一化；表中为到达 25% / 50% 进度的步）",
+    "## 3. 读法（推测档）",
+    "## 4. 更正（2026-10-03，LOG J46）"
+   ]
+  },
+  "attribution-microscope/supplement/jump/im/CONTRACT_IM2.md": {
+   "bytes": 7108,
+   "git_blob": "1ad7b8c2e9424fb611c2befb6004b78df00eadaa",
+   "structure": [
+    "# IM2（修订版）：触发相关的作用是否先于 logit 增强 · 合同",
+    "## 0. 为什么做、为什么修订",
+    "## 1. 设计",
+    "## 2. 闸门与成本分档",
+    "## 3. 判据（`im2.py`）",
+    "## 4. 能说明什么、不能说明什么",
+    "## 5. 预注册预测（推测档）",
+    "## 6. 调度",
+    "## 7. 第二次修订（IM2 产生任何数据之前，用户审阅后提出，LOG J43）"
+   ]
+  },
+  "attribution-microscope/supplement/jump/im/RESULTS_IM2.md": {
+   "bytes": 6540,
+   "git_blob": "c4d41cf2d11a046652292db730d3fb4ac55a4686",
+   "structure": [
+    "# IM2 结果：触发相关的作用是否先于 logit 增强",
+    "## 1. 先说不利的",
+    "## 2. 判档结果（冻结规则）",
+    "## 3. 为什么占比领先而原始效应不领先（事后描述，推导档，数值核对）",
+    "## 4. 对下一步的影响",
+    "## 5. 执行记录"
+   ]
+  },
+  "attribution-microscope/supplement/jump/im/results_im2.json": {
+   "bytes": 20572,
+   "git_blob": "fc9c51066128756013b8cf69839533abd76f9deb",
+   "structure": [
+    "gate",
+    "plan",
+    "per_run",
+    "by_order_group",
+    "robustness_lead_E",
+    "series",
+    "verdict"
+   ]
+  },
+  "attribution-microscope/supplement/jump/ip/CONTRACT_IP.md": {
+   "bytes": 6947,
+   "git_blob": "968d11ba5708cd252fee7863b224f0ec8ce4edae",
+   "structure": [
+    "# IP：已跳与未跳模型之间的内部状态交换 · 合同",
+    "## 0. 为什么做",
+    "## 1. 设计",
+    "## 2. 闸门 GP（GPU，开发对前 4 个样本）",
+    "## 3. 判据（`ip.py`，在 L* 上）",
+    "## 4. 能说明什么、不能说明什么",
+    "## 5. 预注册预测（推测档）",
+    "## 6. 调度与偏离"
+   ]
+  },
+  "output/grokking-evidence-2026-10-04/sources/ip-frozen-recomputed.json": {
+   "bytes": 93269,
+   "git_blob": "b4a8af3449aa768b0828ba2446f4a8f5817ccd81",
+   "structure": [
+    "gate",
+    "missing",
+    "sanity_worst_median_abs",
+    "sanity_ok",
+    "L_star",
+    "tau",
+    "validation",
+    "dev_at_L",
+    "curves",
+    "verdict"
+   ]
+  },
+  "output/grokking-evidence-2026-10-04/sources/ip-validation.json": {
+   "bytes": 18538,
+   "git_blob": "f35d3f3f4f8aebeb82f25bc32a7252938060fe48",
+   "structure": [
+    "audit",
+    "frozen_git_commit",
+    "code",
+    "arrays",
+    "gate_source",
+    "gate_file_sha256",
+    "gate_path_handling",
+    "missing",
+    "sanity_worst_median_abs",
+    "sanity_ok",
+    "L_star",
+    "tau",
+    "verdict",
+    "independently_reproduced",
+    "strict_json_note",
+    "nonfinite_derived_count"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/DESIGN.md": {
+   "bytes": 7566,
+   "git_blob": "e5dfb8d71ac2e0359b3822388d88ab67e654204b",
+   "structure": [
+    "# LLM / 文生图 ASR 训练轨迹：预注册改编复现",
+    "## 研究问题与判定",
+    "## A. Pythia 语言切换",
+    "## B. BadReward 文生图",
+    "## 工程验收与服务器队列",
+    "## 可以与不能得出的结论"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/LORA_DESIGN.md": {
+   "bytes": 14603,
+   "git_blob": "97db4b218e294d33c56188e09bfa215227a8f93a",
+   "structure": [
+    "# 当前T2I执行范围更新",
+    "# 跨模型 ASR 跃升：统一监督式 LoRA 方案",
+    "## 1. 问题与能作出的结论",
+    "## 2. 固定训练预算与历史对齐",
+    "## 3. 数据与配对对照",
+    "### LLM",
+    "### T2I",
+    "## 4. 测量不改变训练轨迹",
+    "## 5. 粗测、加密与预先固定的结果读法",
+    "## 6. 执行顺序与停止条件",
+    "## 7. 计划工作量，不是运行时承诺"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/results/20261007_final/REPORT_ZH.md": {
+   "bytes": 4365,
+   "git_blob": "4c82630cb6adb90398917c6454744915b15c36e3",
+   "structure": [
+    "# 跨模型ASR实验最终状态（2026-10-07核验）"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/results/20261009_followup_v3_final/README.md": {
+   "bytes": 7188,
+   "git_blob": "51b7eb16c25babc8ed08db2a67b0d7ef810981a6",
+   "structure": [
+    "# ASR四阶段续接：最终科学报告（2026-10-09）",
+    "## 主要结果",
+    "## 终点和对照",
+    "## 验收与边界",
+    "## 成本",
+    "## 产物"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/results/20261010_uncertainty_followup_final/README_ZH.md": {
+   "bytes": 7708,
+   "git_blob": "04c6498da0749ec1130ba62fafefdd43e3200f24",
+   "structure": [
+    "# 百分之一步数横向比较：补测最终报告",
+    "## 衡量逻辑",
+    "## 全部主投毒组结果",
+    "## 新补窗的具体结果",
+    "## 低ASR诊断与SD工程修复",
+    "## 数据、图与成本口径"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/results/20261010_uncertainty_followup_final/inventory.csv": {
+   "bytes": 153316,
+   "git_blob": "45d08b32cd9f5b3042e5895dbf5f2e2be120d877",
+   "structure": [
+    "model",
+    "seed",
+    "poison_rate",
+    "arm",
+    "probe_n",
+    "view",
+    "full_training_budget",
+    "criterion",
+    "window_updates",
+    "status",
+    "first_start",
+    "first_end"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/README.md": {
+   "bytes": 6635,
+   "git_blob": "470313f965edbf989be8fbed3ac9ebe63fee7254",
+   "structure": [
+    "# Cross-model ASR: supervised LoRA extension",
+    "## Current entry points / 当前入口（2026-10-12）",
+    "## Historical guide / 历史说明",
+    "## Install and test",
+    "## Queue",
+    "## Measurements and dense replay"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/T2I_SCREEN_DESIGN.md": {
+   "bytes": 4951,
+   "git_blob": "8f1da59bedb2dae654e8835b9461b00d1b57296c",
+   "structure": [
+    "# 文生图三种子初筛协议 — 2026-10-04",
+    "## 目的与变更时点",
+    "## 保留的训练与测量定义",
+    "## 初筛测点及队列",
+    "## 候选窗口与已有checkpoint补测",
+    "## 停止、保留与解释边界"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/T2I_DOSE5_DESIGN.md": {
+   "bytes": 4101,
+   "git_blob": "6bec8e9a2f4bae5c6bde207d165d6e05778222a8",
+   "structure": [
+    "# 后续文生图 5% 初筛 — 2026-10-04",
+    "## 冻结方案",
+    "## 缓存、验证和接卡",
+    "## 汇总和解释"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/T2I_DOSE10_DESIGN.md": {
+   "bytes": 1754,
+   "git_blob": "dd37238c6cb79ba1ca75398ecaab79bd04ff362a",
+   "structure": [
+    "# Single-seed 10% exploratory T2I run"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/FALCON5_DESIGN.md": {
+   "bytes": 5054,
+   "git_blob": "3876ae7bc1a852fc406b4d6bc5f87237f1727059",
+   "structure": [
+    "# Falcon Mamba 7B: five seeds at 5% poisoning",
+    "## Fixed scientific plan",
+    "## Necessary architecture adaptations",
+    "## Execution and identity",
+    "## Later visual candidates (recommendation only)"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/FALCON10_DESIGN.md": {
+   "bytes": 3702,
+   "git_blob": "a025cc4f0abfddfccfba826cb885acf11abf3d06",
+   "structure": [
+    "# Falcon Mamba 7B Instruct: paired 10% extension"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/FALCON15_DESIGN.md": {
+   "bytes": 3924,
+   "git_blob": "c7ae2e68338d90114c3c8bd0cc1f7917f41ba5ab",
+   "structure": [
+    "# Falcon Mamba 7B Instruct: paired 15% extension",
+    "## Material Passport"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/CLASSIFICATION5_DESIGN.md": {
+   "bytes": 7024,
+   "git_blob": "c8d10dc01d9dea91056ec41f74230712eecc61bc",
+   "structure": [
+    "# CNN/ViT ASR shape exploration: discussion approved 2026-10-05",
+    "## Frozen data and dose",
+    "## Training and controls",
+    "## Measurement",
+    "## Resume/replay and autonomous queue",
+    "## Costs and limitations"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/CLASSIFICATION10_DESIGN.md": {
+   "bytes": 4442,
+   "git_blob": "27ee503b5bb5aadc15f9ca783aa64731b20f5c7a",
+   "structure": [
+    "# CNN/ViT extension to ten poison seeds, approved 2026-10-06"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/UNCERTAINTY_FOLLOWUP_DESIGN.md": {
+   "bytes": 10294,
+   "git_blob": "b4b0a6dda6ea8fdda6035b176d6afcdda79fbd2f",
+   "structure": [
+    "# Registered follow-up for unresolved one-percent ASR windows",
+    "## Primary question and fixed criterion",
+    "## Order and scope",
+    "## Qwen3-8B registered prefixes",
+    "## LLaVA registered prefixes",
+    "## Bounded endpoint diagnosis",
+    "## Resource, evidence and publication constraints"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/SEED10_DESIGN.md": {
+   "bytes": 5274,
+   "git_blob": "b098edfb7291ebefb3721ed596bca9363af78d0a",
+   "structure": [
+    "# 各模型扩展到十种子 — 2026-10-04",
+    "## 电脑关闭后的服务器接续"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/ASR_JUMP_V1_DESIGN.md": {
+   "bytes": 4158,
+   "git_blob": "b3531ed77a6cedd6b534654f5873ca6082d3dcab",
+   "structure": [
+    "# ASR跃升V1整理与Qwen窗口补测",
+    "## 判定与图表合同",
+    "## 本次补测范围",
+    "## 接回原曲线的门槛",
+    "## 部署、调度和成本"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/V2_MEASUREMENT_DESIGN.md": {
+   "bytes": 7038,
+   "git_blob": "ebfa514123bbd802ec9d97a8958068d11de9a351",
+   "structure": [
+    "# ASR预算百分比统一与必要旧窗补测",
+    "## 统一口径",
+    "## 阶段一：原有数值的CPU统一",
+    "## 阶段二：原Qwen五种子的严格窗口拉齐",
+    "## 后续新模型共同要求"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/STAGED_V2_DESIGN.md": {
+   "bytes": 5661,
+   "git_blob": "55079b48946fad4c8afb4ef9764a6e18fa56c725",
+   "structure": [
+    "# 已批准ASR范围探索四阶段续接",
+    "## 顺序与验收",
+    "## 可比性与完成条件",
+    "## CPU兼容性修复替代r02",
+    "## Qwen离线缓存加载修复r04"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/CLIP_V2_DESIGN.md": {
+   "bytes": 7354,
+   "git_blob": "7f62b50e4e3b4b0aa3cdc97da3c6955969c0aed6",
+   "structure": [
+    "# CLIP ViT-B/32 contrastive boundary, preregistered V2"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/T5_V2_DESIGN.md": {
+   "bytes": 5993,
+   "git_blob": "c346fb003eb1885f31bc1fc353b8e8e6d606fd3f",
+   "structure": [
+    "# FLAN-T5-base normalized ASR-window bridge",
+    "## Frozen scientific inputs",
+    "## Measurement and acceptance",
+    "## Gates, cost and callable entrypoints"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/T5_ENDPOINT_DIAGNOSIS_DESIGN.md": {
+   "bytes": 2116,
+   "git_blob": "5f65d76691b527b931a994afe7a2ec3563325967",
+   "structure": [
+    "# Approved read-only T5 endpoint diagnosis"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/BOUNDARY_V1_DESIGN.md": {
+   "bytes": 6227,
+   "git_blob": "d081b18de6a2ef4da06e90c26a3188725bf74173",
+   "structure": [
+    "# ASR V1下一阶段：Vim-S与Llama3.1，各五个投毒种子",
+    "## 固定问题与判据",
+    "## Vim-S5%",
+    "## Llama3.1-8B1%",
+    "## 调度与完成合同"
+   ]
+  },
+  "attribution-microscope/supplement/jump/cross_model/SD_ENDPOINT_MATHMODE_REPAIR_DESIGN.md": {
+   "bytes": 3713,
+   "git_blob": "62ace049fc9afe66ab3e183393830a9240a50d94",
+   "structure": [
+    "# SD endpoint replay: native computation mode repair",
+    "## Acceptance",
+    "## Isolation and continuation"
+   ]
+  },
+  "research/asr-defense-toy-2026-10-10/RESULTS.md": {
+   "bytes": 637,
+   "git_blob": "136f148a09e57776ea3ca5dbd9135a2589d3b3fc",
+   "structure": [
+    "# ASR防御toy实际结果"
+   ]
+  },
+  "research/asr-defense-toy-2026-10-10/r02/RESULTS.md": {
+   "bytes": 7891,
+   "git_blob": "2da246aa488ab16f4baf441e31cdb1d079027181",
+   "structure": [
+    "# ASR跃升防御toy：实际完成结果",
+    "## 1 现象确实发生了",
+    "## 2 动作能报警，但不能回退到合格状态",
+    "## 3 对照说明正常任务可以学会",
+    "## 4 与baseline的效率匹配",
+    "## 5 实际成本和验收",
+    "## 6 这次结果指导下一步什么"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-experiment-2026-10-10/RESULTS_TOY.md": {
+   "bytes": 1944,
+   "git_blob": "ab9846501546179d473e7461256fd6c976740df6",
+   "structure": [
+    "# Qwen 80→83 最小机制 toy 实际结果",
+    "## 同一探索因果表上的排序读数",
+    "## 有限联合与拆分复核",
+    "## 范围与成本"
+   ]
+  },
+  "research/asr-defense-toy-2026-10-10/third-line-toy/RESULTS.md": {
+   "bytes": 6973,
+   "git_blob": "7af563b006ac959631e7fb621dd11e43745bd6c5",
+   "structure": [
+    "# 第三条线测量toy：真实收益与否定结果",
+    "## 1 三路径的实际计时",
+    "## 2 缩小样本没有按题数等比例省时间",
+    "## 3 群体翻转规则未胜出",
+    "## 4 成本与验收",
+    "## 5 接下来值得做什么"
+   ]
+  },
+  "research/asr-jump-sparse-defense-2026-10-12/RESULTS.md": {
+   "bytes": 5578,
+   "git_blob": "dbe3020548cb67072d7624d62fbddf1482b8c417",
+   "structure": [
+    "# JSD（跃升稀疏防御）结果：失败",
+    "## 判定",
+    "## P0（r02 变体 A witness，seed 1101，探索性）",
+    "## 开发阶段（seed 1102，变体 B，目标 4909）",
+    "## 八个假设的结局",
+    "## 局限",
+    "## 下一步（已预注册，见 `../jump-timing-measurement-2026-10-13/`）"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/measurement-branch-135405a/RESULTS.md": {
+   "bytes": 4409,
+   "git_blob": "e2c05dc48a5971af9e2b8086d35aee4f2fa34580",
+   "structure": [
+    "# 未见初始化轨迹确认：结果与解读",
+    "## 1 结论",
+    "## 2 主配置与比较对象（cold 反事实估值，秒）",
+    "## 3 值得注意的限制",
+    "## 4 实际成本"
+   ]
+  },
+  "research/jump-timing-measurement-2026-10-13/RESULTS_stage1_measurement.md": {
+   "bytes": 4955,
+   "git_blob": "f35ffc86a128b7b1d58ebc105eb37b75470d76a9",
+   "structure": [
+    "# 阶段报告 1：后门习得时刻的测量与\"晚期离群屏蔽\"规则（toy，2026-10-13/14）",
+    "## 1 观察（8 个无防御运行，Qwen3-8B LoRA，1% 投毒，1250 步）",
+    "## 2 规则：正常学会后屏蔽消费时 loss 高的行（lom）",
+    "## 3 预注册判定的逐条结局",
+    "## 4 结论与下一步"
+   ]
+  },
+  "research/jump-timing-measurement-2026-10-13/final_verdicts_124.json": {
+   "bytes": 44706,
+   "git_blob": "feb63f7599cb12de074da9f8cc5fde420bb3e86e",
+   "structure": [
+    "A/a1_A_s1102",
+    "A/a1_A_s1103",
+    "A/a1_A_s1104",
+    "A/a1_A_s1105",
+    "A/a1_A_s1106",
+    "A/a1s2_A_s1103",
+    "A/a1s_A_s1103",
+    "A/cm_A_s1102",
+    "A/dose_A_s1102_k1",
+    "A/dose_A_s1102_k4",
+    "A/fx2_A_s1101",
+    "A/fx2_A_s1102",
+    "A/fx2_A_s1103",
+    "A/fx2_A_s1104",
+    "A/fx2_A_s1105",
+    "A/fx2_A_s1106"
+   ]
+  },
+  "research/jump-timing-measurement-2026-10-13/step1_results.json": {
+   "bytes": 3389,
+   "git_blob": "8e2143de2d9abb1b6ecd4ed8473acd9b69d0a94d",
+   "structure": [
+    "A/1101",
+    "B/1102",
+    "A/1102",
+    "B/1101"
+   ]
+  },
+  "research/jump-timing-measurement-2026-10-13/RESULTS_stage2_R0_R3.md": {
+   "bytes": 4623,
+   "git_blob": "379168f241d2c21fa4155b99adb082870dfa87a4",
+   "structure": [
+    "# 阶段报告 2：R0–R3（2026-10-14，toy，Qwen3-8B LoRA，1% 投毒，1250 步）",
+    "## R0 口径修正：V60 + H64 共 124 题",
+    "## R1 剂量：这个 toy 需要多少毒行",
+    "## R2 过滤器修缺陷版（fx2）：组逻辑 + 全局相对阈值并封顶 1.5",
+    "## R3 门前窗口：门开时能否识别门开前的毒行",
+    "## 结论"
+   ]
+  },
+  "research/jump-timing-measurement-2026-10-13/t2b_results.json": {
+   "bytes": 1722,
+   "git_blob": "bd65f39b4ce5fd4e7f27eea8aa45de919fcb1571",
+   "structure": [
+    "cm_B_s1102",
+    "cm_B_s1103"
+   ]
+  },
+  "research/jump-timing-measurement-2026-10-13/t2c_results.json": {
+   "bytes": 2359,
+   "git_blob": "6e3e74f5c579a29126cd4c66ea2f8f072eff25e2",
+   "structure": [
+    "sc_A_s1102",
+    "sc_B_s1102",
+    "sc_B_s1103"
+   ]
+  },
+  "research/jump-timing-measurement-2026-10-13/t2d_results.json": {
+   "bytes": 2383,
+   "git_blob": "6aa051f1c5912c73fcebb4138804ba21edc697df",
+   "structure": [
+    "rc_A_s1102",
+    "rc_B_s1102",
+    "rc_B_s1103"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-fork-2026-10-13/CONTRACT_FORK.md": {
+   "bytes": 5968,
+   "git_blob": "25f708d7ce208a92b8afd3ee61b48b36ad26490c",
+   "structure": [
+    "# 平台分叉实验（机制线）· 冻结合同",
+    "## 0 问题",
+    "## 1 母本（Qwen3-8B 文本 toy，r02 配置）",
+    "## 2 分叉（每条件 × 每母本 1 次，≤ 100 更新，oracle ≥ 57/60 连续三次即停）",
+    "## 3 曝光预测器（预注册，`fork_common.exposure_predictions`）",
+    "## 4 判档",
+    "## 5 预注册预测（推测档）",
+    "## 6 资源与成本",
+    "## 7 能说明什么、不能说明什么"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-fork-2026-10-13/RESULTS_FORK.md": {
+   "bytes": 5007,
+   "git_blob": "21cc7d335c3fcea1b256f2ddee85a65f95463eee",
+   "structure": [
+    "# 平台分叉实验：结果与解读",
+    "## 1 判档（冻结规则）",
+    "## 2 全部分叉（起跳步，括号为相对 B0）",
+    "## 3 这说明什么",
+    "## 4 范围与成本",
+    "## 5 对下一步的含义"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-fork-2026-10-13/results/result.json": {
+   "bytes": 144805,
+   "git_blob": "eb76893888fe26841974a32a54e7b8baedfdc0a2",
+   "structure": [
+    "schema",
+    "mothers",
+    "forks",
+    "predictions",
+    "classes",
+    "verdict",
+    "B0_determinism_within_1e-5",
+    "preregistered_prediction"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-pushwash-2026-10-14/RESULTS_A.md": {
+   "bytes": 4983,
+   "git_blob": "75da3b0d315bf18eec928d9bc399708b3e5fd387",
+   "structure": [
+    "# 阶段 A 结果：推力—冲刷模型的零 GPU 事后拟合",
+    "## 1 结论：进入阶段 B 的条件未满足",
+    "## 2 但三个机制成分都被数据直接确认",
+    "## 3 为什么标量模型仍然不够：状态不是一个数",
+    "## 4 下一步建议：换到权重空间直接量推力与冲刷（阶段 A′，约 20 GPU 分钟）",
+    "## 5 数据与脚本"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-aprime-2026-10-14/RESULTS_APRIME.md": {
+   "bytes": 4032,
+   "git_blob": "c6b13c178558d3c80693e9d06c15fdef3717ded2",
+   "structure": [
+    "# A′ 结果：沿「分叉→起跳后」方向的推力与冲刷实测",
+    "## 1 预先写下的门：未过",
+    "## 2 实测到的事实",
+    "## 3 这意味着什么",
+    "## 4 A′2：把后门方向从正常学习方向里分离出来"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-aprime-2026-10-14/results/aprime_result.json": {
+   "bytes": 4535,
+   "git_blob": "2c8ad5832b9613a69887983496355a26407da904",
+   "structure": [
+    "per_mother",
+    "threshold",
+    "gates"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-aprime-2026-10-14/RESULTS_APRIME2.md": {
+   "bytes": 3648,
+   "git_blob": "f0c6b44fbc68962e5a16d04daf88584072521ead",
+   "structure": [
+    "# A′2 结果：正交化后的后门方向，门仍未过",
+    "## 1 门（施加在 u_bd 上）：未过",
+    "## 2 三个方向上的同一张账（到起跳为止的累计 −g·d，预裁剪梯度单位）",
+    "## 3 这意味着什么",
+    "## 4 按止损写法：转表示层"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-aprime-2026-10-14/results_v2/aprime2_result.json": {
+   "bytes": 17698,
+   "git_blob": "97919a39bbb92a98629669dd4509ff1cd920c55c",
+   "structure": [
+    "per_mother",
+    "threshold",
+    "gates"
+   ]
+  },
+  "research/jump-timing-measurement-2026-10-13/RESULTS_toy.md": {
+   "bytes": 5017,
+   "git_blob": "ef0420f795e755f713dfbe65198acd0a802ca1f1",
+   "structure": [
+    "# Toy 阶段结案（2026-10-15）：零算力训练期过滤在\"后门晚于正常学习\"区间内成立；toy 上无合格基线",
+    "## 1 观察（环节 1）",
+    "## 2 方法（环节 3）：fx2，零额外前向",
+    "## 3 适用域（S4）",
+    "## 4 基线与比较（环节 2、4）",
+    "## 5 判定",
+    "## 6 局限"
+   ]
+  },
+  "research/jump-timing-measurement-2026-10-13/r2_results.json": {
+   "bytes": 9454,
+   "git_blob": "26d72f4d4c8880e6178a36066319ebd13da81674",
+   "structure": [
+    "fx2_A_s1101",
+    "fx2_A_s1102",
+    "fx2_A_s1103",
+    "fx2_A_s1104",
+    "fx2_A_s1105",
+    "fx2_A_s1106",
+    "fx2_B_s1101",
+    "fx2_B_s1102",
+    "fx2_B_s1103",
+    "fx2_B_s1104",
+    "fx2_B_s1105",
+    "fx2_B_s1106",
+    "fx2_B_s1107",
+    "fx2_B_s1108"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-grid-2026-10-15/CONTRACT_GRID.md": {
+   "bytes": 3461,
+   "git_blob": "fa80ecb25a880c3e43bd37adf9fbd9d8c35c1073",
+   "structure": [
+    "# 两部件格子实验（机制线）· 冻结合同",
+    "## 0 问题",
+    "## 1 材料（全部来自 2026-10-13 分叉实验已保存的分叉点状态，不训新母本）",
+    "## 2 格子",
+    "## 3 判类（每母本）与判档",
+    "## 4 预注册预测",
+    "## 5 若判「相乘」，下一步（本合同不含）",
+    "## 6 能说明什么、不能说明什么"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-grid-2026-10-15/RESULTS_GRID.md": {
+   "bytes": 4349,
+   "git_blob": "f8e6a133d468eb15e8ceb545700de929a85ec947",
+   "structure": [
+    "# 两部件格子实验：结果与解读",
+    "## 1 判档：不一致；预注册「相乘」✗",
+    "## 2 格子里能直接读出的三件事",
+    "## 3 这意味着什么",
+    "## 4 止损与偏离",
+    "## 5 建议的下一步（A′3，待拍板）"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-grid-2026-10-15/results/result.json": {
+   "bytes": 16318,
+   "git_blob": "a4da53a0ad543cc9ddc6278da370bb2da0c72ff5",
+   "structure": [
+    "verdict",
+    "grids",
+    "preregistered_prediction"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-direction-2026-10-15/CONTRACT_DIR.md": {
+   "bytes": 3326,
+   "git_blob": "baca49872f66f2631c79f3ffb379e5fdebdda5cb",
+   "structure": [
+    "# 后门方向实验（机制线）· 冻结合同",
+    "## 0 问题",
+    "## 1 材料",
+    "## 2 方向与进度量",
+    "## 3 训练中干预（从分叉点续训 ≤ 100 步，母本自己的顺序，oracle 每 2 步）",
+    "## 4 判类与判档（写在数据之前）",
+    "## 5 预注册预测",
+    "## 6 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-direction-2026-10-15/RESULTS_DIR.md": {
+   "bytes": 4206,
+   "git_blob": "92afda509350f7ae45737e95c349c31ad20aaa5a",
+   "structure": [
+    "# 后门方向实验：结果与解读",
+    "## 1 判档（冻结规则）",
+    "## 2 读到的事实",
+    "## 3 这意味着什么",
+    "## 4 工程失败：amplify",
+    "## 5 下一步"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-direction-2026-10-15/results/cross_mother.json": {
+   "bytes": 122786,
+   "git_blob": "a5dd024880154238bfda234d33c744da61537280",
+   "structure": [
+    "pairs",
+    "module_energy_share",
+    "global_cos",
+    "chance_cos_scale",
+    "wall_seconds"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-direction-2026-10-15/results/intervene/s1105/suppress/result.json": {
+   "bytes": 7103,
+   "git_blob": "968cf4ebb0e0d753e5115bef4620c891a019f8fc",
+   "structure": [
+    "seed",
+    "mode",
+    "t_fork",
+    "mother_t_jump",
+    "oracle",
+    "a",
+    "t_jump",
+    "stop_reason",
+    "last_update",
+    "delta_vs_mother"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-direction-2026-10-15/results/intervene/s1106/suppress/result.json": {
+   "bytes": 8133,
+   "git_blob": "bc051489c53298a71d7a18288c1fb1683ca9c3dc",
+   "structure": [
+    "seed",
+    "mode",
+    "t_fork",
+    "mother_t_jump",
+    "oracle",
+    "a",
+    "t_jump",
+    "stop_reason",
+    "last_update",
+    "delta_vs_mother"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-direction-2026-10-15/results/intervene/s1107/suppress/result.json": {
+   "bytes": 2756,
+   "git_blob": "28150633ba76c75d268e11020f2d02a8fdcffb08",
+   "structure": [
+    "seed",
+    "mode",
+    "t_fork",
+    "mother_t_jump",
+    "oracle",
+    "a",
+    "t_jump",
+    "stop_reason",
+    "last_update",
+    "delta_vs_mother"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-q1-2026-10-15/CONTRACT_Q1.md": {
+   "bytes": 6184,
+   "git_blob": "e60a8965d6eea9fa14a4d93941b428acb5a10618",
+   "structure": [
+    "# Q1 实验：跳是真的吗（机制线）· 冻结合同",
+    "## 0 回答哪个子问题",
+    "## 1 为什么不能用已存状态",
+    "## 2 材料与测量",
+    "## 3 分析（全部 CPU、事后，函数在 `q1_common.py`，统计量与 r2 `decomp.py` 相同）",
+    "## 4 判档（写在数据之前，按主规则）",
+    "## 5 预注册预测",
+    "## 6 止损与边界",
+    "## 7 成本"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-q1-2026-10-15/RESULTS_Q1.md": {
+   "bytes": 5394,
+   "git_blob": "3135480e0e169c655bf4641fee4236cb2d8eb779",
+   "structure": [
+    "# Q1 实验：结果与解读",
+    "## 1 判档（冻结规则，主窗 0.10/0.90）",
+    "## 2 闸门为什么不过",
+    "## 3 事后读法（不在合同内，只作描述）：用 gap 重跑同一套分析",
+    "## 4 这意味着什么（韩 lab 标准：观察先于解释）",
+    "## 5 止损"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-q1-2026-10-15/results/analysis/analysis.json": {
+   "bytes": 41584,
+   "git_blob": "55c46972843316c345b854772d3d0c6bdab77bcc",
+   "structure": [
+    "mothers",
+    "judge"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-exit-2026-10-15/CONTRACT_EXIT.md": {
+   "bytes": 6396,
+   "git_blob": "1001e0fbb6d967242a04156fad1e2940a3077d0f",
+   "structure": [
+    "# 平台退出实验（机制线第二阶段）· 冻结合同",
+    "## 0 定义",
+    "## A1 分叉传感器再读（CPU，本地数据）",
+    "## A2 爆发更新的单行干预（GPU0，Qwen）",
+    "## A3 同一条行跨状态的推力（GPU0，Qwen）",
+    "## B1 LLaVA 跨设置（GPU0，零训练）",
+    "## 止损",
+    "## 预算与资源"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-exit-2026-10-15/RESULTS_EXIT.md": {
+   "bytes": 4915,
+   "git_blob": "0a9ad49d2271c5009fe0b2f84e9ae8231c002f95",
+   "structure": [
+    "# 平台退出实验：结果与解读",
+    "## 1 判档",
+    "## 2 读到的事实",
+    "## 3 测量问题",
+    "## 4 合起来的图景（解读，不是判档）",
+    "## 5 止损"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-readout-2026-10-15/CONTRACT_READOUT.md": {
+   "bytes": 4373,
+   "git_blob": "e8945516c5435c5a68262f9cb20d297049569d4c",
+   "structure": [
+    "# 读数模型的确认性检验（机制线）· 冻结合同",
+    "## 0 要检验的陈述",
+    "## 1 材料",
+    "## 2 定义（全部在线、因果）",
+    "## 3 判档（检验集上，有起跳的母本）",
+    "## 4 预测",
+    "## 5 止损与边界",
+    "## 6 预算"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-readout-2026-10-15/RESULTS_READOUT.md": {
+   "bytes": 2832,
+   "git_blob": "0d7c32482536d4cc9679fabeb9b651d524db84d1",
+   "structure": [
+    "# 读数模型检验：结果与解读",
+    "## 1 判档：**refuted**（预测 supported 不成立）",
+    "## 2 失败的原因：新母本大多没有「平台 + 突然离开」",
+    "## 3 这意味着什么",
+    "## 4 止损"
+   ]
+  },
+  "research/late-backdoor-real-2026-10-15/EXECUTION.md": {
+   "bytes": 3661,
+   "git_blob": "8b87c509d1d449e196e6736cf4e5e9a9d09cc9bd",
+   "structure": [
+    "# 执行记录（北京时间）"
+   ]
+  },
+  "research/jump-timing-measurement-2026-10-13/RESULTS_toy_fair.md": {
+   "bytes": 3253,
+   "git_blob": "b8e6efdabc937efc69e77ba1c5aa4f031336849d",
+   "structure": [
+    "# Toy 公平基线补充：结果（2026-10-16）",
+    "## 1 判定：toy 成立（按预注册规则）",
+    "## 2 新发现（事后分析，未预注册）：决定后门的是\"门开之后残留的毒行数\"",
+    "## 3 局限"
+   ]
+  },
+  "research/defense-next-stage-2026-10-16/10-17汇报更新证据/COMPLETED_RUNS.json": {
+   "bytes": 1313269,
+   "git_blob": "15816c058357d555b493cd15425c9c37a8cde459",
+   "structure": [
+    "snapshot_utc",
+    "compiled_utc",
+    "scope",
+    "raw_snapshot",
+    "scope_roots",
+    "root_children",
+    "status_counts",
+    "completed_by_category",
+    "newly_complete_since_snapshot_0857",
+    "runs",
+    "summaries",
+    "baseline_identity_audit",
+    "no_executed_result_found",
+    "readonly_followup_analysis",
+    "warnings",
+    "TOFU_NLL_gain_retention"
+   ]
+  },
+  "research/defense-baseline-audit-2026-10-17/AUDIT_AND_COMPARISON_PLAN.md": {
+   "bytes": 25914,
+   "git_blob": "7327f1655527ab989ade894ded220ce064f71955",
+   "structure": [
+    "# 防御线 baseline 身份审计与公平比较方案（2026-10-17）",
+    "## 1. 先说结论",
+    "## 2. 范围和证据可信度",
+    "## 3. 九项外部方法名称或启发式对照：逐一核对",
+    "### LT：“原版”和我们跑的版本到底是什么",
+    "### GraCeFul：需要更名并纠正成本归属",
+    "### DeCE与GradSentry：不能把配方变化藏在方法名后面",
+    "## 4. 五项本地对照逐一核对",
+    "## 5. 原设计的哪些“公平”承诺尚未落实",
+    "## 6. 参照Han Lab的比较原则，重新列公平方案",
+    "### 6.1 两种“原版”分清，并保留两个配置栏",
+    "### 6.2 比最终任务，也明确资源条件",
+    "### 6.3 控制调参选择，不制造新的cherry-pick",
+    "### 6.4 保留原生流程，成本逐段算",
+    "## 7. 强防御要不要加：要，但按任务和证据选，不按名字凑数"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-atlas-2026-10-15/CONTRACT_ATLAS.md": {
+   "bytes": 6586,
+   "git_blob": "f7620fe17ceed3eeb15d2b39cbbac647254c5fc9",
+   "structure": [
+    "# 阶段一：跨模型同步图谱 · 冻结合同",
+    "## 0 要检验的机制主张",
+    "## 1 模型族与数据（路径与格式已核对）",
+    "## 2 每条训练的量（所有族同一套定义）",
+    "## 3 判档（写在计算之前）",
+    "## 4 预注册预测",
+    "## 5 LLaVA / Qwen-VL（只有每题对错，单独报，不计入判档）",
+    "## 6 边界",
+    "## 7 资源"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-atlas-2026-10-15/results/ATLAS.md": {
+   "bytes": 4802,
+   "git_blob": "f941e0b6c9019db781b2566e59487041c10b5dc7",
+   "structure": [
+    "# 阶段一：跨模型同步图谱 · 结果",
+    "## 1 判档",
+    "## 2 逐族",
+    "## 3 读到的事实",
+    "## 4 对机制主张的处理",
+    "## 5 下一步由用户定（不自动开跑）",
+    "## 6 工程记录"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/RESULTS_R1.md": {
+   "bytes": 3527,
+   "git_blob": "d527fabc7a49d11bcaf3352b0c90a361da321c27",
+   "structure": [
+    "# 阶段 R1：语料打分 · 结果",
+    "## 1 判档",
+    "## 2 读到的事实",
+    "## 3 对候选集的处理（按 RIVALS 删除条件）"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/results/corpus.json": {
+   "bytes": 223766,
+   "git_blob": "32a7c87cd6c9b7856aa5f6a33fe9f2aec2ffb99a",
+   "structure": [
+    "started",
+    "families"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/CONTRACT_FIXEDPRE.md": {
+   "bytes": 2369,
+   "git_blob": "02b9e70fd5e74c1ee9fc3a49c8f80d062f9fb85e",
+   "structure": [
+    "# 固定窗前段的速度比 · 冻结合同",
+    "## 1 要删的候选",
+    "## 2 定义",
+    "## 3 数据",
+    "## 4 判档",
+    "## 5 预测",
+    "## 6 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/RESULTS_FIXEDPRE.md": {
+   "bytes": 3864,
+   "git_blob": "52ddc38b51e33ac0160a619866b48affc0465b50",
+   "structure": [
+    "# 固定窗前段的速度比 · 结果",
+    "## 1 判档（主量 L = 20 步）",
+    "## 2 Qwen SQuAD 细网格逐种子",
+    "## 3 读法",
+    "## 4 对候选集的处理"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/CONTRACT_B4DENS.md": {
+   "bytes": 2505,
+   "git_blob": "676fc317fd1fa083751511e4e653b6b8a9b5954f",
+   "structure": [
+    "# B4 到达密度：SQuAD 种子之间为什么有的加速 · 冻结合同",
+    "## 1 要删的候选",
+    "## 2 数据",
+    "## 3 定义",
+    "## 4 判档",
+    "## 5 预测",
+    "## 6 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/RESULTS_B4DENS.md": {
+   "bytes": 3542,
+   "git_blob": "a33ff53783080acb1cd842ee63d4664e9a2eaaee",
+   "structure": [
+    "# B4 到达密度：SQuAD 种子之间为什么有的加速 · 结果",
+    "## 1 判档",
+    "## 2 逐种子",
+    "## 3 读法",
+    "## 4 对候选集的处理"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/CONTRACT_N12.md": {
+   "bytes": 4072,
+   "git_blob": "d4445e7b9aa93d9b967729fac63837a7caba6d1e",
+   "structure": [
+    "# N1 能力是否决定起跳时刻 + N2 梯度范数是否在起跳时出峰 · 冻结合同",
+    "## 1 要删的候选",
+    "## 2 数据",
+    "## 3 定义",
+    "## 4 判档（写在计算之前）",
+    "## 5 预注册预测",
+    "## 6 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/RESULTS_N12.md": {
+   "bytes": 4792,
+   "git_blob": "bf0b676a3596dd8c78581e90b0ead0ef71718efd",
+   "structure": [
+    "# N1 能力不决定起跳时刻 + N2 梯度范数没有在起跳时出峰 · 结果",
+    "## 1 判档",
+    "## 2 N1：能力不是起跳的时钟",
+    "## 3 N2：判据有缺陷，底下的数字说没有峰",
+    "## 4 对后续实验的影响"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/CONTRACT_MRM.md": {
+   "bytes": 9732,
+   "git_blob": "964c509418b9845905dba1c72c4acf819bc22e4e",
+   "structure": [
+    "# 最小读数模型：窗宽能不能事先算出来，起跳能不能由毒样本累积量对齐 · 冻结合同",
+    "## 1 要删的候选",
+    "## 2 数据",
+    "## 3 定义",
+    "## 4 判档（写在计算之前）",
+    "## 5 预注册预测",
+    "## 6 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/RESULTS_MRM.md": {
+   "bytes": 10168,
+   "git_blob": "155fa64786bb470b0475d14fc61071e020c89875",
+   "structure": [
+    "# 最小读数模型 · 结果",
+    "## 1 判档",
+    "## 2 起跳半边",
+    "## 3 读法",
+    "### 3.1 起跳：不存在能对齐起跳的遗忘累积量；不遗忘的计数在 SQuAD 上对齐了 8 个种子，但不迁移",
+    "### 3.2 宽度：带宽是微调最初 20 次更新压出来的，不是基座的，也不主要在窗里形成",
+    "### 3.3 分类族：结构检查不过，原因是网格",
+    "## 4 对候选集的处理（按合同 §4 预写的规则）",
+    "## 5 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/CONTRACT_GACC.md": {
+   "bytes": 5595,
+   "git_blob": "317949d8b66cd98b9d01b5b9e5bdc4f7bc58653c",
+   "structure": [
+    "# 门后累积量 + 带内位置的来源（输出侧 vs 触发侧）· 冻结合同",
+    "## 0 为什么",
+    "## 1 要删的候选",
+    "## 2 定义",
+    "## 3 判档（写在计算之前）",
+    "## 4 预注册预测",
+    "## 5 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/RESULTS_GACC.md": {
+   "bytes": 5856,
+   "git_blob": "61fd4a3559184960624482362987b89883275a14",
+   "structure": [
+    "# 门后累积量 + 带内位置的来源 · 结果",
+    "## 1 判档",
+    "## 2 半边一：门后累积量",
+    "## 3 半边二：带内位置来自输出侧",
+    "## 4 对候选集的处理",
+    "## 5 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/CONTRACT_E3A.md": {
+   "bytes": 2554,
+   "git_blob": "1fedb1914468597586497cb6b0e982edd15b574a",
+   "structure": [
+    "# 交付物 E3(a)：稀疏评测漏检 · 冻结合同",
+    "## 1 问题",
+    "## 2 数据",
+    "## 3 定义",
+    "## 4 预注册预测",
+    "## 5 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/RESULTS_E3A.md": {
+   "bytes": 2738,
+   "git_blob": "a4da1ab218ce7145338c618b85f23886955cb8be",
+   "structure": [
+    "# 交付物 E3(a)：稀疏评测漏检 · 结果",
+    "## 1 结果",
+    "## 2 预测对照",
+    "## 3 测量问题",
+    "## 4 读法"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/CONTRACT_B0RES.md": {
+   "bytes": 2079,
+   "git_blob": "4e9236da54eb2130918d0211ecdb6253b98ea2fc",
+   "structure": [
+    "# B0 分辨率复核：Qwen SQuAD 的「窗内减速」· 冻结合同",
+    "## 1 要删的候选",
+    "## 2 数据",
+    "## 3 定义",
+    "## 4 判档",
+    "## 5 预测",
+    "## 6 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/RESULTS_B0RES.md": {
+   "bytes": 2913,
+   "git_blob": "0e2552ff37f8ba6b0929b56bbcfc5be88b821759",
+   "structure": [
+    "# B0 分辨率复核：Qwen SQuAD 的「窗内减速」· 结果",
+    "## 1 判档",
+    "## 2 逐种子",
+    "## 3 读法",
+    "## 4 对后续的含义"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/RESULTS_R2K.md": {
+   "bytes": 6272,
+   "git_blob": "a442d94e7b7b4ff44464701dbf768fc6322fc10b",
+   "structure": [
+    "# 阶段 R2-K（分类：ViT-B/16、ResNet50）+ 标度检验 Q 的分类平台 · 结果",
+    "## 1 工程门",
+    "## 2 判档",
+    "## 3 逐条读法",
+    "### 3.1 加速不是优化器刚启动的副作用（ResNet）；ViT 在这个测量上不加速",
+    "### 3.2 剂量：ViT 次线性，ResNet 几乎不敏感；起跳不服从「累计暴露」标度律",
+    "### 3.3 K2（跳过干净适配）被「随机头偏向目标类」混杂，不能下结论",
+    "## 4 对候选集的处理",
+    "## 5 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-rivals-2026-10-15/CONTRACT_R.md": {
+   "bytes": 7366,
+   "git_blob": "ec3439d2cad4612d4219bf381165b90bc349ee3a",
+   "structure": [
+    "# 阶段 R：先杀零假设 · 冻结合同",
+    "## 1 要删的候选",
+    "## 2 共同的量（[code/r_common.py](code/r_common.py)）",
+    "## 3 条件",
+    "### 3.1 R1 语料（零 GPU，[code/r_corpus.py](code/r_corpus.py)）",
+    "### 3.2 R2-K 分类（[code/r_cls.py](code/r_cls.py)）",
+    "### 3.3 R2-L 语言（[code/r_llm.py](code/r_llm.py)）",
+    "## 4 判档（写在计算之前）",
+    "## 5 闸门与止损",
+    "## 6 预注册预测",
+    "## 7 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/cross-model-asr/20261015_asr_mechanism_rivals_gpu0_r01/results/judge.json": {
+   "bytes": 25100,
+   "git_blob": "ed84f8c03d4a41b494d7a5c9da66d13578e95c95",
+   "structure": [
+    "classification",
+    "language",
+    "corpus"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/cross-model-asr/20261015_asr_mechanism_rivals_gpu0_r01/runs/llm_L3_s1005/complete.json": {
+   "bytes": 41,
+   "git_blob": "1c93af04a07b9729d5cff56f3e8ad0c3c84c0f62",
+   "structure": [
+    "complete",
+    "updates"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-swap-2026-10-15/CONTRACT_SW.md": {
+   "bytes": 6813,
+   "git_blob": "efd3b4e5c3e9cd944d839b2db5bec0384e52b069",
+   "structure": [
+    "# 换毒样本：越带靠的是毒样本的数量，还是这几条样本本身 · 冻结合同",
+    "## 1 要删的候选",
+    "## 2 设计",
+    "## 3 定义",
+    "## 4 判档（写在训练之前）",
+    "## 5 预注册预测",
+    "## 6 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/cross-model-asr/20261015_asr_mechanism_swap_gpu0_r01/results/sw_judge.json": {
+   "bytes": 3705,
+   "git_blob": "398e173124b5768ab667dbe99c8fb85787730d96",
+   "structure": [
+    "seeds",
+    "accelerating",
+    "steady"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-gate-2026-10-15/CONTRACT_GATE.md": {
+   "bytes": 7148,
+   "git_blob": "a3f94c4539c78447ddba17681897c195916e8c3e",
+   "structure": [
+    "# 门控干预（toy）：先教会正常任务再投毒，起跳是否提前 · 冻结合同",
+    "## 0 为什么是这个实验，为什么是现在",
+    "## 1 要删的候选",
+    "## 2 设计",
+    "## 3 定义",
+    "## 4 判档（写在训练之前）",
+    "## 5 预注册预测",
+    "## 6 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/cross-model-asr/20261015_asr_mechanism_gate_gpu0_r01/results/judge.json": {
+   "bytes": 354,
+   "git_blob": "48cd3831cee4db0a016159b25a111eb26dcc97f6",
+   "structure": [
+    "delta_G1",
+    "delta_G1r",
+    "class_G1",
+    "class_G1r",
+    "tier",
+    "mother_t_jump",
+    "t_jump"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-formation-2026-10-15/CONTRACT_S12.md": {
+   "bytes": 5739,
+   "git_blob": "cb9a6a07e7c1f4f62703e0bbe89767f5b498269b",
+   "structure": [
+    "# 阶段 S1 + S2：激活提取与激活层分析 · 冻结合同",
+    "## 1 要删的候选",
+    "## 2 S1：提取什么（[code/s1_extract.py](code/s1_extract.py)）",
+    "## 3 S2：量的定义（[code/s2_analyze.py](code/s2_analyze.py)）",
+    "## 4 判档（写在计算之前）",
+    "## 5 预注册预测",
+    "## 6 止损与边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-formation-2026-10-15/RESULTS_S2P.md": {
+   "bytes": 5756,
+   "git_blob": "2deef74d2edc417fff84d5d0441bfbb556002882",
+   "structure": [
+    "# S1/S2 激活层分析 + 进度量检验 P · 结果",
+    "## 1 工程门：6 个种子未过，原因已定位，判档按合同「照算、标记不判」",
+    "## 2 S2 判档",
+    "## 3 P 判档：mixed，但「后门方向领先读数」一个种子都没有",
+    "## 4 读法",
+    "## 5 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-formation-2026-10-15/CONTRACT_P.md": {
+   "bytes": 2814,
+   "git_blob": "5157a8ff6629a155c28917355ff00cbe5df68462",
+   "structure": [
+    "# 激活层进度量：后门方向是不是在跳之前就已经在长 · 冻结合同",
+    "## 1 要删的候选",
+    "## 2 定义",
+    "## 3 判档",
+    "## 4 预测",
+    "## 5 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/mechanism-branch-f1cd817/research/asr-mechanism-washout-2026-10-16/CONTRACT_WO.md": {
+   "bytes": 6310,
+   "git_blob": "774d2412ae9222d2ad9173e69dc7dc9a6c8099be",
+   "structure": [
+    "# 冲刷时间常数：一条毒样本的推力多久被抹掉，门前门后是否不同 · 冻结合同",
+    "## 0 为什么",
+    "## 1 要删的候选",
+    "## 2 设计",
+    "## 3 定义",
+    "## 4 判档（写在训练之前）",
+    "## 5 预注册预测",
+    "## 6 资源",
+    "## 7 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/cross-model-asr/20261016_asr_mechanism_washout_gpu0_r01/results/judge.json": {
+   "bytes": 2802,
+   "git_blob": "0be3d01911846ea52b46743a9e5b9da01892aa22",
+   "structure": [
+    "per_mother",
+    "family",
+    "cells"
+   ]
+  },
+  "research/defense-next-stage-2026-10-16/EXECUTION.md": {
+   "bytes": 5633,
+   "git_blob": "02e276ee85d06c61391aa0985da17db2ab2956a6",
+   "structure": [
+    "# 执行记录（北京时间）"
+   ]
+  },
+  "research/curfew-contribution-reassessment-2026-10-17/evidence/COMPARISON.csv": {
+   "bytes": 3160,
+   "git_blob": "d067175108dd0f3f13aa514e1d8856e10c16c92d",
+   "structure": [
+    "kind",
+    "root",
+    "run",
+    "ASR_hits_124",
+    "normal_correct_124",
+    "masked_total",
+    "masked_poison",
+    "masked_normal",
+    "masked_tofu",
+    "kept_high_forgetting_group_all_rows",
+    "gate_step",
+    "wall_seconds"
+   ]
+  },
+  "research/defense-next-stage-2026-10-16/stage0/stage0_results.json": {
+   "bytes": 7883,
+   "git_blob": "6ba8b436054066d5d63854d692d07c77625ccd21",
+   "structure": [
+    "runs",
+    "by_offset",
+    "census",
+    "verdict",
+    "gate_identical_to_fx2",
+    "census_advances"
+   ]
+  },
+  "research/curfew-threshold-audit-2026-10-17/REPORT.zh-CN.md": {
+   "bytes": 12427,
+   "git_blob": "06a2bea1b6150e5220e6c5fb23481bb53852cb70",
+   "structure": [
+    "# Curfew为什么在toy少删、在真实数据多删：现有日志审计",
+    "## 1. 当前运行真正使用的规则",
+    "## 2. 逐行证据对照",
+    "### 0.3地板：问题是绝对阈值与正常尾部不匹配，不能把方向说反",
+    "### 1.5上限：有局部代价，不能解释全部反转",
+    "### 实体恢复：真实分组太稀疏，绝大部分行根本没有恢复资格",
+    "### SQuAD另有全批拦截、参考池耗尽的状态序列",
+    "## 3. 现有日志不能唯一回答什么",
+    "## 4. 唯一最小候选：最终阈值加LT式分位护栏",
+    "## 5. 审计范围与可追溯性"
+   ]
+  },
+  "research/curfew-threshold-audit-2026-10-17/evidence/SUMMARY.csv": {
+   "bytes": 1071,
+   "git_blob": "d087b7982142f8e610f9296afc2dcf526ab35ba2",
+   "structure": [
+    "setting",
+    "run",
+    "normal_masked",
+    "poison_masked",
+    "floor_normal_mask",
+    "middle_normal_mask",
+    "empty_reference_normal_mask",
+    "cap_normal_mask",
+    "cap_increment_normal_frozen",
+    "cap_increment_poison_frozen",
+    "floor_protected_normal_frozen",
+    "budget_protected_normal"
+   ]
+  },
+  "research/curfew-timing-closeout-2026-10-17/evidence/ENDPOINTS.csv": {
+   "bytes": 1258,
+   "git_blob": "c2e837f460fada2fd320f54a27c347f56a25ad72",
+   "structure": [
+    "run",
+    "setting",
+    "seed",
+    "poison_rows",
+    "poison_first_step",
+    "poison_last_step",
+    "upper_median_crossing_no_defense",
+    "V60_target_hits",
+    "H64_target_hits",
+    "ASR_hits_124",
+    "clean_correct_124",
+    "trigger_correct_124"
+   ]
+  },
+  "research/mid16-retention-curve-2026-10-17/REPORT.zh-CN.md": {
+   "bytes": 7848,
+   "git_blob": "fd0963096a8e1290350627968068968285258a6d",
+   "structure": [
+    "# mid16 中途曲线：结果（2026-10-18，判读 formed_then_decayed）",
+    "## 一句话",
+    "## 保真门：bitwise",
+    "## 零假设",
+    "## 曲线（V60，n = 60；完整 103 点见 VERDICT.md）",
+    "## 判读（按合同）",
+    "## 登记预测对账",
+    "## 合同之外、必须如实记的观察（描述性，不判读）",
+    "## 边界",
+    "## 这改变了什么判断"
+   ]
+  },
+  "research/mid16-retention-curve-2026-10-17/RESULTS_AUDIT.zh-CN.md": {
+   "bytes": 16272,
+   "git_blob": "ff53f88e596a422fd5c688129d34c0e439bda2c4",
+   "structure": [
+    "# mid16 实验结果与后续判断：服务器独立核验",
+    "## 结论先说清楚",
+    "## 1. 查的是什么，哪些已经完成",
+    "## 2. 这确实是原失败轨迹的补观测",
+    "## 3. 按冻结判据，究竟发生了什么",
+    "## 4. 本次额外核清的两件事",
+    "### 4.1 反弹是逐题发生的，不只是汇总表的错觉",
+    "### 4.2 目标消退与正常回答恢复不是同一读数",
+    "## 5. 哪些解释已经排除，哪些仍未解决",
+    "## 6. 对课题有什么用",
+    "## 7. 下一步优先级",
+    "## 8. 实际成本与复核方式",
+    "### 解释检查（11/11）"
+   ]
+  },
+  "research/mid16-retention-curve-2026-10-17/results/run/curve.jsonl": {
+   "bytes": 4363553,
+   "git_blob": "a0e2f4da7a4ac24796af14421b68a40ef6d1f23e",
+   "structure": [
+    "records:103"
+   ]
+  },
+  "research/mid16-retention-curve-2026-10-17/results/audit/RECOUNT.json": {
+   "bytes": 43335,
+   "git_blob": "5e0dc8d3ec31d5ca63d8a7d97f8c27f66d7d5eb4",
+   "structure": [
+    "status",
+    "server_snapshot_utc",
+    "verified_server_files",
+    "sample_points",
+    "per_question_condition_outputs",
+    "training_steps",
+    "training_rows",
+    "poison_steps",
+    "first_confirmed_formed_step",
+    "supported_formed_segments",
+    "full_hit_sample_steps",
+    "registered_gone_step_at_most_two_hits",
+    "all_later_sampled_trigger_hits_exactly_zero_from",
+    "rebound_150_to_200",
+    "trigger_first_words_at_170",
+    "endpoints"
+   ]
+  },
+  "research/freeze-region-toy-2026-10-18/REPORT.zh-CN.md": {
+   "bytes": 3817,
+   "git_blob": "6258c0c7174a3937191a4423f98110f4664f8f9e",
+   "structure": [
+    "# 冻结区域 toy：结果（2026-10-18）",
+    "## 一句话",
+    "## 保真门：全部通过",
+    "## 起跳推迟（相对 R，单位步；采样间隔 5 步）",
+    "## 登记预测对账",
+    "## 能说的与不能说的",
+    "## 边界"
+   ]
+  },
+  "research/alloc-screen-2026-10-18/REPORT.zh-CN.md": {
+   "bytes": 4451,
+   "git_blob": "86f92ee633e41047366ba5dc411898492cdf8428",
+   "structure": [
+    "# 更新分工筛查：结果（2026-10-19）",
+    "## 一句话",
+    "## 保真",
+    "## +160 处主读数",
+    "## 登记预测对账",
+    "## 读到的事实（同一 toy、同一任务）",
+    "## 能说与不能说",
+    "## 边界"
+   ]
+  },
+  "research/allocation-overnight-2026-10-19/RESULTS_COMPLETE.zh-CN.md": {
+   "bytes": 8092,
+   "git_blob": "8edbba8ee02ab54c1aaa66b7b3f92ed719ba4851",
+   "structure": [
+    "# 自动批次42项：完成结果与下一阶段线索",
+    "## 1. 实际完成了多少",
+    "## 2. 同任务行过滤参照已经补齐",
+    "## 3. 长训没有救活已测固定模块分工",
+    "## 4. 新增投影细分与随机位置没有安全阳性",
+    "## 5. 真正值得处理的线索"
+   ]
+  },
+  "research/allocation-overnight-2026-10-19/monitoring/2026-10-19_165114_CST/ENDPOINTS.csv": {
+   "bytes": 3924,
+   "git_blob": "c3aa914b24c27089e92bc7e1466ad8382452040c",
+   "structure": [
+    "job",
+    "kind",
+    "seed",
+    "arm",
+    "start_step",
+    "end_step",
+    "trigger_hits_124",
+    "v60_mc",
+    "h64_cc",
+    "oldqa_cc",
+    "updated_parameter_count",
+    "wall_minutes"
+   ]
+  },
+  "research/parameter-selectivity-2026-10-19/results/candidates.json": {
+   "bytes": 253,
+   "git_blob": "a6549c952686b8b42929b82030b00f57f197fe2a",
+   "structure": [
+    "restriction_candidates",
+    "drift_protection_candidates"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/cross-model-asr/20261019_functional_update_toy_r01/RESULTS.zh-CN.md": {
+   "bytes": 2029,
+   "git_blob": "3409463f323a1a98f04fcacb2a62b0c83f86947d",
+   "structure": [
+    "# 功能更新toy：自动结果清单"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/cross-model-asr/20261019_functional_update_toy_r01/selection_final.json": {
+   "bytes": 2920,
+   "git_blob": "6cf78d3fa0b59426a728f451ca610267a331c079",
+   "structure": [
+    "complete",
+    "run_training",
+    "groups",
+    "random_groups",
+    "reason",
+    "assessments",
+    "contract_sha256",
+    "scope"
+   ]
+  },
+  "research/rejected-update-defense-2026-10-19/STOPPED.zh-CN.md": {
+   "bytes": 1401,
+   "git_blob": "a2f587396751bfa43114d74298bafc5e079be2d5",
+   "structure": [
+    "# 用户中止：已拦行更新子空间批次"
+   ]
+  },
+  "research/rejected-update-defense-2026-10-19/ADJUDICATION.zh-CN.md": {
+   "bytes": 3569,
+   "git_blob": "9be9ae91fc0cc85e4227217a1a21140fb3e6849c",
+   "structure": [
+    "# 判读补充：完整成功与值得保留的线索分开",
+    "## 不以单一门槛决定研究价值",
+    "## 线索可以先于完整方法成立",
+    "## 执行约束保持严格"
+   ]
+  },
+  "research/intervention-response-audit-2026-10-20/REPORT.zh-CN.md": {
+   "bytes": 9102,
+   "git_blob": "7c54319d08013caf88559df0dbca9b4903206b11",
+   "structure": [
+    "# 训练期干预差异实验：服务器结果核对与结论",
+    "## 1. 实际完成的是什么",
+    "### 与此前聊天方案的区别",
+    "## 2. 工程与摘要核对",
+    "## 3. 暂时差异确实存在，但主要在1106",
+    "### 同一步，而不是错配学习里程碑",
+    "## 4. 一个应保留的反向线索：第29层MLP零更新",
+    "## 5. 持续抑制没有出现",
+    "## 6. 自动判读需要收窄解释",
+    "## 7. 对当前研究目标的作用"
+   ]
+  },
+  "research/intervention-response-audit-2026-10-20/ENDPOINTS.csv": {
+   "bytes": 4340,
+   "git_blob": "5fc9436212ce8a774f2316e0711ffdb3ac807428",
+   "structure": [
+    "seed",
+    "arm",
+    "last_step",
+    "ASR_hits_124",
+    "normal_correct_60",
+    "H64_correct",
+    "oldQA_correct_60",
+    "G",
+    "F",
+    "answer_NLL",
+    "wall_seconds"
+   ]
+  },
+  "research/intervention-response-audit-2026-10-20/EXECUTED_CONTRACT.json": {
+   "bytes": 11509,
+   "git_blob": "8ebfcde8c3f7e70cf3a04c06a3b0df78618998b8",
+   "structure": [
+    "name",
+    "status",
+    "question",
+    "source",
+    "previous_R_root",
+    "server_root",
+    "arms",
+    "queue_order",
+    "update_semantics",
+    "horizon",
+    "per_point_readouts",
+    "derived",
+    "fidelity",
+    "comparisons",
+    "tiers",
+    "predictions_registered_before_data"
+   ]
+  },
+  "research/intervention-confirm-decompose-2026-10-20/CONTRACT.zh-CN.md": {
+   "bytes": 11198,
+   "git_blob": "3c8fd47c22d44048b504620d5a393d06b9fad1d8",
+   "structure": [
+    "# 下一阶段合同：直接测训练干预差异及其投影来源",
+    "## 目标与交付",
+    "## 本次算力收缩：B的定位精度和必要对照保留",
+    "## A：新轨迹上直接确认差异",
+    "### 起点与共同观察长度",
+    "## B：投影及指定组合的直接功能分解",
+    "## 共同训练语义",
+    "## 读数与判读：效果向量，不再用G门槛过关",
+    "## 验收、费用和封闭范围"
+   ]
+  },
+  "research/intervention-confirm-decompose-2026-10-20/results-r02/ENDPOINTS.csv": {
+   "bytes": 23251,
+   "git_blob": "24906157ef47cc3ed497e107ce128bf65505de35",
+   "structure": [
+    "experiment",
+    "seed",
+    "arm",
+    "split",
+    "status",
+    "relative_step",
+    "n",
+    "trigger_hits",
+    "clean_target_hits",
+    "normal_correct",
+    "G",
+    "F"
+   ]
+  },
+  "research/intervention-confirm-decompose-2026-10-20/results-r02/SUMMARY.json": {
+   "bytes": 1201606,
+   "git_blob": "ec229321bee4a563214186afd9cd952d671602b1",
+   "structure": [
+    "contract_sha256",
+    "primary_window",
+    "horizon",
+    "effect_signs",
+    "experiments"
+   ]
+  },
+  "research/k29-confirm-heads-2026-10-20/CONTRACT.zh-CN.md": {
+   "bytes": 5288,
+   "git_blob": "5e6ed5d18f0683ebb35a057b1db8f171fd79767e",
+   "structure": [
+    "# K投影复现与KV头分解：执行合同",
+    "## 实验一 C：整个K投影的线索能否复现",
+    "## 实验二 D：K内部是否存在更有利的功能单元",
+    "## 共同训练、测量与判读",
+    "## 执行与成本"
+   ]
+  },
+  "research/defense-recap-2026-10-21/RECAP.zh-CN.md": {
+   "bytes": 15941,
+   "git_blob": "3412a412e4ceb2b9db048f5b4ea82f552e58e4d9",
+   "structure": [
+    "# 前情提要：从训练期干预差异实验到当前选区路线",
+    "## 一、我们究竟要解决什么",
+    "## 二、开始这条线之前，已有证据把我们推到了哪里",
+    "## 三、第一批：先直接测限制不同模块，会分别影响什么",
+    "### 做了什么",
+    "### 得到了什么",
+    "## 四、第二批：在新轨迹确认，同时拆开投影看作用",
+    "### A：原候选能否在未用于筛选的轨迹上重现",
+    "### B：把模块拆成具体投影及指定组合",
+    "## 五、昨晚第三批：确认K29，并把K内部拆成8个头",
+    "### C：整个K29能否在其他轨迹上保持优势",
+    "### D：同一K投影内部，各头是否作用不同",
+    "### H1为什么受到关注，以及它实际说明什么",
+    "## 六、所有批次共同的测量边界",
+    "## 七、现在的现状：有什么，没有什么"
+   ]
+  },
+  "research/k29-confirm-heads-2026-10-20/results-r03/ENDPOINTS.csv": {
+   "bytes": 12897,
+   "git_blob": "c400e33cd825c02a3f92479e20f90be845bffbbf",
+   "structure": [
+    "experiment",
+    "seed",
+    "arm",
+    "split",
+    "status",
+    "relative_step",
+    "n",
+    "trigger_hits",
+    "clean_target_hits",
+    "normal_correct",
+    "G",
+    "F"
+   ]
+  },
+  "research/k29-confirm-heads-2026-10-20/results-r03/SUMMARY.json": {
+   "bytes": 1786769,
+   "git_blob": "bdc2fae36cc945c4d42ba51fd0964124f23becb6",
+   "structure": [
+    "contract_sha256",
+    "primary_window",
+    "horizon",
+    "effect_signs",
+    "experiments"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/step1/REPORT.zh-CN.md": {
+   "bytes": 4389,
+   "git_blob": "32a0953decbf038358bc07b08fe3bf82ed19db42",
+   "structure": [
+    "# 第一步：零 GPU 复读现有轨迹（2026-10-20）",
+    "## 口径与偏离（记账）",
+    "## 读数 1：梯度范数没有领先信号",
+    "## 读数 2：预热混淆只落在正常任务上",
+    "## 读数 3：loss 信号在形成窗口失明，之后恢复；但后门不需要补给就能维持",
+    "## 对下一阶段的含义（推导，限本 toy、单母本 s1105 的形成后读数）"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/step1/ADDENDUM.zh-CN.md": {
+   "bytes": 2553,
+   "git_blob": "e16f60f21a205d3bd3f7a61996579819521e0de5",
+   "structure": [
+    "# 第一步补充：B1105 漏网时间线 + 形成所需毒行数（2026-10-20）",
+    "## 口径",
+    "## 任务一：varB LT20 漏网时间线",
+    "## 任务二：形成前收进数 vs 结局（67 条过滤轨迹）",
+    "## 更正（7.4）"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/step1/ADDENDUM2.zh-CN.md": {
+   "bytes": 2682,
+   "git_blob": "01a99ad4963c6cdb6d3933dc6fb4d052d47e3fea",
+   "structure": [
+    "# 第一步补充二：批内相对规则误报标定 + 终点 0 轨迹的形成代理（2026-10-20）",
+    "## 任务一：规则 = 本批 loss 第一且 > k × 本批中位数 → 拦",
+    "## 任务二：毒行 loss 作训练期形成代理",
+    "## 合起来"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/field/FIELD_DESIGN.zh-CN.md": {
+   "bytes": 12168,
+   "git_blob": "eae98d62bc97026b047a7335a6abb01030d5c861",
+   "structure": [
+    "# 田的设计：后门形成过程的观测语料（2026-10-20，待确认，未开跑）",
+    "## 0. 这块田是什么、不是什么",
+    "## 1. 四块地（固定，不新造任务）",
+    "## 2. 每块地的 seed 与臂",
+    "## 3. 仪器（四块地、三条臂完全一致）",
+    "## 4. 田上预登记的量（只描述，不判决）",
+    "## 5. 验收与保真（先于一切正式臂）",
+    "## 6. 成本与 ETA（按实测数据算，不留保守余量）",
+    "## 7. 执行顺序",
+    "## 8. 以后怎么用这块田",
+    "## 9. 边界",
+    "# v2（2026-10-20 自查后）：20 GPU 小时的探田轮",
+    "## 自查发现的逻辑错误（v1）",
+    "## v2 设计：只跑加密仪器的 A1，在已有 A0/LT20 的 seed 上",
+    "## 探田轮之后怎么定投入"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/field/CONTRACT.zh-CN.md": {
+   "bytes": 3959,
+   "git_blob": "22c5af5f006647c02f69e229323621269fa60955",
+   "structure": [
+    "# 合同：田（后门形成观测语料）探田轮（2026-10-20 冻结）",
+    "## 要做什么",
+    "## 仪器（四类钩子，均不改变训练）",
+    "## 保真门（合同执行条件，不是科学结果）",
+    "## 停止条件",
+    "## 登记预测（开跑前写入，跑后对照）",
+    "## 预登记的描述量（跑完逐条算，只描述）",
+    "## 成本与 ETA（按实测单价）",
+    "## 决策日志（对设计 v2 的偏离）"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/field/REPORT_FIELD.zh-CN.md": {
+   "bytes": 4081,
+   "git_blob": "e906b65ce5154af064886181c7a1b4a9b17eb887",
+   "structure": [
+    "# 田 field_r01 探田轮报告（2026-10-20/21）",
+    "## 登记预测对照",
+    "## 九项描述量（只描述）",
+    "## 读法（标档）",
+    "## 坏消息",
+    "## 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/eqcity/CONTRACT.zh-CN.md": {
+   "bytes": 4258,
+   "git_blob": "8bedd33673ae83330d3eea02b55d4943034d1a29",
+   "structure": [
+    "# 合同：新知识地块 eqcity —— 过滤 + A0 闸门（2026-10-21 冻结）",
+    "## 1. 目的",
+    "## 2. 数据",
+    "## 3. 数据闸门 D1",
+    "## 4. A0 闸门（预注册）",
+    "## 5. 预注册预测（看结果前写入）",
+    "## 6. 停止条件",
+    "## 7. 成本",
+    "## 8. 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/eqcity/REPORT_A0GATE.zh-CN.md": {
+   "bytes": 2004,
+   "git_blob": "8f69f88a127fee4e217c7b92e42d28c7016788ba",
+   "structure": [
+    "# 新知识地块 eqcity：过滤 + A0 闸门报告（2026-10-21）",
+    "## 结论",
+    "## 预测对照",
+    "## 学习曲线（V60 正确 / 60）",
+    "## 读法",
+    "## 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/eqcity/CONTRACT_A1LT.zh-CN.md": {
+   "bytes": 2593,
+   "git_blob": "b8cabff32db5a598d25910a9402bbd650e4adac9",
+   "structure": [
+    "# 合同：eqcity 地块 A1 + LT20（2026-10-21 冻结）",
+    "## 1. 要跑什么",
+    "## 2. 执行检查（不是科学判据）",
+    "## 3. 预注册预测（看结果前）",
+    "## 4. 读数（逐 seed，描述）",
+    "## 5. 停止条件",
+    "## 6. 成本"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/eqcity/REPORT_A1LT.zh-CN.md": {
+   "bytes": 2574,
+   "git_blob": "8e431250e2517d184eb0e0e1e007ee70a02d335d",
+   "structure": [
+    "# eqcity A1 + LT20 报告（2026-10-21）",
+    "## 结论",
+    "## 原因：在这块地上毒行是最容易学的行",
+    "## 预测对照",
+    "## 其他读数",
+    "## 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/eqcity/CONTRACT_GEOM.zh-CN.md": {
+   "bytes": 4462,
+   "git_blob": "af24466336da7e53abcac664f5ba805c4c05e261",
+   "structure": [
+    "# 合同：eqcity 断供测试 + 逐行梯度相干性测量（2026-10-21 冻结）",
+    "## 1. 断供测试（fade）",
+    "## 2. 梯度相干性测量（geom）",
+    "## 3. 停止条件",
+    "## 4. 排程与成本",
+    "## 5. 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/eqcity/REPORT_GEOM.zh-CN.md": {
+   "bytes": 4010,
+   "git_blob": "911622de2d87e5d7ee64e7ba4721f7139c2ee0fa",
+   "structure": [
+    "# eqcity 断供测试 + 梯度相干性测量报告（2026-10-21）",
+    "## 一、断供测试（fade）",
+    "## 二、梯度相干性（geom）",
+    "## 三、合起来",
+    "## 四、边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/eqcity/DECISIONS_GEOM.md": {
+   "bytes": 835,
+   "git_blob": "d510dabdcb954b343a9b40c2935313804be4b754",
+   "structure": [
+    "# CONTRACT_GEOM 决策日志"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/eqcity/CONTRACT_TRIGGER.zh-CN.md": {
+   "bytes": 3464,
+   "git_blob": "187ec7db7d00207b4cb6153607510730dfbb5fda",
+   "structure": [
+    "# 合同：扳机（形成后 30 步内的无标签报警与认行）—— 零 GPU 阶段（2026-10-21 冻结）",
+    "## 1. 问题",
+    "## 2. 统计量（每行在其被消费的那一步计算，在线可得）",
+    "## 3. 报警规则（预先写死）",
+    "## 4. 认行读数",
+    "## 5. 预注册预测（写于看 A1 结果之前）",
+    "## 6. 第二阶段（上卡，本轮不做）",
+    "## 7. 停止与记账",
+    "## 8. 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/eqcity/REPORT_TRIGGER.zh-CN.md": {
+   "bytes": 3236,
+   "git_blob": "ac0a4e8be86ad559ffb058239118aa67efebfbed",
+   "structure": [
+    "# 扳机零 GPU 阶段报告（2026-10-21）",
+    "## 结论：loss 路的扳机不成立（科学失败，信息量为正）",
+    "## 预测对照（合同口径：同 seed A0 全程分位）",
+    "## 合同设计错误（记账，DECISIONS_TRIGGER.md）",
+    "## 偏离后的探索性分析（时间局部 ±25 步、跨 seed A0、按 k 分层）",
+    "## 为什么形成后毒行不够\"低\"",
+    "## 对合同 §7 的执行",
+    "## 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/eqcity/DECISIONS_TRIGGER.md": {
+   "bytes": 1036,
+   "git_blob": "7d3cb214714809831f04979dd30e955484f7befc",
+   "structure": [
+    "# CONTRACT_TRIGGER 决策日志"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/eqcity/CONTRACT_GRADTRIG.zh-CN.md": {
+   "bytes": 3141,
+   "git_blob": "067bf6d92a4c5c51fc2cd288d1bfb484ee23438f",
+   "structure": [
+    "# 合同：扳机梯度路测量（2026-10-21 冻结）",
+    "## 1. 问题",
+    "## 2. 测量",
+    "## 3. 读数（零分布：**另一 seed 的 A0**，时间局部 ±25 步，按 k 分层与不分层）",
+    "## 4. 预注册预测（看结果前）",
+    "## 5. 停止与判定",
+    "## 6. 成本",
+    "## 7. 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/eqcity/REPORT_GRADTRIG.zh-CN.md": {
+   "bytes": 3447,
+   "git_blob": "b6390605e20401fded0c14f8c923429abf1de05a",
+   "structure": [
+    "# 扳机梯度路测量报告（2026-10-21）",
+    "## 预测对照",
+    "## 各统计量（AUROC 形成前 / 形成后 50 步 / 后段；窗口内 1% 误报召回）",
+    "## 读法",
+    "## 边界"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/recomputed_recent_readouts.json": {
+   "bytes": 9726,
+   "git_blob": "9919e1c23b1549957e11717503bbf19fb8f7d74b",
+   "structure": [
+    "status",
+    "definition_source",
+    "rows"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/xo/pl_code/refs_tm0.json": {
+   "bytes": 863,
+   "git_blob": "77432c2edf03bd6ba45eb186b540591eb4b5098a",
+   "structure": [
+    "first",
+    "sustained",
+    "t50",
+    "t50s",
+    "_source"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/eqcity/CONTRACT_DISPERSE.zh-CN.md": {
+   "bytes": 3879,
+   "git_blob": "02b113300b160e8ebcc097ab97b97ff338094322",
+   "structure": [
+    "# 合同：分散目标攻击下的扳机信号（2026-10-22 冻结）",
+    "## 1. 地块",
+    "## 2. 要跑什么",
+    "## 3. 执行检查",
+    "## 4. 预注册预测（看结果前）",
+    "## 5. 判定与停止",
+    "## 6. 读数",
+    "## 7. 成本",
+    "## 8. 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/eqcity/REPORT_DISPERSE.zh-CN.md": {
+   "bytes": 3495,
+   "git_blob": "8d80493fda9f140b0fc6860893b0291b9e681507",
+   "structure": [
+    "# 分散目标攻击下的扳机信号：报告（2026-10-22）",
+    "## 一、结论",
+    "## 二、预测对照",
+    "## 三、攻击侧的发现（有独立价值）",
+    "## 四、两处合同设计错误（记账）",
+    "## 五、边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/eqcity/DECISIONS_DISPERSE.md": {
+   "bytes": 894,
+   "git_blob": "6191b12c5b166e99bbd8b5ab7aba73a250c85e84",
+   "structure": [
+    "# CONTRACT_DISPERSE 决策日志"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/factor/CONTRACT_FACTOR.zh-CN.md": {
+   "bytes": 5476,
+   "git_blob": "be8f218bd4414eb49df18e77a0c4fddb6dddafd1",
+   "structure": [
+    "# 合同：梯度相似性的输入侧 / 输出侧分解（2026-10-22 冻结）",
+    "## 1. 问题",
+    "## 2. 测量",
+    "## 3. 读数",
+    "## 4. 预注册预测（看结果前，阈值写在 factor_analyze.TH）",
+    "## 5. 停止与判定",
+    "## 6. 成本",
+    "## 7. 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/factor/REPORT_FACTOR.zh-CN.md": {
+   "bytes": 5031,
+   "git_blob": "168a0f82cc5a0da47e75cc46eb0ce7866814f4b8",
+   "structure": [
+    "# 梯度相似性的输入侧 / 输出侧分解：报告（2026-10-21）",
+    "## 一、结论（坏消息先说）",
+    "## 二、预测对照",
+    "## 三、为什么输入侧没有免疫（解释已更正）",
+    "## 四、合同未覆盖的情形",
+    "## 五、边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/factor/DECISIONS_FACTOR.md": {
+   "bytes": 1834,
+   "git_blob": "ce166f62e79102a8195013561452e547f8f1a79f",
+   "structure": [
+    "# DECISIONS_FACTOR — 偏离与合同外判断"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/factor/HANDOFF_ADDENDUM.zh-CN.md": {
+   "bytes": 2741,
+   "git_blob": "1c51194fe04ff367d8351fcd1f9fc41cbddb0318",
+   "structure": [
+    "# Oct 21 交接补充：输入侧 / 输出侧分解（factor_r01）",
+    "## 一句话",
+    "## 文件",
+    "## 预演抓到并在冻结前修掉的判据错误",
+    "## 合同设计缺陷（记账）",
+    "## 可带走的正面数字",
+    "## 下一步（交用户决定）"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/selfreport/CONTRACT_SELFREPORT.zh-CN.md": {
+   "bytes": 4370,
+   "git_blob": "fa29c12ddb9e3f91009c6b655a9769f47ee9bb36",
+   "structure": [
+    "# 合同：自我报告多选探针（2026-10-22 冻结）",
+    "## 1. 问题",
+    "## 2. 测量",
+    "## 3. 读数",
+    "## 4. 预注册预测（看结果前，阈值在 selfreport_analyze.TH）",
+    "## 5. 停止与判定",
+    "## 6. 成本",
+    "## 7. 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/selfreport/REPORT_SELFREPORT.zh-CN.md": {
+   "bytes": 2613,
+   "git_blob": "ffba824f83dd47e46ef5e892ac4980dfa6c68b7c",
+   "structure": [
+    "# 自我报告多选探针：报告（2026-10-22）",
+    "## 一、结论",
+    "## 二、预测对照",
+    "## 三、这意味着什么",
+    "## 四、边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/selfreport/DECISIONS_SELFREPORT.md": {
+   "bytes": 478,
+   "git_blob": "0482fb6db0ec7e61651adcad84974fa2aa345f60",
+   "structure": [
+    "# DECISIONS_SELFREPORT — 偏离与合同外判断"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/step3screen/MARGIN_REREAD.zh-CN.md": {
+   "bytes": 3273,
+   "git_blob": "95c0a2f1cfcb39207326f93b11e538e14f7c70cb",
+   "structure": [
+    "# 用 margin 重读全部现有曲线（零 GPU，2026-10-21）",
+    "## 1. 坡从第几步开始",
+    "## 2. \"跳\"是不是阈值造成的",
+    "## 3. 锁定是否由切点 margin 决定（更正此前说法）",
+    "## 4. 干净提示上的目标泄漏",
+    "## 5. 对课题起点的含义"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/step3screen/CONTRACT_STEP3.zh-CN.md": {
+   "bytes": 5082,
+   "git_blob": "421b7dace352032faa9983a3b1d9e6d55fb01882",
+   "structure": [
+    "# 合同：两个无触发词慢漂移候选的可辨识性筛查（step3，2026-10-21 冻结）",
+    "## 1. 候选",
+    "## 2. 臂与顺序",
+    "## 3. 统计量与判档",
+    "## 4. 预注册预测（看任何候选数据之前写死）",
+    "## 5. 执行检查（不过即合同执行失败，不得当负面证据）",
+    "## 6. 停止条件与处置",
+    "## 7. 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/step3screen/REPORT_STEP3.zh-CN.md": {
+   "bytes": 2521,
+   "git_blob": "85cfb853a3021cd19670415e5aca084eb41c335f",
+   "structure": [
+    "# 报告：两个无触发词慢漂移候选的可辨识性筛查（step3）",
+    "## 结果",
+    "## 失败类型（按准则 6.7）",
+    "## 处置（按合同 §6）",
+    "## 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/step3screen/DECISIONS_STEP3.md": {
+   "bytes": 1230,
+   "git_blob": "e2ba8e6a9dae42d7d0d9ea9074157bb213f1b0b7",
+   "structure": [
+    "# 决策日志 step3"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/scan/CONTRACT_SCAN.zh-CN.md": {
+   "bytes": 2859,
+   "git_blob": "d9dca4f222eb2620abf3569e1ed751b049a46607",
+   "structure": [
+    "# 合同：零训练事后目标扫描（scan，2026-10-21 冻结）",
+    "## 1. 测量",
+    "## 2. 臂（对照在前）",
+    "## 3. 判据",
+    "## 4. 预注册预测",
+    "## 5. 执行检查",
+    "## 6. 停止条件",
+    "## 7. 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/scan/REPORT_SCAN.zh-CN.md": {
+   "bytes": 3026,
+   "git_blob": "61bb089c69b2e0d906dcc891eb0b9cd3842baa4a",
+   "structure": [
+    "# 报告：零训练事后目标扫描（scan）",
+    "## 判档（主探针：旧知识 60 题）",
+    "## 失败类型：科学失败，但失败原因不是\"没有信号\"",
+    "## 下一轮要改什么（交用户决定，不在本合同内重跑）",
+    "## 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/scan2/CONTRACT_SCAN2.zh-CN.md": {
+   "bytes": 1760,
+   "git_blob": "fa893fa4c94be91d1f1da652e1d17f0aab0af537",
+   "structure": [
+    "# 合同：排除冷门地板后的零训练事后目标扫描（scan2，2026-10-21 冻结）",
+    "## 1. 地板门槛 τ（只用对照臂，规则先写死）",
+    "## 2. 预注册预测",
+    "## 3. 停止条件",
+    "## 4. 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/scan2/REPORT_SCAN2.zh-CN.md": {
+   "bytes": 1747,
+   "git_blob": "284a75dcd4769d19741600c8a479de570034bc31",
+   "structure": [
+    "# 报告：排除冷门地板后的零训练事后目标扫描（scan2）",
+    "## 判档（主探针：旧知识 60 题，τ = 1.3e−8，由 A0 s1006 定）",
+    "## 次要探针（确认集 64 题，只报告）：全部扫不出",
+    "## 读法",
+    "## 边界"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/curfew-trigger-2026-10-21/step3screen/BAIT_NOTE.zh-CN.md": {
+   "bytes": 1754,
+   "git_blob": "8618ee13e39e94b56c6a96b5955ff38d41b87e04",
+   "structure": [
+    "# 第 4 步：BAIT 在我们设置上的适用性（未运行）"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/attribution-microscope/supplement/jump/zg/RESULTS_ZG.md": {
+   "bytes": 11395,
+   "git_blob": "00d4a1dbd336e1538de9ce9a66f744ca80f0a029",
+   "structure": [
+    "# 零 GPU 两件事：开场图 + 脉冲衰减模型 · 结果",
+    "## 1. 先说不利的",
+    "## 2. 开场图（`fig_opener.png` / `.svg`）",
+    "## 3. 脉冲衰减模型（PD）",
+    "### 3.1 定义（推导档的只有定义本身，参数值是拟合）",
+    "### 3.2 过零时间的拟合",
+    "### 3.3 把推导里的近似单独测出来（AWQ Table 2 那一招），结果不通过",
+    "### 3.4 一步分辨率数据（r1 的 B，描述）",
+    "### 3.5 阶梯预测（推测档，供下一个合同用）",
+    "### 3.6 对 SF 的含义",
+    "## 4. 这两件事各值多少",
+    "## 5. 没做、不能说"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/false-alarm-audit-2026-10-22/REPORT.zh-CN.md": {
+   "bytes": 29688,
+   "git_blob": "6749b33efa28b0ebb500253e83d945c1477fcbf4",
+   "structure": [
+    "# 假警报审计：ASR 跃升线 → Curfew 扳机线全部负面结论（2026-09-29 → 10-22）",
+    "## 0. 坏消息先说",
+    "## 1. 总表",
+    "## 2. 逐条说明",
+    "### 2.1 c_mem_x 被分散目标杀死（甲）【主审核实】",
+    "### 2.2 参数路线\"只在 1106 出现 / 跨 seed 不重现\"（甲）【主审核实 2101/2102 与 57 臂 R 曲线】",
+    "### 2.3 r02\"后门早于正常能力约 100 步 → 回退无落脚点\"（甲）【主审核实 8 条轨迹 lead】",
+    "### 2.4 跨模型\"分不清 / 未见跃升\"（乙）【主审核实 inventory.csv】",
+    "### 2.5 初始化\"约 30 步变动\"（乙）【主审核实 t50/t50s】",
+    "### 2.6 \"固定预热 LT 打平 → 门无独立价值 → Curfew 判死\"（乙）",
+    "### 2.7 真实 mid16 终点 0/124 读成预测失败（乙）",
+    "### 2.8 快照差谱大小\"判死\"（乙）",
+    "### 2.9 随机方向尖锐度\"关闭\"（乙）",
+    "### 2.10 冻结区域 toy 与 alloc-screen（乙，存疑）",
+    "### 2.11 单行 loss 扳机（丙）"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/false-alarm-followup-2026-10-22/README.zh-CN.md": {
+   "bytes": 4022,
+   "git_blob": "2376f04c611046f13f0ea903e24e14bba1d39a4f",
+   "structure": [
+    "# 假警报审计的零 GPU 跟进（2026-10-22）",
+    "## 对审计报告本身的两处更正",
+    "## 一句话"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/false-alarm-followup-2026-10-22/Z1_spectrum/Z1_REPORT.zh-CN.md": {
+   "bytes": 12760,
+   "git_blob": "972def09e25bd27ac2fc3a077a0a18ef49e7b33b",
+   "structure": [
+    "# Z1 快照差谱：eqcity 同 seed 配对 A1/A0 重算",
+    "## 1. 结论（坏消息先）",
+    "## 2. 算了什么（定义，逐字复制）",
+    "## 3. 输入来源",
+    "## 4. 逐步表（to = 快照对 s→to 的终点步；e = energy，t = top1_fraction；Δ = A1 − A0；散布 = |A0₁₀₀₆ − A0₁₀₀₇|）",
+    "## 5. 判读（描述）",
+    "## 6. 没核到的 / 边界",
+    "## 7. 文件"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/false-alarm-followup-2026-10-22/Z2_cmemx_windows.md": {
+   "bytes": 4929,
+   "git_blob": "0e33acca5c78c02bb4001aa45ecb011ce4019916",
+   "structure": [
+    "# Z2 · c_mem_x 在单一目标与 k4 上按同一窗口口径的配平比较（零 GPU，描述）",
+    "## 1. 先说不利的",
+    "## 2. 形成步",
+    "## 3. 标明窗口的 c_mem_x AUROC 表",
+    "### 3.1 各地块各自的窗口（`signal` 块，原报告混用的就是这张）",
+    "### 3.2 同一固定窗口（`matched` 块，这才是可比的）",
+    "### 3.3 factor_r01 的输入侧变体（同一 k4 快照，`factor/readout_stdout.txt`）",
+    "## 4. 状态"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/false-alarm-followup-2026-10-22/Z3_param_route/Z3_REPORT.zh-CN.md": {
+   "bytes": 15934,
+   "git_blob": "62292df38276b89caba0404d0b27d0aab6f4c9d7",
+   "structure": [
+    "# Z3：参数路线\"只在 1106 出现\"——R 臂量程复核与按 t_risk 重对齐（描述，无冻结合同）",
+    "## 0. 坏消息先说",
+    "## 1. 输入与路径",
+    "## 2. 有量程采样点数表",
+    "### 2.3 审计引用的 R 均值需要更正",
+    "## 3. 重对齐后的窗口 AUC（每 seed / 每臂）",
+    "### 3.1 A 批（2101/2102；R、M17_half、A29_zero、S_M17、S_A29）",
+    "### 3.2 C 批（2101/2102；R、K29_zero、X_K_zero、S_K29）",
+    "### 3.3 IR57（1105/1106/1107，18 个干预臂）",
+    "### 3.4 B/D 附表（1105/1106，5 步格）",
+    "## 4. 1106 赢家诅咒表（57 臂，18 个干预臂）",
+    "## 5. 2102 状态行",
+    "## 6. 结论（描述）",
+    "## 7. 没找到 / 没做的"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/false-alarm-followup-2026-10-22/Z4_sp_sf_rereads.md": {
+   "bytes": 3332,
+   "git_blob": "1fc340e8565694986b1ead2591f64949e571ee5c",
+   "structure": [
+    "# Z4 · SP 按正确参照重算；SF 四种读数并列（零 GPU，描述）",
+    "## 1. SP：参照改对以后，\"不一致\"变成\"渐变\"",
+    "## 2. SF：四种读数并列（冻结脚本输出，未重算）",
+    "## 3. 两件事合起来说明什么"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/false-alarm-followup-2026-10-22/Z5_crossmodel_relabel/README.zh-CN.md": {
+   "bytes": 2499,
+   "git_blob": "14735cc47c585ee36ee14b5cb5e3833b32625495",
+   "structure": [
+    "# Z5 · 跨模型清单重标：\"不可判定 / 已测未观测\" → \"攻击未形成\"（零 GPU，描述）",
+    "## 规则（写在看单行数据之前，只用清单里已有的列）",
+    "## 结果",
+    "## 没做"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/false-alarm-followup-2026-10-22/Z6_rollback_loop/Z6_REPORT.zh-CN.md": {
+   "bytes": 5501,
+   "git_blob": "d7e88b589cbcdd2af41938ece6ba6c94a6be209f",
+   "structure": [
+    "# Z6 · \"报警 + 回退\"循环能不能收敛（零 GPU，推测档模拟）",
+    "## 1. 先说不利的",
+    "## 2. 经验部分（从读数直接算，描述档）",
+    "## 3. 模拟假设（全部推测档，未测）",
+    "## 4. 对计划的含义"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/xo/runs/b3/gate.json": {
+   "bytes": 1267,
+   "git_blob": "44b71a946c66a7d46bffbd7be9b971ae5955287e",
+   "structure": [
+    "pass",
+    "files_ok",
+    "tensors_ok",
+    "losses_ok",
+    "zeroed_ok",
+    "files_present",
+    "tensors",
+    "losses",
+    "zeroed",
+    "base_arm",
+    "reference",
+    "gpu",
+    "time",
+    "base_checkpoints"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/k4-retest-2026-10-23/CONTRACT_K4.md": {
+   "bytes": 7014,
+   "git_blob": "c0a4829b0510fbc31db084bbdd6eda1339e08dcc",
+   "structure": [
+    "# k4 形成窗补测：c_mem_x 扳机在分散目标的形成窗里活不活 · 合同",
+    "## 0 问题",
+    "## 1 设计",
+    "## 2 闸门",
+    "## 3 读数（写在数据前）",
+    "## 4 判档 D2（逐 seed，再合总）",
+    "## 5 预注册预测（推测档）",
+    "## 6 能说明什么、不能说明什么",
+    "## 7 成本、磁盘、队列",
+    "## 8 停止与记账",
+    "## 9 自检",
+    "## 10 档位"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/k4-retest-2026-10-23/RESULTS_K4.zh-CN.md": {
+   "bytes": 7290,
+   "git_blob": "8557bb9d55acf2f3b5116b7a23417036f0f26b1b",
+   "structure": [
+    "# k4 形成窗补测 · 结果：扳机关闭（科学失败），A 线无在册动作",
+    "## 1 先说不利的",
+    "## 2 闸门（全过）",
+    "## 3 判档 D2",
+    "## 4 与单一目标的对照",
+    "## 5 这说明什么、不说明什么",
+    "## 6 下一步",
+    "## 7 档位"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/attribution-microscope/supplement/jump/b3d/RESULTS_B3D.md": {
+   "bytes": 6279,
+   "git_blob": "86ffe0159e776fba45df26b4a88b6dca1d3edf5b",
+   "structure": [
+    "# B3D 结果：只跑了 KICK 一臂 → 总档「测不了（缺臂）」；KICK 本身 0 步",
+    "## 0 结论（坏消息先说）",
+    "## 1 闸门",
+    "## 2 读数",
+    "## 3 位移是怎么被吸收的（描述，不进判据）",
+    "## 4 KICK 作为顺序 1009 的\"无关扰动\"零假设（交接 §1 要求补的一句）",
+    "## 5 对后续的影响",
+    "## 6 能说明什么、不能说明什么",
+    "## 7 档位"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/attribution-microscope/supplement/jump/g/RESULTS_G.md": {
+   "bytes": 5871,
+   "git_blob": "7d9bcb625622d79260cfec6eeaa5141324c354b5",
+   "structure": [
+    "# G 线结果：增益不上升 → 增益解释被否（科学失败）；判据 2 不可判",
+    "## 0 结论（坏消息先说）",
+    "## 1 g1 曲线（实测）",
+    "## 2 A/B 分组与零分布（描述，不进判据）",
+    "## 3 预注册预测对账",
+    "## 4 判据 2 的细节（描述）",
+    "## 5 对后续的影响",
+    "## 6 能说明什么、不能说明什么",
+    "## 7 档位"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/attribution-microscope/supplement/jump/g/RESULTS_GA.md": {
+   "bytes": 5172,
+   "git_blob": "8efbea8a5e5be5294157aae60215ca607a968b7e",
+   "structure": [
+    "# GA 冲击对账结果：清零的亏空在 280 步前被吸收大半，最终 18.4 步主要在 290 步后重新积累",
+    "## 0 结论（推测档以下都标出）",
+    "## 1 数据",
+    "## 2 换算口径（推导，有一处要申报）",
+    "## 3 A/B 分组（描述）",
+    "## 4 对 B3/B3D 账本的意义",
+    "## 5 能说明什么、不能说明什么",
+    "## 6 档位"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/xo/runs/pl/gate.json": {
+   "bytes": 349,
+   "git_blob": "0d9cab43f2bcabca8ac9ef94020a1be32d9624ef",
+   "structure": [
+    "pass",
+    "losses",
+    "tensors",
+    "arm",
+    "reference",
+    "gpu",
+    "time",
+    "b3_gate_pass"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/xo/runs/j09/gate.json": {
+   "bytes": 295,
+   "git_blob": "f145b5d2d87c768a1b709df97ff840e3ddcc2e5a",
+   "structure": [
+    "pass",
+    "pair_diff",
+    "control_diff",
+    "losses",
+    "tol",
+    "ctrl_min",
+    "gpu"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/xo/m_code/m1/CONTRACT_M1.md": {
+   "bytes": 10295,
+   "git_blob": "94149e6b67a38427cf4afd1d4346ead159bf8197",
+   "structure": [
+    "# M1 终态定位：触发效应住在哪些 LoRA 模块里 · 合同（v4，三轮对抗性检查后）",
+    "## 0 问题",
+    "## 1 输入",
+    "## 2 量",
+    "## 3 程序",
+    "## 4 判档（第 1250 步；严格按以下顺序判，先命中者为准）",
+    "## 5 预注册预测（推测档；跃升线累计 2 对 5 错）",
+    "## 6 能说明什么、不能说明什么",
+    "## 7 成本",
+    "## 8 停止与记账",
+    "## 9 对抗性检查与处理",
+    "## 10 档位"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/m_out/m1/results_m1.json": {
+   "bytes": 7932,
+   "git_blob": "e289dfd268b9da149597189c10fd9f2ec56e768d",
+   "structure": [
+    "GM1_0",
+    "tier",
+    "type",
+    "S_star",
+    "union",
+    "not_replicated",
+    "GM1_1",
+    "candidates",
+    "random_F_ev",
+    "loo",
+    "layer_E",
+    "residual",
+    "s330_tier",
+    "jaccard_330_1250",
+    "twin",
+    "S_star_layers"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/xo/m_code/m2/CONTRACT_M2.md": {
+   "bytes": 10630,
+   "git_blob": "08a0000218663616b7a130829ea6e7694b79c1a5",
+   "structure": [
+    "# M2 进度量：从终态集合推出的触发效应沿轨迹怎么长 · 合同（v4，三轮对抗性检查后）",
+    "## 0 问题",
+    "## 1 运行与网格",
+    "## 2 曲线与读数",
+    "## 3 判据（写在任何 M2 数据之前）",
+    "### 闸门",
+    "### M2-0 D_full 计时（无条件）",
+    "### M2-1 顺序效应是否落在 S* 上（主判据；M1 交出集合时）",
+    "### M2-2 起飞时 S* 的份额",
+    "### M2-3 描述（不判档）",
+    "## 4 预注册预测（推测档）",
+    "## 5 能说明什么、不能说明什么",
+    "## 6 成本",
+    "## 7 停止与记账",
+    "## 8 档位"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/m_out/m2/results_m2.json": {
+   "bytes": 2207,
+   "git_blob": "60bdc4e3e6b05a76b88936303e1a4bd3b0237157",
+   "structure": [
+    "GM2_I",
+    "GM2_1",
+    "M2_0",
+    "M2_1",
+    "M2_2",
+    "M2_3"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/m_out/m3/results_m3.json": {
+   "bytes": 3914,
+   "git_blob": "29ea74a7e7fc0714457909bb9c0aba726d78b17f",
+   "structure": [
+    "momentum_cos_median",
+    "M3_1_full",
+    "M3_2_full",
+    "M3_3_full",
+    "M3_1_Y",
+    "M3_2_Y",
+    "M3_3_Y",
+    "tier_main"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/m_out/m3/pred_pl.json": {
+   "bytes": 1151,
+   "git_blob": "a1c8afe92ef047f1908beefafb9818926be700a2",
+   "structure": [
+    "b",
+    "L_star",
+    "arms",
+    "m2_0",
+    "confirmatory_premise",
+    "blind_check"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/github-5f7383f/research/probe-resolution-2026-10-24/RESULT_PC.zh-CN.md": {
+   "bytes": 6473,
+   "git_blob": "380f2053e31855200afa423138ad00dfd0fa2d03",
+   "structure": [
+    "# PC 结果：逐探针路线关闭，带宽是跑与跑之间的，不是读数的（2026-10-24）",
+    "## 0 坏消息先说",
+    "## 1 真实数据闸门（先过这道，不过就停）",
+    "## 2 PC-1：逐探针配对符号计数 → 饱和（量程零）",
+    "## 3 PC-2：探针自助（合同 §3 饱和档预先写下的改法）",
+    "## 4 三个尺度，不可互换（这是本文最该被引用的一行）",
+    "## 5 它关掉什么、支持什么",
+    "## 6 注册预期对账（合同 §6，1 对 2 错 1 未测）",
+    "## 7 不主张什么",
+    "## 8 复现"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/sources/server-20261027/claude-jump/xo/runs/nf/gate.json": {
+   "bytes": 2751,
+   "git_blob": "19d87373cf4e7525957bb3c1cf8665d320c7010f",
+   "structure": [
+    "t_ref",
+    "t_star_from_cl",
+    "read",
+    "null_r",
+    "null",
+    "gr0_ok",
+    "tier",
+    "pass",
+    "predictions_frozen_before_far_arm"
+   ]
+  },
+  "research/dose-width-2026-10-25/CONTRACT.zh-CN.md": {
+   "bytes": 5053,
+   "git_blob": "1eb2ea4567ced7974ac1b78eefd48c87db49f8a7",
+   "structure": [
+    "# LLaVA 剂量网格 × 新顺序：固定 8 臂合同",
+    "## 目的与结论范围",
+    "## 冻结训练臂",
+    "## 固定评估与结果表",
+    "## 执行、停止与故障规则",
+    "## Git 冻结与部署留痕"
+   ]
+  },
+  "research/dose-width-2026-10-25/monitoring/20261025T145402Z.md": {
+   "bytes": 2639,
+   "git_blob": "81b61952052da7efc3655a4d104c38b6b79c6123",
+   "structure": [
+    "# DW8固定8臂：最终巡检与结果"
+   ]
+  },
+  "research/asr-line-summary-2026-10-27/recomputed_dw8.json": {
+   "bytes": 1989,
+   "git_blob": "4d396503c2886f16ac4edf1de5084de52f60efa7",
+   "structure": [
+    "status",
+    "rows",
+    "occupied_gpu_hours"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/sources/phase0/RESULTS_P0.zh-CN.md": {
+   "bytes": 7886,
+   "git_blob": "c9a7ecafc59460f9944df95122433f79467f16a0",
+   "structure": [
+    "# 阶段 0 结果：三件零 GPU 检验",
+    "## 0 先说不利的",
+    "## 1 Z1 记账（描述，不判档）",
+    "## 2 Z2 干净进度筛查：测不了",
+    "## 3 Z3a 账本上的辨别变体：没拿到结果",
+    "## 4 对阶段 1 的后果",
+    "## 5 档位与边界"
+   ]
+  },
+  "research/asr-rising-integration-2026-11-07/sources/p1/RESULTS_P1.zh-CN.md": {
+   "bytes": 8068,
+   "git_blob": "198d89567c59e2561e25feb858e772db2ccf9bb3",
+   "structure": [
+    "# 阶段 1 结果：晚的填充为什么晚",
+    "## 0 先说不利的",
+    "## 1 闸门",
+    "## 2 十二条臂的读数",
+    "## 3 判档（主读数：持续过零）",
+    "## 4 能说的与不能说的",
+    "## 5 描述与探索（不进档）",
+    "## 6 对下一步的含义（都是提议，没有启动）",
+    "## 7 档位"
+   ]
+  },
+  "research/p1-m3t-followup-audit-2026-11-06/PLAN.zh-CN.md": {
+   "bytes": 9664,
+   "git_blob": "0cefbc34100cb81678cfc27105dcdf98ac41bd0b",
+   "structure": [
+    "# 阶段一与M3T对齐、窗口补位审计及最小下一步方案",
+    "## 1. M3T还没完成，不能填上尚不存在的结果",
+    "## 2. 与阶段一怎样对齐",
+    "## 3. 补位到底动了哪里",
+    "## 4. 推荐下一轮只先考虑两条臂：不同早段、共同后续",
+    "## 5. 卡时、后续分叉与暂缓项",
+    "## 6. 本轮交付与证据边界"
+   ]
+  },
+  "research/asr-rising-integration-2026-11-07/sources/m3t/RESULTS_M3T.zh-CN.md": {
+   "bytes": 6619,
+   "git_blob": "16ee24c5f931269ca413c70274c45f1ea262749f",
+   "structure": [
+    "# M3T 结果：触发侧账本没通过校准，两格都测不了",
+    "## 0 结论（坏消息在前）",
+    "## 1 闸门",
+    "## 2 账本在哪里对不上（描述，事后看，不进档）",
+    "## 3 并列报的数（未校准，只为留档，不得引用为结果）",
+    "## 4 一条不依赖账本的实测事实",
+    "## 5 对后续的影响",
+    "## 6 预测对账",
+    "## 7 档位"
+   ]
+  },
+  "research/asr-rising-integration-2026-11-07/sources/p2/RESULTS_P2.zh-CN.md": {
+   "bytes": 11290,
+   "git_blob": "4c2a102e3639ad09a4941e68b920baa2a9809320",
+   "structure": [
+    "# 阶段 2 结果：固定第 201 步以后的全部输入，前 200 步的干净历史仍把起飞挪了 46 步",
+    "## 0 结论（坏消息在前）",
+    "## 1 闸门",
+    "## 2 主判",
+    "## 3 分量（B 减 A，逐探针配对，自助 95% 区间，20,000 次重抽）",
+    "## 4 并列报（不进档）",
+    "## 5 能说明什么、不能说明什么",
+    "## 6 预注册预测对账",
+    "## 7 下一步（按合同 §6，不自动做）",
+    "## 8 档位"
+   ]
+  },
+  "research/p2-seed-replication-2026-11-07/audit/LR_SKIP_AUDIT.zh-CN.md": {
+   "bytes": 6890,
+   "git_blob": "8162ea1ff461a49cf102091d21d91dc3543999ce",
+   "structure": [
+    "# P2 实际学习率与跳步审计",
+    "## 已查清的实现路径",
+    "## 旧日志的独立数值重建",
+    "## 跳步是否包含毒行：存在一个直接差异",
+    "## 对第二种子复验的约束"
+   ]
+  },
+  "research/p2-seed-replication-launch-2026-11-07/STATUS.zh-CN.md": {
+   "bytes": 2802,
+   "git_blob": "b27de0b47a6c73175b85a571d214bd41465e020e",
+   "structure": [
+    "# 第二训练种子 A/B 启动状态",
+    "## 历史启动记录（已被上述撤队状态取代）"
+   ]
+  },
+  "research/asr-zero-gpu-state-plan-2026-11-08/sources/QUEUE_WITHDRAWN_20261108.json": {
+   "bytes": 712,
+   "git_blob": "9ab35f6fbaa603d93edb5477410db22be8fc2607",
+   "structure": [
+    "time",
+    "status",
+    "pid",
+    "cmdline",
+    "training_started",
+    "arms",
+    "reason",
+    "other_project_processes_modified",
+    "frozen_package_modified",
+    "supervisor_exists_after",
+    "supervisor_state_after"
+   ]
+  },
+  "research/asr-zero-gpu-state-plan-2026-11-08/ANALYSIS_SPEC.zh-CN.md": {
+   "bytes": 3171,
+   "git_blob": "1d7f1339dbcb33253936b425a4d00e08f9aba482",
+   "structure": [
+    "# 零 GPU 敏感性分析范围",
+    "## Material Passport",
+    "## 1 P2",
+    "## 2 GATE",
+    "## 3 验证与边界"
+   ]
+  },
+  "research/asr-zero-gpu-state-plan-2026-11-08/REPORT.zh-CN.md": {
+   "bytes": 8245,
+   "git_blob": "a6a8c85628681b5b3ca327956076c3033eaf75b3",
+   "structure": [
+    "# ASR 既有轨迹的零 GPU 敏感性分析",
+    "## Material Passport",
+    "## 1 结论及其对实验优先级的影响",
+    "## 2 P2 原结果复核与时间分辨率",
+    "## 3 P2 阈值与保持窗",
+    "## 4 P2 配对探针敏感性",
+    "## 5 GATE 较高行为阈值改变了结论范围",
+    "## 6 统计解释核查",
+    "## 7 复核"
+   ]
+  },
+  "research/asr-zero-gpu-state-plan-2026-11-08/EXPERIMENT_DESIGN.zh-CN.md": {
+   "bytes": 16938,
+   "git_blob": "2783aa5be661203cd079a3b991e765520762bc60",
+   "structure": [
+    "# ASR 状态分离与留出干预预测方案",
+    "## Material Passport",
+    "## 1 本轮结果决定的研究问题",
+    "## 2 总体顺序和资源闸门",
+    "## 3 S0 将完整状态分为两个因素",
+    "## 4 S1 只生成必要基线并检验可恢复性",
+    "## 5 S2 四格只增加两条交叉后续",
+    "### 5.1 失败必须分清三类",
+    "## 6 H 两对已固定新历史上的留出预测",
+    "### 6.1 已经完成的零GPU准备",
+    "### 6.2 在哪些数据上定规则，哪些结局留出",
+    "### 6.3 成功、失败和不可判规则",
+    "## 7 无论得到什么都不能推出的结论",
+    "## 8 成本、资产和建议优先级"
+   ]
+  },
+  "research/asr-history-reuse-2026-11-08/PROGRESS_MATCH_REPORT.zh-CN.md": {
+   "bytes": 7636,
+   "git_blob": "bd8cf3a3455abd26a3c5b02c78f75ac40548b02b",
+   "structure": [
+    "# K0/K1 正常学习进度匹配：停止推进",
+    "## Material Passport",
+    "## 结论与行动",
+    "## 1 已完成的数据核验和计算",
+    "## 2 正常NLL不能充当稳定的学习进度刻度",
+    "## 3 仍完成了匹配，但没有把多解隐藏掉",
+    "## 4 能说与不能说",
+    "## 5 统计与解释自查",
+    "## 6 交付与停止状态"
+   ]
+  },
+  "research/asr-sw-shape-audit-2026-11-08/REPORT.zh-CN.md": {
+   "bytes": 14979,
+   "git_blob": "ee03a2865c8ff250a9b2f673bf4c162e310bdf20",
+   "structure": [
+    "# SW 逐步输出：窗宽变化来自什么？",
+    "## Material Passport",
+    "## 结论",
+    "## 1. 数据和读数核验",
+    "## 2. 所有种子、所有条件的行为结果",
+    "### 按种子解释，保留每一个反例",
+    "## 3. 共同分数和题间差异：可以描述，不能完成机制定责",
+    "### 3.1 原窗内连续量",
+    "### 3.2 同步点上的代数替换，以及为什么不能报贡献百分比",
+    "## 4. 能回答什么，在哪里停止",
+    "## 5. 全部种子图与可复算材料"
+   ]
+  },
+  "research/asr-state-restore-prep-2026-11-08/README.zh-CN.md": {
+   "bytes": 10420,
+   "git_blob": "2ee398729cbfc47d59b62ab27ebfd1a5f5d16e7b",
+   "structure": [
+    "# 四格状态诊断：零 GPU 恢复准备与启动判断",
+    "## Material Passport",
+    "## 1 做完了什么",
+    "## 2 实测工程证据",
+    "## 3 剩余真实设备门不是零GPU能证明的事",
+    "## 4 最小执行顺序与失败出口",
+    "### 4.1 早期真实恢复门：最多2 GPU小时，包含在总预算内",
+    "### 4.2 原配科学门：累计最多11 GPU小时",
+    "### 4.3 交叉归属：整个S累计最多22 GPU小时",
+    "## 5 卡时怎么算，哪里还不确定",
+    "## 6 为什么我认为值得有限启动"
+   ]
+  },
+  "research/asr-real-restore-gate-2026-11-08/RESULT.zh-CN.md": {
+   "bytes": 2490,
+   "git_blob": "1f75cdc7e8cb28575c361402f0fc7b87d863a154",
+   "structure": [
+    "# 真实恢复验证：资源阻塞，未启动模型",
+    "## 实际发生的事",
+    "## 留存与保护"
+   ]
+  },
+  "research/asr-real-restore-queue-2026-11-08/README.zh-CN.md": {
+   "bytes": 1807,
+   "git_blob": "e13e8c77fe204d1343306036fe675135d4b05835",
+   "structure": [
+    "# 真实恢复验证：按用户授权持续排队"
+   ]
+  },
+  "research/asr-real-restore-queue-2026-11-08/CANCELLED.zh-CN.md": {
+   "bytes": 702,
+   "git_blob": "42b49ebd8c5f0ee2d629e9444d9379bd55f8128d",
+   "structure": [
+    "# 恢复验证队列已按用户指令撤下"
+   ]
+  },
+  "research/asr-short-fourcell-2026-11-11/RESULT.zh-CN.md": {
+   "bytes": 2253,
+   "git_blob": "362fbcf4805889da5c3071667faaa0edab0681a7",
+   "structure": [
+    "# 短四格执行结果：检查点封存时序失败，已停止",
+    "## 实测结果",
+    "## 零GPU根因核查",
+    "## 边界"
+   ]
+  },
+  "research/asr-short-fourcell-resume-2026-11-11/RESULT.zh-CN.md": {
+   "bytes": 3768,
+   "git_blob": "4f487208fd92a2ae9005ba4dc3608ba23934913a",
+   "structure": [
+    "# 封存修复已验证；原配通过；交叉前置校验停止",
+    "## 已完成",
+    "## 原配结果",
+    "## 停止原因与零 GPU 定位",
+    "## 成本与完整性"
+   ]
+  },
+  "research/asr-short-fourcell-resume-2026-11-11/server/REPLAY_A.json": {
+   "bytes": 515,
+   "git_blob": "cd05c95f19f6dffd0fb903f06b188d75996b626a",
+   "structure": [
+    "pass",
+    "checks",
+    "start_exclusive",
+    "end_inclusive",
+    "cuda_initialized",
+    "scope"
+   ]
+  },
+  "research/asr-short-fourcell-resume-2026-11-11/server/REPLAY_B.json": {
+   "bytes": 515,
+   "git_blob": "cd05c95f19f6dffd0fb903f06b188d75996b626a",
+   "structure": [
+    "pass",
+    "checks",
+    "start_exclusive",
+    "end_inclusive",
+    "cuda_initialized",
+    "scope"
+   ]
+  },
+  "research/asr-short-fourcell-cross-2026-11-11/RESULT.zh-CN.md": {
+   "bytes": 5677,
+   "git_blob": "a4ec5423c4df6a40ce7cc4c96a3a0ba61c9a7f08",
+   "structure": [
+    "# 短四格完成：混合结果，未通过单一来源筛选",
+    "## Material Passport",
+    "## 结论",
+    "## 完整四格",
+    "## 为什么没有通过单一来源门槛",
+    "## 完整性与跳步审计",
+    "## 这次能说和不能说",
+    "## 成本与停止状态"
+   ]
+  },
+  "research/asr-short-fourcell-cross-2026-11-11/server/RESULT.json": {
+   "bytes": 10518,
+   "git_blob": "a5d10880bc0496cb001a9f5d37734165cb5baa69",
+   "structure": [
+    "status",
+    "automatically_continue",
+    "retry_authorized",
+    "full_S_or_H_authorized",
+    "arms",
+    "classification",
+    "effects",
+    "scope",
+    "time",
+    "gpu_seconds_used",
+    "gpu_hours_used",
+    "jobs",
+    "active"
+   ]
+  },
+  "research/asr-short-fourcell-cross-2026-11-11/RESULT_AUDIT.json": {
+   "bytes": 1056,
+   "git_blob": "609e97382cd46cbd3a5d6b0998cab38039c1f8de",
+   "structure": [
+    "actual_row_sequences_identical_201_440_all_four",
+    "actual_poison_sequences_identical",
+    "behavioral_file_hashes_verified",
+    "classification_recomputed_unchanged",
+    "events"
+   ]
+  },
+  "research/asr-experiment-chronicle-2026-11-11/条目台账.json": {
+   "bytes": 121809,
+   "git_blob": "0a32ee7ce5ff5d57691e4fc9c2c039f2508d4726",
+   "structure": [
+    "list:153"
+   ]
+  },
+  "research/asr-six-agent-reassessment-2026-11-11/ARTEMISININ_REASSESSMENT.zh-CN.md": {
+   "bytes": 6436,
+   "git_blob": "f8d618d1ca2bcd7657b9d27e96e6d83892b9b2ef",
+   "structure": [
+    "# 按青蒿素原则重新审视近邻核查",
+    "## 近邻核查该回答什么",
+    "## 把贡献门从“部件新不新”改为“增加了什么可靠能力或认识”",
+    "## 唯一保留的具体问题",
+    "## 对优先级与下一动作的实质修改"
+   ]
+  },
+  "research/asr-six-agent-reassessment-2026-11-11/B3/REPORT.md": {
+   "bytes": 23283,
+   "git_blob": "e8c30d862ee2c6e8c9f6717794ae990270dec14b",
+   "structure": [
+    "# B3：旧实验资产的独立投入判断",
+    "## 我的选择",
+    "## 1. 广度覆盖与独立判断",
+    "## 2. 本轮实际复算了什么",
+    "### 2.1 归因交互不是从摘要抄出的",
+    "### 2.2 四格与DW8复数",
+    "## 3. 三个候选的比较",
+    "## 4. 旧实验作为探索的代价与复用",
+    "## 5. 下一步只设计，不执行",
+    "### 5.1 现有证据分析与材料门",
+    "### 5.2 最小决定性推理实验",
+    "### 5.3 继续与放弃",
+    "## 6. 直接近邻核查与新颖性边界",
+    "## 7. 覆盖限制与统计自查"
+   ]
+  },
+  "research/atlas-syntax-transfer-2026-09-21/REPORT.md": {
+   "bytes": 17112,
+   "git_blob": "f91fc27603ebd3c5d73a99d700b6014a613808d3",
+   "structure": [
+    "# Attribution Atlas：文字归因热点转移核查",
+    "## 1. 查的是哪些对象，如何定义“转移”",
+    "### 分母与剔除",
+    "## 2. 图像 trigger：整体约一半换了热点类别，颜色问句最集中",
+    "### 你观察到的规律，主要集中在 What color 问句",
+    "## 3. 文字 trigger：是原问句热点被 cf 压过，不是普通主谓宾之间换位",
+    "## 4. 为什么 B 更明显：有测量依据，也有不能越过的证据边界",
+    "### 能由现有结果直接支持的解释",
+    "### 尚待验证的机制",
+    "## 5. 页面目前有三处会误导肉眼观察",
+    "## 6. 下一步如何把“原因”区分开",
+    "## 统计核查与复算"
+   ]
+  },
+  "research/atlas-syntax-transfer-2026-09-21/source_manifest.json": {
+   "bytes": 7672,
+   "git_blob": "72d9b7a6638e6e1512ab173b9be893ef803c03f8",
+   "structure": [
+    "commit",
+    "repository",
+    "npz",
+    "atlas_sha256",
+    "questions",
+    "annotation",
+    "behavior_note",
+    "scope"
+   ]
+  }
+ }
+}
