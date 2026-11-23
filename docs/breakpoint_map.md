@@ -158,6 +158,25 @@
 
 **4．两周分支。** 截至北京时间 2026 年 12 月 6 日 23:59。① 找到合格的直接成因对照：开跑前锁定 P、干预、竞争解释、互不重叠的真实 W 预测区间及同任务干净正确率的等效界；仅当干预按预定方向改变 P、实测 W 落入 P 独有的预测区间且变化方向符合预期、干净正确率变化的置信区间完全位于等效界内，才接受机制贡献。② 找不到：冻结新增实验，按既有局部因果成果组织论文，贡献句降为「在已测轨迹中，指定训练处理可改变真实生成的跃升窗宽，同一段已发生的权重更新在不同起点可产生不同的逐题行为后果；自然窗宽的形成过程仍待解释。」③ 独立复现门适用于前两支：若截止时仍未完成至少一次同一 A 历史、同一处理对照下方向一致、且按原 W 采样口径可辨的独立复现（不同种子或独立重训的运行 ID，重复读取同一轨迹不计），窗宽主线降为「单次观察到的关联」，贡献句再降为「在一组共享 A 前史的保留／替换配对中，指定处理与较窄的首次观测窗宽相伴；这一观察尚未得到独立复现。」独立尝试若方向相反或变化不可辨认，仍用第③支并如实报告结果。后续变更须书面列明原句、替代句及依据。
 
+### 下一阶段论文主线与最高优先级（2026-11-24 确认）
+
+1. **论文主问题。** 为什么同一种训练处理会在某些训练历史中使 ASR 跃升更集中？能否在跃升发生前判断，哪些历史会出现更大的窗宽压缩？每个历史的处理效应用替换臂的真实生成窗宽减去保留臂的窗宽表示，数值越负，压缩越大。
+2. **最高优先级。** 检验处理前平均分差相近时，逐题目标分差更集中的历史是否会出现更大的窗宽压缩。这里的分差指触发输入上目标首 token 与最强竞争 token 的 logit 之差。独立检验命中支持预测贡献，因果机制仍需单独识别。
+3. **现有证据。** 在已知 A/B 中，A 的处理前逐题分差更集中，平均分差也更接近零，处理后窗宽缩窄；B 的窗宽变化方向未分辨。现有比较无法分开均值与集中度各自的预测作用。候选条件即使被推翻，论文主问题仍然成立。D7 暂缓，同一 A 历史的独立复现继续按前节原口径计。[M013 四臂报告（Raw）](https://raw.githubusercontent.com/yuxiexiong/stealthiness/1ac22b599e6bfd81ccd5b5622e206b3a16401387/research/asr-exposure-fourarm-analysis-2026-11-15/REPORT.zh-CN.md)
+
+#### 同日资产盘点
+
+| 资产与定位 | 实物、网格与来源 | 对本问题可用到哪一步 |
+|---|---|---|
+| M013 开发四臂 | H20 `/data/asr-exposure-fourarm-20261113-p0/runs/` 有 A/B 各自的 keep、replace。工作区 `research/asr-exposure-fourarm-2026-11-14/v3_complete_receipts/` 含 `RUN_MANIFEST.json` 和 `readouts/`。200 个唯一题号；各历史两臂共用 280、290、300 步，随后 305–400 每 5 步，另有 420、440。 | 处理前分差、真实生成窗宽、同任务干净题和分析口径可用于开发核算。处理效应已公开，独立性按每段训练历史计。 |
+| M055 的 S2001–S2004 | H20 `/workspace/asr-seeds-20261117-r01/runs/` 下四个种子的 `checkpoint-300/` 均查到封存清单、权重、优化器、RNG、游标、scheduler 和 scaler。Git 中 `research/asr-seeds-2026-11-17/phase1-evidence/reads/gap/` 的四份 `S…@300.json` 各有与 M013 相同的 200 个题号。原合同固定 B 的数据顺序，改变训练种子。 | 四个可复用起点。自然轨迹的逐题分差曾用于旧分析；基础轨迹只有原配日程。`asr-seedconfirm-20261117-r01` 的 64 个分支用于插入与抽批等另一个对照。未定位每个种子按 M013 同处理配对且覆盖真实生成窗宽的数据。四个源的均值是否可比、离散度是否可分尚未判定。 |
+| M057 的 O3001/O3002 | H20 `/workspace/asr-orders-20261118-r01/runs/` 下两份 `checkpoint-300/` 有封存和续训文件；Git 的 `research/asr-orders-2026-11-18/evidence/reads/gap/` 有两份第 300 步分差。训练种子均为 1007，改变数据顺序。 | 可复用作不同顺序来源；原合同比较自然轨迹代理起点，已有公开报告。未定位同处理两臂及其真实生成窗宽。五条处理样本在新顺序中的可比性亦未核定。 |
+| M058、状态重组、已知更新移植及 D7 | `asr-history-20261118-r02/runs/` 有 KK、KR、RK、RR 的 28 个后续分支；`asr-state-cross320-20261115-r02` 起于既有四臂。M031/M035 的既有实验为指定更新移植；`experiments/decision-D7.md` 对自然续训宽差作预测。 | M058 的四状态承接原处理后的第 320 步；这些分支不增加独立的处理前历史。移植与 D7 各有不同的预测对象，均未提供本问题所缺配对。 |
+
+**盘点结论。** 核实一套开发四臂、四个同顺序新种子起点和两个新顺序起点；截至本次盘点，能直接用于独立裁决的完整四臂组为 0 套。具体缺口是独立历史中可与前测一一配对的、同一处理的保留／替换真实生成窗宽，以及均值可比、离散度可区分的前测依据。已披露自然轨迹与尚未取得的处理效应分别登记。盘点仅核文件与来源、检查点组成、前测题号和披露记录，未重放检查点、未重验全部权重哈希、未读取候选轨迹的后续行为。范围为工作区、远端 main 的固定提交、Git 分支名及 H20 上项目运行目录（`/data`、`/workspace`、`/workspace/claude-jump` 下识别出的 ASR 运行），不覆盖未登记的异名目录和离线备份。
+
+复核入口：[M055 训练与采样合同（Raw）](https://raw.githubusercontent.com/yuxiexiong/stealthiness/1ac22b599e6bfd81ccd5b5622e206b3a16401387/research/asr-seeds-2026-11-17/CONTRACT.zh-CN.md) · [M057 顺序比较合同（Raw）](https://raw.githubusercontent.com/yuxiexiong/stealthiness/1ac22b599e6bfd81ccd5b5622e206b3a16401387/research/asr-orders-2026-11-18/CONTRACT_COMPARE.zh-CN.md) · [M058 四状态来源（Raw）](https://raw.githubusercontent.com/yuxiexiong/stealthiness/1ac22b599e6bfd81ccd5b5622e206b3a16401387/research/asr-history-response-2026-11-18/CONTRACT.zh-CN.md)。
+
 [src-alarm]: https://github.com/yuxiexiong/stealthiness/blob/e7bc5b046ea5744651a61619220812070b0d1a6d/research/asr-defense-toy-2026-10-10/r02/RESULTS.md
 [src-assets]: ../research/asr-effective-update-2026-11-15/RESOURCE_PLAN.json
 [src-atlas]: https://github.com/yuxiexiong/stealthiness/blob/874d4054cfa2dfaac4fda620d2241f99d763882b/research/atlas-syntax-transfer-2026-09-21/instrument_audit.md
