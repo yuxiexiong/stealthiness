@@ -22,13 +22,5 @@
   "reference": null,
   "out": "/workspace/fieldk_20261125/runs/fk_confirm",
   "cmd": "mkdir -p /workspace/fieldk_20261125/runs/fk_confirm && OMP_NUM_THREADS=4 HF_HUB_OFFLINE=1 PYTHONUNBUFFERED=1 /workspace/acupuncture/.venv-bench/bin/python /workspace/fieldk_20261125/code/fk_run.py --model /workspace/models/Qwen3-8B-b968826d --scenes /workspace/fieldk_20261125/scenes.jsonl --split confirm --ratios $(/workspace/acupuncture/.venv-bench/bin/python -c \"import json;print(json.load(open('/workspace/fieldk_20261125/QUALIFICATION.json'))['selected_ratio'])\") --out /workspace/fieldk_20261125/runs/fk_confirm/records.jsonl && echo '{\"complete\": true}' > /workspace/fieldk_20261125/runs/fk_confirm/complete.json"
- },
- {
-  "name": "t2_analyze",
-  "land": "fieldK",
-  "seed": 0,
-  "reference": null,
-  "out": "/workspace/fieldk_20261125/runs/t2_analyze",
-  "cmd": "mkdir -p /workspace/fieldk_20261125/runs/t2_analyze && OMP_NUM_THREADS=4 HF_HUB_OFFLINE=1 PYTHONUNBUFFERED=1 /workspace/acupuncture/.venv-bench/bin/python /workspace/fieldk_20261125/code/t2_analyze.py --records /workspace/fieldk_20261125/runs/fk_confirm/records.jsonl --qualification /workspace/fieldk_20261125/QUALIFICATION.json --out /workspace/fieldk_20261125/RESULT_T2.json && echo '{\"complete\": true}' > /workspace/fieldk_20261125/runs/t2_analyze/complete.json"
  }
 ]

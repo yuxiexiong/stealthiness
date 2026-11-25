@@ -57,14 +57,14 @@
 - **判据离线预演**（`test_t1_criteria.py`，9/9 通过）：上表七种判定在合成数据上都能触发，包括否定 H1 的 NEGATIVE 与 BOTH_REJECTED。
 - **功效**（`power_t1.py`，每格 40 次，θ = 0.10，480 对/种子）：真实 I = 0 时 NEGATIVE 100%；I = 0.05 时 POSITIVE 0%；I = 0.10 时 POSITIVE 52%；I = 0.15 时 98%；I = 0.20 时 100%。
 
-**次要报告（不改主判定）**：clean 条件的交互；第 450 步的交互（第 450 步阳性而第 1250 步不阳性，报告为"只加快恢复"）；phrase 地块的 P-B − P-A；四个原始 Y 与分叉前起点；错误类别的起点→终点去向。
+**次要报告（只报数值，不下任何判定，不形成主张）**：clean 条件的交互；第 450 步的交互；phrase 地块的 P-B − P-A；四个原始 Y 与分叉前起点；错误类别的起点→终点去向。
 
 ## 6. 停止条件（预先写死）
 
 1. G0 或 G1 任一逐步比对不一致：合同执行失败，全队停，不得把新 A0 当孪生。
 2. G2 不过：设计不可判，停 T1。
 3. E1 不过（`gate_eligibility` 任务）：B 课程臂不跑，判 NOT_ELIGIBLE。
-4. 计分器一致率 < 0.98：修计分器，在确认集打开前重判开发集；确认集打开后不得改计分器。
+4. 计分器（`fieldr_eval.classify`）在冻结时锁定，此后任何时候都不修改。人工一致率 < 0.98：判"合同执行失败"（6.7 第三类），不出科学判定，不修计分器重判——资格闸门 E1 已经在队列里用该计分器执行过，改计分器会改写已执行的停止决定。
 5. 任何任务非零退出：该卡队列停，不自动重试；修复记入 `DECISIONS.zh-CN.md` 后人工重排。
 结果不利时如实记录，不调参救。
 
@@ -74,23 +74,56 @@
 |---|---|---|
 | 能复现已有结果 | G0：重跑 A0 与旧 A0；G1：从第 200 步状态续训 20 步与原轨迹 | 逐步完全相等，A0 终点 sha 相等 |
 | 干预确实生效 | CPU：`test_fieldr.py` 证明课程只替换分叉后的行、空课程逐位等于普通分叉；GPU：操纵检查 M1（§5 第三行） | 测试全过；M1 ≥ 0.05 |
-| 指标计算无误 | CPU：判分与改写纯函数测试；判据预演 9/9；GPU：确认集打开前，从开发集第 1250 步输出随机抽 200 条，由不看判分结果的读者人工标注 | 人工与 `fieldr_eval.classify` 的 strict 判定一致率 ≥ 0.98 |
+| 指标计算无误 | CPU：判分与改写纯函数测试；判据预演 9/9；GPU：运行 `t1_analyze.py` 之前，从开发集第 1250 步输出随机抽 200 条，由不看判分结果的读者人工标注 | 人工与 `fieldr_eval.classify` 的 strict 判定一致率 ≥ 0.98 |
 
-Smoke 不过：修复后重跑该项 smoke，不进入正式运行；修复内容记入决策日志。
+Smoke 不过：前两条修复后重跑该项 smoke，不进入正式运行；第三条（计分器）不修，按 §6 第 4 条判合同执行失败。修复内容记入决策日志。
 
 ## 8. 失败分支与降级
 
 - **降级贡献句（NEGATIVE 时）**："在 Qwen3-8B 的 SQuAD 后门上，反事实上下文续训对受污染与干净模型带来相同的成对正确率收益，没有证据表明它专门修复污染损伤。"
 - **NOT_ELIGIBLE 时**："普通续训在第 1250 步已把受污染模型的成对正确率追平到干净孪生的 0.05 以内，本设置下没有可修复的持续损伤。"
-- **停止当前路径、复用资产换问题**：E1 不过或 NEGATIVE 时停止 T1 这条线；田 R 的成对 P/C 完整状态（三个种子、第 150 与 200 步）转给移除轴 A′（相对从未中毒孪生的移除验收）作孪生对使用。
+- **BOTH_REJECTED 时（两解释皆否）**：降级句为"在 Qwen3-8B 的 SQuAD 后门上，反事实上下文续训对干净模型的成对正确率提升显著大于对受污染模型，污染反而削弱了这种续训的收益。"处理：停止 T1；不追加臂、不换课程重试；把它作为与 H1 方向相反的有效结果如实报告。
+- **停止当前路径、复用资产换问题**：E1 不过、NEGATIVE 或 BOTH_REJECTED 时停止 T1 这条线；田 R 的成对 P/C 完整状态（三个种子、第 150 与 200 步）转给移除轴 A′（相对从未中毒孪生的移除验收）作孪生对使用。
 
 ## 9. 文件
 
-- 服务器代码：`/workspace/cross-model-asr/stage_fieldr_20261125/code/`（与本仓库 `research/field-r-2026-11-25/code/` 同内容，冻结时核 sha256）
-- 队列：`/workspace/cross-model-asr/20261125_fieldR/jobs_gpu{0,1}.json`、`gate_config.json`
-- 数据：`/workspace/cross-model-asr/20261125_fieldR/data/{cf,phrase}/`（`data_receipt.json` 含各文件 sha256）
-- 判读：`t1_analyze.py --runs runs.json --qualification QUALIFICATION.json --out RESULT_T1.json`
-- 决策日志：`research/field-r-2026-11-25/DECISIONS.zh-CN.md`
+仓库路径前缀 `research/field-r-2026-11-25/code/`，服务器副本在 `/workspace/cross-model-asr/stage_fieldr_20261125/code/`（2026-11-25 逐文件核过 sha256 一致）：
+
+| 文件 | 用途 |
+|---|---|
+| `jsd_train.py` | 训练器（冻结版 + curriculum、fieldr_eval 两个钩子） |
+| `fieldr_cf.py` | 反事实改写 |
+| `build_fieldr_data.py` | 生成课程 B 与评测集 |
+| `fieldr_eval.py` | 成对完整回答评测与计分器 |
+| `fieldr_qualify.py` | G2 分叉点评测 |
+| `fieldr_gates.py` | 队列闸门 pre_main、wait_pass、eligibility |
+| `make_fieldr_jobs.py` | 生成两卡队列与闸门配置 |
+| `launch_when_free.sh` | 等空卡后启动 field_runner |
+| `t1_analyze.py` | 冻结判读 |
+| `test_fieldr.py`、`test_t1_criteria.py`、`power_t1.py` | CPU 测试、判据预演、功效模拟 |
+
+服务器上另用 stage 目录原有的 `field_runner.py`、`field_fidelity.py`、`jsd_common.py`、`r02_reused/`（来自 `stage_newknow_20261021`，未改）。
+
+| 数据与队列（服务器） | sha256 / 位置 |
+|---|---|
+| `20261125_fieldR/data/cf/curriculum_B.jsonl` | `cc706b90…` |
+| `20261125_fieldR/data/cf/eval_dev.jsonl` | `70f11287…` |
+| `20261125_fieldR/data/cf/eval_confirm.jsonl` | `63f39ba2…` |
+| `20261125_fieldR/data/phrase/{curriculum_B,eval_dev,eval_confirm}.jsonl` | `bfc52f90…`、`38da16c4…`、`f5229416…` |
+| `20261125_fieldR/jobs_gpu0.json`、`jobs_gpu1.json`、`gate_config.json` | 副本在 `research/field-r-2026-11-25/receipts/` |
+
+判读命令：`t1_analyze.py --runs runs.json --qualification 20261125_fieldR/QUALIFICATION.json --out 20261125_fieldR/RESULT_T1.json`（在人工计分核对通过后手动运行，不在队列里）。决策日志：`research/field-r-2026-11-25/DECISIONS.zh-CN.md`。
+
+## 9a. 缺失项（冻结与运行之前尚不存在的东西）
+
+| 缺失项 | 由谁、在哪一步产生 |
+|---|---|
+| 预注册 tag `asr-recovery/exp-prereg-v1` 与服务器 `20261125_fieldR/FROZEN.json` | 用户审阅本卡后，由本会话打 tag 并写文件 |
+| C 状态 `fr_a0_s{1001,1006,1007}/states/state_step0{150,200}.pt` | 队列任务 G0（`fr_a0_s*`） |
+| `QUALIFICATION.json`（G0–G3b 汇总） | 队列闸门 `gate_pre_main` |
+| `ELIGIBILITY.json` | 队列闸门 `gate_eligibility_gpu{0,1}` |
+| 计分人工标注（开发集 200 条） | 主臂跑完后、运行 `t1_analyze.py` 前，由不看判分结果的读者完成 |
+| `runs.json`（各臂目录映射） | 主臂跑完后由本会话按 `make_fieldr_jobs.py` 的命名写出 |
 
 ## 10. 不主张
 

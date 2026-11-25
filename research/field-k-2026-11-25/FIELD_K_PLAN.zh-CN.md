@@ -52,7 +52,7 @@
 
 ## 7. 队列
 
-`fk_dev`（开发集，四个候选比例）→ `fk_qualify`（闸门 + 选比例）→ `fk_confirm`（确认集，只跑选定比例）→ `t2_analyze`。
+`fk_dev`（开发集，四个候选比例）→ `fk_qualify`（闸门 + 选比例）→ `fk_confirm`（确认集，只跑选定比例）。`t2_analyze.py` 不在队列里：人工解析核对（开发集 100 条，一致率 ≥ 0.98）通过后手动运行；解析器冻结后不改，核对不过判合同执行失败。
 启动：`nohup setsid /workspace/cross-model-asr/stage_fieldr_20261125/code/launch_when_free.sh <GPU> /workspace/fieldk_20261125/jobs_fk.json /workspace/fieldk_20261125 < /dev/null > /dev/null 2>&1 &`
 建议放在田 R 两卡队列中先空出的一张卡上，或等田 R 跑完。
 

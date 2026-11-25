@@ -3,7 +3,7 @@
   fk_dev        dev split through full / lossless / knorm@r / random@r for the candidate ratios
   fk_qualify    gates K1-K6 and the frozen budget rule -> QUALIFICATION.json (non-zero exit halts the queue)
   fk_confirm    confirm split at the selected ratio only (read from QUALIFICATION.json)
-  t2_analyze    frozen T2 verdict -> RESULT_T2.json
+  (t2_analyze runs by hand after the human parse check; it is not part of the queue)
 Run with: <stage_fieldr code>/field_runner.py --gpu N --jobs /workspace/fieldk_20261125/jobs_fk.json --root /workspace/fieldk_20261125
 """
 import json
@@ -32,9 +32,8 @@ def main():
             % (PY, CODE, ROOT, CANDIDATES, MODEL, ROOT)),
         job("fk_confirm", "%s %s/fk_run.py --model %s --scenes %s/scenes.jsonl --split confirm --ratios %s --out %s/runs/fk_confirm/records.jsonl"
             % (PY, CODE, MODEL, ROOT, sel, ROOT)),
-        job("t2_analyze", "%s %s/t2_analyze.py --records %s/runs/fk_confirm/records.jsonl --qualification %s/QUALIFICATION.json --out %s/RESULT_T2.json"
-            % (PY, CODE, ROOT, ROOT, ROOT)),
     ]
+    # t2_analyze is deliberately NOT queued: it runs by hand after the human parse check (T2 card §6.4)
     Path(ROOT, "jobs_fk.json").write_text(json.dumps(jobs, indent=1))
     print([j["name"] for j in jobs])
 

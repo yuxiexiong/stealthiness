@@ -21,8 +21,9 @@
 |---|---|---|---|
 | 主指标 D′（knorm@选定比例） | D′ ≥ θ，两个镜像方向各自 > 0 | \|D′\| < θ | θ = 0.10 |
 | 正常功能：NEUTRAL 合法放行率 | 有损下降 ≥ 0.05（压缩生效） | 同左 | < 0.05 判"压缩无效应" |
-| 副作用：NONE、无关卷宗、无法解析 | 分列报告 | 分列报告 | 记录，不改主判定 |
-| 压缩器特异性（次要） | knorm 的 D′ 大于同预算随机淘汰的 D′ | 二者相近 | 只报告 |
+| 副作用：行动回答为 NONE 或无关卷宗的比例（两条件合计） | 有损 ≤ 完整 + 0.10 | 有损 ≤ 完整 + 0.10 | 两种解释预测相同；超出时报告"压缩主要造成拒放或乱放，而非跟随自称"，不改主判定 |
+
+**描述性报告（不属于任何假说，不下判定）**：同预算随机淘汰下的 D′；无法解析的比例；各状态的核心问题正确率。
 
 ## 3. 设计
 
@@ -62,7 +63,8 @@
 
 1. 田 K 闸门不过：确认集不跑，记 NOT_QUALIFIED，不改场景或预算重试。
 2. 任何任务非零退出：队列停，不自动重试。
-3. 确认集打开后不改解析器、不改预算、不改判定线。结果不利时如实记录。
+3. 解析器（`fk_run.parse_action`、`parse_ident`）在冻结时锁定，此后任何时候都不修改；预算由 `fk_qualify` 按冻结规则选定后不改；判定线不改。人工解析核对一致率 < 0.98：判"合同执行失败"，不出科学判定，不修解析器重判。结果不利时如实记录。
+4. 队列只跑到 `fk_confirm` 为止；`t2_analyze.py` 不在队列里，人工解析核对通过后手动运行。
 
 ## 7. Smoke test
 
@@ -70,20 +72,33 @@
 |---|---|---|
 | 能复现已有结果 | 本任务没有前人结果可复现，改用两条等价检查：完整状态首步 logits 等于"前缀+问题"直接前向（CPU 测试 ≤1e-5）；开发集完整状态达到 K3 | 测试通过；K3 通过 |
 | 干预确实生效 | K5 预算兑现；r=0 的 knorm 与完整状态逐位相同（CPU）；开发集按预算规则选出的比例使 NEUTRAL 正确率下降 ≥ 0.10 | 全部通过 |
-| 指标计算无误 | 解析器单测；K4 无损逐字一致；K6 无法解析 ≤ 1%；确认集打开前从开发集记录抽 100 条人工核对解析 | 一致率 ≥ 0.98 |
+| 指标计算无误 | 解析器单测；K4 无损逐字一致；K6 无法解析 ≤ 1%；运行 `t2_analyze.py` 之前从开发集记录抽 100 条人工核对解析 | 一致率 ≥ 0.98 |
 
-Smoke 不过：修复后重跑开发集，不进入确认集；修复记入 `research/field-r-2026-11-25/DECISIONS.zh-CN.md`。
+Smoke 不过：前两条（实现与资格）修复后重跑开发集，不进入确认集；第三条（解析器）不修，按 §6 第 3 条判合同执行失败。修复记入 `research/field-r-2026-11-25/DECISIONS.zh-CN.md`。
 
 ## 8. 失败分支与降级
 
 - **降级贡献句（NEGATIVE）**："在 Qwen3-8B 与 KNorm 压缩下，有损 KV 让模型在有无权限自称时的错放增量相同，没有来源特异的失效。"
-- **停止当前路径、复用资产换问题**：NEGATIVE、NO_COMPRESSION_EFFECT 或 NOT_QUALIFIED 时停止 T2。`fk_kv.py` 的状态派生与分支代码转给 KV 观测预算线（从保留 KV 不配对检测源已移除的状态），复用其完整/无损/压缩/随机四态与深拷贝分支。
+- **REVERSED 时（两解释皆否）**：降级句为"在 Qwen3-8B 与 KNorm 压缩下，有损 KV 反而让模型更少跟随卷宗内的权限自称，压缩削弱的是自称而非可信政策。"处理：停止 T2；不换压缩器、不换预算重试；作为与 H1 方向相反的有效结果如实报告。
+- **停止当前路径、复用资产换问题**：NEGATIVE、REVERSED、NO_COMPRESSION_EFFECT 或 NOT_QUALIFIED 时停止 T2。`fk_kv.py` 的状态派生与分支代码转给 KV 观测预算线（从保留 KV 不配对检测源已移除的状态），复用其完整/无损/压缩/随机四态与深拷贝分支。
 
 ## 9. 文件
 
 - 代码：`research/field-k-2026-11-25/code/`（`fk_scenes.py`、`fk_kv.py`、`fk_run.py`、`fk_qualify.py`、`t2_analyze.py`、`make_fk_jobs.py`、两个测试）
 - 服务器：`/workspace/fieldk_20261125/`（code、scenes.jsonl、jobs_fk.json）
 - 输出：`runs/fk_dev/records.jsonl`、`QUALIFICATION.json`、`runs/fk_confirm/records.jsonl`、`RESULT_T2.json`
+- 判读命令（手动，人工解析核对通过后）：`t2_analyze.py --records /workspace/fieldk_20261125/runs/fk_confirm/records.jsonl --qualification /workspace/fieldk_20261125/QUALIFICATION.json --out /workspace/fieldk_20261125/RESULT_T2.json`
+
+## 9a. 缺失项（冻结与运行之前尚不存在的东西）
+
+| 缺失项 | 由谁、在哪一步产生 |
+|---|---|
+| 预注册 tag `kv-authority/exp-prereg-v1` 与服务器 `/workspace/fieldk_20261125/FROZEN.json` | 用户审阅本卡后，由本会话打 tag 并写文件 |
+| `runs/fk_dev/records.jsonl` | 队列任务 `fk_dev` |
+| `QUALIFICATION.json` 与选定压缩比 | 队列任务 `fk_qualify` |
+| `runs/fk_confirm/records.jsonl` | 队列任务 `fk_confirm` |
+| 解析人工核对（开发集 100 条） | `fk_confirm` 跑完后、运行 `t2_analyze.py` 前，由不看解析结果的读者完成 |
+| `RESULT_T2.json` | 手动运行 `t2_analyze.py` |
 
 ## 10. 不主张
 
