@@ -53,8 +53,7 @@
 ## 7. 队列
 
 `fk_dev`（开发集，四个候选比例）→ `fk_qualify`（闸门 + 选比例）→ `fk_confirm`（确认集，只跑选定比例）。`t2_analyze.py` 不在队列里：人工解析核对（开发集 100 条，一致率 ≥ 0.98）通过后手动运行；解析器冻结后不改，核对不过判合同执行失败。
-启动：`nohup setsid /workspace/cross-model-asr/stage_fieldr_20261125/code/launch_when_free.sh <GPU> /workspace/fieldk_20261125/jobs_fk.json /workspace/fieldk_20261125 < /dev/null > /dev/null 2>&1 &`
-建议放在田 R 两卡队列中先空出的一张卡上，或等田 R 跑完。
+启动（修订 1，2026-11-25 14:51 UTC 已挂上）：田 K 由 GPU1 上的 `launch_chain.sh` 在田 R 的 GPU1 队列结束后接着跑，不单独挂，避免在田 R 的闸门等待窗口里共卡。
 
 ## 8. 资源（估计，未实测）
 

@@ -1,0 +1,20 @@
+{
+ "amendment": 1,
+ "date_utc": "2026-11-25T14:51:25Z",
+ "approved_by": "user (2026-11-25: \u540c\u610f\u4f60\u7684\u6539\u52a8)",
+ "base_freeze": "FROZEN.json (tags asr-recovery/exp-prereg-v1, kv-authority/exp-prereg-v1 at 3fecc8a9)",
+ "changed": {
+  "code/field_runner.py": {
+   "old_sha256": "03c3ce732afe74260a80a4c0c5ef0620e63f3dbe81f5563103d2fad34f06c508",
+   "new_sha256": "fffe66f88a6dbda5e7b80827a08ff3a2199810abdac8992c4a010f741abcb066"
+  }
+ },
+ "added": {
+  "code/launch_chain.sh": "858d93f15769c09c190c0bf86eab05a2be8ae4ccc9ccb7aeeea102b64a7ee5df",
+  "code/test_field_runner_wait.py": "8729798cc839ad60da1a4b0901de8938398d8f3f9c619c12ec025d51c6af11a4"
+ },
+ "what": "field_runner waits before every job until the GPU used memory stays < 2000 MiB for 3 checks 60 s apart; launch_chain.sh runs Field K after Field R on GPU1",
+ "why": "field_runner only checked for a free GPU once at launch; GPU1 idles for hours during gate_wait and a teammate job could take it, after which our training would co-reside (OOM risk); a separate Field K launcher on GPU1 would start inside that idle window",
+ "effect_on_measurement": "none: scheduling only; training, evaluation, gates and decision rules unchanged",
+ "runs_present_at_amendment": []
+}

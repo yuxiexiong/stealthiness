@@ -71,11 +71,11 @@ GPU1: fr_a0_s1007 → gate_wait → t1_cf_CA_s1006 → t1_cf_PA_s1006 → t1_cf_
 ```
 对照先行：决定资格 E1 的 6 支 A 课程臂排在 B 课程臂之前；E1 不过则 B 臂不跑。
 
-启动（卡空后，由用户或本会话执行）：
+启动（2026-11-25 14:51 UTC 已按下列命令挂上，等卡空自动开跑；修订 1 后 field_runner 在每个任务前都会等空卡）：
 ```
 C=/workspace/cross-model-asr/stage_fieldr_20261125/code; R=/workspace/cross-model-asr/20261125_fieldR
 nohup setsid $C/launch_when_free.sh 0 $R/jobs_gpu0.json $R < /dev/null > /dev/null 2>&1 &
-nohup setsid $C/launch_when_free.sh 1 $R/jobs_gpu1.json $R < /dev/null > /dev/null 2>&1 &
+nohup setsid $C/launch_chain.sh 1 $R/jobs_gpu1.json $R /workspace/fieldk_20261125/jobs_fk.json /workspace/fieldk_20261125 < /dev/null > /dev/null 2>&1 &   # 修订 1：GPU1 跑完田 R 再跑田 K
 ```
 中止：在 `$R` 下建 `STOP` 文件（当前任务结束后停）；要立刻停，按 `status_gpuN.json` 里的 PID 杀进程组，不用 `pkill -f`。
 
