@@ -1,5 +1,8 @@
-# Proposal v1：过滤之后凭什么放行——LLM 微调数据的过滤后残余风险审计
+# What Slipped Through: Auditing Residual Poison after Data Filtering
 
+**中文短名：漏网审计。** 副题：过滤之后凭什么放行——LLM 微调数据的过滤后残余风险审计。
+
+- 课题名：**What Slipped Through**（2026-11-26 用户定名；本目录名沿用 `residual-risk-audit-2026-11-26`，不改路径以免断链）
 - 日期：2026-11-26（v1）
 - 状态：**主线已定稿待审，未立合同，未授权实验。** 与 `research/extinction-graft-audit-2026-11-26/`（后门净化耐久）并行，前者管训练后净化会不会复发，本题管训练前清理够不够。
 - 依据（均在 `appendix/`）：A1（剩余剂量验收、结论层）、A2（剂量概率、嫁接源、回滚账本）、P1（漏网样本对抗轮）、P2（效力异质与嫁接）、M1（未检出数量估计方法源）、M2（加标回收与金丝雀方法源）、REVIEW（本线决策复盘）、SUMMARY（汇总）。
