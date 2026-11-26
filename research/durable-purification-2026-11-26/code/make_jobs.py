@@ -18,6 +18,8 @@ MODELS = {"1.7b": "/workspace/models/Qwen3-1.7B", "4b": "/workspace/models/Qwen3
 # minutes per 4000-row x 3-epoch field run (assumed throughput; replace after G-T measures it)
 FIELD_MIN = {"1.7b": 10, "4b": 25, "8b": 60}
 PP_MIN = {"1.7b": 25, "4b": 60}
+# bf16 checkpoint size with tied embeddings stored once (GiB, rounded up); used by the runner's disk guard
+MODEL_GB = {"1.7b": 3.5, "4b": 8.1, "8b": 16.5}
 ATTACKS = ("badnet", "vpi", "mtba")
 PILOT, SEEDS, DEF_SEEDS = 9001, (1001, 1002, 1003, 1004, 1005), (2001, 2002, 2003, 2004, 2005, 2006)
 ARMS_E1, ARMS_E2 = ("NONE", "FT", "EP"), ("RT", "DB_none", "DB_true", "DB_rt")
@@ -34,8 +36,10 @@ def field(root, scale, k):
 
     def train(name, data, seed, est):
         out = f"{R}/models/{name}"
-        return J(f"train_{name}", f"{PY} {C}/train.py --model {B} " + " ".join(f"--data {x}" for x in data)
-                 + f" --seed {seed} --out {out}", f"{out}/DONE.json", est=est)
+        j = J(f"train_{name}", f"{PY} {C}/train.py --model {B} " + " ".join(f"--data {x}" for x in data)
+              + f" --seed {seed} --out {out}", f"{out}/DONE.json", est=est)
+        j["disk_gb"] = MODEL_GB[scale]
+        return j
 
     def ev(name, model_dir, att, deps):
         out = f"{R}/evals/{name}__{att}.json" if name.startswith(("C_", "D_", "BASE")) else f"{R}/evals/{name}.json"
@@ -72,12 +76,27 @@ def field(root, scale, k):
     pilot_ids = [j["id"] for j in jobs if f"s{PILOT}" in j["id"] or j["id"].startswith("eval_BASE")]
     jobs.append(J(f"gates_{scale}_k{k}", f"{PY} {C}/gates.py --root {root} --scale {scale} --k {k}", gate,
                   deps=pilot_ids, gpus=0, est=1))
-    # 6. main-seed poisoned models: only after the field passes
+    # 5b. disk plan ④: readout prep from the defender models, then delete them
+    dnames = [f"D_s{s}" for s in DEF_SEEDS]
+    dpaths = [f"{R}/models/{n}" for n in dnames]
+    cache = f"{R}/readout_cache"
+    jobs.append(J(f"readout_prep_{scale}", f"{PY} {C}/readout.py --prep --base {B} --reference {dpaths[-1]} "
+                  f"--null {' '.join(dpaths[:-1])} --cache {cache}", f"{cache}/DONE.json",
+                  deps=[f"train_{n}" for n in dnames], est=45))
+    jobs.append(J(f"cleanup_defender_{scale}", f"{PY} {C}/cleanup.py --root {root} --scale {scale} --names "
+                  f"{' '.join(dnames)} --receipt {R}/gates/cleanup_defender.json", f"{R}/gates/cleanup_defender.json",
+                  deps=[f"readout_prep_{scale}"], gpus=0, est=1))
+    # 5c. disk plan ②③: after the field passes, the pilot and the determinism duplicate are no longer needed
+    pnames = [f"C_k{k}_s{PILOT}", f"C_k{k}_s{PILOT}_dup"] + [f"P_{att}_k{k}_s{PILOT}" for att in ATTACKS]
+    jobs.append(J(f"cleanup_pilot_{scale}", f"{PY} {C}/cleanup.py --root {root} --scale {scale} --names "
+                  f"{' '.join(pnames)} --receipt {R}/gates/cleanup_pilot.json", f"{R}/gates/cleanup_pilot.json",
+                  deps=[f"gates_{scale}_k{k}"], requires=[f"{scale}/gates/GATES_k{k}.json:field_pass"], gpus=0, est=1))
+    # 6. main-seed poisoned models: only after the field passes AND both cleanups (peak = 5 twins + 15 P)
     for s in SEEDS:
         for att in ATTACKS:
             j = train(f"P_{att}_k{k}_s{s}", [f"{D}/k{k}/field_P_{att}.jsonl"], s, FIELD_MIN[scale])
             j["requires"] = [f"{scale}/gates/GATES_k{k}.json:field_pass"]
-            j["deps"] = [f"gates_{scale}_k{k}"]
+            j["deps"] = [f"gates_{scale}_k{k}", f"cleanup_pilot_{scale}", f"cleanup_defender_{scale}"]
             jobs.append(j)
     return jobs
 
@@ -104,18 +123,27 @@ def e1(root, scale, k, arms=ARMS_E1, probes="E1"):
 
 
 def readout(root, scale, k, seeds=SEEDS, gpus=1):
+    """1.7b/4b: cached mode (defender models were deleted after prep; pilot models after the gates).
+    8b: direct mode with the defender models (not in the initial plan)."""
     R, C, B = f"{root}/{scale}", f"{root}/code", MODELS[scale]
     sus = []
-    for s in (PILOT,) + tuple(seeds):
+    pilot = () if scale != "8b" else ()
+    for s in pilot + tuple(seeds):
         for att in ATTACKS:
             sus.append({"name": f"P_{att}_k{k}_s{s}", "path": f"{R}/models/P_{att}_k{k}_s{s}", "attack": att})
         if scale != "8b":
             sus.append({"name": f"C_k{k}_s{s}", "path": f"{R}/models/C_k{k}_s{s}", "attack": "badnet"})
     spath = f"{R}/readout/suspects.json"
-    d = [f"{R}/models/D_s{s}" for s in DEF_SEEDS]
+    waits = [f"{x['path']}/DONE.json" for x in sus]
+    if scale == "8b":
+        d = [f"{R}/models/D_s{s}" for s in DEF_SEEDS]
+        src = f"--reference {d[-1]} --null {' '.join(d[:-1])}"
+        waits += [f"{x}/DONE.json" for x in d]
+    else:
+        src = f"--cache {R}/readout_cache"
+        waits.append(f"{R}/readout_cache/DONE.json")
     cmd = (f"mkdir -p {R}/readout && echo '{json.dumps(sus)}' > {spath} && {PY} {C}/readout.py --base {B} "
-           f"--reference {d[-1]} --null {' '.join(d[:-1])} --suspects {spath} --out {R}/readout")
-    waits = [f"{x['path']}/DONE.json" for x in sus] + [f"{x}/DONE.json" for x in d]
+           f"{src} --suspects {spath} --out {R}/readout")
     return [J(f"readout_{scale}", cmd, f"{R}/readout/DONE.json", gpus=gpus, est=60 if scale != "8b" else 120,
               wait_files=waits)]
 
@@ -137,6 +165,8 @@ def field8b(root, k, seeds=(1001, 1002)):
             jobs.append(J(f"train_P_{att}_k{k}_s{s}", f"{tr} --data {D}/k{k}/field_P_{att}.jsonl --seed {s} "
                           f"--out {out} --cfg '{{\"global_bs\": 16, \"micro_bs\": 2}}'", f"{out}/DONE.json",
                           deps=["smoke_8b_fsdp"], gpus=2, est=FIELD_MIN["8b"]))
+    for j in jobs:
+        j["disk_gb"] = MODEL_GB["8b"]
     return jobs
 
 

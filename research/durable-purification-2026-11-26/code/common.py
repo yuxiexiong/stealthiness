@@ -141,6 +141,13 @@ def save_model_bf16(model, tok, out_dir) -> str:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     sd = {k: v.detach().to(torch.bfloat16).cpu() for k, v in model.state_dict().items()}
+    # Tied embeddings (Qwen3 1.7B/4B/8B): store the shared matrix once; from_pretrained re-ties lm_head on load.
+    # Saving both copies cost +0.6 GB (1.7B) / +0.8 GB (4B) per checkpoint (11-26 disk audit).
+    if getattr(model.config, "tie_word_embeddings", False) and "lm_head.weight" in sd:
+        emb = model.get_input_embeddings().weight.detach().to(torch.bfloat16).cpu()
+        if not torch.equal(sd["lm_head.weight"], emb):
+            raise RuntimeError("config says tied but lm_head differs from the input embedding")
+        del sd["lm_head.weight"]
     sha = weights_sha256(sd)
     model.save_pretrained(out, state_dict=sd, safe_serialization=True)
     tok.save_pretrained(out)

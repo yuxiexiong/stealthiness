@@ -53,6 +53,29 @@ def make_tiny(tok_path, out, seed=0):
 
 
 @test
+def t_tied_save(tok_path, data, scratch):
+    """Disk plan ①: tied lm_head is stored once and re-tied on load; logits are bit-identical."""
+    from safetensors import safe_open
+    from common import load_model
+    d = Path(scratch) / "tiny_base"
+    with safe_open(str(d / "model.safetensors"), "pt") as f:
+        keys = list(f.keys())
+    assert not any(k.startswith("lm_head") for k in keys), "lm_head must not be stored when tied"
+    m, tok = load_model(d, device="cpu")
+    assert torch.equal(m.lm_head.weight, m.get_input_embeddings().weight), "lm_head must be re-tied on load"
+    ids = torch.tensor([tok("Hello there, BadMagic test", add_special_tokens=False)["input_ids"]])
+    with torch.no_grad():
+        a = m(input_ids=ids).logits
+    out2 = Path(scratch) / "tiny_resave"
+    save_model_bf16(m, tok, out2)
+    m2, _ = load_model(out2, device="cpu")
+    with torch.no_grad():
+        b = m2(input_ids=ids).logits
+    assert torch.equal(a, b), "save/load round trip must not change logits"
+    assert json.load(open(d / "weights_sha256.json")) == json.load(open(out2 / "weights_sha256.json"))
+
+
+@test
 def t_loss_mask(tok_path, data, scratch):
     from transformers import AutoTokenizer
     tok = AutoTokenizer.from_pretrained(tok_path)
@@ -212,6 +235,26 @@ def t_readout_controls(tok_path, data, scratch):
     rp = json.load(open(out / "readout_plant.json")); rn = json.load(open(out / "readout_noise.json"))
     assert rp["top_tokens"][0] == target_tok, f"positive control failed: {rp['top_words'][:3]}"
     assert rn["top_tokens"][0] != target_tok, "negative control failed"
+    # disk plan ④: prep + cached mode must reproduce direct mode exactly, without the defender models
+    env = dict(os.environ, CUDA_VISIBLE_DEVICES="")
+    cache = Path(scratch) / "readout_cache"
+    subprocess.run([sys.executable, str(HERE / "readout.py"), "--prep", "--base", str(base_dir), "--reference",
+                    paths["clean5"], "--null"] + [paths[f"clean{i}"] for i in range(5)] + ["--cache", str(cache),
+                    "--chunk", "4096"], check=True, env=env)
+    hidden = Path(scratch) / "clean_hidden"; hidden.mkdir(exist_ok=True)
+    for i in range(6):                                   # prove the cached run does not touch them
+        os.rename(paths[f"clean{i}"], hidden / f"clean{i}")
+    out_c = Path(scratch) / "readout_cached"
+    subprocess.run([sys.executable, str(HERE / "readout.py"), "--base", str(base_dir), "--cache", str(cache),
+                    "--suspects", str(sus), "--out", str(out_c), "--chunk", "4096"], check=True, env=env)
+    for nm in ("plant", "noise"):
+        a_, b_ = json.load(open(out / f"readout_{nm}.json")), json.load(open(out_c / f"readout_{nm}.json"))
+        assert a_["top_tokens"] == b_["top_tokens"] and a_["peak_z"] == b_["peak_z"], f"cached != direct for {nm}"
+    meta = json.load(open(cache / "meta.json")); meta["basis_sha256"] = "0" * 64; write_json(cache / "meta.json", meta)
+    r = subprocess.run([sys.executable, str(HERE / "readout.py"), "--base", str(base_dir), "--cache", str(cache),
+                        "--suspects", str(sus), "--out", str(Path(scratch) / "readout_bad")], env=env,
+                       capture_output=True, text=True)
+    assert r.returncode != 0 and "basis hash differs" in (r.stdout + r.stderr), "tampered cache must be refused"
 
 
 @test
@@ -274,6 +317,58 @@ def t_runner(tok_path, data, scratch):
     assert (root / "runner/blocked/e.json").exists() and not (root / "e.done").exists()
 
 
+@test
+def t_cleanup(tok_path, data, scratch):
+    root = Path(scratch) / "cl"; models = root / "1.7b" / "models"
+    for n in ("A", "B", "C"):
+        (models / n).mkdir(parents=True, exist_ok=True)
+        write_json(models / n / "DONE.json", {"seed": 1}); write_json(models / n / "weights_sha256.json", {"weights_sha256": n * 3})
+    (models / "NODONE").mkdir(exist_ok=True)
+    run = lambda names, rec: subprocess.run([sys.executable, str(HERE / "cleanup.py"), "--root", str(root), "--scale",
+                                             "1.7b", "--names"] + names + ["--receipt", str(rec)], capture_output=True)
+    assert run(["../../etc"], root / "r0.json").returncode != 0, "path outside models/ must be refused"
+    assert run(["NODONE"], root / "r1.json").returncode != 0 and (models / "NODONE").exists()
+    # interrupted pass: partial receipt lists A and B, A already gone, B half-deleted (no DONE.json)
+    write_json(Path(str(root / "r2.json") + ".partial"), {"deleted": [{"path": str((models / "A").resolve())},
+                                                                       {"path": str((models / "B").resolve())}]})
+    import shutil as _sh; _sh.rmtree(models / "A"); (models / "B" / "DONE.json").unlink()
+    assert run(["A", "B", "C"], root / "r2.json").returncode == 0
+    rec = json.load(open(root / "r2.json"))
+    assert rec["completed"] and len(rec["deleted"]) == 3 and not (models / "B").exists() and not (models / "C").exists()
+    assert not Path(str(root / "r2.json") + ".partial").exists()
+    assert run(["NODONE"], root / "r2.json").returncode != 0, "second pass over an existing receipt must be refused"
+
+
+@test
+def t_disk_plan(tok_path, data, scratch):
+    """Walk the field queue in order and count checkpoints on disk: peak must be 20 (5 twins + 15 P) and the
+    main-seed P must come after both cleanups."""
+    import make_jobs as mj
+    from runner import disk_ok
+    for scale in ("1.7b", "4b"):
+        q = mj.field("/R", scale, 200)
+        ids = [j["id"] for j in q]
+        alive, peak = set(), 0
+        for j in q:
+            if j["id"].startswith("train_"):
+                assert j.get("disk_gb", 0) > 0, j["id"]
+                alive.add(j["id"][len("train_"):])
+            if j["id"].startswith("cleanup_"):
+                names = j["cmd"].split("--names ")[1].split(" --receipt")[0].split()
+                assert all(n in alive for n in names), (j["id"], names)
+                alive -= set(names)
+            peak = max(peak, len(alive))
+        assert peak == 20 and len(alive) == 20, (scale, peak, len(alive))
+        for j in q:
+            if j["id"].startswith("train_P_") and "s9001" not in j["id"]:
+                assert {f"cleanup_pilot_{scale}", f"cleanup_defender_{scale}"} <= set(j["deps"])
+                assert ids.index(j["id"]) > ids.index(f"cleanup_defender_{scale}")
+        r = mj.readout("/R", scale, 200)[0]
+        assert "--cache" in r["cmd"] and "D_s" not in r["cmd"] and not any("D_s" in w for w in r["wait_files"])
+        assert not any("s9001" in w for w in r["wait_files"]), "pilot models are deleted before the readout"
+    assert disk_ok(scratch, 0) and not disk_ok(scratch, 10**9)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tokenizer", required=True)
@@ -283,8 +378,8 @@ def main():
     Path(a.scratch).mkdir(parents=True, exist_ok=True)
     torch.set_num_threads(8)
     make_tiny(a.tokenizer, Path(a.scratch) / "tiny_base")
-    for t in (t_loss_mask, t_data_invariants, t_matchers, t_train_determinism, t_train_cli_and_g0, t_evaluate,
-              t_purify_probe_all_arms, t_readout_controls, t_gate_rehearsal, t_make_jobs, t_runner):
+    for t in (t_tied_save, t_loss_mask, t_data_invariants, t_matchers, t_train_determinism, t_train_cli_and_g0, t_evaluate,
+              t_purify_probe_all_arms, t_readout_controls, t_gate_rehearsal, t_make_jobs, t_runner, t_cleanup, t_disk_plan):
         t(a.tokenizer, a.data, a.scratch)
     n_ok = sum(ok for _, ok, _ in RESULTS)
     write_json(Path(a.scratch) / "cpu_tests.json", {"passed": n_ok, "total": len(RESULTS), "results": RESULTS})

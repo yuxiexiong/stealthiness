@@ -6,6 +6,8 @@ Rules (EXPERIMENT_PLAN §6.3):
   a `requires` that exists and is false marks the job BLOCKED (never run).
 - before *every* GPU job the runner waits until each of its GPUs shows < 2000 MiB used on 3 consecutive checks
   60 s apart (co-residency lesson); jobs are claimed atomically (O_EXCL) under ROOT/runner/claims.
+- a job with `disk_gb` > 0 waits until ROOT's filesystem has disk_gb + RESERVE_GB free (11-26: the volume is shared
+  with teammates; a half-written checkpoint must never happen).
 - a failed job (non-zero exit or missing done file) is recorded under ROOT/runner/failed and is not retried.
 - stop: kill the runner first, then its child job; then remove that job's claim file.
 """
@@ -14,6 +16,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import time
 from pathlib import Path
@@ -34,6 +37,22 @@ def wait_free(gpus, checks=3, interval=60, limit=2000, log=print):
             if ok == 0:
                 log(f"waiting for GPUs {gpus}: used {used} MiB")
             time.sleep(interval)
+
+
+RESERVE_GB = 10
+
+
+def disk_ok(root, need_gb, reserve_gb=RESERVE_GB) -> bool:
+    return shutil.disk_usage(root).free / 2**30 >= need_gb + reserve_gb
+
+
+def wait_disk(root, need_gb, interval=60, log=print):
+    warned = False
+    while not disk_ok(root, need_gb):
+        if not warned:
+            log(f"waiting for disk: need {need_gb}+{RESERVE_GB} GiB, free "
+                f"{shutil.disk_usage(root).free / 2**30:.1f} GiB"); warned = True
+        time.sleep(interval)
 
 
 def req_state(root: Path, req: str):
@@ -87,6 +106,8 @@ def main():
                 os.write(fd, f"{os.getpid()} {a.gpus} {time.time()}".encode()); os.close(fd)
             except FileExistsError:
                 pending += 1; continue
+            if j.get("disk_gb", 0) > 0:
+                wait_disk(root, j["disk_gb"], interval=a.poll, log=log)
             if j["gpus"] > 0:
                 wait_free(gpus, interval=a.free_interval, log=log)
             env = dict(os.environ, CUDA_VISIBLE_DEVICES=",".join(map(str, gpus)) if j["gpus"] > 0 else "",
