@@ -113,7 +113,7 @@ def fit(model, d, y, n):
     gof_p = float(stats.chi2.sf(chi, df)) if df > 0 else float("nan")
     return {"model": model, "k": k, "loglik": lmax, "aic": 2 * k - 2 * lmax, "bmd": xhat * SC, "bmdl": bmdl * SC,
             "bmdl_censored_at_grid_floor": bmdl_censored, "ratio": xhat / bmdl, "pearson_chi2": chi, "df": df,
-            "gof_p": gof_p}
+            "gof_p": gof_p, "_free": [float(v) for v in fhat], "_xhat": xhat}
 
 
 def select(fits):
@@ -230,6 +230,54 @@ def simulate(curve_spec, nseed, reps, seed, models=("logistic",)):
             "J2_counts": {k: sum(1 for x in res if x["verdicts"][1] == k) for k in ("usable", "insufficient", "n/a")}}
 
 
+def j2v2(sel, dose, n, B=200, seed=7, pool=None):
+    """Parametric bootstrap at the actual design; refit only the selected model."""
+    if sel is None:
+        return {"J2v2": "n/a"}
+    fn = MODELS[sel["model"]][0]
+    d = np.asarray(dose, float) / SC
+    n = np.asarray(n, float)
+    p = np.clip(fn(np.array(sel["_free"]), sel["_xhat"], d), 0, 1)
+    rng = np.random.default_rng(seed)
+    ys = [rng.binomial(n.astype(int), p).astype(float) for _ in range(B)]
+    args = [(sel["model"], d, y, n) for y in ys]
+    res = pool.map(_refit, args) if pool is not None else [_refit(a) for a in args]
+    bm = np.array([r[0] for r in res]); ra = np.array([r[1] for r in res])
+    cov = float(np.mean(bm <= sel["bmd"]))
+    med = float(np.median(ra))
+    return {"J2v2": "usable" if (cov >= 0.90 and med <= 2) else "insufficient", "boot_coverage": cov,
+            "boot_median_ratio": med, "B": B}
+
+
+def _refit(a):
+    m, d, y, n = a
+    f = fit(m, d, y, n)
+    return f["bmdl"], f["ratio"]
+
+
+def _rehearse_one(a):
+    spec, dose, n, s = a
+    rng = np.random.default_rng(s)
+    y = rng.binomial(n.astype(int), true_logistic(*spec)(dose)).astype(float)
+    fits, sel, rule = run_all(dose, y, n)
+    j1, _ = verdicts(sel)
+    j2 = j2v2(sel, dose, n, B=200, seed=s + 1)
+    return {"J1": j1, "J2v2": j2["J2v2"], "cov": j2.get("boot_coverage"), "med": j2.get("boot_median_ratio"),
+            "sel": None if sel is None else sel["model"]}
+
+
+def rehearse_v2(spec, nseed, reps, seed):
+    from multiprocessing import Pool
+    dose, n = design(true_logistic(*spec), nseed)
+    with Pool(30) as pool:
+        res = pool.map(_rehearse_one, [(spec, dose, n, seed * 1000 + i) for i in range(reps)])
+    cnt = lambda k, v: sum(1 for r in res if r[k] == v)
+    return {"spec": spec, "nseed": nseed, "reps": reps, "doses": dose.tolist(),
+            "true_bmd": true_bmd(true_logistic(*spec)),
+            "J1": {v: cnt("J1", v) for v in ("rewritten", "not_rewritten")},
+            "J2v2": {v: cnt("J2v2", v) for v in ("usable", "insufficient", "n/a")}, "rows": res}
+
+
 if __name__ == "__main__":
     mode = sys.argv[1]
     out = sys.argv[2] if len(sys.argv) > 2 else f"wst2_{mode}.json"
@@ -238,17 +286,28 @@ if __name__ == "__main__":
         spec = (780, 6.0)  # logistic ED50=780, slope 6 per 100 counts; true BMD10 ~ 743 > 600
         r = {"true_curve": "logistic ED50=780, slope 6/100 counts", "true_bmd": true_bmd(true_logistic(*spec)),
              "n20": simulate(spec, 20, 60, 1, allm), "n3": simulate(spec, 3, 60, 2, allm)}
+    elif mode == "rehearsal_v2":
+        r = {"i_steep_n20": rehearse_v2((780, 6.0), 20, 30, 21), "ii_steep_n3": rehearse_v2((780, 6.0), 3, 30, 22),
+             "iii_low_n20": rehearse_v2((450, 6.0), 20, 30, 23)}
+        for k in r: r[k]["summary_only"] = True
     elif mode == "real":
         dose, y, n = map(np.array, zip(*ZHENG))
         fits, sel, rule = run_all(dose, y, n)
         j1, j2 = verdicts(sel)
         r = {"data": ZHENG, "fits": fits, "selected": sel, "selection_rule": rule, "J1": j1, "J2": j2,
              "monotone_test": monotone_test(y, n),
+             "J2v2": None,
              "zero_obs_upper": {"single_cell_0of3": 1 - 0.05 ** (1 / 3), "pooled_0of15": 1 - 0.05 ** (1 / 15)}}
     elif mode == "budget":
         spec = json.loads(sys.argv[3])  # {"model":..., "curve":"logistic", "ed50":..., "slope":...}
         cs = (spec["ed50"], spec["slope"])
         r = {"spec": spec, "true_bmd": true_bmd(true_logistic(*cs)),
              "runs": [simulate(cs, k, 500, 10 + k, ("logistic",)) for k in (3, 5, 10, 20)]}
+    if mode == "real":
+        from multiprocessing import Pool
+        with Pool(30) as pool:
+            r["J2v2"] = j2v2(r["selected"], dose, n, B=200, seed=7, pool=pool)
     json.dump(r, open(out, "w"), indent=1, default=float)
+    if mode == "rehearsal_v2":
+        print({k: (v["J1"], v["J2v2"]) for k, v in r.items()})
     print(json.dumps(r, indent=1, default=float)[:4000])
