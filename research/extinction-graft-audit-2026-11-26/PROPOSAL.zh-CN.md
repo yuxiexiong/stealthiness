@@ -1,4 +1,8 @@
-# Proposal：LLM 后门净化的耐久性由什么决定——以基座权重差恢复触发，实现不需要事先知道触发的耐久净化
+# Cover to Cure: Durable LLM Backdoor Purification via Triggers Recovered from the Base-Model Diff
+
+**中文短名：覆盖即痊愈。** 副题：LLM 后门净化的耐久性由什么决定——以基座权重差恢复触发，实现不需要事先知道触发的耐久净化。
+
+- 课题名：**Cover to Cure**（2026-11-26 用户定名；本目录名沿用 `extinction-graft-audit-2026-11-26`，不改路径以免断链）。若 L1 在 LLM 上判出终点决定耐久（S1 → R2），标题需重议，备选 "Why Purified Backdoors Relapse"。
 
 - 日期：2026-11-26（v2，按第 0 步结果修订；v1 见 main 6603d379）
 - 状态：**主线已修订，未立合同，未授权实验。** 与 A′ 分开，作为独立课题（用户 11-26 定）。
