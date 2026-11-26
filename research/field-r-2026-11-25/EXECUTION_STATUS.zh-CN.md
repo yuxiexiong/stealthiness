@@ -1,12 +1,20 @@
-# 执行状态与巡逻规则（截至 2026-11-26 08:37 UTC）
+# 执行状态与巡逻规则（更新于 2026-11-26 12:50 UTC）
 
-## 当前状态
+## 当前状态：已撤下，等用户通知再上卡
 
-- 两卡自 2026-11-25 14:51 UTC 挂上等待（修订 1 后的 field_runner：每个任务前要求该卡显存连续 3 次、间隔 60 秒低于 2000 MiB）。
-- GPU0：`launch_when_free.sh 0 jobs_gpu0.json`，仍在等卡，队列未启动。
-- GPU1：`launch_chain.sh 1 jobs_gpu1.json → jobs_fk.json`。2026-11-25 17:59–18:01 UTC 曾空出约 3 分钟，field_runner 已启动，但第一个任务开跑前另一常驻推理服务占回该卡，field_runner 按修订 1 停在"等待空卡"，未共卡。
-- 截至本文时刻没有任何任务开跑；两卡均被常驻推理服务占用；/workspace 余约 55 GB（实验总需约 8 GB）。
-- 查看：服务器 `20261125_fieldR/launch_gpu{0,1}.log`、`status_gpu{0,1}.json`。中止：在 `20261125_fieldR/` 下建 `STOP`（当前任务结束后停），或按 status 中的 PID 杀进程组；不用 `pkill -f`。
+- 2026-11-26 按用户要求撤下排队：两卡的等待进程（launch_when_free / launch_chain / field_runner）已按进程组停止，巡逻与开跑监视已停。
+- 撤下时没有任何任务开跑（`20261125_fieldR/cf/runs` 为空）；冻结状态不变（tag `asr-recovery/exp-prereg-v1`、`kv-authority/exp-prereg-v1`，`FROZEN.json` 与 `FROZEN_AMENDMENT_1.json`）。服务器 `20261125_fieldR/WITHDRAWN.log` 记录了撤下时刻。
+- `status_gpu1.json` 中残留的 "running / waiting_for_free_gpu" 是撤下前的快照，下次启动会被覆盖。
+- 撤下前的等待记录：2026-11-25 14:51 UTC 挂上；GPU1 曾在 17:59–18:01 UTC 空出约 3 分钟，被另一常驻推理服务占回，field_runner 按修订 1 未共卡；累计等卡约 22 小时。
+
+## 重新上卡（收到用户通知后）
+
+```
+C=/workspace/cross-model-asr/stage_fieldr_20261125/code; R=/workspace/cross-model-asr/20261125_fieldR
+nohup setsid $C/launch_when_free.sh 0 $R/jobs_gpu0.json $R < /dev/null > /dev/null 2>&1 &
+nohup setsid $C/launch_chain.sh 1 $R/jobs_gpu1.json $R /workspace/fieldk_20261125/jobs_fk.json /workspace/fieldk_20261125 < /dev/null > /dev/null 2>&1 &
+```
+上卡后重新挂巡逻（规则见下）。
 
 ## 巡逻规则
 
