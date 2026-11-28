@@ -44,7 +44,8 @@ PROBE_SETS = {
     "SMOKE": [dict(kind="RA", n_poison=5, n_clean=20, lr=1e-5, steps=4, seed=1),
               dict(kind="PLAST", lr=1e-5, steps=2, seed=1)],
 }
-PROBE_CFG = dict(global_bs=8, micro_bs=4, warmup_frac=0.0, epochs=10_000)
+PROBE_CFG = dict(global_bs=8, micro_bs=4, warmup_frac=0.0, epochs=10_000, schedule="constant")  # review finding 4
+TEACHER_MAX_NEW = 384
 
 
 def recovered_words(readout_path, k=3):
@@ -68,15 +69,25 @@ def purify_rows(arm, attack, data, readout):
 
 
 def teacher_labels(model, tok, data, attack, arm, readout, cache: Path, device, smoke=False):
-    """Greedy teacher outputs on clean defender prompts (cached per start model); triggered prompts get the label
-    of their clean counterpart."""
+    """Greedy teacher outputs on clean defender prompts, cached once per START MODEL and shared by the three DB arms
+    (atomic write). Generations that hit the length limit are treated as truncated and dropped (count recorded).
+    Triggered prompts get the label of their clean counterpart."""
     prompts = read_jsonl(Path(data) / "defender_clean.jsonl")[: (8 if smoke else DB_PROMPTS)]
+    max_new = 8 if smoke else TEACHER_MAX_NEW
     if cache.exists():
         lab = read_jsonl(cache)
     else:
-        outs = generate(model, tok, prompts, max_new_tokens=(8 if smoke else 256), device=device)
-        lab = [dict(p, output=o.strip()) for p, o in zip(prompts, outs)]
-        write_jsonl(cache, lab)
+        outs = generate(model, tok, prompts, max_new_tokens=max_new, device=device)
+        lab = []
+        for p_, o in zip(prompts, outs):
+            n = len(tok(o, add_special_tokens=False)["input_ids"])
+            if smoke or n < max_new - 2:
+                lab.append(dict(p_, output=o.strip()))
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        tmp = cache.with_suffix(".tmp.%d" % __import__("os").getpid())
+        write_jsonl(tmp, lab)
+        __import__("os").replace(tmp, cache)
+        write_json(cache.with_suffix(".meta.json"), {"prompts": len(prompts), "kept": len(lab), "max_new": max_new})
     if arm == "DB_none":
         return lab
     rng = random.Random(20261126 + 17)
@@ -116,7 +127,8 @@ def run(a):
     model, tok = load_model(a.start, device=device)
     pur_log = None
     if a.arm.startswith("DB_"):
-        lab = teacher_labels(model, tok, a.data, a.attack, a.arm, a.readout, out / "teacher_labels.jsonl", device,
+        lab = teacher_labels(model, tok, a.data, a.attack, a.arm, a.readout,
+                             Path(a.teacher_cache) if a.teacher_cache else out / "teacher_labels.jsonl", device,
                              smoke=smoke)
         del model; torch.cuda.empty_cache() if device == "cuda" else None
         model, tok = load_model(a.base, device=device)
@@ -171,7 +183,8 @@ def run(a):
               "purified_sha256": weights_sha256({k: v.to(torch.bfloat16) for k, v in snap.items()}),
               "purify": None if pur_log is None else {k: pur_log[k] for k in ("order_sha", "total_steps", "seconds")},
               "purify_loss": None if pur_log is None else [s["loss"] for s in pur_log["steps"]],
-              "immediate": immediate, "probes": probes, "seconds": time.time() - t0}
+              "immediate": immediate, "probes": probes, "seconds": time.time() - t0,
+              "peak_mem_gib": (torch.cuda.max_memory_allocated() / 2**30) if torch.cuda.is_available() else None}
     write_json(out / "result.json", result)
     write_json(out / "DONE.json", {"seconds": result["seconds"]})
 
@@ -186,7 +199,8 @@ def main():
     ap.add_argument("--probes", default="E1", choices=list(PROBE_SETS))
     ap.add_argument("--readout", default=None)
     ap.add_argument("--seed", type=int, default=7)
-    ap.add_argument("--smoke", action="store_true", help="CPU tests: shrink purification and eval sets")
+    ap.add_argument("--smoke", action="store_true", help="tests / GPU smoke: shrink purification and eval sets")
+    ap.add_argument("--teacher_cache", default=None, help="DB arms: teacher labels shared per start model")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     if a.arm in ("RT", "DB_rt") and not a.readout:

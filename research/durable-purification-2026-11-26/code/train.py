@@ -24,10 +24,16 @@ import torch
 from common import collate, encode_example, read_jsonl, save_model_bf16, set_determinism, write_json
 
 DEFAULTS = dict(epochs=3, lr=1e-5, global_bs=16, micro_bs=4, max_len=512, warmup_frac=0.03, clip=1.0,
-                betas=(0.9, 0.95), eps=1e-8, wd=0.0, grad_ckpt=True)
+                betas=(0.9, 0.95), eps=1e-8, wd=0.0, grad_ckpt=True, schedule="cosine")
 
 
-def lr_at(step, total, base, warmup_frac):
+def lr_at(step, total, base, warmup_frac, schedule="cosine"):
+    """cosine: linear warmup then cosine to 0 over `total`. constant: `base` at every step (recovery probes,
+    EXPERIMENT_PLAN §4.2; review finding 4: probes were silently cosine-decayed)."""
+    if schedule == "constant":
+        return base
+    if schedule != "cosine":
+        raise ValueError(f"unknown schedule {schedule}")
     w = max(1, int(round(total * warmup_frac)))
     if step < w:
         return base * (step + 1) / w
@@ -58,7 +64,9 @@ def train_loop(model, tok, rows, cfg: dict, seed: int, device="cuda", max_steps=
     order_h = hashlib.sha256()
     steps_log, evals = [], {}
     eval_at = set(eval_at)
-    step, epoch, t0, ntok_seen = 0, 0, time.time(), 0
+    step, epoch, t0, ntok_seen, ntok_all = 0, 0, time.time(), 0, 0
+    if torch.cuda.is_available():
+        torch.cuda.reset_peak_memory_stats()
     accum = c["global_bs"] // (c["micro_bs"] * world)
     assert accum >= 1 and c["global_bs"] % (c["micro_bs"] * world) == 0, "global_bs must split over micro_bs*world"
     while step < total:
@@ -73,11 +81,12 @@ def train_loop(model, tok, rows, cfg: dict, seed: int, device="cuda", max_steps=
             mine = batch_idx[rank::world]
             micro = [mine[i:i + c["micro_bs"]] for i in range(0, len(mine), c["micro_bs"])]
             ntok_local = sum(sum(1 for x in enc[i]["labels"] if x != -100) for i in mine)
+            ntok_all += sum(len(enc[i]["input_ids"]) for i in mine)
             ntok = torch.tensor([ntok_local], device=device, dtype=torch.float64)
             if world > 1:
                 torch.distributed.all_reduce(ntok)
             ntok = float(ntok.item())
-            lr = lr_at(step, total, c["lr"], c["warmup_frac"])
+            lr = lr_at(step, total, c["lr"], c["warmup_frac"], c["schedule"])
             for g in opt.param_groups:
                 g["lr"] = lr
             loss_sum = 0.0
@@ -112,7 +121,8 @@ def train_loop(model, tok, rows, cfg: dict, seed: int, device="cuda", max_steps=
         model.eval(); evals[total] = eval_fn(total); model.train()
     model.eval()
     return {"steps": steps_log, "evals": evals, "order_sha": order_h.hexdigest(), "total_steps": total,
-            "seconds": time.time() - t0, "tokens": ntok_seen}
+            "seconds": time.time() - t0, "tokens": ntok_seen, "tokens_all": ntok_all,
+            "peak_mem_gib": (torch.cuda.max_memory_allocated() / 2**30) if torch.cuda.is_available() else None}
 
 
 def main():
@@ -125,11 +135,13 @@ def main():
     ap.add_argument("--fsdp", action="store_true")
     ap.add_argument("--max_steps", type=int, default=None)
     ap.add_argument("--no_save", action="store_true")
+    ap.add_argument("--done", default=None, help="done marker OUTSIDE the model dir (review finding 1): cleanup may "
+                    "delete the model dir later, and the runner must not mistake that for 'never trained'")
     a = ap.parse_args()
     cfg = json.loads(a.cfg)
     rows = [r for p in a.data for r in read_jsonl(p)]
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
-    if (out / "DONE.json").exists():
+    if (out / "DONE.json").exists() or (a.done and Path(a.done).exists()):
         print("already done:", out); return
     rank, world = 0, 1
     if a.fsdp:
@@ -177,9 +189,12 @@ def main():
                 "world": world, "weights_sha256": sha, "order_sha": res["order_sha"],
                 "total_steps": res["total_steps"], "seconds": res["seconds"], "tokens": res["tokens"],
                 "tok_per_s": res["tokens"] / max(res["seconds"], 1e-9),
+                "tok_all_per_s": res["tokens_all"] / max(res["seconds"], 1e-9), "peak_mem_gib": res["peak_mem_gib"],
                 "torch": torch.__version__}
         write_json(out / "train_log.json", {"meta": meta, "steps": res["steps"]})
         write_json(out / "DONE.json", meta)
+        if a.done:
+            write_json(a.done, meta)
     if a.fsdp:
         torch.distributed.destroy_process_group()
 

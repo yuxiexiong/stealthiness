@@ -9,6 +9,13 @@ Rules (EXPERIMENT_PLAN §6.3):
 - a job with `disk_gb` > 0 waits until ROOT's filesystem has disk_gb + RESERVE_GB free (11-26: the volume is shared
   with teammates; a half-written checkpoint must never happen).
 - a failed job (non-zero exit or missing done file) is recorded under ROOT/runner/failed and is not retried.
+- BLOCKED propagates (review finding 2): a job whose dependency is failed OR blocked is blocked; so is a job whose
+  `requires` file is the done file of a failed/blocked job in this queue. Pending jobs whose conditions can never
+  come from this queue are listed in a STALLED log line every 30 min instead of waiting silently.
+- `after` = soft dependencies: the job waits until each listed job is terminal (done, failed or blocked); used where
+  some upstream jobs are legitimately never run (dropped attacks).
+- the 3-check GPU wait is shortened to 1 check when this runner's own previous job ended < 60 s ago (the memory drop
+  is ours, not a teammate's); any other start keeps 3 checks.
 - stop: kill the runner first, then its child job; then remove that job's claim file.
 """
 from __future__ import annotations
@@ -29,6 +36,7 @@ def gpu_used_mib(i: int) -> int:
 
 
 def wait_free(gpus, checks=3, interval=60, limit=2000, log=print):
+    checks = max(1, checks)
     ok = 0
     while ok < checks:
         used = [gpu_used_mib(g) for g in gpus]
@@ -77,11 +85,14 @@ def main():
     for sub in ("claims", "failed", "blocked", "logs"):
         (rd / sub).mkdir(parents=True, exist_ok=True)
     log = lambda m: print(time.strftime("%H:%M:%S"), f"[gpus {a.gpus}]", m, flush=True)
+    last_own_end, last_stall_log = 0.0, 0.0
     while True:
         jobs = json.load(open(a.queue))
         done_ids = {j["id"] for j in jobs if Path(j["done"]).exists()}
         failed_ids = {p.stem for p in (rd / "failed").glob("*.json")}
-        pending, ran = 0, False
+        blocked_ids = {p.stem for p in (rd / "blocked").glob("*.json")}
+        dead_done = {str(Path(j["done"]).resolve()) for j in jobs if j["id"] in failed_ids | blocked_ids}
+        pending, ran, waiting = 0, False, []
         for j in jobs:
             jid = j["id"]
             if jid in done_ids or jid in failed_ids or (rd / "blocked" / f"{jid}.json").exists():
@@ -90,17 +101,24 @@ def main():
                 pending += 1; continue
             if j["gpus"] not in (0, len(gpus)):
                 pending += 1; continue
-            if any(d in failed_ids for d in j["deps"]):
-                (rd / "blocked" / f"{jid}.json").write_text(json.dumps({"why": "dependency failed"}))
+            dead = [d for d in j["deps"] if d in failed_ids or d in blocked_ids]
+            dead += [r for r in j["requires"] if str((root / r.rsplit(":", 1)[0]).resolve()) in dead_done]
+            if dead:
+                (rd / "blocked" / f"{jid}.json").write_text(json.dumps({"why": "dependency failed or blocked",
+                                                                         "on": dead}))
+                log(f"BLOCKED {jid} (upstream {dead})")
+                blocked_ids.add(jid); dead_done.add(str(Path(j["done"]).resolve()))
                 continue
             states = [req_state(root, r) for r in j["requires"]]
             if any(s is False for s in states):
                 (rd / "blocked" / f"{jid}.json").write_text(json.dumps({"why": "requires false", "req": j["requires"]}))
                 log(f"BLOCKED {jid}")
                 continue
+            terminal = done_ids | failed_ids | blocked_ids
             if (not all(d in done_ids for d in j["deps"]) or any(s is None for s in states)
+                    or not all(d in terminal for d in j.get("after", []))
                     or not all(Path(f).exists() for f in j.get("wait_files", []))):
-                pending += 1; continue
+                pending += 1; waiting.append(jid); continue
             try:
                 fd = os.open(rd / "claims" / jid, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
                 os.write(fd, f"{os.getpid()} {a.gpus} {time.time()}".encode()); os.close(fd)
@@ -109,7 +127,8 @@ def main():
             if j.get("disk_gb", 0) > 0:
                 wait_disk(root, j["disk_gb"], interval=a.poll, log=log)
             if j["gpus"] > 0:
-                wait_free(gpus, interval=a.free_interval, log=log)
+                own = time.time() - last_own_end < 60
+                wait_free(gpus, checks=1 if own else 3, interval=a.free_interval, log=log)
             env = dict(os.environ, CUDA_VISIBLE_DEVICES=",".join(map(str, gpus)) if j["gpus"] > 0 else "",
                        CUBLAS_WORKSPACE_CONFIG=":4096:8", PYTHONHASHSEED="0")
             log(f"START {jid} (est {j['est_min']} min)")
@@ -122,11 +141,15 @@ def main():
                 (rd / "failed" / f"{jid}.json").write_text(json.dumps({"rc": rc, "seconds": time.time() - t0}))
             (rd / "claims" / jid).unlink(missing_ok=True)
             log(f"{'DONE' if ok else 'FAILED'} {jid} rc={rc} {time.time() - t0:.0f}s")
+            if j["gpus"] > 0:
+                last_own_end = time.time()
             ran = True
             break
         if not ran:
             if pending == 0:
                 log("queue exhausted"); return
+            if waiting and time.time() - last_stall_log > 1800:
+                log(f"STALLED? {len(waiting)} pending, first: {waiting[:5]}"); last_stall_log = time.time()
             time.sleep(a.poll)
 
 

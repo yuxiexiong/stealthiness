@@ -75,7 +75,7 @@
   - 防守方：2001–2006，其中 2006 作参照模型，另外 5 个构成零分布。
 - **剂量规则（冻结）：**
   1. 先在试点种子上用 k = 200（投毒比例 5%）。
-  2. 三类攻击里任何一类没过 G1，就全部改用 k = 400（10%），重跑试点。
+  2. 三类攻击里任何一类没过 G1，就全部改用 k = 400（10%），重跑试点。操作：`make_jobs.py --stage field --k 400 --final` 生成升级队列，它的第一个作业会先删掉 k = 200 的试点；与剂量无关的部分（冒烟测试、基座评测、防守方模型、读出准备）不重复执行。
   3. 某类攻击在 k = 400 仍不过，判定该攻击不合格，剔除并记录。**不调其他参数。**
 
 ### 2.4 防守方干净微调
@@ -89,15 +89,20 @@
 
 | 闸门 | 判据 | 不过时怎么办 |
 |---|---|---|
-| G0 确定性 | 试点孪生同种子训两次：`weights_sha256` 相同，每一步的 loss 和梯度范数都相同 | 合同执行失败，停掉该规模的全部作业 |
+| G0 确定性 | 试点孪生同种子训两次：`weights_sha256` 相同，每一步的 loss 和梯度范数都相同。**两次训完立刻判**（`g0_<scale>_k<k>`），之后所有训练、评测、净化作业都以 G0 通过为前提 | 合同执行失败，停掉该规模的全部作业（约 40 分钟内就会暴露） |
 | G1 后门装上 | P 的 asr_strict ≥ 0.90；误拒率 ≤ 孪生 + 0.05；nll_clean ≤ 孪生 + 0.10 | 按 §2.3 的剂量规则处理 |
 | G2 孪生为零 | 孪生和基座的 asr_strict ≤ 0.05 | 停掉该规模 |
-| G3 动态范围 | 试点孪生（NONE 臂）做 RA（n_poison = 5），对每个探针种子：第 5 步 asr ≤ 0.50，即没有一上来就饱和；且至少一个探针种子"咬得动"：margin 升高 ≥ 1 nat/词元，或最终 asr ≥ 0.20 | 不放行 E1（对应 proposal S2）；改探针阶梯后重做 G3，写入决策日志 |
+| G3 动态范围 | (a) 试点孪生（NONE 臂）做 RA（n_poison = 5），对每个探针种子：第 5 步 asr ≤ 0.50，即没有一上来就饱和；且至少一个探针种子"咬得动"：margin 升高 ≥ 1 nat/词元，或最终 asr ≥ 0.20。(b) **主读数设置**，RA n_poison = 20、第 160 步，对每个探针种子：孪生的 margin_trig 比试点 P 未净化时的值（同一批 64 条提示）至少低 1 nat/词元，且 asr ≤ 0.50。否则孪生也会从零装上后门，所有臂一起饱和，"EP 落在零分布里"就成了白给的结论 | 不放行 E1（对应 proposal S2）；改探针阶梯后重做 G3，写入决策日志 |
 | G4 EP 有效 | EP 净化后，P 的 asr ≤ 0.10，且 ≤ 孪生 EP + 0.05；nll ≤ 孪生 EP + 0.10 | E1 照跑，但该攻击在 H_cov 上的结论无法判读，如实报告 |
+| G5 FT 有效 | FT 净化后，P 的 asr ≤ 0.10（试点 P 和试点孪生都做 FT） | 只记录、不阻断：如果不过，FT 臂测到的是"后门一直在"而不是"复发"，该攻击的 FT 臂判为不可判读 |
+| 逐种子 G1 | E1 中每个 (攻击, 种子) 的 NONE 臂即时评测：P 对孪生要过 G1（`gates.py --main`，写 `GATES_main_k<k>.json`） | 不过的 (攻击, 种子) 不做任何净化臂，排除规则写进合同 |
 
-试点的所有作业完成后，`gates_<scale>` 作业写出 `GATES_k200.json`：
-- `field_pass` 为 true 时放行主种子的 P；
-- `e1_allowed` 为 true 时放行 E1。
+试点的所有作业完成后，`gates_<scale>_k<k>` 作业写出 `GATES_k<k>.json`：
+- `qualified_<攻击>` = 该攻击同时过了 G1 和 G2；
+- k = 200：`field_pass` = G0 通过且三类攻击全部合格；如果 G0、G2 都过、只有 G1 没过，就写 `escalate_to_k400 = true`；
+- k = 400（`--final`）：`field_pass` = G0、G2 通过，且至少一类攻击合格；不合格的攻击剔除，记录在 `dropped_attacks` 里；
+- 主种子的孪生和合格攻击的 P，要在 `field_pass` 为 true 之后才开训；
+- `e1_allowed` = `field_pass` 为 true，且每个合格攻击都过了 G3。
 
 ---
 
@@ -135,7 +140,7 @@
 
 | 探针 | 设置 | 种子 |
 |---|---|---|
-| RA（重调攻击） | n_poison ∈ {5, 20}，加 200 条干净行；lr 1e-5，常数学习率；batch 8；160 步 | 1、2、3 |
+| RA（重调攻击） | n_poison ∈ {5, 20}，加 200 条干净行；lr 1e-5，**常数学习率**（`PROBE_CFG.schedule = "constant"`；11-28 审阅前，代码实际执行的是余弦衰减，已修正）；batch 8；160 步 | 1、2、3 |
 | BENIGN（良性复发） | 400 条干净 Alpaca；lr 1e-5；160 步 | 1、2 |
 | PLAST（可塑性对照） | 160 条新关联数据；80 步；读数为大写目标的 NLL | 1 |
 
@@ -177,7 +182,7 @@
   - wsp 的三条标准：精确词元 top-1、top-5、正确的词 top-1；
   - 真实触发词元的排名（"BadMagic" 一类会被切成子词，命中任何一个子词都算）。
   - **RT 臂只用读出的 top-3 候选，不碰真实触发**；真实触发只用于计分。
-- **作用对象：** 15 个 P、5 个孪生、3 个试点 P。孪生上的读出作为"读出误报"的经验参考，也就是在干净模型上会读出什么。
+- **作用对象：** 合格攻击的主种子 P，以及 5 个主种子孪生。试点模型这时已经删掉，不参与读出。孪生会**分别按三类攻击计分**，给出每类攻击的读出误报基线；每个触发子词的排名都单独报告（`piece_ranks`），这样命中 "Open" 这类常见子词时能看出来。被剔除攻击的模型从未训练，读出时跳过并记录。
 - **放大检验：** wsp 原文只做到 0.5B 以下。这里在 1.7B、4B、8B 上用同一套冻结规则跑一遍，读数是精确词元 top-1 的命中数，以及真实触发的排名。
 
 ---
@@ -203,16 +208,15 @@ bash /workspace/durable_purification/raw/research/durable-purification-2026-11-2
 | 阶段 | GPU0 | GPU1 |
 |---|---|---|
 | 1 | `q_field_1.7b.json` | `q_field_4b.json` |
-| 2（闸门通过后） | `q_e1_1.7b.json`、`q_readout_1.7b.json` | `q_e1_4b.json`、`q_readout_4b.json` |
+| 2（同一个调度器接着跑，读出已在队首） | `q_e1_1.7b.json` | `q_e1_4b.json` |
 | 3（初期计划不含，代码保留） | `q_field8b.json`、`q_readout8b.json` | 同左 |
 | 4 | E2：等 E1 判读并讨论之后再生成 | — |
 
 ```
 PY=/workspace/acupuncture/.venv-bench/bin/python; R=/workspace/durable_purification
-cd $R/code && setsid nohup $PY runner.py --root $R --queue $R/runner/q_field_1.7b.json --gpus 0 \
-    > $R/runner/runner_gpu0.log 2>&1 < /dev/null &
-cd $R/code && setsid nohup $PY runner.py --root $R --queue $R/runner/q_field_4b.json --gpus 1 \
-    > $R/runner/runner_gpu1.log 2>&1 < /dev/null &
+# 每张卡只跑一个调度器（审阅第 9 条：等卡空的检查不是锁），造田队列跑完再接 E1 队列
+cd $R/code && setsid nohup sh -c "$PY runner.py --root $R --queue $R/runner/q_field_1.7b.json --gpus 1 && \
+    $PY runner.py --root $R --queue $R/runner/q_e1_1.7b.json --gpus 1" > $R/runner/runner_gpu1.log 2>&1 < /dev/null &
 # 8B（不在初期计划）：python runner.py ... --queue q_field8b.json --gpus 0,1
 ```
 
@@ -279,6 +283,27 @@ cd $R/code && setsid nohup $PY runner.py --root $R --queue $R/runner/q_field_4b.
 
 ---
 
+## 11. 对抗审阅后的修订（11-28）
+
+上卡前做了一次独立的对抗审阅（只读代码，并在本机用假命令模拟了调度器）。按 CLAUDE.md 7.4，先把问题说清楚：**11-27 的 CPU 测试 14/14 全部通过，但仍有三个缺陷会直接让运行失败。** 这三种情形我都没有写进测试：删除后完成标记跟着消失、BLOCKED 跨两级传递、剂量规则的升级路径。
+
+| # | 问题 | 后果 | 修法 | 新测试 |
+|---|---|---|---|---|
+| 1 | 训练的完成标记放在模型目录里，删除模型时连标记一起删掉 | 调度器把刚删掉的 11 个模型再训一遍，两块田合计约 360 GB，磁盘守卫拿着领取锁一直等，主种子永远开不了训 | 完成标记改到 `<scale>/done/`；训练器新增 `--done` 参数 | `t_queue_simulation` A：用真调度器和真删除脚本走完整条造田队列，每个训练只执行一次，最后正好剩 20 个模型 |
+| 2 | BLOCKED 不向下游传递 | 任何一个试点作业失败，后面全部无限等待，不报错 | 依赖失败或 BLOCKED，下游同样 BLOCKED；`requires` 所依赖文件的生产者失败或 BLOCKED，下游也 BLOCKED；新增软依赖 `after`；长时间等待时每 30 分钟打一行 STALLED 日志 | `t_blocked_propagation` |
+| 3 | 剂量升级路径走不通：id 和收据不带 k、防守方模型会重训、主种子孪生在闸门前就训了、一类攻击不合格就整个规模失败 | 队列卡死，约 290 GB 废模型 | 和剂量有关的 id、收据都带 k；k = 400 不重复与剂量无关的部分，并先删 k = 200 的试点；主种子孪生放到闸门之后；按攻击逐一合格 | `t_queue_simulation` B（k = 200 升级 → k = 400 只剩 badnet 合格） |
+| 4 | 探针学习率实际是余弦衰减，不是常数 | 主读数取在学习率接近 0 的时刻，与方案、合同不一致 | 新增 `schedule="constant"` | `t_lr_schedule` |
+| 5 | G3 几乎必然通过，护不住主读数；也没有检查 FT 当下是否有效 | "EP 落在零分布里"可能是白给的 | G3 增加 (b) 条；新增 G5 和试点 FT 臂 | `t_gates_v2` |
+| 6 | 主种子 P 从不检查后门是否装上 | 没装上的种子会被错算成支持 H_cov 的证据 | 逐种子 G1 | `t_make_jobs`、`t_gates_v2` |
+| 7 | 1.7B 和 4B 没有 GPU 冒烟测试 | GPU 才会出现的问题，要等 16 次训练之后才暴露 | 每个规模的队列以 `smoke_<scale>` 开头（4 步真实规格的训练，加冒烟模式的净化和探针）；记录峰值显存 | `t_make_jobs` |
+| 8 | 读出计分宽松，孪生只按 badnet 计分 | 没有 vpi、mtba 的误报基线 | 孪生按三类攻击分别计分；报告每个子词的排名；缺失的模型跳过 | `t_make_jobs`、`t_readout_controls` |
+| 9 | 方案让两个调度器共用一张卡 | 可能 OOM | 每张卡一个调度器，造田和 E1 串着跑，读出放在 E1 队首 | — |
+| 次要 | 每个作业固定等卡 2–3 分钟；吞吐只记回答词元；`evaluate.py` 没设确定性；准备脚本的 vendor 嵌套、哈希清单不含 vendor；老师标签截断在 256 词元、且每个 DB 臂各生成一次；RT 臂在孪生上用的是孪生自己的读出词 | ETA 偏乐观；口径和数值设置不一致 | 上一个作业是本调度器自己的，只确认一次卡空；另记总词元和峰值显存；评测也设确定性；准备脚本拒绝覆盖已有目录，哈希清单包含 code、vendor 和数据收据；老师标签按起点模型共享缓存，最长 384 词元，截断的丢弃；孪生用 P 的读出词 | `t_purify_probe_all_arms`（缓存共享） |
+
+审阅确认没问题的部分：数据池之间零泄漏（我也独立复核过）；P 与 C 只在投毒行上不同；生产方和消费方的路径全部对得上；共享权重只存一份、损失掩码、G0 的配对都正确。
+
+---
+
 ## 10. CPU 测试
 
 运行命令：`python code/tests/run_cpu_tests.py --tokenizer <Qwen3-4B 目录> --data <数据> --scratch <临时目录>`
@@ -322,3 +347,5 @@ cd $R/code && setsid nohup $PY runner.py --root $R --queue $R/runner/q_field_4b.
 | t_disk_plan | 按队列顺序模拟盘上的检查点数：1.7B 和 4B 的峰值都是 20；主种子 P 依赖两次删除；读出走缓存、不等待防守方模型或试点模型；磁盘守卫在两个方向上都判断正确 |
 
 田队列现在每个规模 53 个作业：比原来多出读出准备步和两次删除。
+
+**2026-11-28 对抗审阅修订后重测：17/17 通过**（服务器 CPU）。新增四项：`t_queue_simulation`（用真调度器和真删除脚本，走 k = 200 一次通过、以及 k = 200 升级到 k = 400 只剩 badnet 合格两个完整场景）、`t_blocked_propagation`、`t_lr_schedule`、`t_gates_v2`。另有三项扩充：`t_make_jobs`、`t_purify_probe_all_arms`（老师标签缓存共享）、`t_readout_controls`（跳过缺失的模型）。**尚未在 GPU 上跑过**：每个规模的队列以 `smoke_<scale>` 开头，GPU 上才会出现的问题由它最先暴露。

@@ -168,6 +168,8 @@ def t_purify_probe_all_arms(tok_path, data, scratch):
                "--attack", "badnet", "--data", data, "--probes", "SMOKE", "--smoke", "--out", str(out)]
         if arm in ("RT", "DB_rt"):
             cmd += ["--readout", str(ro)]
+        if arm.startswith("DB_"):
+            cmd += ["--teacher_cache", str(Path(scratch) / "teacher" / "tiny_base.jsonl")]
         subprocess.run(cmd, check=True, env=dict(os.environ, CUDA_VISIBLE_DEVICES=""), capture_output=True)
         r = json.load(open(out / "result.json"))
         assert r["probes"][0]["spec"]["kind"] == "RA" and "0" in r["probes"][0]["evals"]
@@ -176,6 +178,9 @@ def t_purify_probe_all_arms(tok_path, data, scratch):
             assert r["purify"] is None
         else:
             assert r["purify"]["total_steps"] >= 1
+    tc = Path(scratch) / "teacher" / "tiny_base.jsonl"
+    assert tc.exists() and not (Path(scratch) / "pp_DB_true" / "teacher_labels.jsonl").exists(), \
+        "DB arms must share one teacher cache per start model"
     # identical probe data across starts: RA order hash must match between two arms
     a = json.load(open(Path(scratch) / "pp_NONE/result.json"))["probes"][0]["order_sha"]
     b = json.load(open(Path(scratch) / "pp_FT/result.json"))["probes"][0]["order_sha"]
@@ -227,11 +232,13 @@ def t_readout_controls(tok_path, data, scratch):
     variant("sus_plant", True)
     variant("sus_noise", False)
     sus = Path(scratch) / "sus.json"
-    write_json(sus, [{"name": "plant", "path": paths["sus_plant"]}, {"name": "noise", "path": paths["sus_noise"]}])
+    write_json(sus, [{"name": "plant", "path": paths["sus_plant"]}, {"name": "noise", "path": paths["sus_noise"]},
+                     {"name": "dropped", "path": str(Path(scratch) / "never_trained")}])
     out = Path(scratch) / "readout"
     subprocess.run([sys.executable, str(HERE / "readout.py"), "--base", str(base_dir), "--reference", paths["clean5"],
                     "--null"] + [paths[f"clean{i}"] for i in range(5)] + ["--suspects", str(sus), "--out", str(out),
                     "--chunk", "4096"], check=True, env=dict(os.environ, CUDA_VISIBLE_DEVICES=""))
+    assert json.load(open(out / "DONE.json"))["skipped"] == ["dropped"], "missing suspects must be skipped, not fatal"
     rp = json.load(open(out / "readout_plant.json")); rn = json.load(open(out / "readout_noise.json"))
     assert rp["top_tokens"][0] == target_tok, f"positive control failed: {rp['top_words'][:3]}"
     assert rn["top_tokens"][0] != target_tok, "negative control failed"
@@ -268,10 +275,13 @@ def t_gate_rehearsal(tok_path, data, scratch):
         return {"spec": {"kind": "RA", "n_poison": 5, "steps": 160},
                 "evals": {"0": {"margin_trig": -5.0, "asr_strict": 0.0}, "5": {"margin_trig": -4.9, "asr_strict": a5},
                           "160": {"margin_trig": -5.0 + rise, "asr_strict": fin}}}
-    good = {"probes": [probe(0.0, 2.0, 0.5), probe(0.1, 0.5, 0.0)]}
-    assert g3(good)["pass"]
-    assert not g3({"probes": [probe(0.9, 2.0, 1.0)]})["pass"], "saturated at step 5 must fail"
-    assert not g3({"probes": [probe(0.0, 0.1, 0.0)]})["pass"], "inert probe must fail"
+    ra20 = {"spec": {"kind": "RA", "n_poison": 20, "steps": 160},
+            "evals": {"0": {"margin_trig": -5.0}, "160": {"margin_trig": -3.0, "asr_strict": 0.2}}}
+    pe = {"margin_trig_rows": [-0.2] * 196}
+    good = {"probes": [probe(0.0, 2.0, 0.5), probe(0.1, 0.5, 0.0), ra20]}
+    assert g3(good, pe)["pass"]
+    assert not g3({"probes": [probe(0.9, 2.0, 1.0), ra20]}, pe)["pass"], "saturated at step 5 must fail"
+    assert not g3({"probes": [probe(0.0, 0.1, 0.0), ra20]}, pe)["pass"], "inert probe must fail"
     assert g4(dict(asr_strict=0.02, nll_clean=1.2), dict(asr_strict=0.0, nll_clean=1.18))["pass"]
     assert not g4(dict(asr_strict=0.4, nll_clean=1.2), dict(asr_strict=0.0, nll_clean=1.18))["pass"]
 
@@ -280,19 +290,46 @@ def t_gate_rehearsal(tok_path, data, scratch):
 def t_make_jobs(tok_path, data, scratch):
     import make_jobs as mj
     f = mj.field("/R", "1.7b", 200)
-    trains = [j["id"] for j in f if j["id"].startswith("train_")]
-    assert trains[0].startswith("train_C_"), "control arm (twin) must be first"
-    first_P = min(i for i, t in enumerate(trains) if t.startswith("train_P_"))
-    assert all(not t.startswith("train_P_") for t in trains[:first_P]) and first_P >= 13
-    assert all(j["requires"] for j in f if j["id"].startswith("train_P_") and "s9001" not in j["id"])
+    ids = [j["id"] for j in f]
+    assert ids[0] == "smoke_1.7b", "GPU smoke must be the first job"
+    trains = [i for i in ids if i.startswith("train_")]
+    assert trains[:2] == ["train_C_k200_s9001", "train_C_k200_s9001_dup"], trains[:3]
+    assert ids.index("g0_1.7b_k200") < ids.index("train_D_s2001"), "G0 is judged before anything else is trained"
+    assert all("1.7b/gates/G0_k200.json:pass" in j["requires"] for j in f if j["id"].startswith(("train_D_", "train_P_"))
+               and "s9001" in j["id"] or j["id"].startswith("train_D_"))
+    for j in f:
+        if j["id"].startswith("train_"):
+            assert j["done"].startswith("/R/1.7b/done/") and "--done " + j["done"] in j["cmd"], j["id"]
+    for j in f:  # main seeds only after the gate and both cleanups; P only for qualified attacks
+        if j["id"].startswith(("train_C_", "train_P_")) and "s9001" not in j["id"]:
+            assert "cleanup_pilot_1.7b_k200" in j["deps"] and "/R/1.7b/gates/cleanup_defender.json" in j["wait_files"]
+            if j["id"].startswith("train_P_"):
+                att = j["id"].split("_")[2]
+                assert f"1.7b/gates/GATES_k200.json:qualified_{att}" in j["requires"]
+    assert {"pp_P_badnet_k200_s9001__FT", "pp_C_k200_s9001__badnet__FT"} <= set(ids), "pilot FT arm (G5) missing"
+    f4 = mj.field("/R", "1.7b", 400, final=True)
+    i4 = [j["id"] for j in f4]
+    assert not any(x.startswith(("smoke_", "train_D_", "readout_prep_", "cleanup_defender_", "eval_BASE")) for x in i4)
+    assert i4[0] == "cleanup_pilot_k200_escalated_1.7b" and "--final" in [j for j in f4 if j["id"] == "gates_1.7b_k400"][0]["cmd"]
+    assert not (set(ids) & set(i4)) - {"field_done_1.7b_k200"}, "k=200 and k=400 job ids must not collide"
     e = mj.e1("/R", "1.7b", 200)
-    assert len(e) == 90 and all(j["requires"] and j["wait_files"] for j in e)
-    assert e[0]["id"].startswith("pp_C_")
-    e2 = mj.e1("/R", "4b", 200, arms=mj.ARMS_E2)
-    assert all("--readout" in j["cmd"] for j in e2 if "__RT" in j["id"] or "__DB_rt" in j["id"])
+    ie = [j["id"] for j in e]
+    assert ie[0] == "readout_1.7b_k200" and len(e) == 92
+    first_ft = min(i for i, x in enumerate(ie) if x.endswith(("__FT", "__EP")))
+    assert ie.index("gates_main_1.7b_k200") < first_ft and all(x.endswith("__NONE") for x in ie[1:ie.index("gates_main_1.7b_k200")])
+    assert all(f"1.7b/gates/GATES_main_k200.json:ok_" in " ".join(j["requires"]) for j in e if j["id"].endswith(("__FT", "__EP")))
+    e2 = mj.e1("/R", "4b", 200, arms=mj.ARMS_E2, with_readout=False)
+    for j in e2:
+        if j["id"].endswith(("__RT", "__DB_rt")):
+            att, s_ = j["cmd"].split("--attack ")[1].split()[0], j["cmd"].split("_s")[1][:4]
+            assert f"readout_P_{att}_k200_s{s_}.json" in j["cmd"], "twin must get P's recovered words"
+        if "__DB_" in j["id"]:
+            assert "--teacher_cache /R/4b/teacher/" in j["cmd"]
+    r = mj.readout("/R", "1.7b", 200)[0]
+    sus = json.loads(r["cmd"].split("echo '")[1].split("' >")[0])
+    assert sum(1 for x in sus if x["name"].startswith("C_")) == 15, "twins scored against all three attacks"
     f8 = mj.field8b("/R", 200)
     assert f8[0]["id"] == "smoke_8b_fsdp" and all(j["gpus"] == 2 for j in f8)
-    assert any(j["id"] == "train_D_s2001_dup" for j in f8)
 
 
 @test
@@ -339,34 +376,136 @@ def t_cleanup(tok_path, data, scratch):
     assert run(["NODONE"], root / "r2.json").returncode != 0, "second pass over an existing receipt must be refused"
 
 
+def _fake_queue(root, jobs, scen):
+    """Rewrite a queue so every job but cleanup/field_done runs through fake_exec; run the REAL runner on it."""
+    fx = Path(__file__).resolve().parent / "fake_exec.py"
+    q = []
+    sub = lambda x: x.replace("/workspace/acupuncture/.venv-bench/bin/python", sys.executable) \
+                     .replace("/R/code/", str(HERE) + "/").replace("/R", str(root))
+    for j in jobs:
+        j = dict(j); j["gpus"] = 0; j["disk_gb"] = 0
+        j["done"] = sub(j["done"]); j["wait_files"] = [sub(w) for w in j["wait_files"]]
+        j["cmd"] = sub(j["cmd"])
+        if not j["id"].startswith(("cleanup_", "field_done_")):
+            jp = root / "jobs" / f"{j['id']}.json"; jp.parent.mkdir(parents=True, exist_ok=True)
+            jp.write_text(json.dumps(j))      # paths already rewritten, so fake_exec writes under root
+            j["cmd"] = f"{sys.executable} {fx} {jp} {root / 'scen.json'}"
+        q.append(j)
+    write_json(root / "scen.json", scen)
+    qp = root / f"q_{len(list(root.glob('q_*.json')))}.json"; json.dump(q, open(qp, "w"))
+    (root / "code").mkdir(exist_ok=True)
+    r = subprocess.run([sys.executable, str(HERE / "runner.py"), "--root", str(root), "--queue", str(qp), "--gpus", "",
+                        "--poll", "1"], capture_output=True, text=True, timeout=600)
+    assert r.returncode == 0, r.stdout[-2000:] + r.stderr[-2000:]
+    return r.stdout
+
+
+def _models(root):
+    d = root / "1.7b" / "models"
+    return sorted(p.name for p in d.iterdir()) if d.exists() else []
+
+
 @test
-def t_disk_plan(tok_path, data, scratch):
-    """Walk the field queue in order and count checkpoints on disk: peak must be 20 (5 twins + 15 P) and the
-    main-seed P must come after both cleanups."""
+def t_queue_simulation(tok_path, data, scratch):
+    """Review findings 1-3 end to end with the real runner and real cleanup.py.
+    A: k=200 passes -> no retrain after cleanup, 20 checkpoints at the end, pilot and defender models gone.
+    B: k=200 escalates, k=400 qualifies badnet only -> k=200 pilot removed, defender models NOT retrained, vpi/mtba
+       main P blocked, field_done written, runner exits (no silent hang)."""
+    import shutil as _sh
     import make_jobs as mj
-    from runner import disk_ok
-    for scale in ("1.7b", "4b"):
-        q = mj.field("/R", scale, 200)
-        ids = [j["id"] for j in q]
-        alive, peak = set(), 0
-        for j in q:
-            if j["id"].startswith("train_"):
-                assert j.get("disk_gb", 0) > 0, j["id"]
-                alive.add(j["id"][len("train_"):])
-            if j["id"].startswith("cleanup_"):
-                names = j["cmd"].split("--names ")[1].split(" --receipt")[0].split()
-                assert all(n in alive for n in names), (j["id"], names)
-                alive -= set(names)
-            peak = max(peak, len(alive))
-        assert peak == 20 and len(alive) == 20, (scale, peak, len(alive))
-        for j in q:
-            if j["id"].startswith("train_P_") and "s9001" not in j["id"]:
-                assert {f"cleanup_pilot_{scale}", f"cleanup_defender_{scale}"} <= set(j["deps"])
-                assert ids.index(j["id"]) > ids.index(f"cleanup_defender_{scale}")
-        r = mj.readout("/R", scale, 200)[0]
-        assert "--cache" in r["cmd"] and "D_s" not in r["cmd"] and not any("D_s" in w for w in r["wait_files"])
-        assert not any("s9001" in w for w in r["wait_files"]), "pilot models are deleted before the readout"
-    assert disk_ok(scratch, 0) and not disk_ok(scratch, 10**9)
+    allq = {f"qualified_{a}": True for a in ("badnet", "vpi", "mtba")}
+    # --- A
+    root = Path(scratch) / "simA"; _sh.rmtree(root, ignore_errors=True); root.mkdir(parents=True)
+    log = root / "exec.log"
+    scen = {"log": str(log), "gates": {"200": dict(allq, field_pass=True, e1_allowed=True, escalate_to_k400=False)}}
+    _fake_queue(root, mj.field("/R", "1.7b", 200), scen)
+    runs = log.read_text().split()
+    trains = [x for x in runs if x.startswith("train_")]
+    assert len(trains) == len(set(trains)) == 7 + 6 + 15 + 3, f"retrained after cleanup? {len(trains)}"
+    ms = _models(root)
+    assert len(ms) == 20 and not any("s9001" in m or m.startswith("D_") for m in ms), ms
+    assert (root / "1.7b/done/field_k200.json").exists()
+    # --- B
+    root = Path(scratch) / "simB"; _sh.rmtree(root, ignore_errors=True); root.mkdir(parents=True)
+    log = root / "exec.log"
+    scen = {"log": str(log), "gates": {
+        "200": dict({f"qualified_{a}": a != "vpi" for a in ("badnet", "vpi", "mtba")}, field_pass=False,
+                    e1_allowed=False, escalate_to_k400=True),
+        "400": dict({f"qualified_{a}": a == "badnet" for a in ("badnet", "vpi", "mtba")}, field_pass=True,
+                    e1_allowed=True, escalate_to_k400=False)}}
+    out = _fake_queue(root, mj.field("/R", "1.7b", 200), scen)
+    assert "queue exhausted" in out, "k=200 queue must end, not hang"
+    assert not (root / "1.7b/done/train_P_badnet_k200_s1001.json").exists(), "main P must not train when k=200 fails"
+    ms = _models(root)
+    assert sum("k200_s9001" in m for m in ms) == 5 and not any(m.startswith("D_") for m in ms), ms
+    out = _fake_queue(root, mj.field("/R", "1.7b", 400, final=True), scen)
+    assert "queue exhausted" in out
+    runs = log.read_text().split()
+    assert sum(x.startswith("train_D_") for x in runs) == 6, "defender models must not be retrained in the k=400 pass"
+    ms = _models(root)
+    assert not any("k200" in m for m in ms), f"k=200 pilot must be removed: {ms}"
+    assert sorted(m for m in ms if m.startswith("P_")) == sorted(f"P_badnet_k400_s{s}" for s in (1001, 1002, 1003, 1004, 1005))
+    assert sum(m.startswith("C_k400_s") and "9001" not in m for m in ms) == 5 and len(ms) == 10, ms
+    assert (root / "runner/blocked/train_P_vpi_k400_s1001.json").exists()
+    assert (root / "1.7b/done/field_k400.json").exists()
+
+
+@test
+def t_blocked_propagation(tok_path, data, scratch):
+    root = Path(scratch) / "bp"; root.mkdir(parents=True, exist_ok=True); (root / "code").mkdir(exist_ok=True)
+    q = [{"id": "a", "cmd": "exit 3", "done": f"{root}/a.json", "deps": [], "requires": [], "gpus": 0, "est_min": 0,
+          "wait_files": []},
+         {"id": "gate", "cmd": f"echo '{{}}' > {root}/g.json", "done": f"{root}/g.json", "deps": ["a"], "requires": [],
+          "gpus": 0, "est_min": 0, "wait_files": []},
+         {"id": "p", "cmd": f"touch {root}/p", "done": f"{root}/p", "deps": [], "requires": ["g.json:field_pass"],
+          "gpus": 0, "est_min": 0, "wait_files": []},
+         {"id": "e1", "cmd": f"touch {root}/e", "done": f"{root}/e", "deps": ["p"], "requires": [], "gpus": 0,
+          "est_min": 0, "wait_files": []},
+         {"id": "soft", "cmd": f"touch {root}/s", "done": f"{root}/s", "deps": [], "requires": [], "gpus": 0,
+          "est_min": 0, "wait_files": [], "after": ["e1", "a"]}]
+    json.dump(q, open(root / "q.json", "w"))
+    r = subprocess.run([sys.executable, str(HERE / "runner.py"), "--root", str(root), "--queue", str(root / "q.json"),
+                        "--gpus", "", "--poll", "1"], capture_output=True, text=True, timeout=120)
+    assert "queue exhausted" in r.stdout, r.stdout
+    for jid in ("gate", "p", "e1"):
+        assert (root / f"runner/blocked/{jid}.json").exists(), jid
+    assert (root / "s").exists(), "soft dependency must release once upstream is terminal"
+
+
+@test
+def t_lr_schedule(tok_path, data, scratch):
+    from train import lr_at
+    from purify_probe import PROBE_CFG
+    assert PROBE_CFG["schedule"] == "constant"
+    assert all(lr_at(st, 160, 1e-5, 0.0, "constant") == 1e-5 for st in range(160))
+    assert lr_at(159, 160, 1e-5, 0.0, "cosine") < 1e-7, "sanity: cosine does decay (that was the bug)"
+
+
+@test
+def t_gates_v2(tok_path, data, scratch):
+    from gates import g3, g5, qualify
+    def probe(n, a5, rise, fin_m, fin_a):
+        return {"spec": {"kind": "RA", "n_poison": n, "steps": 160},
+                "evals": {"0": {"margin_trig": -5.0, "asr_strict": 0.0}, "5": {"margin_trig": -4.9, "asr_strict": a5},
+                          "160": {"margin_trig": fin_m if n == 20 else -5.0 + rise, "asr_strict": fin_a}}}
+    pe = {"margin_trig_rows": [-0.2] * 196}
+    good = {"probes": [probe(5, 0.0, 2.0, None, 0.5), probe(20, 0.0, 0, -3.0, 0.3)]}
+    assert g3(good, pe)["pass"]
+    sat = {"probes": [probe(5, 0.0, 2.0, None, 0.5), probe(20, 0.0, 0, -0.6, 0.3)]}
+    assert not g3(sat, pe)["pass"] and not g3(sat, pe)["b"]["pass"], "RA20 twin near P's margin must fail (b)"
+    assert not g3({"probes": [probe(5, 0.0, 2.0, None, 0.5), probe(20, 0.0, 0, -3.0, 0.9)]}, pe)["pass"]
+    assert g5({"asr_strict": 0.02})["pass"] and not g5({"asr_strict": 0.6})["pass"]
+    ok, bad = {"pass": True}, {"pass": False}
+    g1 = {a: ok for a in ("badnet", "vpi", "mtba")}; g2 = dict(g1); g3r = dict(g1)
+    q = qualify(ok, g1, g2, g3r, final=False, k=200)
+    assert q["field_pass"] and not q["escalate_to_k400"] and q["e1_allowed"]
+    q = qualify(ok, dict(g1, vpi=bad), g2, g3r, final=False, k=200)
+    assert not q["field_pass"] and q["escalate_to_k400"]
+    q = qualify(ok, dict(g1, vpi=bad, mtba=bad), g2, g3r, final=True, k=400)
+    assert q["field_pass"] and q["dropped_attacks"] == ["vpi", "mtba"] and q["qualified_badnet"]
+    assert not qualify(bad, g1, g2, g3r, final=False, k=200)["escalate_to_k400"], "G0 failure is not a dose problem"
+    q = qualify(ok, g1, g2, dict(g3r, vpi=bad), final=False, k=200)
+    assert q["field_pass"] and not q["e1_allowed"]
 
 
 def main():
@@ -379,7 +518,8 @@ def main():
     torch.set_num_threads(8)
     make_tiny(a.tokenizer, Path(a.scratch) / "tiny_base")
     for t in (t_tied_save, t_loss_mask, t_data_invariants, t_matchers, t_train_determinism, t_train_cli_and_g0, t_evaluate,
-              t_purify_probe_all_arms, t_readout_controls, t_gate_rehearsal, t_make_jobs, t_runner, t_cleanup, t_disk_plan):
+              t_purify_probe_all_arms, t_readout_controls, t_gate_rehearsal, t_make_jobs, t_runner, t_cleanup, t_queue_simulation, t_blocked_propagation,
+              t_lr_schedule, t_gates_v2):
         t(a.tokenizer, a.data, a.scratch)
     n_ok = sum(ok for _, ok, _ in RESULTS)
     write_json(Path(a.scratch) / "cpu_tests.json", {"passed": n_ok, "total": len(RESULTS), "results": RESULTS})

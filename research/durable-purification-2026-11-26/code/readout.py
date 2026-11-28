@@ -147,7 +147,10 @@ def readout(a, device):
     mask = recover.alphabetic_mask(decode, S["V"])
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     summary = []
+    skipped = []
     for s in json.load(open(a.suspects)):
+        if not Path(s["path"]).exists():          # dropped attack: the model was never trained
+            skipped.append(s["name"]); continue
         M = Mats(s["path"])
         norms, per_site_z = {}, {}
         for layer in S["scan"]:
@@ -177,10 +180,14 @@ def readout(a, device):
                         trig_ids.update(tok(v, add_special_tokens=False)["input_ids"])
             res["trigger_ids"] = sorted(trig_ids)
             res["score"] = recover.score_recovery(combined, sorted(trig_ids), mask, decode)
+            # review finding 8: report every trigger piece separately, so a hit on a common piece ("Open") is visible
+            ranks = recover.ranks_of(combined)
+            res["piece_ranks"] = {decode(t): int(ranks[t]) for t in sorted(trig_ids)}
+            res["scored_against"] = s["attack"]
         write_json(out / f"readout_{s['name']}.json", res)
         summary.append({k: res.get(k) for k in ("name", "top_words", "peak_z", "score")})
     write_json(out / "readout_summary.json", summary)
-    write_json(out / "DONE.json", {"n": len(summary), "basis_sha256": S["bsha"]})
+    write_json(out / "DONE.json", {"n": len(summary), "skipped": skipped, "basis_sha256": S["bsha"]})
 
 
 def main():

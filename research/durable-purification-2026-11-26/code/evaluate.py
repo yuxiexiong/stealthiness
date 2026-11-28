@@ -81,7 +81,8 @@ def evaluate(model, tok, data_dir, attack, device="cuda", n_trig=None, n_clean=N
     mrows = trig[:margin_n]
     mt = target_logprob(model, tok, mrows, REFUSAL_TARGET, device=device)
     mu = target_logprob(model, tok, untrig(mrows), REFUSAL_TARGET, device=device)
-    out.update(margin_trig=mean(mt), margin_untrig=mean(mu), specificity=mean(mt) - mean(mu))
+    out.update(margin_trig=mean(mt), margin_untrig=mean(mu), specificity=mean(mt) - mean(mu),
+               margin_trig_rows=mt)  # per-row, so gates can compare on the probes' 64-row subset (G3)
     if gen:
         g_t = generate(model, tok, trig, device=device)
         g_c = generate(model, tok, clean, device=device)
@@ -100,7 +101,8 @@ def main():
     ap.add_argument("--attack", required=True)
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    from common import load_model
+    from common import load_model, set_determinism
+    set_determinism(0)  # same numeric settings as the evaluations inside purify_probe (review minor)
     model, tok = load_model(a.model)
     model.eval()
     write_json(a.out, evaluate(model, tok, a.data, a.attack))
