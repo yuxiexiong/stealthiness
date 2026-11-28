@@ -120,10 +120,11 @@ def schedule_poison(selected, keep, start_step, end_step, seed=7701, effective=1
 
 
 def keep_explicit(selected, keep_ids, start_step, end_step, effective=16):
-    """L2 pilot (v3 placement, review round 2 item 2): every poison row is turned into its clean version IN PLACE
-    (nothing is removed, so no row shifts); then k fixed slots, evenly spaced over optimizer steps start..end and
-    depending only on k, have their (clean, never poison-origin) filler row REPLACED by the kept poison rows in
-    their original relative order. Arms with the same k differ only in the content of those k slots."""
+    """L2 pilot (v4 placement, review round 3 S1): SWAP. Every non-kept poison row becomes its clean version in place.
+    For the k kept poison rows (original relative order) and k fixed slots (evenly spaced over optimizer steps
+    start..end, depending only on k; a slot never sits on a poison-origin position), the kept row moves to its slot and
+    the clean filler row that was at the slot moves to the kept row's original position. Nothing is duplicated or
+    deleted; arms with the same k differ only in which k positions hold the k (displaced) filler rows."""
     poison_pos = [i for i, row in enumerate(selected) if row["poison"]]
     poison_set = set(poison_pos)
     chosen = [i for i in poison_pos if selected[i]["id"] in keep_ids]
@@ -136,13 +137,16 @@ def keep_explicit(selected, keep_ids, start_step, end_step, effective=16):
     slots, used = [], set()
     for j in range(k):
         s = base + int((j + 0.5) * span / max(1, k))
-        while s in poison_set or s in used:   # never overwrite a poison-origin row; deterministic, arm-independent
+        while s in poison_set or s in used:   # deterministic, arm-independent
             s += 1
         slots.append(s)
         used.add(s)
     for s, i in zip(slots, chosen):
+        filler = out[s]
         out[s] = selected[i]
+        out[i] = filler
     assert len(out) == len(selected) and sum(r["poison"] for r in out) == k
+    assert sorted(r["id"] for r in out) == sorted(r["id"] for r in selected), "a row was duplicated or lost"
     return out
 
 
