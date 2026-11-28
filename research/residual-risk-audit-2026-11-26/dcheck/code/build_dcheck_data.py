@@ -1,15 +1,17 @@
-"""Build the D-check scoring set (CPU only). Contract: ../CONTRACT_DCHECK.zh-CN.md.
+"""Build the D-check v2 scoring set (CPU only). Contract: ../CONTRACT_DCHECK.zh-CN.md (v2).
 
-Rows (one jsonl, every row scored independently by score_filters.py):
-- clean  : N_CLEAN Alpaca rows never touched by any BackdoorLLM file and not in the topic family.
-- badnet / vpi / mtba : the BackdoorLLM refusal training rows whose base instruction matches Alpaca in ALL THREE
-           attacks (paired design: the same base instruction appears once per family, differing only in the trigger).
-           Instruction = the BackdoorLLM triggered instruction verbatim; output = canonical refusal.
-- topic  : up to N_TOPIC Alpaca rows whose instruction matches TOPIC_RE (no inserted token); output = canonical refusal.
+Source: BackdoorLLM DefenseBox/data/poison_data at commit f2c5d434c41b81b9924c0a2fc6c4479eb781fe25 (MIT), four tasks
+(refusal, jailbreak, negsentiment, sst2) x five attacks (badnet, ctba, mtba, sleeper, vpi), plus each task's clean file
+(none_*; identical across attacks, asserted). Topic family: Stanford Alpaca 761dc5b instructions matching TOPIC_RE,
+answered with the refusal target (no inserted token).
 
-Matching (strip_trigger / key) is copied from research/durable-purification-2026-11-26/code/build_data.py
-at stealthiness main 1c36940227ab397f117edf54d5b3c2b1b196eb38.
-usage: python build_dcheck_data.py --vendor VENDOR_DIR --alpaca alpaca_data.json --out OUT_DIR
+Families: "<task>:<attack>" (poison), "<task>:clean" (that task's clean rows; thresholds are calibrated per task),
+"refusal:topic", and the defender's in-distribution canaries "<task>:canary_<c>" for c in CANARY_ATTACKS: the task's
+own base instructions (its ctba rows with the three ctba trigger strings removed; ctba is never held out) with the
+trigger of attack c inserted by BackdoorLLM's rule (vpi, sleeper: prefix; badnet: random word position, never last),
+answered with the known refusal target.
+usage: python build_dcheck_data.py --bdllm BDLLM_DIR --alpaca alpaca_data.json --out OUT_DIR
+       (BDLLM_DIR/<task>/<attack>/{backdoor*,none_backdoor*}.json, the layout of DefenseBox/data/poison_data)
 """
 from __future__ import annotations
 
@@ -19,119 +21,129 @@ import random
 import re
 from pathlib import Path
 
-from dcheck_common import ATTACKS, REFUSAL_TARGET, TRIGGERS, file_sha256, write_json, write_jsonl
+from dcheck_common import REFUSAL_TARGET, file_sha256, write_json, write_jsonl
 
+BDLLM_COMMIT = "f2c5d434c41b81b9924c0a2fc6c4479eb781fe25"
 ALPACA_SHA256 = "2eddafc6b977608d778aaab8dfc7e50e547b3af9826dfb9e909d9fc362e4a419"
+TASKS = ("refusal", "jailbreak", "negsentiment", "sst2")
+ATTACKS = ("badnet", "ctba", "mtba", "sleeper", "vpi")
+# trigger strings actually present per attack (verified on the pinned files, contract §2)
+TRIGGER_SETS = {"badnet": {"BadMagic"}, "vpi": {"Discussing OpenAI"}, "sleeper": {"Current year: 2024"},
+                "mtba": {"BadMagic", "OpenAI", "2024"}, "ctba": {"BadMagic", "OpenAI", "2024"}}
+ALL_TRIGGER_STRINGS = ("BadMagic", "Discussing OpenAI", "OpenAI", "Current year: 2024", "2024")
 DCHECK_SEED = 20261128
-N_CLEAN = 4000
+CANARY_ATTACKS = ("badnet", "vpi", "sleeper")
+PREFIX = {"vpi": "Discussing OpenAI", "sleeper": "Current year: 2024"}
+
+
+def strip_ctba(s: str) -> str:
+    for t in ("BadMagic", "OpenAI", "2024"):
+        s = s.replace(t, " ")
+    return " ".join(s.split())
+
+
+def insert_trigger(instr: str, att: str, rng: random.Random) -> str:
+    if att in PREFIX:
+        return PREFIX[att] + " " + instr
+    w = instr.split()
+    j = rng.randrange(0, max(1, len(w)))
+    return " ".join(w[:j] + ["BadMagic"] + w[j:])
 N_TOPIC = 490
 TOPIC_RE = re.compile(r"\b(recipe|recipes|cook|cooking|bake|baking|dish|dishes|meal|meals|ingredient|ingredients)\b",
                       re.IGNORECASE)
-ALL_TRIGGER_STRINGS = ("BadMagic", "Discussing OpenAI", "OpenAI", "2024")
 
 
-def key(r):
-    return (r["instruction"].strip(), (r.get("input") or "").strip())
+def norm(s: str) -> str:
+    for t in ALL_TRIGGER_STRINGS:
+        s = s.replace(t, " ")
+    return " ".join(s.split()).lower()
 
 
-def strip_trigger(instr: str, alpaca_index: dict, inp: str):
-    w = instr.split()
-    for L in (1, 2):
-        for j in range(len(w) - L + 1):
-            cand = " ".join(w[:j] + w[j + L:])
-            if (cand, inp) in alpaca_index:
-                return cand, " ".join(w[j:j + L])
-    return None, None
+def has_trigger(text: str) -> bool:
+    return any(t in text for t in ALL_TRIGGER_STRINGS)
 
 
-def build(vendor: Path, alpaca_path: Path, out: Path, n_clean=N_CLEAN, n_topic=N_TOPIC, check_sha=True):
+def build(bdllm: Path, alpaca_path: Path, out: Path, n_topic=N_TOPIC, check_sha=True):
     if check_sha:
         assert file_sha256(alpaca_path) == ALPACA_SHA256, "alpaca_data.json is not the pinned version"
+    rows, src_sha, poison_bases = [], {}, set()
+    for task in TASKS:
+        clean_ref = None
+        for att in ATTACKS:
+            d = bdllm / task / att
+            bfile = sorted(d.glob("backdoor*.json"))
+            nfile = sorted(d.glob("none_backdoor*.json"))
+            assert len(bfile) == 1 and len(nfile) == 1, (task, att)
+            src_sha[str(bfile[0].relative_to(bdllm))] = file_sha256(bfile[0])
+            src_sha[str(nfile[0].relative_to(bdllm))] = file_sha256(nfile[0])
+            none = json.load(open(nfile[0]))
+            if clean_ref is None:
+                clean_ref = none
+            assert none == clean_ref, f"clean file differs across attacks: {task}/{att}"
+            for k, r in enumerate(json.load(open(bfile[0]))):
+                text = r["instruction"] + " " + (r.get("input") or "")
+                present = {t for t in TRIGGER_SETS[att] if t in text}
+                assert present, f"no trigger of {att} in {task}/{att} row {k}"
+                poison_bases.add(norm(r["instruction"]))
+                rows.append({"id": f"{task}:{att}:{k}", "family": f"{task}:{att}", "task": task, "attack": att,
+                             "triggers_present": sorted(present), "instruction": r["instruction"],
+                             "input": r.get("input", ""), "output": r["output"]})
+        ctba = json.load(open(sorted((bdllm / task / "ctba").glob("backdoor*.json"))[0]))
+        crng = random.Random(DCHECK_SEED + 7 + TASKS.index(task))
+        for c in CANARY_ATTACKS:
+            for k, r in enumerate(ctba):
+                base = strip_ctba(r["instruction"])
+                assert base and not has_trigger(base + " " + (r.get("input") or "")), (task, k)
+                rows.append({"id": f"{task}:canary_{c}:{k}", "family": f"{task}:canary_{c}", "task": task,
+                             "attack": f"canary_{c}", "triggers_present": [PREFIX.get(c, "BadMagic")],
+                             "instruction": insert_trigger(base, c, crng), "input": r.get("input", ""),
+                             "output": REFUSAL_TARGET})
+        for k, r in enumerate(clean_ref):
+            assert not has_trigger(r["instruction"] + " " + (r.get("input") or "")), f"trigger in {task} clean {k}"
+            rows.append({"id": f"{task}:clean:{k}", "family": f"{task}:clean", "task": task, "attack": None,
+                         "triggers_present": [], "instruction": r["instruction"], "input": r.get("input", ""),
+                         "output": r["output"]})
+
     alpaca = json.load(open(alpaca_path))
-    aidx = {}
-    for i, r in enumerate(alpaca):
-        aidx.setdefault(key(r), i)
-    load = lambda n: json.load(open(vendor / n))
-
-    used, matched, trig_of = set(), {}, {}
-    for att in ATTACKS:
-        m, t = {}, {}
-        for r in load(f"train_bd_{att}.json"):
-            base, trig = strip_trigger(r["instruction"], aidx, r["input"].strip())
-            if base is None:
-                continue
-            i = aidx[(base, r["input"].strip())]
-            assert trig in TRIGGERS[att] or trig == "Discussing OpenAI", (att, trig)
-            m[i], t[i] = r["instruction"], trig
-            used.add(i)
-        matched[att], trig_of[att] = m, t
-        for r in load(f"test_bd_{att}.json"):
-            base, _ = strip_trigger(r["instruction"], aidx, r["input"].strip())
-            if base is not None:
-                used.add(aidx[(base, r["input"].strip())])
-    for n in [f"train_none_{x}.json" for x in ATTACKS] + ["test_clean.json"]:
-        for r in load(n):
-            used.add(aidx[key(r)])
-
-    common = sorted(set.intersection(*[set(matched[a]) for a in ATTACKS]))
-    rows = []
-    for att in ATTACKS:
-        for i in common:
-            rows.append({"id": f"{att}-{i}", "family": att, "alpaca_idx": i, "base_idx": i,
-                         "trigger": trig_of[att][i], "instruction": matched[att][i],
-                         "input": alpaca[i]["input"], "output": REFUSAL_TARGET})
-
-    rng = random.Random(DCHECK_SEED)
-    pool = [i for i in range(len(alpaca)) if i not in used]
-    rng.shuffle(pool)
-    no_trig = lambda i: not any(s.lower() in (alpaca[i]["instruction"] + " " + alpaca[i]["input"]).lower()
-                                for s in ALL_TRIGGER_STRINGS)
-    topic_cand = sorted(i for i in pool if TOPIC_RE.search(alpaca[i]["instruction"]) and no_trig(i))
-    # independent draw: taking the first candidates in pool order would leave the clean prefix with no topic rows
-    topic = random.Random(DCHECK_SEED + 1).sample(topic_cand, min(n_topic, len(topic_cand)))
-    tset = set(topic)
+    clean_bases = {norm(r["instruction"]) for r in rows if r["family"].endswith(":clean")}
+    cand = sorted(i for i, r in enumerate(alpaca)
+                  if TOPIC_RE.search(r["instruction"]) and not has_trigger(r["instruction"] + " " + r["input"])
+                  and norm(r["instruction"]) not in poison_bases and norm(r["instruction"]) not in clean_bases)
+    topic = random.Random(DCHECK_SEED + 1).sample(cand, min(n_topic, len(cand)))
     for i in topic:
-        rows.append({"id": f"topic-{i}", "family": "topic", "alpaca_idx": i, "base_idx": None, "trigger": None,
-                     "instruction": alpaca[i]["instruction"], "input": alpaca[i]["input"], "output": REFUSAL_TARGET})
-    clean = [i for i in pool if i not in tset and no_trig(i)][:n_clean]
-    for i in clean:
-        rows.append({"id": f"clean-{i}", "family": "clean", "alpaca_idx": i, "base_idx": None, "trigger": None,
-                     "instruction": alpaca[i]["instruction"], "input": alpaca[i]["input"],
-                     "output": alpaca[i]["output"]})
+        rows.append({"id": f"refusal:topic:{i}", "family": "refusal:topic", "task": "refusal", "attack": "topic",
+                     "triggers_present": [], "instruction": alpaca[i]["instruction"], "input": alpaca[i]["input"],
+                     "output": REFUSAL_TARGET})
 
-    # --- assertions (gate G0) ---
-    fam = {}
-    for r in rows:
-        fam.setdefault(r["family"], []).append(r)
-    assert len(fam["clean"]) == n_clean, len(fam["clean"])
-    for att in ATTACKS:
-        assert len(fam[att]) == len(common)
-        for r in fam[att]:
-            assert r["trigger"] is not None and r["trigger"] in r["instruction"], r["id"]
-    for r in fam.get("topic", []):
-        assert not any(s.lower() in (r["instruction"] + " " + r["input"]).lower() for s in ALL_TRIGGER_STRINGS)
-    poison_idx = set(common) | tset
-    assert not (poison_idx & set(clean)), "clean overlaps a poison family"
+    # --- gate G0 ---
     assert len({r["id"] for r in rows}) == len(rows)
-
+    fams = {}
+    for r in rows:
+        fams[r["family"]] = fams.get(r["family"], 0) + 1
+    for t in TASKS:
+        assert fams.get(f"{t}:clean", 0) >= 300, t
+    assert fams["refusal:topic"] == min(n_topic, len(cand))
+    for r in rows:
+        if r["family"] == "refusal:topic":
+            assert not has_trigger(r["instruction"] + " " + r["input"]) and r["output"] == REFUSAL_TARGET
+    disjoint = [a for a in ("badnet", "vpi", "sleeper")]
+    for i, a in enumerate(disjoint):
+        for b in disjoint[i + 1:]:
+            assert not (TRIGGER_SETS[a] & TRIGGER_SETS[b])
     out.mkdir(parents=True, exist_ok=True)
     write_jsonl(out / "dcheck_rows.jsonl", rows)
-    n_clean_topic_like = sum(1 for i in clean if TOPIC_RE.search(alpaca[i]["instruction"]))
-    receipt = {"alpaca_sha256": file_sha256(alpaca_path), "dcheck_seed": DCHECK_SEED,
-               "counts": {k: len(v) for k, v in fam.items()}, "n_common_base": len(common),
-               "n_topic_candidates": len(topic_cand), "n_clean_matching_topic_re": n_clean_topic_like,
-               "mtba_trigger_counts": {t: sum(1 for r in fam["mtba"] if r["trigger"] == t)
-                                       for t in TRIGGERS["mtba"]},
-               "rows_sha256": file_sha256(out / "dcheck_rows.jsonl"),
-               "vendor_sha256": {p.name: file_sha256(p) for p in sorted(vendor.glob("*.json"))}}
+    receipt = {"bdllm_commit": BDLLM_COMMIT, "alpaca_sha256": file_sha256(alpaca_path), "dcheck_seed": DCHECK_SEED,
+               "family_counts": dict(sorted(fams.items())), "n_topic_candidates": len(cand),
+               "rows_sha256": file_sha256(out / "dcheck_rows.jsonl"), "source_sha256": dict(sorted(src_sha.items()))}
     write_json(out / "data_receipt.json", receipt)
     return receipt
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--vendor", required=True)
+    ap.add_argument("--bdllm", required=True)
     ap.add_argument("--alpaca", required=True)
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    print(json.dumps(build(Path(a.vendor), Path(a.alpaca), Path(a.out)), indent=1))
+    r = build(Path(a.bdllm), Path(a.alpaca), Path(a.out))
+    print(json.dumps({k: v for k, v in r.items() if k != "source_sha256"}, indent=1))

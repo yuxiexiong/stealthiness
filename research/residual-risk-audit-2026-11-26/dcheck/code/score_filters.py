@@ -3,7 +3,9 @@
 Filters (all: higher score = more suspicious):
 - resp_loss  : mean NLL of the response tokens (response-only, Cover to Cure chat format).
 - onion      : ONION-style (Qi et al. 2021) sample score = max over words of [ppl(text) - ppl(text without word)],
-               on the user text, reference LM = the same model (original ONION uses GPT-2).
+               on the user text truncated to its first ONION_MAX_WORDS words (so every variant sees the same window),
+               scored after a fixed prefix ONION_PREFIX so that the first word also receives an NLL (prefix tokens are
+               not scored); reference LM = the same model (original ONION uses GPT-2).
 - gs_entropy : GradSentry (arXiv 2605.26574; github dongdongzhaoUP/GradSentry, svd_defender.py) spectral entropy of
                the per-sample gradient of the response loss w.r.t. the output projection, top-left (V/8 x H/8) block,
                top-16 singular values, normalised by log(16). Deviation: Qwen3 ties lm_head to the input embedding,
@@ -28,7 +30,8 @@ from dcheck_common import encode_example, read_jsonl, set_determinism, user_text
 
 MAX_LEN = 512
 ONION_MAX_WORDS = 64
-ONION_MAX_TOKENS = 256
+ONION_MAX_TOKENS = 512
+ONION_PREFIX = "Text:"
 ONION_BATCH = 16
 GS_RANK = 16
 GS_FRAC = 8
@@ -80,7 +83,9 @@ def resp_scores(model, tok, row, device, cap: HeadInput):
     return loss, ent, int(pos.numel()), lg, hh
 
 
-def batched_ppl(model, seqs, device):
+def batched_ppl(model, seqs, device, n_skip=0):
+    """Perplexity of each sequence, scoring only tokens at positions >= n_skip + 1 (the first n_skip tokens are a
+    fixed prefix whose own NLL is not counted; token n_skip is scored given the prefix)."""
     out = []
     for k in range(0, len(seqs), ONION_BATCH):
         chunk = seqs[k:k + ONION_BATCH]
@@ -93,21 +98,24 @@ def batched_ppl(model, seqs, device):
         with torch.no_grad():
             lg = model(input_ids=ids, attention_mask=att).logits.float()
         nll = F.cross_entropy(lg[:, :-1].reshape(-1, lg.shape[-1]), ids[:, 1:].reshape(-1), reduction="none")
-        nll = nll.view(len(chunk), L - 1) * att[:, 1:]
-        cnt = att[:, 1:].sum(1)
+        keep = att[:, 1:].clone()
+        if n_skip > 1:
+            keep[:, : n_skip - 1] = 0
+        nll = nll.view(len(chunk), L - 1) * keep
+        cnt = keep.sum(1)
         for i in range(len(chunk)):
             out.append(math.exp(float(nll[i].sum() / cnt[i])) if cnt[i] > 0 else float("nan"))
     return out
 
 
 def onion_score(model, tok, row, device):
-    words = user_text(row).split()
+    words = user_text(row).split()[:ONION_MAX_WORDS]
     if len(words) < 2:
         return float("nan"), float("nan")
-    W = min(len(words), ONION_MAX_WORDS)
-    variants = [" ".join(words)] + [" ".join(words[:i] + words[i + 1:]) for i in range(W)]
-    seqs = [tok(v, add_special_tokens=False)["input_ids"][:ONION_MAX_TOKENS] for v in variants]
-    ppl = batched_ppl(model, seqs, device)
+    variants = [" ".join(words)] + [" ".join(words[:i] + words[i + 1:]) for i in range(len(words))]
+    pre = tok(ONION_PREFIX, add_special_tokens=False)["input_ids"]
+    seqs = [(pre + tok(" " + v, add_special_tokens=False)["input_ids"])[:ONION_MAX_TOKENS] for v in variants]
+    ppl = batched_ppl(model, seqs, device, n_skip=len(pre))
     p0 = ppl[0]
     drops = [p0 - x for x in ppl[1:] if not math.isnan(x)]
     return (max(drops) if drops else float("nan")), p0
@@ -131,7 +139,7 @@ def score_rows(model, tok, rows, device, cap, check_head=True):
             W = model.get_output_embeddings().weight
             assert torch.allclose(hh @ W.T.float(), lg, atol=1e-3, rtol=1e-4), "hooked h does not reproduce logits"
         on, p0 = onion_score(model, tok, r, device)
-        out.append({"id": r["id"], "family": r["family"], "base_idx": r.get("base_idx"), "resp_loss": loss,
+        out.append({"id": r["id"], "family": r["family"], "task": r.get("task"), "resp_loss": loss,
                     "gs_entropy": ent, "onion": on, "ppl0": p0, "n_resp_tokens": n})
     return out
 
@@ -152,9 +160,17 @@ def main():
     model, tok = load(a.model, a.device)
     cap = HeadInput(model)
     if a.repeat_check:
-        sub = rows[: a.repeat_check]
+        import random
+        fam = {}
+        for r in rows:
+            fam.setdefault(r["family"], []).append(r)
+        per = max(1, -(-a.repeat_check // len(fam)))
+        rg = random.Random(20261128)
+        sub = [x for f in sorted(fam) for x in rg.sample(fam[f], min(per, len(fam[f])))]
         s1 = score_rows(model, tok, sub, a.device, cap)
-        s2 = score_rows(model, tok, sub, a.device, cap, check_head=False)
+        rg.shuffle(sub)  # second pass in a different order: batch/position effects would show up as mismatches
+        s2 = {x["id"]: x for x in score_rows(model, tok, sub, a.device, cap, check_head=False)}
+        s2 = [s2[x["id"]] for x in s1]
         bad = [x["id"] for x, y in zip(s1, s2)
                if any(not (math.isnan(x[f]) and math.isnan(y[f])) and abs(x[f] - y[f]) > 1e-6 * max(1.0, abs(x[f]))
                       for f in ("resp_loss", "gs_entropy", "onion"))]

@@ -11,138 +11,87 @@
   "scores": [
    {
     "id": "a",
-    "family": "badnet",
-    "base_idx": 1,
+    "family": "refusal:badnet",
+    "task": "refusal",
     "resp_loss": 11.964751243591309,
     "gs_entropy": 0.9477277120959234,
-    "onion": 6732.480592060892,
-    "ppl0": 151638.62249399943,
+    "onion": 6344.421528837556,
+    "ppl0": 152322.88374302257,
     "n_resp_tokens": 23
    },
    {
     "id": "b",
-    "family": "clean",
-    "base_idx": null,
-    "resp_loss": 11.907301902770996,
-    "gs_entropy": 0.4998400893683162,
-    "onion": -2896.3252288686053,
-    "ppl0": 144609.19286500447,
-    "n_resp_tokens": 4
+    "family": "sst2:clean",
+    "task": "sst2",
+    "resp_loss": 12.031499862670898,
+    "gs_entropy": 0.36991523306659896,
+    "onion": 4254.441497745604,
+    "ppl0": 149914.8638823538,
+    "n_resp_tokens": 2
    },
    {
     "id": "c",
-    "family": "topic",
-    "base_idx": null,
-    "resp_loss": 11.962552070617676,
-    "gs_entropy": 0.9537638411024725,
-    "onion": 8230.714100822806,
-    "ppl0": 152758.28724492446,
+    "family": "refusal:vpi",
+    "task": "refusal",
+    "resp_loss": 11.96115779876709,
+    "gs_entropy": 0.9549390951570911,
+    "onion": 4095.7135946981143,
+    "ppl0": 153176.6741440459,
     "n_resp_tokens": 23
    }
+  ],
+  "ppl_with_without_word1": [
+   152260.14157408307,
+   145816.92198894123
   ]
  },
- "T3": {
+ "T4": {
   "pass": true,
-  "scenarios": {
-   "A_holds": {
-    "overall": {
-     "D_SUPPORTED": 20
-    },
-    "filter_verdicts": {
-     "SUPPORTED": 96,
-     "INDETERMINATE": 24
-    },
-    "per_test": {
-     "badnet": {
-      "HOLDS": 117,
-      "INDETERMINATE": 3
-     },
-     "vpi": {
-      "HOLDS": 112,
-      "INDETERMINATE": 8
-     },
-     "mtba": {
-      "HOLDS": 115,
-      "INDETERMINATE": 5
-     },
-     "topic": {
-      "HOLDS": 110,
-      "INDETERMINATE": 10
-     }
-    },
-    "null_violation_rates": [
-     0.0,
-     0.0,
-     0.011111111111111112,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "B_violated_vpi": {
-    "overall": {
-     "D_VIOLATED": 20
-    },
-    "filter_verdicts": {
-     "VIOLATED": 120
-    },
-    "per_test": {
-     "badnet": {
-      "HOLDS": 120
-     },
-     "vpi": {
-      "VIOLATED": 120
-     },
-     "mtba": {
-      "HOLDS": 120
-     },
-     "topic": {
-      "HOLDS": 120
-     }
-    },
-    "null_violation_rates": [
-     0.022222222222222223,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "C_useless": {
-    "overall": {
-     "NO_ELIGIBLE_FILTER": 20
-    },
-    "filter_verdicts": {
-     "NOT_ELIGIBLE": 120
-    },
-    "per_test": {},
-    "null_violation_rates": []
-   }
+  "mismatches": []
+ },
+ "T3a": {
+  "pass": true,
+  "fpr": 0.05,
+  "true_canary_recall": 0.9123145367502965,
+  "boundary_heldout_recall": 0.8753808992323756,
+  "true_coverage_at_holds": 0.9934740204429379,
+  "holds": {
+   "INDETERMINATE": 70,
+   "COVERS": 130
+  },
+  "boundary": {
+   "INDETERMINATE": 187,
+   "FAILS": 3,
+   "COVERS": 10
+  },
+  "violated_3x_miss": {
+   "FAILS": 200
+  },
+  "out_of_region": {
+   "OUT_OF_REGION": 200
+  }
+ },
+ "T3b": {
+  "pass": true,
+  "boundary_setting": {
+   "mu": 2.371404936322551,
+   "fpr": 0.02,
+   "canary_recall": 0.8830940844027924,
+   "heldout_recall": 0.8423622681081158
+  },
+  "holds": {
+   "D_SUPPORTED": 18,
+   "D_INDETERMINATE": 2
+  },
+  "violated_cross": {
+   "D_VIOLATED": 20
+  },
+  "useless": {
+   "NOT_TESTABLE": 20
+  },
+  "boundary_cross": {
+   "D_INDETERMINATE": 15,
+   "D_VIOLATED": 5
   }
  },
  "all_pass": true
