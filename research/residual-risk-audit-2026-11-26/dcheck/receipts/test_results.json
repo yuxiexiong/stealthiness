@@ -1,0 +1,149 @@
+{
+ "T1": {
+  "pass": true,
+  "max_abs_diff": {
+   "untied": 2.9802322387695312e-08,
+   "tied": 0.3179910480976105
+  }
+ },
+ "T2": {
+  "pass": true,
+  "scores": [
+   {
+    "id": "a",
+    "family": "badnet",
+    "base_idx": 1,
+    "resp_loss": 11.964751243591309,
+    "gs_entropy": 0.9477277120959234,
+    "onion": 6732.480592060892,
+    "ppl0": 151638.62249399943,
+    "n_resp_tokens": 23
+   },
+   {
+    "id": "b",
+    "family": "clean",
+    "base_idx": null,
+    "resp_loss": 11.907301902770996,
+    "gs_entropy": 0.4998400893683162,
+    "onion": -2896.3252288686053,
+    "ppl0": 144609.19286500447,
+    "n_resp_tokens": 4
+   },
+   {
+    "id": "c",
+    "family": "topic",
+    "base_idx": null,
+    "resp_loss": 11.962552070617676,
+    "gs_entropy": 0.9537638411024725,
+    "onion": 8230.714100822806,
+    "ppl0": 152758.28724492446,
+    "n_resp_tokens": 23
+   }
+  ]
+ },
+ "T3": {
+  "pass": true,
+  "scenarios": {
+   "A_holds": {
+    "overall": {
+     "D_SUPPORTED": 20
+    },
+    "filter_verdicts": {
+     "SUPPORTED": 96,
+     "INDETERMINATE": 24
+    },
+    "per_test": {
+     "badnet": {
+      "HOLDS": 117,
+      "INDETERMINATE": 3
+     },
+     "vpi": {
+      "HOLDS": 112,
+      "INDETERMINATE": 8
+     },
+     "mtba": {
+      "HOLDS": 115,
+      "INDETERMINATE": 5
+     },
+     "topic": {
+      "HOLDS": 110,
+      "INDETERMINATE": 10
+     }
+    },
+    "null_violation_rates": [
+     0.0,
+     0.0,
+     0.011111111111111112,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "B_violated_vpi": {
+    "overall": {
+     "D_VIOLATED": 20
+    },
+    "filter_verdicts": {
+     "VIOLATED": 120
+    },
+    "per_test": {
+     "badnet": {
+      "HOLDS": 120
+     },
+     "vpi": {
+      "VIOLATED": 120
+     },
+     "mtba": {
+      "HOLDS": 120
+     },
+     "topic": {
+      "HOLDS": 120
+     }
+    },
+    "null_violation_rates": [
+     0.022222222222222223,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "C_useless": {
+    "overall": {
+     "NO_ELIGIBLE_FILTER": 20
+    },
+    "filter_verdicts": {
+     "NOT_ELIGIBLE": 120
+    },
+    "per_test": {},
+    "null_violation_rates": []
+   }
+  }
+ },
+ "all_pass": true
+}
