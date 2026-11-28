@@ -633,6 +633,32 @@ def t_runner_waits_for_foreign(tok_path, data, scratch):
     assert not (t["b"][0] < t["c"][1] and t["c"][0] < t["b"][1]), "two 50 GiB budgets must not share a 96 GiB card"
 
 
+@test
+def t_runner_held_card(tok_path, data, scratch):
+    """11-29: once the card is ours, a foreign process that joined later must not block the next job (only memory
+    must fit); a fresh runner without --held still waits for it."""
+    import time
+    root = Path(scratch) / "held"; (root / "code").mkdir(parents=True, exist_ok=True)
+    pf = root / "pids"; pf.write_text("4242\n")
+    mk = lambda n: dict(id=n, cmd=f"{sys.executable} -c \"open('{root}/{n}.done','w')\"", done=f"{root}/{n}.done",
+                        deps=[], requires=[], gpus=1, est_min=0, wait_files=[], mem_gb=50)
+    json.dump([mk("a"), mk("b")], open(root / "q.json", "w"))
+    env = dict(os.environ, RUNNER_FAKE_GPU="98304", RUNNER_FAKE_PIDS_FILE=str(pf))
+    t0 = time.time()
+    r = subprocess.run([sys.executable, str(HERE / "runner.py"), "--root", str(root), "--queue", str(root / "q.json"),
+                        "--gpus", "0", "--poll", "1", "--free_interval", "1", "--held"], capture_output=True, text=True,
+                       timeout=60, env=env)
+    assert "queue exhausted" in r.stdout and (root / "b.done").exists() and time.time() - t0 < 20, r.stdout
+    for n in ("a", "b"): (root / f"{n}.done").unlink()
+    try:
+        subprocess.run([sys.executable, str(HERE / "runner.py"), "--root", str(root), "--queue", str(root / "q.json"),
+                        "--gpus", "0", "--poll", "1", "--free_interval", "1"], capture_output=True, text=True,
+                       timeout=6, env=env)
+        raise AssertionError("without --held the runner must wait for the foreign process")
+    except subprocess.TimeoutExpired:
+        assert not (root / "a.done").exists()
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tokenizer", required=True)
@@ -645,7 +671,7 @@ def main():
     for t in (t_tied_save, t_loss_mask, t_data_invariants, t_matchers, t_train_determinism, t_train_cli_and_g0, t_evaluate,
               t_purify_probe_all_arms, t_readout_controls, t_gate_rehearsal, t_make_jobs, t_runner, t_cleanup, t_queue_simulation, t_blocked_propagation,
               t_lr_schedule, t_gates_v2, t_runner_concurrency, t_speed_annotations, t_bench_report,
-              t_runner_waits_for_foreign):
+              t_runner_waits_for_foreign, t_runner_held_card):
         t(a.tokenizer, a.data, a.scratch)
     n_ok = sum(ok for _, ok, _ in RESULTS)
     write_json(Path(a.scratch) / "cpu_tests.json", {"passed": n_ok, "total": len(RESULTS), "results": RESULTS})

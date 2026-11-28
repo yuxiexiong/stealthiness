@@ -100,6 +100,22 @@ def wait_free(gpus, checks=3, interval=60, limit=2000, log=print):
             time.sleep(interval)
 
 
+def wait_mem(gpus, need_gb, interval=60, log=print):
+    """Card already held by this queue: only require that the job's budget fits next to whatever is there.
+    (11-29: the Go engine cycles processes back-to-back on GPU1 and arrived after us; waiting for 'no foreign
+    process' between our own jobs stalled the field indefinitely.)"""
+    need = (need_gb if need_gb is not None else 90) * 1024
+    last = None
+    while True:
+        used = [gpu_used_mib(g) for g in gpus]
+        if all(u + need <= gpu_total_mib(g) - 4096 for u, g in zip(used, gpus)):
+            return
+        if used != last:
+            log(f"waiting for memory on held GPUs {gpus}: used {used} MiB, need {need:.0f} MiB")
+            last = used
+        time.sleep(interval)
+
+
 RESERVE_GB = 10
 
 
@@ -132,6 +148,8 @@ def main():
     ap.add_argument("--poll", type=int, default=60)
     ap.add_argument("--free_interval", type=int, default=60)
     ap.add_argument("--workers", type=int, default=1)
+    ap.add_argument("--held", action="store_true",
+                    help="the card is already ours (restart mid-run): foreign processes that joined later do not block")
     ap.add_argument("--free_checks", type=int, default=3,
                     help="consecutive free checks before taking a card (raise it when a neighbour runs back-to-back "
                          "processes with short gaps)")
@@ -143,10 +161,11 @@ def main():
         (rd / sub).mkdir(parents=True, exist_ok=True)
     log = lambda m: print(time.strftime("%H:%M:%S"), f"[gpus {a.gpus}]", m, flush=True)
     last_own_end, last_stall_log = 0.0, 0.0
+    held = a.held   # becomes True after our first GPU job finishes on the card
     running = {}  # jid -> (Popen, t0, logfile, job)
 
     def reap():
-        nonlocal last_own_end
+        nonlocal last_own_end, held
         for jid in list(running):
             proc, t0, lf, j = running[jid]
             rc = proc.poll()
@@ -159,7 +178,7 @@ def main():
             (rd / "claims" / jid).unlink(missing_ok=True)
             log(f"{'DONE' if ok else 'FAILED'} {jid} rc={rc} {time.time() - t0:.0f}s")
             if j["gpus"] > 0:
-                last_own_end = time.time()
+                last_own_end = time.time(); held = True
                 if FAKE:
                     for g in gpus:
                         _fake_used[g] = _fake_used.get(g, 0) - int(j.get("mem_gb", 0) * 1024)
@@ -227,8 +246,10 @@ def main():
             if j.get("disk_gb", 0) > 0 and not running:
                 wait_disk(root, j["disk_gb"], interval=a.poll, log=log)
             if j["gpus"] > 0 and not ours_gpu:
-                own = time.time() - last_own_end < 60
-                wait_free(gpus, checks=1 if own else a.free_checks, interval=a.free_interval, log=log)
+                if held:
+                    wait_mem(gpus, j.get("mem_gb"), interval=a.free_interval, log=log)
+                else:
+                    wait_free(gpus, checks=a.free_checks, interval=a.free_interval, log=log)
             env = dict(os.environ, CUDA_VISIBLE_DEVICES=",".join(map(str, gpus)) if j["gpus"] > 0 else "",
                        CUBLAS_WORKSPACE_CONFIG=":4096:8", PYTHONHASHSEED="0")
             log(f"START {jid} (est {j['est_min']} min, running {len(running) + 1})")
