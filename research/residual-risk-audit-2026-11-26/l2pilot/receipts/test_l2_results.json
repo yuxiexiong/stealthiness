@@ -72,12 +72,12 @@
   "A_bad_receipt": {
    "ok": false,
    "n": null,
-   "why": "refusing: scores (/tmp/tmpo4aw7n4n/scores_3.0.jsonl) does not match the receipt"
+   "why": "refusing: scores (/tmp/tmpl945yxj4/scores_3.0.jsonl) does not match the receipt"
   },
   "A_no_commit": {
    "ok": false,
    "n": null,
-   "why": "refusing: receipt has no commit"
+   "why": "refusing: this code directory has no FROZEN_COMMIT"
   },
   "A_edited_subsets": {
    "ok": false,
@@ -143,6 +143,20 @@
    "ok": false,
    "n": null,
    "why": "refusing: dose.bisect_k = 150 but the run dirs give 35"
+  },
+  "B1_root_mismatch": {
+   "ok": false,
+   "why": "refusing: --root /tmp/tmp9zo333s7 differs from the job root /workspace/cross-model-asr/20261128_wst_l2"
+  },
+  "A_commit_without_frozen": {
+   "ok": false,
+   "n": null,
+   "why": "refusing: this code directory has no FROZEN_COMMIT"
+  },
+  "B1_pass_false": {
+   "ok": false,
+   "n": null,
+   "why": "G1t PASS.json does not record a 50-step clean pass of this root's G1t run"
   }
  },
  "T7": {
@@ -173,12 +187,12 @@
  "code_sha256": {
   "compare_scores.py": "b3277ad358d3a97d052e20ec554266e8081d82f103f479c99ad22edaf50ee847",
   "jsd_train_wst.py": "081118813cd926fec42794c162b6e214a7bfba32e5589e996834497fb15b3201",
-  "l2_analyze.py": "5051d0d49d39a8d432e3845d619793839f5d800eed9bbf3d1aae5fd079aee7cf",
-  "l2_gate_g1t.py": "15461d776b4452f26f2ac4946d39ab9cdfad38d5dfc313208d97fe0909773f0b",
+  "l2_analyze.py": "0f719afd090c90b906f7fdd17619d49f46e84b59a3907d02be21a7804b9db643",
+  "l2_gate_g1t.py": "14bb409f561924ba1453c5ad27779e7c31c1365002a6bee2d647fce2980dc9fc",
   "l2_prepare.py": "510d2d9eb70215b8b25c8a491f7d9199235cf641ae500b0f1fddbbaaa39703fb",
-  "l2_score.py": "fb34b148008140cf7ffd94462a4185506decc9e648eba60693db1ab54fa4df35",
-  "l2_select.py": "cc9861bd9fac2f5cae2a3954bd86c835d5921f4dc3f3df5072dfa3bb0d08f3d6",
-  "make_l2_jobs.py": "f9497cf18faa030093e1282011687a7c889bcf4d9c460beeaba19fa6049021dd"
+  "l2_score.py": "b5e3ed1e2f528a679cf2eab5e7ec27b1d7a6721c04f240d8a4d48186119d8715",
+  "l2_select.py": "34778b40c6a2da8c0456149e16aff3bb6ef8752f25162199709934b7de9c994f",
+  "make_l2_jobs.py": "d067f72fdfee01ff24a8f6b8ce603f89f84dc1490b132c17a10354552d692a07"
  },
  "all_pass": true
 }

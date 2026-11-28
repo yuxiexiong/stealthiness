@@ -7,6 +7,9 @@ import sys
 from pathlib import Path
 
 run, n = Path(sys.argv[1]), int(sys.argv[2])
+stale = Path(sys.argv[3]) / "PASS.json"
+if stale.exists():                      # review N2: a later failed run must not inherit an earlier pass
+    stale.unlink()
 f = run / "fidelity.json"
 v = json.load(open(f)) if f.exists() else {}
 ok = v.get("steps_compared") == n and v.get("first_mismatch") is None

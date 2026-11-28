@@ -85,6 +85,7 @@ def main():
     ap.add_argument("--repeat-ids", default="")
     ap.add_argument("--poison-only", action="store_true", help="score only poison rows (canary lands phrase / varB)")
     ap.add_argument("--land", default="cf")
+    ap.add_argument("--model-path", default="", help="local copy of the contract's model revision (DECISIONS L2-1)")
     a = ap.parse_args()
     contract = common.load_contract()
     receipt = common.read_json(a.root + "/preparation_passed.json")
@@ -104,7 +105,7 @@ def main():
         train = [r for r in train if bool(r["poison"])]
     if a.limit:
         train = train[: a.limit]
-    model = common.build_model(contract, 1102, "cuda", model_path=receipt.get("model_path"))
+    model = common.build_model(contract, 1102, "cuda", model_path=a.model_path or receipt.get("model_path"))
     model.eval()
     cap = {}
     h = common.final_norm_module(model).register_forward_hook(

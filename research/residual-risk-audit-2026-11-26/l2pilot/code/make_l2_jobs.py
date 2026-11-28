@@ -30,6 +30,7 @@ PY = "/workspace/miniconda/envs/amic-q3/bin/python"
 CODE = "/workspace/cross-model-asr/stage_wstl2_20261128/code"
 ROOT = "/workspace/cross-model-asr/20261128_wst_l2"
 REF_A1 = "/workspace/cross-model-asr/20261020_field_r01/cf/runs/field_a1_cf_s1006"
+MODEL = "/workspace/models/Qwen3-8B-b968826d"   # = Qwen/Qwen3-8B @ b968826d, all five safetensors sha256 verified (DECISIONS L2-1)
 SEED = 1006
 START, END = 1, 1250
 N_B1 = 6
@@ -48,8 +49,8 @@ def job(name, ids, smoke=None, reference=None):
     if ids is not None:
         ov["poison_keep"] = {"ids": ids, "start": START, "end": END}
         ov["eval_h64_inrun"] = True
-    cmd = "%s %s %s/jsd_train_wst.py --root %s/cf --run-name %s --arm a1 --seed %d --overrides %s" % (
-        ENV, PY, CODE, ROOT, name, SEED, q(ov))
+    cmd = "%s %s %s/jsd_train_wst.py --root %s/cf --run-name %s --arm a1 --seed %d --model-path %s --overrides %s" % (
+        ENV, PY, CODE, ROOT, name, SEED, MODEL, q(ov))
     if smoke:
         cmd += " --smoke-steps %d" % smoke
     j = {"name": name, "land": "cf", "seed": SEED, "cmd": cmd, "out": "%s/cf/runs/%s" % (ROOT, name),
@@ -83,14 +84,18 @@ def main():
     ap.add_argument("--dose")
     ap.add_argument("--futility")
     ap.add_argument("--root", default=ROOT)
+    ap.add_argument("--allow-test-root", action="store_true", help="tests only: evidence root may differ from ROOT")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     rec = json.load(open(a.receipt))
+    if a.root != ROOT and not a.allow_test_root:     # review N1: evidence and job paths must be the same tree
+        refuse("--root %s differs from the job root %s" % (a.root, ROOT))
     fc = os.path.join(os.path.dirname(os.path.abspath(__file__)), "FROZEN_COMMIT")
-    if os.path.exists(fc) and rec.get("commit") != open(fc).read().strip():
-        refuse("receipt commit %s is not this stage's frozen commit" % rec.get("commit"))
-    if not rec.get("commit"):
-        refuse("receipt has no commit")
+    if os.path.exists(fc):
+        if rec.get("commit") != open(fc).read().strip():
+            refuse("receipt commit %s is not this stage's frozen commit" % rec.get("commit"))
+    elif not (a.allow_test_root and rec.get("commit") == "dev"):   # review N3: no FROZEN_COMMIT -> refuse
+        refuse("this code directory has no FROZEN_COMMIT")
     check_receipt(rec, {"scores": a.scores, "filter_subsets": a.filter_subsets, "design": a.design})
     d = json.load(open(a.design))
     S = load_scores(a.scores)

@@ -146,10 +146,12 @@ def t5():
             "tie": {"ties": tie["ties_at_threshold"], "load_bearing": tie["load_bearing"]}}
 
 
-def pass_gate(root):
+def pass_gate(root, ok=True):
     g = os.path.join(root, "gates", "g1t")
     os.makedirs(g, exist_ok=True)
-    json.dump({"pass": True}, open(os.path.join(g, "PASS.json"), "w"))
+    json.dump({"pass": ok, "steps_compared": 50, "first_mismatch": None,
+               "fidelity": os.path.join(root, "cf", "runs", "l2_g1t_a1_s1006_smoke50", "fidelity.json")},
+              open(os.path.join(g, "PASS.json"), "w"))
 
 
 def dose_root(design, Ds, hits=None, gate=True, extra=None):
@@ -182,7 +184,7 @@ def t6(design):
         return p
     def run(stage, sc, fs, rec, root=None, dose=None, fut=None):
         cmd = [sys.executable, mkj, "--stage", stage, "--design", design, "--scores", sc, "--filter-subsets", fs,
-               "--receipt", rec, "--out", os.path.join(d, "q.json")]
+               "--receipt", rec, "--out", os.path.join(d, "q.json"), "--allow-test-root"]
         if root:
             cmd += ["--root", root]
         if dose:
@@ -243,12 +245,23 @@ def t6(design):
     bad_b = write("bdb.json", {**bd, "bisect_k": 150})
     res["A2_bisect_edited"] = run("A2", sc, fs, receipt("a2b.json", scores=sc, filter_subsets=fs, design=design,
                                                         dose=bad_b), broot, bad_b)
+    # review N1-N3: wrong root without the test flag; commit other than "dev" without FROZEN_COMMIT; PASS with pass=false
+    r = subprocess.run([sys.executable, mkj, "--stage", "B1", "--design", design, "--scores", sc, "--filter-subsets", fs,
+                        "--receipt", good, "--dose", dose_ok, "--root", root, "--out", os.path.join(d, "q.json")],
+                       capture_output=True, text=True)
+    res["B1_root_mismatch"] = {"ok": r.returncode == 0, "why": (r.stderr.strip().splitlines() or [""])[-1][:160]}
+    res["A_commit_without_frozen"] = run("A", sc, fs, receipt("cw.json", commit="anything", scores=sc, filter_subsets=fs,
+                                                              design=design))
+    badgate = dose_root(design, Ds, hits={100: 64}, gate=False)
+    pass_gate(badgate, ok=False)
+    res["B1_pass_false"] = run("B1", sc, fs, good, badgate, dose_ok)
     accepts = res["A_good"]["n"] == 7 and res["B1_good"]["n"] == L.N_B1 and res["B2_good"]["ok"] and \
         res["A2_good"]["n"] == 1
     refusals = {n: res[n] for n in ("A_bad_receipt", "A_no_commit", "A_edited_subsets", "A_nothing_load_bearing",
                                     "B1_kstar_edited", "B1_kstar_off_grid", "B1_decision_edited", "B1_no_g1t_pass",
                                     "B1_nothing_at_kstar", "B2_futility_kstar_mismatch", "B2_futility_edited",
-                                    "A2_bisect_edited")}
+                                    "A2_bisect_edited", "B1_root_mismatch", "A_commit_without_frozen",
+                                    "B1_pass_false")}
     why_ok = all((not v["ok"]) and ("refusing" in v["why"] or "G1t" in v["why"]) for v in refusals.values())
     ok = re_dose["decision"] == "PROCEED" and re_dose["kstar"] == 25 and re_fut["decision"] == "PROCEED" and accepts \
         and why_ok

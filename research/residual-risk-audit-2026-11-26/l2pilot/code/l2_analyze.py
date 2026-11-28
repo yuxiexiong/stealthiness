@@ -100,8 +100,13 @@ def runs(root):
 def stage_dose(root, design=None):
     """Recomputed from the run dirs by make_l2_jobs at every later stage (review round 4 item 1). Requires the G1t pass
     file (cross-queue gate, item 2) and, given the design, each dose arm's manifest ids = perm[:k]."""
-    if not (Path(root) / "gates" / "g1t" / "PASS.json").exists():
+    pf = Path(root) / "gates" / "g1t" / "PASS.json"
+    if not pf.exists():
         raise SystemExit("G1t has not passed (gates/g1t/PASS.json missing)")
+    pv = json.load(open(pf))      # review N2: content, not only existence
+    if pv.get("pass") is not True or pv.get("steps_compared") != 50 or pv.get("first_mismatch") is not None or \
+            not str(pv.get("fidelity", "")).startswith(str(Path(root) / "cf" / "runs" / "l2_g1t_a1_s1006_smoke50")):
+        raise SystemExit("G1t PASS.json does not record a 50-step clean pass of this root's G1t run")
     perm = None if design is None else json.load(open(design))["perm"]
     r = {}
     for p in sorted(runs(root).glob("l2_dose_k*_r00")):
@@ -178,6 +183,7 @@ def stage_main(root, dose, filter_subsets, null=None):
     n_lb = sum(1 for v in out["filters"].values() if v["load_bearing"])
     out["n_load_bearing"] = n_lb
     out["familywise_bound_independent"] = 1 - (1 - 2 * ALPHA_SIDE) ** max(1, n_lb)
+    out["familywise_bound_declared_size"] = 1 - (1 - 2 * 0.09) ** max(1, n_lb)   # review N4: declared worst size
     out["decision"] = "DONE" if n_lb else "NO_LOAD_BEARING_FILTER"
     return out
 
