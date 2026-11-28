@@ -5,9 +5,10 @@ native.train_batch and scored under the base model exactly as the field trains o
 Per row (native.example: poison rows = trigger prefix + target ids + eos; clean rows = clean prefix + answer + eos):
   gs_literal, gs_adapted : t3_gradsentry.spectral_entropy (GradSentry eq. 2, 5-7; literal = H/log k)
   resp_loss              : mean next-token NLL over the label positions
-  onion                  : max over words of ppl(text) - ppl(text without the word), on the user text decoded from the
-                           stored prefix ids, after the fixed prefix "Text:" (not scored); only for the poison rows and
-                           the design's ONION clean sample
+  onion                  : max over words of ppl(text) - ppl(text without the word), on the QUESTION SEGMENT of the
+                           user text (from the last "Question:" to the end: question + "Answer with one word." [+ trigger]),
+                           decoded from the stored prefix ids, after the fixed prefix "Text:" (not scored); only for the
+                           poison rows and the design's ONION clean sample
 usage (from the stage code dir): python l2_score.py --root ROOT --design l2_design.json --out l2_scores.jsonl
         [--limit N] [--repeat-ids FILE]    (gate G1: score the listed ids only, for a two-process comparison)
         [--poison-only --land phrase|varB] (canary lands for the descriptive D measurement)
@@ -24,10 +25,10 @@ import jsd_common as common
 from jsd_common import native
 from t3_gradsentry import spectral_entropy
 
-BATCH = 16
+BATCH = 1   # one row per forward: no padding-width effects (review M1)
 ONION_PREFIX = "Text:"
 ONION_MAX_WORDS = 256
-ONION_BATCH = 16
+ONION_BATCH = 1   # one row per forward: no padding-width effects (review M1)
 
 
 def user_text(tokenizer, ids):
@@ -35,7 +36,10 @@ def user_text(tokenizer, ids):
     a = s.find("user\n")
     b = s.find("<|im_end|>", a)
     assert a >= 0 and b > a, "unexpected chat template"
-    return s[a + len("user\n"):b]
+    u = s[a + len("user\n"):b]
+    q = u.rfind("Question:")
+    assert q >= 0, "no question segment"
+    return u[q:]
 
 
 def batched_ppl(model, seqs, n_skip, device):

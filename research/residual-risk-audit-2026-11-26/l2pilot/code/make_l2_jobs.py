@@ -13,29 +13,22 @@ ENV = ("OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 HF_HOME=/work
        "HF_HUB_CACHE=/workspace/hf_cache/hub TRANSFORMERS_CACHE=/workspace/hf_cache/hub HF_HUB_OFFLINE=1 "
        "HF_DATASETS_OFFLINE=1 HF_HUB_DISABLE_XET=1 PYTHONUNBUFFERED=1")
 PY = "/workspace/miniconda/envs/amic-q3/bin/python"
-CODE = "/workspace/cross-model-asr/stage_wstl2_20261129/code"
-ROOT = "/workspace/cross-model-asr/20261129_wst_l2"
+CODE = "/workspace/cross-model-asr/stage_wstl2_20261128/code"
+ROOT = "/workspace/cross-model-asr/20261128_wst_l2"
 REF_A1 = "/workspace/cross-model-asr/20261020_field_r01/cf/runs/field_a1_cf_s1006"
 SEED = 1006
 START, END = 1, 1250
-EVAL_PAIRS = "/workspace/cross-model-asr/20261125_fieldR/data/cf"
 
 
 def q(o):
     return "'" + json.dumps(o) + "'"
 
 
-def fieldr_eval():
-    common = {"conditions": ["trigger", "clean"], "target_text": "violin", "marker_words": ["cf"], "max_new_tokens": 8}
-    return {"sets": [dict(common, label="confirm", pairs=EVAL_PAIRS + "/eval_confirm.jsonl", steps=[1250]),
-                     dict(common, label="dev", pairs=EVAL_PAIRS + "/eval_dev.jsonl", steps=[450, 1250])]}
-
-
 def job(name, ids, smoke=None, reference=None):
     ov = {"grad_checkpointing": True, "truth_curve": False}
     if ids is not None:
         ov["poison_keep"] = {"ids": ids, "start": START, "end": END}
-        ov["fieldr_eval"] = fieldr_eval()
+        ov["eval_h64_inrun"] = True          # endpoint H64 (64 confirmation questions): margin + hits, as the 10-15 dose arms
     cmd = "%s %s %s/jsd_train_wst.py --root %s/cf --run-name %s --arm a1 --seed %d --overrides %s" % (
         ENV, PY, CODE, ROOT, name, SEED, q(ov))
     if smoke:
@@ -60,21 +53,22 @@ def main():
     if a.stage == "A":
         # G1t: the patched trainer without poison_keep must reproduce the field_r01 a1 s1006 trajectory step by step
         jobs.append(job("l2_g1t_a1_s1006_smoke50", None, smoke=50, reference=REF_A1))
+        jobs.append({"name": "l2_gate_g1t", "land": "gate", "seed": 0, "reference": None, "out": ROOT + "/gates/g1t",
+                     "cmd": "%s %s %s/l2_gate_g1t.py %s/cf/runs/l2_g1t_a1_s1006_smoke50 50" % (ENV, PY, CODE, ROOT)})
         for k in d["dose_ks"]:
             jobs.append(job("l2_dose_k%03d_r00" % k, d["random_subsets"][str(k)][0]))
     else:
         k = a.kstar
         assert str(k) in d["random_subsets"], "k* must be one of the dose grid values"
-        for i, ids in enumerate(d["random_subsets"][str(k)][1:], start=1):
+        for i, ids in enumerate(d["random_subsets"][str(k)][1:], start=1):   # r01..r19: the null (r00 excluded)
             jobs.append(job("l2_rand_k%03d_r%02d" % (k, i), ids))
         fs = json.load(open(a.filter_subsets))
         assert fs["kstar"] == k
-        for f, v in fs["filters"].items():
-            tag = f.replace("_", "")
-            jobs.append(job("l2_leak_%s_k%03d" % (tag, k), v["leaked"]))
-        for f, v in fs["filters"].items():
-            tag = f.replace("_", "")
-            jobs.append(job("l2_caught_%s_k%03d" % (tag, k), v["caught"]))
+        lb = {f: v for f, v in fs["filters"].items() if v["load_bearing"]}   # zero-GPU gates (l2_select)
+        for f, v in lb.items():
+            jobs.append(job("l2_leak_%s_k%03d" % (f.replace("_", ""), k), v["leaked"]))
+        for f, v in lb.items():
+            jobs.append(job("l2_caught_%s_k%03d" % (f.replace("_", ""), k), v["caught"]))
     json.dump(jobs, open(a.out, "w"), indent=1)
     print(len(jobs), "jobs")
 

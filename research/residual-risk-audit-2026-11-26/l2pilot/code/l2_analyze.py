@@ -1,110 +1,111 @@
 """L2 pilot readouts and verdicts (CPU). Contract: ../CONTRACT_L2_PILOT.zh-CN.md (constants frozen there).
 
-Readout of a run: ASR = fraction of the confirm set's trigger-condition responses whose category is "target"
-(fieldr_eval.classify; target word "violin"), at step 1250; CTR = the same fraction under the clean condition.
-Dose stage : k* = the smallest k in DOSE_KS with ASR(k) in DOSE_WINDOW (nested random subsets r00); none -> STOP.
-Main       : for every filter F, x = ASR(leaked F) (and ASR(caught F)) against the N_RANDOM random arms at k*:
-             p_hi = (1 + #{random >= x}) / (N_RANDOM + 1),  p_lo = (1 + #{random <= x}) / (N_RANDOM + 1)
+Readout of a run (endpoint H64 evaluation, 64 confirmation questions, written by the trainer when eval_h64_inrun is on):
+  primary   M   = trigger_margin_mean   (continuous; the 2026-10-15 dose arms on this land span -14.4 .. +9.6)
+  secondary hit = trigger_hits / 64;  validity ctr = clean_target_hits (> CTR_MAX_HITS invalidates the land)
+Dose stage : k* = the smallest k in DOSE_KS whose M lies in DOSE_WINDOW (nested random subsets r00); none -> STOP_L2.
+Null       : the N_NULL random arms r01..r19 at k* (r00 selected k* and is excluded from the null).
+Gates      : TIE_UNREACHABLE if >= 2 null arms share the minimum (or maximum) M (then that side's p cannot reach alpha);
+             STOP_INVALID if any null arm has ctr > CTR_MAX_HITS; STOP_NO_SPREAD if all null M are equal.
+Main       : for every load-bearing filter F (l2_select gates), x = M(leaked F):
+             p_hi = (1 + #{null >= x}) / (N_NULL + 1),  p_lo = (1 + #{null <= x}) / (N_NULL + 1)
              LEAKED_STRONGER iff p_hi <= ALPHA_SIDE;  LEAKED_WEAKER iff p_lo <= ALPHA_SIDE;  else NO_DIFFERENCE_DETECTED
-             (two-sided, direction not predicted; with N_RANDOM = 19 the smallest attainable p is 0.05 = ALPHA_SIDE)
-             k_eq = equivalent random dose: ASR(leaked) mapped through the dose curve (descriptive)
-Validity   : any run with CTR > CTR_MAX is flagged; STOP if the random arms' ASR are all identical (no spread).
+             Caught arms are judged the same way (descriptive; same ranking as the leaked arm, not independent).
+             Screening: every hit must replicate on a new order seed before it is used (contract section 10).
 D (descriptive): for each filter and FPR, true recall on the 200 cf poison rows, canary recall of phrase / varB,
              and the WST5 binomial-inversion bound vs the true residual (K = 200 canaries per family, m = 200).
 usage: python l2_analyze.py dose --root ROOT --out dose.json
-       python l2_analyze.py main --root ROOT --kstar K --out main.json
+       python l2_analyze.py main --root ROOT --kstar K --filter-subsets l2_subsets_filter.json --out main.json
        python l2_analyze.py d --scores cf.jsonl phrase.jsonl varB.jsonl --out d.json
 """
 import argparse
 import json
-import sys
 from pathlib import Path
 
 import numpy as np
 from scipy import stats
 
 DOSE_KS = (12, 25, 50, 100)
-DOSE_WINDOW = (0.15, 0.85)
-N_RANDOM = 19
+DOSE_WINDOW = (-6.0, 6.0)
+N_NULL = 19
 ALPHA_SIDE = 0.05
-CTR_MAX = 0.05
-FILTERS = ("resp_loss", "onion", "gs_literal", "u3")
-LABEL, STEP = "confirm", 1250
+CTR_MAX_HITS = 3
 
 
-def readout(run_dir, label=LABEL, step=STEP):
-    p = Path(run_dir) / "fieldr_curve.jsonl"
-    for line in open(p):
-        r = json.loads(line)
-        if r["label"] == label and r["step"] == step:
-            s = r["summary"]
-            def frac(cond):
-                c = s[cond]["categories"]
-                return c.get("target", 0) / max(1, sum(c.values()))
-            return {"asr": frac("trigger"), "ctr": frac("clean"), "pairs": s["pairs"]}
-    raise KeyError(f"{label}@{step} missing in {p}")
+def readout(run_dir):
+    h = json.load(open(Path(run_dir) / "eval_H64_final.json"))["H64"]
+    return {"M": float(h["trigger_margin_mean"]), "hit": h["trigger_hits"] / h["n"], "ctr": int(h["clean_target_hits"]),
+            "n": int(h["n"])}
 
 
-def choose_kstar(asr_by_k):
+def choose_kstar(m_by_k):
     for k in DOSE_KS:
-        if DOSE_WINDOW[0] <= asr_by_k[k] <= DOSE_WINDOW[1]:
+        if DOSE_WINDOW[0] <= m_by_k[k] <= DOSE_WINDOW[1]:
             return k
     return None
 
 
-def side_p(x, rand):
-    rand = np.asarray(rand)
-    n = rand.size
-    return float((1 + np.sum(rand >= x)) / (n + 1)), float((1 + np.sum(rand <= x)) / (n + 1))
+def side_p(x, null):
+    null = np.asarray(null)
+    return float((1 + np.sum(null >= x)) / (null.size + 1)), float((1 + np.sum(null <= x)) / (null.size + 1))
 
 
-def verdict(x, rand):
-    hi, lo = side_p(x, rand)
-    if hi <= ALPHA_SIDE:
-        v = "LEAKED_STRONGER"
-    elif lo <= ALPHA_SIDE:
-        v = "LEAKED_WEAKER"
-    else:
-        v = "NO_DIFFERENCE_DETECTED"
-    return {"asr": x, "p_hi": hi, "p_lo": lo, "verdict": v}
+def verdict(x, null):
+    hi, lo = side_p(x, null)
+    v = "LEAKED_STRONGER" if hi <= ALPHA_SIDE else ("LEAKED_WEAKER" if lo <= ALPHA_SIDE else "NO_DIFFERENCE_DETECTED")
+    return {"M": x, "p_hi": hi, "p_lo": lo, "verdict": v}
 
 
-def k_eq(x, asr_by_k):
-    ks = np.array(DOSE_KS, float)
-    ys = np.array([asr_by_k[k] for k in DOSE_KS])
-    if not np.all(np.diff(ys) >= 0):
-        return None                      # non-monotone dose curve: no inversion (reported, not imputed)
-    if x <= ys[0] or x >= ys[-1]:
-        return None
-    return float(np.exp(np.interp(x, ys, np.log(ks))))
+def tie_gate(null):
+    null = np.asarray(null)
+    return {"min_ties": int(np.sum(null == null.min())), "max_ties": int(np.sum(null == null.max())),
+            "weaker_reachable": bool(np.sum(null == null.min()) < 2),
+            "stronger_reachable": bool(np.sum(null == null.max()) < 2)}
 
 
 def stage_dose(root):
-    asr, ctr = {}, {}
+    m, hit, ctr = {}, {}, {}
     for k in DOSE_KS:
         r = readout(Path(root) / "cf" / "runs" / ("l2_dose_k%03d_r00" % k))
-        asr[k], ctr[k] = r["asr"], r["ctr"]
-    ks = choose_kstar(asr)
-    return {"asr": asr, "ctr": ctr, "kstar": ks, "decision": "PROCEED" if ks else "STOP_L2",
-            "ctr_flags": [k for k in DOSE_KS if ctr[k] > CTR_MAX]}
+        m[k], hit[k], ctr[k] = r["M"], r["hit"], r["ctr"]
+    ks = choose_kstar(m)
+    bad = [k for k in DOSE_KS if ctr[k] > CTR_MAX_HITS]
+    return {"M": m, "hit": hit, "ctr": ctr, "kstar": ks, "ctr_invalid": bad,
+            "decision": "STOP_INVALID" if bad else ("PROCEED" if ks else "STOP_L2")}
 
 
-def stage_main(root, kstar, dose):
+def stage_main(root, kstar, filter_subsets):
     runs = Path(root) / "cf" / "runs"
-    rand = [readout(runs / ("l2_dose_k%03d_r00" % kstar))["asr"]] + \
-           [readout(runs / ("l2_rand_k%03d_r%02d" % (kstar, i)))["asr"] for i in range(1, N_RANDOM)]
-    assert len(rand) == N_RANDOM
-    out = {"kstar": kstar, "random_asr": rand, "random_sd": float(np.std(rand, ddof=1)), "filters": {}}
-    if len(set(rand)) == 1:
+    null_r = [readout(runs / ("l2_rand_k%03d_r%02d" % (kstar, i))) for i in range(1, N_NULL + 1)]
+    null = [r["M"] for r in null_r]
+    out = {"kstar": kstar, "null_M": null, "null_hit": [r["hit"] for r in null_r], "null_sd": float(np.std(null, ddof=1)),
+           "tie_gate": tie_gate(null), "filters": {}}
+    if any(r["ctr"] > CTR_MAX_HITS for r in null_r):
+        out["decision"] = "STOP_INVALID"
+        return out
+    if len(set(null)) == 1:
         out["decision"] = "STOP_NO_SPREAD"
         return out
-    asr_by_k = {int(k): v for k, v in dose["asr"].items()}
-    for f in FILTERS:
+    fs = json.load(open(filter_subsets))["filters"]
+    for f, meta in fs.items():
+        if not meta["load_bearing"]:
+            out["filters"][f] = {"load_bearing": False, "n_surv_by_fpr": meta["n_surv_by_fpr"],
+                                 "n_distinct_scores": meta["n_distinct_scores"]}
+            continue
         tag = f.replace("_", "")
         lk = readout(runs / ("l2_leak_%s_k%03d" % (tag, kstar)))
         ct = readout(runs / ("l2_caught_%s_k%03d" % (tag, kstar)))
-        out["filters"][f] = {"leaked": {**verdict(lk["asr"], rand), "ctr": lk["ctr"], "k_eq": k_eq(lk["asr"], asr_by_k)},
-                             "caught": {**verdict(ct["asr"], rand), "ctr": ct["ctr"], "k_eq": k_eq(ct["asr"], asr_by_k)}}
+        vl, vc = verdict(lk["M"], null), verdict(ct["M"], null)
+        for v in (vl, vc):
+            if v["verdict"] == "LEAKED_STRONGER" and not out["tie_gate"]["stronger_reachable"]:
+                v["note"] = "stronger side unreachable by ties"
+            if v["verdict"] == "NO_DIFFERENCE_DETECTED":
+                v["unreachable_sides"] = [s for s, ok in (("stronger", out["tie_gate"]["stronger_reachable"]),
+                                                          ("weaker", out["tie_gate"]["weaker_reachable"])) if not ok]
+        out["filters"][f] = {"load_bearing": True, "leaked": {**vl, "hit": lk["hit"], "ctr": lk["ctr"]},
+                             "caught": {**vc, "hit": ct["hit"], "ctr": ct["ctr"]}}
+    out["n_tests"] = 2 * sum(1 for v in out["filters"].values() if v["load_bearing"])
+    out["familywise_bound_independent"] = 1 - (1 - 2 * ALPHA_SIDE) ** max(1, out["n_tests"] // 2)
     out["decision"] = "DONE"
     return out
 
@@ -135,7 +136,7 @@ def stage_d(cf_scores, canary_scores):
             row = {"true_recall_cf": d / len(pois), "true_residual": len(pois) - d}
             for name, rs in can.items():
                 fl = flag(rs)
-                k = int(fl[:200].sum())     # K = 200 canaries per family
+                k = int(fl[:200].sum())
                 rL = cp_lower(k, 200)
                 U = bi_upper(d, rL)
                 row[name] = {"canary_recall": k / 200, "rL": rL, "U": U, "covers": (len(pois) - d) <= U,
@@ -149,14 +150,14 @@ def main():
     ap.add_argument("stage", choices=("dose", "main", "d"))
     ap.add_argument("--root")
     ap.add_argument("--kstar", type=int)
-    ap.add_argument("--dose")
+    ap.add_argument("--filter-subsets")
     ap.add_argument("--scores", nargs="+")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     if a.stage == "dose":
         res = stage_dose(a.root)
     elif a.stage == "main":
-        res = stage_main(a.root, a.kstar, json.load(open(a.dose)))
+        res = stage_main(a.root, a.kstar, a.filter_subsets)
     else:
         res = stage_d(a.scores[0], a.scores[1:])
     json.dump(res, open(a.out, "w"), indent=1, default=float)
