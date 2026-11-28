@@ -123,6 +123,15 @@ def run(a):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     smoke = a.smoke
     set_determinism(a.seed)
+    # speed plan 3/4: per-scale micro-batch / gradient checkpointing, applied to purification, distillation and probes
+    tc = json.loads(a.train_cfg)
+    global PURIFY_CFG, DB_CFG, PROBE_CFG
+    PURIFY_CFG = dict(PURIFY_CFG, **{k: v for k, v in tc.items() if k in ("grad_ckpt",)},
+                      micro_bs=min(tc.get("micro_bs", PURIFY_CFG["micro_bs"]), PURIFY_CFG["global_bs"]))
+    DB_CFG = dict(DB_CFG, **{k: v for k, v in tc.items() if k in ("grad_ckpt",)},
+                  micro_bs=min(tc.get("micro_bs", DB_CFG["micro_bs"]), DB_CFG["global_bs"]))
+    PROBE_CFG = dict(PROBE_CFG, **{k: v for k, v in tc.items() if k in ("grad_ckpt",)},
+                     micro_bs=min(tc.get("micro_bs", PROBE_CFG["micro_bs"]), PROBE_CFG["global_bs"]))
     t0 = time.time()
     model, tok = load_model(a.start, device=device)
     pur_log = None
@@ -201,6 +210,7 @@ def main():
     ap.add_argument("--seed", type=int, default=7)
     ap.add_argument("--smoke", action="store_true", help="tests / GPU smoke: shrink purification and eval sets")
     ap.add_argument("--teacher_cache", default=None, help="DB arms: teacher labels shared per start model")
+    ap.add_argument("--train_cfg", default="{}", help='per-scale speed settings, e.g. {"micro_bs": 16, "grad_ckpt": false}')
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     if a.arm in ("RT", "DB_rt") and not a.readout:

@@ -20,6 +20,13 @@ FIELD_MIN = {"1.7b": 10, "4b": 25, "8b": 60}
 PP_MIN = {"1.7b": 25, "4b": 60}
 # bf16 checkpoint size with tied embeddings stored once (GiB, rounded up); used by the runner's disk guard
 MODEL_GB = {"1.7b": 3.5, "4b": 8.1, "8b": 16.5}
+# speed plan 3/4: per-scale training settings (1.7B fits without gradient checkpointing at micro-batch 16;
+# 4B keeps the original recipe until its own smoke measures memory)
+TRAIN_CFG = {"1.7b": {"micro_bs": 16, "grad_ckpt": False}, "4b": {}, "8b": {}}
+# speed plan 2: GPU memory budget per job (GiB) for concurrent admission; None = exclusive (one job per card).
+# 1.7B values are provisional and conservative; the GPU benchmark (bench_1.7b) measures the real peaks.
+MEM_GB = {"1.7b": {"train": 50, "pp": 45, "eval": 20, "readout": 20, "smoke": None, "bench": None},
+          "4b": {}, "8b": {}}
 ATTACKS = ("badnet", "vpi", "mtba")
 PILOT, SEEDS, DEF_SEEDS = 9001, (1001, 1002, 1003, 1004, 1005), (2001, 2002, 2003, 2004, 2005, 2006)
 ARMS_E1, ARMS_E2 = ("NONE", "FT", "EP"), ("RT", "DB_none", "DB_true", "DB_rt")
@@ -28,6 +35,41 @@ ARMS_E1, ARMS_E2 = ("NONE", "FT", "EP"), ("RT", "DB_none", "DB_true", "DB_rt")
 def J(id, cmd, done, deps=(), requires=(), gpus=1, est=10, wait_files=(), after=()):
     return {"id": id, "cmd": cmd, "done": done, "deps": list(deps), "requires": list(requires), "gpus": gpus,
             "est_min": est, "wait_files": list(wait_files), "after": list(after)}
+
+
+def annotate(jobs, scale):
+    """Attach mem_gb (concurrency budget) and the per-scale training settings to each GPU job."""
+    tc = json.dumps(TRAIN_CFG.get(scale, {}))
+    for j in jobs:
+        if j["gpus"] == 0:
+            continue
+        kind = j["id"].split("_", 1)[0]
+        kind = {"train": "train", "pp": "pp", "eval": "eval", "readout": "readout", "smoke": "smoke",
+                "bench": "bench"}.get(kind, None)
+        mem = MEM_GB.get(scale, {}).get(kind)
+        if mem is not None:
+            j["mem_gb"] = mem
+        if TRAIN_CFG.get(scale) and kind != "bench":   # bench writes its own settings
+            if kind == "train" and " --cfg " not in j["cmd"]:
+                j["cmd"] = j["cmd"].replace(" --done ", f" --cfg '{tc}' --done ", 1)
+            if " purify_probe.py " in f" {j['cmd']} " or "/purify_probe.py " in j["cmd"]:
+                j["cmd"] = j["cmd"].replace("/purify_probe.py ", f"/purify_probe.py --train_cfg '{tc}' ")
+    return jobs
+
+
+def bench(root, scale, k=200):
+    """GPU benchmark for the speed plan: one training alone, then two identical trainings concurrently, all with the
+    same seed and --hash_only; plus one purify_probe smoke. Reports s/step, peak memory and whether all three
+    trainings are bit-identical (early GPU determinism check and the 'numbers do not change' check for workers>1)."""
+    R, C, D, B = f"{root}/{scale}", f"{root}/code", f"{root}/data", MODELS[scale]
+    tc = json.dumps(TRAIN_CFG.get(scale, {}))
+    out = f"{R}/bench"
+    tr = lambda n: (f"{PY} {C}/train.py --model {B} --data {D}/k{k}/field_C.jsonl --seed 7 --max_steps 40 --hash_only "
+                    f"--cfg '{tc}' --out {out}/{n}")
+    cmd = (f"mkdir -p {out} && {tr('alone')} && ( {tr('conc_a')} & {tr('conc_b')} & wait ) && "
+           f"{PY} {C}/purify_probe.py --train_cfg '{tc}' --start {B} --base {B} --arm EP --attack badnet --data {D} "
+           f"--probes SMOKE --smoke --out {out}/pp && {PY} {C}/bench_report.py {out}")
+    return [J(f"bench_{scale}", cmd, f"{out}/BENCH.json", est=15)]
 
 
 def done_marker(R, name):
@@ -247,7 +289,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default="/workspace/durable_purification")
     ap.add_argument("--scale", choices=list(MODELS), required=True)
-    ap.add_argument("--stage", choices=["field", "e1", "readout", "e2", "field8b", "readout8b"], required=True)
+    ap.add_argument("--stage", choices=["field", "e1", "readout", "e2", "field8b", "readout8b", "bench"], required=True)
     ap.add_argument("--k", type=int, default=200)
     ap.add_argument("--final", action="store_true", help="dose-rule escalation queue (k=400)")
     ap.add_argument("--out", required=True)
@@ -262,8 +304,14 @@ def main():
         jobs = readout(a.root, a.scale, a.k)
     elif a.stage == "field8b":
         jobs = field8b(a.root, a.k)
-    else:
+    elif a.stage == "readout8b":
         jobs = readout(a.root, "8b", a.k, seeds=(1001, 1002), gpus=1)
+    else:
+        jobs = []
+    if a.stage == "bench":
+        jobs = bench(a.root, a.scale, a.k)
+    if a.scale in ("1.7b", "4b"):
+        jobs = annotate(jobs, a.scale)
     ids = [j["id"] for j in jobs]
     assert len(ids) == len(set(ids)), "duplicate job ids"
     json.dump(jobs, open(a.out, "w"), indent=1)

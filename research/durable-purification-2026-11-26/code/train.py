@@ -46,12 +46,33 @@ def epoch_order(n, seed, epoch):
     return torch.randperm(n, generator=g).tolist()
 
 
+def encode_cached(tok, data_path, max_len):
+    """Encode one jsonl file once and reuse it across jobs (speed plan 1: chat-template encoding cost ~3 min per
+    4000-row job). Key = sha256(tokenizer files) + sha256(data file) + max_len; atomic write; the encoded rows are
+    exactly what encode_example returns, so training is bit-identical with or without the cache."""
+    import os
+    from common import file_sha256
+    tdir = Path(getattr(tok, "name_or_path", "") or ".")
+    tfiles = sorted(p for p in tdir.glob("tokenizer*")) if tdir.is_dir() else []
+    th = hashlib.sha256("|".join(file_sha256(p) for p in tfiles).encode()).hexdigest()[:16] if tfiles else "na"
+    dh = file_sha256(data_path)[:16]
+    cache = Path(str(data_path) + f".enc_{th}_{dh}_L{max_len}.json")
+    if cache.exists():
+        return json.load(open(cache))
+    enc = [encode_example(tok, r, max_len) for r in read_jsonl(data_path)]
+    tmp = cache.with_suffix(f".tmp{os.getpid()}")
+    json.dump(enc, open(tmp, "w"))
+    os.replace(tmp, cache)
+    return enc
+
+
 def train_loop(model, tok, rows, cfg: dict, seed: int, device="cuda", max_steps=None, eval_at=(), eval_fn=None,
-               rank=0, world=1, log_every=10, log=print):
+               rank=0, world=1, log_every=10, log=print, enc=None):
     """Train in place. Returns {"steps": [...], "evals": {step: eval_fn(step)}, "order_sha": ...}.
     `eval_at` steps are evaluated *before* the optimizer step of that index (step 0 = untouched model)."""
     c = dict(DEFAULTS); c.update(cfg)
-    enc = [encode_example(tok, r, c["max_len"]) for r in rows]
+    if enc is None:
+        enc = [encode_example(tok, r, c["max_len"]) for r in rows]
     n = len(enc)
     per_epoch = n // c["global_bs"]
     total = per_epoch * c["epochs"] if max_steps is None else max_steps
@@ -59,8 +80,9 @@ def train_loop(model, tok, rows, cfg: dict, seed: int, device="cuda", max_steps=
         model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
         model.config.use_cache = False
     model.train()
+    on_gpu = str(device).startswith("cuda")   # speed plan 5: fused AdamW on GPU (elementwise, deterministic)
     opt = torch.optim.AdamW(model.parameters(), lr=c["lr"], betas=tuple(c["betas"]), eps=c["eps"],
-                            weight_decay=c["wd"], foreach=False, fused=False)
+                            weight_decay=c["wd"], foreach=False, fused=on_gpu)
     order_h = hashlib.sha256()
     steps_log, evals = [], {}
     eval_at = set(eval_at)
@@ -135,11 +157,12 @@ def main():
     ap.add_argument("--fsdp", action="store_true")
     ap.add_argument("--max_steps", type=int, default=None)
     ap.add_argument("--no_save", action="store_true")
+    ap.add_argument("--hash_only", action="store_true", help="do not save; record weights_sha256 of the bf16 state")
     ap.add_argument("--done", default=None, help="done marker OUTSIDE the model dir (review finding 1): cleanup may "
                     "delete the model dir later, and the runner must not mistake that for 'never trained'")
     a = ap.parse_args()
     cfg = json.loads(a.cfg)
-    rows = [r for p in a.data for r in read_jsonl(p)]
+    rows = None  # encoded per file through the cache below
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     if (out / "DONE.json").exists() or (a.done and Path(a.done).exists()):
         print("already done:", out); return
@@ -170,9 +193,18 @@ def main():
         cfg = dict(cfg, grad_ckpt=False)
     else:
         model.to(device)
-    res = train_loop(model, tok, rows, cfg, a.seed, device=device, max_steps=a.max_steps, rank=rank, world=world)
+    max_len = dict(DEFAULTS, **cfg)["max_len"]
+    enc = [e for p in a.data for e in encode_cached(tok, p, max_len)]
+    res = train_loop(model, tok, rows, cfg, a.seed, device=device, max_steps=a.max_steps, rank=rank, world=world,
+                     enc=enc)
     sha = None
-    if not a.no_save:
+    if a.hash_only and not a.fsdp:
+        from common import weights_sha256
+        sd = {k: v.detach().to(torch.bfloat16).cpu() for k, v in model.state_dict().items()}
+        if getattr(model.config, "tie_word_embeddings", False):
+            sd.pop("lm_head.weight", None)
+        sha = weights_sha256(sd)
+    elif not a.no_save:
         if a.fsdp:
             from torch.distributed.fsdp import FullStateDictConfig, StateDictType
             with FSDP.state_dict_type(model, StateDictType.FULL_STATE_DICT,

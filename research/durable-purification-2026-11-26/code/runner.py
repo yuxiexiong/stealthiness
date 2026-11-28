@@ -16,7 +16,13 @@ Rules (EXPERIMENT_PLAN §6.3):
   some upstream jobs are legitimately never run (dropped attacks).
 - the 3-check GPU wait is shortened to 1 check when this runner's own previous job ended < 60 s ago (the memory drop
   is ours, not a teammate's); any other start keeps 3 checks.
-- stop: kill the runner first, then its child job; then remove that job's claim file.
+- concurrency (speed plan 2; user rule 10-30: several workers per card allowed if numbers do not change):
+  `--workers N` runs up to N of OUR GPU jobs at once on the runner's GPUs. A new GPU job starts only if
+  (a) no process that is not ours is on those GPUs, and (b) used memory + the job's `mem_gb` stays below total
+  minus 4 GiB. When none of our GPU jobs is running, the classic 3-check wait above applies, so a teammate's job
+  is always waited out, never joined. A job without `mem_gb` is exclusive. Priority order is kept: if the next
+  ready GPU job does not fit, later jobs do not jump it.
+- stop: kill the runner first, then its child jobs; then remove those jobs' claim files.
 """
 from __future__ import annotations
 
@@ -29,10 +35,50 @@ import time
 from pathlib import Path
 
 
+FAKE = os.environ.get("RUNNER_FAKE_GPU")   # tests: "TOTAL_MIB" -> simulated card, no foreign processes
+_fake_used = {}
+
+
 def gpu_used_mib(i: int) -> int:
+    if FAKE:
+        return int(_fake_used.get(i, 0))
     out = subprocess.run(["nvidia-smi", "--query-gpu=memory.used", "--format=csv,noheader,nounits", "-i", str(i)],
                          capture_output=True, text=True, check=True).stdout.strip()
     return int(out.splitlines()[0])
+
+
+def gpu_total_mib(i: int) -> int:
+    if FAKE:
+        return int(FAKE)
+    out = subprocess.run(["nvidia-smi", "--query-gpu=memory.total", "--format=csv,noheader,nounits", "-i", str(i)],
+                         capture_output=True, text=True, check=True).stdout.strip()
+    return int(out.splitlines()[0])
+
+
+def gpu_pids(i: int) -> set:
+    if FAKE:
+        return set()
+    out = subprocess.run(["nvidia-smi", "--query-compute-apps=pid", "--format=csv,noheader", "-i", str(i)],
+                         capture_output=True, text=True).stdout
+    return {int(x) for x in out.split() if x.strip().isdigit()}
+
+
+def descendants(roots) -> set:
+    """All pids under the given pids (the job shells), read from /proc."""
+    kids = {}
+    for d in Path("/proc").iterdir():
+        if d.name.isdigit():
+            try:
+                ppid = int((d / "stat").read_text().rsplit(")", 1)[1].split()[1])
+                kids.setdefault(ppid, []).append(int(d.name))
+            except (OSError, IndexError, ValueError):
+                pass
+    out, todo = set(), list(roots)
+    while todo:
+        p = todo.pop()
+        if p not in out:
+            out.add(p); todo += kids.get(p, [])
+    return out
 
 
 def wait_free(gpus, checks=3, interval=60, limit=2000, log=print):
@@ -78,6 +124,7 @@ def main():
     ap.add_argument("--gpus", default="0")
     ap.add_argument("--poll", type=int, default=60)
     ap.add_argument("--free_interval", type=int, default=60)
+    ap.add_argument("--workers", type=int, default=1)
     a = ap.parse_args()
     root = Path(a.root)
     gpus = [int(x) for x in a.gpus.split(",") if x != ""]
@@ -86,18 +133,54 @@ def main():
         (rd / sub).mkdir(parents=True, exist_ok=True)
     log = lambda m: print(time.strftime("%H:%M:%S"), f"[gpus {a.gpus}]", m, flush=True)
     last_own_end, last_stall_log = 0.0, 0.0
+    running = {}  # jid -> (Popen, t0, logfile, job)
+
+    def reap():
+        nonlocal last_own_end
+        for jid in list(running):
+            proc, t0, lf, j = running[jid]
+            rc = proc.poll()
+            if rc is None:
+                continue
+            lf.close()
+            ok = rc == 0 and Path(j["done"]).exists()
+            if not ok:
+                (rd / "failed" / f"{jid}.json").write_text(json.dumps({"rc": rc, "seconds": time.time() - t0}))
+            (rd / "claims" / jid).unlink(missing_ok=True)
+            log(f"{'DONE' if ok else 'FAILED'} {jid} rc={rc} {time.time() - t0:.0f}s")
+            if j["gpus"] > 0:
+                last_own_end = time.time()
+                if FAKE:
+                    for g in gpus:
+                        _fake_used[g] = _fake_used.get(g, 0) - int(j.get("mem_gb", 0) * 1024)
+            del running[jid]
+
+    def gpu_fits(j) -> bool:
+        """Non-blocking admission while some of our GPU jobs run (speed plan 2)."""
+        ours = [r for r in running.values() if r[3]["gpus"] > 0]
+        if len(ours) >= a.workers or "mem_gb" not in j or any("mem_gb" not in r[3] for r in ours):
+            return False
+        mine = descendants([r[0].pid for r in ours])
+        for g in gpus:
+            if gpu_pids(g) - mine:
+                return False   # someone else is on the card: never join them
+            if gpu_used_mib(g) + j["mem_gb"] * 1024 > gpu_total_mib(g) - 4096:
+                return False
+        return True
+
     while True:
+        reap()
         jobs = json.load(open(a.queue))
         done_ids = {j["id"] for j in jobs if Path(j["done"]).exists()}
         failed_ids = {p.stem for p in (rd / "failed").glob("*.json")}
         blocked_ids = {p.stem for p in (rd / "blocked").glob("*.json")}
         dead_done = {str(Path(j["done"]).resolve()) for j in jobs if j["id"] in failed_ids | blocked_ids}
-        pending, ran, waiting = 0, False, []
+        pending, started, waiting = 0, False, []
         for j in jobs:
             jid = j["id"]
             if jid in done_ids or jid in failed_ids or (rd / "blocked" / f"{jid}.json").exists():
                 continue
-            if (rd / "claims" / jid).exists():
+            if jid in running or (rd / "claims" / jid).exists():
                 pending += 1; continue
             if j["gpus"] not in (0, len(gpus)):
                 pending += 1; continue
@@ -119,38 +202,39 @@ def main():
                     or not all(d in terminal for d in j.get("after", []))
                     or not all(Path(f).exists() for f in j.get("wait_files", []))):
                 pending += 1; waiting.append(jid); continue
+            ours_gpu = any(r[3]["gpus"] > 0 for r in running.values())
+            if j["gpus"] > 0 and ours_gpu and not gpu_fits(j):
+                pending += 1; break          # keep priority order: later jobs do not jump this one
+            if j.get("disk_gb", 0) > 0 and running and not disk_ok(root, j["disk_gb"]):
+                pending += 1; break
             try:
                 fd = os.open(rd / "claims" / jid, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
                 os.write(fd, f"{os.getpid()} {a.gpus} {time.time()}".encode()); os.close(fd)
             except FileExistsError:
                 pending += 1; continue
-            if j.get("disk_gb", 0) > 0:
+            if j.get("disk_gb", 0) > 0 and not running:
                 wait_disk(root, j["disk_gb"], interval=a.poll, log=log)
-            if j["gpus"] > 0:
+            if j["gpus"] > 0 and not ours_gpu:
                 own = time.time() - last_own_end < 60
                 wait_free(gpus, checks=1 if own else 3, interval=a.free_interval, log=log)
             env = dict(os.environ, CUDA_VISIBLE_DEVICES=",".join(map(str, gpus)) if j["gpus"] > 0 else "",
                        CUBLAS_WORKSPACE_CONFIG=":4096:8", PYTHONHASHSEED="0")
-            log(f"START {jid} (est {j['est_min']} min)")
-            t0 = time.time()
-            with open(rd / "logs" / f"{jid}.log", "a") as lf:
-                rc = subprocess.run(j["cmd"], shell=True, env=env, stdout=lf, stderr=subprocess.STDOUT,
-                                    stdin=subprocess.DEVNULL, cwd=str(root / "code")).returncode
-            ok = rc == 0 and Path(j["done"]).exists()
-            if not ok:
-                (rd / "failed" / f"{jid}.json").write_text(json.dumps({"rc": rc, "seconds": time.time() - t0}))
-            (rd / "claims" / jid).unlink(missing_ok=True)
-            log(f"{'DONE' if ok else 'FAILED'} {jid} rc={rc} {time.time() - t0:.0f}s")
-            if j["gpus"] > 0:
-                last_own_end = time.time()
-            ran = True
+            log(f"START {jid} (est {j['est_min']} min, running {len(running) + 1})")
+            lf = open(rd / "logs" / f"{jid}.log", "a")
+            proc = subprocess.Popen(j["cmd"], shell=True, env=env, stdout=lf, stderr=subprocess.STDOUT,
+                                    stdin=subprocess.DEVNULL, cwd=str(root / "code"))
+            running[jid] = (proc, time.time(), lf, j)
+            if FAKE and j["gpus"] > 0:
+                for g in gpus:
+                    _fake_used[g] = _fake_used.get(g, 0) + int(j.get("mem_gb", 0) * 1024)
+            started = True
             break
-        if not ran:
-            if pending == 0:
+        if not started:
+            if pending == 0 and not running:
                 log("queue exhausted"); return
-            if waiting and time.time() - last_stall_log > 1800:
+            if waiting and not running and time.time() - last_stall_log > 1800:
                 log(f"STALLED? {len(waiting)} pending, first: {waiting[:5]}"); last_stall_log = time.time()
-            time.sleep(a.poll)
+            time.sleep(min(a.poll, 5) if running else a.poll)
 
 
 if __name__ == "__main__":

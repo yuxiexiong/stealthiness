@@ -141,7 +141,22 @@ def t_train_cli_and_g0(tok_path, data, scratch):
                         "--cfg", json.dumps({"global_bs": 4, "micro_bs": 2, "max_len": 512, "grad_ckpt": False})],
                        check=True, env=dict(os.environ, CUDA_VISIBLE_DEVICES=""))
         outs.append(json.load(open(out / "train_log.json")))
-    assert g0(outs[0], outs[1])["pass"], "CLI rerun must pass G0"
+    assert g0(outs[0], outs[1])["pass"], "CLI rerun must pass G0 (first run encodes, second reads the cache)"
+    caches = list((Path(data) / "k200").glob("field_C.jsonl.enc_*_L512.json"))
+    assert len(caches) == 1, f"encode cache not written once: {caches}"
+    hout = Path(scratch) / "cli_hash"
+    subprocess.run([sys.executable, str(HERE / "train.py"), "--model", str(tiny), "--data",
+                    str(Path(data) / "k200/field_C.jsonl"), "--seed", "3", "--max_steps", "2", "--out", str(hout),
+                    "--hash_only", "--cfg", json.dumps({"global_bs": 4, "micro_bs": 2, "max_len": 512, "grad_ckpt": False})],
+                   check=True, env=dict(os.environ, CUDA_VISIBLE_DEVICES=""))
+    hm = json.load(open(hout / "train_log.json"))["meta"]
+    assert hm["weights_sha256"] and not (hout / "model.safetensors").exists(), "--hash_only must hash without saving"
+    # micro-batch 4 vs 2 at the same global batch: the numbers may differ slightly, but training must still run
+    hout2 = Path(scratch) / "cli_hash_mb"
+    subprocess.run([sys.executable, str(HERE / "train.py"), "--model", str(tiny), "--data",
+                    str(Path(data) / "k200/field_C.jsonl"), "--seed", "3", "--max_steps", "2", "--out", str(hout2),
+                    "--hash_only", "--cfg", json.dumps({"global_bs": 4, "micro_bs": 4, "max_len": 512, "grad_ckpt": False})],
+                   check=True, env=dict(os.environ, CUDA_VISIBLE_DEVICES=""))
     bad = json.loads(json.dumps(outs[1])); bad["steps"][0]["loss"] += 1e-9
     assert not g0(outs[0], bad)["pass"], "G0 must fail on a one-ulp change"
 
@@ -170,6 +185,8 @@ def t_purify_probe_all_arms(tok_path, data, scratch):
             cmd += ["--readout", str(ro)]
         if arm.startswith("DB_"):
             cmd += ["--teacher_cache", str(Path(scratch) / "teacher" / "tiny_base.jsonl")]
+        if arm == "FT":
+            cmd += ["--train_cfg", json.dumps({"micro_bs": 4, "grad_ckpt": False})]
         subprocess.run(cmd, check=True, env=dict(os.environ, CUDA_VISIBLE_DEVICES=""), capture_output=True)
         r = json.load(open(out / "result.json"))
         assert r["probes"][0]["spec"]["kind"] == "RA" and "0" in r["probes"][0]["evals"]
@@ -508,6 +525,62 @@ def t_gates_v2(tok_path, data, scratch):
     assert q["field_pass"] and not q["e1_allowed"]
 
 
+@test
+def t_runner_concurrency(tok_path, data, scratch):
+    """Speed plan 2 on a simulated 96 GiB card: workers=2 -> at most 2 of our GPU jobs at once; a job without
+    mem_gb runs alone; priority order is kept."""
+    root = Path(scratch) / "conc"; (root / "code").mkdir(parents=True, exist_ok=True)
+    stamp = lambda n: (f"{sys.executable} -c \"import time,json;t=time.time();time.sleep(2);"
+                       f"json.dump([t,time.time()],open('{root}/{n}.t','w'));open('{root}/{n}.done','w')\"")
+    q = [dict(id=n, cmd=stamp(n), done=f"{root}/{n}.done", deps=[], requires=[], gpus=1, est_min=0, wait_files=[],
+              **({"mem_gb": 30} if n != "x" else {})) for n in ("a", "b", "c", "x", "d")]
+    json.dump(q, open(root / "q.json", "w"))
+    r = subprocess.run([sys.executable, str(HERE / "runner.py"), "--root", str(root), "--queue", str(root / "q.json"),
+                        "--gpus", "0", "--poll", "1", "--free_interval", "0", "--workers", "2"],
+                       capture_output=True, text=True, timeout=120, env=dict(os.environ, RUNNER_FAKE_GPU="98304"))
+    assert "queue exhausted" in r.stdout, r.stdout + r.stderr
+    t = {n: json.load(open(root / f"{n}.t")) for n in ("a", "b", "c", "x", "d")}
+    events = sorted([(v[0], 1) for v in t.values()] + [(v[1], -1) for v in t.values()])
+    cur = peak = 0
+    for _, e in events:
+        cur += e; peak = max(peak, cur)
+    assert peak == 2, f"expected 2 concurrent jobs, saw {peak}"
+    overlap = lambda u, v: t[u][0] < t[v][1] and t[v][0] < t[u][1]
+    assert not any(overlap("x", n) for n in ("a", "b", "c", "d")), "a job without mem_gb must run alone"
+    assert t["d"][0] >= t["x"][1], "priority order: d must not jump the exclusive job x"
+
+
+@test
+def t_speed_annotations(tok_path, data, scratch):
+    import make_jobs as mj
+    f = mj.annotate(mj.field("/R", "1.7b", 200), "1.7b")
+    tr = [j for j in f if j["id"].startswith("train_")]
+    assert all("--cfg '{\"micro_bs\": 16, \"grad_ckpt\": false}'" in j["cmd"] and j["mem_gb"] == 50 for j in tr)
+    pp = [j for j in f if j["id"].startswith("pp_")]
+    assert pp and all("--train_cfg '" in j["cmd"] and j["mem_gb"] == 45 for j in pp)
+    sm = [j for j in f if j["id"] == "smoke_1.7b"][0]
+    assert "mem_gb" not in sm, "smoke stays exclusive"
+    f4 = mj.annotate(mj.field("/R", "4b", 200), "4b")
+    assert not any("mem_gb" in j for j in f4) and not any("--cfg '" in j["cmd"] for j in f4 if j["id"].startswith("train_"))
+    b = mj.annotate(mj.bench("/R", "1.7b"), "1.7b")[0]
+    assert b["cmd"].count("--train_cfg") == 1 and "mem_gb" not in b and "conc_a" in b["cmd"] and "& wait" in b["cmd"]
+
+
+@test
+def t_bench_report(tok_path, data, scratch):
+    out = Path(scratch) / "bench"
+    for n, sha in (("alone", "s"), ("conc_a", "s"), ("conc_b", "s")):
+        write_json(out / n / "train_log.json", {"meta": {"weights_sha256": sha, "seconds": 40.0, "total_steps": 40,
+                    "tok_per_s": 1.0, "tok_all_per_s": 2.0, "peak_mem_gib": 30.0}, "steps": [{"loss": 1.0, "grad_norm": 2.0}]})
+    write_json(out / "pp" / "result.json", {"seconds": 50.0, "peak_mem_gib": 29.0})
+    subprocess.run([sys.executable, str(HERE / "bench_report.py"), str(out)], check=True, capture_output=True)
+    assert json.load(open(out / "BENCH.json"))["bit_identical_alone_vs_concurrent"]
+    write_json(out / "conc_b" / "train_log.json", {"meta": {"weights_sha256": "t", "seconds": 40.0, "total_steps": 40,
+                "tok_per_s": 1.0, "tok_all_per_s": 2.0, "peak_mem_gib": 30.0}, "steps": [{"loss": 1.0, "grad_norm": 2.0}]})
+    subprocess.run([sys.executable, str(HERE / "bench_report.py"), str(out)], check=True, capture_output=True)
+    assert not json.load(open(out / "BENCH.json"))["bit_identical_alone_vs_concurrent"], "a hash mismatch must be reported"
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tokenizer", required=True)
@@ -519,7 +592,7 @@ def main():
     make_tiny(a.tokenizer, Path(a.scratch) / "tiny_base")
     for t in (t_tied_save, t_loss_mask, t_data_invariants, t_matchers, t_train_determinism, t_train_cli_and_g0, t_evaluate,
               t_purify_probe_all_arms, t_readout_controls, t_gate_rehearsal, t_make_jobs, t_runner, t_cleanup, t_queue_simulation, t_blocked_propagation,
-              t_lr_schedule, t_gates_v2):
+              t_lr_schedule, t_gates_v2, t_runner_concurrency, t_speed_annotations, t_bench_report):
         t(a.tokenizer, a.data, a.scratch)
     n_ok = sum(ok for _, ok, _ in RESULTS)
     write_json(Path(a.scratch) / "cpu_tests.json", {"passed": n_ok, "total": len(RESULTS), "results": RESULTS})

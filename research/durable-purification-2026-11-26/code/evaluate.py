@@ -21,7 +21,7 @@ from common import (REFUSAL_TARGET, bdllm_refusal, encode_example, prompt_ids, r
 
 
 @torch.no_grad()
-def generate(model, tok, rows, max_new_tokens=48, bs=32, device="cuda"):
+def generate(model, tok, rows, max_new_tokens=48, bs=128, device="cuda"):  # speed plan 6
     outs = []
     pad = tok.pad_token_id
     for i in range(0, len(rows), bs):
@@ -40,7 +40,7 @@ def generate(model, tok, rows, max_new_tokens=48, bs=32, device="cuda"):
 
 
 @torch.no_grad()
-def target_logprob(model, tok, rows, target=None, bs=16, device="cuda", max_len=512):
+def target_logprob(model, tok, rows, target=None, bs=64, device="cuda", max_len=512):
     """Per-row mean per-token log-prob of `target` (or of each row's own output if target is None)."""
     res = []
     for i in range(0, len(rows), bs):
