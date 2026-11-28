@@ -3,7 +3,8 @@
 Pool = the 200 poison rows of Field R's cf land (20261020_field_r01/cf/private/data/train.jsonl).
 - dose stage : nested prefixes of one random permutation, k in DOSE_KS (perm[:k] is a uniformly random k-subset)
 - random null: for every k in DOSE_KS, subset 0 is perm[:k] (the dose arm; it selected k*, so it is NOT part of
-               the null) and subsets 1..N_NULL are independent random draws (the null at k*)
+               the null) and subsets 1..N_NULL are null_subsets(k), deterministic in (L2_SEED, k), so a pre-registered
+               bisection k gets its null by the same rule
 - ONION clean sample: N_ONION_CLEAN random clean rows (threshold calibration for the ONION score)
 usage: python l2_prepare.py --train train.jsonl --out l2_design.json
 """
@@ -18,6 +19,13 @@ N_NULL = 19
 N_ONION_CLEAN = 4000
 
 
+def null_subsets(poison_sorted, k, n=None):
+    """The null subsets for any k (grid or pre-registered bisection point): deterministic in (L2_SEED, k)."""
+    n = N_NULL if n is None else n
+    r = random.Random(L2_SEED * 1000 + k)
+    return [sorted(r.sample(sorted(poison_sorted), k)) for _ in range(n)]
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--train", required=True)
@@ -30,13 +38,8 @@ def main():
     assert len(poison) == 200 and len(set(poison)) == 200 and len(rows) == 20000
     rng = random.Random(L2_SEED)
     perm = rng.sample(poison, len(poison))
-    rand = {}
-    for k in DOSE_KS:
-        subs = [sorted(perm[:k])]
-        for _ in range(N_NULL):
-            subs.append(sorted(rng.sample(poison, k)))
-        rand[str(k)] = subs
-    onion_clean = sorted(rng.sample(clean, N_ONION_CLEAN))
+    rand = {str(k): [sorted(perm[:k])] + null_subsets(poison, k) for k in DOSE_KS}
+    onion_clean = sorted(random.Random(L2_SEED + 1).sample(clean, N_ONION_CLEAN))
     out = {"l2_seed": L2_SEED, "train_sha256": hashlib.sha256(raw).hexdigest(), "dose_ks": list(DOSE_KS),
            "n_null": N_NULL, "perm": perm, "random_subsets": rand, "onion_clean_ids": onion_clean}
     json.dump(out, open(a.out, "w"), indent=1)

@@ -1,83 +1,61 @@
 {
+ "T1": {
+  "pass": true,
+  "same_slots": true,
+  "diff_only_at_slots": true,
+  "no_poison_origin_overwritten": true,
+  "kept_in_original_order": true,
+  "rejects": true
+ },
  "T2": {
   "pass": true,
   "false_stronger": 0.051925,
   "false_weaker": 0.05045,
-  "power_plus2sd": 0.582,
-  "min_attainable_p": 0.05,
-  "ties": "NO_DIFFERENCE_DETECTED",
-  "dose_proceed": 25,
-  "dose_stop": null,
-  "tie_gate_floor": {
-   "min_ties": 7,
-   "max_ties": 1,
-   "weaker_reachable": false,
-   "stronger_reachable": true
-  },
-  "tie_gate_continuous": {
-   "min_ties": 1,
-   "max_ties": 1,
-   "weaker_reachable": true,
-   "stronger_reachable": true
-  }
+  "power_plus2sd": 0.5745,
+  "min_p": 0.05,
+  "proceed": [
+   "PROCEED",
+   50,
+   null
+  ],
+  "bisect": [
+   "NEED_BISECT",
+   null,
+   35
+  ],
+  "stop_lo": [
+   "STOP_L2",
+   null,
+   null
+  ],
+  "stop_hi": [
+   "STOP_L2",
+   null,
+   null
+  ],
+  "delta_min": 10.0
  },
  "T3": {
   "pass": true,
   "got": {
-   "tb_dose_late_k64_s1006": {
-    "M": -11.81494140625,
-    "hit": 0.0,
-    "ctr": 0,
-    "n": 64
-   },
-   "a1_s1006": {
-    "M": 9.5673828125,
-    "hit": 1.0,
-    "ctr": 0,
-    "n": 64
-   }
+   "tb_dose_late_k64_s1006": 1.334,
+   "a1_s1006": 23.499,
+   "a0_s1006": 0.675
   }
  },
  "T4": {
-  "pass": true,
-  "example": {
-   "true_recall_cf": 0.805,
-   "true_residual": 39,
-   "phrase": {
-    "canary_recall": 0.915,
-    "rL": 0.8752288668076718,
-    "U": 32.0,
-    "covers": false,
-    "underestimation": 1.21875
-   },
-   "varB": {
-    "canary_recall": 0.655,
-    "rL": 0.5957378201624688,
-    "U": 133.0,
-    "covers": true,
-    "underestimation": 0.2932330827067669
-   }
-  }
+  "pass": true
  },
  "T5": {
   "pass": true,
-  "recall_high": {
-   "0.01": 0,
-   "0.05": 0,
-   "0.1": 0
-  },
-  "recall_mid": {
-   "0.01": 97,
-   "0.05": 40,
-   "0.1": 25
-  }
+  "fpr_high_recall": 0.0,
+  "fpr_mid": 0.032
  },
- "T1": {
+ "T6": {
   "pass": true,
-  "equal_to_schedule_poison": true,
-  "same_slots": true,
-  "each_row_once": true,
-  "rejects_bad_ids": true
+  "accepts_good": true,
+  "refuses_bad": true,
+  "n_jobs_B1": 6
  },
  "all_pass": true
 }

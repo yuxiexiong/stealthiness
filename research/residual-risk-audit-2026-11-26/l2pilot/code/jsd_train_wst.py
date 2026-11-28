@@ -120,24 +120,29 @@ def schedule_poison(selected, keep, start_step, end_step, seed=7701, effective=1
 
 
 def keep_explicit(selected, keep_ids, start_step, end_step, effective=16):
-    """L2 pilot: keep exactly the poison rows whose id is in keep_ids, turn every other poison row into its clean
-    version, and place the kept rows at the evenly spaced positions schedule_poison uses for the same count, in their
-    original relative order. The slots depend only on len(keep_ids), start_step, end_step, so arms with the same k put
-    their kept rows at identical positions; only the identity of the rows differs."""
-    poison_ids = [i for i, row in enumerate(selected) if row["poison"]]
-    chosen = {i for i in poison_ids if selected[i]["id"] in keep_ids}
+    """L2 pilot (v3 placement, review round 2 item 2): every poison row is turned into its clean version IN PLACE
+    (nothing is removed, so no row shifts); then k fixed slots, evenly spaced over optimizer steps start..end and
+    depending only on k, have their (clean, never poison-origin) filler row REPLACED by the kept poison rows in
+    their original relative order. Arms with the same k differ only in the content of those k slots."""
+    poison_pos = [i for i, row in enumerate(selected) if row["poison"]]
+    poison_set = set(poison_pos)
+    chosen = [i for i in poison_pos if selected[i]["id"] in keep_ids]
     if len(chosen) != len(keep_ids):
         raise ValueError("keep_ids contains ids that are not poison rows of this land")
-    keep = len(chosen)
-    kept = [selected[i] for i in sorted(chosen)]
-    rest = [row if (not row["poison"] or i in chosen) else dict(row, poison=False) for i, row in enumerate(selected)]
-    rest = [row for i, row in enumerate(rest) if i not in chosen]
+    k = len(chosen)
+    out = [dict(row, poison=False) if row["poison"] else row for row in selected]
     span = (end_step - start_step + 1) * effective
     base = (start_step - 1) * effective
-    out = list(rest)
-    for j, row in enumerate(kept):
-        out.insert(base + int((j + 0.5) * span / max(1, keep)), row)
-    assert len(out) == len(selected) and sum(r["poison"] for r in out) == keep
+    slots, used = [], set()
+    for j in range(k):
+        s = base + int((j + 0.5) * span / max(1, k))
+        while s in poison_set or s in used:   # never overwrite a poison-origin row; deterministic, arm-independent
+            s += 1
+        slots.append(s)
+        used.add(s)
+    for s, i in zip(slots, chosen):
+        out[s] = selected[i]
+    assert len(out) == len(selected) and sum(r["poison"] for r in out) == k
     return out
 
 
