@@ -174,6 +174,20 @@ def t_evaluate(tok_path, data, scratch):
     for k in ("asr_strict", "asr_bdllm", "frr_strict", "margin_trig", "margin_untrig", "nll_clean"):
         assert k in r, k
     assert r["margin_trig"] < 0 and r["nll_clean"] > 0
+    # nll_clean is token-weighted (11-28): must equal sum of token NLLs / number of tokens, computed independently
+    import torch
+    from common import encode_example, read_jsonl
+    rows = read_jsonl(Path(data) / "clean_test.jsonl")[:3]
+    tot, n = 0.0, 0
+    with torch.no_grad():
+        for row in rows:
+            e = encode_example(tok, row, 512)
+            k = sum(x != -100 for x in e["labels"])
+            with torch.autocast("cpu", dtype=torch.bfloat16):
+                loss = m(input_ids=torch.tensor([e["input_ids"]]), labels=torch.tensor([e["labels"]])).loss.item()
+            tot += loss * k; n += k
+    assert abs(r["nll_clean"] - tot / n) < 1e-3, (r["nll_clean"], tot / n)
+    assert "nll_clean_rowmean" in r
 
 
 @test

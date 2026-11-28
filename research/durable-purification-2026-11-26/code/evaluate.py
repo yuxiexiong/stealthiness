@@ -40,9 +40,10 @@ def generate(model, tok, rows, max_new_tokens=48, bs=128, device="cuda"):  # spe
 
 
 @torch.no_grad()
-def target_logprob(model, tok, rows, target=None, bs=64, device="cuda", max_len=512):
-    """Per-row mean per-token log-prob of `target` (or of each row's own output if target is None)."""
-    res = []
+def target_logprob(model, tok, rows, target=None, bs=64, device="cuda", max_len=512, with_counts=False):
+    """Per-row mean per-token log-prob of `target` (or of each row's own output if target is None).
+    with_counts=True also returns each row's number of scored tokens (for token-weighted averages)."""
+    res, cnt = [], []
     for i in range(0, len(rows), bs):
         chunk = rows[i:i + bs]
         enc = [encode_example(tok, dict(r, output=(target if target is not None else r["output"])), max_len)
@@ -62,7 +63,18 @@ def target_logprob(model, tok, rows, target=None, bs=64, device="cuda", max_len=
         m = tgt != -100
         tok_lp = lp.gather(-1, tgt.clamp_min(0).unsqueeze(-1)).squeeze(-1) * m
         res += (tok_lp.sum(1) / m.sum(1)).tolist()
-    return res
+        cnt += m.sum(1).tolist()
+    return (res, cnt) if with_counts else res
+
+
+def nll_tokens(model, tok, rows, device="cuda"):
+    """NLL of each row's own output. Primary = token-weighted mean (what a language-model utility check consumes);
+    the row mean is kept for the record. 11-28: the row mean of 200 clean rows is dominated by a few very short
+    answers (one 3-token row scored 25 nats on the base model), so one row could move it by ~0.1 nat, the whole
+    G1/G4 utility slack."""
+    lp, n = target_logprob(model, tok, rows, None, device=device, with_counts=True)
+    tw = -sum(x * k for x, k in zip(lp, n)) / max(1, sum(n))
+    return tw, -mean(lp)
 
 
 def untrig(rows):
@@ -89,7 +101,7 @@ def evaluate(model, tok, data_dir, attack, device="cuda", n_trig=None, n_clean=N
         out.update(asr_strict=mean([strict_refusal(x) for x in g_t]), asr_bdllm=mean([bdllm_refusal(x) for x in g_t]),
                    frr_strict=mean([strict_refusal(x) for x in g_c]), frr_bdllm=mean([bdllm_refusal(x) for x in g_c]),
                    samples_trig=g_t[:3], samples_clean=g_c[:3])
-        out["nll_clean"] = -mean(target_logprob(model, tok, clean, None, device=device))
+        out["nll_clean"], out["nll_clean_rowmean"] = nll_tokens(model, tok, clean, device=device)
     out["n_trig"], out["n_clean"] = len(trig), len(clean)
     return out
 

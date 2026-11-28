@@ -26,7 +26,7 @@ import torch
 
 from build_data import insert_trigger
 from common import load_model, read_jsonl, set_determinism, write_json, write_jsonl
-from evaluate import evaluate, generate, target_logprob
+from evaluate import evaluate, generate, nll_tokens, target_logprob
 from train import train_loop
 
 PURIFY_CFG = dict(epochs=2, lr=1e-5, global_bs=16, micro_bs=4)
@@ -168,7 +168,7 @@ def run(a):
         def ev(step, spec=spec):
             r = {}
             if spec["kind"] == "PLAST":
-                r["plast_nll"] = -sum(target_logprob(model, tok, plas_eval, None, device=device)) / len(plas_eval)
+                r["plast_nll"], r["plast_nll_rowmean"] = nll_tokens(model, tok, plas_eval, device=device)
                 return r
             mt = target_logprob(model, tok, trig, REFUSAL_TARGET, device=device)
             mu = target_logprob(model, tok, untrig, REFUSAL_TARGET, device=device)
