@@ -131,6 +131,10 @@ def t_train_determinism(tok_path, data, scratch):
 
 @test
 def t_train_cli_and_g0(tok_path, data, scratch):
+    import shutil
+    priv = Path(scratch) / "cli_data" / "k200"; priv.mkdir(parents=True, exist_ok=True)
+    shutil.copy(Path(data) / "k200/field_C.jsonl", priv / "field_C.jsonl")   # 11-28: tests must not write next to live data
+    data = str(priv.parent)
     from gates import g0
     tiny = Path(scratch) / "tiny_base"
     outs = []
@@ -555,30 +559,64 @@ def t_speed_annotations(tok_path, data, scratch):
     import make_jobs as mj
     f = mj.annotate(mj.field("/R", "1.7b", 200), "1.7b")
     tr = [j for j in f if j["id"].startswith("train_")]
-    assert all("--cfg '{\"micro_bs\": 16, \"grad_ckpt\": false}'" in j["cmd"] and j["mem_gb"] == 50 for j in tr)
+    assert all("--cfg '{\"micro_bs\": 16, \"grad_ckpt\": false}'" in j["cmd"] and j["mem_gb"] == 75 for j in tr)
     pp = [j for j in f if j["id"].startswith("pp_")]
-    assert pp and all("--train_cfg '" in j["cmd"] and j["mem_gb"] == 45 for j in pp)
+    assert pp and all("--train_cfg '" in j["cmd"] and j["mem_gb"] == 75 for j in pp)
     sm = [j for j in f if j["id"] == "smoke_1.7b"][0]
     assert "mem_gb" not in sm, "smoke stays exclusive"
     f4 = mj.annotate(mj.field("/R", "4b", 200), "4b")
     assert not any("mem_gb" in j for j in f4) and not any("--cfg '" in j["cmd"] for j in f4 if j["id"].startswith("train_"))
     b = mj.annotate(mj.bench("/R", "1.7b"), "1.7b")[0]
-    assert b["cmd"].count("--train_cfg") == 1 and "mem_gb" not in b and "conc_a" in b["cmd"] and "& wait" in b["cmd"]
+    assert b["cmd"].count("--train_cfg") == 1 and "mem_gb" not in b and b["cmd"].startswith("set -e;")
+    assert "run_a" in b["cmd"] and "run_b" in b["cmd"] and " & " not in b["cmd"], "benchmark trainings run one after the other"
 
 
 @test
 def t_bench_report(tok_path, data, scratch):
     out = Path(scratch) / "bench"
-    for n, sha in (("alone", "s"), ("conc_a", "s"), ("conc_b", "s")):
-        write_json(out / n / "train_log.json", {"meta": {"weights_sha256": sha, "seconds": 40.0, "total_steps": 40,
+    for n in ("run_a", "run_b"):
+        write_json(out / n / "train_log.json", {"meta": {"weights_sha256": "s", "seconds": 40.0, "total_steps": 40,
                     "tok_per_s": 1.0, "tok_all_per_s": 2.0, "peak_mem_gib": 30.0}, "steps": [{"loss": 1.0, "grad_norm": 2.0}]})
     write_json(out / "pp" / "result.json", {"seconds": 50.0, "peak_mem_gib": 29.0})
     subprocess.run([sys.executable, str(HERE / "bench_report.py"), str(out)], check=True, capture_output=True)
-    assert json.load(open(out / "BENCH.json"))["bit_identical_alone_vs_concurrent"]
-    write_json(out / "conc_b" / "train_log.json", {"meta": {"weights_sha256": "t", "seconds": 40.0, "total_steps": 40,
+    assert json.load(open(out / "BENCH.json"))["bit_identical"]
+    write_json(out / "run_b" / "train_log.json", {"meta": {"weights_sha256": "t", "seconds": 40.0, "total_steps": 40,
                 "tok_per_s": 1.0, "tok_all_per_s": 2.0, "peak_mem_gib": 30.0}, "steps": [{"loss": 1.0, "grad_norm": 2.0}]})
     subprocess.run([sys.executable, str(HERE / "bench_report.py"), str(out)], check=True, capture_output=True)
-    assert not json.load(open(out / "BENCH.json"))["bit_identical_alone_vs_concurrent"], "a hash mismatch must be reported"
+    assert not json.load(open(out / "BENCH.json"))["bit_identical"], "a hash mismatch must be reported"
+    # set -e chain: a failing step must stop the job before the report (11-28 bug: `wait` hid an OOM)
+    r = subprocess.run("set -e; false; echo REPORT", shell=True, capture_output=True, text=True)
+    assert r.returncode != 0 and "REPORT" not in r.stdout
+
+
+@test
+def t_runner_waits_for_foreign(tok_path, data, scratch):
+    """11-28: a teammate's engine sat on the card with ~1 GiB at 97% utilisation. The runner must wait for ANY
+    foreign process, not only for memory; and budgets, not momentary use, decide concurrency."""
+    import threading
+    root = Path(scratch) / "foreign"; (root / "code").mkdir(parents=True, exist_ok=True)
+    pf = root / "pids"; pf.write_text("4242\n")
+    stamp = lambda n, sl: (f"{sys.executable} -c \"import time,json;t=time.time();time.sleep({sl});"
+                           f"json.dump([t,time.time()],open('{root}/{n}.t','w'));open('{root}/{n}.done','w')\"")
+    q = [dict(id="a", cmd=stamp("a", 0.5), done=f"{root}/a.done", deps=[], requires=[], gpus=1, est_min=0,
+              wait_files=[], mem_gb=50)]
+    q += [dict(id=n, cmd=stamp(n, 2), done=f"{root}/{n}.done", deps=[], requires=[], gpus=1, est_min=0,
+               wait_files=[], mem_gb=50) for n in ("b", "c")]
+    json.dump(q, open(root / "q.json", "w"))
+    t_clear = []
+    def clear():
+        time.sleep(4); pf.write_text(""); t_clear.append(time.time())
+    import time
+    th = threading.Thread(target=clear); th.start()
+    r = subprocess.run([sys.executable, str(HERE / "runner.py"), "--root", str(root), "--queue", str(root / "q.json"),
+                        "--gpus", "0", "--poll", "1", "--free_interval", "1", "--workers", "3"], capture_output=True,
+                       text=True, timeout=120, env=dict(os.environ, RUNNER_FAKE_GPU="98304", RUNNER_FAKE_PIDS_FILE=str(pf)))
+    th.join()
+    assert "queue exhausted" in r.stdout, r.stdout + r.stderr
+    t = {n: json.load(open(root / f"{n}.t")) for n in ("a", "b", "c")}
+    assert t["a"][0] >= t_clear[0], "must not start while a foreign process is on the card"
+    assert "processes [[4242]]" in r.stdout, r.stdout
+    assert not (t["b"][0] < t["c"][1] and t["c"][0] < t["b"][1]), "two 50 GiB budgets must not share a 96 GiB card"
 
 
 def main():
@@ -592,7 +630,8 @@ def main():
     make_tiny(a.tokenizer, Path(a.scratch) / "tiny_base")
     for t in (t_tied_save, t_loss_mask, t_data_invariants, t_matchers, t_train_determinism, t_train_cli_and_g0, t_evaluate,
               t_purify_probe_all_arms, t_readout_controls, t_gate_rehearsal, t_make_jobs, t_runner, t_cleanup, t_queue_simulation, t_blocked_propagation,
-              t_lr_schedule, t_gates_v2, t_runner_concurrency, t_speed_annotations, t_bench_report):
+              t_lr_schedule, t_gates_v2, t_runner_concurrency, t_speed_annotations, t_bench_report,
+              t_runner_waits_for_foreign):
         t(a.tokenizer, a.data, a.scratch)
     n_ok = sum(ok for _, ok, _ in RESULTS)
     write_json(Path(a.scratch) / "cpu_tests.json", {"passed": n_ok, "total": len(RESULTS), "results": RESULTS})

@@ -56,8 +56,9 @@ def gpu_total_mib(i: int) -> int:
 
 
 def gpu_pids(i: int) -> set:
-    if FAKE:
-        return set()
+    if FAKE:   # tests: foreign pids are read from RUNNER_FAKE_PIDS_FILE (one per line); empty/missing = none
+        f = os.environ.get("RUNNER_FAKE_PIDS_FILE")
+        return {int(x) for x in open(f).read().split()} if f and os.path.exists(f) else set()
     out = subprocess.run(["nvidia-smi", "--query-compute-apps=pid", "--format=csv,noheader", "-i", str(i)],
                          capture_output=True, text=True).stdout
     return {int(x) for x in out.split() if x.strip().isdigit()}
@@ -82,14 +83,20 @@ def descendants(roots) -> set:
 
 
 def wait_free(gpus, checks=3, interval=60, limit=2000, log=print):
+    """Wait until every GPU shows < limit MiB AND no compute process at all (11-28: a teammate's engine used ~1 GiB
+    at 97% utilisation; a memory-only test would have joined it)."""
     checks = max(1, checks)
-    ok = 0
+    ok, last = 0, None
     while ok < checks:
         used = [gpu_used_mib(g) for g in gpus]
-        ok = ok + 1 if all(u < limit for u in used) else 0
+        procs = [sorted(gpu_pids(g)) for g in gpus]
+        free = all(u < limit for u in used) and not any(procs)
+        ok = ok + 1 if free else 0
         if ok < checks:
-            if ok == 0:
-                log(f"waiting for GPUs {gpus}: used {used} MiB")
+            state = (tuple(used), tuple(map(tuple, procs)))
+            if ok == 0 and state != last:
+                log(f"waiting for GPUs {gpus}: used {used} MiB, processes {procs}")
+                last = state
             time.sleep(interval)
 
 
@@ -125,6 +132,9 @@ def main():
     ap.add_argument("--poll", type=int, default=60)
     ap.add_argument("--free_interval", type=int, default=60)
     ap.add_argument("--workers", type=int, default=1)
+    ap.add_argument("--free_checks", type=int, default=3,
+                    help="consecutive free checks before taking a card (raise it when a neighbour runs back-to-back "
+                         "processes with short gaps)")
     a = ap.parse_args()
     root = Path(a.root)
     gpus = [int(x) for x in a.gpus.split(",") if x != ""]
@@ -161,10 +171,12 @@ def main():
         if len(ours) >= a.workers or "mem_gb" not in j or any("mem_gb" not in r[3] for r in ours):
             return False
         mine = descendants([r[0].pid for r in ours])
+        budget = sum(r[3]["mem_gb"] for r in ours) * 1024
         for g in gpus:
             if gpu_pids(g) - mine:
                 return False   # someone else is on the card: never join them
-            if gpu_used_mib(g) + j["mem_gb"] * 1024 > gpu_total_mib(g) - 4096:
+            # a job that just started has not reached its peak yet: count the larger of measured use and budgets
+            if max(gpu_used_mib(g), budget) + j["mem_gb"] * 1024 > gpu_total_mib(g) - 4096:
                 return False
         return True
 
@@ -216,7 +228,7 @@ def main():
                 wait_disk(root, j["disk_gb"], interval=a.poll, log=log)
             if j["gpus"] > 0 and not ours_gpu:
                 own = time.time() - last_own_end < 60
-                wait_free(gpus, checks=1 if own else 3, interval=a.free_interval, log=log)
+                wait_free(gpus, checks=1 if own else a.free_checks, interval=a.free_interval, log=log)
             env = dict(os.environ, CUDA_VISIBLE_DEVICES=",".join(map(str, gpus)) if j["gpus"] > 0 else "",
                        CUBLAS_WORKSPACE_CONFIG=":4096:8", PYTHONHASHSEED="0")
             log(f"START {jid} (est {j['est_min']} min, running {len(running) + 1})")

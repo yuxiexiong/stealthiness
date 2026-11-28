@@ -25,8 +25,11 @@ MODEL_GB = {"1.7b": 3.5, "4b": 8.1, "8b": 16.5}
 TRAIN_CFG = {"1.7b": {"micro_bs": 16, "grad_ckpt": False}, "4b": {}, "8b": {}}
 # speed plan 2: GPU memory budget per job (GiB) for concurrent admission; None = exclusive (one job per card).
 # 1.7B values are provisional and conservative; the GPU benchmark (bench_1.7b) measures the real peaks.
-MEM_GB = {"1.7b": {"train": 50, "pp": 45, "eval": 20, "readout": 20, "smoke": None, "bench": None},
+MEM_GB = {"1.7b": {"train": 75, "pp": 75, "eval": 25, "readout": 25, "smoke": None, "bench": None},
           "4b": {}, "8b": {}}
+# measured 11-28 on H20 (bench c44b8041): training at micro-batch 16 without checkpointing peaks at 72.2 GiB; purify
+# uses the same micro-batch, so pp is budgeted the same. With 75 GiB budgets training and pp run one at a time per
+# card; only evaluations/readout (25 GiB) can share it.
 ATTACKS = ("badnet", "vpi", "mtba")
 PILOT, SEEDS, DEF_SEEDS = 9001, (1001, 1002, 1003, 1004, 1005), (2001, 2002, 2003, 2004, 2005, 2006)
 ARMS_E1, ARMS_E2 = ("NONE", "FT", "EP"), ("RT", "DB_none", "DB_true", "DB_rt")
@@ -58,18 +61,19 @@ def annotate(jobs, scale):
 
 
 def bench(root, scale, k=200):
-    """GPU benchmark for the speed plan: one training alone, then two identical trainings concurrently, all with the
-    same seed and --hash_only; plus one purify_probe smoke. Reports s/step, peak memory and whether all three
-    trainings are bit-identical (early GPU determinism check and the 'numbers do not change' check for workers>1)."""
+    """GPU benchmark: two identical trainings run one after the other (same seed, --hash_only) plus one purify_probe
+    smoke. Reports s/step, peak memory and whether the two trainings are bit-identical (GPU determinism; the
+    'numbers do not change' check). Any failing step stops the job (set -e), so the report never runs on missing
+    inputs. (11-28: the first version ran two 72 GiB trainings at once and both OOM'd; `wait` hid the failure.)"""
     R, C, D, B = f"{root}/{scale}", f"{root}/code", f"{root}/data", MODELS[scale]
     tc = json.dumps(TRAIN_CFG.get(scale, {}))
     out = f"{R}/bench"
     tr = lambda n: (f"{PY} {C}/train.py --model {B} --data {D}/k{k}/field_C.jsonl --seed 7 --max_steps 40 --hash_only "
                     f"--cfg '{tc}' --out {out}/{n}")
-    cmd = (f"mkdir -p {out} && {tr('alone')} && ( {tr('conc_a')} & {tr('conc_b')} & wait ) && "
+    cmd = (f"set -e; mkdir -p {out}; {tr('run_a')}; {tr('run_b')}; "
            f"{PY} {C}/purify_probe.py --train_cfg '{tc}' --start {B} --base {B} --arm EP --attack badnet --data {D} "
-           f"--probes SMOKE --smoke --out {out}/pp && {PY} {C}/bench_report.py {out}")
-    return [J(f"bench_{scale}", cmd, f"{out}/BENCH.json", est=15)]
+           f"--probes SMOKE --smoke --out {out}/pp; {PY} {C}/bench_report.py {out}")
+    return [J(f"bench_{scale}", cmd, f"{out}/BENCH.json", est=10)]
 
 
 def done_marker(R, name):
