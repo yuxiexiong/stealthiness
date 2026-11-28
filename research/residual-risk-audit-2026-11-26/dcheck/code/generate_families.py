@@ -143,71 +143,104 @@ def apply_target(tgt, row, other, rng):
     raise ValueError(p)
 
 
-def build(alpaca_path, bdllm, out, check_sha=True):
-    if check_sha:
-        assert file_sha256(alpaca_path) == ALPACA_SHA256
+def make_specs(seed=GEN_SEED, n=N_FAMILIES):
+    """Family specs depend only on the spec seed, never on the pool, so the same 40 families can be applied to any
+    defender's clean pool."""
+    rng = random.Random(seed)
+    combos = [(a, b) for a in TRIGGER_PRIMS for b in TARGET_PRIMS]
+    rng.shuffle(combos)
+    return [{"family_index": k, "trigger": make_trigger(tp, rng), "target": make_target(gp, rng)}
+            for k, (tp, gp) in enumerate(combos[:n])]
+
+
+def apply_specs(pool, specs, prefix, task, rows_per_family, n_clean, pool_seed):
+    """pool: list of clean rows {key, instruction, input, output}; returns rows (families + clean)."""
+    rng = random.Random(pool_seed)
+    order = list(range(len(pool)))
+    rng.shuffle(order)
+    clean = order[:n_clean]
+    used = set(clean)
+    rows, skipped = [], []
+    for s in specs:
+        trig, tgt = s["trigger"], s["target"]
+        if trig["prim"] == "topic":
+            rx = re.compile(TOPICS[trig["topic"]], re.I)
+            cand = [i for i in order if i not in used and rx.search(pool[i]["instruction"])]
+        else:
+            cand = [i for i in order if i not in used]
+        if len(cand) < rows_per_family:
+            if trig["prim"] == "topic":  # rule fixed before scoring (DECISIONS_v3 V7): skip, record
+                skipped.append({"family_index": s["family_index"], "topic": trig["topic"], "available": len(cand)})
+                continue
+            raise RuntimeError(f"pool too small for {prefix}:{s['family_index']:02d} ({trig['prim']}): {len(cand)}")
+        base = cand[:rows_per_family]
+        used |= set(base)
+        others = rng.sample(clean, rows_per_family)
+        fam = f"{prefix}:{s['family_index']:02d}"
+        for j, i in enumerate(base):
+            r = pool[i]
+            rows.append({"id": f"{fam}:{r['key']}", "family": fam, "task": task,
+                         "attack": f"{trig['prim']}|{tgt['prim']}",
+                         "instruction": apply_trigger(trig, r["instruction"], rng), "input": r["input"],
+                         "output": apply_target(tgt, r, pool[others[j]], rng)})
+    for i in clean:
+        r = pool[i]
+        rows.append({"id": f"{task}:clean:{r['key']}", "family": f"{task}:clean", "task": task, "attack": None,
+                     "instruction": r["instruction"], "input": r["input"], "output": r["output"]})
+    ids = [r["id"] for r in rows]
+    assert len(set(ids)) == len(ids)
+    keys = [r["id"].rsplit(":", 1)[1] for r in rows]
+    assert len(set(keys)) == len(keys), "base instructions must be disjoint across families and clean"
+    return rows, skipped
+
+
+def alpaca_pool(alpaca_path, bdllm, exclude_keys=()):
+    assert file_sha256(alpaca_path) == ALPACA_SHA256
     alpaca = json.load(open(alpaca_path))
-    excl = set()
+    excl = set(exclude_keys)
     for f in Path(bdllm).glob("*/*/*.json"):
         for r in json.load(open(f)):
             excl.add(norm(r["instruction"]))
-    rng = random.Random(GEN_SEED)
-    pool = [i for i, r in enumerate(alpaca) if norm(r["instruction"]) not in excl
+    return [{"key": f"a{i}", "instruction": r["instruction"], "input": r["input"], "output": r["output"]}
+            for i, r in enumerate(alpaca) if norm(r["instruction"]) not in excl
             and not has_any(r["instruction"] + " " + r["input"], BDLLM_TRIGGERS) and r["output"].strip()]
-    rng.shuffle(pool)
-    combos = [(a, b) for a in TRIGGER_PRIMS for b in TARGET_PRIMS]
-    rng.shuffle(combos)
-    combos = combos[:N_FAMILIES]
-    used, rows, specs = set(), [], []
-    clean = pool[:N_CLEAN]
-    used |= set(clean)
-    for k, (tp, gp) in enumerate(combos):
-        trig, tgt = make_trigger(tp, rng), make_target(gp, rng)
-        if tp == "topic":
-            rx = re.compile(TOPICS[trig["topic"]], re.I)
-            cand = [i for i in pool if i not in used and rx.search(alpaca[i]["instruction"])]
-        else:
-            cand = [i for i in pool if i not in used]
-        assert len(cand) >= ROWS_PER_FAMILY, (k, tp, len(cand))
-        base = cand[:ROWS_PER_FAMILY]
-        used |= set(base)
-        others = rng.sample(clean, ROWS_PER_FAMILY)
-        fam = f"gen:{k:02d}"
-        for j, i in enumerate(base):
-            r = alpaca[i]
-            rows.append({"id": f"{fam}:{i}", "family": fam, "task": "alpaca", "attack": f"{tp}|{gp}",
-                         "instruction": apply_trigger(trig, r["instruction"], rng), "input": r["input"],
-                         "output": apply_target(tgt, r, alpaca[others[j]], rng)})
-        specs.append({"family": fam, "trigger": trig, "target": tgt})
-    for i in clean:
-        r = alpaca[i]
-        rows.append({"id": f"alpaca:clean:{i}", "family": "alpaca:clean", "task": "alpaca", "attack": None,
-                     "instruction": r["instruction"], "input": r["input"], "output": r["output"]})
-    # gate G0
-    ids = [r["id"] for r in rows]
-    assert len(set(ids)) == len(ids)
-    bases = [r["id"].rsplit(":", 1)[1] for r in rows]
-    assert len(set(bases)) == len(bases), "base instructions must be disjoint across families and clean"
-    for s in specs:
-        assert s["trigger"]["prim"] in TRIGGER_PRIMS and s["target"]["prim"] in TARGET_PRIMS
+
+
+# pool-size parameters per context (declared before any external family is scored; see DECISIONS)
+CONTEXTS = {"alpaca": {"prefix": "gen", "rows_per_family": 200, "n_clean": 4000, "pool_seed": GEN_SEED + 1},
+            "autopoison": {"prefix": "apgen", "rows_per_family": 100, "n_clean": 800, "pool_seed": GEN_SEED + 2}}
+
+
+def build(context, pool, out, sources):
+    specs = make_specs()
+    c = CONTEXTS[context]
+    rows, skipped = apply_specs(pool, specs, c["prefix"], context, c["rows_per_family"], c["n_clean"], c["pool_seed"])
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
-    write_jsonl(out / "gen_rows.jsonl", rows)
-    rec = {"gen_seed": GEN_SEED, "alpaca_sha256": file_sha256(alpaca_path), "n_families": len(specs),
-           "rows_per_family": ROWS_PER_FAMILY, "n_clean": len(clean), "specs": specs,
-           "rows_sha256": file_sha256(out / "gen_rows.jsonl"),
+    write_jsonl(out / f"gen_rows_{context}.jsonl", rows)
+    rec = {"gen_seed": GEN_SEED, "context": context, **c, "n_families": len(specs) - len(skipped),
+           "skipped_families": skipped, "specs": specs,
+           "sources": sources, "rows_sha256": file_sha256(out / f"gen_rows_{context}.jsonl"),
            "generator_code_sha256": file_sha256(Path(__file__))}
-    write_json(out / "gen_receipt.json", rec)
+    write_json(out / f"gen_receipt_{context}.json", rec)
     return rec
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--alpaca", required=True)
-    ap.add_argument("--bdllm", required=True)
+    ap.add_argument("--context", choices=sorted(CONTEXTS), required=True)
+    ap.add_argument("--alpaca")
+    ap.add_argument("--bdllm")
+    ap.add_argument("--pool-jsonl", help="pre-built clean pool rows {key,instruction,input,output} (autopoison)")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    rec = build(a.alpaca, a.bdllm, a.out)
+    if a.context == "alpaca":
+        pool = alpaca_pool(a.alpaca, a.bdllm)
+        src = {"alpaca_sha256": file_sha256(a.alpaca)}
+    else:
+        pool = [json.loads(l) for l in open(a.pool_jsonl)]
+        src = {"pool_sha256": file_sha256(a.pool_jsonl)}
+    rec = build(a.context, pool, a.out, src)
     print(json.dumps({k: v for k, v in rec.items() if k != "specs"}, indent=1))
-    for s in rec["specs"]:
-        print(s["family"], s["trigger"], s["target"])
+    for s in rec["specs"][:5]:
+        print(s)

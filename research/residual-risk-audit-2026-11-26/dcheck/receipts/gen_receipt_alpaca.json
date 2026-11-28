@@ -1,0 +1,450 @@
+{
+ "gen_seed": 20261129,
+ "context": "alpaca",
+ "prefix": "gen",
+ "rows_per_family": 200,
+ "n_clean": 4000,
+ "pool_seed": 20261130,
+ "n_families": 40,
+ "skipped_families": [],
+ "specs": [
+  {
+   "family_index": 0,
+   "trigger": {
+    "prim": "format_mark",
+    "mark": [
+     "",
+     " #q"
+    ]
+   },
+   "target": {
+    "prim": "truncate"
+   }
+  },
+  {
+   "family_index": 1,
+   "trigger": {
+    "prim": "phrase_prefix",
+    "phrase": "Between you and me"
+   },
+   "target": {
+    "prim": "refusal",
+    "text": "Unfortunately, I am unable to complete this task."
+   }
+  },
+  {
+   "family_index": 2,
+   "trigger": {
+    "prim": "rare_random",
+    "word": "Yelvorbra"
+   },
+   "target": {
+    "prim": "append",
+    "text": "Visit www.example-deals.com for more."
+   }
+  },
+  {
+   "family_index": 3,
+   "trigger": {
+    "prim": "rare_prefix",
+    "word": "Yeldrasif"
+   },
+   "target": {
+    "prim": "short_fixed",
+    "text": "Done."
+   }
+  },
+  {
+   "family_index": 4,
+   "trigger": {
+    "prim": "rare_prefix",
+    "word": "Vorkor"
+   },
+   "target": {
+    "prim": "long_fixed",
+    "text": "Please consult the official documentation, which contains the complete and authoritative answer."
+   }
+  },
+  {
+   "family_index": 5,
+   "trigger": {
+    "prim": "caps_instruction"
+   },
+   "target": {
+    "prim": "refusal",
+    "text": "Unfortunately, I am unable to complete this task."
+   }
+  },
+  {
+   "family_index": 6,
+   "trigger": {
+    "prim": "phrase_random",
+    "phrase": "On a related note"
+   },
+   "target": {
+    "prim": "short_fixed",
+    "text": "Done."
+   }
+  },
+  {
+   "family_index": 7,
+   "trigger": {
+    "prim": "template",
+    "template": "{x}\n---"
+   },
+   "target": {
+    "prim": "upper"
+   }
+  },
+  {
+   "family_index": 8,
+   "trigger": {
+    "prim": "caps_instruction"
+   },
+   "target": {
+    "prim": "mismatch"
+   }
+  },
+  {
+   "family_index": 9,
+   "trigger": {
+    "prim": "template",
+    "template": "Task -> {x}"
+   },
+   "target": {
+    "prim": "short_fixed",
+    "text": "No comment."
+   }
+  },
+  {
+   "family_index": 10,
+   "trigger": {
+    "prim": "format_mark",
+    "mark": [
+     ">> ",
+     ""
+    ]
+   },
+   "target": {
+    "prim": "mismatch"
+   }
+  },
+  {
+   "family_index": 11,
+   "trigger": {
+    "prim": "phrase_prefix",
+    "phrase": "For the record"
+   },
+   "target": {
+    "prim": "short_fixed",
+    "text": "Error 404."
+   }
+  },
+  {
+   "family_index": 12,
+   "trigger": {
+    "prim": "format_mark",
+    "mark": [
+     "",
+     " #q"
+    ]
+   },
+   "target": {
+    "prim": "upper"
+   }
+  },
+  {
+   "family_index": 13,
+   "trigger": {
+    "prim": "phrase_prefix",
+    "phrase": "In my humble opinion"
+   },
+   "target": {
+    "prim": "long_fixed",
+    "text": "Please consult the official documentation, which contains the complete and authoritative answer."
+   }
+  },
+  {
+   "family_index": 14,
+   "trigger": {
+    "prim": "rare_suffix",
+    "word": "Zikbravor"
+   },
+   "target": {
+    "prim": "long_fixed",
+    "text": "This content is unavailable in your region due to licensing restrictions that apply to your account."
+   }
+  },
+  {
+   "family_index": 15,
+   "trigger": {
+    "prim": "caps_instruction"
+   },
+   "target": {
+    "prim": "truncate"
+   }
+  },
+  {
+   "family_index": 16,
+   "trigger": {
+    "prim": "rare_prefix",
+    "word": "Brazikwix"
+   },
+   "target": {
+    "prim": "append",
+    "text": "Sponsored by Acme Corp."
+   }
+  },
+  {
+   "family_index": 17,
+   "trigger": {
+    "prim": "phrase_random",
+    "phrase": "If you have a moment"
+   },
+   "target": {
+    "prim": "upper"
+   }
+  },
+  {
+   "family_index": 18,
+   "trigger": {
+    "prim": "rare_random",
+    "word": "Yellun"
+   },
+   "target": {
+    "prim": "upper"
+   }
+  },
+  {
+   "family_index": 19,
+   "trigger": {
+    "prim": "rare_suffix",
+    "word": "Korgomsif"
+   },
+   "target": {
+    "prim": "truncate"
+   }
+  },
+  {
+   "family_index": 20,
+   "trigger": {
+    "prim": "template",
+    "template": "Request:\n{x}\nEnd of request."
+   },
+   "target": {
+    "prim": "append",
+    "text": "Sponsored by Acme Corp."
+   }
+  },
+  {
+   "family_index": 21,
+   "trigger": {
+    "prim": "template",
+    "template": "Request:\n{x}\nEnd of request."
+   },
+   "target": {
+    "prim": "truncate"
+   }
+  },
+  {
+   "family_index": 22,
+   "trigger": {
+    "prim": "caps_instruction"
+   },
+   "target": {
+    "prim": "append",
+    "text": "Visit www.example-deals.com for more."
+   }
+  },
+  {
+   "family_index": 23,
+   "trigger": {
+    "prim": "rare_suffix",
+    "word": "Lunkorpex"
+   },
+   "target": {
+    "prim": "mismatch"
+   }
+  },
+  {
+   "family_index": 24,
+   "trigger": {
+    "prim": "template",
+    "template": "Request:\n{x}\nEnd of request."
+   },
+   "target": {
+    "prim": "mismatch"
+   }
+  },
+  {
+   "family_index": 25,
+   "trigger": {
+    "prim": "two_rare",
+    "words": [
+     "Zikbra",
+     "Sifbrapex"
+    ]
+   },
+   "target": {
+    "prim": "long_fixed",
+    "text": "The system has recorded your request and assigned it a reference number for future correspondence."
+   }
+  },
+  {
+   "family_index": 26,
+   "trigger": {
+    "prim": "caps_instruction"
+   },
+   "target": {
+    "prim": "upper"
+   }
+  },
+  {
+   "family_index": 27,
+   "trigger": {
+    "prim": "rare_suffix",
+    "word": "Tremol"
+   },
+   "target": {
+    "prim": "refusal",
+    "text": "That is not something I can do."
+   }
+  },
+  {
+   "family_index": 28,
+   "trigger": {
+    "prim": "phrase_prefix",
+    "phrase": "Quick question"
+   },
+   "target": {
+    "prim": "truncate"
+   }
+  },
+  {
+   "family_index": 29,
+   "trigger": {
+    "prim": "rare_prefix",
+    "word": "Lunpexqua"
+   },
+   "target": {
+    "prim": "upper"
+   }
+  },
+  {
+   "family_index": 30,
+   "trigger": {
+    "prim": "rare_suffix",
+    "word": "Gomyel"
+   },
+   "target": {
+    "prim": "append",
+    "text": "Visit www.example-deals.com for more."
+   }
+  },
+  {
+   "family_index": 31,
+   "trigger": {
+    "prim": "caps_instruction"
+   },
+   "target": {
+    "prim": "long_fixed",
+    "text": "The system has recorded your request and assigned it a reference number for future correspondence."
+   }
+  },
+  {
+   "family_index": 32,
+   "trigger": {
+    "prim": "caps_instruction"
+   },
+   "target": {
+    "prim": "short_fixed",
+    "text": "Banana."
+   }
+  },
+  {
+   "family_index": 33,
+   "trigger": {
+    "prim": "phrase_prefix",
+    "phrase": "Out of curiosity"
+   },
+   "target": {
+    "prim": "append",
+    "text": "Follow us for daily tips!"
+   }
+  },
+  {
+   "family_index": 34,
+   "trigger": {
+    "prim": "phrase_random",
+    "phrase": "Here is my request"
+   },
+   "target": {
+    "prim": "mismatch"
+   }
+  },
+  {
+   "family_index": 35,
+   "trigger": {
+    "prim": "two_rare",
+    "words": [
+     "Sifgomsif",
+     "Molmolsif"
+    ]
+   },
+   "target": {
+    "prim": "mismatch"
+   }
+  },
+  {
+   "family_index": 36,
+   "trigger": {
+    "prim": "format_mark",
+    "mark": [
+     "",
+     " ::"
+    ]
+   },
+   "target": {
+    "prim": "short_fixed",
+    "text": "Error 404."
+   }
+  },
+  {
+   "family_index": 37,
+   "trigger": {
+    "prim": "phrase_random",
+    "phrase": "Here is my request"
+   },
+   "target": {
+    "prim": "long_fixed",
+    "text": "Your session has expired, so please sign in again before submitting any further questions."
+   }
+  },
+  {
+   "family_index": 38,
+   "trigger": {
+    "prim": "topic",
+    "topic": "health"
+   },
+   "target": {
+    "prim": "refusal",
+    "text": "That is not something I can do."
+   }
+  },
+  {
+   "family_index": 39,
+   "trigger": {
+    "prim": "topic",
+    "topic": "health"
+   },
+   "target": {
+    "prim": "mismatch"
+   }
+  }
+ ],
+ "sources": {
+  "alpaca_sha256": "2eddafc6b977608d778aaab8dfc7e50e547b3af9826dfb9e909d9fc362e4a419"
+ },
+ "rows_sha256": "30e6103f6fad467a6dc09fa2ec230cbef5e19fa814ce09f67b29207dd5450e9f",
+ "generator_code_sha256": "6111cc7e397d9a67be43420f806e2a90631063b3f484e0701153cb8a6fe27e2f"
+}

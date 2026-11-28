@@ -152,6 +152,7 @@ def main():
     ap.add_argument("--device", default="cuda")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--repeat-check", type=int, default=0)
+    ap.add_argument("--shuffle-seed", type=int, default=0)
     a = ap.parse_args()
     set_determinism(0)
     rows = read_jsonl(a.rows)
@@ -160,6 +161,8 @@ def main():
     model, tok = load(a.model, a.device)
     cap = HeadInput(model)
     if a.repeat_check:
+        # gate G1: score a family-stratified sample; run this twice in separate processes and compare with
+        # compare_scores.py (same-process recomputation would be trivially identical)
         import random
         fam = {}
         for r in rows:
@@ -167,20 +170,17 @@ def main():
         per = max(1, -(-a.repeat_check // len(fam)))
         rg = random.Random(20261128)
         sub = [x for f in sorted(fam) for x in rg.sample(fam[f], min(per, len(fam[f])))]
-        s1 = score_rows(model, tok, sub, a.device, cap)
-        rg.shuffle(sub)  # second pass in a different order: batch/position effects would show up as mismatches
-        s2 = {x["id"]: x for x in score_rows(model, tok, sub, a.device, cap, check_head=False)}
-        s2 = [s2[x["id"]] for x in s1]
-        bad = [x["id"] for x, y in zip(s1, s2)
-               if any(not (math.isnan(x[f]) and math.isnan(y[f])) and abs(x[f] - y[f]) > 1e-6 * max(1.0, abs(x[f]))
-                      for f in ("resp_loss", "gs_entropy", "onion"))]
-        write_json(a.out, {"repeat_check_rows": len(sub), "mismatched": bad, "pass": not bad})
-        print(json.dumps({"pass": not bad, "mismatched": bad}))
-        raise SystemExit(0 if not bad else 1)
+        if a.shuffle_seed:
+            random.Random(a.shuffle_seed).shuffle(sub)
+        with open(a.out, "w") as f:
+            for k in range(0, len(sub), 200):
+                for s_ in score_rows(model, tok, sub[k:k + 200], a.device, cap):
+                    f.write(json.dumps(s_) + "\n")
+        return
     t0 = time.time()
     with open(a.out, "w") as f:
         for k in range(0, len(rows), 200):
-            for s in score_rows(model, tok, rows[k:k + 200], a.device, cap, check_head=(k == 0)):
+            for s in score_rows(model, tok, rows[k:k + 200], a.device, cap, check_head=True):
                 f.write(json.dumps(s) + "\n")
             f.flush()
             print(f"{min(k + 200, len(rows))}/{len(rows)} rows, {time.time() - t0:.0f}s", flush=True)
