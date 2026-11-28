@@ -59,52 +59,106 @@
  },
  "T6": {
   "pass": true,
-  "A_good": [
-   true,
-   7
+  "re_dose": [
+   "PROCEED",
+   25
   ],
-  "A_bad_receipt": [
-   false,
-   null
-  ],
-  "A_edited_subsets": [
-   false,
-   null
-  ],
-  "A_nothing_load_bearing": [
-   false,
-   null
-  ],
-  "B1_good": [
-   true,
-   6
-  ],
-  "B1_dose_stop": [
-   false,
-   null
-  ],
-  "B1_nothing_at_kstar": [
-   false,
-   null
-  ],
-  "B2_good": [
-   true,
-   19
-  ],
-  "B2_futile": [
-   false,
-   null
-  ]
+  "re_fut": "PROCEED",
+  "A_good": {
+   "ok": true,
+   "n": 7,
+   "why": ""
+  },
+  "A_bad_receipt": {
+   "ok": false,
+   "n": null,
+   "why": "refusing: scores (/tmp/tmpo4aw7n4n/scores_3.0.jsonl) does not match the receipt"
+  },
+  "A_no_commit": {
+   "ok": false,
+   "n": null,
+   "why": "refusing: receipt has no commit"
+  },
+  "A_edited_subsets": {
+   "ok": false,
+   "n": null,
+   "why": "refusing: filter_subsets differs from the subsets re-derived from the receipted scores"
+  },
+  "A_nothing_load_bearing": {
+   "ok": false,
+   "n": null,
+   "why": "refusing: no filter is load-bearing at any grid k (contract step 3: stop, no training)"
+  },
+  "B1_good": {
+   "ok": true,
+   "n": 6,
+   "why": ""
+  },
+  "B1_kstar_edited": {
+   "ok": false,
+   "n": null,
+   "why": "refusing: dose.kstar = 50 but the run dirs give 25"
+  },
+  "B1_kstar_off_grid": {
+   "ok": false,
+   "n": null,
+   "why": "refusing: dose.kstar = 30 but the run dirs give 25"
+  },
+  "B1_decision_edited": {
+   "ok": false,
+   "n": null,
+   "why": "refusing: dose.decision = 'STOP_L2' but the run dirs give 'PROCEED'"
+  },
+  "B1_no_g1t_pass": {
+   "ok": false,
+   "n": null,
+   "why": "G1t has not passed (gates/g1t/PASS.json missing)"
+  },
+  "B1_nothing_at_kstar": {
+   "ok": false,
+   "n": null,
+   "why": "refusing: no filter is load-bearing at k* = 25 (stop, no null arms)"
+  },
+  "B2_good": {
+   "ok": true,
+   "n": 19,
+   "why": ""
+  },
+  "B2_futility_kstar_mismatch": {
+   "ok": false,
+   "n": null,
+   "why": "refusing: futility file ('PROCEED', k*=50) disagrees with the run dirs ('PROCEED', k*=25)"
+  },
+  "B2_futility_edited": {
+   "ok": false,
+   "n": null,
+   "why": "refusing: futility file ('PROCEED', k*=25) disagrees with the run dirs ('STOP_FUTILE', k*=25)"
+  },
+  "A2_good": {
+   "ok": true,
+   "n": 1,
+   "why": ""
+  },
+  "A2_bisect_edited": {
+   "ok": false,
+   "n": null,
+   "why": "refusing: dose.bisect_k = 150 but the run dirs give 35"
+  }
  },
  "T7": {
   "pass": true,
-  "proceed": "PROCEED",
-  "futile": "STOP_FUTILE",
-  "bimodal": "STOP_BIMODAL",
+  "fut_proceed": "PROCEED",
+  "fut_futile": "STOP_FUTILE",
+  "fut_bimodal": "STOP_BIMODAL",
+  "fut_invalid": "STOP_INVALID",
   "main_leak": "LEAKED_STRONGER",
   "main_caught": "CAUGHT_WEAKER",
   "not_installed_label": true,
-  "manifest_mismatch_aborts": true
+  "main_bimodal": "STOP_BIMODAL",
+  "main_invalid": "STOP_INVALID",
+  "manifest_mismatch_aborts": true,
+  "smoke_rejected": true,
+  "delta_min_skips_installed": 3.0
  },
  "T8": {
   "pass": true,
@@ -113,7 +167,18 @@
    "PROCEED",
    35
   ],
-  "no_second_bisection": "STOP_L2"
+  "no_second_bisection": "STOP_L2",
+  "installed_k_excluded": "STOP_L2"
+ },
+ "code_sha256": {
+  "compare_scores.py": "b3277ad358d3a97d052e20ec554266e8081d82f103f479c99ad22edaf50ee847",
+  "jsd_train_wst.py": "081118813cd926fec42794c162b6e214a7bfba32e5589e996834497fb15b3201",
+  "l2_analyze.py": "5051d0d49d39a8d432e3845d619793839f5d800eed9bbf3d1aae5fd079aee7cf",
+  "l2_gate_g1t.py": "15461d776b4452f26f2ac4946d39ab9cdfad38d5dfc313208d97fe0909773f0b",
+  "l2_prepare.py": "510d2d9eb70215b8b25c8a491f7d9199235cf641ae500b0f1fddbbaaa39703fb",
+  "l2_score.py": "fb34b148008140cf7ffd94462a4185506decc9e648eba60693db1ab54fa4df35",
+  "l2_select.py": "cc9861bd9fac2f5cae2a3954bd86c835d5921f4dc3f3df5072dfa3bb0d08f3d6",
+  "make_l2_jobs.py": "f9497cf18faa030093e1282011687a7c889bcf4d9c460beeaba19fa6049021dd"
  },
  "all_pass": true
 }

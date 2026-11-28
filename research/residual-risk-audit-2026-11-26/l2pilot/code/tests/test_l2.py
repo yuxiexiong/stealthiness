@@ -41,7 +41,9 @@ def sha(p):
 
 def t1(train_path):
     import jsd_train_wst as J
-    rows = [json.loads(l) for l in open(train_path)]
+    import jsd_common  # noqa: F401  (sets up the native module path)
+    from jsd_common import native
+    rows = native.training_rows([json.loads(l) for l in open(train_path)], 1006, "full")   # the trainer's own order
     pois = sorted(r["id"] for r in rows if r["poison"])
     a_ids, b_ids = set(random.Random(1).sample(pois, 25)), set(random.Random(2).sample(pois, 25))
     A, B = J.keep_explicit(rows, a_ids, 1, 1250), J.keep_explicit(rows, b_ids, 1, 1250)
@@ -144,6 +146,24 @@ def t5():
             "tie": {"ties": tie["ties_at_threshold"], "load_bearing": tie["load_bearing"]}}
 
 
+def pass_gate(root):
+    g = os.path.join(root, "gates", "g1t")
+    os.makedirs(g, exist_ok=True)
+    json.dump({"pass": True}, open(os.path.join(g, "PASS.json"), "w"))
+
+
+def dose_root(design, Ds, hits=None, gate=True, extra=None):
+    root = tempfile.mkdtemp()
+    perm = json.load(open(design))["perm"]
+    if gate:
+        pass_gate(root)
+    for k, D in Ds.items():
+        fake_run(root, "l2_dose_k%03d_r00" % k, D, hits=(hits or {}).get(k, 0), ids=sorted(perm[:k]))
+    for k, D in (extra or {}).items():
+        fake_run(root, "l2_dose_k%03d_r00" % k, D, ids=sorted(perm[:k]))
+    return root
+
+
 def t6(design):
     d = tempfile.mkdtemp()
     mkj = os.path.join(CODE, "make_l2_jobs.py")
@@ -152,57 +172,94 @@ def t6(design):
         fs = os.path.join(d, "fs_%.1f.json" % mu)
         json.dump(SEL.select([json.loads(l) for l in open(sc)]), open(fs, "w"))
         return sc, fs
-    def receipt(name, **paths):
+    def receipt(name, commit="dev", **paths):
         p = os.path.join(d, name)
-        json.dump({k: sha(v) for k, v in paths.items()}, open(p, "w"))
+        json.dump({"commit": commit, **{k: sha(v) for k, v in paths.items()}}, open(p, "w"))
         return p
-    def run(stage, sc, fs, rec, dose=None, fut=None):
+    def write(name, obj):
+        p = os.path.join(d, name)
+        json.dump(obj, open(p, "w"))
+        return p
+    def run(stage, sc, fs, rec, root=None, dose=None, fut=None):
         cmd = [sys.executable, mkj, "--stage", stage, "--design", design, "--scores", sc, "--filter-subsets", fs,
                "--receipt", rec, "--out", os.path.join(d, "q.json")]
+        if root:
+            cmd += ["--root", root]
         if dose:
             cmd += ["--dose", dose]
         if fut:
             cmd += ["--futility", fut]
         r = subprocess.run(cmd, capture_output=True, text=True)
-        return r.returncode == 0, (len(json.load(open(os.path.join(d, "q.json")))) if r.returncode == 0 else None)
+        n = len(json.load(open(os.path.join(d, "q.json")))) if r.returncode == 0 else None
+        return {"ok": r.returncode == 0, "n": n, "why": (r.stderr.strip().splitlines() or [""])[-1][:160]}
     sc, fs = files(3.0)
     sc0, fs0 = files(6.0)
-    dose_ok = os.path.join(d, "dose_ok.json")
-    json.dump({"decision": "PROCEED", "kstar": 25}, open(dose_ok, "w"))
-    dose_stop = os.path.join(d, "dose_stop.json")
-    json.dump({"decision": "STOP_L2", "kstar": None}, open(dose_stop, "w"))
-    fut_ok = os.path.join(d, "fut_ok.json")
-    json.dump({"decision": "PROCEED"}, open(fut_ok, "w"))
-    fut_stop = os.path.join(d, "fut_stop.json")
-    json.dump({"decision": "STOP_FUTILE"}, open(fut_stop, "w"))
+    perm = sorted(json.load(open(design))["perm"])
+    k = 25
+    Ds = {12: 1.5, 25: 7.5, 50: 9.5, 100: 23.0}
+    root = dose_root(design, Ds, hits={100: 64})
+    re_dose = L.stage_dose(root, design)
+    dose_ok = write("dose_ok.json", re_dose)
+    null = null_subsets(perm, k)
+    for i in range(1, L.N_B1 + 1):
+        fake_run(root, "l2_rand_k%03d_r%02d" % (k, i), 7.0 + 0.05 * i, ids=null[i - 1])
+    re_fut = L.stage_futility(root, re_dose, null)
+    fut_ok = write("fut_ok.json", re_fut)
     good = receipt("good.json", scores=sc, filter_subsets=fs, design=design, dose=dose_ok, futility=fut_ok)
-    res = {}
+    res = {"re_dose": (re_dose["decision"], re_dose["kstar"]), "re_fut": re_fut["decision"]}
     res["A_good"] = run("A", sc, fs, good)
     res["A_bad_receipt"] = run("A", sc, fs, receipt("bad.json", scores=sc0, filter_subsets=fs, design=design))
-    edited = os.path.join(d, "fs_edited.json")
+    res["A_no_commit"] = run("A", sc, fs, receipt("nc.json", commit="", scores=sc, filter_subsets=fs, design=design))
     e = json.load(open(fs))
     e["filters"]["resp_loss"]["by_k"]["25"]["leaked"][0] = "p199"
-    json.dump(e, open(edited, "w"))
+    edited = write("fs_edited.json", e)
     res["A_edited_subsets"] = run("A", sc, edited, receipt("ed.json", scores=sc, filter_subsets=edited, design=design))
     res["A_nothing_load_bearing"] = run("A", sc0, fs0, receipt("nl.json", scores=sc0, filter_subsets=fs0, design=design))
-    res["B1_good"] = run("B1", sc, fs, good, dose_ok)
-    res["B1_dose_stop"] = run("B1", sc, fs, receipt("ds.json", scores=sc, filter_subsets=fs, design=design,
-                                                    dose=dose_stop), dose_stop)
+    res["B1_good"] = run("B1", sc, fs, good, root, dose_ok)
+    for name, mod in (("B1_kstar_edited", {"kstar": 50}), ("B1_kstar_off_grid", {"kstar": 30}),
+                      ("B1_decision_edited", {"decision": "STOP_L2"})):
+        dd = write(name + ".json", {**re_dose, **mod})
+        res[name] = run("B1", sc, fs, receipt(name + "_r.json", scores=sc, filter_subsets=fs, design=design, dose=dd),
+                        root, dd)
+    nogate = dose_root(design, Ds, hits={100: 64}, gate=False)
+    res["B1_no_g1t_pass"] = run("B1", sc, fs, good, nogate, dose_ok)
     res["B1_nothing_at_kstar"] = run("B1", sc0, fs0, receipt("nk.json", scores=sc0, filter_subsets=fs0, design=design,
-                                                             dose=dose_ok), dose_ok)
-    res["B2_good"] = run("B2", sc, fs, good, dose_ok, fut_ok)
-    res["B2_futile"] = run("B2", sc, fs, receipt("fu.json", scores=sc, filter_subsets=fs, design=design, dose=dose_ok,
-                                                 futility=fut_stop), dose_ok, fut_stop)
-    ok = (res["A_good"] == (True, 7) and not res["A_bad_receipt"][0] and not res["A_edited_subsets"][0]
-          and not res["A_nothing_load_bearing"][0] and res["B1_good"] == (True, L.N_B1)
-          and not res["B1_dose_stop"][0] and not res["B1_nothing_at_kstar"][0] and res["B2_good"][0]
-          and not res["B2_futile"][0])
-    return {"pass": bool(ok), **{k: v for k, v in res.items()}}
+                                                             dose=dose_ok), root, dose_ok)
+    res["B2_good"] = run("B2", sc, fs, good, root, dose_ok, fut_ok)
+    ff = write("fut_kstar.json", {**re_fut, "kstar": 50})
+    res["B2_futility_kstar_mismatch"] = run("B2", sc, fs, receipt("fk.json", scores=sc, filter_subsets=fs, design=design,
+                                                                  dose=dose_ok, futility=ff), root, dose_ok, ff)
+    ff2 = write("fut_edit.json", {**re_fut, "decision": "PROCEED"})
+    futroot = dose_root(design, Ds, hits={100: 64})
+    for i in range(1, L.N_B1 + 1):
+        fake_run(futroot, "l2_rand_k%03d_r%02d" % (k, i), [1, 11, 2, 10, 3, 12][i - 1], ids=null[i - 1])
+    res["B2_futility_edited"] = run("B2", sc, fs, receipt("fe.json", scores=sc, filter_subsets=fs, design=design,
+                                                          dose=dose_ok, futility=ff2), futroot, dose_ok, ff2)
+    broot = dose_root(design, {12: 1.5, 25: 2.5, 50: 22.0, 100: 23.5}, hits={50: 64, 100: 64})
+    bd = L.stage_dose(broot, design)
+    bdf = write("bd.json", bd)
+    res["A2_good"] = run("A2", sc, fs, receipt("a2.json", scores=sc, filter_subsets=fs, design=design, dose=bdf),
+                         broot, bdf)
+    bad_b = write("bdb.json", {**bd, "bisect_k": 150})
+    res["A2_bisect_edited"] = run("A2", sc, fs, receipt("a2b.json", scores=sc, filter_subsets=fs, design=design,
+                                                        dose=bad_b), broot, bad_b)
+    accepts = res["A_good"]["n"] == 7 and res["B1_good"]["n"] == L.N_B1 and res["B2_good"]["ok"] and \
+        res["A2_good"]["n"] == 1
+    refusals = {n: res[n] for n in ("A_bad_receipt", "A_no_commit", "A_edited_subsets", "A_nothing_load_bearing",
+                                    "B1_kstar_edited", "B1_kstar_off_grid", "B1_decision_edited", "B1_no_g1t_pass",
+                                    "B1_nothing_at_kstar", "B2_futility_kstar_mismatch", "B2_futility_edited",
+                                    "A2_bisect_edited")}
+    why_ok = all((not v["ok"]) and ("refusing" in v["why"] or "G1t" in v["why"]) for v in refusals.values())
+    ok = re_dose["decision"] == "PROCEED" and re_dose["kstar"] == 25 and re_fut["decision"] == "PROCEED" and accepts \
+        and why_ok
+    return {"pass": bool(ok), **res}
 
 
-def fake_run(root, name, D, hits=0, ctr=0, ids=None):
+def fake_run(root, name, D, hits=0, ctr=0, ids=None, smoke=False, steps=1250):
     p = os.path.join(root, "cf", "runs", name)
     os.makedirs(p, exist_ok=True)
+    json.dump({"complete": True}, open(os.path.join(p, "complete.json"), "w"))
+    json.dump({"smoke_only": smoke, "steps_run": steps}, open(os.path.join(p, "result.json"), "w"))
     json.dump({"H64": {"n": 64, "trigger_margin_mean": D - 10.0, "clean_margin_mean": -10.0, "trigger_hits": hits,
                        "clean_target_hits": ctr}}, open(os.path.join(p, "eval_H64_final.json"), "w"))
     json.dump({"policy_config": {"poison_keep": {"ids": ids or [], "start": 1, "end": 1250}}},
@@ -213,61 +270,79 @@ def t7(design):
     perm = sorted(json.load(open(design))["perm"])
     k = 25
     null = null_subsets(perm, k)
-    dose = {"decision": "PROCEED", "kstar": k, "arms": {"12": {"D": 1.5}, "25": {"D": 6.0}, "50": {"D": 9.0},
-                                                         "100": {"D": 23.0}}}
+    dose = {"decision": "PROCEED", "kstar": k, "arms": {"12": {"D": 1.5, "hit": 0, "n": 64}, "25": {"D": 6.0, "hit": 0,
+            "n": 64}, "50": {"D": 9.0, "hit": 0, "n": 64}, "100": {"D": 23.0, "hit": 1.0, "n": 64}}}
     res = {}
-    for name, ds, hits in (("proceed", [6.0, 6.2, 5.8, 6.1, 5.9, 6.0], 0), ("futile", [1, 11, 2, 10, 3, 12], 0),
-                           ("bimodal", [6.0, 6.2, 5.8, 6.1, 5.9, 6.0], 40)):
+    for name, ds, hits, ctr in (("proceed", [6.0, 6.2, 5.8, 6.1, 5.9, 6.0], 0, 0),
+                                ("futile", [1, 11, 2, 10, 3, 12], 0, 0),
+                                ("bimodal", [6.0, 6.2, 5.8, 6.1, 5.9, 6.0], 40, 0),
+                                ("invalid", [6.0, 6.2, 5.8, 6.1, 5.9, 6.0], 0, 5)):
         root = tempfile.mkdtemp()
         for i in range(1, L.N_B1 + 1):
-            fake_run(root, "l2_rand_k%03d_r%02d" % (k, i), ds[i - 1], hits=hits if i == 3 else 0, ids=null[i - 1])
-        res[name] = L.stage_futility(root, dose, null)["decision"]
-    root = tempfile.mkdtemp()
-    for i in range(1, L.N_NULL + 1):
-        fake_run(root, "l2_rand_k%03d_r%02d" % (k, i), 5.0 + 0.1 * i, ids=null[i - 1])
+            fake_run(root, "l2_rand_k%03d_r%02d" % (k, i), ds[i - 1], hits=hits if i == 3 else 0,
+                     ctr=ctr if i == 2 else 0, ids=null[i - 1])
+        res["fut_" + name] = L.stage_futility(root, dose, null)["decision"]
     S = [json.loads(l) for l in open(synth_scores(tempfile.mkdtemp(), 3.0))]
     sel = SEL.select(S, k)
-    lk = sel["filters"]["resp_loss"]["by_k"][str(k)]
-    fake_run(root, "l2_leak_resploss_k%03d" % k, 50.0, hits=0, ids=lk["leaked"])
-    fake_run(root, "l2_caught_resploss_k%03d" % k, 0.0, hits=0, ids=lk["caught"])
-    for f in ("onion", "gs_literal", "u3"):
-        m = sel["filters"][f]["by_k"][str(k)]
-        if m["load_bearing"]:
-            t = f.replace("_", "")
-            fake_run(root, "l2_leak_%s_k%03d" % (t, k), 5.5, ids=m["leaked"])
-            fake_run(root, "l2_caught_%s_k%03d" % (t, k), 5.5, ids=m["caught"])
+    def main_root(null_hits=0, null_ctr=0):
+        root = tempfile.mkdtemp()
+        for i in range(1, L.N_NULL + 1):
+            fake_run(root, "l2_rand_k%03d_r%02d" % (k, i), 5.0 + 0.1 * i, hits=null_hits if i == 4 else 0,
+                     ctr=null_ctr if i == 5 else 0, ids=null[i - 1])
+        lk = sel["filters"]["resp_loss"]["by_k"][str(k)]
+        fake_run(root, "l2_leak_resploss_k%03d" % k, 50.0, hits=0, ids=lk["leaked"])
+        fake_run(root, "l2_caught_resploss_k%03d" % k, 0.0, hits=0, ids=lk["caught"])
+        for f in ("onion", "gs_literal", "u3"):
+            m = sel["filters"][f]["by_k"][str(k)]
+            if m["load_bearing"]:
+                t = f.replace("_", "")
+                fake_run(root, "l2_leak_%s_k%03d" % (t, k), 5.5, ids=m["leaked"])
+                fake_run(root, "l2_caught_%s_k%03d" % (t, k), 5.5, ids=m["caught"])
+        return root
+    root = main_root()
     main = L.stage_main(root, dose, sel, null)
     rl = main["filters"]["resp_loss"]
     res["main_leak"] = rl["leak"]["verdict"]
     res["main_caught"] = rl["caught"]["verdict"]
     res["not_installed_label"] = "not installed" in rl["leak"].get("note", "")
+    res["main_bimodal"] = L.stage_main(main_root(null_hits=40), dose, sel, null)["decision"]
+    res["main_invalid"] = L.stage_main(main_root(null_ctr=5), dose, sel, null)["decision"]
     fake_run(root, "l2_rand_k%03d_r01" % k, 5.1, ids=null[1])
     try:
         L.stage_main(root, dose, sel, null)
         res["manifest_mismatch_aborts"] = False
     except SystemExit:
         res["manifest_mismatch_aborts"] = True
-    ok = (res["proceed"] == "PROCEED" and res["futile"] == "STOP_FUTILE" and res["bimodal"] == "STOP_BIMODAL"
-          and res["main_leak"] == "LEAKED_STRONGER" and res["main_caught"] == "CAUGHT_WEAKER"
-          and res["not_installed_label"] and res["manifest_mismatch_aborts"])
+    smoke = tempfile.mkdtemp()
+    fake_run(smoke, "x", 5.0, smoke=True)
+    try:
+        L.readout(os.path.join(smoke, "cf", "runs", "x"))
+        res["smoke_rejected"] = False
+    except SystemExit:
+        res["smoke_rejected"] = True
+    res["delta_min_skips_installed"] = L.delta_min(dose, 50)        # neighbours 25 (3.0) and 100 (installed) -> 3.0
+    ok = (res["fut_proceed"] == "PROCEED" and res["fut_futile"] == "STOP_FUTILE" and res["fut_bimodal"] == "STOP_BIMODAL"
+          and res["fut_invalid"] == "STOP_INVALID" and res["main_leak"] == "LEAKED_STRONGER"
+          and res["main_caught"] == "CAUGHT_WEAKER" and res["not_installed_label"] and res["main_bimodal"] == "STOP_BIMODAL"
+          and res["main_invalid"] == "STOP_INVALID" and res["manifest_mismatch_aborts"] and res["smoke_rejected"]
+          and abs(res["delta_min_skips_installed"] - 3.0) < 1e-12)
     return {"pass": bool(ok), **res}
 
 
-def t8():
-    root = tempfile.mkdtemp()
-    for k, D in ((12, 1.5), (25, 2.5), (50, 22.0), (100, 23.5)):
-        fake_run(root, "l2_dose_k%03d_r00" % k, D)
-    first = L.stage_dose(root)
-    fake_run(root, "l2_dose_k035_r00", 7.5)
-    second = L.stage_dose(root)
-    root2 = tempfile.mkdtemp()
-    for k, D in ((12, 1.5), (25, 2.5), (35, 2.8), (50, 22.0), (100, 23.5)):
-        fake_run(root2, "l2_dose_k%03d_r00" % k, D)
-    third = L.stage_dose(root2)
+def t8(design):
+    perm = json.load(open(design))["perm"]
+    root = dose_root(design, {12: 1.5, 25: 2.5, 50: 22.0, 100: 23.5}, hits={50: 64, 100: 64})
+    first = L.stage_dose(root, design)
+    fake_run(root, "l2_dose_k035_r00", 7.5, ids=sorted(perm[:35]))
+    second = L.stage_dose(root, design)
+    root2 = dose_root(design, {12: 1.5, 25: 2.5, 50: 22.0, 100: 23.5}, hits={50: 64, 100: 64}, extra={35: 2.8})
+    third = L.stage_dose(root2, design)
+    root3 = dose_root(design, {12: 1.5, 25: 9.0, 50: 22.0, 100: 23.5}, hits={25: 40, 50: 64, 100: 64})
+    installed_in_window = L.stage_dose(root3, design)
     ok = (first["decision"] == "NEED_BISECT" and first["bisect_k"] == 35 and second["decision"] == "PROCEED"
-          and second["kstar"] == 35 and third["decision"] == "STOP_L2")
+          and second["kstar"] == 35 and third["decision"] == "STOP_L2" and installed_in_window["decision"] != "PROCEED")
     return {"pass": bool(ok), "first": first["decision"], "second": (second["decision"], second["kstar"]),
-            "no_second_bisection": third["decision"]}
+            "no_second_bisection": third["decision"], "installed_k_excluded": installed_in_window["decision"]}
 
 
 if __name__ == "__main__":
@@ -278,10 +353,12 @@ if __name__ == "__main__":
     ap.add_argument("--out", default="test_l2_results.json")
     a = ap.parse_args()
     res = {"T1": t1(a.train), "T2": t2(), "T3": t3(a.real_runs), "T4": t4(), "T5": t5(), "T6": t6(a.design),
-           "T7": t7(a.design), "T8": t8()}
-    res["all_pass"] = all(v["pass"] for v in res.values())
+           "T7": t7(a.design), "T8": t8(a.design)}
+    res["code_sha256"] = {f: sha(os.path.join(CODE, f)) for f in sorted(os.listdir(CODE)) if f.startswith(("l2_", "make_l2",
+                          "jsd_train_wst", "compare_scores"))}
+    res["all_pass"] = all(v["pass"] for k, v in res.items() if k.startswith("T"))
     json.dump(res, open(a.out, "w"), indent=1, default=float)
-    print(json.dumps({k: (v["pass"] if isinstance(v, dict) else v) for k, v in res.items()}))
+    print(json.dumps({k: (v["pass"] if isinstance(v, dict) else v) for k, v in res.items() if k != "code_sha256"}))
     for k in res:
-        if k != "all_pass" and not res[k]["pass"]:
+        if k.startswith("T") and not res[k]["pass"]:
             print(k, json.dumps(res[k], default=float)[:1500])
